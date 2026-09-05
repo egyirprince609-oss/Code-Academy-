@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HTML Elements - Code Academy</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#0f172a,#1e293b,#312e81);
+  color:white;
+  min-height:100vh;
+  padding-bottom:80px;
+}
+
+/* NAVBAR */
+.navbar{
+  width:100%;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.navbar h1{
+  font-size:18px;
+  color:#ff6b35;
+}
+
+.back-btn{
+  border:none;
+  padding:10px 14px;
+  border-radius:12px;
+  background:#ef4444;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.back-btn:hover{
+  transform:scale(1.05);
+}
+
+/* CONTAINER */
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.intro{
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:20px;
+  text-align:center;
+}
+
+.intro h2{
+  color:#ff6b35;
+  margin-bottom:10px;
+}
+
+.intro p{
+  color:#ddd;
+  font-size:14px;
+}
+
+/* ELEMENT CARD */
+.element-card{
+  background:rgba(255,255,255,0.08);
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  border-left:4px solid #38bdf8;
+  transition:0.3s;
+}
+
+.element-card:hover{
+  transform:translateX(5px);
+  border-left-color:#ff6b35;
+}
+
+.element-card h3{
+  color:#38bdf8;
+  font-size:16px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.element-card .tag{
+  background:#ff6b35;
+  padding:3px 8px;
+  border-radius:6px;
+  font-size:11px;
+  font-family:monospace;
+}
+
+.element-card .example{
+  background:rgba(0,0,0,0.3);
+  padding:12px;
+  border-radius:10px;
+  margin:10px 0;
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.element-card .code{
+  background:#0f1220;
+  padding:10px;
+  border-radius:8px;
+  font-family:monospace;
+  font-size:12px;
+  color:#4ade80;
+  overflow-x:auto;
+  margin-top:8px;
+}
+
+/* GRID FOR SMALL ELEMENTS */
+.grid-2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+@media(max-width:600px){
+  .grid-2{ grid-template-columns:1fr; }
+  .container{ padding:15px; }
+}
+
+/* FOOTER */
+footer{
+  width:100%;
+  background:brown;
+  color:white;
+  text-align:center;
+  padding:12px;
+  position:fixed;
+  bottom:0;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h1>📚 HTML Elements</h1>
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <div class="intro">
+    <h2>40 Essential HTML Elements</h2>
+    <p>Learn the most used HTML tags with live examples. Every website uses these!</p>
+  </div>
+
+  <!-- 1-10: STRUCTURE -->
+  <div class="element-card">
+    <h3>1. HTML Root <span class="tag">&lt;html&gt;</span></h3>
+    <div class="example">Root of every webpage</div>
+    <div class="code">&lt;html lang="en"&gt; ... &lt;/html&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>2. Document Type <span class="tag">&lt;!DOCTYPE&gt;</span></h3>
+    <div class="example">Tells browser this is HTML5</div>
+    <div class="code">&lt;!DOCTYPE html&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>3. Head <span class="tag">&lt;head&gt;</span></h3>
+    <div class="example">Contains meta info, title, links</div>
+    <div class="code">&lt;head&gt;&lt;title&gt;Page&lt;/title&gt;&lt;/head&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>4. Title <span class="tag">&lt;title&gt;</span></h3>
+    <div class="example">Shows in browser tab: Code Academy</div>
+    <div class="code">&lt;title&gt;My Website&lt;/title&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>5. Body <span class="tag">&lt;body&gt;</span></h3>
+    <div class="example">Everything visible goes here</div>
+    <div class="code">&lt;body&gt;Content here&lt;/body&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>6. Meta <span class="tag">&lt;meta&gt;</span></h3>
+    <div class="example">SEO + viewport settings</div>
+    <div class="code">&lt;meta charset="UTF-8"&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>7. Link <span class="tag">&lt;link&gt;</span></h3>
+    <div class="example">Connect CSS files</div>
+    <div class="code">&lt;link rel="stylesheet" href="style.css"&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>8. Script <span class="tag">&lt;script&gt;</span></h3>
+    <div class="example">Add JavaScript</div>
+    <div class="code">&lt;script&gt;alert('Hi');&lt;/script&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>9. Style <span class="tag">&lt;style&gt;</span></h3>
+    <div class="example">Write CSS inside HTML</div>
+    <div class="code">&lt;style&gt;body{color:red}&lt;/style&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>10. Div <span class="tag">&lt;div&gt;</span></h3>
+    <div class="example" style="background:#1e40af;padding:10px;border-radius:8px;">Container box</div>
+    <div class="code">&lt;div&gt;Content block&lt;/div&gt;</div>
+  </div>
+
+  <!-- 11-20: TEXT -->
+  <div class="element-card">
+    <h3>11. Heading 1 <span class="tag">&lt;h1&gt;</span></h3>
+    <div class="example"><h1 style="font-size:24px;margin:0;">Main Title</h1></div>
+    <div class="code">&lt;h1&gt;Main Title&lt;/h1&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>12. Heading 2-6 <span class="tag">&lt;h2&gt;-&lt;h6&gt;</span></h3>
+    <div class="example">
+      <h2 style="font-size:20px;margin:2px 0;">H2</h2>
+      <h3 style="font-size:18px;margin:2px 0;">H3</h3>
+      <h4 style="font-size:16px;margin:2px 0;">H4</h4>
+    </div>
+    <div class="code">&lt;h2&gt;Subtitle&lt;/h2&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>13. Paragraph <span class="tag">&lt;p&gt;</span></h3>
+    <div class="example"><p style="margin:0;">This is a paragraph of text.</p></div>
+    <div class="code">&lt;p&gt;Your text here&lt;/p&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>14. Line Break <span class="tag">&lt;br&gt;</span></h3>
+    <div class="example">Line 1<br>Line 2</div>
+    <div class="code">Text&lt;br&gt;New line</div>
+  </div>
+
+  <div class="element-card">
+    <h3>15. Horizontal Rule <span class="tag">&lt;hr&gt;</span></h3>
+    <div class="example">Above<hr style="border:1px solid #38bdf8;">Below</div>
+    <div class="code">&lt;hr&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>16. Bold <span class="tag">&lt;strong&gt;</span></h3>
+    <div class="example"><strong>Important text</strong></div>
+    <div class="code">&lt;strong&gt;Bold text&lt;/strong&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>17. Italic <span class="tag">&lt;em&gt;</span></h3>
+    <div class="example"><em>Emphasized text</em></div>
+    <div class="code">&lt;em&gt;Italic text&lt;/em&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>18. Small <span class="tag">&lt;small&gt;</span></h3>
+    <div class="example"><small>Small text</small></div>
+    <div class="code">&lt;small&gt;Copyright 2026&lt;/small&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>19. Mark <span class="tag">&lt;mark&gt;</span></h3>
+    <div class="example">Highlight <mark>yellow text</mark></div>
+    <div class="code">&lt;mark&gt;Highlighted&lt;/mark&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>20. Span <span class="tag">&lt;span&gt;</span></h3>
+    <div class="example">Text with <span style="color:#ff6b35;">colored</span> word</div>
+    <div class="code">&lt;span&gt;Inline text&lt;/span&gt;</div>
+  </div>
+
+  <!-- 21-30: LINKS & LISTS -->
+  <div class="element-card">
+    <h3>21. Anchor Link <span class="tag">&lt;a&gt;</span></h3>
+    <div class="example"><a href="https://google.com" target="_blank" style="color:#38bdf8;">Go to Google</a></div>
+    <div class="code">&lt;a href="url"&gt;Click me&lt;/a&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>22. Image <span class="tag">&lt;img&gt;</span></h3>
+    <div class="example"><img src="https://cdn-icons-png.flaticon.com/512/732/732212.png" width="40"></div>
+    <div class="code">&lt;img src="photo.jpg" alt="description"&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>23. Unordered List <span class="tag">&lt;ul&gt;</span></h3>
+    <div class="example">
+      <ul style="margin-left:20px;">
+        <li>Item 1</li>
+        <li>Item 2</li>
+      </ul>
+    </div>
+    <div class="code">&lt;ul&gt;&lt;li&gt;Item&lt;/li&gt;&lt;/ul&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>24. Ordered List <span class="tag">&lt;ol&gt;</span></h3>
+    <div class="example">
+      <ol style="margin-left:20px;">
+        <li>Step 1</li>
+        <li>Step 2</li>
+      </ol>
+    </div>
+    <div class="code">&lt;ol&gt;&lt;li&gt;Step&lt;/li&gt;&lt;/ol&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>25. List Item <span class="tag">&lt;li&gt;</span></h3>
+    <div class="example">Used inside ul/ol</div>
+    <div class="code">&lt;li&gt;List item&lt;/li&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>26. Table <span class="tag">&lt;table&gt;</span></h3>
+    <div class="example">
+      <table style="width:100%;border-collapse:collapse;">
+        <tr><th style="border:1px solid #444;padding:5px;">Name</th><th style="border:1px solid #444;padding:5px;">Age</th></tr>
+        <tr><td style="border:1px solid #444;padding:5px;">John</td><td style="border:1px solid #444;padding:5px;">25</td></tr>
+      </table>
+    </div>
+    <div class="code">&lt;table&gt;&lt;tr&gt;&lt;td&gt;Data&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>27. Table Row <span class="tag">&lt;tr&gt;</span></h3>
+    <div class="example">Row in table</div>
+    <div class="code">&lt;tr&gt;...&lt;/tr&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>28. Table Data <span class="tag">&lt;td&gt;</span></h3>
+    <div class="example">Cell in table</div>
+    <div class="code">&lt;td&gt;Content&lt;/td&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>29. Table Head <span class="tag">&lt;th&gt;</span></h3>
+    <div class="example"><strong>Header cell</strong></div>
+    <div class="code">&lt;th&gt;Header&lt;/th&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>30. Button <span class="tag">&lt;button&gt;</span></h3>
+    <div class="example"><button style="padding:8px 15px;background:#10b981;border:none;border-radius:8px;color:white;cursor:pointer;">Click Me</button></div>
+    <div class="code">&lt;button&gt;Submit&lt;/button&gt;</div>
+  </div>
+
+  <!-- 31-40: FORMS & SEMANTIC -->
+  <div class="element-card">
+    <h3>31. Form <span class="tag">&lt;form&gt;</span></h3>
+    <div class="example">Container for inputs</div>
+    <div class="code">&lt;form&gt;...&lt;/form&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>32. Input <span class="tag">&lt;input&gt;</span></h3>
+    <div class="example"><input type="text" placeholder="Your name" style="padding:6px;border-radius:6px;border:none;"></div>
+    <div class="code">&lt;input type="text"&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>33. Label <span class="tag">&lt;label&gt;</span></h3>
+    <div class="example"><label>Name:</label></div>
+    <div class="code">&lt;label&gt;Email:&lt;/label&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>34. Textarea <span class="tag">&lt;textarea&gt;</span></h3>
+    <div class="example"><textarea placeholder="Message" style="width:100%;padding:6px;border-radius:6px;border:none;"></textarea></div>
+    <div class="code">&lt;textarea&gt;&lt;/textarea&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>35. Select <span class="tag">&lt;select&gt;</span></h3>
+    <div class="example">
+      <select style="padding:6px;border-radius:6px;">
+        <option>Option 1</option>
+        <option>Option 2</option>
+      </select>
+    </div>
+    <div class="code">&lt;select&gt;&lt;option&gt;...&lt;/option&gt;&lt;/select&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>36. Header <span class="tag">&lt;header&gt;</span></h3>
+    <div class="example" style="background:#1e293b;padding:8px;border-radius:6px;">Top section</div>
+    <div class="code">&lt;header&gt;Navigation&lt;/header&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>37. Nav <span class="tag">&lt;nav&gt;</span></h3>
+    <div class="example" style="background:#334155;padding:8px;border-radius:6px;">Menu links</div>
+    <div class="code">&lt;nav&gt;Menu&lt;/nav&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>38. Section <span class="tag">&lt;section&gt;</span></h3>
+    <div class="example" style="background:#1e293b;padding:8px;border-radius:6px;">Content section</div>
+    <div class="code">&lt;section&gt;About us&lt;/section&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>39. Article <span class="tag">&lt;article&gt;</span></h3>
+    <div class="example" style="background:#334155;padding:8px;border-radius:6px;">Blog post</div>
+    <div class="code">&lt;article&gt;Post content&lt;/article&gt;</div>
+  </div>
+
+  <div class="element-card">
+    <h3>40. Footer <span class="tag">&lt;footer&gt;</span></h3>
+    <div class="example" style="background:#0f172a;padding:8px;border-radius:6px;text-align:center;">Bottom section</div>
+    <div class="code">&lt;footer&gt;Copyright&lt;/footer&gt;</div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Copyright © Code Academy - Master HTML Elements
+</footer>
+
+<script>
+function goBack(){
+  window.history.back();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Academy - React Development</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#020617,#0f172a,#1e3a8a,#0f766e);
+    color:white;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+/* NAVBAR */
+.navbar{
+    width:100%;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.logo-section{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-section img{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:2px solid #61dafb;
+}
+
+.logo-text h1{
+    font-size:18px;
+    color:#61dafb;
+}
+
+.logo-text p{
+    font-size:10px;
+    color:#ddd;
+}
+
+.nav-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.nav-buttons button{
+    border:none;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:12px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.back-btn{
+    background:#ef4444;
+}
+
+.progress-btn{
+    background:#10b981;
+}
+
+.nav-buttons button:hover{
+    transform:scale(1.05);
+}
+
+/* MAIN */
+.main{
+    padding:15px;
+    height:calc(100vh - 140px);
+    overflow-y:auto;
+}
+
+.hero{
+    background:rgba(255,255,255,0.07);
+    border-radius:25px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(0,0,0,0.4);
+    margin-bottom:15px;
+}
+
+.hero img{
+    width:120px;
+    margin-bottom:12px;
+    animation:spin 8s linear infinite;
+}
+
+@keyframes spin{
+    from{
+        transform:rotate(0deg);
+    }
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.hero h2{
+    font-size:28px;
+    color:#61dafb;
+    margin-bottom:10px;
+}
+
+.hero p{
+    font-size:14px;
+    color:#f1f1f1;
+    margin-bottom:18px;
+}
+
+/* BUTTONS */
+.action-buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.action-buttons button{
+    padding:12px 18px;
+    border:none;
+    border-radius:15px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+    color:white;
+}
+
+.start-btn{
+    background:linear-gradient(45deg,#06b6d4,#2563eb);
+}
+
+.project-btn{
+    background:linear-gradient(45deg,#10b981,#059669);
+}
+
+.component-btn{
+    background:linear-gradient(45deg,#8b5cf6,#6d28d9);
+}
+
+.action-buttons button:hover{
+    transform:scale(1.08);
+}
+
+/* CARDS */
+.cards{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:15px;
+    text-align:center;
+    transition:0.3s;
+    box-shadow:0 0 15px rgba(0,0,0,0.3);
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:55px;
+    margin-bottom:10px;
+}
+
+.card h3{
+    font-size:15px;
+    margin-bottom:5px;
+    color:#38bdf8;
+}
+
+.card p{
+    font-size:11px;
+    color:#ddd;
+}
+
+/* FOOTER */
+footer{
+    width:100%;
+    background:brown;
+    color:white;
+    text-align:center;
+    padding:12px;
+    position:fixed;
+    bottom:0;
+    font-size:13px;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+    .hero h2{
+        font-size:24px;
+    }
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .main{
+        padding-bottom:90px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <div class="logo-section">
+
+        <img src="logo.png">
+
+        <div class="logo-text">
+
+            <h1>Code Academy</h1>
+
+            <p>We Learn, We Code, We Succeed</p>
+
+        </div>
+
+    </div>
+
+    <div class="nav-buttons">
+
+        <button class="back-btn" onclick="goBack()">
+            Back
+        </button>
+
+        <button class="progress-btn" onclick="openProgress()">
+            Progress
+        </button>
+
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <div class="hero">
+
+        <img src="https://cdn-icons-png.flaticon.com/512/1126/1126012.png">
+
+        <h2>React Development</h2>
+
+        <p>
+            Learn React development and build modern apps, responsive websites, dashboards and powerful user interfaces.
+        </p>
+
+        <div class="action-buttons">
+
+            <button class="start-btn" onclick="startLesson()">
+                Start Lesson
+            </button>
+
+            <button class="project-btn" onclick="openProjects()">
+                React Projects
+            </button>
+
+            <button class="component-btn" onclick="openComponents()">
+                Components
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <div onclick="reusableComponents()"class="card">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png">
+
+            <h3>Reusable Components</h3>
+
+            <p>Create reusable and dynamic components in React.</p>
+
+        </div>
+
+        <div onclick="reactProject()"class="card">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png">
+
+            <h3>Real Projects</h3>
+
+            <p>Build professional apps with React development.</p>
+
+        </div>
+
+        <div onclick="PremiumM"class="card">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+            <h3>Premium Lessons</h3>
+
+            <p>Unlock advanced React concepts and mentorship.</p>
+
+        </div>
+
+        <div onclick ="DevelopM()"class="card">
+
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968672.png">
+
+            <h3>Fast Development</h3>
+
+            <p>Create fast and scalable web applications easily.</p>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    Copyright © Code Academy
+</footer>
+
+<script>
+
+/* BACK */
+function goBack(){
+    window.history.back();
+}
+
+/* PROGRESS */
+function openProgress(){
+    window.location.href = "progress.html";
+}
+
+/* START LESSON */
+function startLesson(){
+    window.location.href = "react_dashboard.html";
+}
+
+/* PROJECTS */
+function openProjects(){
+    window.location.href ="react_projects.html"
+}
+
+/* COMPONENTS */
+function openComponents(){
+    window.location.href ="component_engine.html"
+}
+
+
+/* Reusable Components*/
+function reusableComponents(){
+     window.location.href ="reuses_react.html"
+}
+
+/* Project */
+function reactProject(){
+     window.location.href="react_projects.html"
+}
+
+
+/* Premium */
+
+
+function PremiumM(){
+     window.location.href ="react_premium.html"
+}
+
+/* Development */
+function DevelopM(){
+     window.location.href ="react_dev.html"
+}
+</script>
+
+</body>
+</html>

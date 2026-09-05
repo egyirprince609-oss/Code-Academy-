@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Premium Learning Hub</title>
+
+<style>
+:root{
+    --bg: #050816;
+    --bg-2: #0b1220;
+    --card-bg: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --cyan: #22d3ee;
+    --green: #10b981;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(-45deg,#050816,#0b1220,#0a0f1f,#050816);
+    background-size:400% 400%;
+    animation:bgMove 15s ease infinite;
+    color:var(--text);
+    position:relative;
+    overflow-x:hidden;
+}
+
+@keyframes bgMove{
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+/* GLOW BLOBS */
+body::before,
+body::after{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    z-index:0;
+    pointer-events:none;
+}
+
+body::before{
+    background:radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+    top:-200px;
+    left:-150px;
+    animation:float1 20s ease-in-out infinite;
+}
+
+body::after{
+    background:radial-gradient(circle, rgba(34,211,238,0.15) 0%, transparent 70%);
+    bottom:-250px;
+    right:-180px;
+    animation:float2 25s ease-in-out infinite;
+}
+
+@keyframes float1{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(100px,-100px) scale(1.2)}
+}
+
+@keyframes float2{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-80px,80px) scale(1.3)}
+}
+
+/* NAVBAR */
+.navbar{
+    height:75px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 40px;
+    background:rgba(11,18,32,0.7);
+    backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.navbar-brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    font-size:20px;
+    font-weight:800;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6,#22d3ee);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.back-btn{
+    height:40px;
+    padding:0 20px;
+    background:rgba(239,68,68,0.15);
+    border:1.5px solid rgba(239,68,68,0.3);
+    border-radius:12px;
+    color:#fca5a5;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.back-btn:hover{
+    background:rgba(239,68,68,0.25);
+    border-color:#ef4444;
+    transform:translateX(-4px);
+}
+
+/* CONTAINER */
+.container{
+    max-width:1300px;
+    margin:0 auto;
+    padding:80px 40px 140px;
+    position:relative;
+    z-index:1;
+}
+
+/* HERO */
+.hero{
+    text-align:center;
+    margin-bottom:70px;
+    animation:fadeInDown 0.8s ease;
+}
+
+@keyframes fadeInDown{
+    from{opacity:0;transform:translateY(-40px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.hero-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 20px;
+    background:rgba(99,102,241,0.1);
+    border:1px solid rgba(99,102,241,0.3);
+    border-radius:50px;
+    color:#a5b4fc;
+    font-size:12px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    margin-bottom:24px;
+}
+
+.hero h1{
+    font-size:52px;
+    font-weight:900;
+    background:linear-gradient(135deg,#a5b4fc 0%,#c4b5fd 50%,#67e8f9 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:18px;
+    letter-spacing:-2px;
+    line-height:1.1;
+}
+
+.hero p{
+    font-size:18px;
+    color:var(--text-2);
+    max-width:650px;
+    margin:0 auto;
+    line-height:1.7;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+}
+
+/* CARD - Premium redesign */
+.module-card{
+    position:relative;
+    background:var(--card-bg);
+    backdrop-filter:blur(20px);
+    border:2px solid var(--border);
+    border-radius:24px;
+    padding:32px;
+    cursor:pointer;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    overflow:hidden;
+    animation:fadeInUp 0.6s ease backwards;
+}
+
+.module-card:nth-child(1){animation-delay:0.1s;--accent-color:#38bdf8;--shadow-color:rgba(56,189,248,0.4)}
+.module-card:nth-child(2){animation-delay:0.2s;--accent-color:#a78bfa;--shadow-color:rgba(167,139,250,0.4)}
+.module-card:nth-child(3){animation-delay:0.3s;--accent-color:#22c55e;--shadow-color:rgba(34,197,94,0.4)}
+.module-card:nth-child(4){animation-delay:0.4s;--accent-color:#f59e0b;--shadow-color:rgba(245,158,11,0.4)}
+
+@keyframes fadeInUp{
+    from{opacity:0;transform:translateY(40px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+/* TOP GLOW BORDER */
+.module-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    height:4px;
+    width:100%;
+    background:linear-gradient(90deg,var(--accent-color),#fff, var(--accent-color));
+    background-size:200% 200%;
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform 0.5s;
+}
+
+.module-card:hover::before{
+    transform:scaleX(1);
+    animation:borderGlow 2s linear infinite;
+}
+
+@keyframes borderGlow{
+    0%{background-position:0% 50%}
+    100%{background-position:200% 50%}
+}
+
+.module-card:hover{
+    transform:translateY(-12px);
+    border-color:var(--accent-color);
+    box-shadow:0 30px 60px -15px var(--shadow-color);
+    background:rgba(255,255,255,0.06);
+}
+
+/* CARD CONTENT */
+.card-header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:16px;
+}
+
+.card-icon{
+    width:56px;
+    height:56px;
+    background:linear-gradient(135deg,var(--accent-color),rgba(255,255,255,0.1));
+    border-radius:16px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    flex-shrink:0;
+    box-shadow:0 8px 20px var(--shadow-color);
+}
+
+.card h3{
+    font-size:22px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:4px;
+}
+
+.card-badge{
+    display:inline-block;
+    padding:4px 10px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--border);
+    border-radius:6px;
+    font-size:10px;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    font-weight:600;
+}
+
+.card .desc{
+    font-size:14px;
+    color:var(--text-2);
+    line-height:1.7;
+    margin-bottom:16px;
+    min-height:44px;
+}
+
+.learn-section{
+    padding:14px 16px;
+    background:rgba(0,0,0,0.3);
+    border:1px solid var(--border);
+    border-radius:12px;
+    margin-bottom:18px;
+}
+
+.learn-label{
+    font-size:11px;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.card .learn{
+    font-size:13px;
+    color:var(--text-2);
+    line-height:1.6;
+}
+
+.card-footer{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding-top:16px;
+    border-top:1px solid var(--border);
+}
+
+.action-btn{
+    font-size:13px;
+    color:var(--accent-color);
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    transition:0.3s;
+}
+
+.module-card:hover .action-btn{
+    gap:12px;
+}
+
+.stats{
+    font-size:12px;
+    color:var(--text-muted);
+    display:flex;
+    gap:16px;
+}
+
+/* FOOTER */
+footer{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    height:60px;
+    background:rgba(11,18,32,0.8);
+    backdrop-filter:blur(24px);
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    color:var(--text-muted);
+    z-index:100;
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    .grid{grid-template-columns:1fr}
+    .container{padding:60px 24px 140px}
+    .hero h1{font-size:40px}
+    .navbar{padding:0 24px}
+}
+
+@media(max-width:640px){
+    .hero h1{font-size:32px}
+    .module-card{padding:24px}
+    .card-icon{width:48px;height:48px;font-size:24px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <div class="navbar-brand">React Premium Hub</div>
+    <div></div>
+</nav>
+
+<!-- MAIN CONTAINER -->
+<div class="container">
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-badge">⚡ Premium Learning System</div>
+        <h1>Master React Development</h1>
+        <p>Structured learning modules designed by professional developers. Build real applications, not just tutorials.</p>
+    </section>
+
+    <!-- GRID -->
+    <div class="grid">
+
+        <!-- MODULE 1 -->
+        <div class="module-card" onclick="go('component_engine.html')">
+            <div class="card-header">
+                <div class="card-icon">🧩</div>
+                <div>
+                    <h3>Component Engine</h3>
+                    <span class="card-badge">Foundation</span>
+                </div>
+            </div>
+            <p class="desc">Build reusable UI components used in production applications. Learn the building blocks of React.</p>
+            <div class="learn-section">
+                <div class="learn-label">You will learn</div>
+                <div class="learn">Buttons, Cards, Navbar systems, Layout structuring, Props, Composition</div>
+            </div>
+            <div class="card-footer">
+                <div class="action-btn">Open Module →</div>
+            </div>
+        </div>
+
+        <!-- MODULE 2 -->
+        <div class="module-card" onclick="go('hooks_engine.html')">
+            <div class="card-header">
+                <div class="card-icon">🪝</div>
+                <div>
+                    <h3>Hooks Engine</h3>
+                    <span class="card-badge">Core Logic</span>
+                </div>
+            </div>
+            <p class="desc">Master React hooks to control state, effects, and custom logic. The heart of modern React development.</p>
+            <div class="learn-section">
+                <div class="learn-label">You will learn</div>
+                <div class="learn">useState, useEffect, useContext, useRef, Custom hooks, Performance optimization</div>
+            </div>
+            <div class="card-footer">
+                <div class="action-btn">Open Module →</div>
+            </div>
+        </div>
+
+        <!-- MODULE 3 -->
+        <div class="module-card" onclick="go('state_engine.html')">
+            <div class="card-header">
+                <div class="card-icon">📊</div>
+                <div>
+                    <h3>State Engine</h3>
+                    <span class="card-badge">Data Flow</span>
+                </div>
+            </div>
+            <p class="desc">Understand how data moves inside React applications. Manage state like a pro developer.</p>
+            <div class="learn-section">
+                <div class="learn-label">You will learn</div>
+                <div class="learn">Props drilling, Lifting state, Context API, Redux basics, State management patterns</div>
+            </div>
+            <div class="card-footer">
+                <div class="action-btn">Open Module →</div>
+                
+            </div>
+        </div>
+
+        <!-- MODULE 4 -->
+        <div class="module-card" onclick="go('project_engine.html')">
+            <div class="card-header">
+                <div class="card-icon">🚀</div>
+                <div>
+                    <h3>Project Engine</h3>
+                    <span class="card-badge">Real Projects</span>
+                </div>
+            </div>
+            <p class="desc">Apply everything by building real React applications. Portfolio-ready projects from scratch.</p>
+            <div class="learn-section">
+                <div class="learn-label">You will build</div>
+                <div class="learn">Todo app, Dashboard UI, Blog system, E-commerce cart, Authentication flow</div>
+            </div>
+            <div class="card-footer">
+                <div class="action-btn">Open Module →</div>
+                
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+    © 2026 React Code Academy Premium Hub •
+</footer>
+
+<script>
+function go(page){
+    window.location.href = page;
+}
+
+// Add ripple effect on card click
+document.querySelectorAll('.module-card').forEach(card => {
+    card.addEventListener('click', function(e){
+        const ripple = document.createElement('span');
+        ripple.style.cssText = `
+            position:absolute;
+            border-radius:50%;
+            background:rgba(255,255,255,0.2);
+            transform:scale(0);
+            animation:ripple 0.6s linear;
+            pointer-events:none;
+            width:100px;
+            height:100px;
+            left:${e.offsetX - 50}px;
+            top:${e.offsetY - 50}px;
+        `;
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+    });
+});
+
+// Add ripple animation to CSS dynamically
+const style = document.createElement('style');
+style.textContent = `
+@keyframes ripple{
+    to{transform:scale(4);opacity:0}
+`;
+document.head.appendChild(style);
+</script>
+
+</body>
+</html>

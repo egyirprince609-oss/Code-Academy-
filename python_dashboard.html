@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Course Dashboard</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
+}
+
+/* =========================
+NAVBAR
+========================= */
+
+.navbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px 20px;
+background:#0f172a;
+border-bottom:1px solid #1e293b;
+position:sticky;
+top:0;
+}
+
+/* BACK BUTTON (CONSISTENT ENGINE STYLE) */
+.backBtn{
+background:linear-gradient(135deg,#22c55e,#16a34a);
+border:none;
+color:white;
+padding:10px 14px;
+border-radius:12px;
+cursor:pointer;
+font-weight:bold;
+display:flex;
+align-items:center;
+gap:8px;
+transition:0.3s;
+box-shadow:0 0 12px rgba(34,197,94,0.3);
+}
+
+.backBtn:hover{
+transform:translateX(-6px);
+box-shadow:0 0 18px rgba(34,197,94,0.6);
+}
+
+.backIcon{
+font-size:18px;
+}
+
+/* TITLE */
+.title{
+font-size:16px;
+color:#22c55e;
+font-weight:bold;
+}
+
+/* XP BOX */
+.xpBox{
+background:#1e293b;
+padding:8px 12px;
+border-radius:10px;
+font-size:13px;
+}
+
+/* =========================
+CONTAINER
+========================= */
+
+.container{
+padding:20px;
+max-width:1100px;
+margin:auto;
+}
+
+h2{
+color:#22c55e;
+margin-top:20px;
+}
+
+/* =========================
+GRID
+========================= */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+margin-top:20px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card{
+background:#111827;
+padding:15px;
+border-radius:15px;
+border:1px solid #1f2937;
+cursor:pointer;
+transition:0.3s;
+position:relative;
+}
+
+.card:hover{
+transform:translateY(-5px);
+border-color:#22c55e;
+box-shadow:0 0 15px rgba(34,197,94,0.2);
+}
+
+.card h3{
+margin:0;
+color:#22c55e;
+}
+
+.card p{
+font-size:13px;
+color:#94a3b8;
+margin-top:8px;
+}
+
+.badge{
+position:absolute;
+top:10px;
+right:10px;
+padding:5px 10px;
+font-size:11px;
+border-radius:20px;
+background:#22c55e;
+}
+
+.locked .badge{
+background:#ef4444;
+}
+
+.locked{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<div class="navbar">
+
+<button class="backBtn" onclick="goBack()">
+<span class="backIcon">⬅</span> Back
+</button>
+
+<div class="title">Python Course</div>
+
+<div class="xpBox" id="xpBox">XP: 0</div>
+
+</div>
+
+<!-- =========================
+CONTENT
+========================= -->
+
+<div class="container">
+
+<h2>Python Mastery Path (15 Lessons)</h2>
+
+<div class="grid" id="lessonGrid"></div>
+
+</div>
+
+<script>
+
+/* =========================
+BACK ENGINE
+========================= */
+
+function goBack(){
+window.history.back();
+}
+
+/* =========================
+USER ENGINE
+========================= */
+
+let user = JSON.parse(localStorage.getItem("python_user")) || {
+xp:0,
+completed:[]
+};
+
+function saveUser(){
+localStorage.setItem("python_user", JSON.stringify(user));
+}
+
+document.getElementById("xpBox").textContent = "XP: " + user.xp;
+
+/* =========================
+PYTHON LESSON ENGINE
+========================= */
+
+const lessons = [
+{
+id:"py_lesson_1",
+title:"Introduction to Python",
+desc:"Learn what Python is and why it is one of the most powerful programming languages."
+},
+{
+id:"py_lesson_2",
+title:"Variables",
+desc:"Store and manage data using variables."
+},
+{
+id:"py_lesson_3",
+title:"Data Types",
+desc:"Numbers, strings, lists, booleans and more."
+},
+{
+id:"py_lesson_4",
+title:"Operators",
+desc:"Math and logic operations in Python."
+},
+{
+id:"py_lesson_5",
+title:"If Statements",
+desc:"Decision making in programs."
+},
+{
+id:"py_lesson_6",
+title:"Loops",
+desc:"For loops and while loops."
+},
+{
+id:"py_lesson_7",
+title:"Functions",
+desc:"Reusable blocks of Python code."
+},
+{
+id:"py_lesson_8",
+title:"Lists & Arrays",
+desc:"Store multiple items in one structure."
+},
+{
+id:"py_lesson_9",
+title:"Dictionaries",
+desc:"Key-value structured data."
+},
+{
+id:"py_lesson_10",
+title:"File Handling",
+desc:"Read and write files in Python."
+},
+{
+id:"py_lesson_11",
+title:"Error Handling",
+desc:"Try, except, debugging errors."
+},
+{
+id:"py_lesson_12",
+title:"Modules",
+desc:"Reuse external Python libraries."
+},
+{
+id:"py_lesson_13",
+title:"OOP Basics",
+desc:"Classes and objects introduction."
+},
+{
+id:"py_lesson_14",
+title:"Mini Projects",
+desc:"Build simple Python applications."
+},
+{
+id:"py_lesson_15",
+title:"Final Python Project",
+desc:"Build a real-world automation system."
+}
+];
+
+/* =========================
+UNLOCK ENGINE
+========================= */
+
+function isUnlocked(index){
+
+if(index === 0) return true;
+
+return user.completed.includes(lessons[index-1].id);
+}
+
+/* =========================
+RENDER ENGINE
+========================= */
+
+const grid = document.getElementById("lessonGrid");
+
+function render(){
+
+grid.innerHTML = "";
+
+lessons.forEach((lesson,index)=>{
+
+const unlocked = isUnlocked(index);
+
+const card = document.createElement("div");
+
+card.className = "card " + (!unlocked ? "locked" : "");
+
+card.innerHTML = `
+<h3>${lesson.title}</h3>
+<p>${lesson.desc}</p>
+<div class="badge">${unlocked ? "OPEN" : "LOCKED"}</div>
+`;
+
+if(unlocked){
+card.onclick = () => {
+window.location.href = `python_lesson.html?lesson=${lesson.id}`;
+};
+}
+
+grid.appendChild(card);
+
+});
+
+}
+
+render();
+
+</script>
+
+</body>
+</html>

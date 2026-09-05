@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Code Academy - JavaScript</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+}
+
+body{
+    background: linear-gradient(135deg,#090b1a,#141b3d,#28184f,#0f3460);
+    color:white;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+/* NAVBAR */
+.navbar{
+    width:100%;
+    padding:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,0.4);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo-area img{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    border:2px solid gold;
+}
+
+.logo-text h1{
+    font-size:18px;
+    color:#ffd369;
+}
+
+.logo-text p{
+    font-size:10px;
+    color:#ddd;
+}
+
+.nav-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.nav-buttons button{
+    border:none;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:12px;
+    cursor:pointer;
+    color:white;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.back-btn{
+    background:#ff4b5c;
+}
+
+.progress-btn{
+    background:#00b894;
+}
+
+.nav-buttons button:hover{
+    transform:scale(1.05);
+}
+
+/* MAIN CONTENT */
+.main{
+    padding:15px;
+    height:calc(100vh - 140px);
+    overflow-y:auto;
+}
+
+.hero{
+    background:rgba(255,255,255,0.07);
+    border-radius:25px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 0 25px rgba(0,0,0,0.4);
+    margin-bottom:15px;
+}
+
+.hero img{
+    width:120px;
+    margin-bottom:10px;
+    animation:float 3s infinite ease-in-out;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-10px);}
+    100%{transform:translateY(0);}
+}
+
+.hero h2{
+    font-size:28px;
+    color:#f7df1e;
+    margin-bottom:10px;
+}
+
+.hero p{
+    font-size:14px;
+    color:#eee;
+    margin-bottom:18px;
+}
+
+/* BUTTONS */
+.action-buttons{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+}
+
+.action-buttons button{
+    padding:12px 18px;
+    border:none;
+    border-radius:15px;
+    font-size:14px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+    color:white;
+}
+
+.start-btn{
+    background:linear-gradient(45deg,#ff9800,#ff5722);
+}
+
+.quiz-btn{
+    background:linear-gradient(45deg,#00c6ff,#0072ff);
+}
+
+.video-btn{
+    background:linear-gradient(45deg,#8e2de2,#4a00e0);
+}
+
+.action-buttons button:hover{
+    transform:scale(1.08);
+}
+
+/* CARDS */
+.cards{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.card{
+    background:rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 0 12px rgba(0,0,0,0.3);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card img{
+    width:55px;
+    margin-bottom:10px;
+}
+
+.card h3{
+    font-size:15px;
+    margin-bottom:5px;
+    color:#00e5ff;
+}
+
+.card p{
+    font-size:11px;
+    color:#ddd;
+}
+
+/* FOOTER */
+footer{
+    width:100%;
+    background:brown;
+    color:white;
+    text-align:center;
+    padding:12px;
+    font-size:13px;
+    position:fixed;
+    bottom:0;
+}
+
+/* MOBILE OPTIMIZATION */
+@media(max-width:600px){
+
+    .hero h2{
+        font-size:24px;
+    }
+
+    .cards{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .main{
+        padding-bottom:90px;
+    }
+}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <div class="logo-area">
+        <img src="logo.png" alt="Logo">
+
+        <div class="logo-text">
+            <h1>Code Academy</h1>
+            <p>We Learn, We Code, We Succeed</p>
+        </div>
+    </div>
+
+    <div class="nav-buttons">
+        <button class="back-btn" onclick="goBack()">Back</button>
+
+        <button class="progress-btn" onclick="openProgress()">
+            Progress
+        </button>
+    </div>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+    <div class="hero">
+
+        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png">
+
+        <h2>JavaScript Master Class</h2>
+
+        <p>
+            Learn modern JavaScript from beginner to advanced level.
+            Build websites, apps, animations, games and become a real developer.
+        </p>
+
+        <div class="action-buttons">
+
+            <button class="start-btn"
+            onclick="startLesson()">
+            Start Lesson
+            </button>
+
+            <button class="quiz-btn"
+            onclick="openQuiz()">
+            JavaScript Quiz
+            </button>
+
+            <button class="video-btn"
+            onclick="watchVideos()">
+            JavaScript Projects 
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- FEATURE CARDS -->
+    <div class="cards">
+
+        <div onclick ="Code()"class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/2721/2721297.png">
+            <h3>Interactive Coding</h3>
+            <p>Practice JavaScript directly with live examples.</p>
+        </div>
+
+    <div onclick ="Pro()"class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png">
+            <h3>Projects</h3>
+            <p>Create real-world JavaScript applications.</p>
+        </div>
+
+        <div onclick ="Cert()"class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+            <h3>Certificates</h3>
+            <p>Earn certificates after completing lessons.</p>
+        </div>
+
+        <div onclick ="Pre()"class="card">
+            <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png">
+            <h3>Premium Access</h3>
+            <p>Unlock advanced JavaScript tutorials and mentorship.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+    Copyright © Code Academy
+    <p>We learn. We code. We succeed</p>
+</footer>
+
+<script>
+
+/* BACK BUTTON */
+function goBack(){
+    window.history.back();
+}
+
+/* PROGRESS PAGE */
+function openProgress(){
+    window.location.href = "progress.html";
+}
+
+/* START LESSON */
+function startLesson(){
+    window.location.href = "javascript_dashboard.html";
+}
+
+/* QUIZ */
+function openQuiz(){
+    window.location.href="java_quiz.html"
+}
+
+/* VIDEOS */
+function watchVideos(){
+    window.location.href="java_project.html"
+}
+
+function Code(){
+     window.location.href="java_code.html"
+}
+function Pro(){
+     window.location.href="java_project.html"
+}
+
+function Cert(){
+     window.location.href="certificate.html"
+}
+
+function Pre(){
+     window.location.href="java_premium.html"
+}
+</script>
+
+</body>
+</html>

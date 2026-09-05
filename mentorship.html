@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Mentor Prince</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter', sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+flex-direction:column;
+background:linear-gradient(135deg,#070b1a,#0b1430,#120a2a);
+color:white;
+overflow:hidden;
+}
+
+/* HEADER */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 20px;
+background:rgba(255,255,255,0.05);
+border-bottom:1px solid rgba(255,215,0,0.25);
+backdrop-filter:blur(10px);
+}
+
+header h1{
+font-size:16px;
+color:#ffd700;
+font-weight:800;
+}
+
+.status{
+font-size:12px;
+color:#00ff99;
+}
+
+/* CHAT AREA */
+#chat{
+flex:1;
+overflow-y:auto;
+padding:15px;
+display:flex;
+flex-direction:column;
+gap:12px;
+scroll-behavior:smooth;
+}
+
+#chat::-webkit-scrollbar{
+width:5px;
+}
+
+#chat::-webkit-scrollbar-thumb{
+background:#ffd70055;
+border-radius:10px;
+}
+
+/* MESSAGE */
+.msg{
+max-width:80%;
+padding:12px 14px;
+border-radius:14px;
+font-size:14px;
+line-height:1.5;
+white-space:pre-wrap;
+animation:fade 0.2s ease;
+}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(8px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+.user{
+align-self:flex-end;
+background:linear-gradient(135deg,#1e88ff,#00c6ff);
+}
+
+.ai{
+align-self:flex-start;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,215,0,0.15);
+}
+
+/* INPUT */
+.inputBox{
+display:flex;
+gap:10px;
+padding:12px;
+background:rgba(0,0,0,0.35);
+border-top:1px solid rgba(255,215,0,0.2);
+}
+
+input{
+flex:1;
+padding:12px;
+border:none;
+border-radius:10px;
+outline:none;
+background:rgba(255,255,255,0.08);
+color:white;
+}
+
+button{
+padding:12px 14px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:700;
+}
+
+#send{
+background:#ffd700;
+}
+
+#voice{
+background:transparent;
+border:1px solid #ffd700;
+color:#ffd700;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>🤖 AI Mentor Prince</h1>
+  <div class="status">● Online</div>
+</header>
+
+<div id="chat">
+
+  <div class="msg ai">
+    Hey 👋 I'm your AI Mentor Prince.
+    Ask me anything about coding, debugging, or software development.
+  </div>
+
+</div>
+
+<div class="inputBox">
+  <input id="input" placeholder="Ask your question..." />
+  <button id="voice">🎤</button>
+  <button id="send">➤</button>
+</div>
+
+<script>
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+const sendBtn = document.getElementById("send");
+const voiceBtn = document.getElementById("voice");
+
+/* CHANGE THIS LATER WHEN YOU DEPLOY */
+const API_URL = "http://localhost:3000/ai/explain";
+
+/* ADD MESSAGE */
+function addMsg(text, type){
+  const div = document.createElement("div");
+  div.className = "msg " + type;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+/* SEND MESSAGE */
+async function sendMessage(){
+
+  const text = input.value.trim();
+  if(!text) return;
+
+  addMsg(text,"user");
+  input.value = "";
+
+  const loading = document.createElement("div");
+  loading.className = "msg ai";
+  loading.textContent = "Thinking...";
+  chat.appendChild(loading);
+
+  try{
+
+    const res = await fetch(API_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body:JSON.stringify({ text })
+    });
+
+    const data = await res.json();
+
+    loading.remove();
+
+    addMsg(data.result || "No response","ai");
+
+  }catch(err){
+
+    loading.remove();
+    addMsg("❌ AI server not reachable","ai");
+
+  }
+
+}
+
+/* VOICE INPUT */
+voiceBtn.onclick = () => {
+
+  const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+    alert("Voice not supported");
+    return;
+  }
+
+  const recog = new SpeechRecognition();
+  recog.lang = "en-US";
+
+  recog.onresult = (e)=>{
+    input.value = e.results[0][0].transcript;
+    sendMessage();
+  };
+
+  recog.start();
+};
+
+/* EVENTS */
+sendBtn.onclick = sendMessage;
+
+input.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter"){
+    sendMessage();
+  }
+});
+
+</script>
+
+</body>
+</html>

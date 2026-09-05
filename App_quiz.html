@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Engine v9 - Adaptive Intelligence</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#050505,#1a1208,#3b2a0f);
+color:white;
+overflow-x:hidden;
+}
+
+/* GOLD BACKGROUND */
+body::before{
+content:"";
+position:fixed;
+width:200%;
+height:200%;
+background:repeating-linear-gradient(
+45deg,
+rgba(255,215,0,0.06),
+rgba(255,215,0,0.06) 2px,
+transparent 2px,
+transparent 14px
+);
+animation:move 16s linear infinite;
+z-index:-1;
+}
+
+@keyframes move{
+0%{transform:translate(0,0)}
+100%{transform:translate(-300px,-300px)}
+}
+
+/* NAVBAR */
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+background:rgba(0,0,0,0.75);
+border-bottom:1px solid gold;
+position:sticky;
+top:0;
+}
+
+button{
+padding:8px 12px;
+border-radius:10px;
+border:1px solid gold;
+background:#111;
+color:white;
+cursor:pointer;
+}
+
+/* TIMER CIRCLE WITH PROGRESS */
+.timerWrap{
+display:flex;
+justify-content:center;
+margin-top:10px;
+}
+
+.timerCircle{
+width:75px;
+height:75px;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+font-size:18px;
+color:gold;
+background:#111;
+
+/* progress ring */
+border:6px solid rgba(255,215,0,0.2);
+box-shadow:0 0 15px rgba(255,215,0,0.3);
+transition:0.2s;
+}
+
+/* CONTAINER */
+.container{
+max-width:900px;
+margin:auto;
+padding:15px;
+}
+
+/* QUESTION CARD */
+.card{
+background:rgba(255,255,255,0.04);
+border:1px solid rgba(255,215,0,0.4);
+padding:20px;
+border-radius:20px;
+margin-top:15px;
+}
+
+/* QUESTION */
+.question{
+font-size:18px;
+margin-bottom:12px;
+background:rgba(0,0,0,0.35);
+padding:12px;
+border-radius:12px;
+border:1px solid rgba(255,215,0,0.2);
+}
+
+/* OPTIONS */
+.option{
+padding:10px;
+margin:6px 0;
+background:#111;
+border:1px solid gold;
+border-radius:10px;
+cursor:pointer;
+}
+
+.option:hover{
+background:gold;
+color:black;
+}
+
+/* INPUT */
+input{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:2px solid gold;
+background:#0a0a0a;
+color:white;
+margin-top:10px;
+}
+
+/* MENU */
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.8);
+}
+
+.modalContent{
+background:#111;
+border:1px solid gold;
+width:90%;
+max-width:500px;
+margin:60px auto;
+padding:15px;
+border-radius:15px;
+max-height:80vh;
+overflow:auto;
+}
+
+/* FOOTER */
+footer{
+position:fixed;
+bottom:0;
+width:100%;
+text-align:center;
+padding:10px;
+background:rgba(0,0,0,0.85);
+border-top:1px solid gold;
+font-size:12px;
+color:gold;
+}
+
+.small{
+font-size:12px;
+opacity:0.85;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<button onclick="goBack()">⬅ Back</button>
+<h3>⚡ Quiz Engine v9 AI</h3>
+<button onclick="openMenu()">☰ Menu</button>
+</header>
+
+<div class="timerWrap">
+<div class="timerCircle" id="timer">20</div>
+</div>
+
+<div class="container">
+<div class="card">
+
+<div id="question">Loading...</div>
+
+<div id="options"></div>
+
+<input id="inputBox" placeholder="Type answer...">
+
+</div>
+</div>
+
+<!-- MENU -->
+<div class="modal" id="menu">
+<div class="modalContent">
+
+<button onclick="closeMenu()">Close</button>
+
+<h3>📊 Analytics</h3>
+<div id="stats"></div>
+
+<h3>📚 Recent Activity (REAL TRACKING)</h3>
+<div id="recent"></div>
+
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+Quiz Engine v9 • Adaptive Intelligence System
+</footer>
+
+<script>
+
+/* ======================
+   ENGINE CORE
+====================== */
+
+let questions=[];
+let index=0;
+
+let correct=0;
+let wrong=0;
+
+let history=[];
+
+let time=20;
+let timer;
+
+/* LOAD */
+async function loadEngine(){
+let res=await fetch("questions.bank.json");
+questions=await res.json();
+start();
+}
+
+/* START */
+function start(){
+render();
+startTimer();
+updateStats();
+}
+
+/* RENDER */
+function render(){
+
+if(index>=questions.length){
+index=0;
+}
+
+let q=questions[index];
+
+document.getElementById("question").innerText=q.question;
+
+let box=document.getElementById("options");
+box.innerHTML="";
+
+if(q.type==="mcq"){
+document.getElementById("inputBox").style.display="none";
+
+q.options.forEach(opt=>{
+let div=document.createElement("div");
+div.className="option";
+div.innerText=opt;
+div.onclick=()=>answer(opt===q.answer,opt,q);
+box.appendChild(div);
+});
+
+}else{
+document.getElementById("inputBox").style.display="block";
+}
+}
+
+/* ANSWER */
+function answer(isCorrect,userAns,q){
+
+if(isCorrect) correct++;
+else wrong++;
+
+history.push({
+q:q.question,
+user:userAns,
+ans:q.answer,
+result:isCorrect?"✔":"❌"
+});
+
+next();
+}
+
+/* NEXT AUTO */
+function next(){
+index++;
+resetTimer();
+render();
+updateStats();
+renderHistory();
+}
+
+/* INPUT NEXT */
+function nextFromInput(){
+let q=questions[index];
+let val=document.getElementById("inputBox").value.trim();
+
+let ok=val===q.answer;
+
+if(ok) correct++; else wrong++;
+
+history.push({
+q:q.question,
+user:val,
+ans:q.answer,
+result:ok?"✔":"❌"
+});
+
+next();
+}
+
+/* TIMER */
+function startTimer(){
+timer=setInterval(()=>{
+
+time--;
+document.getElementById("timer").innerText=time;
+
+/* visual ring fade effect */
+let opacity = time/20;
+document.getElementById("timer").style.borderColor =
+`rgba(255,215,0,${opacity})`;
+
+if(time<=0){
+wrong++;
+
+history.push({
+q:questions[index].question,
+user:"TIME OUT",
+ans:questions[index].answer,
+result:"❌"
+});
+
+next();
+}
+
+},1000);
+}
+
+function resetTimer(){
+time=20;
+}
+
+/* MENU */
+function openMenu(){
+document.getElementById("menu").style.display="block";
+renderMenu();
+}
+
+function closeMenu(){
+document.getElementById("menu").style.display="none";
+}
+
+/* STATS */
+function updateStats(){
+document.getElementById("stats").innerHTML=`
+<b>Total:</b> ${index}<br>
+<b>Correct:</b> ${correct}<br>
+<b>Wrong:</b> ${wrong}<br>
+<b>Accuracy:</b> ${index?Math.round((correct/index)*100):0}%
+`;
+}
+
+/* REAL TRACKING */
+function renderMenu(){
+document.getElementById("recent").innerHTML =
+history.slice(-10).map(h=>`
+<div class="small">
+<b>${h.q}</b><br>
+Your: ${h.user}<br>
+Ans: ${h.ans}<br>
+Result: ${h.result}
+</div><hr>
+`).join("");
+}
+
+/* BACK */
+function goBack(){
+window.history.back();
+}
+
+/* INIT */
+loadEngine();
+
+</script>
+
+</body>
+</html>

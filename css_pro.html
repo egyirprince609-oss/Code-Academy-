@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Professional Styling - Code Academy</title>
+<style>
+*{
+  margin:0;padding:0;box-sizing:border-box;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#020617,#172554,#581c87,#0f766e);
+  color:white;min-height:100vh;overflow-x:hidden;
+}
+
+/* NAVBAR */
+.navbar{
+  width:100%;padding:15px;display:flex;justify-content:space-between;
+  align-items:center;background:rgba(0,0,0,0.5);backdrop-filter:blur(15px);
+  border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:0;z-index:100
+}
+.back-btn{
+  padding:10px 18px;background:#ef4444;border:none;border-radius:12px;
+  color:white;font-weight:bold;cursor:pointer;transition:0.3s
+}
+.back-btn:hover{transform:scale(1.05)}
+h1{font-size:20px;color:#38bdf8}
+
+/* CONTAINER */
+.container{
+  padding:20px;max-width:900px;margin:0 auto
+}
+
+/* HERO WITH ANIMATIONS */
+.hero-card{
+  background:rgba(255,255,255,0.05);
+  border-radius:25px;padding:30px;margin-bottom:25px;
+  border:1px solid rgba(255,255,255,0.1);
+  backdrop-filter:blur(10px);
+  animation:slideDown 0.8s ease-out
+}
+
+@keyframes slideDown{
+  from{opacity:0;transform:translateY(-30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.hero-card h2{
+  font-size:32px;margin-bottom:15px;
+  background:linear-gradient(45deg,#38bdf8,#9333ea,#14b8a6);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:glow 3s ease-in-out infinite
+}
+
+@keyframes glow{
+ 0%,100%{filter:brightness(1)}
+ 50%{filter:brightness(1.3)}
+}
+
+/* INTERACTIVE DEMOS */
+.demo-section{
+  background:rgba(0,0,0,0.3);
+  border-radius:20px;padding:25px;margin-bottom:20px;
+  border-left:4px solid #38bdf8;
+  transition:0.4s
+}
+
+.demo-section:hover{
+  border-left-color:#9333ea;
+  transform:translateX(10px)
+}
+
+.demo-section h3{
+  color:#38bdf8;font-size:18px;margin-bottom:15px;
+  display:flex;align-items:center;gap:10px
+}
+
+/* GRADIENT TEXT DEMO */
+.gradient-text{
+  font-size:40px;font-weight:bold;
+  background:linear-gradient(90deg,#ff6b35,#fbbf24,#38bdf8,#9333ea);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradientShift 4s ease infinite;
+  text-align:center;margin:20px 0
+}
+
+@keyframes gradientShift{
+ 0%{background-position:0% 50%}
+ 50%{background-position:100% 50%}
+ 100%{background-position:0% 50%}
+}
+
+/* GLASS CARD DEMO */
+.glass-cards{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;margin:20px 0
+}
+
+.glass-card{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(15px);
+  border:1px solid rgba(255,255,255,0.2);
+  padding:20px;border-radius:15px;
+  box-shadow:0 8px 32px rgba(0,0,0,0.3);
+  transition:0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+  cursor:pointer
+}
+
+.glass-card:hover{
+  transform:translateY(-10px) scale(1.03);
+  box-shadow:0 15px 40px rgba(56,189,248,0.4);
+  border-color:#38bdf8
+}
+
+.glass-card h4{color:#38bdf8;margin-bottom:8px}
+
+/* SHADOW DEMO */
+.shadow-demo{
+  width:150px;height:150px;
+  background:linear-gradient(135deg,#38bdf8,#9333ea);
+  margin:30px auto;border-radius:20px;
+  animation:floatShadow 3s ease-in-out infinite
+}
+
+@keyframes floatShadow{
+ 0%,100%{box-shadow:0 5px 15px rgba(56,189,248,0.3);transform:translateY(0)}
+ 50%{box-shadow:0 25px 40px rgba(147,51,234,0.6);transform:translateY(-15px)}
+}
+
+/* BUTTON DEMO */
+.pro-btn{
+  padding:15px 35px;border:none;border-radius:12px;
+  background:linear-gradient(45deg,#38bdf8,#9333ea);
+  color:white;font-weight:bold;font-size:16px;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:0.3s;margin:10px
+}
+
+.pro-btn::before{
+  content:'';position:absolute;top:0;left:-100%;
+  width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);
+  transition:0.5s
+}
+
+.pro-btn:hover::before{left:100%}
+.pro-btn:hover{transform:scale(1.08);box-shadow:0 10px 25px rgba(56,189,248,0.5)}
+
+/* CODE BOX */
+.code-box{
+  background:#0f1220;border-radius:12px;padding:15px;
+  font-family:'Courier New',monospace;font-size:12px;
+  color:#4ade80;border:1px solid rgba(56,189,248,0.3);
+  overflow-x:auto;margin:15px 0
+}
+
+.code-box span.keyword{color:#fbbf24}
+.code-box span.property{color:#38bdf8}
+.code-box span.value{color:#4ade80}
+
+/* TIPS GRID */
+.tips-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:15px;margin-top:20px
+}
+
+.tip-card{
+  background:rgba(255,255,255,0.05);
+  padding:20px;border-radius:15px;
+  border-top:3px solid #14b8a6;
+  transition:0.3s
+}
+
+.tip-card:hover{
+  background:rgba(255,255,255,0.08);
+  border-top-color:#38bdf8
+}
+
+.tip-card h4{
+  color:#14b8a6;margin-bottom:10px;font-size:16px
+}
+
+.tip-card p{
+  color:#ddd;font-size:13px;line-height:1.6
+}
+
+/* ACTION BUTTON */
+.action-btn{
+  width:100%;padding:16px;
+  background:linear-gradient(45deg,#0ea5e9,#2563eb);
+  border:none;border-radius:15px;color:white;
+  font-size:16px;font-weight:bold;cursor:pointer;
+  margin-top:25px;transition:0.3s
+}
+
+.action-btn:hover{
+  transform:scale(1.03);
+  box-shadow:0 10px 30px rgba(14,165,233,0.4)
+}
+
+/* FLOATING PARTICLES */
+.particle{
+  position:fixed;width:4px;height:4px;
+  background:rgba(56,189,248,0.6);
+  border-radius:50%;pointer-events:none;
+  animation:floatUp 10s infinite linear
+}
+
+@keyframes floatUp{
+ 0%{transform:translateY(100vh) scale(0);opacity:0}
+ 10%{opacity:1}
+ 90%{opacity:1}
+ 100%{transform:translateY(-100vh) scale(1.5);opacity:0}
+</style>
+</head>
+<body>
+
+<!-- FLOATING PARTICLES -->
+<script>
+for(let i=0;i<15;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.left=Math.random()*100+'%';
+  p.style.animationDelay=Math.random()*10+'s';
+  document.body.appendChild(p);
+}
+</script>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <button class="back-btn" onclick="history.back()">⬅ Back</button>
+  <h1>✨ Professional Styling</h1>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero-card">
+    <h2>Master Professional CSS</h2>
+    <p style="color:#ddd;font-size:15px;line-height:1.7">
+      Learn how pro developers create stunning, modern websites using advanced CSS techniques. 
+      Watch the animations below - each one teaches you a real CSS concept.
+    </p>
+  </div>
+
+  <!-- GRADIENT TEXT -->
+  <div class="demo-section">
+    <h3>🎨 1. Gradient Text Effects</h3>
+    <p style="color:#ddd;margin-bottom:10px">Pro websites use gradients on text for premium look:</p>
+    <div class="gradient-text">Code Academy Pro</div>
+    <div class="code-box">
+<span class="keyword">background:</span> <span class="value">linear-gradient(90deg, #ff6b35, #fbbf24, #38bdf8)</span>;<br>
+<span class="keyword">-webkit-background-clip:</span> <span class="value">text</span>;<br>
+<span class="keyword">animation:</span> <span class="value">gradientShift 4s ease infinite</span>;
+    </div>
+  </div>
+
+  <!-- GLASSMORPHISM -->
+  <div class="demo-section">
+    <h3>🔮 2. Glassmorphism Cards</h3>
+    <p style="color:#ddd;margin-bottom:10px">Modern glass effect using backdrop-filter:</p>
+    <div class="glass-cards">
+      <div class="glass-card">
+        <h4>Card 1</h4>
+        <p style="font-size:12px;color:#ddd">Hover to see 3D effect</p>
+      </div>
+      <div class="glass-card">
+        <h4>Card 2</h4>
+        <p style="font-size:12px;color:#ddd">Smooth transitions</p>
+      </div>
+      <div class="glass-card">
+        <h4>Card 3</h4>
+        <p style="font-size:12px;color:#ddd">Professional look</p>
+      </div>
+    </div>
+    <div class="code-box">
+<span class="keyword">backdrop-filter:</span> <span class="value">blur(15px)</span>;<br>
+<span class="keyword">background:</span> <span class="value">rgba(255,255,255,0.08)</span>;<br>
+<span class="keyword">transition:</span> <span class="value">0.4s cubic-bezier(...)</span>;
+    </div>
+  </div>
+
+  <!-- SHADOWS -->
+  <div class="demo-section">
+    <h3>🌟 3. Dynamic Box Shadows</h3>
+    <p style="color:#ddd;margin-bottom:10px">Animated shadows create depth and life:</p>
+    <div class="shadow-demo"></div>
+    <div class="code-box">
+<span class="keyword">box-shadow:</span> <span class="value">0 25px 40px rgba(147,51,234,0.6)</span>;<br>
+<span class="keyword">@keyframes</span> floatShadow { ... }
+    </div>
+  </div>
+
+  <!-- BUTTON EFFECTS -->
+  <div class="demo-section">
+    <h3>⚡ 4. Pro Button Effects</h3>
+    <p style="color:#ddd;margin-bottom:15px">Shine effect on hover - used by Apple, Stripe:</p>
+    <div style="text-align:center">
+      <button class="pro-btn">Hover Me</button>
+      <button class="pro-btn">Click Effect</button>
+    </div>
+    <div class="code-box">
+<span class="keyword">::before</span> {<br>
+  content: ''; position: absolute;<br>
+  background: linear-gradient(90deg, transparent, white, transparent);<br>
+  transition: 0.5s;<br>
+}
+    </div>
+  </div>
+
+  <!-- PRO TIPS -->
+  <div class="demo-section">
+    <h3>💡 Pro Developer Tips</h3>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <h4>1. Color Palette</h4>
+        <p>Use 3-4 main colors max. Tools: Coolors.co, Adobe Color</p>
+      </div>
+      <div class="tip-card">
+        <h4>2. Spacing System</h4>
+        <p>Use 8px grid: 8, 16, 24, 32px for consistent spacing</p>
+      </div>
+      <div class="tip-card">
+        <h4>3. Typography</h4>
+        <p>2 fonts max. Line-height 1.5-1.7 for readability</p>
+      </div>
+      <div class="tip-card">
+        <h4>4. Animations</h4>
+        <p>Use cubic-bezier for smooth, natural motion</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION -->
+  <button class="action-btn" onclick="window.location.href='htmleditor.html'">
+    🚀 Practice These Skills in Code Editor
+  </button>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Academy AI</title>
+
+<link rel="stylesheet" href="lesson.css">
+<style>
+/* ========================= RESET ========================= */
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Inter',Arial,sans-serif; }
+
+html,body{
+width:100%;
+height:100%;
+margin:0;
+padding:0;
+overflow:hidden;
+background: white;
+color:#F8FAFC;
+}
+
+/* ========================= PREMIUM BACKGROUND ========================= */
+.bgGradient{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-3;
+background:
+radial-gradient(circle at 25% 30%, rgba(56,189,248,0.08) 0%, transparent 60%),
+radial-gradient(circle at 75% 70%, rgba(168,85,247,0.06) 0%, transparent 60%),
+linear-gradient(180deg, #0A0F1E 0%, #0D1424 100%);
+}
+
+.bgPattern{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-2;
+background-image:
+linear-gradient(rgba(56,189,248,0.05) 1px, transparent 1px),
+linear-gradient(90deg, rgba(56,189,248,0.05) 1px, transparent 1px);
+background-size:60px 60px;
+opacity:0.4;
+animation:drift 80s linear infinite;
+}
+
+@keyframes drift{
+0%{transform:translate(0,0);}
+100%{transform:translate(60px,60px);}
+}
+
+.bgLogo{
+position:fixed;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+font-size:180px;
+color:rgba(56,189,248,0.03);
+z-index:-1;
+pointer-events:none;
+animation:glow 4s ease-in-out infinite;
+}
+
+@keyframes glow{
+0%,100%{filter:blur(0px);}
+50%{filter:blur(2px);}
+}
+
+.lightBlob{
+position:fixed;
+width:400px;
+height:400px;
+border-radius:50%;
+background:radial-gradient(circle, rgba(56,189,248,0.15), transparent 70%);
+filter:blur(60px);
+z-index:-1;
+animation:float 20s ease-in-out infinite;
+}
+
+.lightBlob:nth-child(1){
+top:20%;
+left:10%;
+animation-delay:0s;
+}
+
+.lightBlob:nth-child(2){
+bottom:20%;
+right:10%;
+background:radial-gradient(circle, rgba(168,85,247,0.15), transparent 70%);
+animation-delay:10s;
+}
+
+@keyframes float{
+0%,100%{transform:translate(0,0) scale(1);}
+50%{transform:translate(30px,-30px) scale(1.1);}
+}
+
+/* ========================= LOADER ========================= */
+#loader{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:#0A0F1E;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+transition:opacity.5s ease;
+}
+
+#loader.fade-out{
+opacity:0;
+pointer-events:none;
+}
+
+.loader-box{ text-align:center; color:white; }
+
+.spinner{ width:65px; height:65px; border:6px solid #1E293B; border-top:6px solid #38BDF8; border-radius:50%; margin:auto; animation:spin 1s linear infinite; margin-bottom:15px; }
+
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* ========================= APP ========================= */
+#app{ width:100%; max-width:800px; height:100vh; margin:auto; display:flex; flex-direction:column; background:rgba(18,26,43,0.95); backdrop-filter:blur(20px); position:relative; overflow:hidden; border-left:1px solid #1E293B; border-right:1px solid #1E293B; }
+
+/* ========================= TOP BAR ========================= */
+.topbar{ height:65px; display:flex; align-items:center; justify-content:space-between; padding:0 15px; background:rgba(21,30,50,0.9); border-bottom:1px solid #1E293B; color:white; }
+
+.app-title{ font-size:18px; font-weight:700; }
+
+.icon-btn{ border:none; background:none; font-size:22px; cursor:pointer; color:#94A3B8; transition:0.3s; }
+
+.icon-btn:hover{ color:#38BDF8; }
+
+.top-actions{ display:flex; gap:10px; }
+
+/* ========================= PROGRESS ========================= */
+.progress-section{ padding:10px 15px; background:rgba(18,26,43,0.8); border-bottom:1px solid #1E293B; }
+
+.progress-bar{ width:100%; height:8px; background:#1E293B; border-radius:50px; overflow:hidden; }
+
+.progress-fill{ width:0%; height:100%; background:linear-gradient(90deg, #38BDF8, #A855F7); transition:.4s; box-shadow:0 0 10px rgba(56,189,248,0.5); }
+
+.xp-container{ margin-top:8px; font-size:14px; font-weight:bold; color:#94A3B8; }
+
+/* ========================= SCREEN ========================= */
+.screen{ flex:1; overflow-y:auto; padding:15px; padding-bottom:120px; }
+
+.hidden{ display:none!important; }
+
+.active{ display:block; }
+
+/* ========================= LESSON ========================= */
+.lesson-title{ font-size:28px; margin-bottom:15px; color:#F8FAFC; font-weight:700; }
+
+.lesson-content{
+width:100%;
+height:100%;
+overflow-y:auto;
+}
+
+.lesson-content p{
+margin-bottom:10px;
+line-height:1.8;
+font-size:18px;
+color:FFFFFF;
+padding:15px;
+background:none;
+border-radius:10px;
+
+animation:fadeIn.3s ease;
+}
+
+@keyframes fadeIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+
+/* CODE BLOCK */
+.codeBlock{
+background:#0D1117;
+border:1px solid #30363d;
+border-radius:12px;
+padding:18px;
+margin:15px 0;
+font-family:'JetBrains Mono',monospace;
+font-size:15px;
+color:#E6EDF3;
+overflow-x:auto;
+}
+
+/* ========================= QUIZ ========================= */
+#quizQuestion{ font-size:22px; margin-bottom:20px; color:#F8FAFC; }
+
+.quiz-options{ display:flex; flex-direction:column; gap:12px; }
+
+.quiz-options button{ padding:15px; border:2px solid #1E293B; border-radius:15px; background:rgba(21,30,50,0.8); color:#F8FAFC; cursor:pointer; font-size:16px; text-align:left; transition:0.3s; }
+
+.quiz-options button:hover{ border-color:#38BDF8; transform:translateX(4px); }
+
+.quiz-options button.selected{ background:rgba(56,189,248,0.2); border-color:#38BDF8; }
+
+#submitQuizBtn{ margin-top:20px; width:100%; height:55px; border:none; border-radius:30px; background:linear-gradient(90deg, #38BDF8, #A855F7); color:white; font-weight:bold; cursor:pointer; font-size:16px; }
+
+/* ========================= RESULT ========================= */
+#resultScreen, #completeScreen{ text-align:center; padding-top:50px; }
+
+#resultScreen h2, #completeScreen h2{ font-size:30px; margin-bottom:15px; color:#F8FAFC; }
+
+#resultText, #completionText{ font-size:18px; color:#94A3B8; margin-bottom:25px; }
+
+.completion-actions{ display:flex; flex-direction:column; gap:12px; }
+
+.completion-actions button{ height:55px; border:none; border-radius:30px; background:linear-gradient(90deg, #38BDF8, #A855F7); color:white; font-weight:bold; cursor:pointer; font-size:16px; }
+
+/* ========================= AI PANEL ========================= */
+#aiPanel{ position:fixed; bottom:0; left:0; width:100%; height:70%; background:rgba(18,26,43,0.98); backdrop-filter:blur(20px); border-radius:25px 25px 0 0; border-top:1px solid #1E293B; box-shadow:0 -10px 30px rgba(0,0,0,.5); display:flex; flex-direction:column; z-index:300; }
+
+.ai-header{ height:60px; display:flex; justify-content:space-between; align-items:center; padding:0 15px; border-bottom:1px solid #1E293B; color:#F8FAFC; }
+
+.ai-header button{ border:none; background:none; font-size:20px; cursor:pointer; color:#94A3B8; }
+
+#aiMessages{ flex:1; overflow-y:auto; padding:15px; background:rgba(10,15,30,0.5); }
+
+#aiMessages div{ background:rgba(21,30,50,0.8); padding:12px; border-radius:15px; margin-bottom:10px; border:1px solid #1E293B; }
+
+.ai-input-area{ display:flex; padding:10px; gap:10px; border-top:1px solid #1E293B; }
+
+#aiInput{ flex:1; height:50px; border:1px solid #1E293B; border-radius:30px; padding:0 15px; outline:none; background:rgba(21,30,50,0.8); color:#F8FAFC; }
+
+#sendAiBtn{ width:70px; border:none; border-radius:30px; background:#38BDF8; color:white; cursor:pointer; }
+
+/* ========================= SHARE MENU ========================= */
+#shareMenu{ position:absolute; top:75px; right:15px; width:200px; background:rgba(21,30,50,0.98); border-radius:15px; overflow:hidden; border:1px solid #1E293B; box-shadow:0 10px 25px rgba(0,0,0,.5); z-index:250; }
+
+#shareMenu button{ width:100%; padding:12px; border:none; background:none; cursor:pointer; text-align:left; color:#F8FAFC; }
+
+#shareMenu button:hover{ background:rgba(56,189,248,0.1); }
+
+/* ========================= PDF BUTTON ========================= */
+.floating-buttons{ position:fixed; right:15px; bottom:90px; z-index:200; }
+
+#pdfBtn{ width:60px; height:60px; border:none; border-radius:50%; background:linear-gradient(135deg, #38BDF8, #A855F7); color:white; font-size:24px; cursor:pointer; box-shadow:0 8px 20px rgba(56,189,248,0.4); transition:0.3s; }
+
+#pdfBtn:hover{ transform:scale(1.1); }
+
+/* ========================= BOTTOM NAV ========================= */
+.bottom-nav{ position:fixed; bottom:0; left:0; width:100%; display:flex; gap:10px; padding:10px; background:rgba(18,26,43,0.95); border-top:1px solid #1E293B; }
+
+.bottom-nav button{ flex:1; height:55px; border:none; border-radius:30px; font-weight:bold; cursor:pointer; font-size:15px; }
+
+#prevBtn{ background:rgba(21,30,50,0.8); color:#F8FAFC; border:1px solid #1E293B; }
+
+#nextBtn{ background:linear-gradient(90deg, #38BDF8, #A855F7); color:white; }
+
+/* ========================= MOBILE ========================= */
+@media(max-width:480px){
+.lesson-title{ font-size:24px; }
+.lesson-content{ font-size:16px; }
+.bgLogo{ font-size:120px; }
+}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- BACKGROUND -->
+<div class="bgGradient"></div>
+<div class="bgPattern"></div>
+<div class="lightBlob"></div>
+<div class="lightBlob"></div>
+<div class="bgLogo">⚡ CODE ACADEMY</div>
+
+<!-- LOADER -->
+<div id="loader">
+<div class="loader-box">
+     
+<div class="spinner"></div>
+<h2>Code Academy AI</h2>
+<p>Preparing your lesson...</p>
+</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+<!-- HEADER -->
+<header class="topbar">
+<button id="closeBtn" class="icon-btn">✕</button>
+<h1 class="app-title">Code Academy AI</h1>
+<div class="top-actions">
+<button id="voiceBtn" class="icon-btn">🔊</button>
+<button id="shareBtn" class="icon-btn">🔗</button>
+<button id="aiBtn" class="icon-btn">🧠</button>
+</div>
+</header>
+
+<!-- PROGRESS -->
+<section class="progress-section">
+<div class="progress-bar">
+<div id="progressFill" class="progress-fill"></div>
+</div>
+<div class="xp-container">
+<span>XP:</span>
+<span id="xpValue">0</span>
+</div>
+</section>
+
+<!-- LESSON SCREEN -->
+<section id="lessonScreen" class="screen active">
+<h2 id="lessonTitle" class="lesson-title">Loading...</h2>
+<div id="lessonContent" class="lesson-content"></div>
+</section>
+
+<!-- QUIZ SCREEN -->
+<section id="quizScreen" class="screen hidden">
+<h2 id="quizQuestion">Question</h2>
+<div id="quizOptions" class="quiz-options"></div>
+<button id="submitQuizBtn">Submit Answer</button>
+</section>
+
+<!-- RESULT SCREEN -->
+<section id="resultScreen" class="screen hidden">
+<h2>Quiz Result</h2>
+<p id="resultText"></p>
+<button id="continueBtn">Continue</button>
+</section>
+
+<!-- COMPLETION SCREEN -->
+<section id="completeScreen" class="screen hidden">
+<h2>🎉 Lesson Completed</h2>
+<p id="completionText"></p>
+<div class="completion-actions">
+<button id="nextLessonBtn">Next Lesson</button>
+</div>
+</section>
+
+<!-- AI PANEL -->
+<div id="aiPanel" class="hidden">
+<div class="ai-header">
+<h3>AI Tutor</h3>
+<button id="closeAiBtn">✕</button>
+</div>
+<div id="aiMessages"></div>
+<div class="ai-input-area">
+<input type="text" id="aiInput" placeholder="Ask AI anything...">
+<button id="sendAiBtn">Send</button>
+</div>
+</div>
+
+<!-- SHARE MENU -->
+<div id="shareMenu" class="hidden">
+<button data-platform="whatsapp">WhatsApp</button>
+<button data-platform="telegram">Telegram</button>
+<button data-platform="facebook">Facebook</button>
+<button data-platform="x">X</button>
+<button data-platform="linkedin">LinkedIn</button>
+<button data-platform="reddit">Reddit</button>
+<button data-platform="email">Email</button>
+</div>
+
+<!-- FLOATING BUTTONS -->
+<div class="floating-buttons">
+<button id="pdfBtn" title="Download Lesson PDF">📄</button>
+</div>
+
+<!-- NAVIGATION -->
+<footer class="bottom-nav">
+<button id="prevBtn">PREVIOUS</button>
+<button id="nextBtn">NEXT</button>
+</footer>
+
+</div>
+
+<script type="module">
+
+
+import { auth, db, doc, getDoc, updateDoc, increment, onAuthStateChanged } from './authentication.js';
+
+console.log("LESSON ENGINE V4 - FIRESTORE CONNECTED");
+
+// ========================= STATE =========================
+let course = 'html';
+let lessonNum = 1;
+let currentBlock = 0;
+let lessonData = null;
+let currentUser = null;
+let userData = null;
+let selectedAnswer = null;
+let muted = false;
+
+// URL params: lesson.html?course=html&lesson=1
+const params = new URLSearchParams(window.location.search);
+course = params.get('course') || 'html';
+lessonNum = parseInt(params.get('lesson')) || 1;
+
+// ========================= ELEMENTS =========================
+const lessonTitle = document.getElementById("lessonTitle");
+const lessonContent = document.getElementById("lessonContent");
+const progressFill = document.getElementById("progressFill");
+const xpValue = document.getElementById("xpValue");
+
+// ========================= INIT + AUTH =========================
+onAuthStateChanged(auth, async (user) => {
+if(user){
+currentUser = user;
+const userRef = doc(db, 'users', user.uid);
+const snap = await getDoc(userRef);
+if(snap.exists()){
+userData = snap.data();
+xpValue.textContent = userData.xp || 0;
+loadLesson();
+}else{
+console.log("No user doc");
+}
+}else{
+window.location.href = "signup.html";
+}
+});
+
+// ========================= LOAD LESSON FROM JSON =========================
+async function loadLesson(){
+try{
+const response = await fetch(`lessons/${course}/lesson${lessonNum}.json`);
+if(!response.ok) throw new Error('Lesson not found');
+lessonData = await response.json();
+
+// Load saved progress from Firestore
+currentBlock = userData.progress?.[course]?.[lessonNum] || 0;
+
+renderBlock();
+updateProgress();
+hideLoader();
+}catch(e){
+console.error('Load error:', e);
+lessonTitle.textContent = "Error Loading Lesson";
+lessonContent.innerHTML = `<p>Cannot load lessons/${course}/lesson${lessonNum}.json</p>`;
+hideLoader();
+}
+}
+
+function hideLoader(){
+setTimeout(() => {
+const loader = document.getElementById("loader");
+loader.classList.add("fade-out");
+setTimeout(() => loader.style.display = "none", 500);
+}, 1000);
+}
+
+// ========================= RENDER BLOCK =========================
+function renderBlock(){
+if(!lessonData) return;
+const block = lessonData.blocks[currentBlock];
+
+if(block.type === 'heading'){
+lessonTitle.textContent = block.text;
+lessonContent.innerHTML = "";
+}else if(block.type === 'sentence' || block.type === 'explanation'){
+const p = document.createElement("p");
+p.textContent = block.text;
+lessonContent.appendChild(p);
+if(!muted) speak(block.text);
+awardXP(5);
+}else if(block.type === 'code'){
+const codeDiv = document.createElement("div");
+codeDiv.className = "codeBlock";
+codeDiv.textContent = block.code;
+lessonContent.appendChild(codeDiv);
+if(block.output){
+setTimeout(() => {
+const outDiv = document.createElement("div");
+outDiv.className = "codeBlock";
+outDiv.style.background = "#FFFFFF";
+outDiv.style.color = "#000";
+outDiv.textContent = block.output;
+lessonContent.appendChild(outDiv);
+}, 500);
+}
+}else if(block.type === 'quiz'){
+showQuiz(block);
+}
+
+updateProgress();
+saveProgressToFirestore();
+}
+
+// ========================= NEXT BUTTON =========================
+document.getElementById("nextBtn").onclick = () => {
+if(!lessonData) return;
+
+if(currentBlock < lessonData.blocks.length - 1){
+currentBlock++;
+lessonContent.innerHTML = "";
+renderBlock();
+}else{
+completeLesson();
+}
+};
+
+// ========================= PREVIOUS BUTTON =========================
+document.getElementById("prevBtn").onclick = () => {
+if(currentBlock > 0){
+currentBlock--;
+lessonContent.innerHTML = "";
+renderBlock();
+}
+};
+
+// ========================= VOICE =========================
+document.getElementById("voiceBtn").onclick = () => {
+muted =!muted;
+document.getElementById("voiceBtn").textContent = muted? "🔇" : "🔊";
+};
+
+function speak(text){
+speechSynthesis.cancel();
+speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+
+// ========================= XP + COINS SYSTEM =========================
+async function awardXP(points){
+const newXP = (userData.xp || 0) + points;
+userData.xp = newXP;
+xpValue.textContent = newXP;
+
+if(currentUser){
+await updateDoc(doc(db, 'users', currentUser.uid), {
+xp: increment(points)
+});
+}
+}
+
+async function awardCoins(coins){
+if(currentUser){
+await updateDoc(doc(db, 'users', currentUser.uid), {
+coins: increment(coins)
+});
+}
+}
+
+// ========================= PROGRESS BAR =========================
+function updateProgress(){
+if(!lessonData) return;
+const percent = ((currentBlock + 1) / lessonData.blocks.length) * 100;
+progressFill.style.width = percent + "%";
+}
+
+// ========================= SAVE PROGRESS TO FIRESTORE =========================
+async function saveProgressToFirestore(){
+if(!currentUser) return;
+await updateDoc(doc(db, 'users', currentUser.uid), {
+[`progress.${course}.${lessonNum}`]: currentBlock,
+[`progress.${course}.completed`]: lessonNum
+});
+}
+
+// ========================= QUIZ SYSTEM =========================
+function showQuiz(block){
+document.getElementById("lessonScreen").classList.add("hidden");
+document.getElementById("quizScreen").classList.remove("hidden");
+
+document.getElementById("quizQuestion").textContent = block.question;
+
+const optionsBox = document.getElementById("quizOptions");
+optionsBox.innerHTML = "";
+
+block.options.forEach((opt, index) => {
+const btn = document.createElement("button");
+btn.textContent = opt;
+btn.onclick = () => {
+selectedAnswer = index;
+document.querySelectorAll("#quizOptions button").forEach(b => b.classList.remove("selected"));
+btn.classList.add("selected");
+};
+optionsBox.appendChild(btn);
+});
+
+window.currentQuizBlock = block;
+}
+
+document.getElementById("submitQuizBtn").onclick = () => {
+const block = window.currentQuizBlock;
+document.getElementById("quizScreen").classList.add("hidden");
+document.getElementById("resultScreen").classList.remove("hidden");
+
+const resultText = document.getElementById("resultText");
+
+if(selectedAnswer === block.correctIndex){
+resultText.textContent = block.correctFeedback + " +20 XP";
+awardXP(20);
+}else{
+resultText.textContent = block.incorrectFeedback;
+}
+
+selectedAnswer = null;
+};
+
+document.getElementById("continueBtn").onclick = () => {
+document.getElementById("resultScreen").classList.add("hidden");
+document.getElementById("lessonScreen").classList.remove("hidden");
+currentBlock++;
+lessonContent.innerHTML = "";
+renderBlock();
+};
+
+// ========================= COMPLETE LESSON + CERTIFICATE =========================
+async function completeLesson(){
+document.getElementById("lessonScreen").classList.add("hidden");
+document.getElementById("completeScreen").classList.remove("hidden");
+document.getElementById("completionText").textContent = `You completed ${lessonData.title}! +${lessonData.xpReward} XP +${lessonData.coinsReward} Coins`;
+
+// Award final XP + Coins
+await awardXP(lessonData.xpReward);
+await awardCoins(lessonData.coinsReward);
+
+// Save lesson as completed
+await updateDoc(doc(db, 'users', currentUser.uid), {
+[`progress.${course}.completed`]: lessonNum
+});
+
+// IF LESSON 15 = AWARD CERTIFICATE
+if(lessonNum === 15){
+await awardCertificate();
+addNotification(`🏆 ${course.toUpperCase()} Certificate Earned!`);
+}
+}
+
+async function awardCertificate(){
+const userRef = doc(db, 'users', currentUser.uid);
+await updateDoc(userRef, {
+[`certificates.${course}`]: true
+});
+console.log(`Certificate awarded for ${course}`);
+}
+
+// ========================= NOTIFICATION =========================
+function addNotification(message){
+let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+notifications.unshift({
+id: Date.now(),
+message: message,
+date: new Date().toLocaleString(),
+read: false
+});
+localStorage.setItem("notifications", JSON.stringify(notifications));
+}
+
+// ========================= NEXT LESSON =========================
+document.getElementById("nextLessonBtn").onclick = () => {
+window.location.href = `lesson.html?course=${course}&lesson=${lessonNum + 1}`;
+};
+
+// ========================= PDF DOWNLOAD =========================
+document.getElementById("pdfBtn").onclick = () => {
+if(!lessonData) return;
+
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+
+doc.setFontSize(20);
+doc.text(lessonData.title, 20, 20);
+
+let y = 35;
+doc.setFontSize(12);
+
+lessonData.blocks.forEach((block) => {
+if(y > 270){
+doc.addPage();
+y = 20;
+}
+
+if(block.type === 'heading'){
+doc.setFontSize(16);
+doc.text(block.text, 20, y);
+y += 12;
+doc.setFontSize(12);
+}else if(block.type === 'sentence' || block.type === 'explanation'){
+const lines = doc.splitTextToSize(block.text, 170);
+doc.text(lines, 20, y);
+y += lines.length * 7 + 5;
+}else if(block.type === 'code'){
+doc.setFontSize(10);
+doc.text('[CODE]', 20, y);
+y += 7;
+const codeLines = doc.splitTextToSize(block.code, 170);
+doc.text(codeLines, 25, y);
+y += codeLines.length * 5 + 5;
+doc.setFontSize(12);
+}
+});
+
+doc.save(`${course}_lesson${lessonNum}.pdf`);
+alert('Lesson PDF downloaded!');
+};
+
+// ========================= SHARE SYSTEM =========================
+document.getElementById("shareBtn").onclick = () => {
+document.getElementById("shareMenu").classList.toggle("hidden");
+};
+
+document.querySelectorAll("#shareMenu button").forEach(btn => {
+btn.onclick = () => {
+const platform = btn.dataset.platform;
+const url = encodeURIComponent(window.location.href);
+const text = encodeURIComponent(`Learning ${lessonData.title} on Code Academy`);
+
+let link = "";
+switch(platform){
+case "whatsapp": link = `https://wa.me/?text=${text} ${url}`; break;
+case "telegram": link = `https://t.me/share/url?url=${url}&text=${text}`; break;
+case "facebook": link = `https://facebook.com/sharer/sharer.php?u=${url}`; break;
+case "x": link = `https://twitter.com/intent/tweet?url=${url}&text=${text}`; break;
+case "linkedin": link = `https://linkedin.com/shareArticle?url=${url}&title=${text}`; break;
+case "reddit": link = `https://reddit.com/submit?url=${url}&title=${text}`; break;
+case "email": link = `mailto:?subject=${text}&body=${url}`; break;
+}
+window.open(link, "_blank");
+document.getElementById("shareMenu").classList.add("hidden");
+};
+});
+
+// ========================= AI TUTOR =========================
+document.getElementById("aiBtn").onclick = () => {
+document.getElementById("aiPanel").classList.toggle("hidden");
+};
+
+document.getElementById("closeAiBtn").onclick = () => {
+document.getElementById("aiPanel").classList.add("hidden");
+};
+
+document.getElementById("sendAiBtn").onclick = async () => {
+const text = document.getElementById("aiInput").value;
+if(!text) return;
+addMessage("You", text);
+document.getElementById("aiInput").value = "";
+try{
+const res = await fetch("http://localhost:3000/ai/explain", {
+method: "POST",
+headers: {"Content-Type": "application/json"},
+body: JSON.stringify({text})
+});
+const data = await res.json();
+addMessage("AI Tutor", data.result || "No response");
+}catch(err){
+addMessage("AI Tutor", "Server error. Check backend.");
+}
+};
+
+function addMessage(sender, text){
+const aiMessages = document.getElementById("aiMessages");
+const div = document.createElement("div");
+div.innerHTML = `<b>${sender}:</b> ${text}`;
+aiMessages.appendChild(div);
+aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+// ========================= EXIT =========================
+document.getElementById("closeBtn").onclick = () => {
+if(confirm("Exit lesson? Your progress will be saved.")){
+window.location.href = "course.html";
+}
+};
+</script>
+
+</body>
+</html>

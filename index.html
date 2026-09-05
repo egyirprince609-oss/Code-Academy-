@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Academy - Loading...</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#050816;
+  --primary:#00F5FF;
+  --secondary:#A855F7;
+  --text:#E8F4FF;
+  --muted:#8B9DC3;
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  height:100vh;
+  width:100vw;
+  overflow:hidden;
+  font-family:'Inter',sans-serif;
+  opacity:0;
+  transition:opacity 0.8s ease-in;
+}
+
+body.loaded{
+  opacity:1;
+}
+
+/* GRID BACKGROUND */
+.grid{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.08) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridMove 30s linear infinite;
+  opacity:0;
+  transition:opacity 1s ease 0.3s;
+}
+
+@keyframes gridMove{
+  0%{transform:translate(0,0);}
+  100%{transform:translate(60px,60px);}
+}
+
+.grid.active{
+  opacity:1;
+}
+
+/* RADIAL GLOW BEHIND LOGO */
+.glowBg{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  width:600px;
+  height:600px;
+  background:radial-gradient(circle, rgba(0,245,255,0.25) 0%, rgba(168,85,247,0.15) 40%, transparent 70%);
+  border-radius:50%;
+  filter:blur(60px);
+  animation:pulse 4s ease-in-out infinite;
+  opacity:0;
+  transition:opacity 1s ease 0.6s;
+}
+
+@keyframes pulse{
+ 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.6;}
+  50%{transform:translate(-50%,-50%) scale(1.15); opacity:0.9;}
+}
+
+.glowBg.active{
+  opacity:1;
+}
+
+/* PARTICLES */
+.particles{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 1s ease 0.8s;
+}
+
+.particles.active{
+  opacity:1;
+}
+
+.particle{
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:var(--primary);
+  border-radius:50%;
+  box-shadow:0 0 10px var(--primary);
+  animation:floatUp 15s linear infinite;
+}
+
+@keyframes floatUp{
+ 0%{
+    transform:translateY(100vh) translateX(0);
+    opacity:0;
+  }
+ 10%{opacity:1;}
+ 90%{opacity:1;}
+ 100%{
+    transform:translateY(-100vh) translateX(100px);
+    opacity:0;
+  }
+}
+
+/* SCANNING BEAMS */
+.beam{
+  position:absolute;
+  width:200%;
+  height:2px;
+  background:linear-gradient(90deg, transparent, var(--primary), transparent);
+  box-shadow:0 0 20px var(--primary);
+  transform:rotate(45deg);
+  animation:scan 8s linear infinite;
+  opacity:0;
+}
+
+@keyframes scan{
+ 0%{top:-10%; left:-100%; opacity:0;}
+  10%{opacity:1;}
+ 90%{opacity:1;}
+ 100%{top:110%; left:100%; opacity:0;}
+}
+
+.beam:nth-child(1){animation-delay:0s;}
+.beam:nth-child(2){animation-delay:4s;}
+
+/* CENTER CONTAINER */
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:40px;
+  z-index:10;
+}
+
+/* LOGO */
+.logoWrapper{
+  position:relative;
+}
+
+.logo{
+  width:180px;
+  height:180px;
+  object-fit:contain;
+  filter:drop-shadow(0 0 40px var(--primary));
+  opacity:0;
+  transform:scale(0.8) rotate(0deg);
+  animation:logoAppear 2s cubic-bezier(0.4,0,0.2,1) 0.8s forwards,
+             logoRotate 60s linear 2.8s infinite;
+}
+
+@keyframes logoAppear{
+ 0%{opacity:0; transform:scale(0.8) rotate(0deg);}
+  100%{opacity:1; transform:scale(1) rotate(0deg);}
+}
+
+@keyframes logoRotate{
+  0%{transform:scale(1) rotate(0deg);}
+  100%{transform:scale(1) rotate(350deg);}
+}
+
+/* LOGO REFLECTION */
+.logoWrapper::after{
+  content:'';
+  position:absolute;
+  top:100%;
+  left:0;
+  width:180px;
+  height:180px;
+  background:url('logo.png') no-repeat center;
+  background-size:contain;
+  transform:scaleY(-1);
+  opacity:0.15;
+  filter:blur(2px);
+  animation:reflectionFade 2s ease 0.8s forwards;
+}
+
+@keyframes reflectionFade{
+ 0%{opacity:0;}
+ 100%{opacity:0.15;}
+}
+
+/* TEXT */
+.textContainer{
+  text-align:center;
+  opacity:0;
+  animation:fadeIn 1s ease 2.5s forwards;
+}
+
+.appName{
+  font-family:'Orbitron',sans-serif;
+  font-size:48px;
+  font-weight:900;
+  letter-spacing:8px;
+  color:var(--text);
+  text-shadow:0 0 30px var(--primary);
+  margin-bottom:12px;
+}
+
+.appName span{
+  display:inline-block;
+  opacity:0;
+  transform:translateY(20px);
+  animation:letterUp 0.5s ease forwards;
+}
+
+@keyframes letterUp{
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.motto{
+  font-size:16px;
+  color:var(--muted);
+  letter-spacing:2px;
+  opacity:0;
+  animation:fadeIn 1s ease 3.5s forwards;
+}
+
+@keyframes fadeIn{
+  to{opacity:1;}
+}
+
+/* LOADING SECTION */
+.loadingSection{
+  width:320px;
+  opacity:0;
+  animation:fadeIn 1s ease 4s forwards;
+}
+
+/* PROGRESS BAR */
+.progressContainer{
+  width:100%;
+  height:4px;
+  background:rgba(255,255,255,0.1);
+  border-radius:4px;
+  overflow:hidden;
+  margin-bottom:20px;
+  box-shadow:0 0 20px rgba(0,245,255,0.2);
+}
+
+.progressBar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg, var(--primary), var(--secondary));
+  box-shadow:0 0 15px var(--primary);
+  border-radius:4px;
+  transition:width 0.3s ease;
+}
+
+/* STATUS TEXT */
+.statusText{
+  text-align:center;
+  font-size:13px;
+  color:var(--muted);
+  font-family:'Orbitron',sans-serif;
+  letter-spacing:1px;
+  min-height:20px;
+}
+
+/* FADE OUT TRANSITION */
+.fadeOut{
+  animation:fadeOutScreen 0.8s ease forwards;
+}
+
+@keyframes fadeOutScreen{
+  0%{opacity:1; transform:scale(1);}
+  100%{opacity:0; transform:scale(1.05);}
+}
+
+@media(max-width:500px){
+ .logo{width:140px; height:140px;}
+ .appName{font-size:36px; letter-spacing:6px;}
+ .loadingSection{width:260px;}
+}
+</style>
+</head>
+<body>
+
+<!-- GRID BACKGROUND -->
+<div class="grid" id="grid"></div>
+
+<!-- RADIAL GLOW -->
+<div class="glowBg" id="glowBg"></div>
+
+<!-- PARTICLES -->
+<div class="particles" id="particles"></div>
+
+<!-- SCANNING BEAMS -->
+<div class="beam"></div>
+<div class="beam"></div>
+
+<!-- CENTER CONTENT -->
+<div class="center" id="center">
+  <div class="logoWrapper">
+    <img src="logo.png" class="logo" alt="Code Academy">
+  </div>
+
+  <div class="textContainer">
+    <h1 class="appName" id="appName"></h1>
+    <p class="motto">We Learn. We Code. We Succeed.</p>
+  </div>
+
+  <div class="loadingSection">
+    <div class="progressContainer">
+      <div class="progressBar" id="progressBar"></div>
+    </div>
+    <div class="statusText" id="statusText">Initializing System...</div>
+  </div>
+</div>
+
+<script type="module">
+import { auth, onAuthStateChanged } from './authentication.js';
+
+const grid = document.getElementById('grid');
+const glowBg = document.getElementById('glowBg');
+const particles = document.getElementById('particles');
+const appName = document.getElementById('appName');
+const progressBar = document.getElementById('progressBar');
+const statusText = document.getElementById('statusText');
+const center = document.getElementById('center');
+
+let authChecked = false;
+let user = null;
+
+// Stage 1: Activate background
+setTimeout(() => {
+  document.body.classList.add('loaded');
+  grid.classList.add('active');
+  glowBg.classList.add('active');
+  particles.classList.add('active');
+}, 300);
+
+// Create particles
+for(let i=0; i<30; i++){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.animationDelay = Math.random() * 15 + 's';
+  p.style.animationDuration = (15 + Math.random() * 10) + 's';
+  particles.appendChild(p);
+}
+
+// Stage 4: Animate app name letter by letter
+const name = 'CODE ACADEMY';
+name.split('').forEach((letter, i) => {
+  const span = document.createElement('span');
+  span.textContent = letter === ' '? '\u00A0' : letter;
+  span.style.animationDelay = (3.5 + i * 0.08) + 's';
+  appName.appendChild(span);
+});
+
+// Status messages
+const messages = [
+  'Initializing System...',
+  'Loading Learning Engine...',
+  'Preparing Interactive Lessons...',
+  'Loading Logic Arena...',
+  'Synchronizing User Data...',
+  'Finalizing Experience...'
+];
+
+let msgIndex = 0;
+let progress = 0;
+
+// Animate progress + status
+const loadingInterval = setInterval(() => {
+  progress += Math.random() * 15 + 5;
+  if(progress > 100) progress = 100;
+
+  progressBar.style.width = progress + '%';
+
+  if(progress > (msgIndex + 1) * (100 / messages.length) && msgIndex < messages.length - 1){
+    msgIndex++;
+    statusText.textContent = messages[msgIndex];
+  }
+
+  if(progress >= 100){
+    clearInterval(loadingInterval);
+    redirectUser();
+  }
+}, 250);
+
+// Firebase auth check
+onAuthStateChanged(auth, (currentUser) => {
+  authChecked = true;
+  user = currentUser;
+});
+
+// Redirect logic
+function redirectUser(){
+  // Wait a bit more if auth not checked yet
+  if(!authChecked){
+    setTimeout(redirectUser, 200);
+    return;
+  }
+
+  // Cinematic transition
+  center.classList.add('fadeOut');
+
+  setTimeout(() => {
+    if(user){
+      window.location.href = 'menu.html';
+    } else {
+      window.location.href = 'signup.html';
+    }
+  }, 500);
+}
+</script>
+
+</body>
+</html>

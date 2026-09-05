@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>About Code Academy</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+
+:root{
+    --bg: #050816;
+    --grid: rgba(0,245,255,0.03);
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.1);
+    --text: #e8f4ff;
+    --muted: #8b9dc3;
+    --neon: #00f5ff;
+    --purple: #a855f7;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+    min-height:100vh;
+    background: 
+        repeating-linear-gradient(0deg, var(--grid) 0px, transparent 1px, transparent 40px, var(--grid) 41px),
+        repeating-linear-gradient(90deg, var(--grid) 0px, transparent 1px, transparent 40px, var(--grid) 41px),
+        var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.7;
+}
+
+.container{
+    max-width:720px;
+    margin:0 auto;
+    padding:0 18px 70px;
+}
+
+/* APP BAR */
+.app-bar{
+    height:56px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    backdrop-filter:blur(12px);
+    background:rgba(5,8,22,0.92);
+    border-bottom:1px solid rgba(255,255,255,0.04);
+}
+
+.back-btn{
+    padding:8px 14px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:8px;
+    color:var(--neon);
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:'Orbitron', monospace;
+    transition:0.2s;
+}
+
+.back-btn:active{transform:scale(0.95)}
+
+.app-title{
+    font-family:'Orbitron', monospace;
+    font-size:15px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+/* HERO */
+.hero-card{
+    margin-top:24px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    padding:36px 24px;
+    backdrop-filter:blur(20px);
+    text-align:center;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+
+.hero-icon{
+    font-size:64px;
+    margin-bottom:16px;
+    filter:drop-shadow(0 0 25px rgba(0,245,255,0.6));
+}
+
+.hero-title{
+    font-family:'Orbitron', monospace;
+    font-size:28px;
+    font-weight:900;
+    margin-bottom:8px;
+    color:var(--neon);
+}
+
+.hero-subtitle{
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* SECTIONS */
+.section{
+    margin-top:28px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    padding:26px;
+    backdrop-filter:blur(10px);
+}
+
+.section-title{
+    font-family:'Orbitron', monospace;
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:16px;
+    color:var(--neon);
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.section-text{
+    font-size:13px;
+    color:var(--text);
+    margin-bottom:12px;
+}
+
+.section-list{
+    margin-left:18px;
+    margin-top:10px;
+}
+
+.section-list li{
+    font-size:13px;
+    margin-bottom:9px;
+    color:var(--muted);
+}
+
+.section-list li strong{
+    color:var(--text);
+}
+
+/* FEATURE GRID */
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:18px;
+}
+
+.feature-card{
+    background:rgba(0,245,255,0.06);
+    border:1px solid rgba(0,245,255,0.15);
+    border-radius:12px;
+    padding:16px;
+}
+
+.feature-icon{
+    font-size:26px;
+    margin-bottom:8px;
+}
+
+.feature-title{
+    font-size:12px;
+    font-weight:700;
+    margin-bottom:5px;
+    color:var(--neon);
+}
+
+.feature-desc{
+    font-size:11px;
+    color:var(--muted);
+}
+
+/* DEVELOPER CARD */
+.dev-card{
+    background:linear-gradient(135deg, rgba(168,85,247,0.12), rgba(0,245,255,0.12));
+    border:1px solid rgba(168,85,247,0.4);
+    border-radius:18px;
+    padding:28px 24px;
+    text-align:center;
+    margin-top:32px;
+}
+
+.dev-avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--purple), var(--neon));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    margin:0 auto 16px;
+    border:3px solid var(--glass-border);
+}
+
+.dev-name{
+    font-family:'Orbitron', monospace;
+    font-size:22px;
+    font-weight:900;
+    margin-bottom:6px;
+    color:var(--neon);
+}
+
+.dev-role{
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:14px;
+    text-transform:uppercase;
+}
+
+.dev-quote{
+    font-size:13px;
+    font-style:italic;
+    color:var(--text);
+    line-height:1.8;
+}
+
+/* HIGHLIGHT */
+.highlight{
+    background:rgba(0,245,255,0.08);
+    border-left:3px solid var(--neon);
+    padding:16px;
+    border-radius:8px;
+    margin:18px 0;
+    font-size:12px;
+}
+
+/* STATS */
+.stats-bar{
+    display:flex;
+    justify-content:space-around;
+    margin-top:20px;
+    padding-top:20px;
+    border-top:1px solid rgba(255,255,255,0.05);
+}
+
+.stat-item{
+    text-align:center;
+}
+
+.stat-number{
+    font-family:'Orbitron', monospace;
+    font-size:20px;
+    font-weight:900;
+    color:var(--neon);
+}
+
+.stat-label{
+    font-size:10px;
+    color:var(--muted);
+    text-transform:uppercase;
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    margin-top:44px;
+    padding-top:24px;
+    border-top:1px solid rgba(255,255,255,0.05);
+    font-size:11px;
+    color:var(--muted);
+}
+
+@media(max-width:500px){
+    .feature-grid{grid-template-columns:1fr}
+    .hero-title{font-size:24px}
+    .section{padding:20px}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <!-- BACK BUTTON -->
+    <div class="app-bar">
+        <button class="back-btn" onclick="history.back()">← Back</button>
+        <div class="app-title">🧠 About Code Academy</div>
+    </div>
+
+    <!-- HERO -->
+    <div class="hero-card">
+        <div class="hero-icon">💻</div>
+        <div class="hero-title">Welcome to Code Academy</div>
+        <div class="hero-subtitle">Where Logic Meets Code • Where Beginners Become Builders</div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="section">
+        <div class="section-title">🚀 About Code Academy</div>
+        <div class="section-text">
+            Code Academy is an interactive learning platform designed to make programming education simple, practical, engaging, and accessible to everyone. Our mission is to help learners develop real-world programming skills through structured lessons, hands-on practice, quizzes, challenges, and interactive learning experiences.
+        </div>
+        <div class="section-text">
+            Whether you are a complete beginner taking your first steps into technology or an aspiring developer seeking to strengthen your skills, Code Academy provides a supportive learning environment designed to help you grow at every stage.
+        </div>
+        <div class="highlight">
+            We cut out boring theory. Every lesson here is built around practice, real examples, and skills you can actually use to build projects.
+        </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number">5+</div>
+                <div class="stat-label">Languages</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Lessons</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Logic Games</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Access</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- VISION -->
+    <div class="section">
+        <div class="section-title">🎯 Our Vision</div>
+        <div class="section-text">
+            Technology is shaping the future, and programming has become one of the most valuable skills in the modern world. Code Academy was created with the vision of making high-quality programming education available to students, young learners, and technology enthusiasts, regardless of their background or experience level.
+        </div>
+        <div class="section-text">
+            We believe that learning should be not only informative, but also engaging, motivating, and practical. Every concept you learn here is tied to real-world application.
+        </div>
+    </div>
+
+    <!-- WHAT YOU LEARN -->
+    <div class="section">
+        <div class="section-title">📚 What You Can Learn</div>
+        <div class="section-text">Code Academy offers lessons across multiple programming and web development technologies:</div>
+        <ul class="section-list">
+            <li><strong>HTML & CSS</strong> - Build beautiful, responsive websites from scratch with modern design</li>
+            <li><strong>JavaScript</strong> - Make websites interactive, learn DOM manipulation, APIs, and ES6+</li>
+            <li><strong>Python</strong> - From basics to automation, data handling, and backend development</li>
+            <li><strong>React Development</strong> - Build modern web applications using components and hooks</li>
+            <li><strong>Web Development Fundamentals</strong> - HTTP, APIs, databases, Git, and deployment</li>
+            <li><strong>Programming Logic</strong> - Problem solving, algorithms, and computational thinking</li>
+            <li><strong>Logic Arena</strong> - 5 premium puzzle games that train your developer brain</li>
+        </ul>
+        <div class="section-text">Each learning path is carefully structured to guide learners from foundational concepts to advanced topics with practical projects at every level.</div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="section">
+        <div class="section-title">⚡ Learn Through Practice</div>
+        <div class="section-text">At Code Academy, we believe programming cannot be mastered through reading alone. Our system combines:</div>
+        
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📖</div>
+                <div class="feature-title">Step Lessons</div>
+                <div class="feature-desc">Clear explanations broken into bite-sized chunks</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💻</div>
+                <div class="feature-title">Hands-On Practice</div>
+                <div class="feature-desc">Code directly in your browser</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧩</div>
+                <div class="feature-title">Interactive Quizzes</div>
+                <div class="feature-desc">Test understanding instantly</div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎮</div>
+                <div class="feature-title">Logic Challenges</div>
+                <div class="feature-desc">Train problem-solving like a developer</div>
+            </div>
+        </div>
+        
+        <div class="section-text">This approach helps learners understand not only what to do, but also why it works and how to apply knowledge in real projects.</div>
+    </div>
+
+    <!-- GAMIFICATION -->
+    <div class="section">
+        <div class="section-title">🎮 Gamified Learning</div>
+        <div class="section-text">Learning should be rewarding. As you complete lessons, quizzes, challenges, and activities, you earn:</div>
+        <ul class="section-list">
+            <li><strong>Experience Points (XP)</strong> - Track growth and level up</li>
+            <li><strong>Coins</strong> - Unlock premium content and features</li>
+            <li><strong>Achievements</strong> - Milestones that celebrate progress</li>
+            <li><strong>Progress Rewards</strong> - Daily streaks and consistency bonuses</li>
+        </ul>
+        
+        <div class="highlight">
+            <strong>Logic Arena Collection:</strong> 5 puzzle games designed to strengthen developer skills:<br><br>
+            🔐 Logic Vault - Pattern recognition<br>
+            🕵️ Digital Detective - Investigation<br>
+            🧠 Mind Palace - Memory & deduction<br>
+            🌍 Civilization - Systems thinking<br>
+            🎭 Truth or Lie - Logical reasoning
+        </div>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="section">
+        <div class="section-title">⭐ Premium Content</div>
+        <div class="section-text">Advanced learners get access to deeper content:</div>
+        <ul class="section-list">
+            <li>Deeper explanations with real-world analogies</li>
+            <li>Advanced programming concepts and design patterns</li>
+            <li>Extended practical examples and mini-projects</li>
+            <li>Specialized resources for career preparation</li>
+            <li>Voice-assisted guidance in selected lessons</li>
+        </ul>
+    </div>
+
+    <!-- GUIDED -->
+    <div class="section">
+        <div class="section-title">🧭 Guided Learning</div>
+        <div class="section-text">To improve accessibility and engagement:</div>
+        <ul class="section-list">
+            <li>Clear lesson explanations written for beginners</li>
+            <li>Organized learning paths showing what to learn next</li>
+            <li>Voice-assisted guidance in selected lessons</li>
+            <li>User-friendly navigation for mobile and desktop</li>
+            <li>Interactive learning experiences</li>
+        </ul>
+    </div>
+
+    <!-- PRIVACY -->
+    <div class="section">
+        <div class="section-title">🔒 Data & Privacy</div>
+        <div class="section-text">To provide features like account management, progress tracking, achievements, XP, and personalized learning, Code Academy may securely store:</div>
+        <ul class="section-list">
+            <li>Account information</li>
+            <li>Learning progress</li>
+            <li>Quiz results and scores</li>
+            <li>Achievement records</li>
+            <li>Platform usage for functionality</li>
+        </ul>
+        <div class="section-text">This information is used solely to improve your learning experience. We use proper security measures to protect your data and never share personal information.</div>
+    </div>
+
+    <!-- DEVELOPER -->
+    <div class="dev-card">
+        <div class="dev-avatar">👨‍💻</div>
+        <div class="dev-name">Prince Wise Man</div>
+        <div class="dev-role">Founder & Lead Developer • Ghana</div>
+        <div class="dev-quote">
+            "I started Code Academy because I struggled learning to code with boring tutorials. As a young student from Ghana passionate about technology and education, I wanted to build what I wished existed. Every feature here was designed to make programming accessible, practical, and fun. The goal is simple: help you build valuable skills while enjoying the journey."
+        </div>
+    </div>
+
+    <!-- COMMITMENT -->
+    <div class="section">
+        <div class="section-title">🌱 Our Commitment</div>
+        <div class="section-text">We continuously improve Code Academy through:</div>
+        <ul class="section-list">
+            <li>Better learning resources and clearer explanations</li>
+            <li>Improved user experience and performance</li>
+            <li>Additional programming courses as tech evolves</li>
+            <li>More practical portfolio projects</li>
+            <li>New features based on your feedback</li>
+        </ul>
+        <div class="highlight">
+            As technology evolves, Code Academy will keep growing to support your journey to becoming a confident creator and developer.
+        </div>
+    </div>
+
+    <!-- THANK YOU -->
+    <div class="section" style="text-align:center">
+        <div class="section-title" style="justify-content:center">💙 Thank You</div>
+        <div class="section-text">
+            Thank you for choosing Code Academy.<br><br>
+            Every lesson completed, every challenge solved, every skill learned is a step toward your future.<br><br>
+            <strong style="color:var(--neon)">We Lear. We Code. We Succeed</strong><br><br>
+            Welcome to the future of learning.
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        Code Academy © 2026 • Built with passion in Ghana<br>
+        Version 1.0 • Logic Arena Edition
+    </div>
+
+</div>
+
+</body>
+</html>

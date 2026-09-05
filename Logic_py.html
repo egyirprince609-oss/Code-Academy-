@@ -1,0 +1,360 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Logic Engine</title>
+
+<style>
+
+/* ================= BASE ================= */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+.back-btn{
+     background: none;
+     margin: 0px;
+     font-size:60px;
+     border: none;
+     color: cyan;
+     margin-left: 10%;
+     margin-top: none;
+     
+}
+body{
+background: radial-gradient(circle at top,#0b1220,#05060a);
+color:white;
+padding:1px;
+}
+
+/* ================= PAGE ================= */
+.container{
+max-width:900px;
+margin:auto;
+display:block;
+}
+
+/* ================= ACCORDION ================= */
+.acc{
+background:rgba(255,255,255,0.06);
+margin-bottom:12px;
+border-radius:12px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.acc-header{
+padding:14px;
+cursor:pointer;
+background:linear-gradient(90deg,#1e293b,#0f172a);
+color:#facc15;
+font-weight:bold;
+transition:0.3s;
+}
+
+.acc-header:hover{
+background:linear-gradient(90deg,#334155,#1e293b);
+}
+
+.acc-content{
+display:none;
+padding:14px;
+font-size:13px;
+line-height:1.8;
+color:#cbd5e1;
+}
+
+.acc.active .acc-content{
+display:block;
+}
+
+/* ================= PANELS ================= */
+.panel{
+background:rgba(255,255,255,0.05);
+padding:14px;
+border-radius:12px;
+margin-bottom:15px;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+/* ================= TITLES ================= */
+h3{
+color:#38bdf8;
+margin-bottom:10px;
+}
+
+/* ================= BUTTONS (IMPROVED) ================= */
+button{
+padding:9px 14px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:8px;
+transition:0.3s;
+font-weight:bold;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+/* premium buttons */
+.copyBtn{
+background:linear-gradient(45deg,#10b981,#059669);
+color:white;
+}
+
+.explainBtn{
+background:linear-gradient(45deg,#3b82f6,#1d4ed8);
+color:white;
+}
+
+.submitBtn{
+background:linear-gradient(45deg,#f59e0b,#d97706);
+color:black;
+}
+
+/* ================= CODE ================= */
+pre{
+background:#000814;
+padding:12px;
+border-radius:10px;
+font-size:12px;
+overflow:auto;
+}
+
+/* ================= STEPS ================= */
+.step{
+font-size:13px;
+margin-bottom:8px;
+color:#cbd5e1;
+}
+
+/* ================= DRAG DROP ================= */
+.dragBox{
+display:flex;
+gap:10px;
+margin-top:10px;
+}
+
+.box{
+flex:1;
+min-height:180px;
+border:1px dashed #38bdf8;
+padding:10px;
+border-radius:10px;
+}
+
+.item{
+background:#1f2937;
+padding:7px;
+margin:5px 0;
+border-radius:6px;
+cursor:grab;
+}
+
+.question{
+background:linear-gradient(90deg,#0f172a,#1e293b);
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+color:#facc15;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<button class="back-btn" onclick="goBack()">
+            <
+        </button>
+<h2 style="color:#facc15;margin-bottom:1px;">
+🧠 Advanced Logic Engine
+</h2>
+
+<!-- ================= ACCORDIONS ================= -->
+<div class="acc" onclick="toggle(this)">
+<div class="acc-header">Algorithm Thinking</div>
+<div class="acc-content">
+Algorithm thinking is breaking problems into structured steps.
+It converts real-world problems into logical instructions.
+It improves programming efficiency and clarity.
+It is used in automation, AI, and software systems.
+It reduces coding errors by planning logic first.
+It is the foundation of all programming.
+It helps developers think like machines.
+</div>
+</div>
+
+<div class="acc" onclick="toggle(this)">
+<div class="acc-header">Recursion System</div>
+<div class="acc-content">
+Recursion is a function that calls itself.
+It solves problems by breaking them into smaller cases.
+It requires a base condition to stop execution.
+It is used in trees, graphs, and algorithms.
+It simplifies complex repetitive problems.
+It is widely used in computer science.
+It improves logical depth in coding systems.
+</div>
+</div>
+
+
+
+<!-- ================= STEP SYSTEM ================= -->
+<div class="panel">
+<h3>Step-by-Step Algorithm</h3>
+
+<div id="stepText" class="step">Step 1: Understand the problem</div>
+
+<button class="copyBtn" onclick="nextStep()">Next Step</button>
+</div>
+
+<!-- ================= CODE ================= -->
+<div class="panel">
+<h3>Python Code</h3>
+
+<pre id="code">
+def greet(name):
+    return "Hello " + name
+
+print(greet("Alex"))
+</pre>
+
+<button class="copyBtn" onclick="copyCode()">Copy Code</button>
+<button class="explainBtn" onclick="toggleExplain()">Explain Code</button>
+
+<div id="explain" style="display:none;margin-top:10px;color:#cbd5e1;font-size:13px;line-height:1.8;">
+1. Function is defined using def keyword.<br>
+2. It accepts name as input parameter.<br>
+3. It combines string with input value.<br>
+4. Returns final greeting message.<br>
+5. Function can be reused multiple times.<br>
+6. print executes the function call.<br>
+7. Output is displayed on screen.
+</div>
+
+</div>
+
+<!-- ================= DRAG DROP (BOTTOM ONLY) ================= -->
+<div class="panel">
+<h3>🧩 Logic Builder Quiz</h3>
+
+<div class="question" id="questionText"></div>
+
+<div class="dragBox">
+
+<div class="box" id="pool"></div>
+<div class="box" id="drop"></div>
+
+</div>
+
+<button class="submitBtn" onclick="submitAnswer()">Submit Answer</button>
+
+<p id="result"></p>
+
+</div>
+
+</div>
+
+<script>
+
+/* ================= ACCORDION ================= */
+function toggle(el){
+el.classList.toggle("active");
+}
+
+/* ================= STEP SYSTEM ================= */
+let steps=[
+"Step 1: Understand the problem",
+"Step 2: Identify inputs",
+"Step 3: Break into logic parts",
+"Step 4: Write pseudocode",
+"Step 5: Convert to Python",
+"Step 6: Test logic",
+"Step 7: Optimize solution"
+];
+
+let i=0;
+
+function nextStep(){
+i++;
+if(i>=steps.length) i=0;
+document.getElementById("stepText").innerText=steps[i];
+}
+
+/* ================= CODE ================= */
+function copyCode(){
+navigator.clipboard.writeText(document.getElementById("code").innerText);
+alert("Copied");
+}
+
+function toggleExplain(){
+let ex=document.getElementById("explain");
+ex.style.display=ex.style.display==="block"?"none":"block";
+}
+
+/* ================= DRAG DROP ================= */
+const q={
+question:"Build logic to collect username and validate input",
+options:["FUNCTION","INPUT","IF","LOOP","RETURN"],
+answer:["FUNCTION","INPUT","IF"]
+};
+
+document.getElementById("questionText").innerText=q.question;
+
+const pool=document.getElementById("pool");
+const drop=document.getElementById("drop");
+
+q.options.forEach(o=>{
+let d=document.createElement("div");
+d.className="item";
+d.innerText=o;
+d.draggable=true;
+
+d.ondragstart=e=>{
+e.dataTransfer.setData("text",o);
+};
+
+pool.appendChild(d);
+});
+
+drop.ondragover=e=>e.preventDefault();
+
+drop.ondrop=e=>{
+let v=e.dataTransfer.getData("text");
+let d=document.createElement("div");
+d.className="item";
+d.innerText=v;
+drop.appendChild(d);
+};
+
+function submitAnswer(){
+
+let user=[...drop.children].map(x=>x.innerText);
+
+let ok=
+user.length===q.answer.length &&
+user.every(v=>q.answer.includes(v));
+
+if(ok){
+document.getElementById("result").innerText="Correct ✔";
+}else{
+document.getElementById("result").innerText="Wrong ❌ Try again";
+}
+
+}
+function goBack(){
+    window.history.back();
+}
+</script>
+
+</body>
+</html>

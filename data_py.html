@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Premium Data Engineering</title>
+
+<style>
+
+/* ==========================
+   RESET
+========================== */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+<!-- body{
+background:
+radial-gradient(circle at top,#0ea5e9,#020617 60%);
+color:white;
+overflow-x:hidden;
+min-height:100vh;
+} -->
+body{
+background: radial-gradient(circle at top,#0b1220,#05060a);
+color:white;
+padding:1px;
+overflow-x:hidden;
+}
+
+
+/* ==========================
+   FLOATING OBJECTS
+========================== */
+
+.floating{
+position:fixed;
+inset:0;
+pointer-events:none;
+z-index:0;
+overflow:hidden;
+}
+
+.float{
+position:absolute;
+opacity:.18;
+font-size:28px;
+animation:floatMove linear infinite;
+}
+
+@keyframes floatMove{
+
+0%{
+transform:
+translateY(100vh)
+rotate(0deg);
+}
+
+100%{
+transform:
+translateY(-150px)
+rotate(360deg);
+}
+
+}
+
+/* ==========================
+   HEADER
+========================== */
+
+header{
+position:relative;
+z-index:2;
+padding:30px;
+text-align:center;
+}
+
+header h1{
+font-size:35px;
+color:#67e8f9;
+}
+
+header p{
+margin-top:10px;
+color:#cbd5e1;
+}
+
+.badge{
+display:inline-block;
+margin-top:15px;
+padding:8px 15px;
+border-radius:30px;
+background:rgba(255,255,255,.08);
+border:1px solid #22d3ee;
+}
+
+/* ==========================
+   CONTAINER
+========================== */
+
+.container{
+position:relative;
+z-index:2;
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+/* ==========================
+   ACCORDION
+========================== */
+
+.accordion{
+background:rgba(255,255,255,.06);
+border:1px solid rgba(255,255,255,.12);
+backdrop-filter:blur(12px);
+border-radius:20px;
+overflow:hidden;
+margin-bottom:20px;
+}
+
+.accordion-header{
+padding:18px;
+cursor:pointer;
+font-size:18px;
+font-weight:bold;
+color:#67e8f9;
+}
+
+.accordion-content{
+display:none;
+padding:20px;
+border-top:1px solid rgba(255,255,255,.08);
+line-height:1.8;
+color:#dbeafe;
+}
+
+.accordion.active .accordion-content{
+display:block;
+}
+
+/* ==========================
+   BUTTONS
+========================== */
+
+.btn{
+padding:10px 18px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#06b6d4;
+color:white;
+margin-top:10px;
+margin-right:10px;
+}
+
+.btn:hover{
+background:#0891b2;
+}
+
+/* ==========================
+   CODE BLOCK
+========================== */
+
+.code-box{
+
+background:#020617;
+
+border:1px solid #0ea5e9;
+
+padding:15px;
+
+border-radius:15px;
+
+margin-top:15px;
+
+overflow:auto;
+
+white-space:pre-wrap;
+
+font-family:monospace;
+
+font-size:14px;
+
+color:#93c5fd;
+}
+
+.footer{
+padding:30px;
+text-align:center;
+color:#94a3b8;
+}
+.back-btn{
+     background: none;
+     margin: 0px;
+     font-size:60px;
+     border: none;
+     color: cyan;
+     margin-left: 10%;
+     margin-top: none;
+     
+}
+</style>
+</head>
+<body>
+<div class="container">
+<button class="back-btn" onclick="goBack()">
+            <
+        </button>
+<div class="floating" id="floating"></div>
+
+<header>
+
+<h1>📊 Premium Data Engineering</h1>
+
+<p>
+Master Data Processing, Cleaning,
+Transformation and Analysis Like A Professional.
+</p>
+
+<div class="badge">
+Premium Laboratory Mode
+</div>
+
+</header>
+
+<div class="container">
+
+<!-- ==========================
+DATA ENGINEERING
+========================== -->
+
+<div class="accordion">
+
+<div class="accordion-header">
+📚 What Is Data Engineering?
+</div>
+
+<div class="accordion-content">
+
+<p id="dataIntro">
+
+Data Engineering is the process of collecting,
+organizing, cleaning and transforming raw
+information into useful data that applications,
+businesses and analysts can understand.
+Every modern company depends on data to make
+important decisions and improve services.
+
+Data Engineers build systems that move data
+from one place to another efficiently and
+securely. They ensure that information remains
+accurate, complete and ready for analysis.
+
+Without Data Engineering, data would remain
+scattered across files, databases and servers,
+making it difficult to extract valuable insights.
+This field forms the foundation of modern
+analytics, machine learning and business
+intelligence systems.
+
+</p>
+
+<button class="btn"
+onclick="readText('dataIntro')">
+🔊 Read Section
+</button>
+
+</div>
+
+</div>
+
+<!-- ==========================
+CSV
+========================== -->
+
+<div class="accordion">
+
+<div class="accordion-header">
+📄 CSV Data Processing
+</div>
+
+<div class="accordion-content">
+
+<p id="csvText">
+
+CSV stands for Comma Separated Values.
+It is one of the most common formats used
+for storing structured data.
+
+A CSV file contains rows and columns similar
+to a spreadsheet. Python provides a built-in
+csv module that allows developers to read,
+modify and create CSV files efficiently.
+
+CSV files are widely used because they are
+simple, lightweight and supported by almost
+every data platform available today.
+
+</p>
+
+<button class="btn"
+onclick="readText('csvText')">
+🔊 Read Section
+</button>
+
+<div class="code-box" id="csvCode">
+import csv
+
+with open("users.csv","r") as file:
+    reader = csv.reader(file)
+
+    for row in reader:
+        print(row)
+</div>
+
+<button class="btn"
+onclick="copyCode('csvCode')">
+📋 Copy Code
+</button>
+
+</div>
+
+</div>
+
+<!-- ==========================
+JSON
+========================== -->
+
+<div class="accordion">
+
+<div class="accordion-header">
+🧾 JSON Processing
+</div>
+
+<div class="accordion-content">
+
+<p id="jsonText">
+
+JSON stands for JavaScript Object Notation.
+Although its name comes from JavaScript,
+it is widely used in Python and almost every
+modern programming language.
+
+APIs commonly return JSON because it is
+easy for both humans and computers to read.
+Python's json module allows developers to
+convert Python dictionaries into JSON and
+JSON into Python dictionaries.
+
+Understanding JSON is essential because
+web applications, mobile apps and cloud
+services communicate using this format.
+
+</p>
+
+<button class="btn"
+onclick="readText('jsonText')">
+🔊 Read Section
+</button>
+
+<div class="code-box" id="jsonCode">
+import json
+
+person = {
+    "name":"John",
+    "age":20
+}
+
+print(json.dumps(person))
+</div>
+
+<button class="btn"
+onclick="copyCode('jsonCode')">
+📋 Copy Code
+</button>
+
+</div>
+
+</div>
+
+<!-- ==========================
+DATA CLEANING
+========================== -->
+
+<div class="accordion">
+
+<div class="accordion-header">
+🧹 Data Cleaning
+</div>
+
+<div class="accordion-content">
+
+<p id="cleanText">
+
+Real-world data is often messy.
+Some records may contain missing values,
+duplicate entries or incorrect information.
+
+Data Cleaning is the process of fixing
+these issues before performing analysis.
+A clean dataset improves accuracy and
+helps prevent misleading results.
+
+Professional data engineers spend a large
+portion of their time cleaning and validating
+data because poor quality data leads to
+poor decisions.
+
+</p>
+
+<button class="btn"
+onclick="readText('cleanText')">
+🔊 Read Section
+</button>
+
+</div>
+
+</div>
+
+<!-- ==========================
+PANDAS
+========================== -->
+
+<div class="accordion">
+
+<div class="accordion-header">
+🐼 Pandas Fundamentals
+</div>
+
+<div class="accordion-content">
+
+<p id="pandasText">
+
+Pandas is one of the most powerful Python
+libraries used for Data Engineering and Data
+Analysis.
+
+It introduces the DataFrame structure,
+which allows developers to store and manage
+large amounts of information efficiently.
+
+Pandas makes filtering, sorting, grouping
+and transforming data much easier than
+using traditional Python lists.
+
+Most professional data engineers use Pandas
+daily because it significantly increases
+productivity.
+
+</p>
+
+<button class="btn"
+onclick="readText('pandasText')">
+🔊 Read Section
+</button>
+
+<div class="code-box" id="pandasCode">
+import pandas as pd
+
+data = pd.read_csv("users.csv")
+
+print(data.head())
+</div>
+
+<button class="btn"
+onclick="copyCode('pandasCode')">
+📋 Copy Code
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="footer">
+Premium Data Engineering Laboratory © 2026
+</div>
+
+<script>
+
+/* ==========================
+FLOATING OBJECTS
+========================== */
+
+const floating =
+document.getElementById("floating");
+
+const icons =
+["📊","🗄️","📑","💾","📈","🖥️","📉","⚙️"];
+
+for(let i=0;i<15;i++){
+
+let div =
+document.createElement("div");
+
+div.className = "float";
+
+div.innerHTML =
+icons[Math.floor(Math.random()*icons.length)];
+
+div.style.left =
+Math.random()*100+"vw";
+
+div.style.animationDuration =
+(15+Math.random()*15)+"s";
+
+div.style.fontSize =
+(20+Math.random()*20)+"px";
+
+floating.appendChild(div);
+
+}
+
+/* ==========================
+ACCORDION
+========================== */
+
+document
+.querySelectorAll(".accordion-header")
+.forEach(header=>{
+
+header.onclick=()=>{
+
+header.parentElement
+.classList.toggle("active");
+
+};
+
+});
+
+/* ==========================
+SPEECH
+========================== */
+
+function readText(id){
+
+speechSynthesis.cancel();
+
+const text =
+document.getElementById(id).innerText;
+
+const speech =
+new SpeechSynthesisUtterance(text);
+
+speech.rate = 1;
+
+speech.pitch = 1;
+
+speechSynthesis.speak(speech);
+
+}
+
+/* ==========================
+COPY
+========================== */
+
+function copyCode(id){
+
+const text =
+document.getElementById(id).innerText;
+
+navigator.clipboard.writeText(text);
+
+alert("Code Copied");
+
+}
+function goBack(){
+    window.history.back();
+}
+</script>
+
+</body>
+</html>

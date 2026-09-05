@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upgrade to Premium - AI Mentor Prince</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+<script src="https://checkout.flutterwave.com/v3.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter', sans-serif;
+}
+
+body{
+min-height:100vh;
+background:linear-gradient(135deg,#050816,#0b1430,#120a2a);
+color:white;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:20px;
+}
+
+/* TOP BAR */
+.topbar{
+width:100%;
+max-width:900px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+}
+
+.back-btn{
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.15);
+color:white;
+padding:10px 14px;
+border-radius:10px;
+cursor:pointer;
+font-weight:700;
+transition:0.2s;
+width: 25%;
+}
+
+.back-btn:hover{
+transform:scale(1.05);
+}
+
+.title{
+color:#ffd700;
+font-weight:900;
+font-size:18px;
+}
+
+/* HERO */
+.hero{
+text-align:center;
+margin-top:10px;
+max-width:600px;
+}
+
+.hero h1{
+font-size:28px;
+color:#ffd700;
+}
+
+.hero p{
+color:#b0b3d6;
+margin-top:10px;
+font-size:14px;
+}
+
+/* PLANS */
+.plans{
+margin-top:30px;
+display:flex;
+flex-direction:column;
+gap:15px;
+width:100%;
+max-width:600px;
+}
+
+.plan{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.1);
+border-radius:15px;
+padding:20px;
+text-align:center;
+transition:0.3s;
+}
+
+.plan:hover{
+transform:scale(1.02);
+border-color:#ffd700;
+}
+
+.plan h2{
+color:#ffd700;
+font-size:18px;
+}
+
+.price{
+font-size:26px;
+font-weight:900;
+margin:10px 0;
+}
+
+.desc{
+font-size:13px;
+color:#b0b3d6;
+}
+
+button{
+margin-top:12px;
+padding:12px;
+width:100%;
+border:none;
+border-radius:10px;
+font-weight:800;
+cursor:pointer;
+background:linear-gradient(135deg,#ffd700,#ff9800);
+color:black;
+}
+
+/* FOOTER */
+.footer{
+margin-top:30px;
+font-size:12px;
+color:#777;
+text-align:center;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <button class="back-btn" onclick="goBack()">Back</button>
+  <div class="title">Premium Upgrade</div>
+  <div></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Unlock AI Mentor Premium</h1>
+  <p>Get unlimited access to advanced AI guidance, debugging help, and career mentorship.</p>
+</div>
+
+<!-- PLANS -->
+<div class="plans">
+
+  <div class="plan">
+    <h2>🔥 Weekly Plan</h2>
+    <div class="price">$3</div>
+    <div class="desc">7 days full access to AI Mentor</div>
+    <button onclick="pay('week',3)">Upgrade Now</button>
+  </div>
+
+  <div class="plan">
+    <h2>⭐ Monthly Plan</h2>
+    <div class="price">$10</div>
+    <div class="desc">30 days unlimited access</div>
+    <button onclick="pay('month',10)">Upgrade Now</button>
+  </div>
+
+  <div class="plan">
+    <h2>💎 Yearly Plan</h2>
+    <div class="price">$50</div>
+    <div class="desc">Best value - 365 days access</div>
+    <button onclick="pay('year',50)">Upgrade Now</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  © AI Mentor Prince • Secure Payment Powered by Flutterwave
+</div>
+
+<script>
+
+/* BACK BUTTON */
+function goBack(){
+  window.history.back();
+}
+
+/* FLUTTERWAVE PAYMENT */
+function pay(plan, amount){
+
+  FlutterwaveCheckout({
+
+    public_key: "YOUR_FLUTTERWAVE_PUBLIC_KEY",
+
+    tx_ref: "AI_MENTOR_" + Date.now(),
+
+    amount: amount,
+
+    currency: "USD",
+
+    payment_options: "card, mobilemoneyghana, ussd",
+
+    customer: {
+      email: "user@example.com",
+      name: "AI Mentor User"
+    },
+
+    callback: function (data) {
+
+      console.log("Payment success:", data);
+
+      // send to backend
+      fetch("http://localhost:3000/payment-success", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          transaction_id: data.transaction_id,
+          plan: plan
+        })
+      });
+
+      alert("Payment successful! Activating premium...");
+
+      window.location.href = "mentorship.html";
+
+    },
+
+    onclose: function () {
+      console.log("Payment closed");
+    }
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>

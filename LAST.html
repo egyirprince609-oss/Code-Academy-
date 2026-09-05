@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Code Academy AI</title>
+
+<link rel="stylesheet" href="lesson.css">
+<style>
+     
+   /* ========================= RESET ========================= */
+
+*{ margin:0; padding:0; box-sizing:border-box; font-family:Arial,sans-serif; }
+
+/* html, body{ width:100%; height:100%; background:#f5f7fb; overflow:hidden; }
+ */
+
+html,
+body{
+    width:100%;
+    height:100%;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+    background: #f5f7fb;
+}
+
+/* ========================= LOADER ========================= */
+
+#loader{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:#0f1220;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+    transition:opacity .5s ease;
+}
+
+#loader.fade-out{
+    opacity:0;
+    pointer-events:none;
+}
+
+
+
+.loader-box{ text-align:center; color:white; }
+
+.spinner{ width:65px; height:65px; border:6px solid #2f3554; border-top:6px solid #5a00ff; border-radius:50%; margin:auto; animation:spin 1s linear infinite; margin-bottom:15px; }
+
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* ========================= APP ========================= */
+
+#app{ width:100%; max-width:800px; height:100vh; margin:auto; display:flex; flex-direction:column; background:white; position:relative; overflow:hidden; }
+
+/* ========================= TOP BAR ========================= */
+
+.topbar{ height:65px; display:flex; align-items:center; justify-content:space-between; padding:0 15px; background:linear-gradient( 90deg, #4a90ff, #5a00ff ); color:white; }
+
+.app-title{ font-size:18px; font-weight:700; }
+
+.icon-btn{ border:none; background:none; font-size:22px; cursor:pointer; color:white; }
+
+.top-actions{ display:flex; gap:10px; }
+
+/* ========================= PROGRESS ========================= */
+
+.progress-section{ padding:10px 15px; background:white; }
+
+.progress-bar{ width:100%; height:8px; background:#e5e9f2; border-radius:50px; overflow:hidden; }
+
+.progress-fill{ width:0%; height:100%; background:linear-gradient( 90deg, #4a90ff, #5a00ff ); transition:.4s; }
+
+.xp-container{ margin-top:8px; font-size:14px; font-weight:bold; color:#555; }
+
+/* ========================= SCREEN ========================= */
+
+.screen{ flex:1; overflow-y:auto; padding:15px; padding-bottom:120px; }
+
+.hidden{ display:none !important; }
+
+.active{ display:block; }
+
+/* ========================= LESSON ========================= */
+
+.lesson-title{ font-size:28px; margin-bottom:15px; color:#222; }
+
+/* .lesson-image-wrapper{ width:100%; margin-bottom:15px; }
+
+.lesson-image{ width:70%; height:5px; object-fit:cover; border-radius:20px; background:#e5e9f2; } */
+/* 
+.lesson-content{ font-size:18px; line-height:1.8; color:#444; }
+ */
+.lesson-content{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+/* 
+.lesson-content p{ margin-bottom:15px; padding:15px; background:#fafbff; border-radius:15px; animation:fadeIn .3s ease; } */
+
+.lesson-content p{
+    margin-bottom:12px;
+    line-height:1.8;
+}
+
+@keyframes fadeIn{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+
+/* ========================= QUIZ ========================= */
+
+#quizQuestion{ font-size:22px; margin-bottom:20px; }
+
+.quiz-options{ display:flex; flex-direction:column; gap:12px; }
+
+.quiz-options button{ padding:15px; border:none; border-radius:15px; background:white; box-shadow:0 5px 15px rgba(0,0,0,.08); cursor:pointer; font-size:16px; text-align:left; }
+
+.quiz-options button:hover{ transform:translateY(-2px); }
+
+.quiz-options button.selected{ background:#5a00ff; color:white; }
+
+#submitQuizBtn{ margin-top:20px; width:100%; height:55px; border:none; border-radius:30px; background:linear-gradient( 90deg, #4a90ff, #5a00ff ); color:white; font-weight:bold; cursor:pointer; }
+
+/* ========================= RESULT ========================= */
+
+#resultScreen, #completeScreen{ text-align:center; padding-top:50px; }
+
+#resultScreen h2, #completeScreen h2{ font-size:30px; margin-bottom:15px; }
+
+#resultText, #completionText{ font-size:18px; color:#666; margin-bottom:25px; }
+
+.completion-actions{ display:flex; flex-direction:column; gap:12px; }
+
+.completion-actions button{ height:55px; border:none; border-radius:30px; background:#5a00ff; color:white; font-weight:bold; cursor:pointer; }
+
+/* ========================= AI PANEL ========================= */
+
+#aiPanel{ position:fixed; bottom:0; left:0; width:100%; height:70%; background:white; border-radius:25px 25px 0 0; box-shadow:0 -10px 30px rgba(0,0,0,.15); display:flex; flex-direction:column; z-index:300; }
+
+.ai-header{ height:60px; display:flex; justify-content:space-between; align-items:center; padding:0 15px; border-bottom:1px solid #eee; }
+
+.ai-header button{ border:none; background:none; font-size:20px; cursor:pointer; }
+
+#aiMessages{ flex:1; overflow-y:auto; padding:15px; background:#f8f8f8; }
+
+#aiMessages div{ background:white; padding:12px; border-radius:15px; margin-bottom:10px; box-shadow:0 3px 8px rgba(0,0,0,.08); }
+
+.ai-input-area{ display:flex; padding:10px; gap:10px; border-top:1px solid #eee; }
+
+#aiInput{ flex:1; height:50px; border:1px solid #ddd; border-radius:30px; padding:0 15px; outline:none; }
+
+#sendAiBtn{ width:70px; border:none; border-radius:30px; background:#5a00ff; color:white; cursor:pointer; }
+
+/* ========================= SHARE MENU ========================= */
+
+#shareMenu{ position:absolute; top:75px; right:15px; width:200px; background:white; border-radius:15px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,.15); z-index:250; }
+
+#shareMenu button{ width:100%; padding:12px; border:none; background:none; cursor:pointer; text-align:left; }
+
+#shareMenu button:hover{ background:#f5f7fb; }
+
+/* ========================= PDF BUTTON ========================= */
+
+.floating-buttons{ position:fixed; right:15px; bottom:90px; z-index:200; }
+
+#pdfBtn{ width:60px; height:60px; border:none; border-radius:50%; background:#5a00ff; color:white; font-size:24px; cursor:pointer; box-shadow:0 8px 20px rgba(90,0,255,.3); }
+
+/* ========================= BOTTOM NAV ========================= */
+
+.bottom-nav{ position:fixed; bottom:0; left:0; width:100%; display:flex; gap:10px; padding:10px; background:white; box-shadow:0 -5px 20px rgba(0,0,0,.08); }
+
+.bottom-nav button{ flex:1; height:55px; border:none; border-radius:30px; font-weight:bold; cursor:pointer; }
+
+#prevBtn{ background:#e5e9f2; }
+
+#nextBtn{ background:linear-gradient( 90deg, #4a90ff, #5a00ff ); color:white; }
+
+/* ========================= MOBILE ========================= */
+
+@media(max-width:480px){
+
+.lesson-title{ font-size:24px; }
+
+.lesson-image{ height:180px; }
+
+.lesson-content{ font-size:16px; }
+
+}
+
+     
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- ================= LOADER ================= -->
+ 
+<div id="loader">
+
+    <div class="loader-box">
+
+        <div class="spinner"></div>
+
+        <h2>Code Academy AI</h2>
+
+        <p>Preparing your lesson...</p>
+
+    </div>
+ 
+</div>
+
+<!-- ================= MAIN APP ================= -->
+
+<div id="app">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+
+        <button id="closeBtn" class="icon-btn">
+            ✕
+        </button>
+
+        <h1 class="app-title">
+            Code Academy AI
+        </h1>
+
+        <div class="top-actions">
+
+            <button id="voiceBtn" class="icon-btn">
+                🔊
+            </button>
+
+            <button id="shareBtn" class="icon-btn">
+                🔗
+            </button>
+
+            <button id="aiBtn" class="icon-btn">
+                🧠
+            </button>
+
+        </div>
+
+    </header>
+
+    <!-- ================= PROGRESS ================= -->
+
+    <section class="progress-section">
+
+        <div class="progress-bar">
+
+            <div
+                id="progressFill"
+                class="progress-fill">
+            </div>
+
+        </div>
+
+        <div class="xp-container">
+
+            <span>XP:</span>
+
+            <span id="xpValue">
+                0
+            </span>
+
+        </div>
+
+    </section>
+
+    <!-- ================= LESSON SCREEN ================= -->
+
+    <section
+        id="lessonScreen"
+        class="screen active">
+
+        <h2
+            id="lessonTitle"
+            class="lesson-title">
+            Loading...
+        </h2>
+
+       
+
+        <div
+            id="lessonContent"
+            class="lesson-content">
+
+        </div>
+
+    </section>
+
+    <!-- ================= QUIZ SCREEN ================= -->
+
+    <section
+        id="quizScreen"
+        class="screen hidden">
+
+        <h2 id="quizQuestion">
+            Question
+        </h2>
+
+        <div
+            id="quizOptions"
+            class="quiz-options">
+
+        </div>
+
+        <button id="submitQuizBtn">
+            Submit Answer
+        </button>
+
+    </section>
+
+    <!-- ================= RESULT SCREEN ================= -->
+
+    <section
+        id="resultScreen"
+        class="screen hidden">
+
+        <h2>
+            Quiz Result
+        </h2>
+
+        <p id="resultText">
+
+        </p>
+
+        <button id="continueBtn">
+            Continue
+        </button>
+
+    </section>
+
+    <!-- ================= COMPLETION SCREEN ================= -->
+
+    <section
+        id="completeScreen"
+        class="screen hidden">
+
+        <h2>
+            🎉 Lesson Completed
+        </h2>
+
+        <p id="completionText">
+
+        </p>
+
+        <div class="completion-actions">
+
+            
+
+            <button id="nextLessonBtn">
+                Next Lesson
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ================= AI PANEL ================= -->
+
+    <div
+        id="aiPanel"
+        class="hidden">
+
+        <div class="ai-header">
+
+            <h3>
+                AI Tutor
+            </h3>
+
+            <button id="closeAiBtn">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="aiMessages">
+
+        </div>
+
+        <div class="ai-input-area">
+
+            <input
+                type="text"
+                id="aiInput"
+                placeholder="Ask AI anything...">
+
+            <button id="sendAiBtn">
+                Send
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ================= SHARE MENU ================= -->
+
+    <div
+        id="shareMenu"
+        class="hidden">
+
+        <button data-platform="whatsapp">
+            WhatsApp
+        </button>
+
+        <button data-platform="telegram">
+            Telegram
+        </button>
+
+        <button data-platform="facebook">
+            Facebook
+        </button>
+
+        <button data-platform="x">
+            X
+        </button>
+
+        <button data-platform="linkedin">
+            LinkedIn
+        </button>
+
+        <button data-platform="reddit">
+            Reddit
+        </button>
+
+        <button data-platform="email">
+            Email
+        </button>
+
+    </div>
+
+    <!-- ================= FLOATING BUTTONS ================= -->
+
+    <div class="floating-buttons">
+
+        <button id="pdfBtn">
+            📄
+        </button>
+
+    </div>
+
+    <!-- ================= NAVIGATION ================= -->
+
+    <footer class="bottom-nav">
+
+        <button id="prevBtn">
+            PREVIOUS
+        </button>
+
+        <button id="nextBtn">
+            NEXT
+        </button>
+
+    </footer>
+
+</div>
+
+<!-- ================= FILES ================= -->
+
+
+
+<script>
+     
+     
+  // =========================
+// STATE
+// =========================
+
+let currentLesson = 0;
+let currentSentence = 0;
+let xp = 0;
+let muted = false;
+let selectedAnswer = null;
+
+// =========================
+// ELEMENTS
+// =========================
+
+const lessonTitle = document.getElementById("lessonTitle");
+const lessonImage = document.getElementById("lessonImage");
+const lessonContent = document.getElementById("lessonContent");
+
+const progressFill = document.getElementById("progressFill");
+const xpValue = document.getElementById("xpValue");
+
+const aiPanel = document.getElementById("aiPanel");
+const aiMessages = document.getElementById("aiMessages");
+const aiInput = document.getElementById("aiInput");
+
+// =========================
+// LESSON DATA (TEST)
+// =========================
+
+const lessons = [
+{
+title: "Intro to HTML",
+
+sentences: [
+"HTML stands for HyperText Markup Language.",
+"It is used to create web pages.",
+"Every website uses HTML, CSS, and JavaScript."
+],
+quiz: {
+question: "What does HTML stand for?",
+options: [
+"HyperText Markup Language",
+"HighText Machine Language",
+"Home Tool Markup Language"
+],
+answer: 0
+}
+}
+];
+
+// =========================
+// INIT
+// =========================
+
+
+window.onload = () => {
+
+    loadLesson();
+    updateProgress();
+
+    setTimeout(() => {
+
+        const loader = document.getElementById("loader");
+        loader.classList.add("fade-out");
+
+        setTimeout(() => {
+            loader.style.display = "none";
+        }, 500);
+
+    }, 1000);
+
+};
+
+
+// =========================
+// LOAD LESSON
+// =========================
+
+function loadLesson() {
+const lesson = lessons[currentLesson];
+
+lessonTitle.textContent = lesson.title;
+lessonImage.src = lesson.image;
+lessonContent.innerHTML = "";
+
+currentSentence = 0;
+showSentence();
+}
+
+// =========================
+// SHOW SENTENCE
+// =========================
+
+function showSentence() {
+const lesson = lessons[currentLesson];
+
+if (currentSentence >= lesson.sentences.length) {
+showQuiz();
+return;
+}
+
+const text = lesson.sentences[currentSentence];
+
+const p = document.createElement("p");
+p.textContent = text;
+lessonContent.appendChild(p);
+
+// voice
+if (!muted) speak(text);
+
+// XP
+addXP(5);
+
+// progress
+updateProgress();
+
+currentSentence++;
+}
+
+// =========================
+// NEXT BUTTON
+// =========================
+
+document.getElementById("nextBtn").onclick = () => {
+showSentence();
+};
+
+// =========================
+// PREVIOUS BUTTON
+// =========================
+
+document.getElementById("prevBtn").onclick = () => {
+if (currentSentence > 1) {
+currentSentence -= 2;
+lessonContent.innerHTML = "";
+showSentence();
+}
+};
+
+// =========================
+// VOICE
+// =========================
+
+document.getElementById("voiceBtn").onclick = () => {
+muted = !muted;
+document.getElementById("voiceBtn").textContent = muted ? "🔇" : "🔊";
+};
+
+function speak(text) {
+speechSynthesis.cancel();
+speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}
+
+// =========================
+// XP SYSTEM
+// =========================
+
+function addXP(points) {
+xp += points;
+xpValue.textContent = xp;
+}
+
+// =========================
+// PROGRESS BAR
+// =========================
+
+function updateProgress() {
+const lesson = lessons[currentLesson];
+const percent = (currentSentence / lesson.sentences.length) * 100;
+progressFill.style.width = percent + "%";
+}
+
+// =========================
+// QUIZ SYSTEM
+// =========================
+
+function showQuiz() {
+const lesson = lessons[currentLesson];
+
+document.getElementById("lessonScreen").classList.add("hidden");
+document.getElementById("quizScreen").classList.remove("hidden");
+
+document.getElementById("quizQuestion").textContent =
+lesson.quiz.question;
+
+const optionsBox = document.getElementById("quizOptions");
+optionsBox.innerHTML = "";
+
+lesson.quiz.options.forEach((opt, index) => {
+const btn = document.createElement("button");
+
+btn.textContent = opt;
+
+btn.onclick = () => {
+selectedAnswer = index;
+
+document.querySelectorAll("#quizOptions button")
+.forEach(b => b.classList.remove("selected"));
+
+btn.classList.add("selected");
+};
+
+optionsBox.appendChild(btn);
+});
+}
+
+// =========================
+// SUBMIT QUIZ
+// =========================
+
+document.getElementById("submitQuizBtn").onclick = () => {
+const lesson = lessons[currentLesson];
+
+document.getElementById("quizScreen").classList.add("hidden");
+document.getElementById("resultScreen").classList.remove("hidden");
+
+const resultText = document.getElementById("resultText");
+
+if (selectedAnswer === lesson.quiz.answer) {
+resultText.textContent = "Correct! +20 XP";
+addXP(20);
+} else {
+resultText.textContent = "Wrong answer. Try again next time.";
+}
+};
+
+// =========================
+// CONTINUE
+// =========================
+
+document.getElementById("continueBtn").onclick = () => {
+document.getElementById("resultScreen").classList.add("hidden");
+document.getElementById("completeScreen").classList.remove("hidden");
+
+document.getElementById("completionText").textContent =
+"You completed this lesson!";
+};
+
+// =========================
+// AI TUTOR (OPENROUTER BACKEND)
+// =========================
+
+document.getElementById("aiBtn").onclick = () => {
+aiPanel.classList.toggle("hidden");
+};
+
+document.getElementById("closeAiBtn").onclick = () => {
+aiPanel.classList.add("hidden");
+};
+
+document.getElementById("sendAiBtn").onclick = async () => {
+const text = aiInput.value;
+if (!text) return;
+
+addMessage("You", text);
+aiInput.value = "";
+
+try {
+const res = await fetch("http://localhost:3000/ai/explain", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({ text })
+});
+
+const data = await res.json();
+
+addMessage("AI Tutor", data.result || "No response");
+
+} catch (err) {
+addMessage("AI Tutor", "Server error. Check backend.");
+}
+};
+
+function addMessage(sender, text) {
+const div = document.createElement("div");
+div.innerHTML = `<b>${sender}:</b> ${text}`;
+aiMessages.appendChild(div);
+aiMessages.scrollTop = aiMessages.scrollHeight;
+}
+
+// =========================
+// PDF DOWNLOAD (jsPDF)
+// =========================
+
+document.getElementById("pdfBtn").onclick = () => {
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF();
+
+const lesson = lessons[currentLesson];
+
+doc.setFontSize(16);
+doc.text(lesson.title, 10, 10);
+
+let y = 20;
+
+lesson.sentences.forEach((s) => {
+doc.setFontSize(12);
+doc.text("- " + s, 10, y);
+y += 10;
+});
+
+doc.save("lesson.pdf");
+};
+
+// =========================
+// SHARE SYSTEM
+// =========================
+
+document.getElementById("shareBtn").onclick = () => {
+document.getElementById("shareMenu").classList.toggle("hidden");
+};
+
+document.querySelectorAll("#shareMenu button").forEach(btn => {
+btn.onclick = () => {
+const platform = btn.dataset.platform;
+const url = encodeURIComponent(window.location.href);
+
+let link = "";
+
+switch (platform) {
+case "whatsapp":
+link = "https://wa.me/?text=" + url;
+break;
+
+case "telegram":
+link = "https://t.me/share/url?url=" + url;
+break;
+
+case "facebook":
+link = "https://facebook.com/sharer/sharer.php?u=" + url;
+break;
+
+case "x":
+link = "https://twitter.com/intent/tweet?url=" + url;
+break;
+
+case "linkedin":
+link = "https://linkedin.com/shareArticle?url=" + url;
+break;
+
+case "reddit":
+link = "https://reddit.com/submit?url=" + url;
+break;
+
+case "email":
+link = "mailto:?subject=Lesson&body=" + url;
+break;
+}
+
+window.open(link, "_blank");
+};
+});
+
+// =========================
+// EXIT
+// =========================
+
+document.getElementById("closeBtn").onclick = () => {
+if (confirm("Exit lesson?")) {
+window.location.href = "menu.html";
+}
+};  
+setTimeout(() => {
+    document.getElementById("loader").style.display = "none";
+}, 5000);    
+     
+</script>
+
+</body>
+</html>

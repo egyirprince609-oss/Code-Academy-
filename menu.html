@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Code Academy</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+padding-bottom:40px;
+}
+
+/* NAVBAR */
+
+/* NAVBAR */
+
+header{
+    width:100%;
+    background:#0f172a;
+    padding:12px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+
+/* LOGO */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.logo h2{
+    font-size:18px;
+    color:#38bdf8;
+}
+
+
+/* NAVIGATION */
+
+nav{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+
+nav a{
+    text-decoration:none;
+    color:white;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    transition:0.3s;
+}
+
+
+nav a:hover{
+    color:#38bdf8;
+}
+
+
+/* PROFILE */
+
+#menuProfile{
+
+    width:45px !important;
+    height:45px !important;
+    border-radius:50%;
+    object-fit:cover;
+    border:2px solid #38bdf8;
+
+}
+
+/* SECTION A */
+
+#sectionA{
+display:flex;
+flex-direction:row;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+padding:15px;
+}
+
+/* LEFT SIDE */
+
+.leftA{
+width:52%;
+}
+
+.leftA h1{
+font-size:20px;
+line-height:1.3;
+margin-bottom:10px;
+}
+
+.leftA span{
+color:#38bdf8;
+}
+
+.leftA p{
+font-size:11px;
+line-height:1.5;
+color:#cbd5e1;
+margin-bottom:12px;
+}
+
+/* BUTTON */
+
+.start-btn{
+padding:10px 12px;
+border:none;
+border-radius:10px;
+background:#38bdf8;
+color:white;
+font-size:12px;
+cursor:pointer;
+margin-bottom:15px;
+}
+
+/* MEMBERS */
+
+.members{
+display:flex;
+align-items:center;
+}
+
+.members img{
+width:28px;
+height:28px;
+border-radius:50%;
+margin-left:-8px;
+border:2px solid #020617;
+}
+
+.member-text{
+font-size:10px;
+margin-left:8px;
+color:#cbd5e1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* =========================
+   NEW MENU BUTTON
+========================= */
+
+#menuBtn{
+
+    background:none;
+
+    border:none;
+
+    color:white;
+
+    font-size:26px;
+
+    cursor:pointer;
+
+}
+
+
+/* =========================
+   MENU OVERLAY
+========================= */
+
+#menuOverlay{
+
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.6);
+
+    display:none;
+
+    z-index:998;
+
+}
+
+
+/* =========================
+   SIDE MENU
+========================= */
+
+#sideMenu{
+
+    position:fixed;
+
+    top:0;
+
+    right:-320px;
+
+    width:300px;
+
+    height:100vh;
+
+    background:#0f172a;
+
+    overflow-y:auto;
+
+    z-index:999;
+
+    padding:20px;
+
+    transition:0.3s;
+
+    border-left:1px solid rgba(255,255,255,0.08);
+
+}
+
+#sideMenu.active{
+
+    right:0;
+
+}
+
+
+/* =========================
+   PROFILE AREA
+========================= */
+
+.menuProfile{
+
+    text-align:center;
+
+    margin-bottom:20px;
+
+}
+
+.menuProfile img{
+
+    width:90px;
+
+    height:90px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    border:3px solid #38bdf8;
+
+}
+
+.menuProfile h3{
+
+    margin-top:10px;
+
+    color:white;
+
+    font-size:16px;
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+.searchContainer{
+
+    margin-bottom:20px;
+
+}
+
+#searchInput{
+
+    width:100%;
+
+    padding:12px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:10px;
+
+    background:#1e293b;
+
+    color:white;
+
+}
+
+#searchInput::placeholder{
+
+    color:#94a3b8;
+
+}
+
+#searchResults{
+
+    margin-top:8px;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+}
+
+
+/* =========================
+   SEARCH ITEM
+========================= */
+
+.searchItem{
+
+    background:#1e293b;
+
+    padding:12px;
+
+    color:white;
+
+    cursor:pointer;
+
+    border-bottom:1px solid #334155;
+
+}
+
+.searchItem:hover{
+
+    background:#334155;
+
+}
+
+
+/* =========================
+   MENU HEADINGS
+========================= */
+
+.menuHeading{
+
+    color:#38bdf8;
+
+    margin-top:18px;
+
+    margin-bottom:10px;
+
+    font-size:12px;
+
+    letter-spacing:1px;
+
+}
+
+
+/* =========================
+   MENU LINKS
+========================= */
+
+.menuLink{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    text-decoration:none;
+
+    color:white;
+
+    background:#1e293b;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    margin-bottom:10px;
+
+    transition:0.3s;
+
+}
+
+.menuLink:hover{
+
+    background:#334155;
+
+}
+
+.menuLink i{
+
+    width:20px;
+
+    color:#38bdf8;
+
+}
+
+
+/* =========================
+   MODERN FOOTER
+========================= */
+
+footer{
+
+    margin-top:25px;
+
+    background:#0f172a;
+
+    padding:20px;
+
+    border-top:1px solid rgba(255,255,255,0.08);
+
+}
+
+.footerLinks{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+    margin-bottom:12px;
+
+}
+
+.footerLinks a{
+
+    color:#38bdf8;
+
+    font-size:22px;
+
+    text-decoration:none;
+
+}
+
+.footerText{
+
+    text-align:center;
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:500px){
+
+    #sideMenu{
+
+        width:280px;
+
+    }
+
+}
+
+
+
+
+
+/* RIGHT SIDE */
+
+.rightA{
+width:45%;
+display:flex;
+justify-content:center;
+}
+
+/* VIDEO CARD */
+
+.video-card{
+position:relative;
+width:100%;
+max-width:180px;
+border-radius:18px;
+overflow:hidden;
+cursor:pointer;
+box-shadow:0 0 25px rgba(0,0,0,0.4);
+transition:0.4s;
+}
+
+.video-card:hover{
+transform:translateY(-5px);
+}
+
+.video-thumbnail{
+width:100%;
+height:260px;
+object-fit:cover;
+display:block;
+}
+
+.video-overlay{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+padding:12px;
+background:linear-gradient(
+to top,
+rgba(0,0,0,0.95),
+rgba(0,0,0,0.3),
+transparent
+);
+color:white;
+}
+
+.play-circle{
+width:45px;
+height:45px;
+border-radius:50%;
+background:#38bdf8;
+display:flex;
+justify-content:center;
+align-items:center;
+margin-bottom:10px;
+font-size:18px;
+color:white;
+}
+
+.video-overlay h2{
+font-size:13px;
+margin-bottom:8px;
+line-height:1.4;
+}
+
+.video-overlay p{
+font-size:9px;
+line-height:1.5;
+color:#e2e8f0;
+margin-bottom:10px;
+}
+
+.video-info{
+display:flex;
+justify-content:space-between;
+font-size:9px;
+color:#cbd5e1;
+}
+
+/* SECTION B */
+
+#sectionB{
+display:flex;
+flex-direction:row;
+justify-content:space-between;
+gap:8px;
+padding:10px;
+}
+
+/* CARDS */
+
+.card{
+width:32%;
+background:#0f172a;
+padding:10px;
+border-radius:15px;
+text-align:center;
+transition:0.3s;
+}
+
+.card:hover{
+background:#1e293b;
+}
+
+.card i{
+font-size:22px;
+margin-bottom:8px;
+color:#38bdf8;
+}
+
+.card h3{
+font-size:12px;
+margin-bottom:6px;
+}
+
+.card p{
+font-size:8px;
+line-height:1.4;
+color:#cbd5e1;
+}
+
+.card a{
+text-decoration:none;
+color:white;
+}
+
+/* SECTION C */
+
+#sectionC{
+padding:10px;
+}
+
+.section-title{
+text-align:center;
+font-size:18px;
+margin-bottom:15px;
+color:#38bdf8;
+}
+
+/* COURSE ROW */
+
+.course-row{
+display:flex;
+flex-direction:row;
+justify-content:space-between;
+gap:8px;
+}
+
+/* COURSE CARD */
+
+.course-card{
+width:24%;
+background:#0f172a;
+padding:8px;
+border-radius:12px;
+}
+
+.course-card img{
+width:100%;
+height:45px;
+object-fit:contain;
+background:white;
+padding:4px;
+border-radius:8px;
+margin-bottom:8px;
+}
+
+.course-card h3{
+font-size:10px;
+margin-bottom:5px;
+color:#38bdf8;
+}
+
+.course-card p{
+font-size:8px;
+line-height:1.3;
+margin-bottom:6px;
+color:#cbd5e1;
+}
+
+/* STARS */
+
+.stars{
+font-size:9px;
+color:gold;
+margin-bottom:6px;
+}
+
+/* PROGRESS BAR */
+
+.progress-box{
+width:100%;
+height:6px;
+background:#334155;
+border-radius:10px;
+overflow:hidden;
+}
+
+.progress{
+height:100%;
+border-radius:10px;
+}
+
+.html-progress{
+width:90%;
+background:#f97316;
+}
+
+.js-progress{
+width:70%;
+background:#facc15;
+}
+
+.react-progress{
+width:60%;
+background:#38bdf8;
+}
+
+.python-progress{
+width:85%;
+background:#22c55e;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:20px;
+padding:15px;
+text-align:center;
+font-size:11px;
+color:#94a3b8;
+}
+
+</style>
+</head>
+
+<body>
+
+
+
+
+<header>
+
+    <div class="logo">
+
+        <img src="logo.png">
+
+        <h2>Code Academy</h2>
+
+    </div>
+
+    <button id="menuBtn">
+
+        <i class="fa-solid fa-bars"></i>
+
+    </button>
+
+</header>
+
+
+<!-- MENU OVERLAY -->
+
+<div id="menuOverlay"></div>
+
+
+<!-- SIDE MENU -->
+
+<div id="sideMenu">
+
+    <!-- PROFILE -->
+
+    <div class="menuProfile">
+
+        <img
+        id="userPhoto"
+        src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+        <h3 id="userName">
+
+            Loading...
+
+        </h3>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="searchContainer">
+
+        <input
+        type="text"
+        id="searchInput"
+        placeholder="Search pages...">
+
+        <div id="searchResults"></div>
+
+    </div>
+
+
+    <!-- MAIN NAVIGATION -->
+
+    <h4 class="menuHeading">
+
+        MAIN NAVIGATION
+
+    </h4>
+
+
+    <a href="course.html" class="menuLink">
+
+        <i class="fa-solid fa-book"></i>
+
+        Courses
+
+    </a>
+
+
+    <a href="project.html" class="menuLink">
+
+        <i class="fa-solid fa-code"></i>
+
+        Projects
+
+    </a>
+
+
+    <a href="CSSJourney/community.html" class="menuLink">
+
+        <i class="fa-solid fa-users"></i>
+
+        Community
+
+    </a>
+
+
+    <a href="progress.html" class="menuLink">
+
+        <i class="fa-solid fa-chart-line"></i>
+
+        Progress
+
+    </a>
+
+
+    <!-- MY LEARNING -->
+
+    <h4 class="menuHeading">
+
+        MY LEARNING
+
+    </h4>
+
+
+    <a href="certificate.html" class="menuLink">
+
+        <i class="fa-solid fa-award"></i>
+
+        Certificates
+
+    </a>
+
+
+    <a href="code.html" class="menuLink">
+
+        <i class="fa-solid fa-floppy-disk"></i>
+
+        Saved Codes
+
+    </a>
+
+
+    <a href="note.html" class="menuLink">
+
+        <i class="fa-solid fa-note-sticky"></i>
+
+        Saved Notes
+
+    </a>
+
+<a href="Side games/games_dash.html" class="menuLink">
+     🎮
+     Side Games
+</a>
+    <!-- ACCOUNT -->
+
+    <h4 class="menuHeading">
+
+        ACCOUNT
+
+    </h4>
+
+
+    <a href="profil.html" class="menuLink">
+
+        <i class="fa-solid fa-user"></i>
+
+        Profile
+
+    </a>
+
+
+    <a href="aboutus.html" class="menuLink">
+
+        <i class="fa-solid fa-circle-info"></i>
+
+        About Us
+
+    </a>
+
+    
+   <a href="contactus.html" class="menuLink">
+
+        📞
+
+        Customer Support 
+
+    </a>
+    
+  <a href="https://netpluse.shop/r/WISE9100" class="menuLink">
+
+        Buy data
+
+    </a>
+    
+
+
+    <a href="#"
+       class="menuLink"
+       onclick="logout()">
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+        Logout
+
+    </a>
+
+</div>
+
+
+</header>
+
+<section id="sectionA">
+
+<div class="leftA">
+
+<h1>
+
+Learn Code.<br>
+
+<span>Build Projects.</span><br>
+
+Launch Your Future.
+
+</h1>
+
+<p>
+
+Master coding skills with real-world projects,
+interactive lessons, and practical exercises.
+
+</p>
+
+<button class="start-btn"
+onclick="startLearning()">
+
+Start Learning Now
+
+</button>
+
+<div class="members">
+
+<img src="user1.jpg">
+<img src="user2.jpg">
+<img src="user3.jpg">
+<img src="user4.jpg">
+
+<div class="member-text">
+
+Join 50,000+ people learning coding skills
+
+</div>
+
+</div>
+
+</div>
+
+<!-- VIDEO SECTION -->
+
+<div class="rightA">
+
+<a href="CODEACADEMY/intro.html"
+style="text-decoration:none;">
+
+<div class="video-card">
+
+<img
+src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4?q=80&w=1200&auto=format&fit=crop"
+class="video-thumbnail">
+
+<div class="video-overlay">
+
+<div class="play-circle">
+
+<i class="fa fa-play"></i>
+
+</div>
+
+<h2>
+
+Introduction To Coding
+
+</h2>
+
+<p>
+
+Learn coding with AI voice lessons,
+interactive notes, quizzes,
+and beginner-friendly explanations.
+
+</p>
+
+<div class="video-info">
+
+<span>
+
+<i class="fa fa-clock"></i>
+3 Minutes
+
+</span>
+
+<span>
+
+<i class="fa fa-book"></i>
+Beginner
+
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</a>
+
+</div>
+
+</section>
+
+<section id="sectionB">
+
+<div class="card">
+
+<a href="project.html">
+
+<i class="fa fa-code"></i>
+
+<h3>Hands-on Projects</h3>
+
+<p>
+
+Build real-world coding projects.
+
+</p>
+
+</a>
+
+</div>
+
+<div class="card">
+
+<a href="progress.html">
+
+<i class="fa fa-chart-line"></i>
+
+<h3>Track Progress</h3>
+
+<p>
+
+Track progress and earn certificates.
+
+</p>
+
+</a>
+
+</div>
+
+<div class="card">
+
+<a href="CSSJourney/community.html">
+
+<i class="fa fa-users"></i>
+
+<h3>Community Support</h3>
+
+<p>
+
+Join our WhatsApp coding community.
+
+</p>
+
+</a>
+
+</div>
+
+</section>
+
+<section id="sectionC">
+
+<h2 class="section-title">
+
+Popular Courses
+
+</h2>
+
+<div class="course-row">
+
+<div class="course-card">
+
+<a href="HTML.html">
+
+<img src="https://cdn-icons-png.flaticon.com/512/732/732212.png">
+
+<h3>HTML</h3>
+
+</a>
+
+<p>
+
+Build the foundation of web development.
+
+</p>
+
+<div class="stars">
+
+★★★★★
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress html-progress"></div>
+
+</div>
+
+</div>
+
+<div class="course-card">
+
+<a href="JavaScript.html">
+
+<img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png">
+
+<h3>JavaScript</h3>
+
+</a>
+
+<p>
+
+Learn JavaScript from scratch.
+
+</p>
+
+<div class="stars">
+
+★★★★☆
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress js-progress"></div>
+
+</div>
+
+</div>
+
+<div class="course-card">
+
+<a href="React.html">
+
+<img src="https://cdn-icons-png.flaticon.com/512/1126/1126012.png">
+
+<h3>React</h3>
+
+</a>
+
+<p>
+
+Build modern web apps with React.
+
+</p>
+
+<div class="stars">
+
+★★★★☆
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress react-progress"></div>
+
+</div>
+
+</div>
+
+<div class="course-card">
+
+<a href="Python.html">
+
+<img src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png">
+
+<h3>Python</h3>
+
+</a>
+
+<p>
+
+Master Python for automation and more.
+
+</p>
+
+<div class="stars">
+
+★★★★★
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress python-progress"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+    
+    
+
+© 2025 Code Academy
+
+
+</footer>
+
+<script type="module"src="menu.js">
+
+
+</script>
+</body>
+</html>

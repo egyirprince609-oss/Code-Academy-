@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Code Editor - Code Academy</title>
+<style>
+:root{--bg:#0f172a;--panel:#1e293b;--editor:#0f1220;--text:#e2e8f0;--accent:#38bdf8;--orange:#ff6b35}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Courier New',monospace}
+html,body{height:100vh;width:100vw;overflow:hidden;background:var(--bg);color:var(--text)}
+.navbar{height:50px;background:var(--panel);display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:2px solid var(--accent)}
+.menu-btn{width:35px;height:35px;background:var(--bg);border:1px solid var(--accent);border-radius:8px;color:var(--accent);font-size:18px;cursor:pointer}
+.navbar h1{font-size:14px;color:var(--orange);flex:1;text-align:center}
+.action-btns{display:flex;gap:5px}
+.action-btns button{padding:6px 8px;border:none;border-radius:6px;background:var(--bg);color:var(--text);font-size:10px;font-weight:bold;cursor:pointer;border:1px solid var(--accent)}
+.run-btn{background:linear-gradient(45deg,#10b981,#059669)!important;color:white!important;border:none!important}
+.challenge-btn{background:linear-gradient(45deg,#f59e0b,#d97706)!important;color:white!important;border:none!important}
+.side-menu{position:fixed;left:-280px;top:50px;width:280px;height:calc(100vh - 50px);background:var(--panel);border-right:2px solid var(--accent);transition:0.3s;z-index:1000;display:flex;flex-direction:column}
+.side-menu.open{left:0}
+.menu-header{padding:12px;border-bottom:1px solid var(--accent);display:flex;justify-content:space-between}
+.menu-header h3{font-size:12px;color:var(--accent)}
+.menu-header button{padding:4px 8px;background:var(--accent);border:none;border-radius:4px;color:white;font-size:10px;cursor:pointer}
+.file-list{flex:1;overflow-y:auto;padding:8px}
+.file-item{padding:8px;margin:3px 0;background:var(--bg);border-radius:6px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.file-item:hover{background:#334155}
+.file-item.active{background:var(--accent);color:white}
+.overlay{display:none;position:fixed;top:50px;left:0;width:100vw;height:calc(100vh - 50px);background:rgba(0,0,0,0.5);z-index:999}
+.overlay.show{display:block}
+.main-area{height:calc(100vh - 50px);display:flex;flex-direction:column}
+.editor-area{height:45%;background:var(--editor);display:flex;flex-direction:column}
+.editor-header{height:35px;background:var(--panel);padding:0 10px;display:flex;align-items:center;font-size:11px;border-bottom:1px solid var(--accent)}
+#editor{flex:1;background:var(--editor);color:var(--text);border:none;padding:10px;font-size:12px;line-height:1.5;resize:none;outline:none;overflow-y:auto}
+.preview-area{height:55%;background:white;display:flex;flex-direction:column}
+.preview-header{height:35px;background:var(--panel);color:var(--text);padding:0 10px;display:flex;align-items:center;font-size:11px;border-bottom:1px solid var(--accent)}
+#preview{flex:1;border:none;width:100%;background:white}
+.modal{display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modal-box{background:var(--panel);padding:20px;border-radius:12px;width:90%;max-width:400px;border:1px solid var(--accent);max-height:80vh;overflow-y:auto}
+.modal-box h3{color:var(--accent);margin-bottom:12px;font-size:14px}
+.modal-box input{width:100%;padding:10px;background:var(--editor);border:1px solid var(--accent);border-radius:6px;color:var(--text);margin-bottom:12px;font-size:12px}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+.modal-btns button{padding:8px 14px;border:none;border-radius:6px;cursor:pointer;font-weight:bold;font-size:12px}
+.btn-create{background:var(--accent);color:white}
+.btn-cancel{background:var(--bg);color:var(--text)}
+
+/* CHALLENGE CARDS */
+.challenge-card{
+  background:var(--editor);
+  padding:12px;
+  border-radius:8px;
+  margin-bottom:10px;
+  border-left:3px solid var(--orange);
+  cursor:pointer;
+  transition:0.2s;
+}
+.challenge-card:hover{
+  border-left-color:var(--accent);
+  transform:translateX(5px);
+}
+.challenge-card h4{
+  color:var(--orange);
+  font-size:13px;
+  margin-bottom:5px;
+}
+.challenge-card p{
+  font-size:11px;
+  color:#94a3b8;
+  line-height:1.4;
+}
+</style>
+</head>
+<body>
+
+<div class="navbar">
+  <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  <h1>⚡ Code Editor</h1>
+  <div class="action-btns">
+    <button class="challenge-btn" onclick="openChallenge()">🎯 CHALLENGE</button>
+    <button class="run-btn" onclick="runCode()">▶ RUN</button>
+    <button onclick="saveToFirebase()">💾 SAVE</button>
+  </div>
+</div>
+
+<div class="side-menu" id="sideMenu">
+  <div class="menu-header">
+    <h3>📁 FILES</h3>
+    <div>
+      <button onclick="newFile()">+ File</button>
+      <button onclick="newProject()">+ Project</button>
+    </div>
+  </div>
+  <div class="file-list" id="fileList">
+    <div style="text-align:center;padding:30px;color:#64748b;font-size:12px;">
+      No project yet<br>
+      <button style="margin-top:10px;padding:6px 12px;background:var(--accent);border:none;border-radius:6px;color:white;cursor:pointer;" onclick="newProject()">Create Project</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+<div class="main-area">
+  <div class="editor-area">
+    <div class="editor-header"><span id="currentFile">No file open</span></div>
+    <textarea id="editor" placeholder="Tap ☰ menu → Create Project to start coding..."></textarea>
+  </div>
+  <div class="preview-area">
+    <div class="preview-header">📱 Live Preview</div>
+    <iframe id="preview"></iframe>
+  </div>
+</div>
+
+<!-- FILE MODAL -->
+<div class="modal" id="fileModal">
+  <div class="modal-box">
+    <h3>Create New File</h3>
+    <input type="text" id="fileName" placeholder="index.html">
+    <p style="font-size:10px;color:#94a3b8;margin-bottom:10px;">Only.html,.css,.js allowed</p>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('fileModal')">Cancel</button>
+      <button class="btn-create" onclick="createFile()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECT MODAL -->
+<div class="modal" id="projectModal">
+  <div class="modal-box">
+    <h3>Create New Project</h3>
+    <input type="text" id="projectName" placeholder="my-website">
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('projectModal')">Cancel</button>
+      <button class="btn-create" onclick="createProject()">Create</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHALLENGE MODAL - NEW -->
+<div class="modal" id="challengeModal">
+  <div class="modal-box">
+    <h3>🎯 Coding Challenges</h3>
+    <p style="font-size:11px;color:#94a3b8;margin-bottom:15px;">Pick a challenge to practice</p>
+
+    <div class="challenge-card" onclick="loadChallenge('counter')">
+      <h4>1. Click Counter</h4>
+      <p>Create a button that counts clicks. Show count on screen.</p>
+    </div>
+
+    <div class="challenge-card" onclick="loadChallenge('color')">
+      <h4>2. Color Changer</h4>
+      <p>Make a button that changes background color randomly.</p>
+    </div>
+
+    <div class="challenge-card" onclick="loadChallenge('todo')">
+      <h4>3. Todo List</h4>
+      <p>Create input + button to add items to a list.</p>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('challengeModal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged } from './authentication.js';
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+let currentUser = null;
+let files = {};
+let activeFile = null;
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    await loadFiles();
+  } else {
+    alert('Please login first');
+    window.location.href = 'signup.html';
+  }
+});
+
+async function loadFiles(){
+  const userRef = doc(db, 'users', currentUser.uid);
+  const snap = await getDoc(userRef);
+  if(snap.exists() && snap.data().savedCodes){
+    const saved = snap.data().savedCodes;
+    files = saved.length > 0? saved[0] : {};
+    renderFileList();
+    if(files['index.html']){
+      openFile('index.html');
+    }
+  }
+}
+
+window.toggleMenu = () => {
+  document.getElementById('sideMenu').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function renderFileList(){
+  const list = document.getElementById('fileList');
+  let html = '';
+  for(const [name, code] of Object.entries(files)){
+    if(name && code!== undefined){
+      const icon = name.endsWith('.html')?'🌐':name.endsWith('.css')?'🎨':name.endsWith('.js')?'⚡':'📄';
+      const active = name === activeFile?'active':'';
+      html += `<div class="file-item ${active}" onclick="openFile('${name}')">${icon} ${name}</div>`;
+    }
+  }
+  list.innerHTML = html || '<div style="padding:20px;text-align:center;color:#64748b;font-size:12px;">No files yet</div>';
+}
+
+window.newFile = () => document.getElementById('fileModal').classList.add('show');
+window.newProject = () => document.getElementById('projectModal').classList.add('show');
+
+window.createFile = () => {
+  const name = document.getElementById('fileName').value.trim();
+  if(!name) return alert('Enter file name');
+  const valid = ['.html','.css','.js'].some(ext => name.endsWith(ext));
+  if(!valid) return alert('Only.html,.css,.js files allowed!');
+  if(files[name]) return alert('File exists!');
+  files[name] = name.endsWith('.html')?`<!DOCTYPE html><html><head><title>New</title></head><body><h1>Hello</h1></body></html>`:
+                name.endsWith('.css')?`body{margin:0;padding:20px;font-family:Arial}`:
+                `console.log('Hello JS');`;
+  document.getElementById('fileName').value = '';
+  closeModal('fileModal');
+  renderFileList();
+  openFile(name);
+}
+
+window.createProject = () => {
+  const name = document.getElementById('projectName').value.trim();
+  if(!name) return alert('Enter project name');
+  files = {
+    'index.html': `<!DOCTYPE html><html><head><title>${name}</title><link rel="stylesheet" href="style.css"></head><body><h1>Welcome to ${name}</h1><button onclick="sayHi()">Click Me</button><script src="script.js"><\/script></body></html>`,
+    'style.css': `body{font-family:Arial;margin:0;padding:40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;text-align:center;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center}h1{font-size:40px;margin-bottom:20px}button{padding:15px 30px;font-size:18px;border:none;border-radius:10px;background:#ff6b35;color:white;cursor:pointer;font-weight:bold}`,
+    'script.js': `function sayHi(){alert('Welcome to Code Academy! 🎉');document.querySelector('h1').style.color = '#fbbf24'}`
+  };
+  document.getElementById('projectName').value = '';
+  closeModal('projectModal');
+  renderFileList();
+  openFile('index.html');
+}
+
+window.openFile = (name) => {
+  activeFile = name;
+  document.getElementById('currentFile').textContent = name;
+  document.getElementById('editor').value = files[name] || '';
+  renderFileList();
+  toggleMenu();
+  if(name.endsWith('.html')){
+    setTimeout(runCode, 300);
+  }
+}
+
+document.getElementById('editor').addEventListener('input', () => {
+  if(activeFile){
+    files[activeFile] = document.getElementById('editor').value;
+  }
+});
+
+window.runCode = () => {
+  let html = files['index.html'] || '<h1 style="font-family:Arial;text-align:center;margin-top:50px;">Create index.html first from ☰ menu</h1>';
+  let css = files['style.css'] || '';
+  let js = files['script.js'] || '';
+  const full = html.replace('</body>', `<style>${css}</style><script>${js}<\/script></body>`);
+  const preview = document.getElementById('preview');
+  const doc = preview.contentDocument || preview.contentWindow.document;
+  doc.open();
+  doc.write(full);
+  doc.close();
+}
+
+window.saveToFirebase = async () => {
+  if(!currentUser){
+    alert('Login first');
+    return;
+  }
+  const userRef = doc(db, 'users', currentUser.uid);
+  await updateDoc(userRef, {
+    savedCodes: [files],
+    lastSaved: new Date().toISOString()
+  });
+  const btn = event.target;
+  const original = btn.textContent;
+  btn.textContent = '✅ SAVED';
+  setTimeout(() => btn.textContent = original, 2000);
+}
+
+window.closeModal = (id) => {
+  document.getElementById(id).classList.remove('show');
+}
+
+// CHALLENGE FUNCTIONS - NEW
+window.openChallenge = () => {
+  document.getElementById('challengeModal').classList.add('show');
+}
+
+window.loadChallenge = (type) => {
+  const challenges = {
+    counter: {
+      html: `<!DOCTYPE html>
+<html>
+<head><title>Counter</title></head>
+<body>
+  <h1>Click Count: <span id="count">0</span></h1>
+  <button onclick="add()">Click Me!</button>
+  <script src="script.js"><\/script>
+</body>
+</html>`,
+      css: `body{
+  font-family:Arial;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  background:#1e293b;
+  color:white;
+}
+h1{font-size:50px;margin-bottom:30px}
+button{
+  padding:20px 40px;
+  font-size:24px;
+  border:none;
+  border-radius:12px;
+  background:#ff6b35;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+}`,
+      js: `let count = 0;
+function add(){
+  count++;
+  document.getElementById('count').textContent = count;
+}`
+    },
+    color: {
+      html: `<!DOCTYPE html>
+<html>
+<head><title>Color Changer</title></head>
+<body>
+  <h1>Click to change color!</h1>
+  <button onclick="changeColor()">Change Color</button>
+  <script src="script.js"><\/script>
+</body>
+</html>`,
+      css: `body{
+  font-family:Arial;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  min-height:100vh;
+  transition:0.5s;
+}
+h1{margin-bottom:30px;font-size:40px}
+button{
+  padding:20px 40px;
+  font-size:20px;
+  border:none;
+  border-radius:10px;
+  background:#38bdf8;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+}`,
+      js: `function changeColor(){
+  const colors = ['#ff6b35','#38bdf8','#10b981','#f59e0b','#ec4899'];
+  const random = colors[Math.floor(Math.random()*colors.length)];
+  document.body.style.background = random;
+}`
+    },
+    todo: {
+      html: `<!DOCTYPE html>
+<html>
+<head><title>Todo List</title></head>
+<body>
+  <h1>My Todo List</h1>
+  <input type="text" id="task" placeholder="Enter task...">
+  <button onclick="addTask()">Add</button>
+  <ul id="list"></ul>
+  <script src="script.js"><\/script>
+</body>
+</html>`,
+      css: `body{
+  font-family:Arial;
+  padding:40px;
+  background:#0f172a;
+  color:white;
+  max-width:500px;
+  margin:0 auto;
+}
+h1{text-align:center;margin-bottom:30px}
+input{
+  padding:12px;
+  width:70%;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+}
+button{
+  padding:12px 20px;
+  border:none;
+  border-radius:6px;
+  background:#10b981;
+  color:white;
+  cursor:pointer;
+  font-weight:bold;
+  margin-left:5px;
+}
+ul{margin-top:20px;list-style:none}
+li{
+  background:#1e293b;
+  padding:12px;
+  margin:8px 0;
+  border-radius:6px;
+}`,
+      js: `function addTask(){
+  const input = document.getElementById('task');
+  const task = input.value.trim();
+  if(task){
+    const li = document.createElement('li');
+    li.textContent = task;
+    document.getElementById('list').appendChild(li);
+    input.value = '';
+  }
+}`
+    }
+  };
+
+  files = {
+    'index.html': challenges[type].html,
+    'style.css': challenges[type].css,
+    'script.js': challenges[type].js
+  };
+
+  closeModal('challengeModal');
+  renderFileList();
+  openFile('index.html');
+  alert('Challenge loaded! Now edit code and hit RUN ▶');
+}
+
+document.addEventListener('keydown', (e) => {
+  if(e.ctrlKey && e.key === 'Enter'){
+    e.preventDefault();
+    runCode();
+  }
+});
+</script>
+
+</body>
+</html>

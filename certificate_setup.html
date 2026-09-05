@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Certificate Setup | Code Academy</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#020617;
+color:white;
+min-height:100vh;
+padding-bottom:40px;
+}
+
+/* TOP BAR */
+.topbar{
+background:#0f172a;
+padding:15px 20px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logoBox{display:flex;align-items:center;gap:12px;}
+.logoBox img{width:55px;height:55px;border-radius:12px;object-fit:cover;}
+.logoBox h2{color:#38bdf8;font-size:20px;}
+.logoBox p{color:#94a3b8;font-size:12px;}
+
+/* CONTAINER */
+.container{padding:20px;max-width:900px;margin:auto;}
+.container h1{font-size:28px;margin-bottom:8px;color:#38bdf8;}
+.sub{color:#94a3b8;font-size:14px;margin-bottom:25px;}
+
+/* CARD */
+.card{
+background:#0f172a;
+padding:20px;
+border-radius:22px;
+margin-bottom:20px;
+border:1px solid rgba(255,255,255,0.05);
+box-shadow:0 10px 30px rgba(0,0,0,0.35);
+}
+.card h3{margin-bottom:15px;font-size:18px;color:#38bdf8;}
+
+/* PHOTO */
+.photoArea{display:flex;justify-content:center;margin-bottom:20px;}
+.photoArea img{
+width:140px;
+height:140px;
+border-radius:50%;
+object-fit:cover;
+border:4px solid #38bdf8;
+box-shadow:0 0 25px rgba(56,189,248,0.4);
+}
+.photoButtons{display:flex;gap:10px;flex-wrap:wrap;}
+.photoButtons button{
+flex:1;
+padding:12px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+background:#1e293b;
+color:white;
+font-size:14px;
+transition:0.3s;
+}
+.photoButtons button:hover{background:#38bdf8;}
+
+/* SIGNATURE PAD */
+#signaturePad{
+width:100%;
+height:250px;
+background:white;
+border-radius:15px;
+border:3px dashed #38bdf8;
+touch-action:none;
+display:block;
+}
+.signatureActions{margin-top:12px;}
+.signatureActions button{
+background:#ef4444;
+border:none;
+padding:10px 15px;
+color:white;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* DETAILS */
+.detailRow{display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.08);}
+.detailRow span:first-child{color:#94a3b8;}
+.detailRow span:last-child{font-weight:bold;}
+
+/* CONTINUE BUTTON */
+#continueBtn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:18px;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+background:#38bdf8;
+color:white;
+transition:0.3s;
+}
+#continueBtn:hover{transform:translateY(-2px);}
+#continueBtn:disabled{background:#334155;cursor:not-allowed;transform:none;}
+
+/* SUCCESS STATE */
+.ready{box-shadow:0 0 20px rgba(34,197,94,0.5);border:2px solid #22c55e;}
+
+@media(max-width:768px){
+.container h1{font-size:24px;}
+.photoButtons{flex-direction:column;}
+.photoButtons button{width:100%;}
+.photoArea img{width:120px;height:120px;}
+#signaturePad{height:220px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="topbar">
+<div class="logoBox">
+<img src="logo.png">
+<div>
+<h2>Code Academy</h2>
+<p>Certificate Setup</p>
+</div>
+</div>
+</header>
+
+<!-- MAIN -->
+<div class="container">
+<h1>Prepare Your Certificate</h1>
+<p class="sub">Before generating your certificate, please verify your information.</p>
+
+<!-- PHOTO SECTION -->
+<div class="card">
+<h3>Profile Photo</h3>
+<div class="photoArea">
+<img id="previewPhoto" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+</div>
+<div class="photoButtons">
+<button id="useCurrentBtn"><i class="fa fa-user"></i> Use Current Photo</button>
+<button id="uploadBtn"><i class="fa fa-image"></i> Upload Photo</button>
+<button id="cameraBtn"><i class="fa fa-camera"></i> Take Picture</button>
+</div>
+<input type="file" id="galleryInput" accept="image/*" hidden>
+<input type="file" id="cameraInput" accept="image/*" capture="environment" hidden>
+</div>
+
+<!-- SIGNATURE SECTION -->
+<div class="card">
+<h3>Draw Your Signature</h3>
+<p>Use your finger to sign below.</p>
+<canvas id="signaturePad"></canvas>
+<div class="signatureActions">
+<button id="clearSignature">Clear Signature</button>
+</div>
+</div>
+
+<!-- COURSE INFO -->
+<div class="card">
+<h3>Certificate Details</h3>
+<div class="detailRow">
+<span>Course:</span>
+<span id="courseName">Loading...</span>
+</div>
+<div class="detailRow">
+<span>Student:</span>
+<span id="studentName">Loading...</span>
+</div>
+<div class="detailRow">
+<span>Date:</span>
+<span id="currentDate">Loading...</span>
+</div>
+</div>
+
+<!-- CONTINUE -->
+<button id="continueBtn" disabled>Continue To Certificate</button>
+</div>
+
+<script type="module">
+// IMPORT FROM YOUR authentication.js - NO NEW FIREBASE CONFIG
+import { auth, getUserProfile, onAuthStateChanged } from './authentication.js';
+
+console.log("CERTIFICATE SETUP LOADED");
+
+// ===================== ELEMENTS =====================
+const previewPhoto = document.getElementById("previewPhoto");
+const useCurrentBtn = document.getElementById("useCurrentBtn");
+const uploadBtn = document.getElementById("uploadBtn");
+const cameraBtn = document.getElementById("cameraBtn");
+const galleryInput = document.getElementById("galleryInput");
+const cameraInput = document.getElementById("cameraInput");
+const canvas = document.getElementById("signaturePad");
+const clearSignature = document.getElementById("clearSignature");
+const continueBtn = document.getElementById("continueBtn");
+const studentName = document.getElementById("studentName");
+const currentDate = document.getElementById("currentDate");
+const courseName = document.getElementById("courseName");
+
+// ===================== STATE =====================
+let selectedPhoto = "";
+let signatureData = "";
+let isSigned = false;
+let currentUser = null;
+let currentCourseId = "html";
+
+// Get course from URL: certificate_setup.html?course=html
+const urlParams = new URLSearchParams(window.location.search);
+currentCourseId = urlParams.get('course') || 'html';
+
+const courseNames = {
+html: "HTML Developer",
+css: "CSS Developer",
+javascript: "JavaScript Developer",
+python: "Python Developer",
+react: "React Developer"
+};
+
+courseName.textContent = courseNames[currentCourseId] || "Course";
+
+// ===================== LOAD USER FROM authentication.js =====================
+onAuthStateChanged(auth, async (user) => {
+if(user){
+currentUser = user;
+const userData = await getUserProfile(user.uid);
+studentName.textContent = userData?.displayName || user.displayName || "Student";
+
+if(user.photoURL){
+previewPhoto.src = user.photoURL;
+selectedPhoto = user.photoURL;
+}
+}else{
+window.location.href = "signup.html";
+}
+currentDate.textContent = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+checkReadyState();
+});
+
+// ===================== USE CURRENT PHOTO =====================
+useCurrentBtn.addEventListener("click", () => {
+if(currentUser?.photoURL){
+previewPhoto.src = currentUser.photoURL;
+selectedPhoto = currentUser.photoURL;
+checkReadyState();
+}else{
+alert("No photo in your profile. Upload one first.");
+}
+});
+
+// ===================== UPLOAD PHOTO =====================
+uploadBtn.addEventListener("click", () => galleryInput.click());
+galleryInput.addEventListener("change", (e) => {
+const file = e.target.files[0];
+if(!file) return;
+const reader = new FileReader();
+reader.onload = () => {
+previewPhoto.src = reader.result;
+selectedPhoto = reader.result;
+checkReadyState();
+};
+reader.readAsDataURL(file);
+});
+
+// ===================== CAMERA PHOTO =====================
+cameraBtn.addEventListener("click", () => cameraInput.click());
+cameraInput.addEventListener("change", (e) => {
+const file = e.target.files[0];
+if(!file) return;
+const reader = new FileReader();
+reader.onload = () => {
+previewPhoto.src = reader.result;
+selectedPhoto = reader.result;
+checkReadyState();
+};
+reader.readAsDataURL(file);
+});
+
+// ===================== SIGNATURE PAD =====================
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas(){
+canvas.width = canvas.clientWidth;
+canvas.height = canvas.clientHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+let drawing = false;
+
+function getPos(e){
+const rect = canvas.getBoundingClientRect();
+if(e.touches){
+return {x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top};
+}
+return {x: e.clientX - rect.left, y: e.clientY - rect.top};
+}
+
+function startDraw(e){
+drawing = true;
+const pos = getPos(e);
+ctx.beginPath();
+ctx.moveTo(pos.x, pos.y);
+}
+
+function draw(e){
+if(!drawing) return;
+e.preventDefault();
+const pos = getPos(e);
+ctx.lineWidth = 3;
+ctx.lineCap = "round";
+ctx.strokeStyle = "#000";
+ctx.lineTo(pos.x, pos.y);
+ctx.stroke();
+}
+
+function stopDraw(){
+if(!drawing) return;
+drawing = false;
+signatureData = canvas.toDataURL("image/png");
+isSigned = true;
+checkReadyState();
+}
+
+canvas.addEventListener("mousedown", startDraw);
+canvas.addEventListener("mousemove", draw);
+canvas.addEventListener("mouseup", stopDraw);
+canvas.addEventListener("mouseleave", stopDraw);
+canvas.addEventListener("touchstart", startDraw);
+canvas.addEventListener("touchmove", draw);
+canvas.addEventListener("touchend", stopDraw);
+
+// ===================== CLEAR SIGNATURE =====================
+clearSignature.addEventListener("click", () => {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+signatureData = "";
+isSigned = false;
+checkReadyState();
+});
+
+// ===================== READY CHECK =====================
+function checkReadyState(){
+if(selectedPhoto && isSigned){
+continueBtn.disabled = false;
+continueBtn.classList.add("ready");
+}else{
+continueBtn.disabled = true;
+continueBtn.classList.remove("ready");
+}
+}
+
+// ===================== CONTINUE - Save to sessionStorage =====================
+continueBtn.addEventListener("click", () => {
+if(!currentUser) return;
+
+const data = {
+photo: selectedPhoto,
+signature: signatureData,
+name: studentName.textContent,
+date: currentDate.textContent,
+courseId: currentCourseId,
+course: courseName.textContent,
+uid: currentUser.uid
+};
+
+// FIX: Use sessionStorage like certificate.html expects
+sessionStorage.setItem("certificateCourse", currentCourseId);
+sessionStorage.setItem("certificateUser", JSON.stringify(data));
+
+// Redirect to certificate viewer
+window.location.href = "certificate_view.html";
+});
+</script>
+</body>
+</html>

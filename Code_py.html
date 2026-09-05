@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Practice Arena - Level 2</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+min-height:100vh;
+color:white;
+
+background:
+radial-gradient(circle at top left, rgba(0,140,255,.25), transparent 40%),
+radial-gradient(circle at top right, rgba(168,85,247,.18), transparent 45%),
+linear-gradient(135deg,#050816,#0b1220,#0f172a);
+
+padding:20px;
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background-image:
+linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+background-size:60px 60px;
+opacity:0.35;
+pointer-events:none;
+}
+
+/* HEADER */
+.header{
+text-align:center;
+margin-bottom:15px;
+}
+
+.header h1{
+font-size:30px;
+color:#facc15;
+}
+
+.header p{
+font-size:13px;
+color:#cbd5e1;
+}
+
+/* DIFFICULTY */
+.difficulty{
+text-align:center;
+margin-bottom:15px;
+}
+
+select{
+padding:10px;
+border-radius:10px;
+border:none;
+background:#111827;
+color:white;
+}
+
+/* TIMER */
+.timer{
+text-align:center;
+margin-bottom:10px;
+color:#38bdf8;
+font-size:18px;
+}
+
+/* QUIZ BOX */
+.quiz-box{
+max-width:700px;
+margin:auto;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:18px;
+padding:20px;
+}
+
+/* QUESTION */
+.question{
+font-size:16px;
+margin-bottom:10px;
+line-height:1.5;
+color:#e2e8f0;
+}
+
+/* COPY */
+.copy-btn{
+padding:5px 10px;
+border:none;
+border-radius:8px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+font-size:11px;
+margin-bottom:10px;
+}
+
+/* OPTIONS */
+.option{
+padding:12px;
+margin:8px 0;
+border-radius:12px;
+background:rgba(255,255,255,0.06);
+border:1px solid rgba(255,255,255,0.08);
+cursor:pointer;
+transition:0.2s;
+}
+
+.option:hover{
+transform:scale(1.02);
+background:rgba(255,255,255,0.12);
+}
+
+/* RESULT */
+.result{
+margin-top:10px;
+font-weight:bold;
+}
+
+/* NEXT */
+.next-btn{
+margin-top:15px;
+padding:10px 14px;
+border:none;
+border-radius:10px;
+background:#10b981;
+color:white;
+cursor:pointer;
+display:none;
+}
+
+.next-btn:hover{
+background:#059669;
+}
+
+.back-btn{
+     background: none;
+     width: 10%;
+     height: 2%;
+     margin: 2px;
+     font-size:60px;
+     border: none;
+     color: cyan;
+}
+</style>
+</head>
+
+<body>
+<body>
+    <button class="back-btn" onclick="goBack()">
+            <
+        </button>
+<div class="header">
+     
+<h1>🧪 Python Practice Arena</h1>
+<p>Level 2 System — Difficulty + Python Filtering + Sound</p>
+</div>
+
+<div class="difficulty">
+<select id="level" onchange="loadQuestion()">
+<option value="easy">🟢 Easy</option>
+<option value="medium">🟡 Medium</option>
+<option value="hard">🔴 Hard</option>
+</select>
+</div>
+
+<div class="timer" id="timer">Time: 20s</div>
+
+<div class="quiz-box">
+
+<button class="copy-btn" onclick="copyQuestion()">Copy Question</button>
+
+<div class="question" id="question">Loading...</div>
+
+<div id="options"></div>
+
+<div class="result" id="result"></div>
+
+<button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+
+</div>
+
+<script>
+
+let timeLeft = 20;
+let timer;
+let correctAnswer = "";
+
+/* SOUND SYSTEM */
+function playSound(type){
+let ctx = new (window.AudioContext || window.webkitAudioContext)();
+let osc = ctx.createOscillator();
+let gain = ctx.createGain();
+
+osc.connect(gain);
+gain.connect(ctx.destination);
+
+if(type === "correct") osc.frequency.value = 700;
+if(type === "wrong") osc.frequency.value = 200;
+if(type === "timeout") osc.frequency.value = 100;
+
+osc.start();
+gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.5);
+osc.stop(ctx.currentTime + 0.5);
+}
+
+/* PYTHON FILTER */
+function isPythonQuestion(text){
+let keywords = ["python","function","variable","class","list","loop","dictionary","def","tuple"];
+text = text.toLowerCase();
+return keywords.some(k => text.includes(k));
+}
+
+/* LOAD QUESTION */
+async function loadQuestion(){
+
+document.getElementById("result").innerText = "";
+document.getElementById("nextBtn").style.display = "none";
+
+timeLeft = 20;
+document.getElementById("timer").innerText = "Time: 20s";
+
+clearInterval(timer);
+timer = setInterval(countDown,1000);
+
+let level = document.getElementById("level").value;
+
+try{
+
+let res = await fetch("https://opentdb.com/api.php?amount=10&category=18&type=multiple");
+let data = await res.json();
+
+let filtered = data.results.filter(q =>
+isPythonQuestion(q.question)
+);
+
+if(filtered.length === 0){
+return useFallback();
+}
+
+let q = filtered[Math.floor(Math.random()*filtered.length)];
+
+let options = [...q.incorrect_answers, q.correct_answer]
+.sort(() => Math.random() - 0.5);
+
+correctAnswer = q.correct_answer;
+
+document.getElementById("question").innerHTML = q.question;
+
+renderOptions(options);
+
+}catch(e){
+useFallback();
+}
+
+}
+
+/* FALLBACK */
+function useFallback(){
+
+let q = {
+question:"What keyword is used to define a function in Python?",
+correct:"def",
+options:["function","def","define","fun"]
+};
+
+correctAnswer = q.correct;
+
+document.getElementById("question").innerText = q.question;
+
+renderOptions(q.options);
+
+}
+function goBack(){
+    window.history.back();
+}
+/* OPTIONS */
+function renderOptions(options){
+
+let box = document.getElementById("options");
+box.innerHTML = "";
+
+options.forEach(opt => {
+let div = document.createElement("div");
+div.className = "option";
+div.innerText = opt;
+
+div.onclick = () => checkAnswer(opt);
+
+box.appendChild(div);
+});
+
+}
+
+/* CHECK */
+function checkAnswer(ans){
+
+let result = document.getElementById("result");
+
+if(ans === correctAnswer){
+result.innerText = "✅ Correct!";
+result.style.color = "#10b981";
+playSound("correct");
+}else{
+result.innerText = "❌ Wrong!";
+result.style.color = "#ef4444";
+playSound("wrong");
+}
+
+document.getElementById("nextBtn").style.display = "block";
+clearInterval(timer);
+
+}
+
+/* TIMER */
+function countDown(){
+
+timeLeft--;
+document.getElementById("timer").innerText = "Time: " + timeLeft + "s";
+
+if(timeLeft <= 0){
+clearInterval(timer);
+document.getElementById("result").innerText = "⏰ Time Up!";
+playSound("timeout");
+document.getElementById("nextBtn").style.display = "block";
+}
+}
+
+/* NEXT */
+function nextQuestion(){
+loadQuestion();
+}
+
+/* COPY */
+function copyQuestion(){
+navigator.clipboard.writeText(document.getElementById("question").innerText);
+alert("Copied!");
+}
+
+/* START */
+loadQuestion();
+
+</script>
+
+</body>
+</html>

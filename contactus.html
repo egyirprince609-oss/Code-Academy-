@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Support Center - Code Academy</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;700&display=swap');
+
+:root{
+    --bg: #050816;
+    --grid: rgba(0,245,255,0.03);
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.1);
+    --text: #e8f4ff;
+    --muted: #8b9dc3;
+    --neon: #4cc9f0;
+    --neon-glow: rgba(76,201,240,0.4);
+    --success: #22c55e;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+    min-height:100vh;
+    background: 
+        repeating-linear-gradient(0deg, var(--grid) 0px, transparent 1px, transparent 40px, var(--grid) 41px),
+        repeating-linear-gradient(90deg, var(--grid) 0px, transparent 1px, transparent 40px, var(--grid) 41px),
+        var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+}
+
+.container{
+    max-width:700px;
+    margin:0 auto;
+    padding:0 18px 60px;
+}
+
+/* APP BAR */
+.app-bar{
+    height:56px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    backdrop-filter:blur(12px);
+    background:rgba(5,8,22,0.92);
+    border-bottom:1px solid rgba(255,255,255,0.04);
+}
+
+.back-btn{
+    padding:8px 14px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:8px;
+    color:var(--neon);
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:'Orbitron', monospace;
+    transition:0.2s;
+}
+
+.back-btn:active{transform:scale(0.95)}
+
+.app-title{
+    font-family:'Orbitron', monospace;
+    font-size:15px;
+    font-weight:900;
+}
+
+/* 1. HEADER SECTION */
+.hero-support{
+    margin-top:24px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    padding:40px 24px;
+    backdrop-filter:blur(15px);
+    text-align:center;
+    box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    animation:fadeIn 0.6s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.hero-icon{
+    font-size:56px;
+    margin-bottom:16px;
+    filter:drop-shadow(0 0 20px var(--neon-glow));
+}
+
+.hero-title{
+    font-family:'Orbitron', monospace;
+    font-size:26px;
+    font-weight:900;
+    margin-bottom:8px;
+    color:var(--neon);
+}
+
+.hero-sub{
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* 2. QUICK CONTACT CARDS */
+.section-title{
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin:32px 0 14px;
+    font-weight:700;
+}
+
+.quick-cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:14px;
+}
+
+.contact-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    padding:20px;
+    backdrop-filter:blur(15px);
+    transition:0.2s;
+}
+
+.contact-card:active{transform:scale(0.98)}
+
+.card-icon{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.card-title{
+    font-size:15px;
+    font-weight:800;
+    margin-bottom:4px;
+    font-family:'Orbitron', monospace;
+}
+
+.card-email{
+    font-size:12px;
+    color:var(--neon);
+    margin-bottom:6px;
+    word-break:break-all;
+}
+
+.card-desc{
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:12px;
+    line-height:1.6;
+}
+
+.card-btn{
+    width:100%;
+    padding:10px;
+    background:linear-gradient(135deg, var(--neon), #3a86ff);
+    border:none;
+    border-radius:12px;
+    color:var(--bg);
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+    font-family:'Inter', sans-serif;
+    transition:0.2s;
+}
+
+.card-btn:active{
+    transform:scale(0.97);
+    box-shadow:0 0 20px var(--neon-glow);
+}
+
+/* 3. MESSAGE FORM */
+.form-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    padding:24px;
+    backdrop-filter:blur(15px);
+}
+
+.form-title{
+    font-size:16px;
+    font-weight:800;
+    margin-bottom:20px;
+    font-family:'Orbitron', monospace;
+    color:var(--neon);
+}
+
+.form-group{
+    margin-bottom:16px;
+}
+
+.form-label{
+    font-size:12px;
+    font-weight:600;
+    margin-bottom:6px;
+    display:block;
+    color:var(--text);
+}
+
+.form-input,
+.form-select,
+.form-textarea{
+    width:100%;
+    padding:12px 14px;
+    background:rgba(0,0,0,0.3);
+    border:1px solid var(--glass-border);
+    border-radius:10px;
+    color:var(--text);
+    font-size:13px;
+    font-family:'Inter', sans-serif;
+    transition:0.2s;
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus{
+    border-color:var(--neon);
+    box-shadow:0 0 15px var(--neon-glow);
+    outline:none;
+}
+
+.form-textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.submit-btn{
+    width:100%;
+    padding:14px;
+    background:linear-gradient(135deg, var(--neon), #3a86ff);
+    border:none;
+    border-radius:12px;
+    color:var(--bg);
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+    font-family:'Orbitron', monospace;
+    margin-top:8px;
+    transition:0.2s;
+}
+
+.submit-btn:active{
+    transform:scale(0.98);
+    box-shadow:0 0 25px var(--neon-glow);
+}
+
+/* 4. FAQ SECTION */
+.faq-item{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:10px;
+    backdrop-filter:blur(10px);
+}
+
+.faq-question{
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:var(--neon);
+}
+
+.faq-answer{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.7;
+}
+
+.msg{
+    position:fixed;
+    top:70px;
+    left:50%;
+    transform:translateX(-50%) translateY(-100px);
+    padding:12px 20px;
+    background:rgba(34,197,94,0.95);
+    color:var(--bg);
+    border-radius:8px;
+    font-size:12px;
+    font-weight:700;
+    z-index:1000;
+    opacity:0;
+    transition:0.4s;
+}
+
+.msg.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+}
+
+@media(max-width:500px){
+    .quick-cards{grid-template-columns:1fr}
+    .hero-title{font-size:22px}
+    .hero-icon{font-size:48px}
+</style>
+</head>
+
+<body>
+
+<div class="msg" id="msg"></div>
+
+<div class="container">
+    <!-- APP BAR -->
+    <div class="app-bar">
+        <button class="back-btn" onclick="history.back()">← Back</button>
+        <div class="app-title">🎧 Support Center</div>
+    </div>
+
+    <!-- 1. HEADER SECTION -->
+    <div class="hero-support">
+        <div class="hero-icon">🎧</div>
+        <div class="hero-title">Code Academy Support</div>
+        <div class="hero-sub">We are here to help you<br>Get help with lessons, login issues, bugs, or account problems</div>
+    </div>
+
+    <!-- 2. QUICK CONTACT CARDS -->
+    <div class="section-title">Quick Contact</div>
+    
+    <div class="quick-cards">
+        <!-- EMAIL CARD -->
+        <div class="contact-card">
+            <div class="card-icon">📧</div>
+            <div class="card-title">Email Support</div>
+            <div class="card-email">support@codeacademy.com</div>
+            <div class="card-desc">Response: 24–48 hours<br>Best for detailed issues</div>
+            <button class="card-btn" onclick="sendEmail()">Send Email</button>
+        </div>
+
+        <!-- WHATSAPP CARD -->
+        <div class="contact-card">
+            <div class="card-icon">💬</div>
+            <div class="card-title">WhatsApp Community</div>
+            <div class="card-desc">Join students, ask questions and get help instantly from the community</div>
+            <button class="card-btn" onclick="joinWhatsApp()">Join WhatsApp Group</button>
+        </div>
+    </div>
+
+    <!-- 3. MESSAGE FORM SECTION -->
+    <div class="section-title">Send Us a Message</div>
+    
+    <div class="form-card">
+        <form id="supportForm">
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-input" id="name" placeholder="Your name" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="email" placeholder="your@email.com" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Issue Type</label>
+                <select class="form-select" id="issueType" required>
+                    <option value="">Select issue type...</option>
+                    <option value="Login Problem">Login Problem</option>
+                    <option value="Lesson Error">Lesson Error</option>
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Account Issue">Account Issue</option>
+                    <option value="Payment Issue">Payment Issue</option>
+                    <option value="General Question">General Question</option>
+                    <option value="Suggestion">Suggestion</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea class="form-textarea" id="message" placeholder="Describe your issue in detail..." required></textarea>
+            </div>
+
+            <button type="submit" class="submit-btn">Send Message</button>
+        </form>
+    </div>
+
+    <!-- 4. FAQ SECTION -->
+    <div class="section-title">Frequently Asked Questions</div>
+    
+    <div class="faq-item">
+        <div class="faq-question">Q1: Why is my lesson not loading?</div>
+        <div class="faq-answer">Try refreshing the page or checking your internet connection. If problem persists, clear browser cache and try again.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q2: How do I earn XP?</div>
+        <div class="faq-answer">XP is earned by completing lessons, quizzes, challenges, and Logic Arena games. Each completed activity adds XP to your account automatically.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q3: How do I join WhatsApp group?</div>
+        <div class="faq-answer">Click the "Join WhatsApp Group" button above. You'll be redirected to our official community group where students help each other.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q4: I forgot my password, what should I do?</div>
+        <div class="faq-answer">Use the "Forgot Password" link on login page. You'll receive a reset link via email. If you don't see it, check spam folder.</div>
+    </div>
+
+    <div class="faq-item">
+        <div class="faq-question">Q5: Can I use Code Academy offline?</div>
+        <div class="faq-answer">Currently Code Academy requires internet connection. Offline mode is coming in future updates. Stay tuned!</div>
+    </div>
+
+</div>
+
+<script>
+// WHATSAPP PLACEHOLDER - REPLACE WITH YOUR ACTUAL LINK
+const whatsappLink = "https://chat.whatsapp.com/FzwfUAK9RcN9aRx9STTIH9";
+
+function sendEmail(){
+    window.location.href = "mailto:support@codeacademy.com?subject=Code Academy Support";
+}
+
+function joinWhatsApp(){
+    if(whatsappLink === "PLACE_WHATSAPP_LINK_HERE"){
+        showMsg("WhatsApp link not configured yet!");
+    } else {
+        window.open(whatsappLink, '_blank');
+    }
+}
+
+// FORM SUBMISSION
+document.getElementById('supportForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const issueType = document.getElementById('issueType').value;
+    const message = document.getElementById('message').value;
+    
+    // Option B: Simple alert - no backend
+    showMsg("Message sent successfully! We'll get back to you soon.");
+    
+    // Reset form
+    this.reset();
+    
+    // Option A: Firebase code - uncomment when you add Firebase
+    /*
+    firebase.database().ref('supportMessages').push({
+        name: name,
+        email: email,
+        issueType: issueType,
+        message: message,
+        timestamp: Date.now()
+    });
+    */
+});
+
+function showMsg(text){
+    const msg = document.getElementById('msg');
+    msg.textContent = text;
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 3000);
+}
+</script>
+
+</body>
+</html>

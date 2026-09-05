@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Quiz Engine</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#020617;
+color:white;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background:#0f172a;
+position:sticky;
+top:0;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#0f172a;
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+}
+
+button{
+width:100%;
+padding:12px;
+margin:8px 0;
+border:none;
+border-radius:10px;
+background:#1e293b;
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+background:#334155;
+}
+
+.exit{
+background:#ef4444;
+padding:10px 15px;
+border-radius:10px;
+border:none;
+cursor:pointer;
+}
+
+.xp{
+color:#38bdf8;
+margin-top:10px;
+}
+
+.pass{color:lime;font-size:20px;}
+.fail{color:red;font-size:20px;}
+
+.progressBar{
+height:8px;
+background:#1e293b;
+border-radius:20px;
+margin-top:10px;
+overflow:hidden;
+}
+
+.progressFill{
+height:100%;
+background:#38bdf8;
+width:0%;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h3>React Quiz</h3>
+<button class="exit" onclick="exitQuiz()">Exit</button>
+</header>
+
+<div class="container">
+<div id="quizBox" class="card">Loading...</div>
+</div>
+
+<script type="module">
+
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+// =========================
+// CONFIG
+// =========================
+const QUIZ_FILE = "./reacts/quiz.json";
+const COURSE = "react";
+
+// =========================
+// STATE
+// =========================
+let quizData = [];
+let quiz = null;
+let index = 0;
+let xp = 0;
+let user = null;
+
+// =========================
+// AUTH CHECK
+// =========================
+onAuthStateChanged(auth, async (u) => {
+
+if(!u){
+window.location.href = "signup.html";
+return;
+}
+
+user = u;
+await loadQuiz();
+
+});
+
+// =========================
+// LOAD QUIZ JSON
+// =========================
+async function loadQuiz(){
+
+const res = await fetch(QUIZ_FILE);
+quizData = await res.json();
+
+quiz = quizData.find(q => q.lessonId === "react_lesson_1");
+
+render();
+
+}
+
+// =========================
+// LOAD USER DATA (FIREBASE)
+// =========================
+async function loadUserData(){
+
+const ref = doc(db,"users",user.uid);
+const snap = await getDoc(ref);
+
+if(snap.exists()){
+xp = snap.data().xp || 0;
+}
+
+}
+
+// =========================
+// RENDER
+// =========================
+function render(){
+
+const box = document.getElementById("quizBox");
+
+if(index >= quiz.questions.length){
+finishQuiz();
+return;
+}
+
+const q = quiz.questions[index];
+
+const progress = (index / quiz.questions.length) * 100;
+
+box.innerHTML = `
+
+<h2>Question ${index + 1}</h2>
+
+<p>${q.question}</p>
+
+${q.options.map(opt => `
+<button onclick="answer('${opt}')">${opt}</button>
+`).join("")}
+
+<div class="xp">XP: ${xp}</div>
+
+<div class="progressBar">
+<div class="progressFill" style="width:${progress}%"></div>
+</div>
+
+`;
+
+}
+
+// =========================
+// ANSWER
+// =========================
+window.answer = async function(opt){
+
+const q = quiz.questions[index];
+
+if(opt === q.answer){
+xp += 5;
+}
+
+index++;
+render();
+
+}
+
+// =========================
+// FINISH QUIZ
+// =========================
+async function finishQuiz(){
+
+const maxXP = quiz.questions.length * 5;
+const passMark = maxXP * 0.6;
+const passed = xp >= passMark;
+
+// SAVE TO FIREBASE
+const ref = doc(db,"users",user.uid);
+
+const snap = await getDoc(ref);
+const data = snap.data();
+
+await updateDoc(ref,{
+
+xp: (data.xp || 0) + xp,
+
+[`certificates.${COURSE}`]: passed
+
+});
+
+document.getElementById("quizBox").innerHTML = `
+
+<h2>Quiz Completed 🎉</h2>
+
+<p>XP Earned: ${xp}</p>
+<p>Pass Mark: ${passMark}</p>
+
+${passed
+? `<div class="pass">🏆 Certificate Unlocked!</div>`
+: `<div class="fail">❌ Try Again</div>`
+}
+
+`;
+
+}
+
+// =========================
+// EXIT SYSTEM
+// =========================
+window.exitQuiz = function(){
+
+if(confirm("You are leaving. Progress may be lost. Continue?")){
+window.location.href = "reactdashboard.html";
+}
+
+};
+
+</script>
+
+</body>
+</html>

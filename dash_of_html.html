@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HTML Dashboard</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* =========================
+RESET
+========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#020617;
+color:white;
+padding-bottom:100px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+header{
+
+background:#0f172a;
+
+padding:15px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+position:sticky;
+
+top:0;
+
+z-index:1000;
+
+border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.logo{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.logo i{
+
+color:#f97316;
+
+font-size:28px;
+
+}
+
+.logo h2{
+
+font-size:18px;
+
+color:#38bdf8;
+
+}
+
+.backBtn{
+
+width:45px;
+
+height:45px;
+
+border:none;
+
+border-radius:12px;
+
+background:#1e293b;
+
+color:white;
+
+cursor:pointer;
+
+}
+
+/* =========================
+HERO
+========================= */
+
+.hero{
+
+padding:20px;
+
+text-align:center;
+
+}
+
+.hero h1{
+
+font-size:28px;
+
+color:#f97316;
+
+margin-bottom:10px;
+
+}
+
+.hero p{
+
+color:#cbd5e1;
+
+line-height:1.7;
+
+}
+
+/* =========================
+STATS
+========================= */
+
+.stats{
+
+padding:15px;
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:12px;
+
+}
+
+.card{
+
+background:#0f172a;
+
+padding:15px;
+
+border-radius:15px;
+
+text-align:center;
+
+}
+
+.card h3{
+
+color:#38bdf8;
+
+margin-bottom:8px;
+
+font-size:14px;
+
+}
+
+.card span{
+
+font-size:24px;
+
+font-weight:bold;
+
+}
+
+/* =========================
+PROGRESS
+========================= */
+
+.progressBox{
+
+padding:15px;
+
+}
+
+.progressContainer{
+
+height:12px;
+
+background:#1e293b;
+
+border-radius:30px;
+
+overflow:hidden;
+
+}
+
+.progressBar{
+
+height:100%;
+
+width:0%;
+
+background:
+linear-gradient(
+90deg,
+#f97316,
+#fb923c
+);
+
+}
+
+/* =========================
+LESSONS
+========================= */
+
+.lessonSection{
+
+padding:15px;
+
+}
+
+.lessonTitle{
+
+margin-bottom:15px;
+
+font-size:18px;
+
+color:#38bdf8;
+
+}
+
+.lessonGrid{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:12px;
+
+}
+
+.lessonCard{
+
+background:#0f172a;
+
+padding:15px;
+
+border-radius:15px;
+
+text-align:center;
+
+transition:.3s;
+
+}
+
+.lessonCard:hover{
+
+transform:translateY(-5px);
+
+}
+
+.lessonNumber{
+
+font-size:20px;
+
+font-weight:bold;
+
+margin-bottom:10px;
+
+color:#f97316;
+
+}
+
+.lessonName{
+
+font-size:13px;
+
+margin-bottom:12px;
+
+color:#cbd5e1;
+
+}
+
+.lessonBtn{
+
+width:100%;
+
+padding:10px;
+
+border:none;
+
+border-radius:10px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+}
+
+.unlocked{
+
+background:#38bdf8;
+
+color:white;
+
+}
+
+.locked{
+
+background:#334155;
+
+color:#94a3b8;
+
+cursor:not-allowed;
+
+}
+
+.completed{
+
+background:#22c55e;
+
+color:white;
+
+}
+
+/* =========================
+FOOTER
+========================= */
+
+footer{
+
+position:fixed;
+
+bottom:0;
+
+left:0;
+
+width:100%;
+
+height:70px;
+
+background:#0f172a;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+footer button{
+
+padding:12px 20px;
+
+border:none;
+
+border-radius:12px;
+
+background:#38bdf8;
+
+color:white;
+
+font-weight:bold;
+
+cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+
+<i class="fab fa-html5"></i>
+
+<h2>HTML Dashboard</h2>
+
+</div>
+
+<button class="backBtn"
+onclick="location.href='courses.html'">
+
+<i class="fa-solid fa-arrow-left"></i>
+
+</button>
+
+</header>
+
+<section class="hero">
+
+<h1>HTML Mastery Course</h1>
+
+<p>
+
+Complete all 15 lessons and unlock
+your HTML Certificate.
+
+</p>
+
+</section>
+
+<section class="stats">
+
+<div class="card">
+
+<h3>XP</h3>
+
+<span id="xpValue">0</span>
+
+</div>
+
+<div class="card">
+
+<h3>Completed</h3>
+
+<span id="completedValue">0/15</span>
+
+</div>
+
+</section>
+
+<section class="progressBox">
+
+<div class="progressContainer">
+
+<div
+id="progressBar"
+class="progressBar">
+
+</div>
+
+</div>
+
+</section>
+
+<section class="lessonSection">
+
+<h2 class="lessonTitle">
+
+HTML Lessons
+
+</h2>
+
+<div
+id="lessonGrid"
+class="lessonGrid">
+
+</div>
+
+</section>
+
+<footer>
+
+<button onclick="startFirstLesson()">
+
+Continue Learning
+
+</button>
+
+</footer>
+
+<script>
+
+/* =========================
+CONFIG
+========================= */
+
+const TOTAL_LESSONS = 15;
+
+/* =========================
+LOAD LESSONS
+========================= */
+
+const lessonGrid =
+document.getElementById("lessonGrid");
+
+for(let i = 1; i <= TOTAL_LESSONS; i++){
+
+const card =
+document.createElement("div");
+
+card.className = "lessonCard";
+
+card.innerHTML = `
+
+<div class="lessonNumber">
+
+Lesson ${i}
+
+</div>
+
+<div class="lessonName">
+
+HTML Lesson ${i}
+
+</div>
+
+<button
+class="lessonBtn ${i === 1 ? "unlocked" : "locked"}"
+${i === 1 ? "" : "disabled"}
+onclick="openLesson(${i})">
+
+${i === 1 ? "Start" : "Locked"}
+
+</button>
+
+`;
+
+lessonGrid.appendChild(card);
+
+}
+
+/* =========================
+OPEN LESSON
+========================= */
+
+function openLesson(number){
+
+location.href =
+`lesson.html?course=html&lesson=${number}`;
+
+}
+
+/* =========================
+CONTINUE
+========================= */
+
+function startFirstLesson(){
+
+openLesson(1);
+
+}
+
+/* =========================
+DEMO DATA
+========================= */
+
+let completed = 0;
+
+let percent =
+(completed / TOTAL_LESSONS) * 100;
+
+document.getElementById("progressBar")
+.style.width = percent + "%";
+
+</script>
+
+</body>
+</html>

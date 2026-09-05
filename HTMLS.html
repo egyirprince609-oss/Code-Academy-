@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Website Structure - Code Academy</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#0f172a,#1e293b,#312e81);
+  color:white;
+  min-height:100vh;
+  padding-bottom:80px;
+}
+
+/* NAVBAR */
+.navbar{
+  width:100%;
+  padding:12px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+
+.navbar h1{
+  font-size:18px;
+  color:#ff6b35;
+}
+
+.back-btn{
+  border:none;
+  padding:10px 14px;
+  border-radius:12px;
+  background:#ef4444;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.back-btn:hover{
+  transform:scale(1.05);
+}
+
+/* CONTAINER */
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+
+.intro{
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:20px;
+  text-align:center;
+}
+
+.intro h2{
+  color:#ff6b35;
+  margin-bottom:10px;
+}
+
+.intro p{
+  color:#ddd;
+  font-size:14px;
+}
+
+/* VISUAL STRUCTURE */
+.structure-visual{
+  background:rgba(0,0,0,0.3);
+  border-radius:15px;
+  padding:20px;
+  margin:20px 0;
+  border:2px solid #38bdf8;
+}
+
+.structure-box{
+  margin:8px 0;
+  padding:12px;
+  border-radius:10px;
+  font-family:monospace;
+  font-size:13px;
+  border-left:4px solid;
+}
+
+.html-tag{ background:rgba(255,99,71,0.2); border-color:#ff6347; }
+.head-tag{ background:rgba(56,189,248,0.2); border-color:#38bdf8; }
+.body-tag{ background:rgba(16,185,129,0.2); border-color:#10b981; }
+.header-tag{ background:rgba(139,92,246,0.2); border-color:#8b5cf6; }
+.nav-tag{ background:rgba(251,191,36,0.2); border-color:#fbbf24; color:#000; }
+.main-tag{ background:rgba(236,72,153,0.2); border-color:#ec4899; }
+.section-tag{ background:rgba(34,197,94,0.2); border-color:#22c55e; }
+.footer-tag{ background:rgba(244,63,94,0.2); border-color:#f43f5e; }
+
+/* CODE BLOCK */
+.code-block{
+  background:#0f1220;
+  padding:15px;
+  border-radius:12px;
+  margin:15px 0;
+  overflow-x:auto;
+  border-left:4px solid #ff6b35;
+}
+
+.code-block pre{
+  color:#4ade80;
+  font-family:monospace;
+  font-size:12px;
+  line-height:1.6;
+}
+
+/* INFO CARD */
+.info-card{
+  background:rgba(255,255,255,0.08);
+  border-radius:15px;
+  padding:18px;
+  margin-bottom:15px;
+  border-left:4px solid #38bdf8;
+}
+
+.info-card h3{
+  color:#38bdf8;
+  margin-bottom:10px;
+  font-size:16px;
+}
+
+.info-card p{
+  color:#ddd;
+  font-size:14px;
+  line-height:1.6;
+  margin-bottom:8px;
+}
+
+/* LIVE PREVIEW */
+.preview-box{
+  background:white;
+  color:#000;
+  border-radius:10px;
+  padding:15px;
+  margin-top:10px;
+}
+
+.preview-header{
+  background:#1e293b;
+  color:white;
+  padding:10px;
+  border-radius:6px;
+  margin-bottom:8px;
+  text-align:center;
+  font-weight:bold;
+}
+
+.preview-nav{
+  background:#334155;
+  color:white;
+  padding:8px;
+  border-radius:6px;
+  margin-bottom:8px;
+  text-align:center;
+}
+
+.preview-main{
+  background:#f1f5f9;
+  padding:15px;
+  border-radius:6px;
+  margin-bottom:8px;
+  min-height:80px;
+}
+
+.preview-footer{
+  background:#1e293b;
+  color:white;
+  padding:10px;
+  border-radius:6px;
+  text-align:center;
+  font-size:12px;
+}
+
+@media(max-width:600px){
+  .container{ padding:15px; }
+  .code-block pre{ font-size:11px; }
+}
+
+/* FOOTER */
+footer{
+  width:100%;
+  background:brown;
+  color:white;
+  text-align:center;
+  padding:12px;
+  position:fixed;
+  bottom:0;
+  font-size:13px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h1>🏗️ Website Structure</h1>
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <div class="intro">
+    <h2>How Real Websites Are Built</h2>
+    <p>Every website you use - YouTube, Facebook, TikTok - uses this exact skeleton structure!</p>
+  </div>
+
+  <!-- VISUAL STRUCTURE -->
+  <div class="structure-visual">
+    <h3 style="color:#38bdf8;margin-bottom:15px;">📦 HTML Document Tree</h3>
+    
+    <div class="structure-box html-tag">
+      &lt;html&gt; ← Root of everything
+      <div style="margin-left:20px;">
+        <div class="structure-box head-tag">
+          &lt;head&gt; ← Invisible info
+          <div style="margin-left:20px;font-size:11px;color:#ddd;">
+            &lt;meta&gt; &lt;title&gt; &lt;link&gt; &lt;style&gt;
+          </div>
+        </div>
+        <div class="structure-box body-tag">
+          &lt;body&gt; ← Everything users see
+          <div style="margin-left:20px;">
+            <div class="structure-box header-tag">&lt;header&gt; ← Top bar/logo</div>
+            <div class="structure-box nav-tag">&lt;nav&gt; ← Menu links</div>
+            <div class="structure-box main-tag">
+              &lt;main&gt; ← Main content
+              <div style="margin-left:20px;">
+                <div class="structure-box section-tag">&lt;section&gt; ← Content block</div>
+                <div class="structure-box section-tag">&lt;section&gt; ← Another block</div>
+              </div>
+            </div>
+            <div class="structure-box footer-tag">&lt;footer&gt; ← Bottom/copyright</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE PREVIEW -->
+  <div class="info-card">
+    <h3>👁️ Live Preview - How it looks</h3>
+    <div class="preview-box">
+      <div class="preview-header">HEADER - Logo + Title</div>
+      <div class="preview-nav">NAV - Home | About | Contact</div>
+      <div class="preview-main">
+        <strong>MAIN CONTENT AREA</strong><br>
+        This is where all your text, images, videos go.<br>
+        Split into sections.
+      </div>
+      <div class="preview-footer">FOOTER - Copyright 2026 | Links</div>
+    </div>
+  </div>
+
+  <!-- FULL CODE TEMPLATE -->
+  <div class="info-card">
+    <h3>💻 Complete Website Skeleton Template</h3>
+    <p>Copy this for EVERY website you build. This is the foundation!</p>
+    
+    <div class="code-block">
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;My Website&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    
+    &lt;!-- HEADER: Top of website --&gt;
+    &lt;header&gt;
+        &lt;h1&gt;My Website Logo&lt;/h1&gt;
+    &lt;/header&gt;
+    
+    &lt;!-- NAVIGATION: Menu --&gt;
+    &lt;nav&gt;
+        &lt;a href="index.html"&gt;Home&lt;/a&gt;
+        &lt;a href="about.html"&gt;About&lt;/a&gt;
+        &lt;a href="contact.html"&gt;Contact&lt;/a&gt;
+    &lt;/nav&gt;
+    
+    &lt;!-- MAIN: All content goes here --&gt;
+    &lt;main&gt;
+        
+        &lt;!-- SECTION 1: Hero/Banner --&gt;
+        &lt;section&gt;
+            &lt;h2&gt;Welcome to My Site&lt;/h2&gt;
+            &lt;p&gt;This is the main banner area&lt;/p&gt;
+        &lt;/section&gt;
+        
+        &lt;!-- SECTION 2: About --&gt;
+        &lt;section&gt;
+            &lt;h2&gt;About Us&lt;/h2&gt;
+            &lt;p&gt;Information about your website&lt;/p&gt;
+        &lt;/section&gt;
+        
+        &lt;!-- SECTION 3: Services/Products --&gt;
+        &lt;section&gt;
+            &lt;h2&gt;Our Services&lt;/h2&gt;
+            &lt;p&gt;What you offer&lt;/p&gt;
+        &lt;/section&gt;
+        
+    &lt;/main&gt;
+    
+    &lt;!-- FOOTER: Bottom of website --&gt;
+    &lt;footer&gt;
+        &lt;p&gt;Copyright © 2026 My Website&lt;/p&gt;
+        &lt;p&gt;All rights reserved&lt;/p&gt;
+    &lt;/footer&gt;
+    
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="info-card">
+    <h3>🔍 Breakdown - What Each Part Does</h3>
+    
+    <p><strong style="color:#ff6347;">1. &lt;!DOCTYPE html&gt;</strong><br>
+    Tells browser: "This is HTML5". Always first line.</p>
+    
+    <p><strong style="color:#ff6347;">2. &lt;html&gt;</strong><br>
+    Root container. Everything goes inside this.</p>
+    
+    <p><strong style="color:#38bdf8;">3. &lt;head&gt;</strong><br>
+    Invisible section. Contains title, meta tags, CSS links. Not shown on page.</p>
+    
+    <p><strong style="color:#10b981;">4. &lt;body&gt;</strong><br>
+    Visible section. Everything users see goes here.</p>
+    
+    <p><strong style="color:#8b5cf6;">5. &lt;header&gt;</strong><br>
+    Top section. Logo, website name, search bar.</p>
+    
+    <p><strong style="color:#fbbf24;">6. &lt;nav&gt;</strong><br>
+    Navigation menu. Links to other pages.</p>
+    
+    <p><strong style="color:#ec4899;">7. &lt;main&gt;</strong><br>
+    Main content area. Only ONE main per page.</p>
+    
+    <p><strong style="color:#22c55e;">8. &lt;section&gt;</strong><br>
+    Content blocks. Split your page into sections.</p>
+    
+    <p><strong style="color:#f43f5e;">9. &lt;footer&gt;</strong><br>
+    Bottom section. Copyright, contact info, links.</p>
+  </div>
+
+  <!-- RULES -->
+  <div class="info-card" style="border-left-color:#ff6b35;">
+    <h3>⚡ 5 Golden Rules</h3>
+    <p>1. Always start with &lt;!DOCTYPE html&gt;</p>
+    <p>2. Only ONE &lt;main&gt; tag per page</p>
+    <p>3. &lt;head&gt; = invisible, &lt;body&gt; = visible</p>
+    <p>4. Use semantic tags: header, nav, main, section, footer</p>
+    <p>5. Close every tag you open!</p>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  Copyright © Code Academy - Master Website Structure
+</footer>
+
+<script>
+function goBack(){
+  window.history.back();
+}
+</script>
+
+</body>
+</html>

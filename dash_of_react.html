@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>React Development Dashboard</title>
+
+<style>
+
+/* =========================
+RESET
+========================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+padding-bottom:40px;
+}
+
+/* =========================
+HEADER
+========================= */
+
+header{
+width:100%;
+background:#0f172a;
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid rgba(255,255,255,0.1);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.logo img{
+width:35px;
+height:35px;
+border-radius:50%;
+}
+
+.logo h2{
+font-size:16px;
+color:#06b6d4;
+}
+
+nav{
+display:flex;
+gap:10px;
+}
+
+nav a{
+text-decoration:none;
+color:white;
+font-size:12px;
+}
+
+nav a:hover{
+color:#06b6d4;
+}
+
+/* =========================
+TITLE
+========================= */
+
+.hero{
+padding:20px;
+text-align:center;
+}
+
+.hero h1{
+font-size:26px;
+color:#06b6d4;
+margin-bottom:8px;
+}
+
+.hero p{
+font-size:13px;
+color:#cbd5e1;
+}
+
+/* =========================
+LESSON GRID
+========================= */
+
+.lesson-grid{
+padding:15px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+/* CARD */
+
+.lesson-card{
+background:#0f172a;
+padding:15px;
+border-radius:15px;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+.lesson-card:hover{
+transform:translateY(-5px);
+background:#1e293b;
+}
+
+.lesson-card h2{
+font-size:14px;
+color:#06b6d4;
+margin-bottom:6px;
+}
+
+.lesson-card p{
+font-size:11px;
+color:#cbd5e1;
+margin-bottom:10px;
+}
+
+/* PROGRESS */
+
+.progress-box{
+width:100%;
+height:6px;
+background:#334155;
+border-radius:10px;
+overflow:hidden;
+margin-bottom:10px;
+}
+
+.progress{
+height:100%;
+background:#06b6d4;
+border-radius:10px;
+}
+
+/* BUTTON */
+
+.lesson-btn{
+width:100%;
+padding:8px;
+border:none;
+border-radius:10px;
+background:#06b6d4;
+color:black;
+font-size:11px;
+cursor:pointer;
+}
+
+.lesson-btn:hover{
+background:#0891b2;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:20px;
+padding:15px;
+text-align:center;
+font-size:11px;
+color:#94a3b8;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+<img src="logo.png">
+<h2>React Development</h2>
+</div>
+
+<nav>
+<a href="menu.html">Home</a>
+<a href="courses.html">Courses</a>
+<a href="quiz.html">Quiz</a>
+<a href="community.html">Community</a>
+</nav>
+
+</header>
+
+<section class="hero">
+
+<h1>React Development Mastery</h1>
+<p>Learn modern React step-by-step from beginner to advanced level.</p>
+
+</section>
+
+<section class="lesson-grid">
+
+<script>
+for(let i=1;i<=15;i++){
+document.write(`
+<div class="lesson-card">
+<h2>Lesson ${i}</h2>
+<p>React Concept ${i}</p>
+
+<div class="progress-box">
+<div class="progress" style="width:${i*6}%"></div>
+</div>
+
+<button class="lesson-btn" onclick="openLesson(${i})">
+Start Lesson
+</button>
+
+</div>
+`);
+}
+
+function openLesson(num){
+window.location.href = `less.html?course=react&lesson=${num}`;
+}
+</script>
+
+</section>
+
+<footer>
+© 2025 Code Academy - React Development Course
+</footer>
+
+</body>
+</html>

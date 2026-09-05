@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reusable React Components - Build Component Library</title>
+
+<style>
+:root{
+    --bg: #050816;
+    --bg-2: #0b1220;
+    --border: rgba(255,255,255,0.08);
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --text-muted: #94a3b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+
+body{
+    background:radial-gradient(circle at 30% 20%, #0b1220 0%, #050816 50%, #020617 100%);
+    color:var(--text);
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+}
+
+/* ANIMATED GRID - Purple theme for components */
+body::before{
+    content:'';
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-image:
+        linear-gradient(rgba(139,92,246,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,92,246,0.06) 1px, transparent 1px);
+    background-size:70px 70px;
+    animation:gridMove 30s linear infinite;
+    z-index:0;
+}
+
+@keyframes gridMove{
+    0%{transform:translate(0,0)}
+    100%{transform:translate(70px,70px)}
+}
+
+.glow{
+    position:fixed;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+    border-radius:50%;
+    filter:blur(100px);
+    animation:float 20s ease-in-out infinite;
+    z-index:0;
+}
+
+@keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(80px,-80px) scale(1.2)}
+}
+
+/* NAVBAR */
+.navbar{
+    height:72px;
+    background:rgba(11,18,32,0.8);
+    backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 40px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:18px;
+    font-weight:700;
+    background:linear-gradient(135deg,#a78bfa,#8b5cf6);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.btn-back{
+    height:38px;
+    padding:0 18px;
+    background:rgba(239,68,68,0.15);
+    border:1.5px solid rgba(239,68,68,0.3);
+    border-radius:10px;
+    color:#fca5a5;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.btn-back:hover{
+    background:rgba(239,68,68,0.25);
+    transform:translateX(-3px);
+}
+
+/* CONTAINER */
+.container{
+    max-width:1400px;
+    margin:0 auto;
+    padding:40px 40px 140px;
+    position:relative;
+    z-index:1;
+}
+
+/* HEADER */
+.page-title{
+    font-size:44px;
+    font-weight:900;
+    background:linear-gradient(135deg,#c4b5fd 0%,#a78bfa 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-align:center;
+    margin-bottom:12px;
+}
+
+.page-desc{
+    font-size:16px;
+    color:var(--text-2);
+    text-align:center;
+    margin-bottom:60px;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+}
+
+/* COMPONENT CARD */
+.comp-card{
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(20px);
+    border:2px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    position:relative;
+    animation:fadeInUp 0.6s ease backwards;
+}
+
+.comp-card:nth-child(1){animation-delay:0.1s;--comp-color:#8b5cf6;--comp-shadow:rgba(139,92,246,0.4)}
+.comp-card:nth-child(2){animation-delay:0.2s;--comp-color:#38bdf8;--comp-shadow:rgba(56,189,248,0.4)}
+.comp-card:nth-child(3){animation-delay:0.3s;--comp-color:#22c55e;--comp-shadow:rgba(34,197,94,0.4)}
+
+@keyframes fadeInUp{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.comp-card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    background:var(--comp-color);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform 0.4s;
+}
+
+.comp-card:hover::before{
+    transform:scaleX(1);
+}
+
+.comp-card:hover{
+    transform:translateY(-10px);
+    border-color:var(--comp-color);
+    box-shadow:0 25px 50px var(--comp-shadow);
+}
+
+/* CARD CONTENT */
+.card-header{
+    padding:24px 24px 16px;
+}
+
+.card-title{
+    font-size:20px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+/* DEFINITION WITH AI VOICE */
+.definition{
+    margin-top:14px;
+    padding:14px;
+    background:rgba(0,0,0,0.3);
+    border-left:3px solid var(--comp-color);
+    border-radius:8px;
+    font-size:13px;
+    color:var(--text-2);
+    line-height:1.7;
+}
+
+.definition-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:8px;
+}
+
+.definition-header strong{
+    color:var(--comp-color);
+}
+
+.ai-btn{
+    padding:6px 12px;
+    background:var(--comp-color);
+    color:var(--bg);
+    border:none;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.ai-btn:hover{
+    filter:brightness(1.2);
+    transform:scale(1.05);
+}
+
+/* LIVE PREVIEW */
+.preview{
+    padding:28px 24px;
+    min-height:180px;
+    background:rgba(0,0,0,0.3);
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* BUTTON PREVIEW */
+.btn-preview{
+    padding:12px 28px;
+    background:var(--comp-color);
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:14px;
+    transition:0.3s;
+}
+
+.btn-preview:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px var(--comp-shadow);
+}
+
+/* CARD PREVIEW */
+.card-preview{
+    width:280px;
+    background:var(--bg-2);
+    border:2px solid var(--comp-color);
+    border-radius:16px;
+    padding:20px;
+}
+
+.card-preview h3{
+    color:var(--comp-color);
+    margin-bottom:8px;
+    font-size:16px;
+}
+
+/* NAVBAR PREVIEW */
+.nav-preview{
+    width:100%;
+    height:50px;
+    background:var(--bg-2);
+    border:2px solid var(--comp-color);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    font-size:13px;
+}
+
+/* CODE SECTION */
+.code-section{
+    padding:20px 24px;
+}
+
+.code-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:12px;
+}
+
+.code-title{
+    font-size:13px;
+    color:var(--text-muted);
+    font-weight:600;
+}
+
+.copy-btn{
+    padding:6px 14px;
+    background:var(--bg-2);
+    border:1.5px solid var(--border);
+    border-radius:6px;
+    color:var(--text-2);
+    font-size:12px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.copy-btn:hover{
+    background:var(--comp-color);
+    color:var(--bg);
+}
+
+.code-box{
+    background:var(--bg);
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+    font-family:'Fira Code',monospace;
+    font-size:11px;
+    line-height:1.7;
+    overflow-x:auto;
+    max-height:320px;
+    overflow-y:auto;
+}
+
+/* LINE EXPLANATION */
+.line-explanation{
+    padding:20px 24px;
+    background:rgba(0,0,0,0.3);
+    border-top:1px solid var(--border);
+    max-height:350px;
+    overflow-y:auto;
+}
+
+.line-exp-item{
+    margin-bottom:16px;
+    padding:14px;
+    background:rgba(255,255,255,0.03);
+    border-radius:8px;
+    border-left:3px solid var(--comp-color);
+}
+
+.line-exp-item strong{
+    color:var(--comp-color);
+    font-size:12px;
+    display:block;
+    margin-bottom:8px;
+}
+
+.line-exp-item p{
+    font-size:12px;
+    color:var(--text-2);
+    line-height:1.6;
+}
+
+.exp-btn{
+    width:100%;
+    padding:10px;
+    background:var(--comp-color);
+    color:var(--bg);
+    border:none;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:13px;
+    margin-top:12px;
+}
+
+.footer{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    height:54px;
+    background:rgba(11,18,32,0.9);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    color:var(--text-muted);
+}
+
+@media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.container{padding:30px 24px 140px}}
+
+.kw{color:#c792ea}
+.str{color:#c3e88d}
+.fn{color:#82aaff}
+.prop{color:#f78c6c}
+</style>
+</head>
+
+<body>
+<div class="glow"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <button class="btn-back" onclick="history.back()">← Back</button>
+    <div class="logo">🧩 Reusable Components Engine</div>
+    <div></div>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">Build Reusable React Components</h1>
+    <p class="page-desc">Create component library with props, deep code explanations, and AI voice for every definition</p>
+
+    <div class="grid">
+
+        <!-- COMPONENT 1: BUTTON -->
+        <div class="comp-card">
+            <div class="card-header">
+                <div class="card-title">🔘 Button Component</div>
+
+                <div class="definition">
+                    <div class="definition-header">
+                        <strong>What is it?</strong>
+                        <button class="ai-btn" onclick="speak('A Button Component is a reusable React component that accepts props like label, color, and onClick. Props make it dynamic so you can reuse it everywhere with different text and styles')">🔊 AI Voice</button>
+                    </div>
+                    A Button Component is a reusable React component that accepts props. Props make it dynamic - you pass different text, color, and click function. Instead of writing button code 50 times, you write once and reuse everywhere.
+                </div>
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="preview">
+                <button class="btn-preview" onclick="alert('Button clicked!')">Click Me</button>
+            </div>
+
+            <!-- CODE -->
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">Button.jsx - Complete Code</div>
+                    <button class="copy-btn" onclick="copyCode('buttonCode')">Copy Code</button>
+                </div>
+                <div class="code-box" id="buttonCode">import React from 'react';
+
+function Button({ label, color, onClick }) {
+  return (
+    &lt;button
+      onClick={onClick}
+      style={{
+        backgroundColor: color,
+        padding: '12px 24px',
+        borderRadius: '8px',
+        border: 'none',
+        color: 'white',
+        cursor: 'pointer'
+      }}
+    &gt;
+      {label}
+    &lt;/button&gt;
+  );
+}
+
+export default Button;
+
+// USAGE IN APP.JSX
+function App() {
+  return (
+    &lt;div&gt;
+      &lt;Button
+        label="Submit"
+        color="#10b981"
+        onClick={() => alert('Submitted!')}
+      /&gt;
+      &lt;Button
+        label="Delete"
+        color="#ef4444"
+        onClick={() => alert('Deleted!')}
+      /&gt;
+    &lt;/div&gt;
+  );
+}</div>
+                <button class="exp-btn" onclick="explainCode('button')">📝 Explain Every Line + What If Missing</button>
+            </div>
+        </div>
+
+        <!-- COMPONENT 2: CARD -->
+        <div class="comp-card">
+            <div class="card-header">
+                <div class="card-title">🃏 Card Component</div>
+
+                <div class="definition">
+                    <div class="definition-header">
+                        <strong>What is it?</strong>
+                        <button class="ai-btn" onclick="speak('A Card Component is a reusable container component that accepts title, description, and image as props. Children prop allows you to pass any content inside the card, making it extremely flexible')">🔊 AI Voice</button>
+                    </div>
+                    A Card Component is a container that accepts title, description, and image as props. Uses children prop to accept any content inside. You build card structure once, then reuse for products, users, posts, etc with different data.
+                </div>
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="preview">
+                <div class="card-preview">
+                    <h3>Premium Course</h3>
+                    <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">Learn React from scratch to advanced level with real projects</p>
+                    <button class="btn-preview" style="padding:8px 16px;font-size:12px">Enroll Now</button>
+                </div>
+            </div>
+
+            <!-- CODE -->
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">Card.jsx - Complete Code</div>
+                    <button class="copy-btn" onclick="copyCode('cardCode')">Copy Code</button>
+                </div>
+                <div class="code-box" id="cardCode">import React from 'react';
+
+function Card({ title, description, image, children }) {
+  return (
+    &lt;div style={{
+      border: '2px solid #8b5cf6',
+      borderRadius: '16px',
+      padding: '20px',
+      backgroundColor: '#0b1220'
+    }}&gt;
+      {image && &lt;img src={image} alt={title} style={{width: '100%'}} /&gt;}
+      &lt;h3 style={{color: '#a78bfa', marginBottom: '8px'}}&gt;{title}&lt;/h3&gt;
+      &lt;p style={{color: '#cbd5e1', fontSize: '14px'}}&gt;{description}&lt;/p&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default Card;
+
+// USAGE
+&lt;Card
+  title="React Course"
+  description="Learn from scratch"
+  image="/course.jpg"
+&gt;
+  &lt;button&gt;Enroll&lt;/button&gt;
+&lt;/Card&gt;</div>
+                <button class="exp-btn" onclick="explainCode('card')">📝 Explain Every Line + What If Missing</button>
+            </div>
+        </div>
+
+        <!-- COMPONENT 3: NAVBAR -->
+        <div class="comp-card">
+            <div class="card-header">
+                <div class="card-title">🧭 Navbar Component</div>
+
+                <div class="definition">
+                    <div class="definition-header">
+                        <strong>What is it?</strong>
+                        <button class="ai-btn" onclick="speak('A Navbar Component is a reusable navigation bar that accepts logo text and menu items array as props. Using map method, it renders menu items dynamically so you can change menu without touching component code')">🔊 AI Voice</button>
+                    </div>
+                    A Navbar Component accepts logo text and menu items array as props. Uses map() to render menu items dynamically. Change menu by just passing different array - no need to edit component code. True reusability.
+                </div>
+            </div>
+
+            <!-- LIVE PREVIEW -->
+            <div class="preview">
+                <div class="nav-preview">
+                    <span style="color:var(--comp-color);font-weight:700">CodeAcademy</span>
+                    <div style="display:flex;gap:16px">
+                        <span>Home</span>
+                        <span>Courses</span>
+                        <span>About</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CODE -->
+            <div class="code-section">
+                <div class="code-header">
+                    <div class="code-title">Navbar.jsx - Complete Code</div>
+                    <button class="copy-btn" onclick="copyCode('navCode')">Copy Code</button>
+                </div>
+                <div class="code-box" id="navCode">import React from 'react';
+
+function Navbar({ logo, menuItems }) {
+  return (
+    &lt;nav style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '16px 40px',
+      backgroundColor: '#0b1220',
+      borderBottom: '1px solid rgba(255,255,255,0.1)'
+    }}&gt;
+      &lt;h1 style={{color: '#8b5cf6'}}&gt;{logo}&lt;/h1&gt;
+
+      &lt;div style={{display: 'flex', gap: '24px'}}&gt;
+        {menuItems.map((item, index) => (
+          &lt;a
+            key={index}
+            href={item.link}
+            style={{color: '#cbd5e1', textDecoration: 'none'}}
+          &gt;
+            {item.label}
+          &lt;/a&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/nav&gt;
+  );
+}
+
+export default Navbar;
+
+// USAGE
+const menu = [
+  { label: 'Home', link: '/' },
+  { label: 'Courses', link: '/courses' },
+  { label: 'About', link: '/about' }
+];
+
+&lt;Navbar logo="CodeAcademy" menuItems={menu} /&gt;</div>
+                <button class="exp-btn" onclick="explainCode('navbar')">📝 Explain Every Line + What If Missing</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- CODE EXPLANATION MODAL -->
+<div id="expModal" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(5,8,22,0.9);backdrop-filter:blur(16px);display:none;align-items:center;justify-content:center;z-index:1000" onclick="if(event.target.id==='expModal') closeModal()">
+    <div style="width:92%;max-width:900px;max-height:85vh;background:var(--bg-2);border:2px solid var(--border);border-radius:20px;overflow:hidden" onclick="event.stopPropagation()">
+        <div style="height:60px;padding:0 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg)">
+            <div style="font-size:16px;font-weight:700;color:var(--text)" id="modalTitle">Code Explanation</div>
+            <button onclick="closeModal()" style="width:34px;height:34px;background:var(--bg-2);border:1.5px solid var(--border);border-radius:6px;color:var(--text-muted);cursor:pointer;font-size:20px">×</button>
+        </div>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<div class="footer">Reusable Components Engine Pro • Build Component Libraries Like Pros</div>
+
+<script>
+// AI VOICE
+function speak(text){
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        speechSynthesis.speak(utterance);
+    } else {
+        alert('Speech not supported');
+    }
+}
+
+// COPY CODE
+function copyCode(id){
+    const code = document.getElementById(id).innerText;
+    navigator.clipboard.writeText(code);
+    alert('✓ Code copied to clipboard!');
+}
+
+// CODE EXPLANATIONS
+const codeExplanations = {
+    button: {
+        title: 'Button Component - Line by Line Deep Explanation',
+        lines: [
+            {
+                line: 'Line 3: function Button({ label, color, onClick }) {',
+                explanation: 'Destructuring props object to get label, color, onClick. This is ES6 destructuring. Without destructuring you would write props.label, props.color every time. If you remove destructuring, you must access props.label instead of just label.'
+            },
+            {
+                line: 'Line 5: onClick={onClick}',
+                explanation: 'Passes onClick function received as prop to button element. This makes button clickable and parent decides what happens on click. If you remove onClick={onClick}, button becomes non-clickable and cannot trigger any action.'
+            },
+            {
+                line: 'Line 6: style={{ backgroundColor: color }}',
+                explanation: 'Inline style using JSX double curly braces. First {} enters JS, second {} is style object. backgroundColor: color uses color prop passed from parent. If you remove this, button will have default gray browser style instead of custom color.'
+            },
+            {
+                line: 'Line 12: {label}',
+                explanation: 'Displays text inside button using JSX expression. Curly braces tell React this is JavaScript variable, not string. If you write label without {}, button will literally show text "label" instead of "Submit" or "Delete".'
+            },
+            {
+                line: 'Line 19: label="Submit" color="#10b981"',
+                explanation: 'Passing props when using component. label becomes text, color becomes background. This is reusability - same Button component, different props create different buttons. If you forget to pass color prop, button background becomes undefined and transparent.'
+            }
+        ]
+    },
+    card: {
+        title: 'Card Component - Line by Line Deep Explanation',
+        lines: [
+            {
+                line: 'Line 3: function Card({ title, description, image, children }) {',
+                explanation: 'Accepts 4 props including children. children is special prop in React - anything you put between <Card>...</Card> tags becomes children. Without children prop, you cannot pass custom content inside card.'
+            },
+            {
+                line: 'Line 9: {image && <img src={image} />}',
+                explanation: 'Conditional rendering using && operator. Image only renders if image prop exists. This prevents broken image icon when no image passed. If you remove && condition, <img src={undefined}> will show broken image icon.'
+            },
+            {
+                line: 'Line 14: <div>{children}</div>',
+                explanation: 'Renders whatever content parent passed between Card tags. This makes Card flexible - can contain buttons, forms, lists. Without {children}, Card can only show title and description, not custom content.'
+            },
+            {
+                line: 'Line 21: <Card title="React Course">',
+                explanation: 'Using Card component and passing title prop. Component is reusable - same Card structure, different data. If you pass wrong prop name like titile instead of title, card heading will be empty because prop name mismatch.'
+            }
+        ]
+    },
+    navbar: {
+        title: 'Navbar Component - Line by Line Deep Explanation',
+        lines: [
+            {
+                line: 'Line 3: function Navbar({ logo, menuItems }) {',
+                explanation: 'Accepts logo string and menuItems array as props. Array prop allows dynamic menu. Without array prop, you would hardcode menu items and need to edit component every time menu changes.'
+            },
+            {
+                line: 'Line 13: {menuItems.map((item, index) => (',
+                explanation: 'map() method loops through menuItems array and returns JSX for each item. This creates dynamic menu. index is used as key. If you remove map, you must manually write <a> tag for each menu item, losing reusability.'
+            },
+            {
+                line: 'Line 14: key={index}',
+                explanation: 'key prop helps React identify which items changed in list. Must be unique. Without key, React shows warning and list updates become slow and buggy when items reorder.'
+            },
+            {
+                line: 'Line 28: const menu = [{ label: "Home", link: "/" }]',
+                explanation: 'Menu data defined as array of objects. Each object has label and link. Passing this array as prop makes Navbar dynamic. If you change menu array, Navbar updates automatically without editing Navbar component.'
+            }
+        ]
+    }
+};
+
+// OPEN EXPLANATION MODAL
+window.explainCode = function(comp){
+    const data = codeExplanations[comp];
+    document.getElementById('modalTitle').textContent = data.title;
+
+    const explanationsHTML = data.lines.map(item => `
+        <div class="line-exp-item">
+            <strong>${item.line}</strong>
+            <p>${item.explanation}</p>
+        </div>
+    `).join('');
+
+    document.getElementById('modalBody').innerHTML = `
+        <div class="line-explanation">${explanationsHTML}</div>
+    `;
+
+    document.getElementById('expModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+window.closeModal = function(){
+    document.getElementById('expModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+</script>
+
+</body>
+</html>

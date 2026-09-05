@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>HTML Course Dashboard</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
+}
+
+/* =========================
+NAVBAR
+========================= */
+
+.navbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px 20px;
+background:#0f172a;
+border-bottom:1px solid #1e293b;
+position:sticky;
+top:0;
+}
+
+.left{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.backBtn{
+background:#1e293b;
+border:none;
+color:white;
+padding:8px 12px;
+border-radius:10px;
+cursor:pointer;
+}
+
+.backBtn:hover{
+background:#334155;
+}
+
+.logo{
+width:40px;
+height:40px;
+object-fit:cover;
+border-radius:8px;
+}
+
+.title{
+font-size:16px;
+color:#38bdf8;
+font-weight:bold;
+}
+
+.xpBox{
+background:#1e293b;
+padding:8px 12px;
+border-radius:10px;
+font-size:13px;
+}
+
+/* =========================
+CONTAINER
+========================= */
+
+.container{
+padding:20px;
+max-width:1100px;
+margin:auto;
+}
+
+h2{
+margin-top:20px;
+color:#38bdf8;
+}
+
+/* =========================
+GRID
+========================= */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:15px;
+margin-top:20px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card{
+background:#111827;
+padding:15px;
+border-radius:15px;
+border:1px solid #1f2937;
+cursor:pointer;
+transition:0.3s;
+position:relative;
+}
+
+.card:hover{
+transform:translateY(-5px);
+border-color:#38bdf8;
+}
+
+.card h3{
+margin:0;
+color:#38bdf8;
+}
+
+.card p{
+font-size:13px;
+color:#94a3b8;
+margin-top:8px;
+line-height:1.4;
+}
+
+.badge{
+position:absolute;
+top:10px;
+right:10px;
+padding:5px 10px;
+font-size:11px;
+border-radius:20px;
+background:#22c55e;
+}
+
+.locked .badge{
+background:#ef4444;
+}
+
+.locked{
+opacity:0.5;
+cursor:not-allowed;
+}
+
+.progressBar{
+height:6px;
+background:#1e293b;
+border-radius:10px;
+margin-top:10px;
+overflow:hidden;
+}
+
+.progress{
+height:100%;
+width:0%;
+background:#38bdf8;
+transition:0.3s;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<div class="navbar">
+
+<div class="left">
+
+<button class="backBtn" onclick="history.back()">⬅ Back</button>
+
+<img src="logo.png" class="logo">
+
+<div class="title">HTML Course</div>
+
+</div>
+
+<div class="xpBox" id="xpBox">XP: 0</div>
+
+</div>
+
+<!-- =========================
+CONTENT
+========================= -->
+
+<div class="container">
+
+<h2>HTML Mastery Path (15 Lessons)</h2>
+
+<div class="grid" id="lessonGrid"></div>
+
+</div>
+
+<script>
+
+// =========================
+// REAL HTML COURSE DATA
+// =========================
+
+const lessons = [
+{
+id:"lesson_1",
+title:"Introduction to HTML",
+desc:"Learn what HTML is, why it is used, and how websites are structured using HTML elements."
+},
+{
+id:"lesson_2",
+title:"HTML Elements",
+desc:"Understand tags, elements, attributes, and how HTML structure works in real pages."
+},
+{
+id:"lesson_3",
+title:"Text Formatting",
+desc:"Learn headings, paragraphs, bold, italic, and text styling elements in HTML."
+},
+{
+id:"lesson_4",
+title:"Links & Navigation",
+desc:"Create links, anchor tags, and navigation between pages."
+},
+{
+id:"lesson_5",
+title:"Images in HTML",
+desc:"Learn how to insert images, control size, and optimize visuals."
+},
+{
+id:"lesson_6",
+title:"Lists",
+desc:"Ordered and unordered lists for structured content."
+},
+{
+id:"lesson_7",
+title:"Tables",
+desc:"Build structured data tables using HTML."
+},
+{
+id:"lesson_8",
+title:"Forms Basics",
+desc:"Learn input fields, buttons, and user forms."
+},
+{
+id:"lesson_9",
+title:"Form Validation",
+desc:"Add required fields and validation rules."
+},
+{
+id:"lesson_10",
+title:"Semantic HTML",
+desc:"Learn modern HTML structure using header, section, article, footer."
+},
+{
+id:"lesson_11",
+title:"Audio & Video",
+desc:"Embed media like audio and video in web pages."
+},
+{
+id:"lesson_12",
+title:"HTML Layout",
+desc:"Page structure and layout techniques."
+},
+{
+id:"lesson_13",
+title:"Meta Tags",
+desc:"SEO and page metadata basics."
+},
+{
+id:"lesson_14",
+title:"Forms Advanced",
+desc:"Advanced form design and UX improvements."
+},
+{
+id:"lesson_15",
+title:"Final Project",
+desc:"Build a complete HTML website project."
+}
+];
+
+// =========================
+// USER DATA
+// =========================
+
+let user = JSON.parse(localStorage.getItem("html_user")) || {
+xp:0,
+completed:[]
+};
+
+document.getElementById("xpBox").textContent = "XP: " + user.xp;
+
+// =========================
+// UNLOCK SYSTEM
+// =========================
+
+function isUnlocked(index){
+
+if(index === 0) return true;
+
+return user.completed.includes(lessons[index-1].id);
+}
+
+// =========================
+// RENDER DASHBOARD
+// =========================
+
+const grid = document.getElementById("lessonGrid");
+
+function render(){
+
+grid.innerHTML = "";
+
+lessons.forEach((lesson,index)=>{
+
+const unlocked = isUnlocked(index);
+
+const card = document.createElement("div");
+
+card.className = "card " + (!unlocked ? "locked" : "");
+
+card.innerHTML = `
+<h3>${lesson.title}</h3>
+<p>${lesson.desc}</p>
+<div class="badge">${unlocked ? "OPEN" : "LOCKED"}</div>
+<div class="progressBar">
+<div class="progress"></div>
+</div>
+`;
+
+if(unlocked){
+
+card.onclick = () => {
+window.location.href = `lesson.html?lesson=${lesson.id}`;
+};
+
+}
+
+grid.appendChild(card);
+
+});
+
+}
+
+render();
+
+// =========================
+// LIVE XP UPDATE
+// =========================
+
+setInterval(()=>{
+
+const data = JSON.parse(localStorage.getItem("html_user"));
+
+if(data){
+document.getElementById("xpBox").textContent = "XP: " + data.xp;
+}
+
+},2000);
+
+</script>
+
+</body>
+</html>

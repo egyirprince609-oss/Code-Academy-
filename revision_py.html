@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Revision Hub</title>
+
+<style>
+
+/* RESET */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+min-height:100vh;
+color:white;
+
+/* 🌌 premium background */
+background:
+radial-gradient(circle at top left, rgba(0,140,255,.25), transparent 40%),
+radial-gradient(circle at top right, rgba(168,85,247,.18), transparent 45%),
+radial-gradient(circle at bottom, rgba(245,158,11,.10), transparent 50%),
+linear-gradient(135deg,#050816,#0b1220,#0f172a);
+
+padding:20px;
+overflow-x:hidden;
+}
+
+/* grid overlay */
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background-image:
+linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+background-size:60px 60px;
+opacity:0.35;
+pointer-events:none;
+}
+
+/* HEADER */
+.header{
+text-align:center;
+margin-bottom:30px;
+}
+
+.header h1{
+font-size:34px;
+color:#facc15;
+}
+
+.header p{
+font-size:14px;
+color:#cbd5e1;
+margin-top:6px;
+}
+
+/* GRID */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+gap:20px;
+max-width:1100px;
+margin:auto;
+}
+
+/* CARD */
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:18px;
+padding:18px;
+box-shadow:0 10px 30px rgba(0,0,0,0.35);
+transition:0.3s ease;
+position:relative;
+overflow:hidden;
+}
+
+.card:hover{
+transform:translateY(-10px);
+background:rgba(255,255,255,0.08);
+}
+
+/* TITLE */
+.card h2{
+font-size:18px;
+color:#38bdf8;
+margin-bottom:10px;
+}
+
+/* DESCRIPTION (DEEPER NOW) */
+.desc{
+font-size:13px;
+color:#cbd5e1;
+line-height:1.6;
+margin-bottom:12px;
+}
+
+/* KEY POINTS */
+.points{
+margin-left:18px;
+margin-bottom:12px;
+color:#a5f3fc;
+font-size:12px;
+line-height:1.5;
+}
+
+/* CODE BOX */
+.code-box{
+background:#0b1020;
+border:1px solid rgba(255,255,255,0.1);
+border-radius:12px;
+padding:12px;
+font-size:12px;
+color:#d1d5db;
+position:relative;
+overflow:auto;
+}
+
+/* COPY BUTTON */
+.copy-btn{
+position:absolute;
+top:8px;
+right:8px;
+padding:5px 10px;
+font-size:11px;
+border:none;
+border-radius:8px;
+background:#3b82f6;
+color:white;
+cursor:pointer;
+}
+
+.copy-btn:hover{
+background:#2563eb;
+}
+
+/* HEADER SMALL LABEL */
+.tag{
+display:inline-block;
+font-size:10px;
+padding:4px 10px;
+border-radius:20px;
+background:rgba(59,130,246,0.15);
+border:1px solid rgba(59,130,246,0.4);
+color:#93c5fd;
+margin-bottom:10px;
+}
+.back-btn{
+     background: none;
+     width: 10%;
+     height: 2%;
+     margin: 2px;
+     font-size:60px;
+     border: none;
+     color: cyan;
+}
+</style>
+</head>
+
+<body>
+    <button class="back-btn" onclick="goBack()">
+            <
+        </button>
+<div class="header">
+<h1>📌 Python Revision Hub</h1>
+<p>Deeper understanding with simple explanations + code examples</p>
+</div>
+
+<div class="grid">
+
+<!-- CARD 1 -->
+<div class="card">
+
+<div class="tag">Core Concept</div>
+<h2>Variables & Data Types</h2>
+
+<div class="desc">
+Variables are containers used to store data in Python. Every value in Python has a type such as integer, string, float, or boolean. Understanding data types helps you control how your program behaves and processes information.
+</div>
+
+<ul class="points">
+<li>int → whole numbers like 10, 50</li>
+<li>float → decimal numbers like 3.5</li>
+<li>str → text like "Hello"</li>
+<li>bool → True or False conditions</li>
+</ul>
+
+<div class="code-box" id="code1">
+<button class="copy-btn" onclick="copyCode('code1')">Copy</button>
+<pre>
+name = "John"
+age = 20
+height = 5.9
+is_student = True
+
+print(name)
+print(age)
+</pre>
+</div>
+
+</div>
+
+<!-- CARD 2 -->
+<div class="card">
+
+<div class="tag">Control Flow</div>
+<h2>Loops</h2>
+
+<div class="desc">
+Loops allow you to repeat a block of code multiple times without rewriting it. Python provides for-loops for known repetitions and while-loops for condition-based repetition.
+</div>
+
+<ul class="points">
+<li>for loop → used when number of repetitions is known</li>
+<li>while loop → runs until condition becomes false</li>
+<li>helps reduce repeated code and improves efficiency</li>
+</ul>
+
+<div class="code-box" id="code2">
+<button class="copy-btn" onclick="copyCode('code2')">Copy</button>
+<pre>
+for i in range(5):
+    print("Hello")
+
+x = 0
+while x < 5:
+    print(x)
+    x += 1
+</pre>
+</div>
+
+</div>
+
+<!-- CARD 3 -->
+<div class="card">
+
+<div class="tag">Reusable Code</div>
+<h2>Functions</h2>
+
+<div class="desc">
+Functions are reusable blocks of code designed to perform a specific task. They help you avoid repetition, organize your program, and make your code easier to maintain and debug.
+</div>
+
+<ul class="points">
+<li>Defined using the def keyword</li>
+<li>Can accept parameters (inputs)</li>
+<li>Can return results for reuse</li>
+</ul>
+
+<div class="code-box" id="code3">
+<button class="copy-btn" onclick="copyCode('code3')">Copy</button>
+<pre>
+def greet(name):
+    print("Hello", name)
+
+greet("Alice")
+</pre>
+</div>
+
+</div>
+
+<!-- CARD 4 -->
+<div class="card">
+
+<div class="tag">Data Storage</div>
+<h2>Lists</h2>
+
+<div class="desc">
+Lists are used to store multiple values in a single variable. They are ordered, changeable, and allow duplicate values. Lists are one of the most powerful data structures in Python.
+</div>
+
+<ul class="points">
+<li>Stores multiple values in one variable</li>
+<li>Supports indexing (0, 1, 2...)</li>
+<li>Can be modified after creation</li>
+</ul>
+
+<div class="code-box" id="code4">
+<button class="copy-btn" onclick="copyCode('code4')">Copy</button>
+<pre>
+fruits = ["apple", "banana", "mango"]
+
+print(fruits[0])
+fruits.append("orange")
+
+print(fruits)
+</pre>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function copyCode(id){
+const code = document.getElementById(id).innerText;
+navigator.clipboard.writeText(code);
+alert("Code copied successfully!");
+}
+function goBack(){
+    window.history.back();
+}
+</script>
+
+</body>
+</html>

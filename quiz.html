@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Quiz Exam Mode</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:white;
+}
+
+/* =========================
+HEADER
+========================= */
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background:#0f172a;
+border-bottom:1px solid #1e293b;
+}
+
+.logo{
+width:35px;
+height:35px;
+border-radius:8px;
+}
+
+.title{
+color:#38bdf8;
+font-weight:bold;
+}
+
+.btn{
+background:#1e293b;
+color:white;
+border:none;
+padding:8px 12px;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* =========================
+QUIZ AREA
+========================= */
+
+.container{
+max-width:800px;
+margin:auto;
+padding:20px;
+}
+
+.card{
+background:#111827;
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+border:1px solid #1f2937;
+}
+
+.question{
+font-size:18px;
+margin-bottom:15px;
+}
+
+.option{
+display:block;
+padding:12px;
+margin-bottom:10px;
+background:#1e293b;
+border-radius:10px;
+cursor:pointer;
+transition:0.2s;
+}
+
+.option:hover{
+background:#334155;
+}
+
+.option.selected{
+background:#38bdf8;
+color:black;
+}
+
+/* =========================
+RESULT PAGE
+========================= */
+
+#resultPage{
+display:none;
+padding:20px;
+}
+
+canvas{
+max-width:300px;
+margin:auto;
+display:block;
+}
+
+/* =========================
+REVIEW BOX
+========================= */
+
+.review{
+margin-top:20px;
+}
+
+.qBox{
+background:#111827;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+border:1px solid #1f2937;
+}
+
+.correct{
+color:#22c55e;
+}
+
+.wrong{
+color:#ef4444;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+<button class="btn" onclick="history.back()">⬅ Back</button>
+<img src="logo.png" class="logo">
+<div class="title">HTML Exam Quiz</div>
+<div id="timer">0:00</div>
+</header>
+
+<!-- QUIZ -->
+<div class="container" id="quizPage"></div>
+
+<!-- RESULT -->
+<div id="resultPage">
+
+<h2>Quiz Results</h2>
+
+<canvas id="chart"></canvas>
+
+<div id="summary"></div>
+
+<div class="review" id="review"></div>
+
+<button class="btn" onclick="goDashboard()">Back to Dashboard</button>
+
+</div>
+
+<script>
+
+// =========================
+// GET LESSON
+// =========================
+
+const params = new URLSearchParams(window.location.search);
+const lessonId = params.get("lesson");
+
+// =========================
+// STATE
+// =========================
+
+let quizData = [];
+let current = 0;
+let userAnswers = [];
+let startTime = Date.now();
+
+// =========================
+// LOAD QUIZ JSON
+// =========================
+
+async function loadQuiz(){
+
+const res = await fetch(`lessons/html/${lessonId}.json`);
+const data = await res.json();
+
+quizData = data.quiz;
+
+renderQuestion();
+
+startTimer();
+
+}
+
+// =========================
+// RENDER QUESTION
+// =========================
+
+function renderQuestion(){
+
+const q = quizData[current];
+
+const container = document.getElementById("quizPage");
+
+container.innerHTML = `
+<div class="card">
+
+<h3>Question ${current+1} / ${quizData.length}</h3>
+
+<div class="question">${q.question}</div>
+
+<div id="options">
+
+${q.options.map((opt,i)=>`
+<div class="option" onclick="selectOption(${i})">
+${opt}
+</div>
+`).join("")}
+
+</div>
+
+<button class="btn" onclick="next()">Next</button>
+
+</div>
+`;
+
+}
+
+// =========================
+// SELECT OPTION
+// =========================
+
+function selectOption(i){
+
+const opts = document.querySelectorAll(".option");
+
+opts.forEach(o=>o.classList.remove("selected"));
+
+opts[i].classList.add("selected");
+
+userAnswers[current] = i;
+
+}
+
+// =========================
+// NEXT QUESTION
+// =========================
+
+function next(){
+
+if(userAnswers[current] === undefined){
+alert("Select an answer!");
+return;
+}
+
+current++;
+
+if(current < quizData.length){
+renderQuestion();
+}else{
+showResults();
+}
+
+}
+
+// =========================
+// RESULT PAGE
+// =========================
+
+function showResults(){
+
+document.getElementById("quizPage").style.display = "none";
+document.getElementById("resultPage").style.display = "block";
+
+let correct = 0;
+
+let reviewHTML = "";
+
+quizData.forEach((q,i)=>{
+
+const user = userAnswers[i];
+const isCorrect = user === q.answer;
+
+if(isCorrect) correct++;
+
+reviewHTML += `
+<div class="qBox">
+
+<h4>${q.question}</h4>
+
+<p>Your Answer:
+<span class="${isCorrect ? "correct":"wrong"}">
+${q.options[user] || "No answer"}
+</span></p>
+
+<p>Correct Answer:
+<span class="correct">
+${q.options[q.answer]}
+</span></p>
+
+<p><b>Explanation:</b> ${q.explanation || "No explanation provided."}</p>
+
+</div>
+`;
+
+});
+
+const wrong = quizData.length - correct;
+
+renderChart(correct, wrong);
+
+document.getElementById("summary").innerHTML = `
+<h3>You scored ${correct}/${quizData.length}</h3>
+<p>Correct: ${correct}</p>
+<p>Wrong: ${wrong}</p>
+`;
+
+document.getElementById("review").innerHTML = reviewHTML;
+
+saveProgress(correct);
+
+}
+
+// =========================
+// PIE CHART
+// =========================
+
+function renderChart(c,w){
+
+new Chart(document.getElementById("chart"),{
+type:"pie",
+data:{
+labels:["Correct","Wrong"],
+datasets:[{
+data:[c,w],
+backgroundColor:["#22c55e","#ef4444"]
+}]
+}
+});
+
+}
+
+// =========================
+// TIMER
+// =========================
+
+function startTimer(){
+
+setInterval(()=>{
+
+let sec = Math.floor((Date.now() - startTime)/1000);
+
+document.getElementById("timer").textContent =
+Math.floor(sec/60)+":"+ (sec%60).toString().padStart(2,"0");
+
+},1000);
+
+}
+
+// =========================
+// SAVE PROGRESS (LOCAL + READY FOR FIREBASE)
+// =========================
+
+function saveProgress(score){
+
+let user = JSON.parse(localStorage.getItem("html_user")) || {
+xp:0,
+completed:[]
+};
+
+user.xp += score * 10;
+
+user.completed.push(lessonId);
+
+localStorage.setItem("html_user",JSON.stringify(user));
+
+}
+
+// =========================
+// BACK TO DASHBOARD
+// =========================
+
+function goDashboard(){
+
+window.location.href = "html_dashboard.html";
+
+}
+
+// INIT
+loadQuiz();
+
+</script>
+
+</body>
+</html>

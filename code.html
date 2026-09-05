@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Code Review - Real IDE Engine</title>
+<style>
+     
+     
+    *{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+
+:root{
+
+--bg:#050510;
+--card:#0a0a1a;
+--border:#00f5ff;
+--cyan:#00f5ff;
+--pink:#ff00ff;
+--green:#00ff88;
+--red:#ff4444;
+--text:#e0e0ff;
+
+}
+
+
+
+body{
+
+background:var(--bg);
+color:var(--text);
+font-family:'JetBrains Mono',monospace;
+min-height:100vh;
+overflow-x:hidden;
+
+}
+
+
+
+/* BACKGROUND GRID */
+
+#background{
+
+position:fixed;
+inset:0;
+
+background-image:
+
+linear-gradient(
+rgba(0,245,255,.08) 1px,
+transparent 1px
+),
+
+linear-gradient(
+90deg,
+rgba(0,245,255,.08) 1px,
+transparent 1px
+);
+
+
+background-size:40px 40px;
+
+animation:gridMove 30s linear infinite;
+
+z-index:-1;
+
+}
+
+
+
+@keyframes gridMove{
+
+from{
+transform:translate(0,0);
+}
+
+to{
+transform:translate(40px,40px);
+}
+
+}
+
+
+
+
+
+/* NAVBAR */
+
+.navbar{
+
+height:80px;
+
+padding:20px 40px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+
+background:rgba(5,5,16,.85);
+
+backdrop-filter:blur(20px);
+
+border-bottom:2px solid var(--cyan);
+
+
+position:sticky;
+
+top:0;
+
+z-index:10;
+
+}
+
+
+
+
+#backBtn{
+
+
+padding:12px 25px;
+
+border:none;
+
+border-radius:10px;
+
+
+background:
+linear-gradient(
+45deg,
+var(--pink),
+var(--cyan)
+);
+
+
+color:white;
+
+font-family:'Orbitron';
+
+font-weight:700;
+
+cursor:pointer;
+
+
+box-shadow:
+0 0 20px rgba(0,245,255,.4);
+
+
+}
+
+
+
+.logo{
+
+font-family:'Orbitron';
+
+color:var(--cyan);
+
+letter-spacing:2px;
+
+text-shadow:
+0 0 20px var(--cyan);
+
+}
+
+
+
+
+
+/* MAIN */
+
+.container{
+
+max-width:1200px;
+
+margin:auto;
+
+padding:50px 30px;
+
+}
+
+
+
+
+.header{
+
+text-align:center;
+
+margin-bottom:40px;
+
+}
+
+
+
+.header h1{
+
+font-family:'Orbitron';
+
+font-size:45px;
+
+
+background:
+linear-gradient(
+90deg,
+var(--cyan),
+var(--pink)
+);
+
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+
+}
+
+
+
+
+.header p{
+
+margin-top:15px;
+
+color:#8a8ab0;
+
+}
+
+
+
+
+
+/* CARD */
+
+
+.editor-card{
+
+
+background:
+rgba(10,10,26,.9);
+
+
+border:2px solid var(--cyan);
+
+border-radius:20px;
+
+
+padding:30px;
+
+
+box-shadow:
+
+0 0 40px
+rgba(0,245,255,.2);
+
+
+}
+
+
+
+
+.section-title{
+
+font-family:'Orbitron';
+
+color:var(--cyan);
+
+font-size:18px;
+
+margin-bottom:20px;
+
+}
+
+
+
+
+
+/* MONACO AREA */
+
+
+#editor{
+
+
+height:500px;
+
+border-radius:15px;
+
+overflow:hidden;
+
+
+border:2px solid var(--cyan);
+
+
+box-shadow:
+
+0 0 30px
+rgba(0,245,255,.25);
+
+
+margin-bottom:25px;
+
+
+}
+
+
+
+
+
+/* BUTTON */
+
+
+#scanBtn{
+
+
+width:100%;
+
+padding:18px;
+
+
+border:none;
+
+border-radius:12px;
+
+
+background:
+
+linear-gradient(
+90deg,
+var(--cyan),
+var(--pink)
+);
+
+
+color:white;
+
+
+font-family:'Orbitron';
+
+font-size:18px;
+
+font-weight:700;
+
+
+cursor:pointer;
+
+
+transition:.3s;
+
+
+}
+
+
+
+#scanBtn:hover{
+
+transform:scale(1.02);
+
+
+box-shadow:
+
+0 0 40px
+rgba(255,0,255,.5);
+
+}
+
+
+
+
+
+/* RESULTS */
+
+
+.results{
+
+
+margin-top:35px;
+
+}
+
+
+
+.error-box{
+
+
+background:
+rgba(255,68,68,.1);
+
+
+border:2px solid var(--red);
+
+border-radius:15px;
+
+padding:25px;
+
+
+}
+
+
+
+.error-header{
+
+display:flex;
+
+gap:15px;
+
+align-items:center;
+
+margin-bottom:20px;
+
+}
+
+
+
+.error-title{
+
+font-family:'Orbitron';
+
+color:var(--red);
+
+font-size:20px;
+
+}
+
+
+
+
+.error-details{
+
+
+background:#000010;
+
+padding:15px;
+
+border-radius:10px;
+
+margin-top:15px;
+
+
+}
+
+
+
+.error-line{
+
+display:flex;
+
+gap:15px;
+
+margin-bottom:10px;
+
+font-size:14px;
+
+color:#ff9999;
+
+
+}
+
+
+
+.label{
+
+color:var(--cyan);
+
+min-width:80px;
+
+}
+
+
+
+
+
+/* FIX AREA */
+
+
+.fixed-section{
+
+
+margin-top:30px;
+
+background:
+
+rgba(0,255,136,.05);
+
+
+border:2px solid var(--green);
+
+border-radius:15px;
+
+
+padding:25px;
+
+
+}
+
+
+
+
+.fixed-header{
+
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+
+
+.fixed-header h2{
+
+
+font-family:'Orbitron';
+
+color:var(--green);
+
+}
+
+
+
+#copyBtn{
+
+
+padding:10px 20px;
+
+border:none;
+
+border-radius:8px;
+
+
+background:var(--green);
+
+color:#000;
+
+
+font-weight:bold;
+
+cursor:pointer;
+
+
+}
+
+
+
+
+#fixedCode{
+
+
+margin-top:20px;
+
+background:#000010;
+
+
+border-radius:10px;
+
+
+padding:20px;
+
+
+color:var(--green);
+
+
+overflow:auto;
+
+
+font-size:14px;
+
+
+border:1px solid var(--green);
+
+
+}
+
+
+
+
+
+.success-box{
+
+
+text-align:center;
+
+padding:40px;
+
+
+background:
+
+rgba(0,255,136,.1);
+
+
+border:2px solid var(--green);
+
+border-radius:15px;
+
+
+}
+
+
+
+.success-icon{
+
+font-size:55px;
+
+}
+
+
+
+
+
+@media(max-width:768px){
+
+
+.header h1{
+
+font-size:30px;
+
+}
+
+
+.container{
+
+padding:30px 15px;
+
+}
+
+
+#editor{
+
+height:350px;
+
+}
+
+
+
+.navbar{
+
+padding:15px;
+
+}
+
+
+}
+     
+     
+     
+</style>
+
+<!-- =========================
+     FONTS
+========================= -->
+<script src="https://unpkg.com/esprima@4.0.1/dist/esprima.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/eslint4b@7.32.0/dist/eslint4b.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+
+<!-- =========================
+     ESLINT REAL ERROR ENGINE
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/linter@8.57.0/dist/eslint.min.js"></script>
+<!-- =========================
+     ESPRIMA JAVASCRIPT PARSER
+========================= -->
+
+<script src="https://unpkg.com/esprima@4.0.1/dist/esprima.js"></script>
+
+
+
+<!-- =========================
+     MONACO EDITOR (VS CODE CORE)
+========================= -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+
+
+
+<style>
+
+/*
+   CSS WILL COME NEXT
+   I LEFT THIS EMPTY ON PURPOSE
+*/
+
+
+</style>
+
+
+</head>
+
+
+
+<body>
+
+
+<!-- =========================
+     BACKGROUND
+========================= -->
+
+<div id="background"></div>
+
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+
+<button id="backBtn">
+← Back
+</button>
+
+
+<div class="logo">
+REAL IDE ENGINE
+</div>
+
+
+</nav>
+
+
+
+
+
+<!-- =========================
+     MAIN APP
+========================= -->
+
+
+<main class="container">
+
+
+
+<section class="header">
+
+
+<h1>
+AI CODE REVIEW ENGINE
+</h1>
+
+
+<p>
+VS Code style JavaScript error detection
+</p>
+
+
+</section>
+
+
+
+
+
+
+<!-- =========================
+     EDITOR AREA
+========================= -->
+
+
+<section class="editor-card">
+
+
+<div class="section-title">
+
+📝 JavaScript Editor
+
+</div>
+
+
+
+<!-- 
+    MONACO EDITOR WILL LOAD HERE
+-->
+
+<div id="editor">
+
+</div>
+
+
+
+
+<button id="scanBtn">
+
+⚡ RUN FULL CODE CHECK
+
+</button>
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+     RESULTS
+========================= -->
+
+
+<section id="results"
+class="results">
+
+
+
+</section>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+     FIXED CODE
+========================= -->
+
+
+<section id="fixSection"
+class="fixed-section"
+style="display:none;">
+
+
+
+<div class="fixed-header">
+
+
+<h2>
+🔧 VERIFIED FIX VERSION
+</h2>
+
+
+
+<button id="copyBtn">
+
+COPY CODE
+
+</button>
+
+
+
+</div>
+
+
+
+
+<pre id="fixedCode">
+
+</pre>
+
+
+
+
+</section>
+
+
+
+
+
+</main>
+
+
+
+
+
+
+
+
+
+<!-- =========================
+     YOUR ENGINE GOES HERE
+========================= -->
+
+
+<script>
+
+
+/*
+
+THE REAL JAVASCRIPT ENGINE WILL COME NEXT.
+
+It will contain:
+
+- Monaco setup
+- ESLint checker
+- Esprima parser
+- Runtime sandbox
+- Error detector
+- Auto fixer
+- Copy system
+- Error highlighting
+
+
+*/
+ 
+// ======================================
+// REAL IDE ENGINE
+// ======================================
+
+
+let editor = null;
+let ideLinter = null;
+
+
+
+// ======================================
+// WAIT FOR LIBRARIES
+// ======================================
+
+let editor = null;
+let ideLinter = null;
+
+
+// ESLint
+if(typeof Linter !== "undefined"){
+    ideLinter = new Linter();
+}
+
+
+// MONACO LOAD
+require.config({
+
+paths:{
+vs:"https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs"
+}
+
+});
+
+
+require(
+["vs/editor/editor.main"],
+function(){
+
+
+console.log("Monaco loaded successfully");
+
+
+editor = monaco.editor.create(
+
+document.getElementById("editor"),
+
+{
+
+value:
+
+`// JavaScript Test
+
+function hello(){
+
+let name = "Prince";
+
+console.log(name);
+
+}
+
+hello();`,
+
+language:"javascript",
+
+theme:"vs-dark",
+
+automaticLayout:true,
+
+fontSize:14,
+
+minimap:{
+enabled:false
+}
+
+}
+
+);
+
+
+
+editor.onDidChangeModelContent(()=>{
+
+checkCode();
+
+});
+
+
+});
+
+
+
+
+
+// ======================================
+// MONACO EDITOR
+// ======================================
+
+
+function startEditor(){
+
+
+
+editor = monaco.editor.create(
+
+document.getElementById("editor"),
+
+
+{
+
+
+value:
+
+`// Test JavaScript
+
+function hello(){
+
+ let name = "Prince";
+
+ console.log(name);
+
+}
+
+
+hello();`,
+
+
+language:"javascript",
+
+
+theme:"vs-dark",
+
+
+automaticLayout:true,
+
+
+fontSize:14,
+
+
+minimap:{
+enabled:false
+}
+
+
+});
+
+
+
+
+
+editor.onDidChangeModelContent(
+
+function(){
+
+checkCode();
+
+}
+
+);
+
+
+
+}
+
+
+
+
+
+
+
+// ======================================
+// MAIN CHECKER
+// ======================================
+
+
+function checkCode(){
+
+
+if(!editor) return;
+
+
+
+let code = editor.getValue();
+
+
+
+let errors=[];
+
+
+
+// remove old errors
+
+monaco.editor.setModelMarkers(
+
+editor.getModel(),
+
+"ide",
+
+[]
+
+);
+
+
+
+
+
+
+// ==================================
+// SYNTAX CHECK
+// ==================================
+
+
+try{
+
+
+if(typeof esprima !== "undefined"){
+
+
+esprima.parseScript(
+code,
+{
+loc:true
+}
+);
+
+
+}
+
+
+
+}catch(e){
+
+
+errors.push({
+
+type:"Syntax Error",
+
+line:e.lineNumber || 1,
+
+column:e.column || 1,
+
+message:e.message
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+// ==================================
+// ESLINT CHECK
+// ==================================
+
+
+if(ideLinter){
+
+
+try{
+
+
+let results =
+ideLinter.verify(
+
+code,
+
+
+{
+
+
+env:{
+
+browser:true,
+
+es2021:true
+
+},
+
+
+
+rules:{
+
+
+"no-undef":"error",
+
+
+"no-use-before-define":"error",
+
+
+"no-unused-vars":"warning",
+
+
+"semi":
+
+[
+"error",
+"always"
+],
+
+
+"eqeqeq":"error"
+
+
+}
+
+
+
+}
+
+
+);
+
+
+
+
+
+results.forEach(function(e){
+
+
+errors.push({
+
+type:
+e.severity === 2 ?
+"Error":
+"Warning",
+
+
+line:e.line,
+
+column:e.column,
+
+
+message:e.message,
+
+
+rule:e.ruleId
+
+
+});
+
+
+});
+
+
+
+}catch(e){
+
+console.log(
+"ESLint error",
+e
+);
+
+
+}
+
+
+
+}
+
+
+
+
+
+
+
+// ==================================
+// RUNTIME CHECK
+// ==================================
+
+
+try{
+
+
+new Function(code);
+
+
+
+}catch(e){
+
+
+errors.push({
+
+type:"Runtime Error",
+
+line:"?",
+
+column:"?",
+
+message:e.message
+
+
+});
+
+
+}
+
+
+
+
+
+
+showResults(errors);
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================
+// SHOW RESULTS
+// ======================================
+
+
+function showResults(errors){
+
+
+
+let markers=[];
+
+
+
+errors.forEach(function(e){
+
+
+
+markers.push({
+
+startLineNumber:Number(e.line)||1,
+
+startColumn:Number(e.column)||1,
+
+
+endLineNumber:Number(e.line)||1,
+
+
+endColumn:
+(Number(e.column)||1)+5,
+
+
+message:e.message,
+
+
+severity:
+
+e.type==="Warning"
+
+?
+
+monaco.MarkerSeverity.Warning
+
+:
+
+monaco.MarkerSeverity.Error
+
+
+
+});
+
+
+
+});
+
+
+
+
+
+
+monaco.editor.setModelMarkers(
+
+editor.getModel(),
+
+"ide",
+
+markers
+
+);
+
+
+
+
+
+let box =
+document.getElementById("results");
+
+
+
+
+
+if(errors.length===0){
+
+
+box.innerHTML=`
+
+<div class="success-box">
+
+<div class="success-icon">
+✅
+</div>
+
+<h2>
+CODE VERIFIED
+</h2>
+
+<p>
+No errors detected
+</p>
+
+</div>`;
+
+
+document.getElementById(
+"fixSection"
+).style.display="none";
+
+
+return;
+
+}
+
+
+
+
+
+let fixed =
+makeFix(
+editor.getValue(),
+errors
+);
+
+
+
+
+
+box.innerHTML=`
+
+<div class="error-box">
+
+
+<div class="error-title">
+
+❌ ${errors.length} ISSUE FOUND
+
+</div>
+
+
+
+${errors.map(function(e){
+
+
+return `
+
+<div class="error-details">
+
+<div class="error-line">
+
+<span class="label">
+${e.type}
+</span>
+
+${e.message}
+
+</div>
+
+
+<div class="error-line">
+
+Line: ${e.line}
+
+</div>
+
+
+</div>
+
+`;
+
+}).join("")}
+
+
+</div>
+
+`;
+
+
+
+
+document.getElementById(
+"fixSection"
+).style.display="block";
+
+
+
+document.getElementById(
+"fixedCode"
+).textContent=fixed;
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================
+// SAFE FIX
+// ======================================
+
+
+function makeFix(code,errors){
+
+
+let fixed = code;
+
+
+
+errors.forEach(function(e){
+
+
+if(e.rule==="semi"){
+
+
+let lines =
+fixed.split("\n");
+
+
+let i=e.line-1;
+
+
+
+if(lines[i] &&
+!lines[i].trim().endsWith(";")){
+
+
+lines[i]+=";";
+
+
+}
+
+
+fixed =
+lines.join("\n");
+
+
+}
+
+
+
+});
+
+
+
+fixed =
+fixed.replace(
+/<==/g,
+"<="
+);
+
+
+
+return fixed;
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================
+// COPY BUTTON
+// ======================================
+
+
+document
+.getElementById("copyBtn")
+.onclick=function(){
+
+
+
+let code =
+document.getElementById(
+"fixedCode"
+).textContent;
+
+
+
+navigator.clipboard.writeText(code);
+
+
+
+alert(
+"Copied fixed code"
+);
+
+
+
+};
+</script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Courses - Code Academy</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<button id="logoutBtn"></button>
+<style>
+
+/* RESET */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#020617;
+color:white;
+overflow-x:hidden;
+padding-bottom:40px;
+}
+
+/* NAVBAR */
+
+header{
+width:100%;
+background:#0f172a;
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-bottom:1px solid rgba(255,255,255,0.1);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.logo img{
+width:35px;
+height:35px;
+border-radius:50%;
+}
+
+.logo h2{
+font-size:16px;
+color:#38bdf8;
+}
+
+nav{
+display:flex;
+gap:10px;
+}
+
+nav a{
+text-decoration:none;
+color:white;
+font-size:12px;
+transition:0.3s;
+}
+
+nav a:hover{
+color:#38bdf8;
+}
+
+/* HERO */
+
+.hero{
+padding:20px;
+text-align:center;
+}
+
+.hero h1{
+font-size:28px;
+margin-bottom:10px;
+color:#38bdf8;
+}
+
+.hero p{
+font-size:13px;
+color:#cbd5e1;
+line-height:1.6;
+}
+
+/* COURSE SECTION */
+
+.course-section{
+padding:15px;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+/* CARD */
+
+.course-card{
+background:#0f172a;
+padding:12px;
+border-radius:15px;
+transition:0.3s;
+box-shadow:0 0 10px rgba(0,0,0,0.3);
+}
+
+.course-card:hover{
+transform:translateY(-5px);
+background:#1e293b;
+}
+
+/* IMAGE */
+
+.course-card img{
+width:100%;
+height:80px;
+object-fit:contain;
+background:white;
+padding:6px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+/* TITLE */
+
+.course-card h2{
+font-size:14px;
+margin-bottom:8px;
+color:#38bdf8;
+}
+
+/* DESCRIPTION */
+
+.course-card p{
+font-size:11px;
+line-height:1.5;
+color:#cbd5e1;
+margin-bottom:10px;
+}
+
+/* STARS */
+
+.stars{
+color:gold;
+font-size:10px;
+margin-bottom:10px;
+}
+
+/* PROGRESS */
+
+.progress-box{
+width:100%;
+height:6px;
+background:#334155;
+border-radius:10px;
+overflow:hidden;
+margin-bottom:12px;
+}
+
+.progress{
+height:100%;
+border-radius:10px;
+}
+
+.html-progress{
+width:95%;
+background:#f97316;
+}
+
+.css-progress{
+width:80%;
+background:#3b82f6;
+}
+
+.js-progress{
+width:70%;
+background:#facc15;
+}
+
+.python-progress{
+width:88%;
+background:#22c55e;
+}
+
+.react-progress{
+width:60%;
+background:#06b6d4;
+}
+
+/* BUTTON */
+
+.course-btn{
+width:100%;
+padding:8px;
+border:none;
+border-radius:10px;
+background:#38bdf8;
+color:white;
+font-size:11px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.course-btn:hover{
+background:#0284c7;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:20px;
+padding:15px;
+text-align:center;
+font-size:11px;
+color:#94a3b8;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.course-section{
+grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+
+<header>
+
+<div class="logo">
+
+<img src="logo.png">
+
+<h2>Code Academy</h2>
+
+</div>
+
+<nav>
+
+<a href="menu.html">Home</a>
+
+
+
+
+
+<a href="projects.html">Practice</a>
+
+</nav>
+
+</header>
+<!-- USER INFO BAR -->
+<div style="padding:15px;margin:10px;background:#0f172a;border-radius:12px;display:flex;justify-content:space-between;align-items:center">
+  <span id="userEmail" style="font-size:13px;color:#38bdf8">Loading...</span>
+  
+</div>
+
+<!-- STATS -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 15px;margin-bottom:20px">
+  <div style="background:#0f172a;padding:15px;border-radius:12px;text-align:center">
+    <div id="totalXP" style="font-size:24px;font-weight:bold;color:#38bdf8">0</div>
+    <div style="font-size:11px;color:#94a3b8">Total XP</div>
+  </div>
+  <div style="background:#0f172a;padding:15px;border-radius:12px;text-align:center">
+    <div id="completedCount" style="font-size:24px;font-weight:bold;color:#22c55e">0</div>
+    <div style="font-size:11px;color:#94a3b8">Completed</div>
+  </div>
+</div>
+
+<!-- LESSON LIST -->
+<div id="lessonList" style="padding:15px;display:grid;gap:10px"></div>
+<!-- HERO -->
+
+<section class="hero">
+
+<h1>Popular Courses</h1>
+
+<p>
+
+Choose your favorite programming course
+and start building real-world projects today.
+
+</p>
+
+</section>
+
+<!-- COURSE SECTION -->
+
+<section class="course-section">
+
+<!-- HTML -->
+
+<div class="course-card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/732/732212.png">
+
+<h2>HTML Course</h2>
+
+<p>
+
+Build the foundation of modern websites
+using HTML.
+
+</p>
+
+<div class="stars">
+
+★★★★★
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress html-progress"></div>
+
+</div>
+
+<button class="course-btn"
+onclick="openHTML()">
+
+Start Course
+
+</button>
+
+</div>
+
+<!-- CSS -->
+
+<div class="course-card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/732/732190.png">
+
+<h2>CSS Course</h2>
+
+<p>
+
+Design beautiful responsive websites
+using CSS.
+
+</p>
+
+<div class="stars">
+
+★★★★☆
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress css-progress"></div>
+
+</div>
+
+<button class="course-btn"
+onclick="openCSS()">
+
+Start Course
+
+</button>
+
+</div>
+
+<!-- JAVASCRIPT -->
+
+<div class="course-card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png">
+
+<h2>JavaScript Course</h2>
+
+<p>
+
+Learn JavaScript from beginner
+to advanced level.
+
+</p>
+
+<div class="stars">
+
+★★★★☆
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress js-progress"></div>
+
+</div>
+
+<button class="course-btn"
+onclick="openJS()">
+
+Start Course
+
+</button>
+
+</div>
+
+<!-- PYTHON -->
+
+<div class="course-card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png">
+
+<h2>Python Course</h2>
+
+<p>
+
+Master Python for automation,
+AI, and web apps.
+
+</p>
+
+<div class="stars">
+
+★★★★★
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress python-progress"></div>
+
+</div>
+
+<button class="course-btn"
+onclick="openPython()">
+
+Start Course
+
+</button>
+
+</div>
+
+<!-- REACT -->
+
+<div class="course-card">
+
+<img src="https://cdn-icons-png.flaticon.com/512/1126/1126012.png">
+
+<h2>React Development</h2>
+
+<p>
+
+Build modern web applications
+with React JS.
+
+</p>
+
+<div class="stars">
+
+★★★★☆
+
+</div>
+
+<div class="progress-box">
+
+<div class="progress react-progress"></div>
+
+</div>
+
+<button class="course-btn"
+onclick="openReact()">
+
+Start Course
+
+</button>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+© 2025 Code Academy - All Rights Reserved
+
+</footer>
+
+<!-- JAVASCRIPT -->
+
+
+<script>
+ const firebaseConfig = {
+
+apiKey: "AIzaSyAUXvl0-nMMu6Il90iZLpZOrnWkp6Anktc",
+
+authDomain:
+"code-academy-93f1e.firebaseapp.com",
+
+projectId:
+"code-academy-93f1e",
+
+storageBucket:
+"code-academy-93f1e.firebasestorage.app",
+
+messagingSenderId:
+"467127855026",
+
+appId:
+"1:467127855026:web:f28e1bb31e5a52567a66ab",
+
+measurementId:
+"G-0XR8C8Z4NW"
+
+};
+
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script type="module">
+
+
+/* =====================================
+   CODE ACADEMY - DASHBOARD ENGINE
+   CLEAN + SCALABLE + FIREBASE CONNECTED
+===================================== */
+
+console.log("🚀 DASHBOARD ENGINE LOADED");
+
+/* =====================================
+   FIREBASE INIT (COMPAT STYLE)
+===================================== */
+
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+/* =====================================
+   GLOBAL STATE
+===================================== */
+
+let user = null;
+let userData = {};
+
+let currentCourse = "html";
+
+/* =====================================
+   DOM ELEMENTS
+===================================== */
+
+const userEmail = document.getElementById("userEmail");
+const logoutBtn = document.getElementById("logoutBtn");
+
+const totalXP = document.getElementById("totalXP");
+const completedCount = document.getElementById("completedCount");
+
+const lessonList = document.getElementById("lessonList");
+
+/* =====================================
+   GET COURSE FROM URL
+===================================== */
+
+const params = new URLSearchParams(window.location.search);
+
+currentCourse = params.get("course") || "html";
+
+console.log("Current Course:", currentCourse);
+
+/* =====================================
+   AUTH STATE
+===================================== */
+
+auth.onAuthStateChanged(async (u) => {
+    if (!u) {
+        window.location.href = "login.html";
+        return;
+    }
+
+    user = u;
+
+    userEmail.textContent = user.email;
+
+    await loadUserData();
+    renderDashboard();
+});
+
+/* =====================================
+   LOAD USER DATA FROM FIREBASE
+===================================== */
+
+async function loadUserData() {
+    const doc = await db.collection("users").doc(user.uid).get();
+
+    if (doc.exists) {
+        userData = doc.data();
+    } else {
+        userData = {
+            xp: 0,
+            completedLessons: {},
+            unlockedLessons: {}
+        };
+    }
+}
+
+/* =====================================
+   RENDER DASHBOARD
+===================================== */
+
+function renderDashboard() {
+
+    // XP
+    totalXP.textContent = userData.xp || 0;
+
+    // Completed lessons count
+    const completed = userData.completedLessons || {};
+    const completedForCourse = Object.keys(completed).filter(k =>
+        k.startsWith(currentCourse)
+    );
+
+    completedCount.textContent = completedForCourse.length;
+
+    // Render lesson list
+    renderLessons();
+}
+
+/* =====================================
+   LESSON GENERATOR
+   (You can increase later dynamically)
+===================================== */
+
+const LESSON_COUNTS = {
+    html: 10,
+    css: 10,
+    javascript: 10,
+    python: 10,
+    react: 10
+};
+
+/* =====================================
+   RENDER LESSONS
+===================================== */
+
+function renderLessons() {
+
+    lessonList.innerHTML = "";
+
+    const totalLessons = LESSON_COUNTS[currentCourse] || 10;
+
+    const completed = userData.completedLessons || {};
+    const unlocked = userData.unlockedLessons || {};
+
+    for (let i = 1; i <= totalLessons; i++) {
+
+        const lessonKey = `${currentCourse}_lesson_${i}`;
+
+        const isCompleted = completed[lessonKey];
+        const isUnlocked = i === 1 || unlocked[`${currentCourse}_${i}`];
+
+        const card = document.createElement("div");
+        card.className = "lessonCard";
+
+        card.innerHTML = `
+            <h3>Lesson ${i}</h3>
+            <p>${isCompleted ? "Completed" : isUnlocked ? "Ready" : "Locked"}</p>
+            <button ${!isUnlocked ? "disabled" : ""}>
+                ${isCompleted ? "Review" : "Start"}
+            </button>
+        `;
+
+        card.querySelector("button").onclick = () => {
+            if (!isUnlocked) return;
+
+            window.location.href =
+                `lesson.html?course=${currentCourse}&lesson=${i}`;
+        };
+
+        lessonList.appendChild(card);
+    }
+}
+
+/* =====================================
+   LOGOUT
+===================================== */
+
+logoutBtn.addEventListener("click", async () => {
+    await auth.signOut();
+    window.location.href = "login.html";
+});
+
+/* =====================================
+   COURSE SWITCH HELPER
+===================================== */
+
+window.openCourse = function(course) {
+    window.location.href = `course-dashboard.html?course=${course}`;
+};
+
+</script>
+
+</body>
+</html>

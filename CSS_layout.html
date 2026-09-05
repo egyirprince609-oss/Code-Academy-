@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Layouts - Flexbox & Grid</title>
+<style>
+*{
+  margin:0;padding:0;box-sizing:border-box;
+  font-family:'Segoe UI',Arial,sans-serif;
+}
+body{
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  color:white;min-height:100vh;
+}
+.back-btn{
+  padding:10px 20px;background:linear-gradient(45deg,#ef4444,#dc2626);
+  margin-right: 3px;
+  border:none;border-radius:12px;color:white;font-weight:600;cursor:pointer;
+  transition:0.3s;display:flex;align-items:center;gap:8px
+}
+
+.back-btn:hover{transform:translateX(-5px);box-shadow:0 5px 20px rgba(239,68,68,0.4)}
+
+h1{font-size:22px;color:#38bdf8;font-weight:700}
+
+/* NAVBAR */
+.navbar{
+  padding:15px 25px;
+  background:rgba(15,23,42,0.8);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(56,189,248,0.2);
+  gap:3px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+
+/* VOICE BUTTON */
+.voice-btn{
+  padding:10px 20px;
+  background:linear-gradient(45deg,#10b981,#059669);
+  border:none;border-radius:12px;
+  color:white;font-weight:700;cursor:pointer;
+  transition:0.3s;box-shadow:0 4px 15px rgba(16,185,129,0.4);
+}
+.voice-btn:hover{transform:translateY(-2px)}
+.voice-btn:active{transform:scale(0.95)}
+.voice-btn.speaking{
+  background:linear-gradient(45deg,#f59e0b,#d97706);
+  animation:pulse 1s infinite
+}
+@keyframes pulse{
+ 0%,100%{box-shadow:0 4px 15px rgba(245,158,11,0.4)}
+ 50%{box-shadow:0 8px 25px rgba(245,158,11,0.7)}
+}
+
+/* CONTAINER */
+.container{
+  padding:30px 25px;max-width:1100px;margin:0 auto;
+}
+
+h1{
+  font-size:38px;margin-bottom:15px;
+  background:linear-gradient(90deg,#38bdf8,#22d3ee);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.subtitle{
+  color:#94a3b8;font-size:16px;margin-bottom:35px;
+}
+
+/* LAYOUT DEMOS */
+.demo-section{
+  background:rgba(30,41,59,0.6);
+  border-radius:20px;padding:30px;
+  margin-bottom:30px;
+  border:1px solid rgba(56,189,248,0.2);
+}
+
+.demo-section h2{
+  color:#38bdf8;margin-bottom:15px;font-size:24px;
+}
+
+.demo-section p{
+  color:#cbd5e1;margin-bottom:20px;line-height:1.6;
+}
+
+/* FLEXBOX DEMO */
+.flex-demo{
+  display:flex;gap:15px;margin-top:20px;
+}
+.flex-item{
+  flex:1;background:linear-gradient(135deg,#3b82f6,#2563eb);
+  padding:40px;text-align:center;border-radius:12px;
+  font-weight:700;font-size:18px;
+  transition:0.3s
+}
+.flex-item:hover{
+  transform:translateY(-5px);
+  box-shadow:0 10px 25px rgba(59,130,246,0.5)
+}
+
+/* GRID DEMO */
+.grid-demo{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:15px;margin-top:20px;
+}
+.grid-item{
+  background:linear-gradient(135deg,#8b5cf6,#7c3aed);
+  padding:40px;text-align:center;border-radius:12px;
+  font-weight:700;font-size:18px;
+  transition:0.3s
+}
+.grid-item:hover{
+  transform:scale(1.05);
+  box-shadow:0 10px 25px rgba(139,92,246,0.5)
+}
+
+/* CODE BOX */
+.code-box{
+  background:#0f172a;border-radius:12px;
+  padding:20px;margin-top:20px;
+  border:1px solid rgba(56,189,248,0.2);
+  position:relative;
+}
+
+.copy-btn{
+  position:absolute;top:10px;right:10px;
+  padding:6px 12px;background:rgba(56,189,248,0.2);
+  border:1px solid #38bdf8;border-radius:6px;
+  color:#38bdf8;font-size:12px;cursor:pointer;
+  transition:0.3s
+}
+.copy-btn:hover{
+  background:#38bdf8;color:#0f172a
+}
+
+pre{
+  color:#e2e8f0;font-family:'Courier New',monospace;
+  font-size:13px;line-height:1.6;overflow-x:auto;
+}
+
+/* TIP BOX */
+.tip{
+  background:rgba(251,191,36,0.1);
+  border-left:4px solid #fbbf24;
+  padding:15px 20px;border-radius:8px;
+  margin-top:20px;color:#fde047;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  h1{font-size:28px}
+  .flex-demo{flex-direction:column}
+  .container{padding:20px 15px}
+ #me{
+      margin: 5px;
+ }
+</style>
+</head>
+<body>
+
+<div class="navbar">
+     <button class="back-btn" onclick="history.back()">Back</button>
+  <h3 id="me">Code Academy</h3>
+  <button class="voice-btn" id="voiceBtn" onclick="speakPage()">🔊 Hear This Page</button>
+</div>
+
+<div class="container">
+  <h1>Modern CSS Layouts</h1>
+  <p class="subtitle">Master Flexbox and Grid - The 2 layout systems every developer must know</p>
+
+  <!-- SECTION 1: FLEXBOX -->
+  <div class="demo-section">
+    <h2>1. Flexbox - 1 Dimensional Layout</h2>
+    <p>Flexbox is perfect for arranging items in a row OR column. Use it for navbars, button groups, and centering content.</p>
+    
+    <div class="flex-demo">
+      <div class="flex-item">Box 1</div>
+      <div class="flex-item">Box 2</div>
+      <div class="flex-item">Box 3</div>
+    </div>
+
+    <div class="code-box">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <pre>.container {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+.item {
+  flex: 1; /* Equal width */
+  padding: 40px;
+}</pre>
+    </div>
+
+    <div class="tip">
+      💡 <strong>Pro Tip:</strong> Use <code>justify-content: center</code> to center items horizontally, <code>align-items: center</code> to center vertically.
+    </div>
+  </div>
+
+  <!-- SECTION 2: GRID -->
+  <div class="demo-section">
+    <h2>2. CSS Grid - 2 Dimensional Layout</h2>
+    <p>Grid is for complex layouts - rows AND columns at the same time. Perfect for dashboards, galleries, and page layouts.</p>
+    
+    <div class="grid-demo">
+      <div class="grid-item">1</div>
+      <div class="grid-item">2</div>
+      <div class="grid-item">3</div>
+      <div class="grid-item">4</div>
+      <div class="grid-item">5</div>
+      <div class="grid-item">6</div>
+    </div>
+
+    <div class="code-box">
+      <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+      <pre>.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.item {
+  padding: 40px;
+}</pre>
+    </div>
+
+    <div class="tip">
+      💡 <strong>Pro Tip:</strong> <code>auto-fit + minmax()</code> makes grid automatically responsive. No media queries needed!
+    </div>
+  </div>
+
+  <!-- SECTION 3: WHEN TO USE WHAT -->
+  <div class="demo-section">
+    <h2>3. Flexbox vs Grid - When to Use What?</h2>
+    <div class="code-box">
+      <pre><strong>Use FLEXBOX when:</strong>
+• 1 row OR 1 column
+• Centering content
+• Navbars, buttons
+• Distributing space
+
+<strong>Use GRID when:</strong>
+• Rows AND columns
+• Complex page layouts
+• Galleries, dashboards
+• Overlapping elements
+
+<strong>PRO SECRET:</strong> Use them together!
+Grid for page layout, Flexbox for components.</pre>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// AI VOICE FUNCTION
+function speakPage(){
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel(); // Stop any current speech
+    
+    const text = `Welcome to Modern CSS Layouts. This page teaches you Flexbox and Grid - the two most important layout systems in CSS. 
+    
+    Section 1: Flexbox. Flexbox is a one-dimensional layout method. Use it when you need to arrange items in a single row or column. Perfect for navigation bars, button groups, and centering content. The key property is display flex.
+    
+    Section 2: CSS Grid. Grid is a two-dimensional layout system. Use it when you need rows AND columns at the same time. Perfect for dashboards, image galleries, and complex page layouts. The magic is grid template columns with auto-fit and minmax.
+    
+    Section 3: When to use what. Use Flexbox for one-dimensional layouts. Use Grid for two-dimensional layouts. Pro developers use both together - Grid for the overall page structure, Flexbox for individual components.
+    
+    Remember: Flexbox for components, Grid for layouts. Practice both and you will master responsive web design.`;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    
+    const voiceBtn = document.getElementById('voiceBtn');
+    voiceBtn.classList.add('speaking');
+    voiceBtn.textContent = '🔊 Speaking...';
+    
+    utterance.onend = () => {
+      voiceBtn.classList.remove('speaking');
+      voiceBtn.textContent = '🔊 Hear This Page';
+    };
+    
+    speechSynthesis.speak(utterance);
+  } else {
+    alert('Sorry, your browser does not support text-to-speech. Try Chrome or Edge.');
+  }
+}
+
+// COPY CODE FUNCTION
+function copyCode(btn){
+  const code = btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const oldText = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = '#10b981';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = oldText;
+      btn.style.background = 'rgba(56,189,248,0.2)';
+      btn.style.color = '#38bdf8';
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

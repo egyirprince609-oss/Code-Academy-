@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security Logic Module</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    color:white;
+    overflow-x:hidden;
+
+    background: radial-gradient(circle at top, #0a0f1f, #05060a 60%, #000);
+}
+
+/* BACKGROUND FLOAT SYSTEM */
+.floating{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    overflow:hidden;
+}
+
+.obj{
+    position:absolute;
+    font-size:18px;
+    opacity:0.6;
+    animation: floatMove linear infinite;
+    filter: drop-shadow(0 0 10px rgba(0,200,255,0.4));
+}
+
+@keyframes floatMove{
+    0%{transform:translate(0,0) rotate(0deg);}
+    50%{transform:translate(60px,-120px) rotate(180deg);}
+    100%{transform:translate(-40px,120px) rotate(360deg);}
+}
+
+/* HEADER */
+header{
+    text-align:center;
+    padding:25px;
+    position:relative;
+    z-index:2;
+}
+
+header h1{
+    font-size:30px;
+    color:#38bdf8;
+}
+
+header p{
+    font-size:13px;
+    color:#cbd5e1;
+}
+
+/* BACK BUTTON */
+.back-btn{
+    position:fixed;
+    top:15px;
+    left:15px;
+    background:none;
+    border:none;
+    font-size:72px;
+    color:#38bdf8;
+    cursor:pointer;
+    z-index:5;
+    
+}
+
+/* CONTAINER */
+.container{
+    position:relative;
+    z-index:2;
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+/* CARDS */
+.card{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:15px;
+    padding:18px;
+    backdrop-filter:blur(10px);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:scale(1.02);
+    box-shadow:0 20px 50px rgba(0,0,0,0.5);
+}
+
+.card h2{
+    color:#22d3ee;
+    margin-bottom:8px;
+}
+
+/* BUTTON */
+.btn{
+    margin-top:10px;
+    padding:8px 12px;
+    border:none;
+    border-radius:10px;
+    background:#38bdf8;
+    color:#000;
+    cursor:pointer;
+}
+
+/* QUIZ BOX */
+.quiz{
+    margin-top:20px;
+    padding:15px;
+    background:rgba(255,255,255,0.04);
+    border-radius:12px;
+}
+
+/* OPTIONS */
+.option{
+    padding:10px;
+    margin:8px 0;
+    background:#0f172a;
+    border:1px solid #334155;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.option:hover{
+    background:#1e293b;
+}
+
+</style>
+</head>
+
+<body>
+
+<button class="back-btn" onclick="history.back()">‹</button>
+
+<div class="floating" id="floating"></div>
+
+<header>
+<h1>🛡️ Security Logic Module</h1>
+<p>Understand how real systems protect data and users</p>
+</header>
+
+<div class="container">
+
+<!-- SECURITY THEORY -->
+<div class="card">
+<h2>🔐 What is Security Logic?</h2>
+<p>
+Security logic is how applications protect user data using rules, validation, encryption, and controlled access systems. 
+It ensures only trusted actions are allowed inside a system.
+</p>
+</div>
+
+<div class="card">
+<h2>🔑 Password Protection</h2>
+<p>
+Passwords are never stored directly. Instead, systems convert them into hashed values. 
+This prevents hackers from reading real passwords even if data is stolen.
+</p>
+</div>
+
+<div class="card">
+<h2>🧾 Input Validation</h2>
+<p>
+Before saving user input, systems check if data is safe, correct, and complete. 
+This prevents injection attacks and broken logic inside applications.
+</p>
+</div>
+
+<!-- SIMPLE SIMULATED SECURITY CHECK -->
+<div class="card">
+<h2>⚙️ Security Simulation</h2>
+
+<div class="quiz">
+<p>Enter a password to test security rules:</p>
+<input id="pwd" type="text" placeholder="Enter password">
+<button class="btn" onclick="check()">Validate</button>
+<p id="result"></p>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* BACKGROUND FLOAT ENGINE */
+const icons = ["🔐","🛡️","⚙️","💻","🔒","🧠","🚀"];
+
+const box = document.getElementById("floating");
+
+for(let i=0;i<10;i++){
+    let d = document.createElement("div");
+    d.className = "obj";
+    d.innerText = icons[Math.floor(Math.random()*icons.length)];
+    
+    d.style.left = Math.random()*100 + "vw";
+    d.style.top = Math.random()*100 + "vh";
+    d.style.animationDuration = (6 + Math.random()*6) + "s";
+    d.style.fontSize = (14 + Math.random()*20) + "px";
+
+    box.appendChild(d);
+}
+
+/* SECURITY CHECK LOGIC */
+function check(){
+    const pwd = document.getElementById("pwd").value;
+    const result = document.getElementById("result");
+
+    if(pwd.length < 6){
+        result.innerText = "❌ Weak password: too short";
+        result.style.color = "red";
+    }
+    else if(!/[A-Z]/.test(pwd)){
+        result.innerText = "⚠️ Add uppercase letter for strength";
+        result.style.color = "orange";
+    }
+    else if(!/[0-9]/.test(pwd)){
+        result.innerText = "⚠️ Add number for stronger security";
+        result.style.color = "orange";
+    }
+    else{
+        result.innerText = "✅ Strong password detected";
+        result.style.color = "lightgreen";
+    }
+}
+
+</script>
+
+</body>
+</html>

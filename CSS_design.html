@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Design Masterclass - Code Academy</title>
+<style>
+*{
+  margin:0;padding:0;box-sizing:border-box;
+  font-family:'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#020617 0%,#0f172a 50%,#1e293b 100%);
+  color:white;min-height:100vh;transition:background 0.8s;
+  overflow-x:hidden;
+}
+
+.navbar{
+  width:100%;padding:18px 25px;display:flex;justify-content:space-between;
+  gap:10%;
+  align-items:center;background:rgba(15,23,42,0.8);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(56,189,248,0.2);position:sticky;top:0;z-index:100
+}
+
+.back-btn{
+  padding:10px 20px;background:linear-gradient(45deg,#ef4444,#dc2626);
+  border:none;border-radius:12px;color:white;font-weight:600;cursor:pointer;
+  transition:0.3s;display:flex;align-items:center;gap:8px
+}
+
+.back-btn:hover{transform:translateX(-5px);box-shadow:0 5px 20px rgba(239,68,68,0.4)}
+
+h1{font-size:22px;color:#38bdf8;font-weight:700}
+
+.container{
+  padding:30px 25px;max-width:1200px;margin:0 auto
+}
+
+/* HERO WITH AI VOICE */
+.hero{
+  background:linear-gradient(135deg,rgba(56,189,248,0.1),rgba(147,51,234,0.1));
+  border-radius:30px;padding:50px 30px;margin-bottom:35px;
+  text-align:center;border:1px solid rgba(56,189,248,0.3);
+  position:relative;overflow:hidden
+}
+
+.hero::before{
+  content:'';position:absolute;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:radial-gradient(circle,rgba(56,189,248,0.2),transparent 70%);
+  animation:rotate 20s linear infinite
+}
+
+@keyframes rotate{100%{transform:rotate(360deg)}}
+
+.hero > *{position:relative;z-index:2}
+
+.hero h2{
+  font-size:42px;margin-bottom:15px;
+  background:linear-gradient(90deg,#38bdf8,#a855f7,#14b8a6);
+  background-size:200% 200%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradientMove 3s ease infinite
+}
+
+@keyframes gradientMove{
+ 0%,100%{background-position:0% 50%}
+ 50%{background-position:100% 50%}
+}
+
+.voice-btn{
+  padding:14px 30px;background:linear-gradient(45deg,#38bdf8,#2563eb);
+  border:none;border-radius:15px;color:white;font-weight:700;font-size:15px;
+  cursor:pointer;margin-top:20px;transition:0.3s;display:inline-flex;
+  align-items:center;gap:10px;box-shadow:0 8px 25px rgba(56,189,248,0.4)
+}
+
+.voice-btn:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(56,189,248,0.6)}
+.voice-btn:active{transform:scale(0.95)}
+
+.voice-btn.speaking{
+  animation:pulse 1s ease-in-out infinite;
+  background:linear-gradient(45deg,#10b981,#059669)
+}
+
+@keyframes pulse{
+ 0%,100%{transform:scale(1)}
+ 50%{transform:scale(1.05)}
+}
+
+/* LIVE DETECTOR */
+.live-box{
+  background:rgba(15,23,42,0.6);
+  border-radius:25px;padding:40px;margin-bottom:35px;
+  border:2px solid rgba(56,189,248,0.3);
+  backdrop-filter:blur(15px)
+}
+
+.width-meter{
+  font-size:72px;font-weight:800;text-align:center;margin:25px 0;
+  font-family:'Courier New',monospace;
+  background:linear-gradient(90deg,#4ade80,#38bdf8);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent
+}
+
+.device-badge{
+  display:inline-block;padding:12px 25px;border-radius:50px;
+  font-size:16px;font-weight:700;margin-bottom:15px;
+  background:linear-gradient(45deg,#38bdf8,#9333ea)
+}
+
+/* 10 BREAKPOINT CARDS */
+.grid-10{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:18px;margin-bottom:40px
+}
+
+.bp-card{
+  background:rgba(15,23,42,0.7);
+  padding:25px 20px;border-radius:18px;
+  border:2px solid rgba(255,255,255,0.1);
+  transition:0.4s;cursor:pointer;position:relative;overflow:hidden
+}
+
+.bp-card::before{
+  content:'';position:absolute;top:0;left:0;width:100%;height:4px;
+  background:linear-gradient(90deg,#38bdf8,#9333ea);transform:scaleX(0);
+  transition:0.4s;transform-origin:left
+}
+
+.bp-card:hover::before{transform:scaleX(1)}
+.bp-card.active{
+  border-color:#38bdf8;background:rgba(56,189,248,0.15);
+  transform:translateY(-5px);box-shadow:0 15px 35px rgba(56,189,248,0.3)
+}
+
+.bp-card h4{font-size:18px;margin-bottom:8px;color:#38bdf8}
+.bp-card .range{font-size:13px;color:#94a3b8;margin-bottom:10px}
+.bp-card .tip{font-size:12px;color:#cbd5e1;line-height:1.5}
+
+/* CODE SECTION WITH COPY */
+.code-wrapper{
+  background:#0a0e1a;border-radius:20px;padding:25px;margin-bottom:30px;
+  border:1px solid rgba(56,189,248,0.2)
+}
+
+.code-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:15px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.1)
+}
+
+.code-title{color:#38bdf8;font-weight:700;font-size:16px}
+
+.copy-btn{
+  padding:8px 16px;background:rgba(56,189,248,0.2);
+  border:1px solid #38bdf8;border-radius:8px;color:#38bdf8;
+  font-size:12px;font-weight:600;cursor:pointer;transition:0.3s
+}
+
+.copy-btn:hover{background:#38bdf8;color:#0a0e1a}
+.copy-btn.copied{background:#10b981;border-color:#10b981;color:white}
+
+.code-box{
+  background:#050810;border-radius:12px;padding:20px;
+  font-family:'Fira Code', 'Courier New', monospace;font-size:13px;
+  color:#e2e8f0;line-height:1.8;overflow-x:auto;
+  white-space:pre
+}
+
+.keyword{color:#fbbf24}
+.property{color:#38bdf8}
+.value{color:#4ade80}
+.comment{color:#64748b}
+.selector{color:#f472b6}
+
+/* EXAMPLES GRID */
+.examples-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;margin-bottom:35px
+}
+
+.example-card{
+  background:rgba(15,23,42,0.5);
+  border-radius:18px;padding:25px;
+  border:1px solid rgba(255,255,255,0.1);
+  transition:0.3s
+}
+
+.example-card:hover{
+  border-color:#38bdf8;transform:translateY(-5px)
+}
+
+.example-card h4{
+  color:#14b8a6;margin-bottom:12px;font-size:17px;
+  display:flex;align-items:center;gap:10px
+}
+
+/* SPEAKING INDICATOR */
+.speaking-indicator{
+  position:fixed;bottom:30px;right:30px;
+  background:linear-gradient(45deg,#10b981,#059669);
+  padding:15px 25px;border-radius:50px;
+  box-shadow:0 10px 40px rgba(16,185,129,0.5);
+  display:none;align-items:center;gap:12px;
+  font-weight:700;z-index:999
+}
+
+.speaking-indicator.show{
+  display:flex;
+  animation:slideIn 0.5s cubic-bezier(0.68,-0.55,0.265,1.55)
+}
+
+@keyframes slideIn{
+  from{transform:translateX(400px);opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+
+.wave{
+  display:flex;gap:4px
+}
+
+.wave span{
+  width:4px;height:20px;background:white;border-radius:2px;
+  animation:wave 1s ease-in-out infinite
+}
+
+.wave span:nth-child(2){animation-delay:0.1s}
+.wave span:nth-child(3){animation-delay:0.2s}
+
+@keyframes wave{
+ 0%,100%{height:8px}
+ 50%{height:20px}
+}
+
+.action-btn{
+  width:100%;padding:18px;
+  background:linear-gradient(45deg,#0ea5e9,#2563eb);
+  border:none;border-radius:18px;color:white;
+  font-size:17px;font-weight:700;cursor:pointer;
+  transition:0.3s;box-shadow:0 10px 30px rgba(14,165,233,0.4)
+}
+
+.action-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 40px rgba(14,165,233,0.6)
+}
+</style>
+</head>
+<body>
+
+<!-- SPEAKING INDICATOR -->
+<div class="speaking-indicator" id="speakingIndicator">
+  <div class="wave"><span></span><span></span><span></span></div>
+  AI Speaking...
+</div>
+
+<div class="navbar">
+  <button class="back-btn" onclick="history.back()">Back</button>
+  <h1>Responsive Design Masterclass</h1>
+</div>
+
+<div class="container">
+
+  <!-- HERO WITH VOICE -->
+  <div class="hero">
+    <h2>Master Responsive Design</h2>
+    <p style="color:#cbd5e1;font-size:16px;max-width:600px;margin:0 auto">
+      Learn how websites adapt to every screen size. Click the button below to hear AI explain responsive design while you interact with live examples.
+    </p>
+    <button class="voice-btn" id="voiceBtn" onclick="speakIntro()">
+      🔊 Hear AI Explanation
+    </button>
+  </div>
+
+  <!-- LIVE WIDTH DETECTOR -->
+  <div class="live-box">
+    <div style="text-align:center">
+      <span class="device-badge" id="deviceBadge">Detecting...</span>
+      <div class="width-meter" id="widthMeter">0px</div>
+      <p style="color:#94a3b8" id="deviceDesc">Resize your browser to see live changes</p>
+    </div>
+  </div>
+
+  <!-- 10 BREAKPOINT CARDS -->
+  <div class="grid-10">
+    <div class="bp-card" data-bp="320">
+      <h4>📱 Mobile Small</h4>
+      <div class="range">320px - 375px</div>
+      <div class="tip">iPhone SE, older Android. Thumb zone design.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="390">
+      <h4>📱 Mobile Medium</h4>
+      <div class="range">390px - 414px</div>
+      <div class="tip">iPhone 12-14, Pixel. Most common mobile.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="428">
+      <h4>📱 Mobile Large</h4>
+      <div class="range">428px - 480px</div>
+      <div class="tip">iPhone 14 Pro Max, big Android phones.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="600">
+      <h4>📱 Phablet</h4>
+      <div class="range">480px - 600px</div>
+      <div class="tip">Large phones, small tablets. Landscape mode.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="768">
+      <h4>📱 Tablet Portrait</h4>
+      <div class="range">600px - 768px</div>
+      <div class="tip">iPad Mini, tablets. Touch targets 44px min.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="834">
+      <h4>📱 iPad Portrait</h4>
+      <div class="range">768px - 834px</div>
+      <div class="tip">Standard iPad. Sidebar navigation works.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="1024">
+      <h4>💻 Tablet Landscape</h4>
+      <div class="range">834px - 1024px</div>
+      <div class="tip">iPad Pro landscape. Near desktop experience.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="1280">
+      <h4>💻 Laptop</h4>
+      <div class="range">1024px - 1280px</div>
+      <div class="tip">Most laptops. 3-column layouts possible.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="1440">
+      <h4>🖥️ Desktop</h4>
+      <div class="range">1280px - 1440px</div>
+      <div class="tip">Desktop monitors. Full layouts shine.</div>
+    </div>
+    
+    <div class="bp-card" data-bp="1920">
+      <h4>🖥️ Large Desktop</h4>
+      <div class="range">1440px - 1920px+</div>
+      <div class="tip">4K monitors. Max-width containers needed.</div>
+    </div>
+  </div>
+
+  <!-- 10 CODE EXAMPLES WITH COPY -->
+  <h3 style="color:#38bdf8;margin-bottom:20px;font-size:20px">10 Must-Know Responsive Code Patterns</h3>
+
+  <div class="examples-grid">
+    
+    <div class="example-card">
+      <h4>1. Mobile First Media Query</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Basic Structure</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="comment">/* Mobile styles first */</span>
+<span class="selector">.container</span> {
+  <span class="property">width:</span> <span class="value">100%</span>;
+  <span class="property">padding:</span> <span class="value">16px</span>;
+}
+
+<span class="comment">/* Tablet and up */</span>
+<span class="keyword">@media</span> <span class="property">(min-width: 768px)</span> {
+  <span class="selector">.container</span> {
+    <span class="property">max-width:</span> <span class="value">720px</span>;
+    <span class="property">margin:</span> <span class="value">0 auto</span>;
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>2. Fluid Typography</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Clamp Function</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">h1</span> {
+  <span class="property">font-size:</span> <span class="value">clamp(2rem, 5vw, 4rem)</span>;
+  <span class="comment">/* Min, preferred, max */</span>
+}
+
+<span class="selector">p</span> {
+  <span class="property">font-size:</span> <span class="value">clamp(1rem, 2.5vw, 1.25rem)</span>;
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>3. Flexible Grid</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Auto-fit Grid</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">.grid</span> {
+  <span class="property">display:</span> <span class="value">grid</span>;
+  <span class="property">grid-template-columns:</span> <span class="value">repeat(auto-fit, minmax(250px, 1fr))</span>;
+  <span class="property">gap:</span> <span class="value">20px</span>;
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>4. Responsive Images</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Image Scaling</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">img</span> {
+  <span class="property">max-width:</span> <span class="value">100%</span>;
+  <span class="property">height:</span> <span class="value">auto</span>;
+  <span class="property">object-fit:</span> <span class="value">cover</span>;
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>5. Container Queries</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Modern Approach</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">.card-container</span> {
+  <span class="property">container-type:</span> <span class="value">inline-size</span>;
+}
+
+<span class="keyword">@container</span> <span class="property">(min-width: 400px)</span> {
+  <span class="selector">.card</span> {
+    <span class="property">display:</span> <span class="value">flex</span>;
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>6. Viewport Units</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">VH/VW Units</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">.hero</span> {
+  <span class="property">height:</span> <span class="value">100vh</span>;
+  <span class="property">width:</span> <span class="value">100vw</span>;
+}
+
+<span class="selector">.section</span> {
+  <span class="property">padding:</span> <span class="value">5vw 10vw</span>;
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>7. Hide/Show Elements</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Display Toggle</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">.desktop-nav</span> {
+  <span class="property">display:</span> <span class="value">block</span>;
+}
+
+<span class="keyword">@media</span> <span class="property">(max-width: 768px)</span> {
+  <span class="selector">.desktop-nav</span> {
+    <span class="property">display:</span> <span class="value">none</span>;
+  }
+  <span class="selector">.mobile-menu</span> {
+    <span class="property">display:</span> <span class="value">block</span>;
+  }
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>8. Flexbox Wrap</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Flexible Layout</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">.flex-container</span> {
+  <span class="property">display:</span> <span class="value">flex</span>;
+  <span class="property">flex-wrap:</span> <span class="value">wrap</span>;
+  <span class="property">gap:</span> <span class="value">16px</span>;
+}
+
+<span class="selector">.flex-item</span> {
+  <span class="property">flex:</span> <span class="value">1 1 300px</span>;
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>9. Aspect Ratio</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Keep Proportions</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">.video-wrapper</span> {
+  <span class="property">aspect-ratio:</span> <span class="value">16 / 9</span>;
+  <span class="property">width:</span> <span class="value">100%</span>;
+}
+
+<span class="selector">.square</span> {
+  <span class="property">aspect-ratio:</span> <span class="value">1 / 1</span>;
+}</div>
+      </div>
+    </div>
+
+    <div class="example-card">
+      <h4>10. Touch Targets</h4>
+      <div class="code-wrapper">
+        <div class="code-header">
+          <span class="code-title">Mobile UX</span>
+          <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        </div>
+        <div class="code-box"><span class="selector">button, a</span> {
+  <span class="property">min-height:</span> <span class="value">44px</span>;
+  <span class="property">min-width:</span> <span class="value">44px</span>;
+  <span class="property">padding:</span> <span class="value">12px 24px</span>;
+}
+
+<span class="comment">/* Apple & Google recommendation */</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <button class="action-btn" onclick="window.location.href='htmleditor.html'">
+    🚀 Practice All 10 Patterns in Code Editor
+  </button>
+
+</div>
+
+<script>
+// AI VOICE USING WEB SPEECH API
+const voiceBtn = document.getElementById('voiceBtn');
+const speakingIndicator = document.getElementById('speakingIndicator');
+
+function speakIntro(){
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel(); // Stop any current speech
+    
+    const text = `Welcome to Responsive Design Masterclass. Responsive design means your website looks perfect on phones, tablets, and desktops. The key is using media queries and flexible layouts. Resize your browser now to see how this page adapts to different screen sizes. Each breakpoint has specific design rules that professional developers follow.`;
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    
+    // Try to get a good voice
+    const voices = speechSynthesis.getVoices();
+    const englishVoice = voices.find(v => v.lang.includes('en-US') && v.name.includes('Google'));
+    if(englishVoice) utterance.voice = englishVoice;
+    
+    utterance.onstart = () => {
+      voiceBtn.classList.add('speaking');
+      voiceBtn.innerHTML = '🔊 Speaking...';
+      speakingIndicator.classList.add('show');
+    };
+    
+    utterance.onend = () => {
+      voiceBtn.classList.remove('speaking');
+      voiceBtn.innerHTML = '🔊 Hear AI Explanation Again';
+      speakingIndicator.classList.remove('show');
+    };
+    
+    speechSynthesis.speak(utterance);
+  } else {
+    alert('Your browser does not support speech synthesis. Try Chrome or Edge.');
+  }
+}
+
+// COPY CODE FUNCTION
+function copyCode(btn){
+  const codeBox = btn.closest('.code-wrapper').querySelector('.code-box');
+  const text = codeBox.textContent;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// LIVE RESIZE DETECTOR
+const widthMeter = document.getElementById('widthMeter');
+const deviceBadge = document.getElementById('deviceBadge');
+const deviceDesc = document.getElementById('deviceDesc');
+
+function updateResponsive(){
+  const width = window.innerWidth;
+  widthMeter.textContent = width + 'px';
+  
+  document.querySelectorAll('.bp-card').forEach(card => card.classList.remove('active'));
+  
+  let device = '';
+  let desc = '';
+  let activeCard = null;
+  
+  if(width <= 375){
+    device = 'Mobile Small';
+    desc = 'iPhone SE size. Use large touch targets.';
+    activeCard = document.querySelector('[data-bp="320"]');
+  } else if(width <= 414){
+    device = 'Mobile Medium';
+    desc = 'Most iPhones. Single column layout.';
+    activeCard = document.querySelector('[data-bp="390"]');
+  } else if(width <= 480){
+    device = 'Mobile Large';
+    desc = 'Big phones. Can fit 2 small cards.';
+    activeCard = document.querySelector('[data-bp="428"]');
+  } else if(width <= 600){
+    device = 'Phablet';
+    desc = 'Large phone landscape. Flexible grid.';
+    activeCard = document.querySelector('[data-bp="600"]');
+  } else if(width <= 768){
+    device = 'Tablet Portrait';
+    desc = 'iPad Mini. 2-3 column grids work.';
+    activeCard = document.querySelector('[data-bp="768"]');
+  } else if(width <= 834){
+    device = 'iPad Portrait';
+    desc = 'Standard iPad. Sidebar navigation possible.';
+    activeCard = document.querySelector('[data-bp="834"]');
+  } else if(width <= 1024){
+    device = 'Tablet Landscape';
+    desc = 'iPad Pro landscape. Near desktop.';
+    activeCard = document.querySelector('[data-bp="1024"]');
+  } else if(width <= 1280){
+    device = 'Laptop';
+    desc = 'Most laptops. Multi-column layouts.';
+    activeCard = document.querySelector('[data-bp="1280"]');
+  } else if(width <= 1440){
+    device = 'Desktop';
+    desc = 'Desktop monitor. Full width layouts.';
+    activeCard = document.querySelector('[data-bp="1440"]');
+  } else {
+    device = 'Large Desktop';
+    desc = '4K monitor. Use max-width containers.';
+    activeCard = document.querySelector('[data-bp="1920"]');
+  }
+  
+  deviceBadge.textContent = device;
+  deviceDesc.textContent = desc;
+  if(activeCard) activeCard.classList.add('active');
+  
+  // Change background gradient based on device
+  if(width <= 480){
+    document.body.style.background = 'linear-gradient(135deg,#7f1d1d,#991b1b)';
+  } else if(width <= 768){
+    document.body.style.background = 'linear-gradient(135deg,#78350f,#92400e)';
+  } else if(width <= 1024){
+    document.body.style.background = 'linear-gradient(135deg,#1e3a8a,#1e40af)';
+  } else {
+    document.body.style.background = 'linear-gradient(135deg,#064e3b,#065f46)';
+  }
+}
+
+window.addEventListener('resize', updateResponsive);
+updateResponsive();
+
+// Load voices when available
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Automation Lab v7</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+min-height:100vh;
+color:white;
+background:
+radial-gradient(circle at top left, rgba(0,140,255,.25), transparent 40%),
+radial-gradient(circle at bottom right, rgba(168,85,247,.18), transparent 45%),
+linear-gradient(135deg,#050816,#0b1220,#0f172a);
+overflow-x:hidden;
+}
+
+body::before{
+content:"";
+position:fixed;
+inset:0;
+background-image:
+linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+background-size:60px 60px;
+opacity:0.35;
+pointer-events:none;
+}
+
+.header{
+text-align:center;
+padding:22px;
+}
+
+.header h1{
+color:#facc15;
+font-size:30px;
+}
+
+.header p{
+color:#cbd5e1;
+font-size:13px;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:18px;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:18px;
+padding:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-6px);
+background:rgba(255,255,255,0.08);
+}
+
+.card h2{
+color:#38bdf8;
+font-size:15px;
+}
+
+.details{
+display:none;
+margin-top:12px;
+animation:fade 0.3s ease;
+}
+
+@keyframes fade{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+.section{
+margin:10px 0;
+font-size:12px;
+color:#93c5fd;
+text-transform:uppercase;
+}
+
+p{
+font-size:12px;
+color:#cbd5e1;
+line-height:1.6;
+}
+
+pre{
+background:#0b1020;
+padding:12px;
+border-radius:12px;
+overflow:auto;
+font-size:12px;
+color:#d1d5db;
+}
+
+.flow span{
+display:inline-block;
+margin:3px;
+padding:5px 8px;
+background:rgba(255,255,255,0.08);
+border-radius:8px;
+font-size:11px;
+}
+
+.btn{
+margin-top:8px;
+padding:8px 10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:11px;
+background:#10b981;
+color:white;
+}
+
+.sim{
+background:#3b82f6;
+}
+
+.stepBox{
+margin-top:10px;
+background:rgba(255,255,255,0.06);
+padding:10px;
+border-radius:10px;
+font-size:12px;
+display:none;
+}
+.back-btn{
+     background: none;
+   
+  
+     margin: 0px;
+     font-size:60px;
+     border: none;
+     color: cyan;
+     margin-left: 10%;
+}
+</style>
+</head>
+
+<body>
+<button class="back-btn" onclick="goBack()">
+            <
+        </button>
+<div class="header">
+     
+<h1>⚙️ Python Automation Lab</h1>
+<p>Complete 10 Automation Systems (Deep Learning Engine)</p>
+</div>
+
+<div class="container">
+
+<!-- 1 FILE AUTOMATION -->
+<div class="card" onclick="toggle(this)">
+<h2>📁 File Automation</h2>
+<div class="details">
+
+<div class="section">EXPLANATION</div>
+<p>
+This automation organizes files automatically into folders based on type.
+It removes manual sorting work completely. Python scans a folder using OS module.
+It checks each file extension like .jpg or .pdf. Then it decides destination folder.
+Shutil module moves files safely. This is used in data management systems and servers.
+It saves time and prevents messy storage. It runs continuously in background systems.
+</p>
+
+<pre>
+import os, shutil
+
+for file in os.listdir("downloads"):
+    if file.endswith(".png"):
+        shutil.move("downloads/"+file, "images/"+file)
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Scan folder → detect file → check type → move file → complete
+</div>
+</div>
+</div>
+
+<!-- 2 WEB AUTOMATION -->
+<div class="card" onclick="toggle(this)">
+<h2>🌐 Web Automation</h2>
+<div class="details">
+
+<p>
+Python can open websites automatically without user clicking.
+It uses webbrowser module. This is used in automation tools and dashboards.
+It helps launch pages instantly. It reduces repetitive browser actions.
+It connects Python to system browser. It is simple but powerful automation.
+</p>
+
+<pre>
+import webbrowser
+webbrowser.open("https://google.com")
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Receive URL → send command → open browser → load page
+</div>
+</div>
+</div>
+
+<!-- 3 EMAIL AUTOMATION -->
+<div class="card" onclick="toggle(this)">
+<h2>📧 Email Automation</h2>
+<div class="details">
+
+<p>
+This automation sends emails without manual typing.
+It uses SMTP protocol which handles email transfer.
+Python connects to Gmail server securely using TLS.
+It logs in using credentials. Then sends messages automatically.
+It is used in notifications and alert systems in companies.
+</p>
+
+<pre>
+import smtplib
+
+server = smtplib.SMTP("smtp.gmail.com",587)
+server.starttls()
+server.login("email@gmail.com","password")
+server.sendmail("from","to","Hello")
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Connect server → login → compose → send → confirm
+</div>
+</div>
+</div>
+
+<!-- 4 TASK SCHEDULER -->
+<div class="card" onclick="toggle(this)">
+<h2>⏰ Task Scheduler</h2>
+<div class="details">
+
+<p>
+This automation runs tasks repeatedly at intervals.
+It uses time module in Python. It is used in bots and background services.
+Python loops continuously and waits using sleep function.
+It is used for system monitoring and automated updates.
+It reduces manual execution of repeated tasks.
+</p>
+
+<pre>
+import time
+
+while True:
+    print("Running task")
+    time.sleep(5)
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Start loop → execute task → wait → repeat
+</div>
+</div>
+</div>
+
+<!-- 5 DATA PROCESSING -->
+<div class="card" onclick="toggle(this)">
+<h2>📊 Data Processing</h2>
+<div class="details">
+
+<p>
+This automation processes large datasets efficiently.
+It uses pandas library for data analysis. It reads CSV files easily.
+It removes missing values and cleans data. It is used in AI systems and analytics.
+Companies use it to prepare data before training models.
+It helps convert raw data into usable format.
+</p>
+
+<pre>
+import pandas as pd
+
+df = pd.read_csv("data.csv")
+df.dropna(inplace=True)
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Load file → read data → clean data → output dataset
+</div>
+</div>
+</div>
+
+<!-- 6 SYSTEM CLEANUP -->
+<div class="card" onclick="toggle(this)">
+<h2>🧹 System Cleanup</h2>
+<div class="details">
+
+<p>
+This automation deletes unnecessary files automatically.
+It helps free storage space. Python scans temporary folders.
+Then it removes unused files. It uses OS module for system access.
+It is used in antivirus and system optimization tools.
+It keeps systems fast and organized.
+</p>
+
+<pre>
+import os
+
+for file in os.listdir("temp"):
+    os.remove("temp/"+file)
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Scan temp → detect file → delete → confirm
+</div>
+</div>
+</div>
+
+<!-- 7 LOGIN AUTOMATION -->
+<div class="card" onclick="toggle(this)">
+<h2>🔐 Login Automation</h2>
+<div class="details">
+
+<p>
+This automation handles user authentication logic.
+It compares input username and password.
+It is used in login systems of websites and apps.
+It checks credentials before granting access.
+It is the base of security systems in software.
+</p>
+
+<pre>
+user = input("User:")
+passw = input("Pass:")
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Get input → validate → check match → allow access
+</div>
+</div>
+</div>
+
+<!-- 8 REPORT -->
+<div class="card" onclick="toggle(this)">
+<h2>🧾 Report Generator</h2>
+<div class="details">
+
+<p>
+This automation generates reports automatically.
+It converts data into readable output format.
+Used in business dashboards and analytics systems.
+It reduces manual reporting work.
+It helps track performance and results.
+</p>
+
+<pre>
+print("Report Generated")
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Collect data → format → generate report → display
+</div>
+</div>
+</div>
+
+<!-- 9 API -->
+<div class="card" onclick="toggle(this)">
+<h2>🔄 API Automation</h2>
+<div class="details">
+
+<p>
+This automation fetches data from online APIs.
+It uses requests library to send HTTP requests.
+It retrieves live data from servers.
+Used in weather apps, finance apps, and dashboards.
+It connects Python with internet services.
+</p>
+
+<pre>
+import requests
+
+data = requests.get("https://api.com")
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Send request → server response → receive data → process
+</div>
+</div>
+</div>
+
+<!-- 10 BACKUP -->
+<div class="card" onclick="toggle(this)">
+<h2>📦 Backup System</h2>
+<div class="details">
+
+<p>
+This automation creates copies of important files.
+It protects data from loss or corruption.
+It uses shutil module to duplicate files.
+It is used in cloud storage and system protection.
+It ensures safety of user data.
+</p>
+
+<pre>
+import shutil
+
+shutil.copy("file.txt","backup/file.txt")
+</pre>
+
+<button class="btn" onclick="copy(this)">Copy</button>
+<button class="btn sim" onclick="simulate(event,this)">Simulate</button>
+
+<div class="stepBox">
+Select file → copy → store backup → verify
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+
+function toggle(card){
+let d = card.querySelector(".details");
+d.style.display = d.style.display === "block" ? "none" : "block";
+}
+
+function copy(btn){
+navigator.clipboard.writeText(btn.parentElement.querySelector("pre").innerText);
+alert("Copied!");
+}
+
+function simulate(e,btn){
+e.stopPropagation();
+let box = btn.parentElement.querySelector(".stepBox");
+box.style.display = box.style.display === "block" ? "none" : "block";
+}
+function goBack(){
+    window.history.back();
+}
+</script>
+
+</body>
+</html>

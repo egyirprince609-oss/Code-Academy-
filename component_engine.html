@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Component Engine Pro</title>
+
+<style>
+:root{
+    --bg: #050816;
+    --bg-2: #0b1220;
+    --card-bg: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.08);
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --text-muted: #94a3b8;
+    --accent: #6366f1;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --cyan: #38bdf8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}
+
+body{
+    min-height:100vh;
+    background:radial-gradient(circle at 30% 20%, #0b1220 0%, #050816 50%, #020617 100%);
+    color:var(--text);
+    position:relative;
+    overflow-x:hidden;
+}
+
+/* ANIMATED GRID BACKGROUND */
+body::before{
+    content:'';
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-image:
+        linear-gradient(rgba(99,102,241,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,102,241,0.06) 1px, transparent 1px);
+    background-size:60px 60px;
+    animation:gridMove 30s linear infinite;
+    z-index:0;
+    pointer-events:none;
+}
+
+@keyframes gridMove{
+    0%{transform:translate(0,0)}
+    100%{transform:translate(60px,60px)}
+}
+
+/* GLOW BLOBS */
+.glow{
+    position:fixed;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+    border-radius:50%;
+    filter:blur(80px);
+    z-index:0;
+    pointer-events:none;
+}
+
+.glow-1{top:-20%;left:-15%;animation:float1 20s ease-in-out infinite}
+.glow-2{bottom:-30%;right:-10%;background:radial-gradient(circle, rgba(56,189,248,0.1) 0%, transparent 70%);animation:float2 25s ease-in-out infinite}
+
+@keyframes float1{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(80px,-80px) scale(1.3)}
+}
+
+@keyframes float2{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-60px,60px) scale(1.2)}
+}
+
+/* NAVBAR - Glassmorphism */
+.navbar{
+    height:72px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 32px;
+    background:rgba(11,18,32,0.7);
+    backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.navbar h1{
+    font-size:18px;
+    font-weight:700;
+    background:linear-gradient(135deg,#6366f1,#8b5cf6);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.back-btn{
+    height:38px;
+    padding:0 18px;
+    background:rgba(239,68,68,0.15);
+    border:1px solid rgba(239,68,68,0.3);
+    border-radius:10px;
+    color:#fca5a5;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.back-btn:hover{
+    background:rgba(239,68,68,0.25);
+    border-color:#ef4444;
+    transform:translateX(-3px);
+}
+
+/* WRAPPER */
+.wrapper{
+    max-width:1100px;
+    margin:0 auto;
+    padding:60px 32px 120px;
+    position:relative;
+    z-index:1;
+}
+
+/* HERO */
+.hero{
+    text-align:center;
+    margin-bottom:56px;
+    animation:fadeInDown 0.8s ease;
+}
+
+@keyframes fadeInDown{
+    from{opacity:0;transform:translateY(-30px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.hero h2{
+    font-size:40px;
+    font-weight:800;
+    background:linear-gradient(135deg,#a5b4fc 0%,#c4b5fd 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:12px;
+    letter-spacing:-1px;
+}
+
+.hero p{
+    font-size:16px;
+    color:var(--text-muted);
+    max-width:550px;
+    margin:0 auto;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:24px;
+}
+
+/* CARD - Pro styling with different accent colors */
+.card{
+    background:var(--card-bg);
+    backdrop-filter:blur(20px);
+    border:1.5px solid var(--border);
+    border-radius:20px;
+    padding:28px;
+    position:relative;
+    overflow:hidden;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    animation:fadeInUp 0.6s ease backwards;
+}
+
+.card:nth-child(1){animation-delay:0.1s;--card-accent:#38bdf8}
+.card:nth-child(2){animation-delay:0.2s;--card-accent:#a78bfa}
+.card:nth-child(3){animation-delay:0.3s;--card-accent:#22c55e}
+
+@keyframes fadeInUp{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    background:var(--card-accent);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform 0.4s;
+}
+
+.card:hover::before{
+    transform:scaleX(1);
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    border-color:var(--card-accent);
+    box-shadow:0 25px 50px -12px var(--card-accent);
+    background:rgba(255,255,255,0.06);
+}
+
+.card h3{
+    font-size:18px;
+    font-weight:700;
+    color:var(--card-accent);
+    margin-bottom:18px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+/* ACCORDION - Improved engine */
+.section{
+    border-top:1px solid var(--border);
+    margin-top:16px;
+    padding-top:16px;
+}
+
+.title{
+    font-size:14px;
+    font-weight:600;
+    color:var(--text-2);
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 0;
+    transition:0.3s;
+    user-select:none;
+}
+
+.title:hover{
+    color:var(--card-accent);
+}
+
+.icon{
+    width:24px;
+    height:24px;
+    background:rgba(255,255,255,0.05);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    transition:0.3s;
+}
+
+.title.active .icon{
+    transform:rotate(45deg);
+    background:var(--card-accent);
+    color:var(--bg);
+}
+
+.content{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+    font-size:14px;
+    color:var(--text-muted);
+    line-height:1.8;
+}
+
+.content.open{
+    max-height:500px;
+    margin-top:12px;
+}
+
+/* CODE BLOCK - Syntax highlighted */
+.code{
+    background:#020617;
+    border:1px solid var(--border);
+    padding:20px;
+    border-radius:12px;
+    font-family:'Fira Code','Courier New',monospace;
+    font-size:13px;
+    line-height:1.7;
+    overflow-x:auto;
+    position:relative;
+}
+
+.code-keyword{color:#c792ea}
+.code-string{color:#c3e88d}
+.code-function{color:#82aaff}
+.code-tag{color:#ff5370}
+.code-comment{color:#546e7a}
+
+/* BUTTONS - Pro styling */
+.btns{
+    margin-top:16px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.btn{
+    height:36px;
+    padding:0 16px;
+    border:none;
+    border-radius:10px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+.copy{
+    background:rgba(16,185,129,0.15);
+    color:#6ee7b7;
+    border:1px solid rgba(16,185,129,0.3);
+}
+
+.copy:hover{
+    background:var(--success);
+    color:white;
+}
+
+.speak{
+    background:rgba(99,102,241,0.15);
+    color:#a5b4fc;
+    border:1px solid rgba(99,102,241,0.3);
+}
+
+.speak:hover{
+    background:var(--accent);
+    color:white;
+}
+
+.explain{
+    background:rgba(245,158,11,0.15);
+    color:#fbbf24;
+    border:1px solid rgba(245,158,11,0.3);
+}
+
+.explain:hover{
+    background:var(--warning);
+    color:var(--bg);
+}
+
+/* EXPLAIN BOX */
+.explainBox{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.4s ease;
+    margin-top:0;
+}
+
+.explainBox.open{
+    max-height:600px;
+    margin-top:16px;
+}
+
+.explain-content{
+    padding:18px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--border);
+    border-radius:12px;
+    font-size:13px;
+    line-height:1.8;
+    color:var(--text-2);
+}
+
+.explain-content strong{
+    color:var(--card-accent);
+}
+
+/* TOAST NOTIFICATION */
+.toast{
+    position:fixed;
+    bottom:80px;
+    right:32px;
+    padding:14px 20px;
+    background:var(--success);
+    color:white;
+    border-radius:12px;
+    font-size:14px;
+    font-weight:600;
+    box-shadow:0 10px 40px rgba(16,185,129,0.4);
+    z-index:9999;
+    transform:translateY(100px);
+    opacity:0;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+
+.toast.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+/* FOOTER */
+footer{
+    padding:20px;
+    text-align:center;
+    font-size:13px;
+    color:var(--text-muted);
+    background:rgba(11,18,32,0.6);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    position:fixed;
+    bottom:0;
+    width:100%;
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .grid{grid-template-columns:1fr}
+    .wrapper{padding:40px 20px 120px}
+    .navbar{padding:0 20px}
+    .hero h2{font-size:32px}
+</style>
+</head>
+
+<body>
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1>React Component Engine Pro</h1>
+    <div></div>
+</nav>
+
+<div class="wrapper">
+
+<!-- HERO -->
+<section class="hero">
+    <h2>Master React Components</h2>
+    <p>3 structured modules with deep explanations, live code, and interactive learning</p>
+</section>
+
+<!-- GRID -->
+<div class="grid">
+
+<!-- CARD 1 -->
+<article class="card">
+    <h3>🧩 1. What is a Component?</h3>
+    
+    <div class="section">
+        <div class="title" onclick="toggleAccordion(this)">
+            <span>Detailed Explanation</span>
+            <span class="icon">+</span>
+        </div>
+        <div class="content">
+            A React component is a reusable, self-contained building block that defines a part of the user interface. Think of it like LEGO pieces - you combine small components to build complex applications.
+            <br><br>
+            <strong>Key Benefits:</strong>
+            <br>• Reusability: Write once, use everywhere
+            <br>• Maintainability: Isolated logic, easier to debug
+            <br>• Scalability: Large apps broken into manageable pieces
+            <br>• Team Collaboration: Different devs work on different components
+            <br><br>
+            Without components, you'd write repetitive HTML/CSS/JS. Components eliminate duplication and make your codebase clean and organized.
+        </div>
+    </div>
+</article>
+
+<!-- CARD 2 -->
+<article class="card">
+    <h3>🚀 2. Why Components Matter</h3>
+    
+    <div class="section">
+        <div class="title" onclick="toggleAccordion(this)">
+            <span>Deep Dive</span>
+            <span class="icon">+</span>
+        </div>
+        <div class="content">
+            Components are the foundation of modern web development. They solve real problems developers face daily.
+            <br><br>
+            <strong>Why They Matter:</strong>
+            <br>• DRY Principle: Don't Repeat Yourself - write code once
+            <br>• Single Responsibility: Each component does one thing well
+            <br>• Testing: Small components are easier to unit test
+            <br>• Performance: React optimizes re-rendering at component level
+            <br>• Reusability: Build a button once, use it 100 times
+            <br><br>
+            Companies like Facebook, Netflix, Airbnb build entire platforms using component architecture. It's industry standard for a reason.
+        </div>
+    </div>
+</article>
+
+<!-- CARD 3 -->
+<article class="card">
+    <h3>💻 3. Sample React Component</h3>
+    
+    <div class="code" id="code1"><span class="code-keyword">import</span> React <span class="code-keyword">from</span> <span class="code-string">"react"</span>;
+
+<span class="code-keyword">function</span> <span class="code-function">Button</span>({ children, onClick, variant = <span class="code-string">"primary"</span> }) {
+  <span class="code-keyword">return</span> (
+    <span class="code-tag">&lt;button</span> <span class="code-keyword">className</span>=<span class="code-string">`btn btn-`</span>{variant} <span class="code-keyword">onClick</span>={onClick}<span class="code-tag">&gt;</span>
+      {children}
+    <span class="code-tag">&lt;/button&gt;</span>
+  );
+}
+
+<span class="code-keyword">export default</span> Button;</div>
+
+    <div class="btns">
+        <button class="btn copy" onclick="copyCode('code1')">📋 Copy Code</button>
+        <button class="btn speak" onclick="speakText('This is a reusable React button component with props for children, onClick, and variant')">🔊 Listen</button>
+        <button class="btn explain" onclick="toggleExplain('exp1')">📖 Explain Line by Line</button>
+    </div>
+
+    <div class="explainBox" id="exp1">
+        <div class="explain-content">
+            <strong>Line 1:</strong> Imports React library. Required for JSX syntax to work.<br><br>
+            <strong>Line 3:</strong> Defines functional component named Button. Uses destructuring to accept props: children, onClick, variant.<br><br>
+            <strong>Line 4:</strong> Returns JSX - HTML-like syntax that React converts to real DOM elements.<br><br>
+            <strong>Line 5:</strong> Creates button element with dynamic className using template literals. variant prop changes button style.<br><br>
+            <strong>Line 6:</strong> Renders children prop - whatever content you pass between Button tags.<br><br>
+            <strong>Line 9:</strong> Exports component so other files can import and reuse it.<br><br>
+            <strong>Props Explained:</strong> children = content inside tags, onClick = function to run when clicked, variant = style variant like primary/secondary.
+        </div>
+    </div>
+</article>
+
+</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+© 2026 Component Engine Pro • Premium React Learning System
+</footer>
+
+<!-- TOAST -->
+<div id="toast" class="toast"></div>
+
+<script>
+// IMPROVED ENGINE - ACCORDION WITH ANIMATION
+function toggleAccordion(element){
+    const content = element.nextElementSibling;
+    const icon = element.querySelector('.icon');
+    
+    // Close all other accordions
+    document.querySelectorAll('.content.open').forEach(openContent => {
+        if(openContent !== content){
+            openContent.classList.remove('open');
+            openContent.previousElementSibling.classList.remove('active');
+        }
+    });
+    
+    // Toggle current accordion
+    content.classList.toggle('open');
+    element.classList.toggle('active');
+}
+
+// IMPROVED COPY ENGINE - With Toast
+function copyCode(id){
+    const codeElement = document.getElementById(id);
+    const codeText = codeElement.innerText;
+    
+    navigator.clipboard.writeText(codeText).then(() => {
+        showToast('✓ Code copied to clipboard!');
+    }).catch(() => {
+        showToast('Failed to copy code');
+    });
+}
+
+// IMPROVED SPEAK ENGINE
+function speakText(text){
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel(); // Stop any ongoing speech
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        speechSynthesis.speak(utterance);
+        showToast('🔊 Playing audio explanation');
+    } else {
+        showToast('Speech not supported in this browser');
+    }
+}
+
+// EXPLAIN BOX TOGGLE
+function toggleExplain(id){
+    const box = document.getElementById(id);
+    box.classList.toggle('open');
+}
+
+// TOAST NOTIFICATION ENGINE
+function showToast(message){
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// Close accordions when clicking outside
+document.addEventListener('click', (e) => {
+    if(!e.target.closest('.section')){
+        document.querySelectorAll('.content.open').forEach(content => {
+            content.classList.remove('open');
+            content.previousElementSibling.classList.remove('active');
+        });
+    }
+});
+</script>
+
+</body>
+</html>

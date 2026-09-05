@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS 200-Question Pro Quiz</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial,sans-serif}
+body{background:linear-gradient(135deg,#090b1a 0%,#141b3d 30%,#28184f 70%,#0f3460 100%);color:white;min-height:100vh;background-attachment:fixed}
+.navbar{width:100%;padding:18px 25px;background:rgba(9,11,26,0.8);backdrop-filter:blur(20px);border-bottom:1px solid rgba(247,223,30,0.2);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:1000}
+.back-btn{padding:12px 22px;background:linear-gradient(45deg,#ff4b5c,#ff1f3a);border:none;border-radius:14px;color:white;font-weight:700;cursor:pointer}
+.xp-display{background:rgba(247,223,30,0.15);padding:10px 20px;border-radius:50px;border:2px solid #f7df1e;display:flex;align-items:center;gap:8px;font-weight:700}
+.container{max-width:900px;margin:0 auto;padding:30px 20px}
+.quiz-header{text-align:center;margin-bottom:35px}
+.quiz-header h1{font-size:42px;margin-bottom:10px;background:linear-gradient(90deg,#f7df1e,#ff9800,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stats{display:flex;gap:15px;justify-content:center;margin-top:15px;flex-wrap:wrap}
+.stat-box{background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:12px;border:1px solid rgba(247,223,30,0.3);font-size:14px}
+.progress-container{background:rgba(255,255,255,0.1);height:14px;border-radius:20px;margin-bottom:25px;overflow:hidden}
+.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#00b894,#00e5ff,#f7df1e);border-radius:20px;transition:width 0.5s}
+.timer-container{background:rgba(0,0,0,0.4);border-radius:20px;padding:20px;margin-bottom:25px;text-align:center;border:2px solid rgba(255,75,92,0.3)}
+.timer{font-size:48px;font-weight:800;font-family:'Courier New',monospace;background:linear-gradient(90deg,#ff4b5c,#ff9800);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.timer.warning{animation:pulse 1s ease-in-out infinite;background:linear-gradient(90deg,#ff0000,#ff4b5c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.question-card{background:rgba(255,255,255,0.05);border-radius:25px;padding:35px;border:2px solid rgba(247,223,30,0.2);backdrop-filter:blur(15px);margin-bottom:25px}
+.question-number{display:inline-block;background:linear-gradient(45deg,#f7df1e,#ff9800);color:#090b1a;padding:8px 18px;border-radius:50px;font-weight:800;font-size:14px;margin-bottom:15px}
+.question-text{font-size:22px;line-height:1.6;margin-bottom:25px;color:#fff}
+.code-snippet{background:#0a0e1a;border-radius:12px;padding:20px;margin:20px 0;border-left:4px solid #f7df1e;font-family:'Fira Code',monospace;font-size:13px;color:#4ade80;overflow-x:auto;white-space:pre}
+.options-container{display:flex;flex-direction:column;gap:12px}
+.option{background:rgba(255,255,255,0.05);padding:18px 22px;border-radius:15px;border:2px solid rgba(255,255,255,0.1);cursor:pointer;transition:0.3s;display:flex;align-items:center;gap:15px}
+.option:hover{border-color:#00e5ff;transform:translateX(8px);background:rgba(0,229,255,0.1)}
+.option.selected{border-color:#00e5ff;background:rgba(0,229,255,0.2)}
+.option.correct{border-color:#00b894;background:rgba(0,184,148,0.3)}
+.option.wrong{border-color:#ff4b5c;background:rgba(255,75,92,0.3)}
+.option-letter{width:40px;height:40px;background:linear-gradient(45deg,#00e5ff,#0072ff);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;flex-shrink:0}
+.option-text{font-size:15px;line-height:1.5;flex:1}
+.explanation-box{background:rgba(0,184,148,0.15);border:2px solid #00b894;border-radius:15px;padding:20px;margin-top:20px;display:none}
+.explanation-title{color:#00b894;font-weight:700;font-size:16px;margin-bottom:10px}
+.explanation-text{color:#e0e0e0;line-height:1.7;font-size:14px}
+.actions{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}
+.btn{flex:1;min-width:150px;padding:16px;border:none;border-radius:15px;font-weight:700;font-size:15px;cursor:pointer;transition:0.3s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:linear-gradient(45deg,#00c6ff,#0072ff);color:white}
+.btn-secondary{background:rgba(255,255,255,0.1);color:white;border:2px solid rgba(255,255,255,0.2)}
+.btn-editor{background:linear-gradient(45deg,#ff9800,#ff5722);color:white}
+.results-screen{text-align:center;padding:50px 30px;display:none}
+.score-circle{width:220px;height:220px;border-radius:50%;background:conic-gradient(#00b894 0deg, #00e5ff 180deg, #f7df1e 360deg);margin:0 auto 30px;display:flex;align-items:center;justify-content:center;position:relative}
+.score-circle::before{content:'';position:absolute;width:185px;height:185px;background:#090b1a;border-radius:50%}
+.score-number{font-size:64px;font-weight:800;background:linear-gradient(90deg,#f7df1e,#00e5ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.speaking-indicator{position:fixed;bottom:30px;right:30px;background:linear-gradient(45deg,#00b894,#00e5ff);padding:15px 25px;border-radius:50px;box-shadow:0 10px 40px rgba(0,184,148,0.5);display:none;align-items:center;gap:12px;font-weight:700;z-index:9999}
+.speaking-indicator.show{display:flex}
+.wave{display:flex;gap:4px}
+.wave span{width:4px;height:20px;background:white;border-radius:2px;animation:wave 1s ease-in-out infinite}
+.wave span:nth-child(2){animation-delay:0.1s}
+.wave span:nth-child(3){animation-delay:0.2s}
+@keyframes wave{0%,100%{height:8px}50%{height:20px}}
+@media(max-width:768px){.quiz-header h1{font-size:32px}.question-text{font-size:18px}.timer{font-size:36px}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="speaking-indicator" id="speakingIndicator"><div class="wave"><span></span><span></span><span></span></div>AI Speaking...</div>
+
+<div class="navbar">
+  <button class="back-btn" onclick="exitQuiz()">⬅ Exit Quiz</button>
+  <div class="xp-display"><span>⚡</span><span id="currentXP">XP: 0</span></div>
+</div>
+
+<div class="container">
+  <div class="quiz-header">
+    <h1>JavaScript 200-Question Master Quiz</h1>
+    <p>Professional level - AI Voice + Timer + Explanations</p>
+    <div class="stats">
+      <div class="stat-box">Question: <strong id="qCounter">1/200</strong></div>
+      <div class="stat-box">Score: <strong id="scoreCounter">0</strong></div>
+      <div class="stat-box">Streak: <strong id="streakCounter">0</strong></div>
+    </div>
+  </div>
+
+  <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div class="timer-container">
+    <div style="font-size:14px;color:#ddd;margin-bottom:8px">Time Remaining</div>
+    <div class="timer" id="timer">30s</div>
+  </div>
+
+  <div id="quizContent">
+    <div class="question-card">
+      <span class="question-number" id="questionNumber">Loading...</span>
+      <div class="question-text" id="questionText">Loading questions from database...</div>
+      <div id="codeContainer"></div>
+      <div class="options-container" id="optionsContainer"></div>
+      <div class="explanation-box" id="explanationBox">
+        <div class="explanation-title">💡 Expert Explanation</div>
+        <div class="explanation-text" id="explanationText"></div>
+      </div>
+      <div class="actions">
+        <button class="btn btn-secondary" onclick="speakQuestion()">🔊 Hear Question</button>
+        <button class="btn btn-editor" onclick="openInEditor()">⚡ Try in Editor</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-screen" id="resultsScreen">
+    <div class="score-circle"><div class="score-text"><div class="score-number" id="finalScore">0%</div><div style="font-size:16px;color:#b0b3d6;margin-top:5px">Final Score</div></div></div>
+    <h2 style="font-size:32px;margin-bottom:15px;color:#f7df1e" id="resultTitle">Completed!</h2>
+    <p style="font-size:18px;color:#b0b3d6;margin-bottom:30px" id="resultDesc"></p>
+    <div class="actions">
+      <button class="btn btn-secondary" onclick="restartQuiz()">🔄 Retake</button>
+      <button class="btn btn-primary" onclick="window.location.href='javascript_dashboard.html'">📚 Back to Lessons</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getFirestore, doc, getDoc, updateDoc, increment } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyAUXvl0-nMMu6Il90iZLpZOrnWkp6Anktc",
+
+authDomain:
+"code-academy-93f1e.firebaseapp.com",
+
+projectId:
+"code-academy-93f1e",
+
+storageBucket:
+"code-academy-93f1e.firebasestorage.app",
+
+messagingSenderId:
+"467127855026",
+
+appId:
+"1:467127855026:web:f28e1bb31e5a52567a66ab",
+
+measurementId:
+"G-0XR8C8Z4NW"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// GLOBAL STATE
+let currentUser = null;
+let userXP = 0;
+let currentQuestionIndex = 0;
+let score = 0;
+let streak = 0;
+let selectedOption = null;
+let timer = null;
+let timeLeft = 30;
+let questions = [];
+let totalQuestions = 200;
+
+// MAKE FUNCTIONS GLOBAL FOR HTML onclick
+window.exitQuiz = function(){
+  if(confirm('Exit quiz? Progress will be lost.')){
+    window.location.href = 'javascript_dashboard.html';
+  }
+}
+
+window.speakQuestion = function(){
+  if(!questions.length) return;
+  const q = questions[currentQuestionIndex];
+  let text = `Question ${currentQuestionIndex + 1}. ${q.q}. `;
+  q.options.forEach((opt, idx) => {
+    text += `Option ${String.fromCharCode(65 + idx)}. ${opt}. `;
+  });
+  speakText(text);
+}
+
+window.openInEditor = function(){
+  if(!questions.length) return;
+  const q = questions[currentQuestionIndex];
+  const code = q.code || '// Write JavaScript here\nconsole.log("Hello World");';
+  const encodedCode = encodeURIComponent(code);
+  window.location.href = `html_editor.html?code=${encodedCode}&lang=javascript`;
+}
+
+window.nextQuestion = function(){
+  currentQuestionIndex++;
+  if(currentQuestionIndex >= questions.length){
+    showResults();
+  } else {
+    document.getElementById('timer').classList.remove('warning');
+    loadQuestion();
+  }
+}
+
+window.restartQuiz = function(){
+  currentQuestionIndex = 0;
+  score = 0;
+  streak = 0;
+  document.getElementById('quizContent').style.display = 'block';
+  document.getElementById('resultsScreen').style.display = 'none';
+  document.getElementById('timer').classList.remove('warning');
+  loadQuestion();
+}
+
+// LOAD QUESTIONS FROM JSON
+async function loadQuestions(){
+  try{
+    const response = await fetch('java_quiz.json');
+    const data = await response.json();
+    questions = data.quiz;
+    totalQuestions = questions.length;
+    
+    // Shuffle questions for randomness
+    questions = questions.sort(() => Math.random() - 0.5).slice(0, totalQuestions);
+    
+    // Start quiz after loading
+    if(currentUser){
+      await loadUserXP();
+      loadQuestion();
+    }
+  } catch(error){
+    document.getElementById('questionText').textContent = 'Error loading questions. Check java_quiz.json file exists.';
+    console.error('Failed to load questions:', error);
+  }
+}
+
+async function loadUserXP(){
+  const userRef = doc(db, 'users', currentUser.uid);
+  const snap = await getDoc(userRef);
+  if(snap.exists()){
+    userXP = snap.data().xp || 0;
+    document.getElementById('currentXP').textContent = `XP: ${userXP}`;
+  }
+}
+
+function loadQuestion(){
+  if(!questions.length) return;
+  const q = questions[currentQuestionIndex];
+
+  document.getElementById('questionNumber').textContent = `Question ${currentQuestionIndex + 1}/${totalQuestions}`;
+  document.getElementById('qCounter').textContent = `${currentQuestionIndex + 1}/${totalQuestions}`;
+  document.getElementById('questionText').textContent = q.q;
+
+  // Code snippet
+  const codeContainer = document.getElementById('codeContainer');
+  if(q.code){
+    codeContainer.innerHTML = `<div class="code-snippet"><pre>${q.code}</pre></div>`;
+  } else {
+    codeContainer.innerHTML = '';
+  }
+
+  // Options
+  const optionsContainer = document.getElementById('optionsContainer');
+  optionsContainer.innerHTML = '';
+  q.options.forEach((opt, idx) => {
+    const optionEl = document.createElement('div');
+    optionEl.className = 'option';
+    optionEl.innerHTML = `
+      <div class="option-letter">${String.fromCharCode(65 + idx)}</div>
+      <div class="option-text">${opt}</div>
+    `;
+    optionEl.onclick = () => selectOption(idx, optionEl);
+    optionsContainer.appendChild(optionEl);
+  });
+
+  // Reset
+  document.getElementById('explanationBox').style.display = 'none';
+  document.getElementById('nextBtn').disabled = true;
+  selectedOption = null;
+
+  // Update progress
+  const progress = (currentQuestionIndex / totalQuestions) * 100;
+  document.getElementById('progressBar').style.width = progress + '%';
+
+  // Start timer
+  startTimer();
+}
+
+function startTimer(){
+  timeLeft = 30;
+  updateTimerDisplay();
+
+  timer = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+
+    if(timeLeft <= 10){
+      document.getElementById('timer').classList.add('warning');
+    }
+
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      handleTimeout();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay(){
+  document.getElementById('timer').textContent = timeLeft + 's';
+}
+
+function handleTimeout(){
+  speakText("Time's up! Moving to next question.");
+  streak = 0;
+  document.getElementById('streakCounter').textContent = streak;
+  showExplanation(-1);
+}
+
+function selectOption(index, element){
+  if(selectedOption !== null) return;
+
+  clearInterval(timer);
+  selectedOption = index;
+
+  const options = document.querySelectorAll('.option');
+  options.forEach(opt => opt.style.pointerEvents = 'none');
+
+  element.classList.add('selected');
+
+  const q = questions[currentQuestionIndex];
+  const isCorrect = index === q.answer;
+
+  setTimeout(() => {
+    options[q.answer].classList.add('correct');
+    if(!isCorrect){
+      element.classList.add('wrong');
+    }
+
+    if(isCorrect){
+      score++;
+      streak++;
+      userXP += 100;
+      speakText("Correct! Well done.");
+    } else {
+      streak = 0;
+      userXP = Math.max(0, userXP - 20);
+      speakText("Incorrect. Let me explain.");
+    }
+
+    document.getElementById('currentXP').textContent = `XP: ${userXP}`;
+    document.getElementById('scoreCounter').textContent = score;
+    document.getElementById('streakCounter').textContent = streak;
+
+    showExplanation(index);
+    document.getElementById('nextBtn').disabled = false;
+  }, 500);
+}
+
+function showExplanation(selectedIdx){
+  const q = questions[currentQuestionIndex];
+  const explanationBox = document.getElementById('explanationBox');
+  const explanationText = document.getElementById('explanationText');
+
+  explanationText.textContent = q.explanation;
+  explanationBox.style.display = 'block';
+}
+
+async function showResults(){
+  clearInterval(timer);
+
+  document.getElementById('quizContent').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+
+  const percentage = Math.round((score / totalQuestions) * 100);
+  document.getElementById('finalScore').textContent = percentage + '%';
+
+  // Save XP to Firebase
+  if(currentUser){
+    const userRef = doc(db, 'users', currentUser.uid);
+    await updateDoc(userRef, {
+      xp: userXP,
+      jsQuizScore: percentage,
+      jsQuizCompleted: true
+    });
+  }
+
+  let title = '';
+  let desc = '';
+  if(percentage >= 90){
+    title = '🏆 JavaScript Master!';
+    desc = `Outstanding! ${percentage}%. +${score * 100} XP earned!`;
+    speakText(`Congratulations! JavaScript Master with ${percentage} percent!`);
+  } else if(percentage >= 70){
+    title = '🎯 Excellent Work!';
+    desc = `Great job! ${percentage}%. +${score * 100} XP earned!`;
+    speakText(`Excellent work! ${percentage} percent!`);
+  } else if(percentage >= 50){
+    title = '👍 Good Effort!';
+    desc = `${percentage}%. Keep practicing to improve.`;
+    speakText(`Good effort! ${percentage} percent. Keep practicing!`);
+  } else {
+    title = '📚 Keep Learning!';
+    desc = `${percentage}%. Review explanations and try again.`;
+    speakText(`Keep learning! ${percentage} percent. Review and try again.`);
+  }
+
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultDesc').textContent = desc;
+  document.getElementById('progressBar').style.width = '100%';
+}
+
+// AI VOICE
+function speakText(text){
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+
+    const speakingIndicator = document.getElementById('speakingIndicator');
+    utterance.onstart = () => speakingIndicator.classList.add('show');
+    utterance.onend = () => speakingIndicator.classList.remove('show');
+
+    speechSynthesis.speak(utterance);
+  }
+}
+
+// INIT
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    await loadQuestions();
+  } else {
+    alert('Please login first');
+    window.location.href = 'login.html';
+  }
+});
+
+if('speechSynthesis' in window){
+  speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+}
+</script>
+
+</body>
+</html>

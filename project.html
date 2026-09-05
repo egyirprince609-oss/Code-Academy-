@@ -1,0 +1,658 @@
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Projects - Code Academy</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172a;
+  --primary:#38bdf8;
+  --primary-glow:rgba(56,189,248,0.4);
+  --text:#f1f5f9;
+  --text-dim:#94a3b8;
+  --border:rgba(56,189,248,0.15);
+  --success:#22c55e;
+  --danger:#ef4444;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Segoe UI',sans-serif;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding-bottom:100px;
+}
+
+body::before{
+  content:'';
+  position:fixed;
+  top:-50%;
+  left:-50%;
+  width:200%;
+  height:200%;
+  background:radial-gradient(circle at 20% 30%, rgba(56,189,248,0.1) 0%, transparent 50%),
+             radial-gradient(circle at 80% 70%, rgba(168,85,247,0.08) 0%, transparent 50%);
+  z-index:-1;
+  animation:float 20s ease-in-out infinite;
+}
+@keyframes float{
+ 0%,100%{transform:translate(0,0);}
+ 50%{transform:translate(40px,40px);}
+}
+
+.navbar{
+  position:sticky;
+  top:0;
+  width:100%;
+  height:75px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 20px;
+  background:rgba(15,23,42,0.8);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  z-index:100;
+}
+
+.backBtn{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:rgba(30,41,59,0.6);
+  border:1px solid var(--border);
+  color:var(--primary);
+  font-size:18px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.3s;
+}
+.backBtn:hover{
+  background:var(--primary);
+  color:var(--bg);
+  transform:translateX(-4px);
+}
+
+.navBrand h2{
+  font-size:20px;
+  background:linear-gradient(135deg,var(--primary),#0ea5e9);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-weight:800;
+}
+
+.addBtn{
+  width:44px;
+  height:44px;
+  border-radius:14px;
+  background:var(--primary);
+  border:none;
+  color:var(--bg);
+  font-size:20px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.3s;
+  box-shadow:0 8px 25px var(--primary-glow);
+}
+.addBtn:hover{
+  transform:scale(1.1) rotate(90deg);
+  box-shadow:0 12px 35px var(--primary-glow);
+}
+
+.container{
+  max-width:900px;
+  margin:30px auto;
+  padding:0 20px;
+}
+
+.header{
+  margin-bottom:30px;
+}
+.header h1{
+  font-size:28px;
+  font-weight:800;
+  margin-bottom:8px;
+}
+.header p{
+  color:var(--text-dim);
+  font-size:14px;
+}
+
+.projectsGrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:20px;
+}
+
+.projectCard{
+  background:rgba(15,23,42,0.6);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--border);
+  border-radius:24px;
+  
+  transition:all 0.4s;
+  cursor:pointer;
+}
+.projectCard:hover{
+  transform:translateY(-10px);
+  border-color:var(--primary);
+  box-shadow:0 25px 60px var(--primary-glow);
+}
+
+.projectThumb{
+  width:100%;
+  height:160px;
+  background:linear-gradient(135deg,#1e293b,#0f172a);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:50px;
+  color:var(--primary);
+  position:relative;
+       
+}
+.projectThumb img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.projectBody{
+  padding:20px;
+class=""}
+.projectTitle{
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:8px;
+}
+.projectDesc{
+  font-size:13px;
+  color:var(--text-dim);
+  line-height:1.6;
+  margin-bottom:15px;
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+.projectTags{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:15px;
+}
+.tag{
+  font-size:11px;
+  padding:4px 10px;
+  background:rgba(56,189,248,0.15);
+  color:var(--primary);
+  border-radius:8px;
+  font-weight:600;
+}
+
+.projectFooter{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding-top:15px;
+  border-top:1px solid var(--border);
+}
+.projectDate{
+  font-size:12px;
+  color:var(--text-dim);
+}
+.projectActions{
+  display:flex;
+  gap:10px;
+}
+.actionBtn{
+  width:32px;
+  height:32px;
+  border-radius:10px;
+  background:rgba(30,41,59,0.8);
+  border:1px solid var(--border);
+  color:var(--text-dim);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:all 0.2s;
+}
+.actionBtn:hover{
+  background:var(--primary);
+  color:var(--bg);
+}
+.actionBtn.delete:hover{
+  background:var(--danger);
+  color:white;
+}
+
+.emptyState{
+  text-align:center;
+  padding:100px 20px;
+  grid-column:1/-1;
+}
+.emptyState i{
+  font-size:80px;
+  color:var(--primary);
+  opacity:0.3;
+  margin-bottom:20px;
+}
+.emptyState h3{
+  font-size:22px;
+  margin-bottom:10px;
+}
+.emptyState p{
+  color:var(--text-dim);
+}
+
+.modal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.8);
+  backdrop-filter:blur(10px);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:200;
+  animation:fadeIn 0.3s;
+}
+.modal.active{display:flex;}
+
+.modalContent{
+  background:rgba(15,23,42,0.95);
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:30px;
+  width:90%;
+  max-width:500px;
+  animation:slideUp 0.3s;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes slideUp{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+.modalHeader{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:25px;
+}
+.modalHeader h3{
+  font-size:22px;
+  font-weight:800;
+}
+.modalClose{
+  background:none;
+  border:none;
+  color:var(--text-dim);
+  font-size:24px;
+  cursor:pointer;
+}
+
+.formGroup{
+  margin-bottom:20px;
+}
+.formGroup label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:8px;
+  color:var(--text-dim);
+}
+.formGroup input,
+.formGroup textarea{
+  width:100%;
+  padding:14px;
+  background:rgba(30,41,59,0.8);
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--text);
+  font-size:15px;
+  outline:none;
+  transition:all 0.3s;
+}
+.formGroup input:focus,
+.formGroup textarea:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px var(--primary-glow);
+}
+.formGroup textarea{
+  resize:vertical;
+  min-height:100px;
+}
+
+.modalActions{
+  display:flex;
+  gap:12px;
+  margin-top:25px;
+}
+.btn{
+  flex:1;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.btn-primary{
+  background:var(--primary);
+  color:var(--bg);
+}
+.btn-primary:hover{
+  box-shadow:0 8px 25px var(--primary-glow);
+  transform:translateY(-2px);
+}
+.btn-secondary{
+  background:rgba(30,41,59,0.8);
+  color:var(--text-dim);
+  border:1px solid var(--border);
+}
+
+.loading{
+  text-align:center;
+  padding:100px 20px;
+  color:var(--primary);
+}
+
+@media(max-width:640px){
+  .projectsGrid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <button class="backBtn" onclick="history.back()">
+    <i class="fa fa-arrow-left"></i>
+  </button>
+  <div class="navBrand">
+    <h2>My Projects</h2>
+  </div>
+  <button class="addBtn" id="addBtn">
+    <i class="fa fa-plus"></i>
+  </button>
+</nav>
+
+<div class="container">
+  <div class="header">
+    <h1>Portfolio Projects</h1>
+    <p>Projects you create in the editor appear here automatically</p>
+  </div>
+
+  <div id="loading" class="loading">
+    <i class="fa fa-spinner fa-spin"></i> Loading projects...
+  </div>
+
+  <div id="projectsGrid" class="projectsGrid" style="display:none;"></div>
+</div>
+
+<div class="modal" id="projectModal">
+  <div class="modalContent">
+    <div class="modalHeader">
+      <h3 id="modalTitle">Add Project Details</h3>
+      <button class="modalClose" id="modalClose"><i class="fa fa-times"></i></button>
+    </div>
+    
+    <form id="projectForm">
+      <div class="formGroup">
+        <label>Project Title *</label>
+        <input type="text" id="projTitle" placeholder="Portfolio Website" required>
+      </div>
+      
+      <div class="formGroup">
+        <label>Description</label>
+        <textarea id="projDesc" placeholder="What does this project do?"></textarea>
+      </div>
+      
+      <div class="formGroup">
+        <label>Live Demo URL</label>
+        <input type="url" id="projUrl" placeholder="https://myproject.netlify.app">
+      </div>
+      
+      <div class="formGroup">
+        <label>GitHub Repo</label>
+        <input type="url" id="projGithub" placeholder="https://github.com/username/repo">
+      </div>
+      
+      <div class="formGroup">
+        <label>Tech Stack</label>
+        <input type="text" id="projTags" placeholder="HTML, CSS, JavaScript">
+      </div>
+      
+      <div class="formGroup">
+        <label>Thumbnail Image URL</label>
+        <input type="url" id="projImage" placeholder="https://.../screenshot.png">
+      </div>
+      
+      <div class="modalActions">
+        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+        <button type="submit" class="btn btn-primary">Save Details</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDDHzPkR4jIMz6fcK7M_hdjQk2u6xk-efI",
+  authDomain: "code-acada.firebaseapp.com",
+  projectId: "code-acada",
+  storageBucket: "code-acada.appspot.com",
+  messagingSenderId: "155763239454",
+  appId: "1:155763239454:web:7fc20b0037dcd8e5621c0f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser = null;
+let editingId = null;
+let editorProjects = [];
+
+const addBtn = document.getElementById('addBtn');
+const modal = document.getElementById('projectModal');
+const modalClose = document.getElementById('modalClose');
+const cancelBtn = document.getElementById('cancelBtn');
+const projectForm = document.getElementById('projectForm');
+const projectsGrid = document.getElementById('projectsGrid');
+const loading = document.getElementById('loading');
+
+onAuthStateChanged(auth, async (user) => {
+  if(user){
+    currentUser = user;
+    loadProjects();
+  } else {
+    window.location.href = 'login.html';
+  }
+});
+
+addBtn.onclick = () => openModal();
+modalClose.onclick = closeModal;
+cancelBtn.onclick = closeModal;
+modal.onclick = (e) => { if(e.target === modal) closeModal(); }
+
+function openModal(project = null){
+  editingId = project ? project.id : null;
+  document.getElementById('modalTitle').textContent = project ? 'Edit Project Details' : 'Add Project Details';
+  
+  if(project){
+    document.getElementById('projTitle').value = project.title || project.name;
+    document.getElementById('projDesc').value = project.description || '';
+    document.getElementById('projUrl').value = project.url || '';
+    document.getElementById('projGithub').value = project.github || '';
+    document.getElementById('projTags').value = project.tags?.join(', ') || '';
+    document.getElementById('projImage').value = project.image || '';
+  } else {
+    projectForm.reset();
+  }
+  
+  modal.classList.add('active');
+}
+
+function closeModal(){
+  modal.classList.remove('active');
+  projectForm.reset();
+  editingId = null;
+}
+
+projectForm.onsubmit = async (e) => {
+  e.preventDefault();
+  
+  const data = {
+    title: document.getElementById('projTitle').value,
+    description: document.getElementById('projDesc').value,
+    url: document.getElementById('projUrl').value,
+    github: document.getElementById('projGithub').value,
+    tags: document.getElementById('projTags').value.split(',').map(t => t.trim()).filter(t => t),
+    image: document.getElementById('projImage').value,
+    updatedAt: serverTimestamp()
+  };
+  
+  try{
+    if(editingId){
+      await updateDoc(doc(db, 'users', currentUser.uid, 'projects', editingId), data);
+    } else {
+      data.createdAt = serverTimestamp();
+      await addDoc(collection(db, 'users', currentUser.uid, 'projects'), data);
+    }
+    
+    closeModal();
+    loadProjects();
+  } catch(error){
+    alert('Error saving: ' + error.message);
+  }
+}
+
+async function loadProjects(){
+  const q = query(collection(db, 'users', currentUser.uid, 'projects'), orderBy('updatedAt', 'desc'));
+  const snap = await getDocs(q);
+  
+  projectsGrid.innerHTML = '';
+  editorProjects = [];
+  
+  if(snap.empty){
+    projectsGrid.innerHTML = `
+      <div class="emptyState">
+        <i class="fa fa-folder-open"></i>
+        <h3>No projects yet</h3>
+        <p>Create a project in the editor and it will show up here</p>
+      </div>
+    `;
+  } else {
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      editorProjects.push({id: docSnap.id, ...data});
+      const card = createProjectCard(docSnap.id, data);
+      projectsGrid.appendChild(card);
+    });
+  }
+  
+  loading.style.display = 'none';
+  projectsGrid.style.display = 'grid';
+}
+
+function createProjectCard(id, data){
+  const card = document.createElement('div');
+  card.className = 'projectCard';
+  
+  // Map editor project fields to portfolio fields
+  const title = data.title || data.name || 'Untitled Project';
+  const description = data.description || generateDescription(data.files);
+  const tags = data.tags || detectTags(data.files);
+  const date = data.updatedAt?.toDate().toLocaleDateString() || 'Just now';
+  
+  const tagsHTML = tags.map(t => `<span class="tag">${t}</span>`).join('');
+  
+  card.innerHTML = `
+    <div class="projectThumb" onclick="openEditor('${id}')">
+      ${data.image ? `<img src="${data.image}" alt="${title}">` : `<i class="fa fa-code"></i>`}
+    </div>
+    <div class="projectBody">
+      <h3 class="projectTitle">${title}</h3>
+      <p class="projectDesc">${description}</p>
+      <div class="projectTags">${tagsHTML}</div>
+      <div class="projectFooter">
+        <span class="projectDate">${date}</span>
+        <div class="projectActions">
+          <button class="actionBtn" onclick="openEditor('${id}')" title="Open in Editor"><i class="fa fa-code"></i></button>
+          ${data.url ? `<button class="actionBtn" onclick="window.open('${data.url}', '_blank')" title="Live Demo"><i class="fa fa-external-link"></i></button>` : ''}
+          ${data.github ? `<button class="actionBtn" onclick="window.open('${data.github}', '_blank')" title="GitHub"><i class="fa fa-github"></i></button>` : ''}
+          <button class="actionBtn" onclick="editProject('${id}')" title="Edit Details"><i class="fa fa-edit"></i></button>
+          <button class="actionBtn delete" onclick="deleteProject('${id}')" title="Delete"><i class="fa fa-trash"></i></button>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  return card;
+}
+
+function generateDescription(files){
+  if(!files) return 'Project created in Code Academy Editor';
+  const fileCount = Object.keys(files).length;
+  const hasHTML = Object.keys(files).some(f => f.endsWith('.html'));
+  const hasCSS = Object.keys(files).some(f => f.endsWith('.css'));
+  const hasJS = Object.keys(files).some(f => f.endsWith('.js'));
+  
+  let tech = [];
+  if(hasHTML) tech.push('HTML');
+  if(hasCSS) tech.push('CSS');
+  if(hasJS) tech.push('JavaScript');
+  
+  return `${fileCount} file(s) • Built with ${tech.join(', ')}`;
+}
+
+function detectTags(files){
+  if(!files) return ['Web'];
+  let tags = [];
+  if(Object.keys(files).some(f => f.endsWith('.html'))) tags.push('HTML');
+  if(Object.keys(files).some(f => f.endsWith('.css'))) tags.push('CSS');
+  if(Object.keys(files).some(f => f.endsWith('.js'))) tags.push('JavaScript');
+  return tags.length ? tags : ['Web'];
+}
+
+window.openEditor = (id) => {
+  window.location.href = `code_edit.html?id=${id}`;
+}
+
+window.editProject = async (id) => {
+  const project = editorProjects.find(p => p.id === id);
+  if(project) openModal(project);
+}
+
+window.deleteProject = async (id) => {
+  if(confirm('Delete this project? This will delete all files too.')){
+    await deleteDoc(doc(db, 'users', currentUser.uid, 'projects', id));
+    loadProjects();
+  }
+}
+</script>
+
+</body>
+</html>

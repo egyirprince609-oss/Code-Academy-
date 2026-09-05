@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Project Engine - Build Real Apps</title>
+
+<style>
+:root{
+    --bg: #050816;
+    --bg-2: #0b1220;
+    --border: rgba(255,255,255,0.08);
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --text-muted: #94a3b8;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+
+body{
+    background:radial-gradient(circle at 30% 20%, #0b1220 0%, #050816 50%, #020617 100%);
+    color:var(--text);
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+}
+
+/* ANIMATED GRID */
+body::before{
+    content:'';
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background-image:
+        linear-gradient(rgba(245,158,11,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(245,158,11,0.06) 1px, transparent 1px);
+    background-size:70px 70px;
+    animation:gridMove 30s linear infinite;
+    z-index:0;
+}
+
+@keyframes gridMove{
+    0%{transform:translate(0,0)}
+    100%{transform:translate(70px,70px)}
+}
+
+.glow{
+    position:fixed;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle, rgba(245,158,11,0.12) 0%, transparent 70%);
+    border-radius:50%;
+    filter:blur(100px);
+    animation:float 20s ease-in-out infinite;
+    z-index:0;
+}
+
+@keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(80px,-80px) scale(1.2)}
+}
+
+/* NAVBAR */
+.navbar{
+    height:72px;
+    background:rgba(11,18,32,0.8);
+    backdrop-filter:blur(24px);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 40px;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:18px;
+    font-weight:700;
+    background:linear-gradient(135deg,#f59e0b,#fbbf24);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.btn-back{
+    height:38px;
+    padding:0 18px;
+    background:rgba(239,68,68,0.15);
+    border:1.5px solid rgba(239,68,68,0.3);
+    border-radius:10px;
+    color:#fca5a5;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.btn-back:hover{
+    background:rgba(239,68,68,0.25);
+    transform:translateX(-3px);
+}
+
+/* CONTAINER */
+.container{
+    max-width:1300px;
+    margin:0 auto;
+    padding:40px 40px 140px;
+    position:relative;
+    z-index:1;
+}
+
+/* HEADER */
+.page-title{
+    font-size:44px;
+    font-weight:900;
+    background:linear-gradient(135deg,#fcd34a 0%,#fbbf24 100%);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-align:center;
+    margin-bottom:12px;
+}
+
+.page-desc{
+    font-size:16px;
+    color:var(--text-2);
+    text-align:center;
+    margin-bottom:60px;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+}
+
+/* PROJECT CARD */
+.project-card{
+    background:rgba(255,255,255,0.04);
+    backdrop-filter:blur(20px);
+    border:2px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    transition:all 0.4s cubic-bezier(0.4,0,0.2,1);
+    position:relative;
+    animation:fadeInUp 0.6s ease backwards;
+}
+
+.project-card:nth-child(1){animation-delay:0.1s;--proj-color:#f59e0b;--proj-shadow:rgba(245,158,11,0.4)}
+.project-card:nth-child(2){animation-delay:0.2s;--proj-color:#ec4899;--proj-shadow:rgba(236,72,153,0.4)}
+.project-card:nth-child(3){animation-delay:0.3s;--proj-color:#14b8a6;--proj-shadow:rgba(20,184,166,0.4)}
+.project-card:nth-child(4){animation-delay:0.4s;--proj-color:#38bdf8;--proj-shadow:rgba(56,189,248,0.4)}
+
+@keyframes fadeInUp{
+    from{opacity:0;transform:translateY(30px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.project-card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:3px;
+    background:var(--proj-color);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform 0.4s;
+}
+
+.project-card:hover::before{
+    transform:scaleX(1);
+}
+
+.project-card:hover{
+    transform:translateY(-10px);
+    border-color:var(--proj-color);
+    box-shadow:0 25px 50px var(--proj-shadow);
+}
+
+/* CARD CONTENT */
+.card-header{
+    padding:24px 24px 16px;
+}
+
+.card-title{
+    font-size:20px;
+    font-weight:700;
+    color:var(--text);
+    margin-bottom:6px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.difficulty{
+    display:inline-block;
+    padding:4px 10px;
+    background:var(--proj-color);
+    color:var(--bg);
+    border-radius:6px;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-left:8px;
+}
+
+/* DEFINITION */
+.definition{
+    margin-top:16px;
+    padding:16px;
+    background:rgba(0,0,0,0.3);
+    border-left:3px solid var(--proj-color);
+    border-radius:8px;
+    font-size:13px;
+    color:var(--text-2);
+    line-height:1.7;
+}
+
+.definition strong{
+    color:var(--proj-color);
+}
+
+/* WHAT YOU LEARN */
+.learn-box{
+    margin-top:14px;
+    padding:14px;
+    background:rgba(0,0,0,0.2);
+    border:1px solid var(--border);
+    border-radius:10px;
+}
+
+.learn-label{
+    font-size:11px;
+    color:var(--text-muted);
+    text-transform:uppercase;
+    letter-spacing:0.8px;
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.learn-list{
+    font-size:12px;
+    color:var(--text-2);
+    line-height:1.8;
+}
+
+/* ACCORDION */
+.accordion{
+    margin-top:16px;
+    border-top:1px solid var(--border);
+}
+
+.accordion-btn{
+    width:100%;
+    padding:14px 0;
+    background:none;
+    border:none;
+    color:var(--text-2);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    transition:0.3s;
+}
+
+.accordion-btn:hover{
+    color:var(--proj-color);
+}
+
+.accordion-icon{
+    transition:0.3s;
+}
+
+.accordion-btn.active.accordion-icon{
+    transform:rotate(180deg);
+}
+
+.accordion-content{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height 0.4s ease;
+    font-size:13px;
+    color:var(--text-muted);
+    line-height:1.8;
+}
+
+.accordion-content.open{
+    max-height:600px;
+    padding-bottom:20px;
+}
+
+/* PREVIEW */
+.card-preview{
+    padding:24px;
+    min-height:120px;
+    background:rgba(0,0,0,0.2);
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    color:var(--text-muted);
+}
+
+/* ACTIONS */
+.card-actions{
+    padding:16px 24px;
+    display:flex;
+    gap:12px;
+}
+
+.btn{
+    flex:1;
+    height:38px;
+    background:var(--bg);
+    border:1.5px solid var(--border);
+    border-radius:10px;
+    color:var(--text-2);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.btn:hover{
+    background:var(--proj-color);
+    color:var(--bg);
+    border-color:var(--proj-color);
+}
+
+.btn.secondary{
+    background:rgba(255,255,255,0.05);
+}
+
+/* MODAL */
+.modal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(5,8,22,0.9);
+    backdrop-filter:blur(16px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+}
+
+.modal.active{display:flex}
+
+.modal-content{
+    width:92%;
+    max-width:950px;
+    max-height:85vh;
+    background:var(--bg-2);
+    border:2px solid var(--border);
+    border-radius:20px;
+    overflow:hidden;
+    animation:modalIn 0.4s ease;
+}
+
+@keyframes modalIn{
+    from{opacity:0;transform:scale(0.9)}
+    to{opacity:1;transform:scale(1)}
+}
+
+.modal-header{
+    height:60px;
+    padding:0 28px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--bg);
+}
+
+.modal-title{
+    font-size:16px;
+    font-weight:700;
+    color:var(--text);
+}
+
+.modal-close{
+    width:34px;
+    height:34px;
+    background:var(--bg-2);
+    border:1.5px solid var(--border);
+    border-radius:6px;
+    color:var(--text-muted);
+    cursor:pointer;
+    font-size:20px;
+}
+
+.code-header{
+    height:44px;
+    padding:0 24px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:var(--bg);
+    font-size:12px;
+    color:var(--text-muted);
+}
+
+.btn-copy{
+    height:30px;
+    padding:0 14px;
+    background:var(--bg-2);
+    border:1.5px solid var(--border);
+    border-radius:6px;
+    color:var(--text-2);
+    font-size:12px;
+    cursor:pointer;
+}
+
+.code-content{
+    padding:24px;
+    font-family:'Fira Code',monospace;
+    font-size:13px;
+    line-height:1.8;
+    overflow-x:auto;
+    background:var(--bg);
+}
+
+.code-line{
+    display:flex;
+    gap:16px;
+    margin-bottom:4px;
+}
+
+.line-num{
+    color:var(--text-muted);
+    min-width:40px;
+    text-align:right;
+    font-size:11px;
+}
+
+/* LINE EXPLANATION */
+.line-explanation{
+    padding:20px 24px;
+    background:rgba(0,0,0,0.3);
+    border-top:1px solid var(--border);
+    max-height:350px;
+    overflow-y:auto;
+}
+
+.line-exp-item{
+    margin-bottom:16px;
+    padding:14px;
+    background:rgba(255,255,255,0.03);
+    border-radius:8px;
+    border-left:3px solid var(--proj-color);
+}
+
+.line-exp-item strong{
+    color:var(--proj-color);
+    font-size:12px;
+    display:block;
+    margin-bottom:8px;
+}
+
+.line-exp-item p{
+    font-size:12px;
+    color:var(--text-2);
+    line-height:1.6;
+}
+
+.footer{
+    position:fixed;
+    bottom:0;
+    width:100%;
+    height:54px;
+    background:rgba(11,18,32,0.9);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    color:var(--text-muted);
+}
+
+@media(max-width:1024px){.grid{grid-template-columns:1fr}}
+@media(max-width:640px){.container{padding:30px 24px 140px}}
+
+.kw{color:#c792ea}
+.str{color:#c3e88d}
+.fn{color:#82aaff}
+.com{color:#546e7a}
+</style>
+</head>
+
+<body>
+<div class="glow"></div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <button class="btn-back" onclick="history.back()">← Back</button>
+    <div class="logo">🚀 React Project Engine</div>
+    <div></div>
+</nav>
+
+<div class="container">
+    <h1 class="page-title">Build Real React Projects</h1>
+    <p class="page-desc">Apply everything you learned by building portfolio-ready applications from scratch</p>
+
+    <div class="grid">
+
+        <!-- TODO APP -->
+        <div class="project-card">
+            <div class="card-header">
+                <div class="card-title">✅ Todo App <span class="difficulty">Beginner</span></div>
+
+                <div class="definition">
+                    <strong>Project Goal:</strong> Build a task management app where users can add, delete, and mark tasks as complete. Learn state management and event handling.
+                </div>
+
+                <div class="learn-box">
+                    <div class="learn-label">You will learn</div>
+                    <div class="learn-list">
+                        • useState for task list management<br>
+                        • Form handling and input validation<br>
+                        • Array methods: map, filter for CRUD operations<br>
+                        • Conditional rendering for completed tasks
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <button class="accordion-btn" onclick="toggleAccordion(this)">
+                        <span>📖 Project Breakdown</span>
+                        <span class="accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        This project teaches core React concepts through a real-world app.
+                        <br><br>
+                        <strong>Features to build:</strong>
+                        <br>• Add new tasks with input field
+                        <br>• Mark tasks complete/incomplete with checkbox
+                        <br>• Delete tasks with button
+                        <br>• Show count of remaining tasks
+                        <br>• Filter: All, Active, Completed
+                        <br><br>
+                        <strong>Why this project:</strong> Every React developer builds a Todo app first. It covers 80% of basic React patterns you'll use daily.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-preview">
+                Preview: Input field + Task list + Checkboxes + Delete buttons
+            </div>
+
+            <div class="card-actions">
+                <button class="btn" onclick="openProjectCode('todo')">💻 View Code</button>
+                <button class="btn secondary" onclick="explainProjectCode('todo')">📝 Explain Lines</button>
+            </div>
+        </div>
+
+        <!-- DASHBOARD UI -->
+        <div class="project-card">
+            <div class="card-header">
+                <div class="card-title">📊 Dashboard UI <span class="difficulty">Intermediate</span></div>
+
+                <div class="definition">
+                    <strong>Project Goal:</strong> Build an admin dashboard with charts, stats cards, and responsive sidebar. Learn component composition and layout design.
+                </div>
+
+                <div class="learn-box">
+                    <div class="learn-label">You will learn</div>
+                    <div class="learn-list">
+                        • Reusable component architecture<br>
+                        • Props drilling vs Context for theme<br>
+                        • Responsive grid layouts<br>
+                        • Data visualization with state
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <button class="accordion-btn" onclick="toggleAccordion(this)">
+                        <span>📖 Project Breakdown</span>
+                        <span class="accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        Build a professional dashboard like Vercel or Stripe.
+                        <br><br>
+                        <strong>Features to build:</strong>
+                        <br>• Sidebar navigation with icons
+                        <br>• Stats cards showing metrics
+                        <br>• Chart components for data visualization
+                        <br>• Dark/light theme toggle using Context
+                        <br>• Responsive design for mobile
+                        <br><br>
+                        <strong>Why this project:</strong> Dashboards are 70% of real business apps. This teaches you component composition at scale.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-preview">
+                Preview: Sidebar + Stats cards + Charts + Theme toggle
+            </div>
+
+            <div class="card-actions">
+                <button class="btn" onclick="openProjectCode('dashboard')">💻 View Code</button>
+                <button class="btn secondary" onclick="explainProjectCode('dashboard')">📝 Explain Lines</button>
+            </div>
+        </div>
+
+        <!-- BLOG SYSTEM -->
+        <div class="project-card">
+            <div class="card-header">
+                <div class="card-title">📝 Blog System <span class="difficulty">Advanced</span></div>
+
+                <div class="definition">
+                    <strong>Project Goal:</strong> Build a full blog with posts list, individual post pages, and create/edit functionality. Learn routing and state management.
+                </div>
+
+                <div class="learn-box">
+                    <div class="learn-label">You will learn</div>
+                    <div class="learn-list">
+                        • React Router for page navigation<br>
+                        • Dynamic routing with URL parameters<br>
+                        • CRUD operations for posts<br>
+                        • Form handling with validation
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <button class="accordion-btn" onclick="toggleAccordion(this)">
+                        <span>📖 Project Breakdown</span>
+                        <span class="accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        Build a complete blog platform like Medium.
+                        <br><br>
+                        <strong>Features to build:</strong>
+                        <br>• Homepage with all blog posts
+                        <br>• Individual post detail page /post/:id
+                        <br>• Create new post form
+                        <br>• Edit existing posts
+                        <br>• Delete posts with confirmation
+                        <br><br>
+                        <strong>Why this project:</strong> Teaches routing, dynamic URLs, and full CRUD operations. Portfolio-ready project.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-preview">
+                Preview: Post list + Detail page + Create/Edit forms + Routing
+            </div>
+
+            <div class="card-actions">
+                <button class="btn" onclick="openProjectCode('blog')">💻 View Code</button>
+                <button class="btn secondary" onclick="explainProjectCode('blog')">📝 Explain Lines</button>
+            </div>
+        </div>
+
+        <!-- E-COMMERCE CART -->
+        <div class="project-card">
+            <div class="card-header">
+                <div class="card-title">🛒 E-Commerce Cart <span class="difficulty">Advanced</span></div>
+
+                <div class="definition">
+                    <strong>Project Goal:</strong> Build a shopping cart with product list, add to cart, quantity management, and total calculation. Learn complex state logic.
+                </div>
+
+                <div class="learn-box">
+                    <div class="learn-label">You will learn</div>
+                    <div class="learn-list">
+                        • Complex state with useReducer<br>
+                        • Cart operations: add, remove, update qty<br>
+                        • Price calculations and totals<br>
+                        • LocalStorage for cart persistence
+                    </div>
+                </div>
+
+                <div class="accordion">
+                    <button class="accordion-btn" onclick="toggleAccordion(this)">
+                        <span>📖 Project Breakdown</span>
+                        <span class="accordion-icon">▼</span>
+                    </button>
+                    <div class="accordion-content">
+                        Build a real shopping cart like Amazon.
+                        <br><br>
+                        <strong>Features to build:</strong>
+                        <br>• Product grid with images and prices
+                        <br>• Add to cart functionality
+                        <br>• Cart sidebar with item list
+                        <br>• Increase/decrease quantity
+                        <br>• Calculate subtotal, tax, total
+                        <br>• Save cart to localStorage
+                        <br><br>
+                        <strong>Why this project:</strong> Complex state management. useReducer teaches you Redux patterns. Highly valuable for jobs.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-preview">
+                Preview: Product grid + Cart sidebar + Quantity controls + Total
+            </div>
+
+            <div class="card-actions">
+                <button class="btn" onclick="openProjectCode('ecommerce')">💻 View Code</button>
+                <button class="btn secondary" onclick="explainProjectCode('ecommerce')">📝 Explain Lines</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- CODE MODAL -->
+<div id="codeModal" class="modal" onclick="if(event.target.id==='codeModal') closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">Project Code</div>
+            <button class="modal-close" onclick="closeModal()">×</button>
+        </div>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
+<div class="footer">React Project Engine Pro • Build Portfolio-Ready Apps</div>
+
+<script>
+// ACCORDION
+function toggleAccordion(btn){
+    const content = btn.nextElementSibling;
+    content.classList.toggle('open');
+    btn.classList.toggle('active');
+}
+
+// PROJECT CODE DATA
+const projectData = {
+    todo: {
+        title: 'Todo App - Complete Code & Line Explanation',
+        code: `import React, { useState } from 'react';
+
+function TodoApp() {
+  const [tasks, setTasks] = useState([]);
+  const [input, setInput] = useState('');
+
+  const addTask = () => {
+    if(input.trim() === '') return;
+    setTasks([...tasks, { id: Date.now(), text: input, done: false }]);
+    setInput('');
+  };
+
+  const toggleTask = (id) => {
+    setTasks(tasks.map(task =>
+      task.id === id? {...task, done:!task.done } : task
+    ));
+  };
+
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(task => task.id!== id));
+  };
+
+  return (
+    <div>
+      <input
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Add task..."
+      />
+      <button onClick={addTask}>Add</button>
+
+      {tasks.map(task => (
+        <div key={task.id}>
+          <input
+            type="checkbox"
+            checked={task.done}
+            onChange={() => toggleTask(task.id)}
+          />
+          <span style={{ textDecoration: task.done? 'line-through' : 'none' }}>
+            {task.text}
+          </span>
+          <button onClick={() => deleteTask(task.id)}>Delete</button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+export default TodoApp;`,
+        lineExplanations: [
+            {
+                line: 'Line 4: const [tasks, setTasks] = useState([]);',
+                explanation: 'State stores array of task objects. Empty array [] is initial state. Without useState, tasks would reset to empty array on every render and you would lose all tasks.'
+            },
+            {
+                line: 'Line 10: setTasks([...tasks, { id: Date.now(), text: input, done: false }]);',
+                explanation: 'Spread operator...tasks copies existing tasks array. Then adds new task object. Date.now() creates unique ID. If you just do setTasks(tasks.push()), it mutates array and React won\'t detect change.'
+            },
+            {
+                line: 'Line 15: tasks.map(task => task.id === id? {...task, done:!task.done } : task)',
+                explanation: 'map creates new array. If task ID matches, create new object with done toggled. Spread...task copies other properties. If you mutate task.done directly, React won\'t re-render.'
+            },
+            {
+                line: 'Line 19: tasks.filter(task => task.id!== id)',
+                explanation: 'filter returns new array excluding task with matching ID. This is immutable way to delete. If you use splice, you mutate original array and cause bugs.'
+            },
+            {
+                line: 'Line 30: key={task.id}',
+                explanation: 'key helps React identify which items changed. Must be unique. Without key, React cannot efficiently update list and you get performance issues and bugs.'
+            }
+        ]
+    },
+    dashboard: {
+        title: 'Dashboard UI - Component Structure',
+        code: `import React, { useState, createContext } from 'react';
+
+export const ThemeContext = createContext();
+
+function Dashboard() {
+  const [theme, setTheme] = useState('dark');
+
+  return (
+    <ThemeContext.Provider value={theme}>
+      <div className={\`dashboard \${theme}\`}>
+        <Sidebar />
+        <main>
+          <StatsCard title="Revenue" value="$45,231" />
+          <StatsCard title="Users" value="2,350" />
+          <Chart />
+        </main>
+      </div>
+    </ThemeContext.Provider>
+  );
+}
+
+function StatsCard({ title, value }) {
+  return (
+    <div className="card">
+      <h3>{title}</h3>
+      <p>{value}</p>
+    </div>
+  );
+}
+
+export default Dashboard;`,
+        lineExplanations: [
+            {
+                line: 'Line 3: export const ThemeContext = createContext();',
+                explanation: 'Creates context for theme. Exported so other components can import and use it. Without context, you would need to pass theme prop through every component level.'
+            },
+            {
+                line: 'Line 7: <ThemeContext.Provider value={theme}>',
+                explanation: 'Provider makes theme value available to all children. Any component inside can useContext(ThemeContext) to access it. This eliminates prop drilling.'
+            },
+            {
+                line: 'Line 12: <StatsCard title="Revenue" value="$45,231" />',
+                explanation: 'Reusable component receives data via props. Same StatsCard component used for Revenue and Users. Without props, you would duplicate code for each card.'
+            }
+        ]
+    },
+    blog: {
+        title: 'Blog System - Routing Structure',
+        code: `import React from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/create">Create Post</Link>
+      </nav>
+
+      <Routes>
+        <Route path="/" element={<PostList />} />
+        <Route path="/post/:id" element={<PostDetail />} />
+        <Route path="/create" element={<CreatePost />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;`,
+        lineExplanations: [
+            {
+                line: 'Line 2: import { BrowserRouter, Routes, Route, Link } from "react-router-dom";',
+                explanation: 'Imports routing components. BrowserRouter wraps app, Routes contains all routes, Route defines path, Link is navigation without page reload. Without this, app would refresh on every navigation.'
+            },
+            {
+                line: 'Line 9: <Route path="/post/:id" element={<PostDetail />} />',
+                explanation: ':id is URL parameter. When user visits /post/123, id = 123. PostDetail component can read this ID to fetch specific post. Dynamic routing is essential for blogs.'
+            }
+        ]
+    },
+    ecommerce: {
+        title: 'E-Commerce Cart - useReducer Logic',
+        code: `import React, { useReducer } from 'react';
+
+function cartReducer(state, action) {
+  switch(action.type) {
+    case 'ADD_ITEM':
+      return [...state, action.item];
+    case 'REMOVE_ITEM':
+      return state.filter(item => item.id!== action.id);
+    case 'UPDATE_QTY':
+      return state.map(item =>
+        item.id === action.id
+         ? {...item, qty: action.qty }
+          : item
+      );
+    default:
+      return state;
+  }
+}
+
+function Cart() {
+  const [cart, dispatch] = useReducer(cartReducer, []);
+
+  const addToCart = (product) => {
+    dispatch({ type: 'ADD_ITEM', item: product });
+  };
+
+  return (
+    <div>
+      <button onClick={() => addToCart({ id: 1, name: 'Phone', price: 999 })}>
+        Add Phone
+      </button>
+      <p>Total items: {cart.length}</p>
+    </div>
+  );
+}
+
+export default Cart;`,
+        lineExplanations: [
+            {
+                line: 'Line 3: function cartReducer(state, action) {',
+                explanation: 'Reducer function takes current state and action, returns new state. Like Redux. Better than multiple useState for complex logic. All state updates go through one function.'
+            },
+            {
+                line: 'Line 15: const [cart, dispatch] = useReducer(cartReducer, []);',
+                explanation: 'useReducer returns current state and dispatch function. dispatch sends action to reducer. Initial state is empty array []. Better for complex state than useState.'
+            },
+            {
+                line: 'Line 18: dispatch({ type: "ADD_ITEM", item: product });',
+                explanation: 'dispatch sends action object to reducer. Reducer checks action.type and updates state accordingly. This pattern scales better than multiple setState calls.'
+            }
+        ]
+    }
+};
+
+// OPEN CODE
+window.openProjectCode = function(key){
+    const data = projectData[key];
+    document.getElementById('modalTitle').textContent = data.title;
+
+    const lines = data.code.split('\n');
+    const codeHTML = lines.map((line, idx) => `
+        <div class="code-line">
+            <span class="line-num">${idx + 1}</span>
+            <span>${highlightSyntax(line)}</span>
+        </div>
+    `).join('');
+
+    document.getElementById('modalBody').innerHTML = `
+        <div class="code-header">
+            <span>Project Code</span>
+            <button class="btn-copy" onclick="copyProjectCode('${key}')">Copy Code</button>
+        </div>
+        <div class="code-content">${codeHTML}</div>
+    `;
+
+    document.getElementById('codeModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+// EXPLAIN CODE
+window.explainProjectCode = function(key){
+    const data = projectData[key];
+    document.getElementById('modalTitle').textContent = data.title;
+
+    const explanationsHTML = data.lineExplanations.map(item => `
+        <div class="line-exp-item">
+            <strong>${item.line}</strong>
+            <p>${item.explanation}</p>
+        </div>
+    `).join('');
+
+    document.getElementById('modalBody').innerHTML = `
+        <div class="code-header">
+            <span>Line by Line Explanation</span>
+        </div>
+        <div class="line-explanation">${explanationsHTML}</div>
+    `;
+
+    document.getElementById('codeModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+window.closeModal = function(){
+    document.getElementById('codeModal').classList.remove('active');
+    document.body.style.overflow = 'auto';
+}
+
+window.copyProjectCode = function(key){
+    navigator.clipboard.writeText(projectData[key].code);
+    alert('Code copied!');
+}
+
+function highlightSyntax(line){
+    return line
+  .replace(/(import|export|const|let|return|function|from)/g, '<span class="kw">$1</span>')
+  .replace(/('[^']*'|"[^"]*")/g, '<span class="str">$1</span>')
+  .replace(/(\w+)\s*\(/g, '<span class="fn">$1</span>(')
+  .replace(/(\/\/.*)/g, '<span class="com">$1</span>');
+}
+</script>
+
+</body>
+</html>
