@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login - Code Academy</title>
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#020617;
+  color:white;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+/* ==============================
+   LOGIN CARD
+============================== */
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:#0f172a;
+  border-radius:20px;
+  padding:35px 30px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* ==============================
+   LOGO
+============================== */
+
+.logo{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.logo img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  margin-bottom:12px;
+}
+
+.logo h1{
+  font-size:24px;
+  color:#38bdf8;
+  margin-bottom:5px;
+}
+
+.logo p{
+  font-size:12px;
+  color:#94a3b8;
+}
+
+/* ==============================
+   FORM
+============================== */
+
+.form-group{
+  margin-bottom:18px;
+}
+
+.input-box{
+  position:relative;
+}
+
+.input-box i{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#38bdf8;
+  font-size:14px;
+}
+
+.input-box input{
+  width:100%;
+  padding:14px 14px 14px 42px;
+  background:#1e293b;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  color:white;
+  font-size:14px;
+  outline:none;
+  transition:0.3s;
+}
+
+.input-box input:focus{
+  border-color:#38bdf8;
+  background:#0f172a;
+}
+
+.input-box input::placeholder{
+  color:#64748b;
+}
+
+/* ==============================
+   REMEMBER ME + FORGOT
+============================== */
+
+.options-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+  font-size:12px;
+}
+
+.checkbox-wrapper{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#cbd5e1;
+  cursor:pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  cursor:pointer;
+  accent-color:#38bdf8;
+}
+
+.forgot-row a{
+  color:#38bdf8;
+  text-decoration:none;
+}
+
+.forgot-row a:hover{
+  text-decoration:underline;
+}
+
+/* ==============================
+   RECAPTCHA
+============================== */
+
+.recaptcha-box{
+  display:flex;
+  justify-content:center;
+  margin:20px 0;
+}
+
+/* ==============================
+   PRIMARY BUTTON
+============================== */
+
+.btn-primary{
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+  border:none;
+  border-radius:12px;
+  color:white;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(56,189,248,0.4);
+}
+
+.btn-primary:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* ==============================
+   DIVIDER
+============================== */
+
+.divider{
+  display:flex;
+  align-items:center;
+  margin:25px 0;
+  color:#64748b;
+  font-size:12px;
+}
+
+.divider::before,
+.divider::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:rgba(255,255,255,0.1);
+}
+
+.divider span{
+  padding:0 12px;
+}
+
+/* ==============================
+   SOCIAL BUTTONS
+============================== */
+
+.social-btn{
+  width:100%;
+  padding:14px;
+  background:#1e293b;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  transition:0.3s;
+}
+
+.social-btn:hover{
+  background:#334155;
+  border-color:#38bdf8;
+}
+
+.social-btn:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
+
+.google-btn i{
+  color:#DB4437;
+}
+
+.yahoo-btn i{
+  color:#720e9e;
+}
+
+/* ==============================
+   SIGNUP LINK
+============================== */
+
+.signup-link{
+  text-align:center;
+  margin-top:20px;
+  font-size:13px;
+  color:#94a3b8;
+}
+
+.signup-link a{
+  color:#38bdf8;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.signup-link a:hover{
+  text-decoration:underline;
+}
+
+/* ==============================
+   MESSAGE BOX
+============================== */
+
+.message-box{
+  display:none;
+  padding:13px;
+  border-radius:10px;
+  font-size:12px;
+  margin-bottom:15px;
+  line-height:1.5;
+  word-break:break-word;
+}
+
+.message-box.show{
+  display:block;
+}
+
+.message-box.info{
+  background:rgba(56,189,248,0.10);
+  border:1px solid rgba(56,189,248,0.35);
+  color:#bae6fd;
+}
+
+.message-box.success{
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.40);
+  color:#bbf7d0;
+}
+
+.message-box.error{
+  background:rgba(239,68,68,0.15);
+  border:1px solid rgba(239,68,68,0.40);
+  color:#fca5a5;
+}
+
+.message-title{
+  font-weight:bold;
+  font-size:14px;
+  margin-bottom:5px;
+}
+
+.message-details{
+  margin-top:8px;
+  font-size:11px;
+  white-space:pre-wrap;
+  opacity:0.9;
+}
+
+/* ==============================
+   LOADING
+============================== */
+
+.loading{
+  display:none;
+  text-align:center;
+  color:#38bdf8;
+  font-size:12px;
+  margin-top:10px;
+}
+
+.loading.show{
+  display:block;
+}
+
+.spinner{
+  width:16px;
+  height:16px;
+  display:inline-block;
+  vertical-align:middle;
+  margin-right:6px;
+  border:2px solid rgba(56,189,248,0.25);
+  border-top-color:#38bdf8;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* ==============================
+   SUCCESS SCREEN
+============================== */
+
+.success-screen{
+  display:none;
+  text-align:center;
+  padding:10px 0;
+}
+
+.success-screen.show{
+  display:block;
+}
+
+.success-icon{
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  border:2px solid #22c55e;
+  color:#22c55e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 15px;
+  font-size:30px;
+}
+
+.success-screen h2{
+  color:#86efac;
+  font-size:21px;
+  margin-bottom:8px;
+}
+
+.success-screen p{
+  color:#cbd5e1;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.redirect-info{
+  margin-top:14px;
+  color:#94a3b8 !important;
+  font-size:12px !important;
+}
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:480px){
+
+  .login-card{
+    padding:30px 22px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="login-card">
+
+  <!-- ==============================
+       LOGO
+  =============================== -->
+
+  <div class="logo">
+
+    <img src="logo.png" alt="Code Academy">
+
+    <h1>Welcome Back</h1>
+
+    <p>Login to continue learning</p>
+
+  </div>
+
+
+  <!-- ==============================
+       MESSAGE
+  =============================== -->
+
+  <div id="messageBox" class="message-box">
+
+    <div id="messageTitle" class="message-title"></div>
+
+    <div id="messageText"></div>
+
+    <div id="messageDetails" class="message-details"></div>
+
+  </div>
+
+
+  <!-- ==============================
+       SUCCESS SCREEN
+  =============================== -->
+
+  <div id="successScreen" class="success-screen">
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+    <h2>Login Successful! 🎉</h2>
+
+    <p>
+      Welcome back to Code Academy.
+      <br>
+      Your account has been verified successfully.
+    </p>
+
+    <p class="redirect-info">
+      Taking you to your learning dashboard...
+    </p>
+
+  </div>
+
+
+  <!-- ==============================
+       LOGIN CONTENT
+  =============================== -->
+
+  <div id="loginContent">
+
+    <form id="loginForm">
+
+      <!-- EMAIL -->
+
+      <div class="form-group">
+
+        <div class="input-box">
+
+          <i class="fa fa-envelope"></i>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="you@email.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- PASSWORD -->
+
+      <div class="form-group">
+
+        <div class="input-box">
+
+          <i class="fa fa-lock"></i>
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- REMEMBER ME -->
+
+      <div class="options-row">
+
+        <label class="checkbox-wrapper">
+
+          <input
+            type="checkbox"
+            id="rememberMe"
+          >
+
+          <span>Remember me</span>
+
+        </label>
+
+
+        <div class="forgot-row">
+
+          <a href="forgot.html">
+            Forgot Password?
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- RECAPTCHA -->
+
+      <div class="recaptcha-box">
+
+        <div
+          class="g-recaptcha"
+          data-sitekey="6LeBaj4tAAAAAG4tn09wVhqz5INyaJgfl-5S9Efh">
+        </div>
+
+      </div>
+
+
+      <!-- LOGIN BUTTON -->
+
+      <button
+        type="submit"
+        class="btn-primary"
+        id="loginBtn"
+      >
+        Log In
+      </button>
+
+
+      <!-- LOADING -->
+
+      <div
+        class="loading"
+        id="loading"
+      >
+
+        <span class="spinner"></span>
+
+        <span id="loadingText">
+          Verifying your account...
+        </span>
+
+      </div>
+
+    </form>
+
+
+    <!-- DIVIDER -->
+
+    <div class="divider">
+
+      <span>Or login with</span>
+
+    </div>
+
+
+    <!-- GOOGLE -->
+
+    <button
+      type="button"
+      class="social-btn google-btn"
+      id="googleBtn"
+    >
+
+      <i class="fab fa-google"></i>
+
+      Continue with Google
+
+    </button>
+
+
+    <!-- YAHOO -->
+
+    <button
+      type="button"
+      class="social-btn yahoo-btn"
+      id="yahooBtn"
+    >
+
+      <i class="fab fa-yahoo"></i>
+
+      Continue with Yahoo
+
+    </button>
+
+
+    <!-- SIGNUP -->
+
+    <div class="signup-link">
+
+      Don't have an account?
+
+      <a href="signup.html">
+        Sign up
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script type="module">
+
+
+/* ============================================================
+   FIREBASE IMPORTS
+============================================================ */
+
+import {
+  logIn,
+  signInWithGoogle,
+  signInWithYahoo,
+  auth
+} from "./authentication.js";
+
+import {
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const loginForm =
+  document.getElementById("loginForm");
+
+const loginBtn =
+  document.getElementById("loginBtn");
+
+const googleBtn =
+  document.getElementById("googleBtn");
+
+const yahooBtn =
+  document.getElementById("yahooBtn");
+
+const loading =
+  document.getElementById("loading");
+
+const loadingText =
+  document.getElementById("loadingText");
+
+const loginContent =
+  document.getElementById("loginContent");
+
+const successScreen =
+  document.getElementById("successScreen");
+
+const messageBox =
+  document.getElementById("messageBox");
+
+const messageTitle =
+  document.getElementById("messageTitle");
+
+const messageText =
+  document.getElementById("messageText");
+
+const messageDetails =
+  document.getElementById("messageDetails");
+
+
+/* ============================================================
+   MESSAGE SYSTEM
+============================================================ */
+
+function showMessage(
+  type,
+  title,
+  text,
+  error = null
+){
+
+  messageBox.className =
+    "message-box show " + type;
+
+  messageTitle.textContent =
+    title;
+
+  messageText.textContent =
+    text;
+
+  messageDetails.textContent =
+    "";
+
+
+  if(error){
+
+    const code =
+      error.code
+        ? "Firebase error code: " + error.code
+        : "Firebase error code: unavailable";
+
+    const firebaseMessage =
+      error.message
+        ? "Firebase message: " + error.message
+        : "Firebase message: unavailable";
+
+    messageDetails.textContent =
+      code + "\n" + firebaseMessage;
+  }
+
+}
+
+
+function hideMessage(){
+
+  messageBox.className =
+    "message-box";
+
+  messageTitle.textContent =
+    "";
+
+  messageText.textContent =
+    "";
+
+  messageDetails.textContent =
+    "";
+
+}
+
+
+/* ============================================================
+   LOADING
+============================================================ */
+
+function startLoading(text){
+
+  loading.classList.add("show");
+
+  loadingText.textContent =
+    text;
+
+  loginBtn.disabled =
+    true;
+
+  googleBtn.disabled =
+    true;
+
+  yahooBtn.disabled =
+    true;
+
+}
+
+
+function stopLoading(){
+
+  loading.classList.remove("show");
+
+  loginBtn.disabled =
+    false;
+
+  googleBtn.disabled =
+    false;
+
+  yahooBtn.disabled =
+    false;
+
+}
+
+
+/* ============================================================
+   RECAPTCHA RESET
+============================================================ */
+
+function resetRecaptcha(){
+
+  try{
+
+    if(
+      typeof grecaptcha !== "undefined" &&
+      grecaptcha.reset
+    ){
+
+      grecaptcha.reset();
+
+    }
+
+  }catch(error){
+
+    console.warn(
+      "Could not reset reCAPTCHA:",
+      error
+    );
+
+  }
+
+}
+
+
+/* ============================================================
+   NETWORK CHECK
+============================================================ */
+
+function isOnline(){
+
+  return navigator.onLine;
+
+}
+
+
+/* ============================================================
+   EMAIL + PASSWORD LOGIN
+============================================================ */
+
+loginForm.addEventListener(
+  "submit",
+  async (event) => {
+
+    event.preventDefault();
+
+    hideMessage();
+
+
+    /* ------------------------------------------
+       INTERNET
+    ------------------------------------------ */
+
+    if(!isOnline()){
+
+      showMessage(
+        "error",
+        "No internet connection",
+        "Your device is currently offline. Please connect to the internet and try again."
+      );
+
+      return;
+
+    }
+
+
+    /* ------------------------------------------
+       INPUTS
+    ------------------------------------------ */
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+    const rememberMe =
+      document
+        .getElementById("rememberMe")
+        .checked;
+
+
+    if(!email){
+
+      showMessage(
+        "error",
+        "Email required",
+        "Please enter your email address."
+      );
+
+      return;
+
+    }
+
+
+    if(!password){
+
+      showMessage(
+        "error",
+        "Password required",
+        "Please enter your password."
+      );
+
+      return;
+
+    }
+
+
+    /* ------------------------------------------
+       RECAPTCHA
+    ------------------------------------------ */
+
+    let recaptchaResponse = "";
+
+    try{
+
+      if(
+        typeof grecaptcha === "undefined"
+      ){
+
+        showMessage(
+          "error",
+          "Security verification unavailable",
+          "Google reCAPTCHA has not loaded yet. Please wait a moment and try again."
+        );
+
+        return;
+
+      }
+
+      recaptchaResponse =
+        grecaptcha.getResponse();
+
+    }catch(error){
+
+      showMessage(
+        "error",
+        "Security verification failed",
+        "The reCAPTCHA system could not be accessed.",
+        error
+      );
+
+      return;
+
+    }
+
+
+    if(!recaptchaResponse){
+
+      showMessage(
+        "error",
+        "Verification required",
+        "Please complete the 'I'm not a robot' verification before logging in."
+      );
+
+      return;
+
+    }
+
+
+    /* ------------------------------------------
+       START
+    ------------------------------------------ */
+
+    startLoading(
+      "Checking your account..."
+    );
+
+    showMessage(
+      "info",
+      "Logging you in...",
+      "Please wait while Firebase verifies your account. Do not close this page."
+    );
+
+
+    try{
+
+      /* ----------------------------------------
+         REMEMBER ME
+      ---------------------------------------- */
+
+      const persistence =
+        rememberMe
+          ? browserLocalPersistence
+          : browserSessionPersistence;
+
+
+      await setPersistence(
+        auth,
+        persistence
+      );
+
+
+      /* ----------------------------------------
+         FIREBASE LOGIN
+      ---------------------------------------- */
+
+      const user =
+        await logIn(
+          email,
+          password
+        );
+
+
+      if(!user){
+
+        throw new Error(
+          "Firebase completed the login operation but did not return a user."
+        );
+
+      }
+
+
+      /* ----------------------------------------
+         SUCCESS
+      ---------------------------------------- */
+
+      showMessage(
+        "success",
+        "Login successful! ✓",
+        "Your account has been verified successfully. Preparing your Code Academy dashboard..."
+      );
+
+
+      loginContent.style.display =
+        "none";
+
+      successScreen.classList.add(
+        "show"
+      );
+
+
+      /*
+         We do not redirect immediately.
+
+         Give the browser a moment to finish Firebase
+         persistence and UI updates.
+      */
+
+      setTimeout(
+        () => {
+
+          window.location.replace(
+            "menu.html"
+          );
+
+        },
+        1800
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "EMAIL LOGIN ERROR:",
+        error
+      );
+
+
+      stopLoading();
+
+      resetRecaptcha();
+
+
+      /*
+         IMPORTANT:
+
+         We do NOT replace this with a fake message.
+
+         The actual Firebase error is displayed.
+      */
+
+      showMessage(
+        "error",
+        "Login was not completed",
+        "Firebase could not complete your login. You are still on the login page. The actual error returned by Firebase is shown below.",
+        error
+      );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   GOOGLE LOGIN
+============================================================ */
+
+googleBtn.addEventListener(
+  "click",
+  async () => {
+
+    hideMessage();
+
+
+    /* ------------------------------------------
+       INTERNET
+    ------------------------------------------ */
+
+    if(!isOnline()){
+
+      showMessage(
+        "error",
+        "No internet connection",
+        "Your device is currently offline. Connect to the internet before continuing with Google."
+      );
+
+      return;
+
+    }
+
+
+    /* ------------------------------------------
+       START GOOGLE
+    ------------------------------------------ */
+
+    startLoading(
+      "Opening Google..."
+    );
+
+
+    showMessage(
+      "info",
+      "Google sign-in is working...",
+      "Please select your Google account and complete the Google authentication. This page will wait for Google to finish."
+    );
+
+
+    /*
+       IMPORTANT:
+
+       There is intentionally NO 5-second,
+       7-second, or 10-second timeout here.
+
+       signInWithGoogle() waits for Firebase's
+       signInWithPopup() to finish.
+
+       Google may take time to load, search for the
+       account, ask for permission, or return the
+       authentication result.
+
+       We WAIT.
+    */
+
+    let stillWaitingTimer = null;
+
+    let secondsWaiting = 0;
+
+
+    try{
+
+      /* ----------------------------------------
+         STATUS TIMER
+
+         This DOES NOT cancel Google.
+
+         It only changes the message if Google
+         takes a long time.
+      ---------------------------------------- */
+
+      stillWaitingTimer =
+        setInterval(
+          () => {
+
+            secondsWaiting += 1;
+
+
+            if(secondsWaiting === 30){
+
+              showMessage(
+                "info",
+                "Google is still working...",
+                "Google authentication is taking longer than usual. Please do not close the page or cancel the Google window. We are still waiting for Firebase to finish."
+              );
+
+            }
+
+
+            if(secondsWaiting === 60){
+
+              showMessage(
+                "info",
+                "Google is still working — please wait",
+                "It has been more than one minute. Google has not finished yet, but we have NOT cancelled the operation. Please continue waiting."
+              );
+
+            }
+
+
+            if(secondsWaiting === 120){
+
+              showMessage(
+                "info",
+                "Google authentication is taking a while",
+                "Google is still being given time to complete. We will continue waiting for the actual Firebase result."
+              );
+
+            }
+
+
+            if(secondsWaiting === 300){
+
+              showMessage(
+                "info",
+                "Google is still responding",
+                "This has taken more than five minutes. We are still waiting for Firebase's actual response rather than cancelling your authentication automatically."
+              );
+
+            }
+
+          },
+          1000
+        );
+
+
+      /* ----------------------------------------
+         ACTUAL GOOGLE AUTHENTICATION
+      ---------------------------------------- */
+
+      const user =
+        await signInWithGoogle();
+
+
+      /* ----------------------------------------
+         STOP STATUS TIMER
+      ---------------------------------------- */
+
+      if(stillWaitingTimer){
+
+        clearInterval(
+          stillWaitingTimer
+        );
+
+        stillWaitingTimer =
+          null;
+
+      }
+
+
+      /* ----------------------------------------
+         VERIFY RESULT
+      ---------------------------------------- */
+
+      if(!user){
+
+        throw new Error(
+          "Google authentication completed without returning a Firebase user."
+        );
+
+      }
+
+
+      /* ----------------------------------------
+         SUCCESS
+      ---------------------------------------- */
+
+      showMessage(
+        "success",
+        "Google login successful! ✓",
+        "Your Google account has been authenticated successfully. Preparing your Code Academy dashboard..."
+      );
+
+
+      loginContent.style.display =
+        "none";
+
+      successScreen.classList.add(
+        "show"
+      );
+
+
+      /*
+         Give the success message time to appear.
+      */
+
+      setTimeout(
+        () => {
+
+          window.location.replace(
+            "menu.html"
+          );
+
+        },
+        1800
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "GOOGLE LOGIN ERROR:",
+        error
+      );
+
+
+      if(stillWaitingTimer){
+
+        clearInterval(
+          stillWaitingTimer
+        );
+
+        stillWaitingTimer =
+          null;
+
+      }
+
+
+      stopLoading();
+
+
+      /*
+         REAL FIREBASE ERROR.
+
+         Nothing is hardcoded as the reason.
+      */
+
+      showMessage(
+        "error",
+        "Google login was not completed",
+        "Google/Firebase did not complete the authentication. You are still on the login page. The actual error returned by Firebase is shown below.",
+        error
+      );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   YAHOO LOGIN
+============================================================ */
+
+yahooBtn.addEventListener(
+  "click",
+  async () => {
+
+    hideMessage();
+
+
+    /* ------------------------------------------
+       INTERNET
+    ------------------------------------------ */
+
+    if(!isOnline()){
+
+      showMessage(
+        "error",
+        "No internet connection",
+        "Your device is currently offline. Connect to the internet before continuing with Yahoo."
+      );
+
+      return;
+
+    }
+
+
+    startLoading(
+      "Opening Yahoo..."
+    );
+
+
+    showMessage(
+      "info",
+      "Yahoo sign-in is working...",
+      "Please complete the Yahoo authentication. This page will wait for Firebase to finish."
+    );
+
+
+    let stillWaitingTimer = null;
+
+    let secondsWaiting = 0;
+
+
+    try{
+
+      /*
+         Again:
+
+         NO SHORT TIMEOUT.
+
+         This timer only provides information.
+         It NEVER cancels Yahoo authentication.
+      */
+
+      stillWaitingTimer =
+        setInterval(
+          () => {
+
+            secondsWaiting += 1;
+
+
+            if(secondsWaiting === 30){
+
+              showMessage(
+                "info",
+                "Yahoo is still working...",
+                "Yahoo authentication is taking longer than usual. Please continue waiting."
+              );
+
+            }
+
+
+            if(secondsWaiting === 60){
+
+              showMessage(
+                "info",
+                "Yahoo is still working — please wait",
+                "More than one minute has passed, but we have not cancelled the authentication. We are still waiting for Firebase."
+              );
+
+            }
+
+
+            if(secondsWaiting === 120){
+
+              showMessage(
+                "info",
+                "Yahoo authentication is taking a while",
+                "The authentication is still running. Please allow it to finish."
+              );
+
+            }
+
+
+            if(secondsWaiting === 300){
+
+              showMessage(
+                "info",
+                "Yahoo is still responding",
+                "This has taken more than five minutes. We are still waiting for the actual Firebase result."
+              );
+
+            }
+
+          },
+          1000
+        );
+
+
+      /* ----------------------------------------
+         ACTUAL YAHOO AUTHENTICATION
+      ---------------------------------------- */
+
+      const user =
+        await signInWithYahoo();
+
+
+      if(stillWaitingTimer){
+
+        clearInterval(
+          stillWaitingTimer
+        );
+
+        stillWaitingTimer =
+          null;
+
+      }
+
+
+      if(!user){
+
+        throw new Error(
+          "Yahoo authentication completed without returning a Firebase user."
+        );
+
+      }
+
+
+      /* ----------------------------------------
+         SUCCESS
+      ---------------------------------------- */
+
+      showMessage(
+        "success",
+        "Yahoo login successful! ✓",
+        "Your Yahoo account has been authenticated successfully. Preparing your Code Academy dashboard..."
+      );
+
+
+      loginContent.style.display =
+        "none";
+
+      successScreen.classList.add(
+        "show"
+      );
+
+
+      setTimeout(
+        () => {
+
+          window.location.replace(
+            "menu.html"
+          );
+
+        },
+        1800
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "YAHOO LOGIN ERROR:",
+        error
+      );
+
+
+      if(stillWaitingTimer){
+
+        clearInterval(
+          stillWaitingTimer
+        );
+
+        stillWaitingTimer =
+          null;
+
+      }
+
+
+      stopLoading();
+
+
+      showMessage(
+        "error",
+        "Yahoo login was not completed",
+        "Yahoo/Firebase did not complete the authentication. You are still on the login page. The actual error returned by Firebase is shown below.",
+        error
+      );
+
+    }
+
+  }
+);
+
+
+/* ============================================================
+   NETWORK STATUS
+============================================================ */
+
+window.addEventListener(
+  "offline",
+  () => {
+
+    showMessage(
+      "error",
+      "Internet connection lost",
+      "Your device has gone offline. Any Firebase operation currently running may fail."
+    );
+
+  }
+);
+
+
+window.addEventListener(
+  "online",
+  () => {
+
+    showMessage(
+      "info",
+      "Internet connection restored",
+      "Your internet connection is back. You can continue."
+    );
+
+  }
+);
+
+
+/* ============================================================
+   PAGE RESTORATION
+============================================================ */
+
+window.addEventListener(
+  "pageshow",
+  () => {
+
+    /*
+       Do NOT automatically redirect based on auth state.
+
+       login.html controls its own successful-login
+       navigation.
+
+       Successful login -> menu.html.
+       Failed login -> remain here.
+    */
+
+  }
+);
+
+</script>
+
+</body>
+</html>
