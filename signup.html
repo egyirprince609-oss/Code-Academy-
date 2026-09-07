@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Create Account - Code Academy</title>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        min-height: 100vh;
+        background:
+            radial-gradient(circle at top, #0f3b5c 0%, #020617 45%, #000814 100%);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .card {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.96);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 22px;
+        padding: 32px 28px;
+        box-shadow:
+            0 25px 70px rgba(0, 0, 0, 0.55),
+            0 0 35px rgba(14, 165, 233, 0.08);
+    }
+
+    .logo-area {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .logo {
+        width: 78px;
+        height: 78px;
+        object-fit: contain;
+        margin-bottom: 10px;
+    }
+
+    .logo-area h1 {
+        font-size: 28px;
+        color: #38bdf8;
+        margin-bottom: 6px;
+    }
+
+    .logo-area p {
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 17px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 14px;
+        color: #cbd5e1;
+        font-weight: 600;
+    }
+
+    input {
+        width: 100%;
+        padding: 14px 15px;
+        border-radius: 11px;
+        border: 1px solid #334155;
+        background: #020617;
+        color: white;
+        font-size: 15px;
+        outline: none;
+        transition: 0.2s;
+    }
+
+    input:focus {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.10);
+    }
+
+    input::placeholder {
+        color: #64748b;
+    }
+
+    .password-info {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    button {
+        width: 100%;
+        border: none;
+        border-radius: 11px;
+        padding: 14px;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .signup-btn {
+        background: #38bdf8;
+        color: #00111c;
+        margin-top: 4px;
+    }
+
+    .signup-btn:hover {
+        background: #7dd3fc;
+        transform: translateY(-1px);
+    }
+
+    .signup-btn:disabled,
+    .social-btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 24px 0;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        height: 1px;
+        background: #334155;
+        flex: 1;
+    }
+
+    .social-btn {
+        background: #0f172a;
+        color: white;
+        border: 1px solid #334155;
+        margin-bottom: 11px;
+    }
+
+    .social-btn:hover {
+        background: #1e293b;
+        border-color: #475569;
+    }
+
+    .google-icon {
+        color: #4285f4;
+        margin-right: 7px;
+        font-weight: bold;
+    }
+
+    .yahoo-icon {
+        color: #9b59ff;
+        margin-right: 7px;
+        font-weight: bold;
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #94a3b8;
+        font-size: 14px;
+    }
+
+    .login-link a {
+        color: #38bdf8;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+
+    /* ==============================
+       MESSAGE AREA
+    ============================== */
+
+    .message {
+        display: none;
+        border-radius: 14px;
+        padding: 16px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        font-size: 14px;
+        word-break: break-word;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.error {
+        background: rgba(127, 29, 29, 0.25);
+        border: 1px solid rgba(248, 113, 113, 0.45);
+        color: #fecaca;
+    }
+
+    .message.success {
+        background: rgba(6, 78, 59, 0.30);
+        border: 1px solid rgba(52, 211, 153, 0.45);
+        color: #bbf7d0;
+    }
+
+    .message.info {
+        background: rgba(14, 116, 144, 0.22);
+        border: 1px solid rgba(56, 189, 248, 0.35);
+        color: #bae6fd;
+    }
+
+    .message-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .error-details {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #fca5a5;
+        opacity: 0.95;
+        white-space: pre-wrap;
+    }
+
+    /* ==============================
+       SUCCESS SCREEN
+    ============================== */
+
+    .success-screen {
+        display: none;
+        text-align: center;
+        padding: 15px 5px 10px;
+    }
+
+    .success-screen.show {
+        display: block;
+    }
+
+    .success-icon {
+        width: 75px;
+        height: 75px;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: rgba(16, 185, 129, 0.15);
+        border: 2px solid #34d399;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        color: #34d399;
+    }
+
+    .success-screen h2 {
+        color: #6ee7b7;
+        font-size: 25px;
+        margin-bottom: 10px;
+    }
+
+    .success-screen p {
+        color: #cbd5e1;
+        line-height: 1.6;
+        font-size: 15px;
+    }
+
+    .redirect-text {
+        margin-top: 18px;
+        color: #94a3b8 !important;
+        font-size: 13px !important;
+    }
+
+    .loader {
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255,255,255,0.2);
+        border-top-color: #38bdf8;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 8px;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 480px) {
+        .card {
+            padding: 27px 20px;
+        }
+
+        .logo-area h1 {
+            font-size: 25px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card">
+
+        <div class="logo-area">
+            <img src="logo.png" class="logo" alt="Code Academy Logo">
+            <h1>Code Academy</h1>
+            <p>Create your account and start learning</p>
+        </div>
+
+        <!-- MESSAGE -->
+        <div id="message" class="message">
+            <div id="messageTitle" class="message-title"></div>
+            <div id="messageText"></div>
+            <div id="errorDetails" class="error-details"></div>
+        </div>
+
+        <!-- SUCCESS SCREEN -->
+        <div id="successScreen" class="success-screen">
+
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <h2>Welcome to Code Academy! 🎉</h2>
+
+            <p>
+                Your account has been created successfully.
+                <br><br>
+                Your next step is to log in with your new account.
+            </p>
+
+            <p class="redirect-text">
+                <span class="loader"></span>
+                Taking you to the login page...
+            </p>
+
+        </div>
+
+        <!-- SIGNUP FORM -->
+        <div id="signupContent">
+
+            <form id="signupForm">
+
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        required
+                    >
+
+                    <div class="password-info">
+                        Use at least 8 characters.
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Enter your password again"
+                        autocomplete="new-password"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    id="signupButton"
+                    class="signup-btn"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+            <div class="divider">
+                OR
+            </div>
+
+            <button
+                type="button"
+                id="googleButton"
+                class="social-btn"
+            >
+                <span class="google-icon">G</span>
+                Continue with Google
+            </button>
+
+            <button
+                type="button"
+                id="yahooButton"
+                class="social-btn"
+            >
+                <span class="yahoo-icon">Y!</span>
+                Continue with Yahoo
+            </button>
+
+            <div class="login-link">
+                Already have an account?
+                <a href="login.html">Log in</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+/* ============================================================
+   FIREBASE IMPORTS
+============================================================ */
+
+import {
+    createUserWithEmailAndPassword,
+    updateProfile,
+    signInWithPopup,
+    signOut,
+    GoogleAuthProvider,
+    OAuthProvider
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import {
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+    auth,
+    db
+} from "./authentication.js";
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const signupForm = document.getElementById("signupForm");
+
+const fullNameInput = document.getElementById("fullName");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
+
+const signupButton = document.getElementById("signupButton");
+const googleButton = document.getElementById("googleButton");
+const yahooButton = document.getElementById("yahooButton");
+
+const message = document.getElementById("message");
+const messageTitle = document.getElementById("messageTitle");
+const messageText = document.getElementById("messageText");
+const errorDetails = document.getElementById("errorDetails");
+
+const signupContent = document.getElementById("signupContent");
+const successScreen = document.getElementById("successScreen");
+
+
+/* ============================================================
+   FIREBASE PROVIDERS
+============================================================ */
+
+const googleProvider = new GoogleAuthProvider();
+
+const yahooProvider = new OAuthProvider("yahoo.com");
+
+
+/* ============================================================
+   SHOW MESSAGE
+============================================================ */
+
+function showMessage(type, title, text, error = null) {
+
+    message.className = "message show " + type;
+
+    messageTitle.textContent = title;
+    messageText.textContent = text;
+
+    errorDetails.textContent = "";
+
+    if (error) {
+
+        const code = error.code
+            ? `Error code: ${error.code}`
+            : "Error code: unavailable";
+
+        const firebaseMessage = error.message
+            ? `Firebase message: ${error.message}`
+            : "Firebase message: unavailable";
+
+        errorDetails.textContent =
+            `${code}\n${firebaseMessage}`;
+    }
+
+    message.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
+}
+
+
+/* ============================================================
+   HIDE MESSAGE
+============================================================ */
+
+function hideMessage() {
+
+    message.className = "message";
+
+    messageTitle.textContent = "";
+    messageText.textContent = "";
+    errorDetails.textContent = "";
+}
+
+
+/* ============================================================
+   DISABLE / ENABLE BUTTONS
+============================================================ */
+
+function setLoading(loading, button = null) {
+
+    signupButton.disabled = loading;
+    googleButton.disabled = loading;
+    yahooButton.disabled = loading;
+
+    if (button) {
+
+        if (!button.dataset.originalText) {
+            button.dataset.originalText = button.textContent;
+        }
+
+        button.textContent = loading
+            ? "Please wait..."
+            : button.dataset.originalText;
+    }
+}
+
+
+/* ============================================================
+   VALIDATE PASSWORD
+============================================================ */
+
+function validatePassword(password, confirmPassword) {
+
+    if (password.length < 8) {
+        return "Password must contain at least 8 characters.";
+    }
+
+    if (password !== confirmPassword) {
+        return "The two passwords do not match.";
+    }
+
+    return null;
+}
+
+
+/* ============================================================
+   CREATE FIRESTORE USER DOCUMENT
+============================================================ */
+
+async function createUserDocument(user) {
+
+    const userRef = doc(db, "users", user.uid);
+
+    const existingUser = await getDoc(userRef);
+
+    if (!existingUser.exists()) {
+
+        await setDoc(userRef, {
+
+            displayName: user.displayName || "",
+            email: user.email || "",
+            photoURL: user.photoURL || "",
+
+            createdAt: serverTimestamp(),
+
+            xp: 0,
+            coins: 0,
+            streak: 0,
+
+            certificates: {
+                html: false,
+                css: false,
+                javascript: false,
+                python: false,
+                react: false
+            },
+
+            progress: {
+                html: 0,
+                css: 0,
+                javascript: 0,
+                python: 0,
+                react: 0
+            },
+
+            completedLessons: []
+
+        });
+    }
+}
+
+
+/* ============================================================
+   SUCCESSFUL SIGNUP
+============================================================ */
+
+function signupSuccessful() {
+
+    hideMessage();
+
+    signupContent.style.display = "none";
+
+    successScreen.classList.add("show");
+
+    /*
+       IMPORTANT:
+       We do NOT redirect immediately.
+
+       We first show the success screen so the user knows
+       Firebase actually completed the signup.
+    */
+
+    setTimeout(() => {
+
+        window.location.replace("login.html");
+
+    }, 3000);
+}
+
+
+/* ============================================================
+   EMAIL SIGNUP
+============================================================ */
+
+signupForm.addEventListener("submit", async (event) => {
+
+    event.preventDefault();
+
+    hideMessage();
+
+    const fullName = fullNameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const confirmPassword = confirmPasswordInput.value;
+
+
+    /* ----------------------------------------
+       BASIC INPUT CHECK
+    ---------------------------------------- */
+
+    if (!fullName) {
+
+        showMessage(
+            "error",
+            "Full name required",
+            "Please enter your full name."
+        );
+
+        return;
+    }
+
+
+    if (!email) {
+
+        showMessage(
+            "error",
+            "Email required",
+            "Please enter your email address."
+        );
+
+        return;
+    }
+
+
+    const passwordError =
+        validatePassword(password, confirmPassword);
+
+    if (passwordError) {
+
+        showMessage(
+            "error",
+            "Password problem",
+            passwordError
+        );
+
+        return;
+    }
+
+
+    /* ----------------------------------------
+       INTERNET CHECK
+    ---------------------------------------- */
+
+    if (!navigator.onLine) {
+
+        showMessage(
+            "error",
+            "No internet connection",
+            "Your device appears to be offline. Please connect to the internet and try again."
+        );
+
+        return;
+    }
+
+
+    /* ----------------------------------------
+       START FIREBASE SIGNUP
+    ---------------------------------------- */
+
+    setLoading(true, signupButton);
+
+    showMessage(
+        "info",
+        "Creating your account...",
+        "Please wait while Firebase creates your Code Academy account."
+    );
+
+
+    try {
+
+        const credential =
+            await createUserWithEmailAndPassword(
+                auth,
+                email,
+                password
+            );
+
+        const user = credential.user;
+
+
+        /* ----------------------------------------
+           SAVE DISPLAY NAME
+        ---------------------------------------- */
+
+        await updateProfile(user, {
+            displayName: fullName
+        });
+
+
+        /* ----------------------------------------
+           CREATE FIRESTORE PROFILE
+        ---------------------------------------- */
+
+        await createUserDocument(user);
+
+
+        /*
+           IMPORTANT:
+
+           Firebase signup is now completely finished.
+
+           We deliberately sign the user out.
+
+           This means the user MUST go through login.html
+           before entering menu.html.
+        */
+
+        await signOut(auth);
+
+
+        /* ----------------------------------------
+           SHOW SUCCESS
+        ---------------------------------------- */
+
+        signupSuccessful();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "CODE ACADEMY SIGNUP ERROR:",
+            error
+        );
+
+
+        /*
+           DO NOT GUESS THE ERROR.
+
+           We display the actual Firebase error object.
+        */
+
+        showMessage(
+            "error",
+            "Account creation failed",
+            "Firebase could not complete the signup. The actual error returned by Firebase is shown below.",
+            error
+        );
+
+        setLoading(false, signupButton);
+    }
+
+});
+
+
+/* ============================================================
+   GOOGLE SIGNUP
+============================================================ */
+
+googleButton.addEventListener("click", async () => {
+
+    hideMessage();
+
+    if (!navigator.onLine) {
+
+        showMessage(
+            "error",
+            "No internet connection",
+            "Your device appears to be offline. Connect to the internet and try again."
+        );
+
+        return;
+    }
+
+    setLoading(true, googleButton);
+
+    showMessage(
+        "info",
+        "Opening Google...",
+        "Please select your Google account in the popup. Do not close the popup while authentication is running."
+    );
+
+
+    try {
+
+        /*
+           IMPORTANT:
+
+           We use signInWithPopup DIRECTLY here.
+
+           We do NOT use signInWithRedirect.
+
+           Therefore the browser should not be sent away
+           from signup.html and then unexpectedly returned
+           to signup.html.
+        */
+
+        const result =
+            await signInWithPopup(
+                auth,
+                googleProvider
+            );
+
+        const user = result.user;
+
+
+        /* ----------------------------------------
+           CREATE USER PROFILE IF NEEDED
+        ---------------------------------------- */
+
+        await createUserDocument(user);
+
+
+        /*
+           Google authentication has completed.
+
+           But this is the SIGNUP page.
+
+           We now sign the user out so that the user must
+           continue through login.html.
+        */
+
+        await signOut(auth);
+
+
+        /* ----------------------------------------
+           SUCCESS
+        ---------------------------------------- */
+
+        signupSuccessful();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "GOOGLE SIGNUP ERROR:",
+            error
+        );
+
+
+        /*
+           If the user closes the popup, Firebase itself
+           returns an error such as auth/popup-closed-by-user.
+
+           We display the actual error.
+        */
+
+        showMessage(
+            "error",
+            "Google signup was not completed",
+            "Google authentication did not finish successfully. The actual error returned by Firebase is shown below.",
+            error
+        );
+
+        setLoading(false, googleButton);
+    }
+
+});
+
+
+/* ============================================================
+   YAHOO SIGNUP
+============================================================ */
+
+yahooButton.addEventListener("click", async () => {
+
+    hideMessage();
+
+    if (!navigator.onLine) {
+
+        showMessage(
+            "error",
+            "No internet connection",
+            "Your device appears to be offline. Connect to the internet and try again."
+        );
+
+        return;
+    }
+
+    setLoading(true, yahooButton);
+
+    showMessage(
+        "info",
+        "Opening Yahoo...",
+        "Please complete Yahoo authentication in the popup."
+    );
+
+
+    try {
+
+        /*
+           Same principle as Google:
+
+           POPUP ONLY.
+           NO REDIRECT.
+        */
+
+        const result =
+            await signInWithPopup(
+                auth,
+                yahooProvider
+            );
+
+        const user = result.user;
+
+
+        /* ----------------------------------------
+           CREATE USER PROFILE IF NEEDED
+        ---------------------------------------- */
+
+        await createUserDocument(user);
+
+
+        /*
+           Force the user to continue through login.html.
+        */
+
+        await signOut(auth);
+
+
+        /* ----------------------------------------
+           SUCCESS
+        ---------------------------------------- */
+
+        signupSuccessful();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "YAHOO SIGNUP ERROR:",
+            error
+        );
+
+
+        showMessage(
+            "error",
+            "Yahoo signup was not completed",
+            "Yahoo authentication did not finish successfully. The actual error returned by Firebase is shown below.",
+            error
+        );
+
+        setLoading(false, yahooButton);
+    }
+
+});
+
+
+/* ============================================================
+   HANDLE NETWORK CHANGES
+============================================================ */
+
+window.addEventListener("offline", () => {
+
+    showMessage(
+        "error",
+        "Internet connection lost",
+        "Your device has gone offline. Any Firebase operation currently running may fail."
+    );
+
+});
+
+
+window.addEventListener("online", () => {
+
+    showMessage(
+        "info",
+        "Internet connection restored",
+        "Your device is back online. You can try the operation again."
+    );
+
+});
+
+
+/* ============================================================
+   PREVENT OLD PAGE STATE AFTER BACK BUTTON
+============================================================ */
+
+window.addEventListener("pageshow", () => {
+
+    /*
+       Do not automatically redirect based on auth state here.
+
+       This is intentional.
+
+       signup.html must remain a signup page.
+    */
+
+});
+
+</script>
+
+</body>
+</html>
