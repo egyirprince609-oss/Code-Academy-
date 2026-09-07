@@ -331,8 +331,8 @@ form.addEventListener('submit', async (e) => {
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value;
 
-  if(password.length < 6){
-    showError('Password must be at least 6 characters');
+  if(password.length < 8){
+    showError('Password must be at least 8 characters');
     return;
   }
 
@@ -341,7 +341,7 @@ form.addEventListener('submit', async (e) => {
 
   try{
     await signUp(email, password, name);
-    window.location.href = 'profile.html';
+    window.location.href = 'login.html';
   } catch(error){
     signupBtn.disabled = false;
     loading.style.display = 'none';
@@ -361,7 +361,7 @@ document.getElementById('googleBtn').addEventListener('click', async () => {
   hideError();
   try{
     await signInWithGoogle();
-    window.location.href = 'profile.html';
+    window.location.href = 'login.html';
   } catch(error){
     showError('Google signup failed. Try again.');
   }
@@ -372,7 +372,7 @@ document.getElementById('yahooBtn').addEventListener('click', async () => {
   hideError();
   try{
     await signInWithYahoo();
-    window.location.href = 'profile.html';
+    window.location.href = 'login.html';
   } catch(error){
     showError('Yahoo signup failed. Try again.');
   }
