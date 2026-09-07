@@ -18,6 +18,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  signInWithPopup,
   sendPasswordResetEmail,
   GoogleAuthProvider,
   OAuthProvider,
