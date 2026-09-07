@@ -1,0 +1,4183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="theme-color"
+    content="#020617">
+
+<meta
+    name="description"
+    content="Manage your Code Academy profile, progress and account settings.">
+
+<title>My Profile - Code Academy</title>
+
+<link
+    rel="icon"
+    href="logo.png">
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    font-family:
+        'Inter',
+        'Segoe UI',
+        Arial,
+        sans-serif;
+
+    color:#f1f5f9;
+
+    background:
+        radial-gradient(
+            circle at 10% 0%,
+            rgba(56,189,248,.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(37,99,235,.13),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(14,165,233,.08),
+            transparent 35%
+        ),
+        #020617;
+
+    overflow-x:hidden;
+
+    padding-bottom:60px;
+}
+
+
+/* =========================================================
+   BACKGROUND LIGHT
+========================================================= */
+
+body::before{
+
+    content:"";
+
+    position:fixed;
+
+    width:550px;
+    height:550px;
+
+    top:-250px;
+    left:-250px;
+
+    border-radius:50%;
+
+    background:
+        rgba(56,189,248,.07);
+
+    filter:blur(70px);
+
+    pointer-events:none;
+
+    z-index:-2;
+
+    animation:
+        floatingLight 18s ease-in-out infinite;
+}
+
+body::after{
+
+    content:"";
+
+    position:fixed;
+
+    width:500px;
+    height:500px;
+
+    right:-250px;
+    bottom:-250px;
+
+    border-radius:50%;
+
+    background:
+        rgba(37,99,235,.08);
+
+    filter:blur(70px);
+
+    pointer-events:none;
+
+    z-index:-2;
+
+    animation:
+        floatingLight2 22s ease-in-out infinite;
+}
+
+@keyframes floatingLight{
+
+    0%,100%{
+        transform:translate(0,0);
+    }
+
+    50%{
+        transform:translate(50px,35px);
+    }
+
+}
+
+@keyframes floatingLight2{
+
+    0%,100%{
+        transform:translate(0,0);
+    }
+
+    50%{
+        transform:translate(-40px,-30px);
+    }
+
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+
+    width:100%;
+
+    height:72px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    padding:
+        0 20px;
+
+    background:
+        rgba(2,6,23,.82);
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    border-bottom:
+        1px solid rgba(56,189,248,.12);
+}
+
+.navBrand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:11px;
+}
+
+.navBrand img{
+
+    width:42px;
+    height:42px;
+
+    object-fit:cover;
+
+    border-radius:12px;
+
+    box-shadow:
+        0 0 25px
+        rgba(56,189,248,.18);
+}
+
+.navBrand h2{
+
+    font-size:18px;
+
+    font-weight:800;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f1f5f9,
+            #38bdf8
+        );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+.backBtn{
+
+    width:44px;
+    height:44px;
+
+    border-radius:13px;
+
+    border:
+        1px solid rgba(56,189,248,.15);
+
+    background:
+        rgba(15,23,42,.8);
+
+    color:#38bdf8;
+
+    font-size:17px;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:.25s;
+}
+
+.backBtn:hover{
+
+    background:#38bdf8;
+
+    color:#020617;
+
+    transform:
+        translateX(-4px);
+
+    box-shadow:
+        0 8px 30px
+        rgba(56,189,248,.35);
+}
+
+
+/* =========================================================
+   CONTAINER
+========================================================= */
+
+.container{
+
+    width:min(850px,94%);
+
+    margin:
+        35px auto 0;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+
+    min-height:70vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#94a3b8;
+
+    text-align:center;
+}
+
+.loading i{
+
+    color:#38bdf8;
+
+    font-size:38px;
+
+    margin-bottom:15px;
+}
+
+
+/* =========================================================
+   ERROR / MESSAGE
+========================================================= */
+
+.messageBox{
+
+    display:none;
+
+    padding:15px 17px;
+
+    margin-bottom:20px;
+
+    border-radius:14px;
+
+    font-size:13px;
+
+    line-height:1.6;
+}
+
+.messageBox.success{
+
+    background:
+        rgba(34,197,94,.10);
+
+    border:
+        1px solid rgba(34,197,94,.25);
+
+    color:#86efac;
+}
+
+.messageBox.error{
+
+    background:
+        rgba(239,68,68,.10);
+
+    border:
+        1px solid rgba(239,68,68,.25);
+
+    color:#fca5a5;
+}
+
+
+/* =========================================================
+   GLASS CARD
+========================================================= */
+
+.glassCard{
+
+    position:relative;
+
+    overflow:hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.82),
+            rgba(7,14,28,.86)
+        );
+
+    backdrop-filter:
+        blur(20px);
+
+    -webkit-backdrop-filter:
+        blur(20px);
+
+    border:
+        1px solid rgba(56,189,248,.13);
+
+    border-radius:24px;
+
+    padding:28px;
+
+    margin-bottom:22px;
+
+    box-shadow:
+        0 25px 70px
+        rgba(0,0,0,.25);
+
+    transition:.3s;
+}
+
+.glassCard:hover{
+
+    border-color:
+        rgba(56,189,248,.28);
+
+    box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.35);
+}
+
+
+/* =========================================================
+   PROFILE HERO
+========================================================= */
+
+.profileHero{
+
+    text-align:center;
+
+    padding:
+        38px 28px;
+}
+
+.profileHero::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:220px;
+    height:220px;
+
+    top:-130px;
+    left:50%;
+
+    transform:
+        translateX(-50%);
+
+    border-radius:50%;
+
+    background:
+        rgba(56,189,248,.08);
+
+    filter:blur(25px);
+
+    pointer-events:none;
+}
+
+.photoWrapper{
+
+    position:relative;
+
+    display:inline-block;
+
+    margin-bottom:18px;
+}
+
+.avatar{
+
+    width:135px;
+    height:135px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:
+        4px solid #38bdf8;
+
+    background:#0f172a;
+
+    box-shadow:
+        0 0 45px
+        rgba(56,189,248,.35);
+
+    transition:.35s;
+}
+
+.avatar:hover{
+
+    transform:
+        scale(1.05);
+
+    box-shadow:
+        0 0 65px
+        rgba(56,189,248,.45);
+}
+
+.editPhoto{
+
+    position:absolute;
+
+    right:5px;
+    bottom:7px;
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    border:
+        3px solid #020617;
+
+    background:
+        linear-gradient(
+            135deg,
+            #38bdf8,
+            #0ea5e9
+        );
+
+    color:#020617;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:.25s;
+}
+
+.editPhoto:hover{
+
+    transform:
+        scale(1.12)
+        rotate(8deg);
+
+    box-shadow:
+        0 8px 25px
+        rgba(56,189,248,.35);
+}
+
+.userName{
+
+    font-size:
+        clamp(25px,6vw,34px);
+
+    font-weight:900;
+
+    margin-bottom:6px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f8fafc,
+            #38bdf8
+        );
+
+    -webkit-background-clip:text;
+
+    -webkit-text-fill-color:transparent;
+}
+
+.userEmail{
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+    margin-bottom:17px;
+
+    word-break:break-word;
+}
+
+
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badgeRow{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+    gap:8px;
+
+    margin-bottom:16px;
+}
+
+.badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:
+        7px 13px;
+
+    border-radius:999px;
+
+    font-size:11px;
+
+    font-weight:800;
+}
+
+.badge.verified{
+
+    color:#86efac;
+
+    background:
+        rgba(34,197,94,.10);
+
+    border:
+        1px solid
+        rgba(34,197,94,.25);
+}
+
+.badge.unverified{
+
+    color:#fca5a5;
+
+    background:
+        rgba(239,68,68,.10);
+
+    border:
+        1px solid
+        rgba(239,68,68,.25);
+}
+
+.badge.level{
+
+    color:#020617;
+
+    background:
+        linear-gradient(
+            135deg,
+            #facc15,
+            #f59e0b
+        );
+}
+
+
+/* =========================================================
+   USER ID
+========================================================= */
+
+.userIdRow{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:7px;
+
+    flex-wrap:wrap;
+}
+
+.userId{
+
+    max-width:100%;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
+
+    white-space:nowrap;
+
+    font-family:
+        "Courier New",
+        monospace;
+
+    font-size:10px;
+
+    color:#64748b;
+
+    padding:
+        8px 12px;
+
+    background:
+        rgba(30,41,59,.55);
+
+    border:
+        1px solid
+        rgba(56,189,248,.10);
+
+    border-radius:9px;
+}
+
+.copyBtn{
+
+    width:31px;
+    height:31px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#172033;
+
+    color:#38bdf8;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.copyBtn:hover{
+
+    background:#38bdf8;
+
+    color:#020617;
+}
+
+
+/* =========================================================
+   XP
+========================================================= */
+
+.xpWrapper{
+
+    margin-top:28px;
+
+    text-align:left;
+}
+
+.xpHeader{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin-bottom:9px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+    color:#cbd5e1;
+}
+
+.xpHeader span:last-child{
+
+    color:#38bdf8;
+}
+
+.xpBar{
+
+    width:100%;
+
+    height:11px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:
+        rgba(30,41,59,.9);
+
+    border:
+        1px solid
+        rgba(56,189,248,.10);
+}
+
+.xpFill{
+
+    height:100%;
+
+    width:0%;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #38bdf8,
+            #0ea5e9,
+            #2563eb
+        );
+
+    box-shadow:
+        0 0 20px
+        rgba(56,189,248,.35);
+
+    transition:
+        width 1.2s ease;
+}
+
+.xpHint{
+
+    color:#64748b;
+
+    font-size:10px;
+
+    margin-top:8px;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.sectionHeader{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:9px;
+
+    margin:
+        30px 0 17px;
+
+    font-size:20px;
+
+    font-weight:900;
+}
+
+.sectionHeader i{
+
+    color:#38bdf8;
+
+    font-size:17px;
+}
+
+
+/* =========================================================
+   STAT GRID
+========================================================= */
+
+.statsGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:14px;
+
+    margin-bottom:20px;
+}
+
+.statCard{
+
+    padding:22px 14px;
+
+    text-align:center;
+
+    border-radius:18px;
+
+    background:
+        rgba(15,23,42,.72);
+
+    border:
+        1px solid
+        rgba(56,189,248,.12);
+
+    transition:.25s;
+}
+
+.statCard:hover{
+
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(56,189,248,.4);
+
+    box-shadow:
+        0 15px 40px
+        rgba(56,189,248,.10);
+}
+
+.statCard i{
+
+    display:block;
+
+    color:#38bdf8;
+
+    font-size:24px;
+
+    margin-bottom:10px;
+}
+
+.statCard h3{
+
+    font-size:26px;
+
+    margin-bottom:5px;
+}
+
+.statCard p{
+
+    color:#64748b;
+
+    font-size:11px;
+
+    font-weight:700;
+}
+
+
+/* =========================================================
+   ACCOUNT OVERVIEW
+========================================================= */
+
+.overviewGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+}
+
+.infoItem{
+
+    padding:16px;
+
+    border-radius:15px;
+
+    background:
+        rgba(30,41,59,.35);
+
+    border:
+        1px solid
+        rgba(56,189,248,.08);
+}
+
+.infoItem label{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.7px;
+
+    margin-bottom:7px;
+
+    font-weight:800;
+}
+
+.infoItem strong{
+
+    display:block;
+
+    color:#e2e8f0;
+
+    font-size:13px;
+
+    word-break:break-word;
+}
+
+
+/* =========================================================
+   COURSE PROGRESS
+========================================================= */
+
+.courseCard{
+
+    padding:17px;
+
+    margin-bottom:11px;
+
+    border-radius:17px;
+
+    background:
+        rgba(15,23,42,.65);
+
+    border:
+        1px solid
+        rgba(56,189,248,.10);
+
+    transition:.25s;
+}
+
+.courseCard:hover{
+
+    transform:
+        translateX(4px);
+
+    border-color:
+        rgba(56,189,248,.3);
+}
+
+.courseTop{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-bottom:13px;
+}
+
+.courseIcon{
+
+    width:48px;
+    height:48px;
+
+    padding:8px;
+
+    object-fit:contain;
+
+    border-radius:13px;
+
+    background:
+        rgba(56,189,248,.07);
+
+    border:
+        1px solid
+        rgba(56,189,248,.12);
+}
+
+.courseInfo{
+
+    min-width:0;
+
+    flex:1;
+}
+
+.courseInfo h4{
+
+    font-size:15px;
+
+    margin-bottom:4px;
+}
+
+.courseInfo p{
+
+    color:#64748b;
+
+    font-size:10px;
+}
+
+.coursePercent{
+
+    color:#38bdf8;
+
+    font-size:12px;
+
+    font-weight:900;
+}
+
+.progressWrapper{
+
+    margin-top:8px;
+}
+
+.progressBar{
+
+    width:100%;
+
+    height:7px;
+
+    overflow:hidden;
+
+    border-radius:20px;
+
+    background:
+        rgba(2,6,23,.9);
+}
+
+.progressFill{
+
+    height:100%;
+
+    width:0%;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #38bdf8,
+            #2563eb
+        );
+
+    transition:
+        width .8s ease;
+}
+
+.progressText{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    margin-top:7px;
+
+    color:#64748b;
+
+    font-size:10px;
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.actionsGrid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,1fr);
+
+    gap:12px;
+}
+
+.actionBtn{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    padding:17px;
+
+    border-radius:16px;
+
+    border:
+        1px solid
+        rgba(56,189,248,.10);
+
+    background:
+        rgba(15,23,42,.65);
+
+    color:#e2e8f0;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.actionBtn:hover{
+
+    transform:
+        translateY(-4px);
+
+    border-color:
+        rgba(56,189,248,.35);
+
+    box-shadow:
+        0 15px 35px
+        rgba(56,189,248,.08);
+}
+
+.actionIcon{
+
+    width:43px;
+    height:43px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:
+        rgba(56,189,248,.08);
+
+    color:#38bdf8;
+
+    font-size:17px;
+}
+
+.actionText strong{
+
+    display:block;
+
+    font-size:13px;
+
+    margin-bottom:3px;
+}
+
+.actionText span{
+
+    color:#64748b;
+
+    font-size:10px;
+}
+
+
+/* =========================================================
+   FORMS
+========================================================= */
+
+.formGroup{
+
+    margin-bottom:17px;
+}
+
+.formLabel{
+
+    display:block;
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+    font-weight:800;
+
+    margin-bottom:8px;
+}
+
+.inputWrapper{
+
+    position:relative;
+}
+
+.inputWrapper i{
+
+    position:absolute;
+
+    left:15px;
+
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    color:#38bdf8;
+
+    font-size:14px;
+}
+
+.inputWrapper input{
+
+    width:100%;
+
+    height:49px;
+
+    padding:
+        0 15px 0 45px;
+
+    border-radius:12px;
+
+    border:
+        1px solid
+        rgba(56,189,248,.12);
+
+    outline:none;
+
+    background:
+        rgba(30,41,59,.55);
+
+    color:#f8fafc;
+
+    font-size:14px;
+
+    transition:.25s;
+}
+
+.inputWrapper input:focus{
+
+    border-color:#38bdf8;
+
+    background:
+        rgba(15,23,42,.85);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(56,189,248,.07);
+}
+
+.inputWrapper input:disabled{
+
+    opacity:.55;
+
+    cursor:not-allowed;
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn{
+
+    width:100%;
+
+    min-height:48px;
+
+    border:none;
+
+    border-radius:13px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    font-size:13px;
+
+    font-weight:900;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.btn-primary{
+
+    background:
+        linear-gradient(
+            135deg,
+            #38bdf8,
+            #0ea5e9,
+            #2563eb
+        );
+
+    color:#020617;
+
+    box-shadow:
+        0 10px 30px
+        rgba(56,189,248,.12);
+}
+
+.btn-primary:hover{
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 15px 40px
+        rgba(56,189,248,.25);
+}
+
+.btn-danger{
+
+    background:
+        linear-gradient(
+            135deg,
+            #ef4444,
+            #dc2626
+        );
+
+    color:white;
+
+    margin-top:10px;
+}
+
+.btn-danger:hover{
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(239,68,68,.25);
+}
+
+.btn-secondary{
+
+    background:
+        rgba(30,41,59,.65);
+
+    color:#cbd5e1;
+
+    border:
+        1px solid
+        rgba(148,163,184,.12);
+}
+
+.btn-secondary:hover{
+
+    border-color:#38bdf8;
+
+    color:#38bdf8;
+}
+
+
+/* =========================================================
+   SECURITY NOTICE
+========================================================= */
+
+.securityNotice{
+
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    padding:15px;
+
+    margin-bottom:20px;
+
+    border-radius:14px;
+
+    background:
+        rgba(56,189,248,.06);
+
+    border:
+        1px solid
+        rgba(56,189,248,.12);
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+    line-height:1.6;
+}
+
+.securityNotice i{
+
+    color:#38bdf8;
+
+    margin-top:2px;
+}
+
+
+/* =========================================================
+   DANGER AREA
+========================================================= */
+
+.dangerCard{
+
+    border-color:
+        rgba(239,68,68,.14);
+}
+
+.dangerCard:hover{
+
+    border-color:
+        rgba(239,68,68,.3);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+
+    width:min(850px,94%);
+
+    margin:
+        40px auto 0;
+
+    padding-top:25px;
+
+    border-top:
+        1px solid
+        rgba(148,163,184,.08);
+
+    text-align:center;
+
+    color:#475569;
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   HIDDEN
+========================================================= */
+
+#photoInput{
+
+    display:none;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:650px){
+
+    .container{
+
+        width:94%;
+
+        margin-top:22px;
+    }
+
+    .glassCard{
+
+        padding:21px;
+
+        border-radius:20px;
+    }
+
+    .profileHero{
+
+        padding:
+            30px 18px;
+    }
+
+    .avatar{
+
+        width:115px;
+        height:115px;
+    }
+
+    .statsGrid{
+
+        grid-template-columns:
+            repeat(3,1fr);
+
+        gap:8px;
+    }
+
+    .statCard{
+
+        padding:
+            17px 7px;
+    }
+
+    .statCard i{
+
+        font-size:20px;
+    }
+
+    .statCard h3{
+
+        font-size:21px;
+    }
+
+    .statCard p{
+
+        font-size:9px;
+    }
+
+    .overviewGrid{
+
+        grid-template-columns:1fr;
+    }
+
+    .actionsGrid{
+
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:400px){
+
+    .navBrand h2{
+
+        font-size:16px;
+    }
+
+    .statsGrid{
+
+        grid-template-columns:
+            1fr;
+    }
+
+    .statCard{
+
+        display:flex;
+
+        align-items:center;
+
+        text-align:left;
+
+        gap:12px;
+    }
+
+    .statCard i{
+
+        margin:0;
+
+        width:35px;
+
+        text-align:center;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <button
+        class="backBtn"
+        id="backBtn"
+        aria-label="Go back">
+
+        <i class="fas fa-arrow-left"></i>
+
+    </button>
+
+
+    <div class="navBrand">
+
+        <img
+            src="logo.png"
+            alt="Code Academy">
+
+        <h2>
+            Code Academy
+        </h2>
+
+    </div>
+
+
+    <div style="width:44px;"></div>
+
+</nav>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<div class="container">
+
+
+    <!-- LOADING -->
+
+    <div
+        id="loading"
+        class="loading">
+
+        <i class="fas fa-spinner fa-spin"></i>
+
+        <p>
+            Loading your profile...
+        </p>
+
+    </div>
+
+
+
+    <!-- CONTENT -->
+
+    <div
+        id="profileContent"
+        style="display:none;">
+
+
+        <!-- MESSAGE -->
+
+        <div
+            id="messageBox"
+            class="messageBox">
+        </div>
+
+
+
+        <!-- =================================================
+             PROFILE HERO
+        ================================================== -->
+
+        <section class="glassCard profileHero">
+
+
+            <div class="photoWrapper">
+
+                <img
+                    id="userPhoto"
+                    class="avatar"
+                    src="logo.png"
+                    alt="Profile picture">
+
+
+                <button
+                    class="editPhoto"
+                    id="editPhotoBtn"
+                    title="Change profile picture">
+
+                    <i class="fas fa-camera"></i>
+
+                </button>
+
+
+                <input
+                    type="file"
+                    id="photoInput"
+                    accept="image/png,image/jpeg,image/webp">
+
+            </div>
+
+
+            <h1
+                id="userName"
+                class="userName">
+
+                Student
+
+            </h1>
+
+
+            <p
+                id="userEmail"
+                class="userEmail">
+
+                Loading...
+
+            </p>
+
+
+            <div class="badgeRow">
+
+                <span
+                    id="verifyBadge"
+                    class="badge verified">
+
+                    <i class="fas fa-check-circle"></i>
+
+                    Verified
+
+                </span>
+
+
+                <span
+                    id="levelBadge"
+                    class="badge level">
+
+                    <i class="fas fa-crown"></i>
+
+                    Level 1
+
+                </span>
+
+
+                <span
+                    id="providerBadge"
+                    class="badge verified">
+
+                    <i class="fas fa-user"></i>
+
+                    Account
+
+                </span>
+
+            </div>
+
+
+            <div class="userIdRow">
+
+                <span
+                    class="userId"
+                    id="userId">
+
+                    ---
+
+                </span>
+
+
+                <button
+                    class="copyBtn"
+                    id="copyIdBtn"
+                    title="Copy User ID">
+
+                    <i class="fas fa-copy"></i>
+
+                </button>
+
+            </div>
+
+
+
+            <!-- XP -->
+
+            <div class="xpWrapper">
+
+                <div class="xpHeader">
+
+                    <span>
+                        <i class="fas fa-bolt"></i>
+                        Experience
+                    </span>
+
+                    <span>
+
+                        <b id="currentXP">
+                            0
+                        </b>
+
+                        /
+
+                        <b id="nextXP">
+                            100
+                        </b>
+
+                        XP
+
+                    </span>
+
+                </div>
+
+
+                <div class="xpBar">
+
+                    <div
+                        id="xpFill"
+                        class="xpFill">
+                    </div>
+
+                </div>
+
+
+                <p
+                    id="xpHint"
+                    class="xpHint">
+
+                    Earn XP by completing lessons and projects.
+
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             STATS
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-chart-line"></i>
+
+            Your Progress
+
+        </h2>
+
+
+        <section class="statsGrid">
+
+
+            <div class="statCard">
+
+                <i class="fas fa-fire"></i>
+
+                <div>
+
+                    <h3 id="streak">
+                        0
+                    </h3>
+
+                    <p>
+                        Day Streak
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statCard">
+
+                <i class="fas fa-book-open"></i>
+
+                <div>
+
+                    <h3 id="lessonsDone">
+                        0
+                    </h3>
+
+                    <p>
+                        Lessons
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="statCard">
+
+                <i class="fas fa-award"></i>
+
+                <div>
+
+                    <h3 id="certCount">
+                        0
+                    </h3>
+
+                    <p>
+                        Certificates
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             ACCOUNT OVERVIEW
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-circle-info"></i>
+
+            Account Overview
+
+        </h2>
+
+
+        <section class="glassCard">
+
+            <div class="overviewGrid">
+
+
+                <div class="infoItem">
+
+                    <label>
+                        Account Status
+                    </label>
+
+                    <strong id="accountStatus">
+                        Active
+                    </strong>
+
+                </div>
+
+
+                <div class="infoItem">
+
+                    <label>
+                        Sign-in Method
+                    </label>
+
+                    <strong id="loginMethod">
+                        Loading...
+                    </strong>
+
+                </div>
+
+
+                <div class="infoItem">
+
+                    <label>
+                        Account Created
+                    </label>
+
+                    <strong id="createdDate">
+                        Loading...
+                    </strong>
+
+                </div>
+
+
+                <div class="infoItem">
+
+                    <label>
+                        Last Sign-in
+                    </label>
+
+                    <strong id="lastLogin">
+                        Loading...
+                    </strong>
+
+                </div>
+
+
+                <div class="infoItem">
+
+                    <label>
+                        Current Level
+                    </label>
+
+                    <strong id="levelInfo">
+                        Level 1
+                    </strong>
+
+                </div>
+
+
+                <div class="infoItem">
+
+                    <label>
+                        Total XP
+                    </label>
+
+                    <strong id="totalXP">
+                        0 XP
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             COURSE PROGRESS
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-graduation-cap"></i>
+
+            Course Progress
+
+        </h2>
+
+
+        <section
+            id="coursesList">
+
+        </section>
+
+
+
+        <!-- =================================================
+             QUICK ACTIONS
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-bolt"></i>
+
+            Quick Actions
+
+        </h2>
+
+
+        <section class="actionsGrid">
+
+
+            <a
+                href="course.html"
+                class="actionBtn">
+
+                <div class="actionIcon">
+
+                    <i class="fas fa-graduation-cap"></i>
+
+                </div>
+
+                <div class="actionText">
+
+                    <strong>
+                        Browse Courses
+                    </strong>
+
+                    <span>
+                        Continue learning
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="projects.html"
+                class="actionBtn">
+
+                <div class="actionIcon">
+
+                    <i class="fas fa-code"></i>
+
+                </div>
+
+                <div class="actionText">
+
+                    <strong>
+                        My Projects
+                    </strong>
+
+                    <span>
+                        Practice your skills
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="progress.html"
+                class="actionBtn">
+
+                <div class="actionIcon">
+
+                    <i class="fas fa-chart-simple"></i>
+
+                </div>
+
+                <div class="actionText">
+
+                    <strong>
+                        Full Progress
+                    </strong>
+
+                    <span>
+                        See your learning journey
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="certificate.html"
+                class="actionBtn">
+
+                <div class="actionIcon">
+
+                    <i class="fas fa-certificate"></i>
+
+                </div>
+
+                <div class="actionText">
+
+                    <strong>
+                        Certificates
+                    </strong>
+
+                    <span>
+                        View your achievements
+                    </span>
+
+                </div>
+
+            </a>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             PROFILE SETTINGS
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-user-gear"></i>
+
+            Profile Settings
+
+        </h2>
+
+
+        <section class="glassCard">
+
+
+            <div class="formGroup">
+
+                <label class="formLabel">
+                    Full Name
+                </label>
+
+                <div class="inputWrapper">
+
+                    <i class="fas fa-user"></i>
+
+                    <input
+                        type="text"
+                        id="fullName"
+                        placeholder="Your full name">
+
+                </div>
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label class="formLabel">
+                    Email Address
+                </label>
+
+                <div class="inputWrapper">
+
+                    <i class="fas fa-envelope"></i>
+
+                    <input
+                        type="email"
+                        id="email"
+                        placeholder="your@email.com">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                id="saveProfileBtn">
+
+                <i class="fas fa-save"></i>
+
+                Save Changes
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             SECURITY
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-shield-halved"></i>
+
+            Security
+
+        </h2>
+
+
+        <section class="glassCard">
+
+
+            <div class="securityNotice">
+
+                <i class="fas fa-lock"></i>
+
+                <span>
+                    For security, changing your password or
+                    email may require your current password
+                    or a recent sign-in.
+                </span>
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label class="formLabel">
+                    Current Password
+                </label>
+
+                <div class="inputWrapper">
+
+                    <i class="fas fa-key"></i>
+
+                    <input
+                        type="password"
+                        id="currentPass"
+                        placeholder="Current password">
+
+                </div>
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label class="formLabel">
+                    New Password
+                </label>
+
+                <div class="inputWrapper">
+
+                    <i class="fas fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="newPass"
+                        placeholder="At least 6 characters">
+
+                </div>
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label class="formLabel">
+                    Confirm New Password
+                </label>
+
+                <div class="inputWrapper">
+
+                    <i class="fas fa-lock"></i>
+
+                    <input
+                        type="password"
+                        id="confirmPass"
+                        placeholder="Confirm new password">
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="btn btn-primary"
+                id="changePasswordBtn">
+
+                <i class="fas fa-key"></i>
+
+                Change Password
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =================================================
+             DANGER / LOGOUT
+        ================================================== -->
+
+        <h2 class="sectionHeader">
+
+            <i class="fas fa-right-from-bracket"></i>
+
+            Account
+
+        </h2>
+
+
+        <section class="glassCard dangerCard">
+
+
+            <button
+                class="btn btn-danger"
+                id="logoutBtn">
+
+                <i class="fas fa-right-from-bracket"></i>
+
+                Logout Account
+
+            </button>
+
+
+        </section>
+
+
+    </div>
+
+</div>
+
+
+
+<footer>
+
+    Code Academy © 2026
+
+    <br>
+
+    Learn • Build • Practice • Become a Developer
+
+</footer>
+
+
+
+<!-- =====================================================
+     AUTHENTICATION ENGINE
+
+     IMPORTANT:
+
+     We use authentication.js.
+
+     We DO NOT create another Firebase project here.
+===================================================== -->
+
+<script type="module">
+
+import {
+    auth,
+    db,
+    storage,
+    onAuthStateChanged
+} from "./authentication.js";
+
+
+import {
+    updateProfile,
+    updateEmail,
+    updatePassword,
+    reauthenticateWithCredential,
+    EmailAuthProvider,
+    signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+import {
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+import {
+    ref,
+    uploadBytes,
+    getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const loading =
+    document.getElementById("loading");
+
+const profileContent =
+    document.getElementById("profileContent");
+
+const messageBox =
+    document.getElementById("messageBox");
+
+const photoInput =
+    document.getElementById("photoInput");
+
+const editPhotoBtn =
+    document.getElementById("editPhotoBtn");
+
+const saveProfileBtn =
+    document.getElementById("saveProfileBtn");
+
+const changePasswordBtn =
+    document.getElementById("changePasswordBtn");
+
+const logoutBtn =
+    document.getElementById("logoutBtn");
+
+
+let currentUser = null;
+
+
+/* =========================================================
+   20 PROGRAMMING LANGUAGES
+========================================================= */
+
+const courses = [
+
+    {
+        id:"html",
+        name:"HTML",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"css",
+        name:"CSS",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"javascript",
+        name:"JavaScript",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"python",
+        name:"Python",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"react",
+        name:"React",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"java",
+        name:"Java",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"c",
+        name:"C",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"cpp",
+        name:"C++",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"csharp",
+        name:"C#",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"php",
+        name:"PHP",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"typescript",
+        name:"TypeScript",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"go",
+        name:"Go",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original-wordmark.svg",
+        lessons:10
+    },
+
+    {
+        id:"rust",
+        name:"Rust",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"kotlin",
+        name:"Kotlin",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"swift",
+        name:"Swift",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"dart",
+        name:"Dart",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"ruby",
+        name:"Ruby",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ruby/ruby-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"sql",
+        name:"SQL",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"r",
+        name:"R",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/r/r-original.svg",
+        lessons:10
+    },
+
+    {
+        id:"lua",
+        name:"Lua",
+        icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/lua/lua-original.svg",
+        lessons:10
+    }
+
+];
+
+
+/* =========================================================
+   SHOW MESSAGE
+========================================================= */
+
+function showMessage(
+    message,
+    type = "success"
+){
+
+    messageBox.textContent =
+        message;
+
+    messageBox.className =
+        "messageBox " + type;
+
+    messageBox.style.display =
+        "block";
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+
+    clearTimeout(
+        window.profileMessageTimer
+    );
+
+
+    window.profileMessageTimer =
+        setTimeout(() => {
+
+            messageBox.style.display =
+                "none";
+
+        }, 6000);
+
+}
+
+
+/* =========================================================
+   LEVEL SYSTEM
+========================================================= */
+
+function getLevel(xp){
+
+    const level =
+        Math.floor(
+            Number(xp || 0) / 100
+        ) + 1;
+
+
+    const titles = [
+
+        "Beginner",
+        "Learner",
+        "Coder",
+        "Developer",
+        "Advanced Developer",
+        "Expert",
+        "Master",
+        "Legend"
+
+    ];
+
+
+    const title =
+        titles[
+            Math.min(
+                level - 1,
+                titles.length - 1
+            )
+        ];
+
+
+    return {
+        level,
+        title
+    };
+
+}
+
+
+/* =========================================================
+   FORMAT DATE
+========================================================= */
+
+function formatDate(date){
+
+    if(!date){
+        return "Not available";
+    }
+
+
+    try{
+
+        return new Intl.DateTimeFormat(
+            undefined,
+            {
+                year:"numeric",
+                month:"short",
+                day:"numeric"
+            }
+        ).format(date);
+
+    }
+    catch{
+
+        return "Not available";
+
+    }
+
+}
+
+
+/* =========================================================
+   PROVIDER
+========================================================= */
+
+function getProvider(user){
+
+    const providers =
+        user.providerData || [];
+
+
+    if(
+        providers.some(
+            provider =>
+                provider.providerId ===
+                "google.com"
+        )
+    ){
+
+        return "Google";
+
+    }
+
+
+    if(
+        providers.some(
+            provider =>
+                provider.providerId ===
+                "yahoo.com"
+        )
+    ){
+
+        return "Yahoo";
+
+    }
+
+
+    if(
+        providers.some(
+            provider =>
+                provider.providerId ===
+                "password"
+        )
+    ){
+
+        return "Email & Password";
+
+    }
+
+
+    return "Account";
+
+}
+
+
+/* =========================================================
+   CREATE MISSING PROFILE
+========================================================= */
+
+async function ensureProfile(user){
+
+    const userRef =
+        doc(
+            db,
+            "users",
+            user.uid
+        );
+
+
+    const snapshot =
+        await getDoc(userRef);
+
+
+    if(!snapshot.exists()){
+
+        await setDoc(
+            userRef,
+            {
+                uid:user.uid,
+
+                email:user.email || "",
+
+                displayName:
+                    user.displayName ||
+                    "Student",
+
+                photoURL:
+                    user.photoURL ||
+                    "",
+
+                xp:0,
+
+                streak:0,
+
+                certificates:{},
+
+                progress:{},
+
+                createdAt:new Date(),
+
+                updatedAt:new Date()
+
+            },
+            {
+                merge:true
+            }
+        );
+
+
+        return {
+
+            uid:user.uid,
+
+            email:user.email || "",
+
+            displayName:
+                user.displayName ||
+                "Student",
+
+            photoURL:
+                user.photoURL ||
+                "",
+
+            xp:0,
+
+            streak:0,
+
+            certificates:{},
+
+            progress:{}
+
+        };
+
+    }
+
+
+    return snapshot.data();
+
+}
+
+
+/* =========================================================
+   LOAD PROFILE
+========================================================= */
+
+async function loadProfile(user){
+
+    currentUser =
+        user;
+
+
+    try{
+
+        const data =
+            await ensureProfile(user);
+
+
+        /* ---------------------------------------------
+           BASIC INFORMATION
+        --------------------------------------------- */
+
+        const photo =
+            data.photoURL ||
+            user.photoURL ||
+            "logo.png";
+
+
+        document.getElementById(
+            "userPhoto"
+        ).src = photo;
+
+
+        document.getElementById(
+            "userName"
+        ).textContent =
+            data.displayName ||
+            user.displayName ||
+            "Student";
+
+
+        document.getElementById(
+            "userEmail"
+        ).textContent =
+            user.email ||
+            "No email";
+
+
+        document.getElementById(
+            "userId"
+        ).textContent =
+            user.uid;
+
+
+        document.getElementById(
+            "fullName"
+        ).value =
+            data.displayName ||
+            user.displayName ||
+            "";
+
+
+        document.getElementById(
+            "email"
+        ).value =
+            user.email ||
+            "";
+
+
+        /* ---------------------------------------------
+           VERIFICATION
+        --------------------------------------------- */
+
+        const verifyBadge =
+            document.getElementById(
+                "verifyBadge"
+            );
+
+
+        if(user.emailVerified){
+
+            verifyBadge.className =
+                "badge verified";
+
+            verifyBadge.innerHTML =
+                `
+                <i class="fas fa-check-circle"></i>
+                Email Verified
+                `;
+
+        }
+        else{
+
+            verifyBadge.className =
+                "badge unverified";
+
+            verifyBadge.innerHTML =
+                `
+                <i class="fas fa-circle-exclamation"></i>
+                Email Not Verified
+                `;
+
+        }
+
+
+        /* ---------------------------------------------
+           PROVIDER
+        --------------------------------------------- */
+
+        const provider =
+            getProvider(user);
+
+
+        document.getElementById(
+            "providerBadge"
+        ).innerHTML =
+            `
+            <i class="fas fa-user-shield"></i>
+            ${provider}
+            `;
+
+
+        document.getElementById(
+            "loginMethod"
+        ).textContent =
+            provider;
+
+
+        /* ---------------------------------------------
+           XP
+        --------------------------------------------- */
+
+        const xp =
+            Number(data.xp || 0);
+
+
+        const levelData =
+            getLevel(xp);
+
+
+        const currentXP =
+            xp % 100;
+
+
+        document.getElementById(
+            "levelBadge"
+        ).innerHTML =
+            `
+            <i class="fas fa-crown"></i>
+            Level ${levelData.level}
+            `;
+
+
+        document.getElementById(
+            "levelInfo"
+        ).textContent =
+            `Level ${levelData.level} • ${levelData.title}`;
+
+
+        document.getElementById(
+            "currentXP"
+        ).textContent =
+            currentXP;
+
+
+        document.getElementById(
+            "nextXP"
+        ).textContent =
+            100;
+
+
+        document.getElementById(
+            "totalXP"
+        ).textContent =
+            `${xp} XP`;
+
+
+        setTimeout(() => {
+
+            document.getElementById(
+                "xpFill"
+            ).style.width =
+                currentXP + "%";
+
+        },100);
+
+
+        /* ---------------------------------------------
+           STREAK
+        --------------------------------------------- */
+
+        const streak =
+            Number(
+                data.streak ||
+                data.currentStreak ||
+                0
+            );
+
+
+        document.getElementById(
+            "streak"
+        ).textContent =
+            streak;
+
+
+        /* ---------------------------------------------
+           CERTIFICATES
+        --------------------------------------------- */
+
+        const certificates =
+            data.certificates || {};
+
+
+        const certificateCount =
+            Object.values(
+                certificates
+            ).filter(
+                value => value === true
+            ).length;
+
+
+        document.getElementById(
+            "certCount"
+        ).textContent =
+            certificateCount;
+
+
+        /* ---------------------------------------------
+           TOTAL LESSONS
+        --------------------------------------------- */
+
+        let totalCompleted =
+            0;
+
+
+        const progress =
+            data.progress || {};
+
+
+        courses.forEach(course => {
+
+            const courseProgress =
+                progress[course.id] || {};
+
+
+            totalCompleted +=
+                Number(
+                    courseProgress.completed ||
+                    0
+                );
+
+        });
+
+
+        /*
+         * Also support the older
+         * completedLessons array.
+         */
+
+        if(
+            Array.isArray(
+                data.completedLessons
+            )
+            &&
+            totalCompleted === 0
+        ){
+
+            totalCompleted =
+                data.completedLessons.length;
+
+        }
+
+
+        document.getElementById(
+            "lessonsDone"
+        ).textContent =
+            totalCompleted;
+
+
+        /* ---------------------------------------------
+           ACCOUNT DATES
+        --------------------------------------------- */
+
+        const creationTime =
+            user.metadata?.creationTime;
+
+
+        const lastSignIn =
+            user.metadata?.lastSignInTime;
+
+
+        document.getElementById(
+            "createdDate"
+        ).textContent =
+            creationTime
+                ? formatDate(
+                    new Date(
+                        creationTime
+                    )
+                )
+                : "Not available";
+
+
+        document.getElementById(
+            "lastLogin"
+        ).textContent =
+            lastSignIn
+                ? formatDate(
+                    new Date(
+                        lastSignIn
+                    )
+                )
+                : "Not available";
+
+
+        document.getElementById(
+            "accountStatus"
+        ).textContent =
+            "Active";
+
+
+        /* ---------------------------------------------
+           COURSE PROGRESS
+        --------------------------------------------- */
+
+        renderCourses(
+            data
+        );
+
+
+        /* ---------------------------------------------
+           SHOW PAGE
+        --------------------------------------------- */
+
+        loading.style.display =
+            "none";
+
+        profileContent.style.display =
+            "block";
+
+    }
+    catch(error){
+
+        console.error(
+            "PROFILE LOAD ERROR:",
+            error
+        );
+
+
+        loading.style.display =
+            "none";
+
+        profileContent.style.display =
+            "block";
+
+
+        showMessage(
+            "Your account is signed in, but some profile information could not be loaded: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER COURSE PROGRESS
+========================================================= */
+
+function renderCourses(data){
+
+    const coursesList =
+        document.getElementById(
+            "coursesList"
+        );
+
+
+    coursesList.innerHTML =
+        "";
+
+
+    const progress =
+        data.progress || {};
+
+
+    const certificates =
+        data.certificates || {};
+
+
+    courses.forEach(course => {
+
+        const courseProgress =
+            progress[course.id] || {};
+
+
+        let completed =
+            Number(
+                courseProgress.completed ||
+                0
+            );
+
+
+        completed =
+            Math.max(
+                0,
+                Math.min(
+                    completed,
+                    course.lessons
+                )
+            );
+
+
+        const percent =
+            Math.floor(
+                (
+                    completed /
+                    course.lessons
+                ) * 100
+            );
+
+
+        const earned =
+            certificates[
+                course.id
+            ] === true;
+
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "courseCard";
+
+
+        card.innerHTML =
+            `
+
+            <div class="courseTop">
+
+                <img
+                    class="courseIcon"
+                    src="${course.icon}"
+                    alt="${course.name}"
+                    loading="lazy">
+
+
+                <div class="courseInfo">
+
+                    <h4>
+                        ${course.name}
+                    </h4>
+
+                    <p>
+                        ${
+                            earned
+                            ? "Certificate earned"
+                            : completed > 0
+                                ? "Course in progress"
+                                : "Not started yet"
+                        }
+                    </p>
+
+                </div>
+
+
+                <div class="coursePercent">
+
+                    ${percent}%
+
+                </div>
+
+            </div>
+
+
+            <div class="progressWrapper">
+
+                <div class="progressBar">
+
+                    <div
+                        class="progressFill"
+                        style="width:${percent}%">
+                    </div>
+
+                </div>
+
+
+                <div class="progressText">
+
+                    <span>
+                        ${completed}
+                        /
+                        ${course.lessons}
+                        lessons
+                    </span>
+
+                    <span>
+                        ${
+                            earned
+                            ? "✓ Completed"
+                            : `${percent}%`
+                        }
+                    </span>
+
+                </div>
+
+            </div>
+
+            `;
+
+
+        coursesList.appendChild(
+            card
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+document.getElementById(
+    "backBtn"
+).addEventListener(
+    "click",
+    () => {
+
+        if(
+            document.referrer &&
+            document.referrer !==
+            window.location.href
+        ){
+
+            history.back();
+
+        }
+        else{
+
+            window.location.href =
+                "menu.html";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   COPY USER ID
+========================================================= */
+
+document.getElementById(
+    "copyIdBtn"
+).addEventListener(
+    "click",
+    async () => {
+
+        if(!currentUser){
+            return;
+        }
+
+
+        try{
+
+            await navigator.clipboard.writeText(
+                currentUser.uid
+            );
+
+
+            showMessage(
+                "User ID copied successfully.",
+                "success"
+            );
+
+        }
+        catch(error){
+
+            showMessage(
+                "Could not copy the User ID.",
+                "error"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CHANGE PHOTO
+========================================================= */
+
+editPhotoBtn.addEventListener(
+    "click",
+    () => {
+
+        photoInput.click();
+
+    }
+);
+
+
+photoInput.addEventListener(
+    "change",
+    async event => {
+
+        const file =
+            event.target.files[0];
+
+
+        if(!file){
+            return;
+        }
+
+
+        if(!currentUser){
+
+            showMessage(
+                "You must be signed in to change your photo.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if(
+            !file.type.startsWith(
+                "image/"
+            )
+        ){
+
+            showMessage(
+                "Please select an image file.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if(
+            file.size >
+            5 * 1024 * 1024
+        ){
+
+            showMessage(
+                "Please choose an image smaller than 5MB.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        try{
+
+            editPhotoBtn.disabled =
+                true;
+
+
+            editPhotoBtn.innerHTML =
+                `
+                <i class="fas fa-spinner fa-spin"></i>
+                `;
+
+
+            const storageRef =
+                ref(
+                    storage,
+                    `profilePhotos/${currentUser.uid}`
+                );
+
+
+            await uploadBytes(
+                storageRef,
+                file
+            );
+
+
+            const photoURL =
+                await getDownloadURL(
+                    storageRef
+                );
+
+
+            await updateProfile(
+                currentUser,
+                {
+                    photoURL
+                }
+            );
+
+
+            await updateDoc(
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid
+                ),
+                {
+                    photoURL,
+                    updatedAt:new Date()
+                }
+            );
+
+
+            document.getElementById(
+                "userPhoto"
+            ).src =
+                photoURL;
+
+
+            showMessage(
+                "Profile photo updated successfully.",
+                "success"
+            );
+
+        }
+        catch(error){
+
+            console.error(
+                "PHOTO ERROR:",
+                error
+            );
+
+
+            showMessage(
+                "Could not update your profile photo: " +
+                error.message,
+                "error"
+            );
+
+        }
+        finally{
+
+            editPhotoBtn.disabled =
+                false;
+
+            editPhotoBtn.innerHTML =
+                `
+                <i class="fas fa-camera"></i>
+                `;
+
+            photoInput.value =
+                "";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   UPDATE PROFILE
+========================================================= */
+
+saveProfileBtn.addEventListener(
+    "click",
+    async () => {
+
+        if(!currentUser){
+
+            showMessage(
+                "You are not signed in.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const newName =
+            document.getElementById(
+                "fullName"
+            ).value.trim();
+
+
+        const newEmail =
+            document.getElementById(
+                "email"
+            ).value.trim();
+
+
+        if(!newName){
+
+            showMessage(
+                "Please enter your name.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if(!newEmail){
+
+            showMessage(
+                "Please enter your email address.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        try{
+
+            saveProfileBtn.disabled =
+                true;
+
+
+            saveProfileBtn.innerHTML =
+                `
+                <i class="fas fa-spinner fa-spin"></i>
+                Saving...
+                `;
+
+
+            /* -----------------------------------------
+               UPDATE NAME
+            ----------------------------------------- */
+
+            if(
+                newName !==
+                (
+                    currentUser.displayName ||
+                    ""
+                )
+            ){
+
+                await updateProfile(
+                    currentUser,
+                    {
+                        displayName:newName
+                    }
+                );
+
+            }
+
+
+            /* -----------------------------------------
+               UPDATE EMAIL
+            ----------------------------------------- */
+
+            if(
+                newEmail !==
+                (
+                    currentUser.email ||
+                    ""
+                )
+            ){
+
+                try{
+
+                    await updateEmail(
+                        currentUser,
+                        newEmail
+                    );
+
+                }
+                catch(emailError){
+
+                    if(
+                        emailError.code ===
+                        "auth/requires-recent-login"
+                    ){
+
+                        throw new Error(
+                            "For security, Firebase requires you to sign in again before changing your email."
+                        );
+
+                    }
+
+                    throw emailError;
+
+                }
+
+            }
+
+
+            /* -----------------------------------------
+               FIRESTORE
+            ----------------------------------------- */
+
+            await setDoc(
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid
+                ),
+                {
+                    displayName:newName,
+                    email:
+                        currentUser.email,
+                    updatedAt:new Date()
+                },
+                {
+                    merge:true
+                }
+            );
+
+
+            document.getElementById(
+                "userName"
+            ).textContent =
+                newName;
+
+
+            document.getElementById(
+                "userEmail"
+            ).textContent =
+                currentUser.email;
+
+
+            document.getElementById(
+                "email"
+            ).value =
+                currentUser.email;
+
+
+            showMessage(
+                "Your profile was updated successfully.",
+                "success"
+            );
+
+        }
+        catch(error){
+
+            console.error(
+                "PROFILE UPDATE ERROR:",
+                error
+            );
+
+
+            showMessage(
+                "Could not update your profile: " +
+                error.message,
+                "error"
+            );
+
+        }
+        finally{
+
+            saveProfileBtn.disabled =
+                false;
+
+            saveProfileBtn.innerHTML =
+                `
+                <i class="fas fa-save"></i>
+                Save Changes
+                `;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   CHANGE PASSWORD
+========================================================= */
+
+changePasswordBtn.addEventListener(
+    "click",
+    async () => {
+
+        if(!currentUser){
+
+            showMessage(
+                "You are not signed in.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const currentPassword =
+            document.getElementById(
+                "currentPass"
+            ).value;
+
+
+        const newPassword =
+            document.getElementById(
+                "newPass"
+            ).value;
+
+
+        const confirmPassword =
+            document.getElementById(
+                "confirmPass"
+            ).value;
+
+
+        if(!currentPassword){
+
+            showMessage(
+                "Enter your current password.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if(
+            newPassword.length < 6
+        ){
+
+            showMessage(
+                "Your new password must contain at least 6 characters.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if(
+            newPassword !==
+            confirmPassword
+        ){
+
+            showMessage(
+                "The new passwords do not match.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Check whether this account actually
+         * uses email/password authentication.
+         */
+
+        const usesPassword =
+            currentUser.providerData.some(
+                provider =>
+                    provider.providerId ===
+                    "password"
+            );
+
+
+        if(!usesPassword){
+
+            showMessage(
+                "This account uses " +
+                getProvider(currentUser) +
+                " sign-in. There is no email/password password to change here.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        try{
+
+            changePasswordBtn.disabled =
+                true;
+
+
+            changePasswordBtn.innerHTML =
+                `
+                <i class="fas fa-spinner fa-spin"></i>
+                Updating...
+                `;
+
+
+            const credential =
+                EmailAuthProvider.credential(
+                    currentUser.email,
+                    currentPassword
+                );
+
+
+            await reauthenticateWithCredential(
+                currentUser,
+                credential
+            );
+
+
+            await updatePassword(
+                currentUser,
+                newPassword
+            );
+
+
+            document.getElementById(
+                "currentPass"
+            ).value = "";
+
+
+            document.getElementById(
+                "newPass"
+            ).value = "";
+
+
+            document.getElementById(
+                "confirmPass"
+            ).value = "";
+
+
+            showMessage(
+                "Password changed successfully. Your current session remains active.",
+                "success"
+            );
+
+        }
+        catch(error){
+
+            console.error(
+                "PASSWORD ERROR:",
+                error
+            );
+
+
+            let message =
+                error.message;
+
+
+            if(
+                error.code ===
+                "auth/wrong-password"
+            ){
+
+                message =
+                    "The current password is incorrect.";
+
+            }
+
+
+            if(
+                error.code ===
+                "auth/invalid-credential"
+            ){
+
+                message =
+                    "The current password is incorrect.";
+
+            }
+
+
+            showMessage(
+                "Could not change password: " +
+                message,
+                "error"
+            );
+
+        }
+        finally{
+
+            changePasswordBtn.disabled =
+                false;
+
+            changePasswordBtn.innerHTML =
+                `
+                <i class="fas fa-key"></i>
+                Change Password
+                `;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+logoutBtn.addEventListener(
+    "click",
+    async () => {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout from Code Academy?"
+            );
+
+
+        if(!confirmed){
+            return;
+        }
+
+
+        try{
+
+            logoutBtn.disabled =
+                true;
+
+
+            logoutBtn.innerHTML =
+                `
+                <i class="fas fa-spinner fa-spin"></i>
+                Logging out...
+                `;
+
+
+            await signOut(
+                auth
+            );
+
+
+            window.location.href =
+                "login.html";
+
+        }
+        catch(error){
+
+            console.error(
+                "LOGOUT ERROR:",
+                error
+            );
+
+
+            logoutBtn.disabled =
+                false;
+
+
+            logoutBtn.innerHTML =
+                `
+                <i class="fas fa-right-from-bracket"></i>
+                Logout Account
+                `;
+
+
+            showMessage(
+                "Could not logout: " +
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        console.log(
+            "Profile auth state:",
+            user
+        );
+
+
+        /*
+         * IMPORTANT:
+         *
+         * If there is no user, send to LOGIN.
+         *
+         * NEVER send to signup from here.
+         */
+
+        if(!user){
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        await loadProfile(
+            user
+        );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
