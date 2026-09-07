@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Code Academy</title>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
+
+<style>
+
+/* =====================================================
+   RESET
+===================================================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#020617;
+    color:white;
+    overflow-x:hidden;
+    padding-bottom:40px;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+header{
+    width:100%;
+    background:#0f172a;
+    padding:12px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+}
+
+.logo h2{
+    font-size:18px;
+    color:#38bdf8;
+}
+
+
+/* =====================================================
+   MENU BUTTON
+===================================================== */
+
+#menuBtn{
+    background:none;
+    border:none;
+    color:white;
+    font-size:26px;
+    cursor:pointer;
+    padding:5px;
+}
+
+#menuBtn:hover{
+    color:#38bdf8;
+}
+
+
+/* =====================================================
+   MENU OVERLAY
+===================================================== */
+
+#menuOverlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.65);
+    display:none;
+    z-index:998;
+}
+
+#menuOverlay.active{
+    display:block;
+}
+
+
+/* =====================================================
+   SIDE MENU
+===================================================== */
+
+#sideMenu{
+    position:fixed;
+    top:0;
+    right:-320px;
+    width:300px;
+    height:100vh;
+    background:#0f172a;
+    overflow-y:auto;
+    z-index:999;
+    padding:20px;
+    transition:right 0.3s ease;
+    border-left:1px solid rgba(255,255,255,0.08);
+}
+
+#sideMenu.active{
+    right:0;
+}
+
+
+/* =====================================================
+   CLOSE MENU
+===================================================== */
+
+.closeMenu{
+    position:absolute;
+    top:12px;
+    right:15px;
+
+    width:35px;
+    height:35px;
+
+    border:none;
+    border-radius:50%;
+
+    background:#1e293b;
+    color:white;
+
+    font-size:20px;
+
+    cursor:pointer;
+}
+
+.closeMenu:hover{
+    background:#334155;
+}
+
+
+/* =====================================================
+   PROFILE AREA
+===================================================== */
+
+.menuProfile{
+    text-align:center;
+    margin-bottom:20px;
+    padding-top:25px;
+}
+
+.menuProfile img{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    object-fit:cover;
+    border:3px solid #38bdf8;
+}
+
+.menuProfile h3{
+    margin-top:10px;
+    color:white;
+    font-size:16px;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.searchContainer{
+    margin-bottom:20px;
+}
+
+#searchInput{
+    width:100%;
+    padding:12px;
+
+    border:none;
+    outline:none;
+
+    border-radius:10px;
+
+    background:#1e293b;
+    color:white;
+}
+
+#searchInput::placeholder{
+    color:#94a3b8;
+}
+
+#searchResults{
+    margin-top:8px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+
+/* =====================================================
+   SEARCH ITEMS
+===================================================== */
+
+.searchItem{
+    background:#1e293b;
+    padding:12px;
+    color:white;
+    cursor:pointer;
+    border-bottom:1px solid #334155;
+}
+
+.searchItem:hover{
+    background:#334155;
+}
+
+
+/* =====================================================
+   MENU HEADINGS
+===================================================== */
+
+.menuHeading{
+    color:#38bdf8;
+    margin-top:18px;
+    margin-bottom:10px;
+    font-size:12px;
+    letter-spacing:1px;
+}
+
+
+/* =====================================================
+   MENU LINKS
+===================================================== */
+
+.menuLink{
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    text-decoration:none;
+    color:white;
+
+    background:#1e293b;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    margin-bottom:10px;
+
+    transition:0.3s;
+}
+
+.menuLink:hover{
+    background:#334155;
+    transform:translateX(3px);
+}
+
+.menuLink i{
+    width:20px;
+    color:#38bdf8;
+}
+
+
+/* =====================================================
+   HERO SECTION
+===================================================== */
+
+#sectionA{
+    display:flex;
+    justify-content:space-between;
+    align-items:stretch;
+    gap:15px;
+    padding:18px 15px;
+}
+
+
+/* =====================================================
+   LEFT HERO
+===================================================== */
+
+.leftA{
+    width:55%;
+
+    background:#0f172a;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    border:1px solid rgba(255,255,255,0.06);
+}
+
+.leftA h1{
+    font-size:22px;
+    line-height:1.35;
+    margin-bottom:10px;
+}
+
+.leftA span{
+    color:#38bdf8;
+}
+
+.leftA p{
+    font-size:11px;
+    line-height:1.6;
+    color:#cbd5e1;
+    margin-bottom:18px;
+}
+
+
+/* =====================================================
+   START LEARNING BUTTON
+===================================================== */
+
+.start-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    padding:12px 16px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#38bdf8;
+
+    color:#020617;
+
+    font-size:12px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    text-decoration:none;
+
+    transition:0.3s;
+}
+
+.start-btn:hover{
+    background:#7dd3fc;
+    transform:translateY(-2px);
+}
+
+
+/* =====================================================
+   LEARNING HUB
+===================================================== */
+
+.learning-hub{
+    width:43%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0f172a,
+            #172554
+        );
+
+    border-radius:18px;
+
+    padding:20px;
+
+    border:1px solid rgba(56,189,248,0.15);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.learning-hub-icon{
+    width:50px;
+    height:50px;
+
+    border-radius:14px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#38bdf8;
+
+    color:#020617;
+
+    font-size:22px;
+
+    margin-bottom:12px;
+}
+
+.learning-hub h2{
+    font-size:16px;
+    margin-bottom:7px;
+}
+
+.learning-hub p{
+    font-size:10px;
+    line-height:1.5;
+    color:#cbd5e1;
+    margin-bottom:14px;
+}
+
+
+/* =====================================================
+   HUB STATS
+===================================================== */
+
+.hub-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+}
+
+.hub-stat{
+    background:#020617;
+    border-radius:10px;
+    padding:9px 5px;
+    text-align:center;
+}
+
+.hub-stat strong{
+    display:block;
+    color:#38bdf8;
+    font-size:14px;
+}
+
+.hub-stat span{
+    display:block;
+    color:#94a3b8;
+    font-size:8px;
+    margin-top:3px;
+}
+
+
+/* =====================================================
+   SECTION B
+===================================================== */
+
+#sectionB{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    padding:10px;
+}
+
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.card{
+    width:32%;
+
+    background:#0f172a;
+
+    padding:12px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    transition:0.3s;
+}
+
+.card:hover{
+    background:#1e293b;
+    transform:translateY(-3px);
+}
+
+.card i{
+    font-size:22px;
+    margin-bottom:8px;
+    color:#38bdf8;
+}
+
+.card h3{
+    font-size:12px;
+    margin-bottom:6px;
+}
+
+.card p{
+    font-size:8px;
+    line-height:1.4;
+    color:#cbd5e1;
+}
+
+.card a{
+    text-decoration:none;
+    color:white;
+}
+
+
+/* =====================================================
+   SECTION C
+===================================================== */
+
+#sectionC{
+    padding:10px;
+}
+
+.section-title{
+    text-align:center;
+    font-size:18px;
+    margin-bottom:15px;
+    color:#38bdf8;
+}
+
+
+/* =====================================================
+   COURSE ROW
+===================================================== */
+
+.course-row{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+}
+
+
+/* =====================================================
+   COURSE CARD
+===================================================== */
+
+.course-card{
+    width:24%;
+
+    background:#0f172a;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    transition:0.3s;
+}
+
+.course-card:hover{
+    transform:translateY(-3px);
+    background:#1e293b;
+}
+
+.course-card img{
+    width:100%;
+    height:85px;
+
+    object-fit:contain;
+
+    background:white;
+
+    padding:4px;
+
+    border-radius:8px;
+
+    margin-bottom:8px;
+}
+
+.course-card h3{
+    font-size:18px;
+    margin-bottom:5px;
+    color:#38bdf8;
+}
+
+.course-card p{
+    font-size:12px;
+    line-height:1.3;
+    margin-bottom:6px;
+    color:#cbd5e1;
+}
+
+
+/* =====================================================
+   STARS
+===================================================== */
+
+.stars{
+    font-size:9px;
+    color:gold;
+    margin-bottom:6px;
+}
+
+
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+.progress-box{
+    width:100%;
+    height:6px;
+
+    background:#334155;
+
+    border-radius:10px;
+
+    overflow:hidden;
+}
+
+.progress{
+    height:100%;
+    border-radius:10px;
+}
+
+.html-progress{
+    width:90%;
+    background:#f97316;
+}
+
+.js-progress{
+    width:70%;
+    background:#facc15;
+}
+
+.react-progress{
+    width:60%;
+    background:#38bdf8;
+}
+
+.python-progress{
+    width:85%;
+    background:#22c55e;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer{
+    margin-top:20px;
+
+    padding:15px;
+
+    text-align:center;
+
+    font-size:11px;
+
+    color:#94a3b8;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:650px){
+
+    #sectionA{
+        flex-direction:column;
+    }
+
+    .leftA,
+    .learning-hub{
+        width:100%;
+    }
+
+    .leftA h1{
+        font-size:20px;
+    }
+
+    .course-row{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+        gap:10px;
+    }
+
+    .course-card{
+        width:100%;
+    }
+
+}
+
+@media(max-width:500px){
+
+    #sideMenu{
+        width:280px;
+    }
+
+    #sectionB{
+        gap:6px;
+    }
+
+    .card{
+        padding:9px 5px;
+    }
+
+    .card h3{
+        font-size:10px;
+    }
+
+    .hub-stats{
+        gap:5px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header>
+
+    <div class="logo">
+
+        <img
+            src="logo.png"
+            alt="Code Academy"
+        >
+
+        <h2>Code Academy</h2>
+
+    </div>
+
+
+    <button
+        id="menuBtn"
+        type="button"
+        aria-label="Open menu"
+    >
+
+        <i class="fa-solid fa-bars"></i>
+
+    </button>
+
+</header>
+
+
+<!-- =====================================================
+     MENU OVERLAY
+===================================================== -->
+
+<div id="menuOverlay"></div>
+
+
+<!-- =====================================================
+     SIDE MENU
+===================================================== -->
+
+<div id="sideMenu">
+
+
+    <button
+        class="closeMenu"
+        id="closeMenu"
+        type="button"
+        aria-label="Close menu"
+    >
+
+        ×
+
+    </button>
+
+
+    <!-- PROFILE -->
+
+    <div class="menuProfile">
+
+        <img
+            id="userPhoto"
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="User"
+        >
+
+        <h3 id="userName">
+            Loading...
+        </h3>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="searchContainer">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search pages..."
+        >
+
+        <div id="searchResults"></div>
+
+    </div>
+
+
+    <!-- MAIN NAVIGATION -->
+
+    <h4 class="menuHeading">
+        MAIN NAVIGATION
+    </h4>
+
+
+    <a href="course.html" class="menuLink">
+
+        <i class="fa-solid fa-book"></i>
+
+        Courses
+
+    </a>
+
+
+    <a href="project.html" class="menuLink">
+
+        <i class="fa-solid fa-code"></i>
+
+        Projects
+
+    </a>
+
+
+    <a
+        href="community.html"
+        class="menuLink"
+    >
+
+        <i class="fa-solid fa-users"></i>
+
+        Community
+
+    </a>
+
+
+    <a href="progress.html" class="menuLink">
+
+        <i class="fa-solid fa-chart-line"></i>
+
+        Progress
+
+    </a>
+
+
+    <!-- MY LEARNING -->
+
+    <h4 class="menuHeading">
+
+        MY LEARNING
+
+    </h4>
+
+
+    <a href="certificate.html" class="menuLink">
+
+        <i class="fa-solid fa-award"></i>
+
+        Certificates
+
+    </a>
+
+
+    <a href="code.html" class="menuLink">
+
+        <i class="fa-solid fa-floppy-disk"></i>
+
+        Saved Codes
+
+    </a>
+
+
+    <a href="note.html" class="menuLink">
+
+        <i class="fa-solid fa-note-sticky"></i>
+
+        Saved Notes
+
+    </a>
+
+
+    <a
+        href="games_dash.html"
+        class="menuLink"
+    >
+
+        <i class="fa-solid fa-gamepad"></i>
+
+        Side Games
+
+    </a>
+
+
+    <!-- ACCOUNT -->
+
+    <h4 class="menuHeading">
+
+        ACCOUNT
+
+    </h4>
+
+
+    <a href="profil.html" class="menuLink">
+
+        <i class="fa-solid fa-user"></i>
+
+        Profile
+
+    </a>
+
+
+    <a href="aboutus.html" class="menuLink">
+
+        <i class="fa-solid fa-circle-info"></i>
+
+        About Us
+
+    </a>
+
+
+    <a href="contactus.html" class="menuLink">
+
+        <i class="fa-solid fa-phone"></i>
+
+        Customer Support
+
+    </a>
+
+
+    <a
+        href="https://netpluse.shop/r/WISE9100"
+        class="menuLink"
+    >
+
+        <i class="fa-solid fa-wifi"></i>
+
+        Buy Data
+
+    </a>
+
+
+    <a
+        href="#"
+        class="menuLink"
+        id="logoutLink"
+    >
+
+        <i class="fa-solid fa-right-from-bracket"></i>
+
+        Logout
+
+    </a>
+
+
+</div>
+
+
+<!-- =====================================================
+     HERO SECTION
+===================================================== -->
+
+<section id="sectionA">
+
+
+    <!-- LEFT -->
+
+    <div class="leftA">
+
+        <h1>
+
+            Learn Code.<br>
+
+            <span>Build Projects.</span><br>
+
+            Launch Your Future.
+
+        </h1>
+
+
+        <p>
+
+            Master coding skills with real-world projects,
+            interactive lessons, practical exercises,
+            and AI-powered learning.
+
+        </p>
+
+
+        <!-- DIRECT LINK TO COURSE.HTML -->
+
+        <a
+            href="course.html"
+            class="start-btn"
+        >
+
+            <i class="fa-solid fa-rocket"></i>
+
+            Start Learning Now
+
+        </a>
+
+    </div>
+
+
+    <!-- RIGHT LEARNING HUB -->
+
+    <div class="learning-hub">
+
+        <div class="learning-hub-icon">
+
+            <i class="fa-solid fa-graduation-cap"></i>
+
+        </div>
+
+
+        <h2>
+
+            Your Learning Hub
+
+        </h2>
+
+
+        <p>
+
+            Continue learning, build projects,
+            practice coding, and track your
+            progress from one place.
+
+        </p>
+
+
+        <div class="hub-stats">
+
+            <div class="hub-stat">
+
+                <strong>
+                    4+
+                </strong>
+
+                <span>
+                    Courses
+                </span>
+
+            </div>
+
+
+            <div class="hub-stat">
+
+                <strong>
+                    20+
+                </strong>
+
+                <span>
+                    Projects
+                </span>
+
+            </div>
+
+
+            <div class="hub-stat">
+
+                <strong>
+                    AI
+                </strong>
+
+                <span>
+                    Tutor
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FEATURE CARDS
+===================================================== -->
+
+<section id="sectionB">
+
+
+    <div class="card">
+
+        <a href="project.html">
+
+            <i class="fa fa-code"></i>
+
+            <h3>
+                Hands-on Projects
+            </h3>
+
+            <p>
+                Build real-world coding projects.
+            </p>
+
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <a href="progress.html">
+
+            <i class="fa fa-chart-line"></i>
+
+            <h3>
+                Track Progress
+            </h3>
+
+            <p>
+                Track progress and earn certificates.
+            </p>
+
+        </a>
+
+    </div>
+
+
+    <div class="card">
+
+        <a href="community.html">
+
+            <i class="fa fa-users"></i>
+
+            <h3>
+                Community Support
+            </h3>
+
+            <p>
+                Connect with other coding learners.
+            </p>
+
+        </a>
+
+    </div>
+
+
+</section>
+
+
+<!-- =====================================================
+     COURSES
+===================================================== -->
+
+<section id="sectionC">
+
+
+    <h2 class="section-title">
+
+        Popular Courses
+
+    </h2>
+
+
+    <div class="course-row">
+
+
+        <!-- HTML -->
+
+        <div class="course-card">
+
+            <a href="HTML.html">
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/732/732212.png"
+                    alt="HTML"
+                >
+
+                <h3>
+                    HTML
+                </h3>
+
+            </a>
+
+
+            <p>
+                Build the foundation of web development.
+            </p>
+
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+
+            <div class="progress-box">
+
+                <div class="progress html-progress"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- JAVASCRIPT -->
+
+        <div class="course-card">
+
+            <a href="JavaScript.html">
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png"
+                    alt="JavaScript"
+                >
+
+                <h3>
+                    JavaScript
+                </h3>
+
+            </a>
+
+
+            <p>
+                Learn JavaScript from scratch.
+            </p>
+
+
+            <div class="stars">
+                ★★★★☆
+            </div>
+
+
+            <div class="progress-box">
+
+                <div class="progress js-progress"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REACT -->
+
+        <div class="course-card">
+
+            <a href="React.html">
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/1126/1126012.png"
+                    alt="React"
+                >
+
+                <h3>
+                    React
+                </h3>
+
+            </a>
+
+
+            <p>
+                Build modern web apps with React.
+            </p>
+
+
+            <div class="stars">
+                ★★★★☆
+            </div>
+
+
+            <div class="progress-box">
+
+                <div class="progress react-progress"></div>
+
+            </div>
+
+        </div>
+
+
+        <!-- PYTHON -->
+
+        <div class="course-card">
+
+            <a href="Python.html">
+
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/5968/5968350.png"
+                    alt="Python"
+                >
+
+                <h3>
+                    Python
+                </h3>
+
+            </a>
+
+
+            <p>
+                Master Python for automation and more.
+            </p>
+
+
+            <div class="stars">
+                ★★★★★
+            </div>
+
+
+            <div class="progress-box">
+
+                <div class="progress python-progress"></div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    © 2025 Code Academy
+
+</footer>
+
+
+<!-- =====================================================
+     YOUR EXISTING MENU JS
+===================================================== -->
+
+<script type="module" src="menu.js"></script>
+
+
+<!-- =====================================================
+     MENU CONTROL
+===================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const menuBtn =
+        document.getElementById("menuBtn");
+
+    const closeMenu =
+        document.getElementById("closeMenu");
+
+    const sideMenu =
+        document.getElementById("sideMenu");
+
+    const menuOverlay =
+        document.getElementById("menuOverlay");
+
+
+    /* OPEN MENU */
+
+    menuBtn.addEventListener("click", function(){
+
+        sideMenu.classList.add("active");
+
+        menuOverlay.classList.add("active");
+
+        document.body.style.overflow = "hidden";
+
+    });
+
+
+    /* CLOSE MENU */
+
+    function closeSideMenu(){
+
+        sideMenu.classList.remove("active");
+
+        menuOverlay.classList.remove("active");
+
+        document.body.style.overflow = "";
+
+    }
+
+
+    closeMenu.addEventListener(
+        "click",
+        closeSideMenu
+    );
+
+
+    menuOverlay.addEventListener(
+        "click",
+        closeSideMenu
+    );
+
+
+    /* CLOSE WITH ESCAPE */
+
+    document.addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Escape"){
+
+                closeSideMenu();
+
+            }
+
+        }
+    );
+
+
+    /* CLOSE MENU AFTER CLICKING A LINK */
+
+    const menuLinks =
+        sideMenu.querySelectorAll("a");
+
+    menuLinks.forEach(function(link){
+
+        link.addEventListener(
+            "click",
+            function(){
+
+                closeSideMenu();
+
+            }
+        );
+
+    });
+
+});
+
+</script>
+
+
+</body>
+
+</html>
