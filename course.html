@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<meta
+    name="theme-color"
+    content="#020617">
+
+<meta
+    name="description"
+    content="Code Academy programming courses">
+
+<title>Code Academy | Courses</title>
+
+<link
+    rel="icon"
+    href="logo.png">
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:#f8fafc;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(37,99,235,.15),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(14,165,233,.10),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(99,102,241,.10),
+            transparent 35%
+        ),
+        #020617;
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND DECORATION
+========================================================= */
+
+body::before{
+    content:"";
+
+    position:fixed;
+
+    width:400px;
+    height:400px;
+
+    top:-200px;
+    left:-200px;
+
+    border-radius:50%;
+
+    background:
+        rgba(37,99,235,.07);
+
+    filter:blur(50px);
+
+    pointer-events:none;
+
+    z-index:-1;
+}
+
+body::after{
+    content:"";
+
+    position:fixed;
+
+    width:350px;
+    height:350px;
+
+    right:-180px;
+    bottom:-150px;
+
+    border-radius:50%;
+
+    background:
+        rgba(59,130,246,.08);
+
+    filter:blur(50px);
+
+    pointer-events:none;
+
+    z-index:-1;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header{
+    position:sticky;
+
+    top:0;
+
+    z-index:1000;
+
+    width:100%;
+
+    background:
+        rgba(2,6,23,.88);
+
+    backdrop-filter:
+        blur(18px);
+
+    -webkit-backdrop-filter:
+        blur(18px);
+
+    border-bottom:
+        1px solid rgba(148,163,184,.12);
+}
+
+.navbar{
+    width:min(1250px,94%);
+
+    min-height:72px;
+
+    margin:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+}
+
+.brand{
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    text-decoration:none;
+
+    color:#fff;
+}
+
+.brand img{
+    width:46px;
+    height:46px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    box-shadow:
+        0 0 25px rgba(59,130,246,.25);
+}
+
+.brand-text{
+    display:flex;
+    flex-direction:column;
+}
+
+.brand-name{
+    font-size:19px;
+    font-weight:800;
+}
+
+.brand-sub{
+    color:#64748b;
+    font-size:10px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+}
+
+.menu-btn{
+    width:45px;
+    height:45px;
+
+    border:1px solid #1e293b;
+
+    border-radius:12px;
+
+    background:#0f172a;
+
+    color:#fff;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.menu-btn:hover{
+    background:#172033;
+
+    border-color:#334155;
+
+    transform:scale(1.04);
+}
+
+
+/* =========================================================
+   SIDE MENU
+========================================================= */
+
+.overlay{
+    position:fixed;
+
+    inset:0;
+
+    z-index:1998;
+
+    background:
+        rgba(0,0,0,.65);
+
+    backdrop-filter:
+        blur(3px);
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.25s;
+}
+
+.overlay.active{
+    opacity:1;
+
+    visibility:visible;
+}
+
+.side-menu{
+    position:fixed;
+
+    top:0;
+
+    right:-340px;
+
+    width:310px;
+
+    max-width:88vw;
+
+    height:100vh;
+
+    z-index:1999;
+
+    overflow-y:auto;
+
+    background:#0b1220;
+
+    border-left:
+        1px solid #1e293b;
+
+    padding:22px 18px;
+
+    transition:
+        right .3s ease;
+}
+
+.side-menu.active{
+    right:0;
+}
+
+.close-menu{
+    float:right;
+
+    width:40px;
+    height:40px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#111c2e;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+.side-profile{
+    clear:both;
+
+    text-align:center;
+
+    padding:
+        45px 0 25px;
+}
+
+.side-profile img{
+    width:76px;
+    height:76px;
+
+    object-fit:cover;
+
+    border-radius:50%;
+
+    border:
+        3px solid #334155;
+}
+
+.side-profile h3{
+    margin-top:10px;
+
+    font-size:17px;
+}
+
+.side-profile p{
+    margin-top:5px;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    word-break:break-word;
+}
+
+.side-menu a{
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    padding:13px;
+
+    margin-bottom:4px;
+
+    border-radius:10px;
+
+    text-decoration:none;
+
+    color:#cbd5e1;
+
+    transition:.2s;
+}
+
+.side-menu a:hover{
+    color:white;
+
+    background:#172033;
+}
+
+.side-menu a i{
+    width:20px;
+
+    text-align:center;
+
+    color:#60a5fa;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.container{
+    width:min(1250px,94%);
+
+    margin:auto;
+
+    padding:
+        35px 0 70px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:
+        42px 35px;
+
+    margin-bottom:25px;
+
+    border:
+        1px solid rgba(59,130,246,.25);
+
+    border-radius:24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(30,64,175,.22),
+            rgba(15,23,42,.88)
+        );
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.20);
+}
+
+.hero::after{
+    content:"</>";
+
+    position:absolute;
+
+    right:30px;
+
+    bottom:-35px;
+
+    font-size:150px;
+
+    font-weight:900;
+
+    color:
+        rgba(59,130,246,.055);
+
+    pointer-events:none;
+}
+
+.hero-content{
+    position:relative;
+
+    z-index:2;
+
+    max-width:760px;
+}
+
+.hero-badge{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:
+        7px 12px;
+
+    margin-bottom:15px;
+
+    border:
+        1px solid rgba(96,165,250,.25);
+
+    border-radius:999px;
+
+    background:
+        rgba(37,99,235,.10);
+
+    color:#93c5fd;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+.hero h1{
+    font-size:
+        clamp(30px,6vw,52px);
+
+    line-height:1.05;
+
+    margin-bottom:15px;
+}
+
+.hero h1 span{
+    color:#60a5fa;
+}
+
+.hero p{
+    max-width:700px;
+
+    color:#94a3b8;
+
+    line-height:1.75;
+
+    font-size:15px;
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:14px;
+
+    margin-bottom:30px;
+}
+
+.stat{
+    display:flex;
+
+    align-items:center;
+
+    gap:13px;
+
+    padding:17px;
+
+    border:
+        1px solid #1e293b;
+
+    border-radius:16px;
+
+    background:
+        rgba(15,23,42,.75);
+}
+
+.stat-icon{
+    width:43px;
+    height:43px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:#172033;
+
+    color:#60a5fa;
+
+    font-size:18px;
+}
+
+.stat strong{
+    display:block;
+
+    font-size:21px;
+
+    margin-bottom:3px;
+}
+
+.stat span{
+    color:#64748b;
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.toolbar{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-bottom:20px;
+}
+
+.section-heading h2{
+    font-size:27px;
+
+    margin-bottom:5px;
+}
+
+.section-heading p{
+    color:#64748b;
+
+    font-size:13px;
+}
+
+.search{
+    position:relative;
+
+    width:300px;
+
+    max-width:100%;
+}
+
+.search i{
+    position:absolute;
+
+    left:15px;
+
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    color:#64748b;
+}
+
+.search input{
+    width:100%;
+
+    height:46px;
+
+    padding:
+        0 15px 0 43px;
+
+    outline:none;
+
+    border:
+        1px solid #1e293b;
+
+    border-radius:12px;
+
+    background:#0f172a;
+
+    color:white;
+
+    font-size:14px;
+
+    transition:.2s;
+}
+
+.search input:focus{
+    border-color:#3b82f6;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(59,130,246,.08);
+}
+
+
+/* =========================================================
+   COURSE GRID
+========================================================= */
+
+.course-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:18px;
+}
+
+
+/* =========================================================
+   COURSE CARD
+========================================================= */
+
+.course-card{
+    position:relative;
+
+    overflow:hidden;
+
+    min-width:0;
+
+    border:
+        1px solid #1e293b;
+
+    border-radius:19px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(15,23,42,.98),
+            rgba(10,16,29,.98)
+        );
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.course-card:hover{
+    transform:
+        translateY(-6px);
+
+    border-color:
+        rgba(59,130,246,.55);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.32);
+}
+
+
+/* =========================================================
+   LANGUAGE IMAGE AREA
+========================================================= */
+
+.course-image{
+    position:relative;
+
+    height:145px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    overflow:hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(59,130,246,.12),
+            transparent 65%
+        );
+
+    border-bottom:
+        1px solid #1e293b;
+}
+
+.course-image::before{
+    content:"";
+
+    position:absolute;
+
+    width:110px;
+    height:110px;
+
+    border-radius:50%;
+
+    background:
+        rgba(59,130,246,.08);
+
+    filter:blur(15px);
+}
+
+.course-image img{
+    position:relative;
+
+    z-index:2;
+
+    width:86px;
+    height:86px;
+
+    object-fit:contain;
+
+    transition:
+        transform .3s ease;
+}
+
+.course-card:hover
+.course-image img{
+    transform:
+        scale(1.12);
+}
+
+
+/* =========================================================
+   COURSE CONTENT
+========================================================= */
+
+.course-content{
+    padding:19px;
+}
+
+.course-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    margin-bottom:9px;
+}
+
+.course-title{
+    font-size:18px;
+
+    font-weight:800;
+}
+
+.level{
+    padding:
+        5px 8px;
+
+    border-radius:999px;
+
+    background:
+        rgba(34,197,94,.08);
+
+    color:#86efac;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+
+    text-transform:uppercase;
+}
+
+.course-description{
+    color:#94a3b8;
+
+    line-height:1.6;
+
+    font-size:12px;
+
+    min-height:58px;
+
+    margin-bottom:15px;
+}
+
+.course-meta{
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:
+        11px 0;
+
+    margin-bottom:13px;
+
+    border-top:
+        1px solid #1e293b;
+
+    border-bottom:
+        1px solid #1e293b;
+
+    color:#64748b;
+
+    font-size:11px;
+}
+
+.course-meta span{
+    display:flex;
+
+    align-items:center;
+
+    gap:5px;
+}
+
+.course-meta i{
+    color:#60a5fa;
+}
+
+.start-btn{
+    width:100%;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2563eb,
+            #3b82f6
+        );
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.start-btn:hover{
+    filter:brightness(1.1);
+
+    transform:translateY(-1px);
+}
+
+
+/* =========================================================
+   EMPTY SEARCH
+========================================================= */
+
+.no-results{
+    grid-column:1/-1;
+
+    text-align:center;
+
+    padding:70px 20px;
+
+    color:#64748b;
+}
+
+.no-results i{
+    display:block;
+
+    font-size:40px;
+
+    margin-bottom:15px;
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+    min-height:70vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    color:#94a3b8;
+}
+
+.loading i{
+    color:#60a5fa;
+
+    font-size:35px;
+
+    margin-bottom:15px;
+
+    animation:
+        spin 1s linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+
+/* =========================================================
+   ERROR
+========================================================= */
+
+.error-box{
+    display:none;
+
+    padding:15px;
+
+    margin-bottom:20px;
+
+    border:
+        1px solid #7f1d1d;
+
+    border-radius:12px;
+
+    background:#450a0a;
+
+    color:#fecaca;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+    padding:30px 20px;
+
+    border-top:
+        1px solid #1e293b;
+
+    text-align:center;
+
+    color:#64748b;
+
+    font-size:12px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    .course-grid{
+        grid-template-columns:
+            repeat(3,1fr);
+    }
+
+}
+
+@media(max-width:850px){
+
+    .course-grid{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .stats{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .toolbar{
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .search{
+        width:100%;
+    }
+
+}
+
+@media(max-width:550px){
+
+    .container{
+        width:94%;
+    }
+
+    .hero{
+        padding:30px 22px;
+    }
+
+    .hero::after{
+        font-size:100px;
+
+        right:5px;
+    }
+
+    .course-grid{
+        grid-template-columns:1fr;
+    }
+
+    .stats{
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+    .stat{
+        padding:13px;
+
+        gap:9px;
+    }
+
+    .stat-icon{
+        width:38px;
+        height:38px;
+
+        font-size:15px;
+    }
+
+    .stat strong{
+        font-size:18px;
+    }
+
+    .stat span{
+        font-size:9px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <nav class="navbar">
+
+        <a
+            href="menu.html"
+            class="brand">
+
+            <img
+                src="logo.png"
+                alt="Code Academy">
+
+            <div class="brand-text">
+
+                <span class="brand-name">
+                    Code Academy
+                </span>
+
+                <span class="brand-sub">
+                    Learn • Build • Grow
+                </span>
+
+            </div>
+
+        </a>
+
+
+        <button
+            class="menu-btn"
+            id="menuBtn"
+            aria-label="Open menu">
+
+            <i class="fas fa-bars"></i>
+
+        </button>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     SIDE MENU
+===================================================== -->
+
+<div
+    class="overlay"
+    id="overlay">
+</div>
+
+
+<aside
+    class="side-menu"
+    id="sideMenu">
+
+    <button
+        class="close-menu"
+        id="closeMenu">
+
+        <i class="fas fa-times"></i>
+
+    </button>
+
+
+    <div class="side-profile">
+
+        <img
+            id="userPhoto"
+            src="logo.png"
+            alt="Profile">
+
+        <h3 id="userName">
+            Student
+        </h3>
+
+        <p id="userEmail">
+            Loading...
+        </p>
+
+    </div>
+
+
+    <a href="menu.html">
+        <i class="fas fa-home"></i>
+        Home
+    </a>
+
+    <a href="course.html">
+        <i class="fas fa-graduation-cap"></i>
+        Courses
+    </a>
+
+    <a href="projects.html">
+        <i class="fas fa-code"></i>
+        Projects
+    </a>
+
+    <a href="progress.html">
+        <i class="fas fa-chart-line"></i>
+        Progress
+    </a>
+
+    <a href="profile.html">
+        <i class="fas fa-user"></i>
+        Profile
+    </a>
+
+    <a href="about.html">
+        <i class="fas fa-circle-info"></i>
+        About
+    </a>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="container">
+
+
+    <!-- LOADING -->
+
+    <div
+        class="loading"
+        id="loading">
+
+        <i class="fas fa-spinner"></i>
+
+        <p>
+            Loading your courses...
+        </p>
+
+    </div>
+
+
+
+    <!-- CONTENT -->
+
+    <div
+        id="pageContent"
+        style="display:none;">
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+
+                    <i class="fas fa-code"></i>
+
+                    CODE ACADEMY LEARNING HUB
+
+                </div>
+
+
+                <h1>
+
+                    Master
+                    <span>Programming</span>
+
+                </h1>
+
+
+                <p>
+
+                    Learn programming languages from
+                    the fundamentals to real-world
+                    development. Choose a language,
+                    start your lessons and build your
+                    skills one step at a time.
+
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ERROR -->
+
+        <div
+            class="error-box"
+            id="errorBox">
+        </div>
+
+
+
+        <!-- STATS -->
+
+        <section class="stats">
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-laptop-code"></i>
+
+                </div>
+
+                <div>
+
+                    <strong>
+                        20
+                    </strong>
+
+                    <span>
+                        Languages
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-star"></i>
+
+                </div>
+
+                <div>
+
+                    <strong id="xpValue">
+                        0
+                    </strong>
+
+                    <span>
+                        Total XP
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-circle-check"></i>
+
+                </div>
+
+                <div>
+
+                    <strong id="completedValue">
+                        0
+                    </strong>
+
+                    <span>
+                        Completed
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-icon">
+
+                    <i class="fas fa-fire"></i>
+
+                </div>
+
+                <div>
+
+                    <strong id="streakValue">
+                        0
+                    </strong>
+
+                    <span>
+                        Day Streak
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- TOOLBAR -->
+
+        <section class="toolbar">
+
+
+            <div class="section-heading">
+
+                <h2>
+                    Programming Courses
+                </h2>
+
+                <p>
+                    Choose what you want to learn next.
+                </p>
+
+            </div>
+
+
+            <div class="search">
+
+                <i class="fas fa-search"></i>
+
+                <input
+                    id="courseSearch"
+                    type="search"
+                    placeholder="Search courses...">
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- COURSE GRID -->
+
+        <section
+            class="course-grid"
+            id="courseGrid">
+        </section>
+
+
+    </div>
+
+</main>
+
+
+
+<footer>
+
+    © 2026 Code Academy
+    • Learn • Build • Become a Developer
+
+</footer>
+
+
+
+<!-- =====================================================
+     FIREBASE
+     
+     IMPORTANT:
+     authentication.js is the ONLY authentication
+     engine used here.
+     
+     There is NO second Firebase configuration.
+===================================================== -->
+
+<script type="module">
+
+import {
+    auth,
+    db,
+    onAuthStateChanged,
+    getDoc,
+    doc
+} from "./authentication.js";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const loading =
+    document.getElementById("loading");
+
+const pageContent =
+    document.getElementById("pageContent");
+
+const errorBox =
+    document.getElementById("errorBox");
+
+const courseGrid =
+    document.getElementById("courseGrid");
+
+const searchInput =
+    document.getElementById("courseSearch");
+
+const userName =
+    document.getElementById("userName");
+
+const userEmail =
+    document.getElementById("userEmail");
+
+const userPhoto =
+    document.getElementById("userPhoto");
+
+const xpValue =
+    document.getElementById("xpValue");
+
+const completedValue =
+    document.getElementById("completedValue");
+
+const streakValue =
+    document.getElementById("streakValue");
+
+
+/* =========================================================
+   COURSE DATA
+========================================================= */
+
+const courses = [
+
+    {
+        name:"HTML",
+        file:"HTML.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",
+        description:"Learn the structure of websites and build pages from the ground up.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-brands fa-html5"
+    },
+
+    {
+        name:"CSS",
+        file:"CSS.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",
+        description:"Master styling, layouts, responsive design, animations and modern UI.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-brands fa-css3-alt"
+    },
+
+    {
+        name:"JavaScript",
+        file:"JavaScript.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",
+        description:"Learn programming logic and create interactive websites and applications.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-brands fa-js"
+    },
+
+    {
+        name:"Python",
+        file:"Python.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",
+        description:"Learn Python for automation, software development, data and AI.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-brands fa-python"
+    },
+
+    {
+        name:"React",
+        file:"React.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",
+        description:"Build modern component-based interfaces with the React ecosystem.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-brands fa-react"
+    },
+
+    {
+        name:"Java",
+        file:"Java.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",
+        description:"Learn object-oriented programming and build powerful Java applications.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-brands fa-java"
+    },
+
+    {
+        name:"C",
+        file:"C.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg",
+        description:"Understand programming fundamentals and low-level computer concepts.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-solid fa-c"
+    },
+
+    {
+        name:"C++",
+        file:"CPlusPlus.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg",
+        description:"Learn powerful object-oriented and systems programming with C++.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-solid fa-code"
+    },
+
+    {
+        name:"C#",
+        file:"CSharp.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg",
+        description:"Learn C# for applications, software development and game development.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-solid fa-hashtag"
+    },
+
+    {
+        name:"PHP",
+        file:"PHP.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",
+        description:"Build dynamic websites and learn server-side web programming.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-brands fa-php"
+    },
+
+    {
+        name:"TypeScript",
+        file:"TypeScript.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",
+        description:"Write scalable JavaScript applications with powerful type safety.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-solid fa-code"
+    },
+
+    {
+        name:"Go",
+        file:"Go.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original-wordmark.svg",
+        description:"Learn Go for fast, efficient and scalable modern software.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-solid fa-code"
+    },
+
+    {
+        name:"Rust",
+        file:"Rust.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg",
+        description:"Learn safe, fast and reliable systems programming with Rust.",
+        lessons:10,
+        level:"Advanced",
+        icon:"fa-solid fa-gears"
+    },
+
+    {
+        name:"Kotlin",
+        file:"Kotlin.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg",
+        description:"Learn modern Kotlin programming for applications and Android development.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-solid fa-code"
+    },
+
+    {
+        name:"Swift",
+        file:"Swift.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg",
+        description:"Learn Apple's powerful programming language for application development.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-brands fa-swift"
+    },
+
+    {
+        name:"Dart",
+        file:"Dart.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg",
+        description:"Learn Dart and prepare for modern cross-platform application development.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-solid fa-code"
+    },
+
+    {
+        name:"Ruby",
+        file:"Ruby.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ruby/ruby-original.svg",
+        description:"Learn elegant programming with Ruby and explore web development.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-solid fa-gem"
+    },
+
+    {
+        name:"SQL",
+        file:"SQL.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",
+        description:"Learn databases, queries, tables and how applications work with data.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-solid fa-database"
+    },
+
+    {
+        name:"R",
+        file:"R.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/r/r-original.svg",
+        description:"Learn statistical programming, data analysis and data science with R.",
+        lessons:10,
+        level:"Intermediate",
+        icon:"fa-solid fa-chart-column"
+    },
+
+    {
+        name:"Lua",
+        file:"Lua.html",
+        image:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/lua/lua-original.svg",
+        description:"Learn a lightweight scripting language used in games and applications.",
+        lessons:10,
+        level:"Beginner",
+        icon:"fa-solid fa-code"
+    }
+
+];
+
+
+/* =========================================================
+   RENDER COURSES
+========================================================= */
+
+function renderCourses(list){
+
+    courseGrid.innerHTML = "";
+
+
+    if(list.length === 0){
+
+        courseGrid.innerHTML = `
+
+            <div class="no-results">
+
+                <i class="fas fa-magnifying-glass"></i>
+
+                <h3>
+                    No course found
+                </h3>
+
+                <p>
+                    Try searching for another programming language.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    list.forEach(course => {
+
+        const card =
+            document.createElement("article");
+
+        card.className =
+            "course-card";
+
+
+        card.innerHTML = `
+
+            <div class="course-image">
+
+                <img
+                    src="${course.image}"
+                    alt="${course.name} logo"
+                    loading="lazy"
+                    onerror="this.style.display='none';">
+
+            </div>
+
+
+            <div class="course-content">
+
+                <div class="course-top">
+
+                    <h3 class="course-title">
+                        ${course.name}
+                    </h3>
+
+                    <span class="level">
+                        ${course.level}
+                    </span>
+
+                </div>
+
+
+                <p class="course-description">
+                    ${course.description}
+                </p>
+
+
+                <div class="course-meta">
+
+                    <span>
+                        <i class="fas fa-book-open"></i>
+                        ${course.lessons} Lessons
+                    </span>
+
+                    <span>
+                        <i class="${course.icon}"></i>
+                        ${course.name}
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="start-btn"
+                    data-file="${course.file}">
+
+                    Start Course
+
+                    <i class="fas fa-arrow-right"></i>
+
+                </button>
+
+            </div>
+
+        `;
+
+
+        courseGrid.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   OPEN COURSE
+========================================================= */
+
+courseGrid.addEventListener(
+    "click",
+    function(event){
+
+        const button =
+            event.target.closest(
+                ".start-btn"
+            );
+
+
+        if(!button){
+            return;
+        }
+
+
+        const file =
+            button.dataset.file;
+
+
+        if(!file){
+            return;
+        }
+
+
+        window.location.href =
+            file;
+
+    }
+);
+
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+searchInput.addEventListener(
+    "input",
+    function(){
+
+        const query =
+            this.value
+                .trim()
+                .toLowerCase();
+
+
+        if(!query){
+
+            renderCourses(courses);
+
+            return;
+
+        }
+
+
+        const filtered =
+            courses.filter(course =>
+
+                course.name
+                    .toLowerCase()
+                    .includes(query)
+
+                ||
+
+                course.description
+                    .toLowerCase()
+                    .includes(query)
+
+                ||
+
+                course.level
+                    .toLowerCase()
+                    .includes(query)
+
+            );
+
+
+        renderCourses(filtered);
+
+    }
+);
+
+
+/* =========================================================
+   LOAD USER PROFILE
+========================================================= */
+
+async function loadUserData(user){
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        if(snapshot.exists()){
+
+            const data =
+                snapshot.data();
+
+
+            userName.textContent =
+                data.displayName ||
+                user.displayName ||
+                "Student";
+
+
+            userEmail.textContent =
+                data.email ||
+                user.email ||
+                "";
+
+
+            if(
+                data.photoURL ||
+                user.photoURL
+            ){
+
+                userPhoto.src =
+                    data.photoURL ||
+                    user.photoURL;
+
+            }
+
+
+            xpValue.textContent =
+                Number(
+                    data.xp || 0
+                );
+
+
+            streakValue.textContent =
+                Number(
+                    data.streak ||
+                    data.currentStreak ||
+                    0
+                );
+
+
+            let completed = 0;
+
+
+            if(
+                Array.isArray(
+                    data.completedLessons
+                )
+            ){
+
+                completed =
+                    data.completedLessons.length;
+
+            }
+            else{
+
+                completed =
+                    Number(
+                        data.completedLessons || 0
+                    );
+
+            }
+
+
+            completedValue.textContent =
+                completed;
+
+        }
+        else{
+
+            /*
+             * The user is still authenticated.
+             * A missing Firestore profile must NOT
+             * send them back to signup.
+             */
+
+            userName.textContent =
+                user.displayName ||
+                "Student";
+
+            userEmail.textContent =
+                user.email ||
+                "";
+
+        }
+
+    }
+    catch(error){
+
+        console.error(
+            "Could not load user profile:",
+            error
+        );
+
+
+        userName.textContent =
+            user.displayName ||
+            "Student";
+
+        userEmail.textContent =
+            user.email ||
+            "";
+
+
+        errorBox.textContent =
+            "Your account is signed in, but your profile data could not be loaded. " +
+            error.message;
+
+
+        errorBox.style.display =
+            "block";
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async function(user){
+
+        console.log(
+            "Course authentication:",
+            user
+        );
+
+
+        /*
+         * If there is no authenticated user,
+         * go to LOGIN.
+         *
+         * NEVER send the user to signup here.
+         */
+
+        if(!user){
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        /*
+         * User is authenticated.
+         */
+
+        await loadUserData(user);
+
+
+        renderCourses(courses);
+
+
+        loading.style.display =
+            "none";
+
+        pageContent.style.display =
+            "block";
+
+    }
+);
+
+
+/* =========================================================
+   SIDE MENU
+========================================================= */
+
+const menuBtn =
+    document.getElementById(
+        "menuBtn"
+    );
+
+const closeMenu =
+    document.getElementById(
+        "closeMenu"
+    );
+
+const sideMenu =
+    document.getElementById(
+        "sideMenu"
+    );
+
+const overlay =
+    document.getElementById(
+        "overlay"
+    );
+
+
+function openMenu(){
+
+    sideMenu.classList.add(
+        "active"
+    );
+
+    overlay.classList.add(
+        "active"
+    );
+
+}
+
+
+function closeSideMenu(){
+
+    sideMenu.classList.remove(
+        "active"
+    );
+
+    overlay.classList.remove(
+        "active"
+    );
+
+}
+
+
+menuBtn.addEventListener(
+    "click",
+    openMenu
+);
+
+
+closeMenu.addEventListener(
+    "click",
+    closeSideMenu
+);
+
+
+overlay.addEventListener(
+    "click",
+    closeSideMenu
+);
+
+</script>
+
+</body>
+
+</html>
