@@ -411,39 +411,60 @@ export async function logIn(
 //
 // This is better suited for mobile browsers.
 // ============================================================
+
 export async function signInWithGoogle() {
 
   try {
 
     console.log(
-      "Starting Google redirect login..."
+      "Starting Google popup login..."
+    );
+
+    const result =
+      await signInWithPopup(
+        auth,
+        googleProvider
+      );
+
+    const user =
+      result.user;
+
+
+    // Create Firestore profile if needed
+    await createUserDocIfNotExists(
+      user
     );
 
 
-    await signInWithRedirect(
-      auth,
-      googleProvider
+    // Update login streak
+    await updateStreak(
+      user.uid
     );
 
 
-    // --------------------------------------------------------
-    // IMPORTANT:
-    // The browser will leave this page and go to Google.
-    //
-    // Therefore this function normally does NOT return here.
-    // Firebase will return the user to the page afterward.
-    // --------------------------------------------------------
+    console.log(
+      "Google login successful:",
+      user.email
+    );
+
+
+    return user;
 
   } catch (error) {
 
     console.error(
-      "Google redirect login error:",
+      "Google popup login error:",
       error
     );
 
     throw error;
   }
 }
+
+
+
+
+
 
 
 // ============================================================
