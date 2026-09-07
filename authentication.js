@@ -61,16 +61,23 @@ import {
 // ============================================================
 // FIREBASE CONFIGURATION
 // ============================================================
+
 const firebaseConfig = {
-  apiKey: "AIzaSyDDHzPk4RjIMz6fcK7M_hdjQk2u6xk-efI",
-  authDomain: "code-acada.firebaseapp.com",
-  databaseURL: "https://code-acada-default-rtdb.firebaseio.com",
-  projectId: "code-acada",
-  storageBucket: "code-acada.appspot.com",
-  messagingSenderId: "155763239454",
-  appId: "1:155763239454:web:7fc20b0037dcd8e5621c0f",
-  measurementId: "G-ZCV1ELNR0K"
+  apiKey: "AIzaSyC84eyA9-fxDiYFPBk3OXVH-AimkjVy9-s",
+  authDomain: "codeacademybywm.firebaseapp.com",
+  projectId: "codeacademybywm",
+  storageBucket: "codeacademybywm.firebasestorage.app",
+  messagingSenderId: "677581551464",
+  appId: "1:677581551464:web:5eda0e67f5ef41f69d48dd",
+  measurementId: "G-X2B2D3W3MP"
 };
+
+
+
+
+
+
+
 
 
 // ============================================================
