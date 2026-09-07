@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Mind Palace Fixed</title>
+
+<style>
+:root{
+    --bg: #0a0c14;
+    --neon: #a855f7;
+    --gold: #ffd700;
+    --text: #e2e8f0;
+    --muted: #94a3b8;
+    --card: rgba(30, 41, 59, 0.8);
+    --success: #22c55e;
+    --danger: #ef4444;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Georgia',serif}
+
+html,body{
+    height:100vh;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 30% 20%, rgba(168,85,247,0.15) 0%, transparent 50%),
+        #0a0c14;
+    color:var(--text);
+}
+
+.container{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:15px;
+    gap:12px;
+    max-width:650px;
+    margin:0 auto;
+}
+
+.header{
+    height:55px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid rgba(168,85,247,0.3);
+}
+
+.logo{
+    font-size:20px;
+    font-weight:900;
+    color:var(--neon);
+    text-shadow:0 0 20px var(--neon);
+}
+
+.controls{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.timer-box{
+    padding:6px 12px;
+    background:rgba(168,85,247,0.2);
+    border:1px solid var(--neon);
+    border-radius:6px;
+    font-size:12px;
+    color:var(--neon);
+    font-weight:700;
+    min-width:60px;
+    text-align:center;
+}
+
+.timer-box.danger{
+    color:var(--danger);
+    border-color:var(--danger);
+    animation:pulse 0.8s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.08)}
+}
+
+.btn{
+    padding:7px 12px;
+    border-radius:6px;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+    border:1px solid;
+}
+
+.btn-back{
+    background:rgba(239,68,68,0.2);
+    border-color:var(--danger);
+    color:var(--danger);
+}
+
+.btn-guide{
+    background:rgba(168,85,247,0.2);
+    border-color:var(--neon);
+    color:var(--neon);
+}
+
+.intro{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:20px;
+    overflow-y:auto;
+}
+
+.pitch{
+    text-align:center;
+    font-size:32px;
+    font-weight:900;
+    color:var(--gold);
+    text-shadow:0 0 30px var(--gold);
+}
+
+.rules-card{
+    background:var(--card);
+    border:2px solid rgba(168,85,247,0.4);
+    border-radius:16px;
+    padding:24px;
+}
+
+.rules-card h3{
+    color:var(--neon);
+    margin-bottom:14px;
+    font-size:15px;
+    text-align:center;
+}
+
+.rules-card p{
+    font-size:12px;
+    line-height:1.9;
+    margin-bottom:10px;
+}
+
+.start-btn{
+    height:52px;
+    background:linear-gradient(135deg, var(--neon), #7c3aed);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.game{
+    display:none;
+    flex-direction:column;
+    gap:15px;
+    height:100%;
+}
+
+.game.active{
+    display:flex;
+}
+
+.floor-info{
+    background:var(--card);
+    border:1px solid rgba(168,85,247,0.3);
+    border-radius:10px;
+    padding:12px;
+    text-align:center;
+}
+
+.observation-card{
+    background:var(--card);
+    border:2px solid var(--neon);
+    border-radius:14px;
+    padding:20px;
+    min-height:200px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    transition:0.5s;
+}
+
+.observation-card.hide{
+    opacity:0;
+    transform:scale(0.9);
+}
+
+.obs-content{
+    font-size:15px;
+    line-height:2;
+    white-space:pre-line;
+}
+
+.question-area{
+    display:none;
+    flex-direction:column;
+    gap:12px;
+}
+
+.question-area.show{
+    display:flex;
+}
+
+.question-box{
+    background:var(--card);
+    border:2px solid var(--gold);
+    border-radius:12px;
+    padding:16px;
+}
+
+.question-text{
+    font-size:14px;
+    color:var(--gold);
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.options{
+    display:grid;
+    gap:8px;
+}
+
+.option-btn{
+    padding:14px;
+    background:var(--bg);
+    border:2px solid rgba(168,85,247,0.3);
+    border-radius:10px;
+    color:var(--text);
+    font-size:13px;
+    cursor:pointer;
+    text-align:left;
+}
+
+.option-btn.correct{
+    border-color:var(--success);
+    background:rgba(34,197,94,0.2);
+}
+
+.option-btn.wrong{
+    border-color:var(--danger);
+    background:rgba(239,68,68,0.2);
+}
+
+.feedback{
+    margin-top:10px;
+    padding:12px;
+    border-radius:8px;
+    font-size:12px;
+    display:none;
+}
+
+.feedback.show{display:block}
+.feedback.correct{
+    background:rgba(34,197,94,0.2);
+    border:1px solid var(--success);
+    color:var(--success);
+}
+.feedback.wrong{
+    background:rgba(239,68,68,0.2);
+    border:1px solid var(--danger);
+    color:var(--danger);
+}
+
+.msg{
+    position:fixed;
+    top:70px;
+    left:50%;
+    transform:translateX(-50%) translateY(-100px);
+    padding:14px 24px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:700;
+    z-index:1000;
+    opacity:0;
+    transition:0.4s;
+    background:rgba(168,85,247,0.95);
+    color:#fff;
+}
+
+.msg.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="msg" id="msg"></div>
+
+<div class="container">
+    <div class="header">
+        <button class="btn btn-back" onclick="history.back()">← Back</button>
+        <div class="logo">🧠 MIND PALACE</div>
+        <div class="controls">
+            <div class="timer-box" id="timer">05</div>
+            <button class="btn btn-guide" onclick="playGuide()">🔊 Guide</button>
+        </div>
+    </div>
+
+    <div class="intro" id="introPage">
+        <div class="pitch">MIND PALACE</div>
+        <div class="rules-card">
+            <h3>🏛️ HOW IT WORKS</h3>
+            <p>1. You enter a Memory Chamber for 5 seconds</p>
+            <p>2. Observe everything carefully - details matter</p>
+            <p>3. The room disappears, then question appears</p>
+            <p>4. You have 20 seconds to answer</p>
+            <p>5. Each floor teaches new logic: Observation, Deduction, Contradiction, Patterns</p>
+            <p>6. After Floor 15, loads from mind_palace.json</p>
+        </div>
+        <button class="start-btn" onclick="startGame()">▶ ENTER THE MIND PALACE</button>
+    </div>
+
+    <div class="game" id="gamePage">
+        <div class="floor-info">
+            <div id="floorTitle">Floor 1</div>
+            <div id="puzzleCounter">Puzzle 1 / 10</div>
+        </div>
+
+        <div class="observation-card" id="obsCard">
+            <div class="obs-content" id="obsContent"></div>
+        </div>
+
+        <div class="question-area" id="questionArea">
+            <div class="question-box">
+                <div class="question-text" id="questionText"></div>
+                <div class="options" id="options"></div>
+            </div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+// GLOBAL VARIABLES - ONLY DECLARED ONCE
+let currentFloor = 1;
+let currentPuzzle = 0;
+let currentData = null;
+let timer = null;
+let timeLeft = 5;
+let phase = 'observe';
+let speechQueue = [];
+let isSpeaking = false;
+let usingJson = false;
+
+// 15 BUILT-IN PUZZLES
+const builtInPuzzles = [
+    {
+        floor: 1,
+        category: "Observation",
+        observe: "Red Book\nBlue Chair\nGreen Lamp\nClock showing 8:15\nWindow Open",
+        question: "Which statement is IMPOSSIBLE?",
+        options: ["A. The lamp was green", "B. The window was closed", "C. There was a chair", "D. There was a clock"],
+        answer: 1,
+        explanation: "The window was OPEN, not closed."
+    },
+    {
+        floor: 1,
+        category: "Observation",
+        observe: "Apple\nChair\nBook\nBlue Cup",
+        question: "What was NOT present?",
+        options: ["A. Apple", "B. Chair", "C. Table", "D. Book"],
+        answer: 2,
+        explanation: "No table was mentioned."
+    },
+    {
+        floor: 2,
+        category: "Observation",
+        observe: "3 Circles\n2 Squares\n1 Triangle\nRed Color",
+        question: "How many total shapes?",
+        options: ["A. 5", "B. 6", "C. 7", "D. 4"],
+        answer: 1,
+        explanation: "3 + 2 + 1 = 6 shapes total."
+    },
+    {
+        floor: 2,
+        category: "Observation",
+        observe: "Door on left\nWindow on right\nPainting above door\nCarpet on floor",
+        question: "What was above the door?",
+        options: ["A. Window", "B. Painting", "C. Carpet", "D. Nothing"],
+        answer: 1,
+        explanation: "The painting was above the door."
+    },
+    {
+        floor: 3,
+        category: "Observation",
+        observe: "Clock: 3:30\nLamp: OFF\nDoor: Locked\nKey on table",
+        question: "Which was OFF?",
+        options: ["A. Clock", "B. Lamp", "C. Door", "D. Key"],
+        answer: 1,
+        explanation: "The lamp was OFF."
+    },
+    {
+        floor: 3,
+        category: "Timeline",
+        observe: "Tom arrived before Jake.\nJake arrived before Sarah.\nSarah arrived before Emma.",
+        question: "Which statement CANNOT be true?",
+        options: ["A. Emma arrived first", "B. Sarah arrived after Jake", "C. Tom arrived before Emma", "D. Jake arrived after Tom"],
+        answer: 0,
+        explanation: "Order is Tom > Jake > Sarah > Emma. Emma cannot be first."
+    },
+    {
+        floor: 4,
+        category: "Relationships",
+        observe: "John standing beside Sarah.\nSarah standing beside Mike.\nMike holding red key.",
+        question: "Who was closest to the red key?",
+        options: ["A. John", "B. Sarah", "C. Mike", "D. Nobody"],
+        answer: 2,
+        explanation: "Mike was holding the red key."
+    },
+    {
+        floor: 4,
+        category: "Timeline",
+        observe: "Event A at 8:00\nEvent B at 9:30\nEvent C at 8:45",
+        question: "Which happened LAST?",
+        options: ["A. Event A", "B. Event B", "C. Event C", "D. A and C"],
+        answer: 1,
+        explanation: "9:30 is later than 8:00 and 8:45."
+    },
+    {
+        floor: 5,
+        category: "Relationships",
+        observe: "Box inside Bag.\nBag on Table.\nTable near Window.",
+        question: "What was farthest from the window?",
+        options: ["A. Box", "B. Bag", "C. Table", "D. All same"],
+        answer: 0,
+        explanation: "Box is inside bag, which is on table. Box is farthest."
+    },
+    {
+        floor: 5,
+        category: "Timeline",
+        observe: "Day 1: Plant seed\nDay 3: Sprout appears\nDay 7: Flower blooms",
+        question: "What happened on Day 3?",
+        options: ["A. Plant seed", "B. Sprout appears", "C. Flower blooms", "D. Nothing"],
+        answer: 1,
+        explanation: "Sprout appeared on Day 3."
+    },
+    {
+        floor: 6,
+        category: "Pattern",
+        observe: "Circle\nSquare\nCircle\nSquare\nCircle\n?",
+        question: "What comes next?",
+        options: ["A. Circle", "B. Square", "C. Triangle", "D. None"],
+        answer: 1,
+        explanation: "Pattern alternates: Circle, Square..."
+    },
+    {
+        floor: 6,
+        category: "Pattern",
+        observe: "2\n4\n8\n16\n?",
+        question: "What comes next?",
+        options: ["A. 24", "B. 30", "C. 32", "D. 20"],
+        answer: 2,
+        explanation: "Each number doubles: 2, 4, 8, 16, 32"
+    },
+    {
+        floor: 7,
+        category: "Pattern",
+        observe: "1\n1\n2\n3\n5\n8\n?",
+        question: "What comes next? Fibonacci",
+        options: ["A. 11", "B. 12", "C. 13", "D. 10"],
+        answer: 2,
+        explanation: "5+8=13"
+    },
+    {
+        floor: 7,
+        category: "Chain Logic",
+        observe: "If A is true,\nB is false.\n\nIf B is false,\nC is true.\n\nIf C is true,\nD is false.",
+        question: "If A is TRUE, is D true or false?",
+        options: ["A. True", "B. False", "C. Cannot tell", "D. Both"],
+        answer: 1,
+        explanation: "A true → B false → C true → D false"
+    },
+    {
+        floor: 8,
+        category: "Contradiction",
+        observe: "All birds can fly.\nPenguins are birds.\nPenguins cannot fly.",
+        question: "Which statement creates contradiction?",
+        options: ["A. All birds can fly", "B. Penguins are birds", "C. Penguins cannot fly", "D. All statements ok"],
+        answer: 0,
+        explanation: "'All birds can fly' contradicts penguins being birds."
+    }
+];
+
+// SPEECH SYSTEM
+function speak(text){
+    speechQueue.push(text);
+    if(!isSpeaking) processSpeech();
+}
+
+function processSpeech(){
+    if(speechQueue.length === 0){
+        isSpeaking = false;
+        return;
+    }
+    isSpeaking = true;
+    const text = speechQueue.shift();
+
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.85;
+        utter.pitch = 0.7;
+        utter.volume = 1.0;
+        utter.onend = () => {
+            setTimeout(() => processSpeech(), 400);
+        };
+        speechSynthesis.speak(utter);
+    }
+}
+
+// GLOBAL FUNCTIONS - ATTACHED TO WINDOW SO HTML CAN CALL THEM
+window.goBack = function(){
+    clearInterval(timer);
+    document.getElementById('gamePage').classList.remove('active');
+    document.getElementById('introPage').style.display = 'flex';
+}
+
+window.startGame = function(){
+    document.getElementById('introPage').style.display = 'none';
+    document.getElementById('gamePage').classList.add('active');
+    currentFloor = 1;
+    currentPuzzle = 0;
+    loadPuzzle();
+}
+
+async function loadPuzzle(){
+    const puzzleIndex = (currentFloor - 1) * 10 + currentPuzzle;
+
+    if(puzzleIndex < builtInPuzzles.length){
+        currentData = builtInPuzzles[puzzleIndex];
+        usingJson = false;
+    } else {
+        usingJson = true;
+        try{
+            const response = await fetch('mind_palace.json');
+            const jsonPuzzles = await response.json();
+            currentData = jsonPuzzles[puzzleIndex - builtInPuzzles.length];
+            if(!currentData){
+                showMsg('All puzzles completed!');
+                return;
+            }
+        } catch(e){
+            showMsg('Error loading mind_palace.json');
+            return;
+        }
+    }
+
+    displayPuzzle();
+}
+
+function displayPuzzle(){
+    document.getElementById('floorTitle').textContent = `Floor ${currentFloor} - ${currentData.category}`;
+    document.getElementById('puzzleCounter').textContent = `Puzzle ${currentPuzzle + 1} / 10`;
+
+    phase = 'observe';
+    timeLeft = 5;
+    document.getElementById('obsContent').textContent = currentData.observe;
+    document.getElementById('obsCard').classList.remove('hide');
+    document.getElementById('questionArea').classList.remove('show');
+
+    clearInterval(timer);
+    timer = setInterval(updateTimer, 1000);
+    updateTimer();
+}
+
+function updateTimer(){
+    document.getElementById('timer').textContent = timeLeft.toString().padStart(2, '0');
+
+    if(timeLeft <= 5){
+        document.getElementById('timer').classList.add('danger');
+    }
+
+    timeLeft--;
+
+    if(timeLeft < 0){
+        clearInterval(timer);
+
+        if(phase === 'observe'){
+            document.getElementById('obsCard').classList.add('hide');
+            setTimeout(() => showQuestion(), 500);
+        } else {
+            showMsg('Time up! Next puzzle');
+            nextPuzzle();
+        }
+    }
+}
+
+function showQuestion(){
+    phase = 'question';
+    timeLeft = 20;
+
+    document.getElementById('questionText').textContent = currentData.question;
+
+    const optionsDiv = document.getElementById('options');
+    optionsDiv.innerHTML = '';
+    currentData.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = opt;
+        btn.onclick = () => selectAnswer(idx);
+        optionsDiv.appendChild(btn);
+    });
+
+    document.getElementById('questionArea').classList.add('show');
+    timer = setInterval(updateTimer, 1000);
+    updateTimer();
+}
+
+function selectAnswer(selectedIdx){
+    clearInterval(timer);
+
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach((btn, idx) => {
+        btn.onclick = null;
+        if(idx === currentData.answer){
+            btn.classList.add('correct');
+        } else if(idx === selectedIdx){
+            btn.classList.add('wrong');
+        }
+    });
+
+    const feedback = document.getElementById('feedback');
+    feedback.classList.add('show');
+
+    if(selectedIdx === currentData.answer){
+        feedback.className = 'feedback correct show';
+        feedback.innerHTML = `✅ CORRECT! ${currentData.explanation}`;
+        speak(`Correct. ${currentData.explanation}`);
+        setTimeout(() => nextPuzzle(), 3000);
+    } else {
+        feedback.className = 'feedback wrong show';
+        feedback.innerHTML = `❌ WRONG! ${currentData.explanation}`;
+        speak(`Incorrect. ${currentData.explanation}`);
+        setTimeout(() => nextPuzzle(), 4000);
+    }
+}
+
+function nextPuzzle(){
+    currentPuzzle++;
+
+    if(currentPuzzle >= 10){
+        currentPuzzle = 0;
+        currentFloor++;
+        showMsg(`Floor ${currentFloor - 1} complete!`);
+    }
+
+    setTimeout(() => loadPuzzle(), 1000);
+}
+
+window.playGuide = function(){
+    const hint = `Floor ${currentFloor}, ${currentData.category} puzzle. ${phase === 'observe'? 'Observe every detail.' : 'Eliminate wrong options.'}`;
+    speak(hint);
+    showMsg('AI Guide active');
+}
+
+function showMsg(text){
+    const msg = document.getElementById('msg');
+    msg.textContent = text;
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

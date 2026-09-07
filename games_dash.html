@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Logic Arena - Code Academy</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@400;600;700&display=swap');
+
+:root{
+    --bg: #050816;
+    --grid: rgba(0,245,255,0.04);
+    --glass: rgba(255,255,255,0.05);
+    --glass-border: rgba(255,255,255,0.1);
+    --text: #e8f4ff;
+    --muted: #8b9dc3;
+    --blue: #3b82f6;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --green: #22c55e;
+    --red: #ef4444;
+    
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+html,body{
+    min-height:100vh;
+    background: 
+        linear-gradient(rgba(5,8,22,0.98), rgba(5,8,22,0.98)),
+        repeating-linear-gradient(0deg, var(--grid) 0px, transparent 1px, transparent 40px, var(--grid) 41px),
+        repeating-linear-gradient(90deg, var(--grid) 0px, transparent 1px, transparent 40px, var(--grid) 41px),
+        var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    overflow-x:hidden;
+}
+
+.container{
+    max-width:600px;
+    margin:0 auto;
+    padding:0 16px 40px;
+}
+
+/* 1. APP BAR - Compact */
+.app-bar{
+    height:52px;
+    display:inline;
+    align-items:center;
+    padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:100;
+    backdrop-filter:blur(10px);
+    background:rgba(5,8,22,0.8);
+    border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.app-title{
+    font-family:'Orbitron', monospace;
+    font-size:14px;
+    font-weight:900;
+    letter-spacing:1.5px;
+    color:var(--text);
+}
+
+.app-subtitle{
+    font-size:10px;
+    color:var(--muted);
+    margin-left:8px;
+    letter-spacing:0.5px;
+}
+
+/* 2. HERO SECTION - 200px glass card */
+.hero{
+    margin-top:20px;
+    height:200px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:20px;
+    padding:24px;
+    backdrop-filter:blur(20px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.3);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero::before{
+    content:'';
+    position:absolute;
+    top:-50%;
+    right:-20%;
+    width:300px;
+    height:300px;
+    background:radial-gradient(circle, rgba(0,245,255,0.15) 0%, transparent 70%);
+    pointer-events:none;
+}
+
+.hero-content{
+    z-index:2;
+}
+
+.hero-greeting{
+    font-size:24px;
+    font-weight:800;
+    margin-bottom:6px;
+    font-family:'Orbitron', monospace;
+}
+
+.hero-sub{
+    font-size:13px;
+    color:var(--muted);
+    margin-bottom:16px;
+    line-height:1.6;
+}
+
+.hero-stats{
+    display:flex;
+    gap:16px;
+    font-size:11px;
+    color:var(--muted);
+    margin-bottom:14px;
+}
+
+.hero-icon{
+    font-size:80px;
+    opacity:0.3;
+    filter:blur(2px);
+}
+
+.continue-btn{
+    padding:12px 24px;
+    background:linear-gradient(135deg, #00f5ff, #0099cc);
+    border:none;
+    border-radius:10px;
+    color:var(--bg);
+    font-size:13px;
+    font-weight:800;
+    cursor:pointer;
+    font-family:'Orbitron', monospace;
+    transition:0.2s;
+}
+
+.continue-btn:active{
+    transform:scale(0.97);
+}
+
+/* 3. PUZZLE COLLECTION */
+.section-title{
+    font-size:12px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:2px;
+    margin:28px 0 14px;
+    font-weight:700;
+}
+
+.puzzle-list{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.puzzle-card{
+    width:100%;
+    height:155px;
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:16px;
+    padding:20px;
+    backdrop-filter:blur(10px);
+    cursor:pointer;
+    transition:0.25s;
+    position:relative;
+    overflow:hidden;
+}
+
+.puzzle-card:active{
+    transform:scale(0.97);
+}
+
+.puzzle-card::before{
+    content:'';
+    position:absolute;
+    top:0;
+    left:0;
+    width:4px;
+    height:100%;
+    transition:0.3s;
+}
+
+/* Color identity per game */
+.card-vault::before{background:var(--blue)}
+.card-detective::before{background:var(--orange)}
+.card-palace::before{background:var(--purple)}
+.card-civilization::before{background:var(--green)}
+.card-truth::before{background:var(--red)}
+
+.puzzle-card:hover::before{
+    width:100%;
+    opacity:0.08;
+}
+
+.card-icon{
+    font-size:32px;
+    margin-bottom:10px;
+}
+
+.card-title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:6px;
+    font-family:'Orbitron', monospace;
+}
+
+.card-desc{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.5;
+    margin-bottom:14px;
+    max-width:80%;
+}
+
+.card-action{
+    font-size:11px;
+    font-weight:700;
+    color:var(--text);
+    opacity:0.7;
+    transition:0.2s;
+}
+
+.puzzle-card:active .card-action{
+    opacity:1;
+    transform:translateX(4px);
+}
+
+/* 4. STATS SECTION */
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:28px;
+}
+
+.stat-card{
+    background:var(--glass);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    padding:16px;
+    text-align:center;
+    backdrop-filter:blur(10px);
+}
+
+.stat-value{
+    font-size:22px;
+    font-weight:900;
+    font-family:'Orbitron', monospace;
+    margin-bottom:4px;
+}
+
+.stat-label{
+    font-size:10px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+/* Mobile optimization */
+@media(max-width:400px){
+    .hero{height:180px;padding:20px}
+    .hero-greeting{font-size:20px}
+    .puzzle-card{height:145px;padding:18px}
+    .card-title{font-size:16px}
+    .bbb{
+         float: right;
+         background: gold;
+         border-radius: 20%;
+         padding: 9px;
+         shadow: red;
+         
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <!-- 1. APP BAR -->
+    <div class="app-bar">
+        <div>
+            <div class="app-title">🧠 CODE ACADEMY</div>
+            <div class="app-subtitle">LOGIC ARENA</div>
+            <button onclick="history.back()" class="bbb">Back</button>
+        </div>
+    </div>
+
+    <!-- 2. HERO SECTION -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-greeting">Welcome Back</div>
+            <div class="hero-sub">5 Challenges Available<br>Train Logic • Improve Focus • Strengthen Reasoning</div>
+            <div class="hero-stats">
+                <span>Games: 5</span>
+                <span>All are unique: Try</span>
+                <span>Brain storming: enter</span>
+            </div>
+            <button class="continue-btn" onclick="continueTraining()">Continue Training →</button>
+        </div>
+        <div class="hero-icon">🧠</div>
+    </div>
+
+    <!-- 3. PUZZLE COLLECTION -->
+    <div class="section-title">Puzzle Collection</div>
+    
+    <div class="puzzle-list">
+        
+        <div class="puzzle-card card-vault" onclick="openGame('digital_vault.html')">
+            <div class="card-icon">🔐</div>
+            <div class="card-title">Logic Vault</div>
+            <div class="card-desc">Crack hidden codes<br>and solve mysteries</div>
+            <div class="card-action">Play Challenge →</div>
+        </div>
+
+        <div class="puzzle-card card-detective" onclick="openGame('detective_man.html')">
+            <div class="card-icon">🕵️</div>
+            <div class="card-title">Digital Detective</div>
+            <div class="card-desc">Investigate mysteries<br>find the culprit</div>
+            <div class="card-action">Play Challenge →</div>
+        </div>
+
+        <div class="puzzle-card card-palace" onclick="openGame('mind_palace.html')">
+            <div class="card-icon">🧠</div>
+            <div class="card-title">Mind Palace</div>
+            <div class="card-desc">Train observation<br>master deduction</div>
+            <div class="card-action">Play Challenge →</div>
+        </div>
+
+        <div class="puzzle-card card-civilization" onclick="openGame('civilization.html')">
+            <div class="card-icon">🌍</div>
+            <div class="card-title">Civilization</div>
+            <div class="card-desc">Manage a growing world<br>every choice matters</div>
+            <div class="card-action">Play Challenge →</div>
+        </div>
+
+        <div class="puzzle-card card-truth" onclick="openGame('detective_man.html')">
+            <div class="card-icon">🎭</div>
+            <div class="card-title">Truth or Lie</div>
+            <div class="card-desc">Find contradictions<br>spot the deception</div>
+            <div class="card-action">Play Challenge →</div>
+        </div>
+
+    </div>
+
+    <!-- 4. STATS SECTION -->
+    <div class="section-title">About This Page</div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" id="gamesCount">5</div>
+            <div class="stat-label">Games</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="winsCount">enter</div>
+            <div class="stat-label">Brain storming</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" id="xpCount">All are unique</div>
+            <div class="stat-label">Try </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Load stats from localStorage
+function loadStats(){
+    const games = localStorage.getItem('gamesPlayed') || 5;
+    const wins = localStorage.getItem('totalWins') || "Brain storming";
+    const xp = localStorage.getItem('totalXP') || "All are unique";
+    
+    document.getElementById('gamesCount').textContent = games;
+    document.getElementById('winsCount').textContent = wins;
+    document.getElementById('xpCount').textContent = xp;
+}
+
+function openGame(filename){
+    // Add haptic feedback if available
+    if(navigator.vibrate) navigator.vibrate(50);
+    
+    // Navigate to game
+    window.location.href = filename;
+}
+
+function continueTraining(){
+    // Open last played game or first game
+    const lastGame = localStorage.getItem('lastPlayed') || 'digital_vault.html';
+    openGame(lastGame);
+}
+
+// Save last played game when navigating back
+window.addEventListener('beforeunload', () => {
+    // This will be called when user leaves for a game
+});
+
+// Load on start
+loadStats();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Digital Detective Pro</title>
+
+<style>
+:root{
+    --bg: #0a0e1a;
+    --neon: #00d4ff;
+    --accent: #ff3b30;
+    --text: #e8ecf3;
+    --muted: #8b94a7;
+    --card: rgba(20,28,45,0.8);
+    --success: #00ff88;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Courier New',monospace}
+
+html,body{
+    height:100vh;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 20% 50%, rgba(0,212,255,0.1) 0%, transparent 50%),
+        #0a0e1a;
+    color:var(--text);
+}
+
+.container{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:15px;
+    gap:12px;
+    max-width:750px;
+    margin:0 auto;
+}
+
+.header{
+    height:55px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid rgba(0,212,255,0.2);
+}
+
+.logo{
+    font-size:18px;
+    font-weight:900;
+    color:var(--neon);
+    text-shadow:0 0 20px var(--neon);
+}
+
+.controls{
+    display:flex;
+    gap:8px;
+}
+
+.btn{
+    padding:7px 12px;
+    border-radius:6px;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+    border:1px solid;
+}
+
+.btn-back{
+    background:rgba(255,59,48,0.2);
+    border-color:var(--accent);
+    color:var(--accent);
+}
+
+.btn-guide{
+    background:rgba(0,212,255,0.2);
+    border-color:var(--neon);
+    color:var(--neon);
+}
+
+.timer-box{
+    padding:6px 12px;
+    background:rgba(0,212,255,0.1);
+    border:1px solid var(--neon);
+    border-radius:6px;
+    font-size:11px;
+    color:var(--neon);
+    font-weight:700;
+}
+
+.timer-box.danger{
+    color:var(--accent);
+    border-color:var(--accent);
+    animation:pulse 1s infinite;
+}
+
+@keyframes pulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.05)}
+}
+
+.welcome{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:20px;
+    overflow-y:auto;
+}
+
+.welcome-title{
+    font-size:36px;
+    font-weight:900;
+    color:var(--neon);
+    text-align:center;
+    text-shadow:0 0 30px var(--neon);
+}
+
+.rules-card{
+    background:var(--card);
+    border:2px solid rgba(0,212,255,0.3);
+    border-radius:14px;
+    padding:24px;
+}
+
+.rules-card h3{
+    color:var(--neon);
+    margin-bottom:14px;
+    font-size:14px;
+}
+
+.rules-card p{
+    font-size:12px;
+    line-height:1.8;
+    margin-bottom:8px;
+}
+
+.input-wrapper input{
+    height:48px;
+    background:var(--bg);
+    border:2px solid rgba(0,212,255,0.3);
+    border-radius:10px;
+    color:var(--neon);
+    padding:0 16px;
+    font-size:16px;
+    text-align:center;
+    font-weight:700;
+    width:100%;
+}
+
+.input-wrapper input:focus{
+    border-color:var(--neon);
+    box-shadow:0 0 25px rgba(0,212,255,0.4);
+    outline:none;
+}
+
+.start-btn{
+    height:50px;
+    background:linear-gradient(135deg, var(--neon), #0099cc);
+    color:var(--bg);
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.case-page{
+    display:none;
+    flex-direction:column;
+    gap:12px;
+    height:100%;
+    overflow-y:auto;
+}
+
+.case-page.active{
+    display:flex;
+}
+
+.case-header{
+    background:var(--card);
+    border:1px solid rgba(0,212,255,0.3);
+    border-radius:10px;
+    padding:14px;
+}
+
+.case-title{
+    font-size:16px;
+    font-weight:900;
+    color:var(--accent);
+    margin-bottom:4px;
+}
+
+.case-desc{
+    font-size:11px;
+    color:var(--muted);
+}
+
+.evidence-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+@media(max-width:650px){
+    .evidence-grid{grid-template-columns:1fr}
+}
+
+.evidence-card{
+    background:var(--card);
+    border:1px solid rgba(0,212,255,0.2);
+    border-radius:10px;
+    padding:12px;
+}
+
+.evidence-type{
+    font-size:9px;
+    color:var(--neon);
+    font-weight:700;
+    margin-bottom:6px;
+    text-transform:uppercase;
+}
+
+.evidence-content{
+    font-size:11px;
+    line-height:1.6;
+    white-space:pre-wrap;
+}
+
+.deduction-area{
+    background:var(--card);
+    border:2px solid rgba(255,59,48,0.3);
+    border-radius:12px;
+    padding:16px;
+}
+
+.deduction-title{
+    font-size:13px;
+    color:var(--accent);
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+/* TEXT INPUT FOR DEDUCTION */
+.deduction-input{
+    width:100%;
+    min-height:80px;
+    background:var(--bg);
+    border:2px solid rgba(0,212,255,0.3);
+    border-radius:8px;
+    color:var(--text);
+    padding:12px;
+    font-size:12px;
+    font-family:'Courier New',monospace;
+    resize:vertical;
+    margin-bottom:10px;
+}
+
+.deduction-input:focus{
+    border-color:var(--neon);
+    outline:none;
+    box-shadow:0 0 15px rgba(0,212,255,0.3);
+}
+
+.toggle-btn{
+    font-size:10px;
+    color:var(--neon);
+    background:none;
+    border:none;
+    cursor:pointer;
+    margin-bottom:8px;
+    text-decoration:underline;
+}
+
+.suspect-options{
+    display:none;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.suspect-options.show{
+    display:grid;
+}
+
+.suspect-btn{
+    padding:10px;
+    background:var(--bg);
+    border:2px solid rgba(0,212,255,0.3);
+    border-radius:6px;
+    color:var(--text);
+    font-size:11px;
+    cursor:pointer;
+}
+
+.suspect-btn:hover{
+    border-color:var(--neon);
+}
+
+.submit-deduction{
+    width:100%;
+    height:45px;
+    background:linear-gradient(135deg, var(--accent), #cc2f24);
+    color:#fff;
+    border:none;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.feedback{
+    margin-top:12px;
+    padding:12px;
+    border-radius:8px;
+    font-size:12px;
+    display:none;
+}
+
+.feedback.show{display:block}
+.feedback.correct{
+    background:rgba(0,255,136,0.2);
+    border:1px solid var(--success);
+    color:var(--success);
+}
+.feedback.wrong{
+    background:rgba(255,59,48,0.2);
+    border:1px solid var(--accent);
+    color:var(--accent);
+}
+
+.msg{
+    position:fixed;
+    top:70px;
+    left:50%;
+    transform:translateX(-50%) translateY(-100px);
+    padding:14px 24px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:700;
+    z-index:1000;
+    opacity:0;
+    transition:0.4s;
+    background:rgba(0,212,255,0.95);
+    color:var(--bg);
+}
+
+.msg.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="msg" id="msg"></div>
+
+<div class="container">
+    <div class="header">
+        <button class="btn btn-back" onclick="history.back()">Back</button>
+        <div class="logo">🕵️ DIGITAL DETECTIVE</div>
+        <div class="controls">
+            <div class="timer-box" id="timer">02:00</div>
+            <button class="btn btn-guide" onclick="playGuidance()">🔊 AI Guide</button>
+        </div>
+    </div>
+
+    <!-- WELCOME PAGE -->
+    <div class="welcome" id="welcomePage">
+        <div class="welcome-title">DIGITAL DETECTIVE</div>
+        <div class="rules-card">
+            <h3>📋 INVESTIGATION RULES</h3>
+            <p>1. You have 15 built-in cases. After that, loads from JSON file</p>
+            <p>2. Each case has 2 minute timer</p>
+            <p>3. Read all evidence: chats, logs, emails, timelines</p>
+            <p>4. Click "AI Guide" for Batman-style detective hints</p>
+            <p>5. Type your deduction in the text box - no multiple choice</p>
+            <p>6. Use keyword matching: "Employee B", "admin", etc</p>
+            <p>7. Back button returns to welcome page anytime</p>
+        </div>
+        <div class="input-wrapper">
+            <input type="text" id="detectiveName" placeholder="Enter detective name..." maxlength="15">
+        </div>
+        <button class="start-btn" onclick="startCase()">▶ START CASE 1</button>
+    </div>
+
+    <!-- CASE PAGE -->
+    <div class="case-page" id="casePage">
+        <div class="case-header">
+            <div class="case-title" id="caseTitle">CASE #1: Loading...</div>
+            <div class="case-desc" id="caseDesc">Loading case data...</div>
+        </div>
+
+        <div class="evidence-grid" id="evidenceGrid"></div>
+
+        <div class="deduction-area">
+            <div class="deduction-title">🎯 YOUR DEDUCTION</div>
+            
+            <button class="toggle-btn" onclick="toggleOptions()">+ Click to see suspect options instead of typing</button>
+            <div class="suspect-options" id="suspectOptions"></div>
+
+            <textarea class="deduction-input" id="deductionInput" placeholder="Type who did it and why... Example: Employee B because he logged in at 5:06 PM"></textarea>
+
+            <button class="submit-deduction" onclick="submitDeduction()">SUBMIT DEDUCTION</button>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+let detectiveName = '';
+let currentCaseIndex = 0;
+let currentCase = null;
+let timer = null;
+let timeLeft = 120;
+let speechQueue = [];
+let isSpeaking = false;
+let usingJsonCases = false;
+
+// 15 BUILT-IN CASES
+const builtInCases = [
+    {
+        id: 1,
+        title: "CASE #001: THE DELETED DATABASE",
+        description: "A company's database was deleted at 5:07 PM. Two employees. One culprit.",
+        evidence: [
+            {type: "💬 Chat - Employee A", content: '"I left work at 5 PM."'},
+            {type: "💬 Chat - Employee B", content: '"I was in a meeting at 5 PM."'},
+            {type: "🖥️ Server Log", content: '17:07:23\nDatabase deletion initiated\nUser: admin_access'},
+            {type: "🔒 Security Log", content: '17:06:45\nUser: employee_b_account\nAction: Server login'},
+            {type: "📧 Email - IT", content: 'Subject: Password Policy\n"Employee B\'s account was reset yesterday due to suspicious activity."'},
+            {type: "⏱️ Timeline", content: '17:00 - Employee A leaves\n17:00 - Employee B meeting\n17:06 - Employee B login\n17:07 - Database deleted'}
+        ],
+        answer: "Employee B",
+        keywords: ["employee b", "b"],
+        explanation: "Employee B logged in at 5:06 PM, 1 minute before deletion at 5:07 PM. Employee A left at 5:00 PM."
+    },
+    {
+        id: 2,
+        title: "CASE #002: THE STOLEN FILES",
+        description: "Confidential files copied at midnight. Server access log shows one user.",
+        evidence: [
+            {type: "💬 Chat - Admin", content: '"I was sleeping at midnight."'},
+            {type: "💬 Chat - Intern", content: '"I was working late last night."'},
+            {type: "🖥️ Access Log", content: '00:03:15\nUser: intern_temp\nFiles accessed: 247\nDownload: COMPLETE'},
+            {type: "🔒 VPN Log", content: '23:58:00\nUser: intern_temp\nLocation: Remote IP'},
+            {type: "📧 Email", content: 'From: HR\n"Intern_temp account expires tomorrow"'},
+            {type: "⏱️ Timeline", content: '23:58 - VPN connection\n00:03 - File download\n00:10 - VPN disconnect'}
+        ],
+        answer: "Intern",
+        keywords: ["intern", "intern_temp"],
+        explanation: "Intern_temp VPN connected at 11:58 PM and downloaded files at 12:03 AM. Admin was sleeping."
+    },
+    {
+        id: 3,
+        title: "CASE #003: THE FAKE EMAIL",
+        description: "Fake email sent from CEO account. Who had access?",
+        evidence: [
+            {type: "💬 Chat - CEO", content: '"I never sent that email."'},
+            {type: "💬 Chat - Secretary", content: '"I have CEO password for scheduling."'},
+            {type: "🖥️ Email Log", content: '09:15:22\nFrom: ceo@company.com\nSent from: webmail_client\nIP: 10.0.0.5'},
+            {type: "🔒 Login Log", content: '09:14:00\nUser: secretary_account\nAction: CEO account access'},
+            {type: "📧 Email Content", content: 'Subject: Urgent Transfer\n"Send $50,000 to account..."'},
+            {type: "⏱️ Timeline", content: '09:14 - Secretary accesses CEO account\n09:15 - Fake email sent'}
+        ],
+        answer: "Secretary",
+        keywords: ["secretary"],
+        explanation: "Secretary accessed CEO account at 9:14 AM and fake email sent at 9:15 AM from her IP."
+    },
+    // Cases 4-15 with similar structure
+    {
+        id: 4,
+        title: "CASE #004: THE PASSWORD LEAK",
+        description: "Customer passwords leaked. Database backup accessed.",
+        evidence: [
+            {type: "💬 Chat - Dev", content: '"I was on vacation that week."'},
+            {type: "💬 Chat - Support", content: '"I accessed backup for troubleshooting."'},
+            {type: "🖥️ Backup Log", content: '14:22:10\nUser: support_2\nBackup downloaded: customers.db'},
+            {type: "🔒 Access Log", content: '14:20:00\nUser: support_2\nDatabase access granted'},
+            {type: "📧 Email", content: 'Subject: Backup Request\n"I need customer data for support ticket"'},
+            {type: "⏱️ Timeline", content: '14:20 - Database access\n14:22 - Backup download'}
+        ],
+        answer: "Support",
+        keywords: ["support", "support_2"],
+        explanation: "Support_2 accessed database and downloaded backup 2 minutes later."
+    },
+    {
+        id: 5,
+        title: "CASE #005: THE RANSOMWARE",
+        description: "Ransomware deployed. One user opened suspicious attachment.",
+        evidence: [
+            {type: "💬 Chat - Manager", content: '"I only use company email."'},
+            {type: "💬 Chat - Sales", content: '"I got weird email about invoice."'},
+            {type: "🖥️ Email Log", content: '11:05:00\nUser: sales_rep\nAttachment opened: invoice.exe'},
+            {type: "🔒 Security Alert", content: '11:05:30\nRansomware detected\nOrigin: sales_rep workstation'},
+            {type: "📧 Email", content: 'From: unknown@fake.com\nSubject: Invoice #5543\nAttachment: invoice.exe'},
+            {type: "⏱️ Timeline", content: '11:05 - Attachment opened\n11:05:30 - Ransomware activated'}
+        ],
+        answer: "Sales",
+        keywords: ["sales", "sales_rep"],
+        explanation: "Sales_rep opened suspicious attachment and ransomware activated 30 seconds later."
+    },
+    {
+        id: 6,
+        title: "CASE #006: THE MISSING MONEY",
+        description: "$10,000 transferred. Transaction log shows one account.",
+        evidence: [
+            {type: "💬 Chat - Accountant", content: '"I was in meeting all day."'},
+            {type: "💬 Chat - Finance", content: '"I processed payments today."'},
+            {type: "🖥️ Transaction Log", content: '15:33:00\nUser: finance_1\nTransfer: $10,000\nTo: external_account'},
+            {type: "🔒 Approval Log", content: '15:32:00\nUser: finance_1\nOverride: used'},
+            {type: "📧 Email", content: 'Subject: Transfer Request\n"Urgent payment needed"'},
+            {type: "⏱️ Timeline", content: '15:32 - Override used\n15:33 - Transfer executed'}
+        ],
+        answer: "Finance",
+        keywords: ["finance", "finance_1"],
+        explanation: "Finance_1 used override and transferred money 1 minute later."
+    },
+    {
+        id: 7,
+        title: "CASE #007: THE BACKDOOR",
+        description: "Backdoor installed in code. Git commit shows one developer.",
+        evidence: [
+            {type: "💬 Chat - Lead", content: '"I review all code."'},
+            {type: "💬 Chat - Junior", content: '"I pushed code yesterday night."'},
+            {type: "🖥️ Git Log", content: 'commit a3f4b2\nAuthor: junior_dev\nFile: auth.js\n+ backdoor_code'},
+            {type: "🔒 Access Log", content: '22:15:00\nUser: junior_dev\nRepo: main_branch'},
+            {type: "📧 Email", content: 'Subject: Late Night Push\n"I fixed the auth bug"'},
+            {type: "⏱️ Timeline", content: '22:15 - Repo access\n22:18 - Malicious commit'}
+        ],
+        answer: "Junior",
+        keywords: ["junior", "junior_dev"],
+        explanation: "Junior_dev accessed repo and committed backdoor code at 10:18 PM."
+    },
+    {
+        id: 8,
+        title: "CASE #008: THE DATA EXFILTRATION",
+        description: "Large data transfer detected. One account active at 3 AM.",
+        evidence: [
+            {type: "💬 Chat - Night Guard", content: '"No one was in office."'},
+            {type: "💬 Chat - Remote Worker", content: '"I work from home nights."'},
+            {type: "🖥️ Network Log", content: '03:12:00\nUser: remote_user\nData sent: 50GB\nDestination: external'},
+            {type: "🔒 VPN Log", content: '03:00:00\nUser: remote_user\nVPN: connected'},
+            {type: "📧 Email", content: 'Subject: Night Shift\n"I handle overnight data sync"'},
+            {type: "⏱️ Timeline", content: '03:00 - VPN connect\n03:12 - Data transfer'}
+        ],
+        answer: "Remote Worker",
+        keywords: ["remote", "remote_user"],
+        explanation: "Remote_user VPN connected at 3 AM and transferred 50GB data."
+    },
+    {
+        id: 9,
+        title: "CASE #009: THE ACCOUNT HIJACK",
+        description: "User account accessed from unknown location. Password changed.",
+        evidence: [
+            {type: "💬 Chat - User", content: '"I was at home all day."'},
+            {type: "💬 Chat - IT", content: '"I reset passwords for security."'},
+            {type: "🖥️ Auth Log", content: '13:45:00\nUser: victim_account\nPassword changed\nIP: 203.45.67.89'},
+            {type: "🔒 Location Log", content: '13:44:00\nLogin from: Russia\nDevice: unknown'},
+            {type: "📧 Email", content: 'Subject: Password Changed\n"Your password was updated"'},
+            {type: "⏱️ Timeline", content: '13:44 - Foreign login\n13:45 - Password change'}
+        ],
+        answer: "IT",
+        keywords: ["it"],
+        explanation: "IT claims password reset but login came from Russia. IT has reset privileges."
+    },
+    {
+        id: 10,
+        title: "CASE #010: THE SOCIAL ENGINEERING",
+        description: "Helpdesk gave access to attacker. Call log shows one agent.",
+        evidence: [
+            {type: "💬 Chat - Helpdesk", content: '"I follow protocol."'},
+            {type: "💬 Chat - Agent_3", content: '"I took call from VIP customer."'},
+            {type: "🖥️ Call Log", content: '10:20:00\nAgent: agent_3\nCaller: claimed CEO\nAccess granted: YES'},
+            {type: "🔒 Access Log", content: '10:21:00\nUser: ceo_account\nCreated by: agent_3'},
+            {type: "📧 Email", content: 'Subject: Urgent Access\n"CEO locked out, needs access now"'},
+            {type: "⏱️ Timeline", content: '10:20 - Call received\n10:21 - Access granted'}
+        ],
+        answer: "Agent 3",
+        keywords: ["agent", "agent_3"],
+        explanation: "Agent_3 took call and granted CEO access 1 minute later without verification."
+    },
+    {
+        id: 11,
+        title: "CASE #011: THE CODE THEFT",
+        description: "Source code copied. USB drive connected to one workstation.",
+        evidence: [
+            {type: "💬 Chat - Developer", content: '"I use cloud storage."'},
+            {type: "💬 Chat - Contractor", content: '"I was debugging on my machine."'},
+            {type: "🖥️ USB Log", content: '16:30:00\nDevice: USB_SanDisk\nUser: contractor_pc\nFiles copied: 1200'},
+            {type: "🔒 File Access", content: '16:25:00\nUser: contractor\nSource code opened'},
+            {type: "📧 Email", content: 'Subject: Code Review\n"I need source files locally"'},
+            {type: "⏱️ Timeline", content: '16:25 - Code opened\n16:30 - USB copy'}
+        ],
+        answer: "Contractor",
+        keywords: ["contractor"],
+        explanation: "Contractor opened source code and copied to USB 5 minutes later."
+    },
+    {
+        id: 12,
+        title: "CASE #012: THE SYSTEM CRASH",
+        description: "Production server crashed. One admin ran dangerous command.",
+        evidence: [
+            {type: "💬 Chat - Admin1", content: '"I was monitoring only."'},
+            {type: "💬 Chat - Admin2", content: '"I ran maintenance script."'},
+            {type: "🖥️ Command Log", content: '04:15:00\nUser: admin2\nCommand: rm -rf /\nExecuted: YES'},
+            {type: "🔒 Server Log", content: '04:15:05\nSystem crash\nAll data lost'},
+            {type: "📧 Email", content: 'Subject: Maintenance\n"Running cleanup script now"'},
+            {type: "⏱️ Timeline", content: '04:15:00 - Command run\n04:15:05 - Crash'}
+        ],
+        answer: "Admin2",
+        keywords: ["admin2", "admin 2"],
+        explanation: "Admin2 ran rm -rf command and server crashed 5 seconds later."
+    },
+    {
+        id: 13,
+        title: "CASE #013: THE PHISHING LINK",
+        description: "Credentials stolen via phishing. One user clicked link.",
+        evidence: [
+            {type: "💬 Chat - User1", content: '"I delete suspicious emails."'},
+            {type: "💬 Chat - User2", content: '"I clicked link to check invoice."'},
+            {type: "🖥️ Browser Log", content: '09:05:00\nUser: user2\nURL: fake-login.com\nForm submitted: YES'},
+            {type: "🔒 Credential Log", content: '09:05:10\nLogin attempt from: fake-login.com'},
+            {type: "📧 Email", content: 'From: billing@fake.com\nSubject: Invoice Overdue\n[CLICK HERE]'},
+            {type: "⏱️ Timeline", content: '09:05 - Link clicked\n09:05:10 - Credentials stolen'}
+        ],
+        answer: "User2",
+        keywords: ["user2", "user 2"],
+        explanation: "User2 clicked phishing link and submitted credentials 10 seconds later."
+    },
+    {
+        id: 14,
+        title: "CASE #014: THE API ABUSE",
+        description: "API rate limit exceeded. One key used excessively.",
+        evidence: [
+            {type: "💬 Chat - Dev1", content: '"My app uses 100 requests."'},
+            {type: "💬 Chat - Dev2", content: '"I test with high volume."'},
+            {type: "🖥️ API Log", content: '12:00:00\nAPI Key: dev2_key\nRequests: 1000000\nStatus: Blocked'},
+            {type: "🔒 Key Log", content: '11:30:00\nKey: dev2_key\nActivated'},
+            {type: "📧 Email", content: 'Subject: Load Testing\n"I\'m stress testing API"'},
+            {type: "⏱️ Timeline", content: '11:30 - Key activated\n12:00 - Rate limit hit'}
+        ],
+        answer: "Dev2",
+        keywords: ["dev2", "dev 2"],
+        explanation: "Dev2_key made 1 million requests in 30 minutes, exceeding rate limit."
+    },
+    {
+        id: 15,
+        title: "CASE #015: THE WIRETAP",
+        description: "Calls recorded without permission. Recording software installed.",
+        evidence: [
+            {type: "💬 Chat - Manager", content: '"I don\'t record calls."'},
+            {type: "💬 Chat - Support", content: '"I use recording for training."'},
+            {type: "🖥️ Software Log", content: '14:00:00\nUser: support_lead\nSoftware: CallRecorder installed'},
+            {type: "🔒 Recording Log", content: '14:05:00\nRecording started\nAll calls captured'},
+            {type: "📧 Email", content: 'Subject: Training Tool\n"I installed call recording software"'},
+            {type: "⏱️ Timeline", content: '14:00 - Software installed\n14:05 - Recording started'}
+        ],
+        answer: "Support Lead",
+        keywords: ["support", "lead"],
+        explanation: "Support_lead installed recording software and started capturing all calls."
+    }
+];
+
+// SPEECH SYSTEM - BATMAN VOICE
+function speak(text){
+    speechQueue.push(text);
+    if(!isSpeaking) processSpeech();
+}
+
+function processSpeech(){
+    if(speechQueue.length === 0){
+        isSpeaking = false;
+        return;
+    }
+    isSpeaking = true;
+    const text = speechQueue.shift();
+
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.85;
+        utter.pitch = 0.7;
+        utter.volume = 1.0;
+        utter.onend = () => {
+            setTimeout(() => processSpeech(), 400);
+        };
+        speechSynthesis.speak(utter);
+    }
+}
+
+function goBack(){
+    clearInterval(timer);
+    document.getElementById('casePage').classList.remove('active');
+    document.getElementById('welcomePage').style.display = 'flex';
+}
+
+function startCase(){
+    detectiveName = document.getElementById('detectiveName').value.trim() || 'Detective';
+    document.getElementById('welcomePage').style.display = 'none';
+    document.getElementById('casePage').classList.add('active');
+    loadCase(0);
+}
+
+async function loadCase(index){
+    currentCaseIndex = index;
+    
+    // Use built-in cases first 15, then JSON
+    if(index < builtInCases.length){
+        currentCase = builtInCases[index];
+        usingJsonCases = false;
+    } else {
+        usingJsonCases = true;
+        try{
+            const response = await fetch('cases.json');
+            const jsonCases = await response.json();
+            currentCase = jsonCases[index - builtInCases.length];
+            if(!currentCase){
+                showMsg('All cases completed!');
+                return;
+            }
+        } catch(e){
+            showMsg('Error loading cases.json', 'error');
+            return;
+        }
+    }
+
+    displayCase();
+    timeLeft = 120;
+    clearInterval(timer);
+    timer = setInterval(updateTimer, 1000);
+    updateTimer();
+}
+
+function displayCase(){
+    document.getElementById('caseTitle').textContent = currentCase.title;
+    document.getElementById('caseDesc').textContent = currentCase.description;
+
+    const grid = document.getElementById('evidenceGrid');
+    grid.innerHTML = '';
+    currentCase.evidence.forEach(e => {
+        const card = document.createElement('div');
+        card.className = 'evidence-card';
+        card.innerHTML = `
+            <div class="evidence-type">${e.type}</div>
+            <div class="evidence-content">${e.content}</div>
+        `;
+        grid.appendChild(card);
+    });
+
+    // Suspect options for toggle
+    const options = document.getElementById('suspectOptions');
+    options.innerHTML = '';
+    ['Employee A', 'Employee B', 'Unknown'].forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'suspect-btn';
+        btn.textContent = s;
+        btn.onclick = () => {
+            document.getElementById('deductionInput').value = s;
+        };
+        options.appendChild(btn);
+    });
+
+    document.getElementById('deductionInput').value = '';
+    document.getElementById('feedback').classList.remove('show');
+}
+
+function toggleOptions(){
+    document.getElementById('suspectOptions').classList.toggle('show');
+}
+
+function playGuidance(){
+    const guidance = `Detective ${detectiveName}. Case ${currentCase.id}. Analyze the evidence carefully. Look at timestamps. Look at access logs. Who had the means and opportunity? The truth is in the details. Think like a detective.`;
+    speak(guidance);
+    showMsg('AI Detective guidance active');
+}
+
+// KEYWORD MATCHING CHECK
+function submitDeduction(){
+    const answer = document.getElementById('deductionInput').value.toLowerCase().trim();
+    
+    if(!answer){
+        showMsg('Type your deduction first!', 'warning');
+        return;
+    }
+
+    clearInterval(timer);
+    const feedback = document.getElementById('feedback');
+    feedback.classList.add('show');
+
+    // Check if any keyword is in answer
+    const isCorrect = currentCase.keywords.some(keyword => answer.includes(keyword));
+
+    if(isCorrect){
+        feedback.className = 'feedback correct show';
+        feedback.innerHTML = `
+            <strong>✅ CORRECT, ${detectiveName}!</strong><br><br>
+            ${currentCase.explanation}
+            <br><br><strong>Case solved! Loading next case...</strong>
+        `;
+        speak(`Excellent deduction ${detectiveName}. ${currentCase.explanation}`);
+        setTimeout(() => loadCase(currentCaseIndex + 1), 4000);
+    } else {
+        feedback.className = 'feedback wrong show';
+        feedback.innerHTML = `
+            <strong>❌ INCORRECT</strong><br><br>
+            Your answer doesn't match the evidence. 
+            Hint: Look at timestamps and access logs. Who logged in before the crime?
+            <br><br>Try again or click AI Guide for help.
+        `;
+        speak('Incorrect deduction. Review the timeline and access logs again.');
+        timeLeft = 120; // Reset timer for retry
+        timer = setInterval(updateTimer, 1000);
+    }
+}
+
+function updateTimer(){
+    timeLeft--;
+    const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+    const s = String(timeLeft % 60).padStart(2, '0');
+    const timerEl = document.getElementById('timer');
+    timerEl.textContent = `${m}:${s}`;
+
+    if(timeLeft <= 30){
+        timerEl.classList.add('danger');
+    }
+
+    if(timeLeft <= 0){
+        clearInterval(timer);
+        showMsg('Time up! Case failed. Restarting...', 'error');
+        speak('Time expired Detective. Case failed.');
+        setTimeout(() => loadCase(currentCaseIndex), 2000);
+    }
+}
+
+function showMsg(text){
+    const msg = document.getElementById('msg');
+    msg.textContent = text;
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>

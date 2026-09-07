@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Logic Vault Final Fix</title>
+
+<style>
+:root{
+    --bg: #050816;
+    --neon: #00ffff;
+    --neon-dim: rgba(0,255,255,0.3);
+    --text: #e2e8f0;
+    --danger: #ff0040;
+    --success: #00ff88;
+    --warning: #ffaa00;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Courier New',monospace}
+
+html,body{
+    height:100vh;
+    overflow:hidden;
+    background:
+        linear-gradient(rgba(0,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,255,255,.08) 1px, transparent 1px),
+        #050816;
+    background-size:40px 40px;
+    color:var(--text);
+}
+
+.container{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:15px;
+    gap:12px;
+    max-width:500px;
+    margin:0 auto;
+}
+
+.header{
+    height:55px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.btn-back{
+    padding:8px 14px;
+    background:rgba(255,0,64,0.2);
+    border:1px solid var(--danger);
+    border-radius:8px;
+    color:var(--danger);
+    font-size:11px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.logo{
+    font-size:16px;
+    font-weight:900;
+    color:var(--neon);
+    text-shadow:0 0 15px var(--neon);
+}
+
+.controls{
+    display:flex;
+    gap:8px;
+}
+
+.btn-control{
+    padding:7px 12px;
+    border-radius:7px;
+    font-size:10px;
+    font-weight:700;
+    cursor:pointer;
+    border:1px solid;
+    transition:0.2s;
+}
+
+.btn-guide{
+    background:rgba(0,255,255,0.2);
+    border-color:var(--neon);
+    color:var(--neon);
+}
+
+.btn-guide:hover{
+    background:rgba(0,255,255,0.3);
+    box-shadow:0 0 15px var(--neon);
+}
+
+.btn-hint{
+    background:rgba(255,170,0,0.2);
+    border-color:var(--warning);
+    color:var(--warning);
+}
+
+.btn-hint:hover{
+    background:rgba(255,170,0,0.3);
+}
+
+.btn-hint:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+}
+
+.welcome{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:20px;
+    text-align:center;
+}
+
+.welcome-title{
+    font-size:32px;
+    font-weight:900;
+    color:var(--neon);
+    text-shadow:0 0 30px var(--neon);
+}
+
+.rules-box{
+    background:rgba(10,16,32,0.8);
+    border:2px solid var(--neon-dim);
+    border-radius:14px;
+    padding:22px;
+    text-align:left;
+    font-size:12px;
+    line-height:1.9;
+}
+
+.input-wrapper input{
+    height:48px;
+    background:var(--bg);
+    border:2px solid var(--neon-dim);
+    border-radius:10px;
+    color:var(--neon);
+    padding:0 16px;
+    font-size:16px;
+    text-align:center;
+    font-weight:700;
+    width:100%;
+}
+
+.input-wrapper input:focus{
+    border-color:var(--neon);
+    outline:none;
+    box-shadow:0 0 25px rgba(0,255,255,0.4);
+}
+
+.start-btn{
+    height:50px;
+    background:linear-gradient(135deg, var(--neon), #00ccff);
+    color:var(--bg);
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.game{
+    display:none;
+    flex-direction:column;
+    gap:12px;
+    height:100%;
+}
+
+.game.active{
+    display:flex;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.stat{
+    background:rgba(10,16,32,0.7);
+    border:1px solid var(--neon-dim);
+    border-radius:8px;
+    padding:8px;
+    text-align:center;
+    font-size:9px;
+}
+
+.stat-val{
+    font-size:18px;
+    font-weight:800;
+    color:var(--neon);
+    margin-top:3px;
+}
+
+.clues-box{
+    background:rgba(10,16,32,0.7);
+    border:1px solid var(--neon-dim);
+    border-radius:10px;
+    padding:12px;
+    height:120px;
+}
+
+.box-title{
+    font-size:10px;
+    color:var(--neon);
+    margin-bottom:8px;
+}
+
+.clues{
+    height:80px;
+    overflow-y:auto;
+    font-size:11px;
+}
+
+.clue{
+    padding:5px 8px;
+    margin-bottom:5px;
+    background:rgba(0,255,255,0.05);
+    border-radius:5px;
+    border-left:3px solid var(--neon);
+}
+
+.code-display{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+}
+
+.digit{
+    width:60px;
+    height:70px;
+    background:var(--bg);
+    border:3px solid var(--neon-dim);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    font-weight:900;
+    color:var(--neon);
+    transition:all 0.2s;
+}
+
+.digit.filled{
+    border-color:var(--neon);
+    box-shadow:0 0 25px var(--neon);
+    background:rgba(0,255,255,0.15);
+}
+
+.keypad{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.key{
+    height:58px;
+    background:var(--bg);
+    border:2px solid var(--neon-dim);
+    border-radius:12px;
+    color:var(--text);
+    font-size:26px;
+    font-weight:800;
+    cursor:pointer;
+    transition:0.15s;
+}
+
+.key:hover{
+    border-color:var(--neon);
+}
+
+.key.highlight{
+    border-color:var(--warning);
+    background:rgba(255,170,0,0.5);
+    box-shadow:0 0 30px var(--warning);
+    animation:highlight 0.8s infinite;
+}
+
+@keyframes highlight{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.12)}
+}
+
+.key.action{
+    background:rgba(0,255,136,0.2);
+    border-color:var(--success);
+    color:var(--success);
+}
+
+.msg{
+    position:fixed;
+    top:70px;
+    left:50%;
+    transform:translateX(-50%) translateY(-100px);
+    padding:16px 28px;
+    border-radius:12px;
+    font-size:13px;
+    font-weight:700;
+    z-index:1000;
+    opacity:0;
+    transition:0.4s;
+    min-width:200px;
+    text-align:center;
+}
+
+.msg.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+}
+
+.msg.success{
+    background:linear-gradient(135deg, rgba(0,255,136,0.95), rgba(0,200,100,0.95));
+    color:var(--bg);
+    border:2px solid var(--success);
+}
+
+.msg.error{
+    background:linear-gradient(135deg, rgba(255,0,64,0.95), rgba(200,0,50,0.95));
+    color:#fff;
+    border:2px solid var(--danger);
+}
+
+.msg.warning{
+    background:linear-gradient(135deg, rgba(255,170,0,0.95), rgba(200,130,0,0.95));
+    color:var(--bg);
+    border:2px solid #ffaa00;
+}
+</style>
+</head>
+
+<body>
+
+<div class="msg" id="msg"></div>
+
+<div class="container">
+    <div class="header">
+        <button class="btn-back" onclick="history.back()">← Back</button>
+        <div class="logo">🔐 LOGIC VAULT</div>
+        <div class="controls">
+            <button class="btn-control btn-guide" onclick="playGuide()">🔊 AI Guide</button>
+            <button class="btn-control btn-hint" id="hintBtn" onclick="useHint()">💡 Hint 10XP</button>
+        </div>
+    </div>
+
+    <div class="welcome" id="welcomePage">
+        <div class="welcome-title">DIGITAL VAULT</div>
+        <div class="rules-box">
+            <h3>📋 HOW TO PLAY</h3>
+            1. Enter your username below<br>
+            2. Click "AI Guide" anytime for help<br>
+            3. Crack the 3-digit code<br>
+            4. Use keypad to enter digits<br>
+            5. Click GO to submit guess<br>
+            6. Clues show correct/misplaced digits<br>
+            7. Hint button reveals 1 digit - costs 10 XP<br>
+            8. You have 7 attempts per floor
+        </div>
+        <div class="input-wrapper">
+            <input type="text" id="playerName" placeholder="Enter username" maxlength="12">
+        </div>
+        <button class="start-btn" onclick="startGame()">▶ START GAME</button>
+    </div>
+
+    <div class="game" id="gamePage">
+        <div class="stats">
+            <div class="stat">
+                <div>Floor</div>
+                <div class="stat-val" id="floor">1</div>
+            </div>
+            <div class="stat">
+                <div>Attempts</div>
+                <div class="stat-val" id="attempts">7</div>
+            </div>
+            <div class="stat">
+                <div>Time</div>
+                <div class="stat-val" id="timer">00:00</div>
+            </div>
+            <div class="stat">
+                <div>XP</div>
+                <div class="stat-val" id="xp">0</div>
+            </div>
+        </div>
+
+        <div class="clues-box">
+            <div class="box-title">Clues & Feedback</div>
+            <div class="clues" id="clues">
+                <div style="opacity:0.5;text-align:center;padding-top:20px">Click AI Guide button for help</div>
+            </div>
+        </div>
+
+        <div>
+            <div class="box-title">Enter 3-Digit Code</div>
+            <div class="code-display" id="codeDisplay"></div>
+        </div>
+
+        <div class="keypad" id="keypad"></div>
+    </div>
+</div>
+
+<script>
+let code = '042';
+let input = [];
+let attempts = 7;
+let floor = 1;
+let xp = 0;
+let timer = null;
+let startTime = null;
+let playerName = '';
+let speechQueue = [];
+let isSpeaking = false;
+let hintUsed = false;
+
+// SPEECH CONTROL - ONLY ON BUTTON CLICK
+function speak(text){
+    speechQueue.push(text);
+    if(!isSpeaking) processSpeech();
+}
+
+function processSpeech(){
+    if(speechQueue.length === 0){
+        isSpeaking = false;
+        return;
+    }
+    isSpeaking = true;
+    const text = speechQueue.shift();
+
+    if('speechSynthesis' in window){
+        speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 0.9;
+        utter.pitch = 1.05;
+        utter.volume = 1.0;
+        utter.onend = () => {
+            setTimeout(() => processSpeech(), 300);
+        };
+        speechSynthesis.speak(utter);
+    }
+}
+
+function startGame(){
+    playerName = document.getElementById('playerName').value.trim() || 'Player';
+    document.getElementById('welcomePage').style.display = 'none';
+    document.getElementById('gamePage').classList.add('active');
+
+    code = Math.floor(Math.random() * 900 + 100).toString();
+    attempts = 7;
+    input = [];
+    hintUsed = false;
+
+    clearInterval(timer);
+    startTime = Date.now();
+    timer = setInterval(updateTimer, 1000);
+
+    createCodeDisplay();
+    createKeypad();
+    updateUI();
+
+    document.getElementById('clues').innerHTML = '<div style="opacity:0.5;text-align:center;padding-top:20px">Click AI Guide button for help</div>';
+    showMsg('Game started! Click AI Guide for help', 'success');
+}
+
+// AI GUIDE BUTTON - ONLY WHEN CLICKED
+function playGuide(){
+    if(isSpeaking){
+        speechSynthesis.cancel();
+        speechQueue = [];
+        isSpeaking = false;
+    }
+
+    const examples = `Example 1. I try 1 2 3. The game tells me which digits are correct. Example 2. The secret code is ${code}. I enter each digit step by step. Now you try ${playerName}.`;
+    speak(examples);
+    showMsg('AI Guide playing...', 'warning');
+}
+
+function createCodeDisplay(){
+    const container = document.getElementById('codeDisplay');
+    container.innerHTML = '';
+    for(let i = 0; i < 3; i++){
+        const div = document.createElement('div');
+        div.className = 'digit';
+        div.id = `digit${i}`;
+        container.appendChild(div);
+    }
+}
+
+function createKeypad(){
+    const container = document.getElementById('keypad');
+    container.innerHTML = '';
+
+    for(let i = 1; i <= 9; i++){
+        const btn = document.createElement('button');
+        btn.className = 'key';
+        btn.textContent = i;
+        btn.id = `key${i}`;
+        btn.onclick = () => addDigit(i);
+        container.appendChild(btn);
+    }
+
+    const clearBtn = document.createElement('button');
+    clearBtn.className = 'key';
+    clearBtn.textContent = 'CLR';
+    clearBtn.onclick = clearCode;
+    container.appendChild(clearBtn);
+
+    const zeroBtn = document.createElement('button');
+    zeroBtn.className = 'key';
+    zeroBtn.textContent = '0';
+    zeroBtn.id = 'key0';
+    zeroBtn.onclick = () => addDigit(0);
+    container.appendChild(zeroBtn);
+
+    const goBtn = document.createElement('button');
+    goBtn.className = 'key action';
+    goBtn.textContent = 'GO';
+    goBtn.onclick = submitGuess;
+    container.appendChild(goBtn);
+}
+
+function addDigit(num){
+    if(input.length >= 3) return;
+    input.push(num.toString());
+    updateDisplay();
+}
+
+function clearCode(){
+    input = [];
+    updateDisplay();
+}
+
+function updateDisplay(){
+    for(let i = 0; i < 3; i++){
+        const box = document.getElementById(`digit${i}`);
+        if(box){
+            box.textContent = input[i] || '';
+            box.classList.toggle('filled', input[i]!== undefined);
+        }
+    }
+}
+
+function check(guess){
+    let correct = 0, misplaced = 0;
+    let c = code.split(''), g = guess.split('');
+    let usedC = [false,false], usedG = [false,false];
+
+    for(let i = 0; i < 3; i++){
+        if(g[i] === c[i]){
+            correct++;
+            usedC[i] = usedG[i] = true;
+        }
+    }
+    for(let i = 0; i < 3; i++){
+        if(!usedG[i]){
+            for(let j = 0; j < 3; j++){
+                if(!usedC[j] && g[i] === c[j]){
+                    misplaced++;
+                    usedC[j] = true;
+                    break;
+                }
+            }
+        }
+    }
+    return {correct, misplaced};
+}
+
+function submitGuess(){
+    const guess = input.join('');
+
+    if(guess.length < 3){
+        showMsg('Enter 3 digits first!', 'warning');
+        return;
+    }
+
+    const result = check(guess);
+    attempts--;
+
+    const cluesDiv = document.getElementById('clues');
+    const clue = document.createElement('div');
+    clue.className = 'clue';
+
+    let text = '';
+    if(result.correct === 3){
+        text = 'Perfect! Vault unlocked!';
+        clue.innerHTML = `<span style="color:var(--neon);font-weight:800">${guess}</span> - ${text}`;
+        cluesDiv.insertBefore(clue, cluesDiv.firstChild);
+        winGame();
+        return;
+    } else if(result.correct > 0 && result.misplaced > 0){
+        text = `${result.correct} correct, ${result.misplaced} misplaced`;
+        showMsg(`${result.correct} correct + ${result.misplaced} misplaced`, 'warning');
+    } else if(result.correct > 0){
+        text = `${result.correct} in correct position`;
+        showMsg(`${result.correct} digit correct!`, 'warning');
+    } else if(result.misplaced > 0){
+        text = `${result.misplaced} wrong position`;
+        showMsg(`${result.misplaced} digit wrong place`, 'warning');
+    } else {
+        text = 'No digits match';
+        showMsg('No matches! Try different digits', 'error');
+    }
+
+    clue.innerHTML = `<span style="color:var(--neon);font-weight:800">${guess}</span> - ${text}`;
+    cluesDiv.insertBefore(clue, cluesDiv.firstChild);
+
+    if(attempts <= 0){
+        showMsg(`Game Over! Code was ${code}`, 'error');
+        speak(`Game over. Code was ${code.split('').join(' ')}`);
+        clearInterval(timer);
+        setTimeout(() => resetGame(), 3000);
+        return;
+    }
+
+    input = [];
+    updateDisplay();
+    updateUI();
+}
+
+// HINT BUTTON - WORKS PROPERLY
+function useHint(){
+    if(xp < 10){
+        showMsg('Need 10 XP for hint!', 'error');
+        return;
+    }
+    if(hintUsed){
+        showMsg('Hint already used this floor!', 'warning');
+        return;
+    }
+
+    xp -= 10;
+    hintUsed = true;
+
+    const pos = Math.floor(Math.random() * 3);
+    const digit = code[pos];
+
+    // Highlight correct key
+    document.querySelectorAll('.key').forEach(k => k.classList.remove('highlight'));
+    const keyBtn = document.getElementById(`key${digit}`);
+    if(keyBtn) keyBtn.classList.add('highlight');
+
+    showMsg(`Hint: Position ${pos+1} is ${digit}`, 'success');
+    speak(`Hint. Position ${pos + 1} is ${digit}`);
+
+    document.getElementById('hintBtn').disabled = true;
+
+    setTimeout(() => {
+        document.querySelectorAll('.key').forEach(k => k.classList.remove('highlight'));
+    }, 5000);
+
+    updateUI();
+}
+
+function winGame(){
+    clearInterval(timer);
+    xp += 50;
+    floor++;
+    showMsg('Vault unlocked! Next floor!', 'success');
+    speak(`Excellent! Floor ${floor-1} complete.`);
+    setTimeout(() => resetGame(), 3000);
+}
+
+function resetGame(){
+    code = Math.floor(Math.random() * 900 + 100).toString();
+    startGame();
+}
+
+function updateTimer(){
+    const elapsed = Math.floor((Date.now() - startTime) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2,'0');
+    const s = String(elapsed % 60).padStart(2,'0');
+    document.getElementById('timer').textContent = `${m}:${s}`;
+}
+
+function showMsg(text, type){
+    const msg = document.getElementById('msg');
+    msg.textContent = text;
+    msg.className = `msg ${type}`;
+    setTimeout(() => msg.classList.add('show'), 10);
+    setTimeout(() => msg.classList.remove('show'), 3000);
+}
+
+function updateUI(){
+    document.getElementById('floor').textContent = floor;
+    document.getElementById('attempts').textContent = attempts;
+    document.getElementById('xp').textContent = xp;
+}
+</script>
+</body>
+</html>
