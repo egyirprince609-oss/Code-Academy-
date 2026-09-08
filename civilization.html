@@ -1,0 +1,3192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#050814">
+
+<title>Civilization Puzzle | Code Academy</title>
+
+<style>
+:root{
+    --bg:#050814;
+    --panel:rgba(11,18,35,.94);
+    --panel2:rgba(15,23,42,.94);
+    --neon:#00f5ff;
+    --gold:#ffd700;
+    --danger:#ff3b30;
+    --success:#00ff88;
+    --purple:#a855f7;
+    --text:#e8f4ff;
+    --muted:#8b9dc3;
+    --border:rgba(0,245,255,.25);
+    --shadow:0 0 30px rgba(0,245,255,.15);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Orbitron','Courier New',monospace;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    background:
+        radial-gradient(circle at 15% 20%,rgba(0,245,255,.10),transparent 40%),
+        radial-gradient(circle at 85% 80%,rgba(168,85,247,.08),transparent 40%),
+        var(--bg);
+    color:var(--text);
+}
+
+body{
+    min-height:100dvh;
+    overflow:auto;
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    touch-action:manipulation;
+}
+
+.container{
+    width:min(100%,1000px);
+    min-height:100dvh;
+    margin:auto;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    min-height:48px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:8px;
+    border-bottom:1px solid rgba(0,245,255,.25);
+    padding-bottom:8px;
+    flex-shrink:0;
+}
+
+.logo{
+    text-align:center;
+    color:var(--neon);
+    font-size:clamp(13px,2vw,19px);
+    font-weight:900;
+    letter-spacing:1.5px;
+    text-shadow:0 0 18px var(--neon);
+    white-space:nowrap;
+}
+
+.controls{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.timer-box{
+    min-width:48px;
+    padding:6px 8px;
+    text-align:center;
+    border:1px solid var(--neon);
+    border-radius:7px;
+    color:var(--neon);
+    background:rgba(0,245,255,.10);
+    font-size:11px;
+    font-weight:900;
+}
+
+.timer-box.paused{
+    color:var(--gold);
+    border-color:var(--gold);
+}
+
+.timer-box.danger{
+    color:var(--danger);
+    border-color:var(--danger);
+    animation:blink .65s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:.35}
+}
+
+.btn{
+    border:1px solid;
+    border-radius:7px;
+    padding:7px 9px;
+    cursor:pointer;
+    font-size:9px;
+    font-weight:900;
+    transition:.2s;
+    white-space:nowrap;
+}
+
+.btn:active{
+    transform:scale(.96);
+}
+
+.btn-back{
+    color:var(--danger);
+    border-color:var(--danger);
+    background:rgba(255,59,48,.10);
+}
+
+.btn-guide{
+    color:var(--neon);
+    border-color:var(--neon);
+    background:rgba(0,245,255,.10);
+}
+
+.btn-pause{
+    color:var(--gold);
+    border-color:var(--gold);
+    background:rgba(255,215,0,.08);
+}
+
+/* =========================
+   COMMON
+========================= */
+
+.hidden{
+    display:none !important;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.intro{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:12px;
+    padding:10px 0;
+}
+
+.dashboard-preview{
+    background:var(--panel);
+    border:2px solid var(--neon);
+    border-radius:15px;
+    padding:16px;
+    text-align:center;
+    box-shadow:0 0 35px rgba(0,245,255,.20);
+}
+
+.preview-title{
+    color:var(--gold);
+    font-size:clamp(20px,4vw,31px);
+    font-weight:900;
+    text-shadow:0 0 18px var(--gold);
+    margin-bottom:5px;
+}
+
+.preview-subtitle{
+    color:var(--muted);
+    font-size:10px;
+    margin-bottom:12px;
+}
+
+.preview-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.stat-box{
+    background:rgba(0,245,255,.06);
+    border:1px solid rgba(0,245,255,.22);
+    border-radius:7px;
+    padding:7px 4px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:8px;
+}
+
+.stat-value{
+    color:var(--neon);
+    font-size:13px;
+    font-weight:900;
+    margin-top:2px;
+}
+
+.rules-card{
+    background:var(--panel);
+    border:1px solid rgba(0,245,255,.3);
+    border-radius:12px;
+    padding:13px 15px;
+}
+
+.rules-card h3{
+    color:var(--neon);
+    text-align:center;
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.rules-card p{
+    color:var(--text);
+    font-size:9px;
+    line-height:1.55;
+    margin-bottom:4px;
+}
+
+.account-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    color:var(--muted);
+    font-size:9px;
+    min-height:28px;
+}
+
+.account-name{
+    color:var(--neon);
+    font-weight:900;
+}
+
+.start-btn{
+    width:100%;
+    min-height:46px;
+    border:0;
+    border-radius:9px;
+    cursor:pointer;
+    background:linear-gradient(135deg,var(--neon),#0099cc);
+    color:var(--bg);
+    font-size:12px;
+    font-weight:900;
+    box-shadow:0 0 25px rgba(0,245,255,.25);
+    transition:.2s;
+}
+
+.start-btn:active{
+    transform:scale(.98);
+}
+
+/* =========================
+   GAME
+========================= */
+
+.game{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    gap:8px;
+    padding-top:8px;
+}
+
+.game.active{
+    display:flex;
+}
+
+.turn-info{
+    padding:8px;
+    text-align:center;
+}
+
+.turn-title{
+    color:var(--gold);
+    font-size:14px;
+    font-weight:900;
+}
+
+.ruler-name{
+    color:var(--muted);
+    font-size:9px;
+    margin-top:3px;
+}
+
+.sync-status{
+    color:var(--success);
+    font-size:7px;
+    margin-top:3px;
+}
+
+/* =========================
+   ALERT
+========================= */
+
+.alert-box{
+    display:none;
+    padding:8px 10px;
+    border:1px solid var(--danger);
+    border-radius:8px;
+    background:rgba(255,59,48,.12);
+}
+
+.alert-box.show{
+    display:block;
+}
+
+.alert-text{
+    color:var(--danger);
+    font-size:9px;
+    font-weight:900;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+}
+
+.stat-card{
+    min-width:0;
+    padding:7px 4px;
+    text-align:center;
+    background:var(--panel);
+    border:1px solid rgba(0,245,255,.18);
+    border-radius:8px;
+}
+
+.stat-card.critical{
+    border-color:var(--danger);
+    background:rgba(255,59,48,.10);
+}
+
+.stat-card-label{
+    color:var(--muted);
+    font-size:7px;
+    margin-bottom:2px;
+}
+
+.stat-card-value{
+    color:var(--neon);
+    font-size:15px;
+    font-weight:900;
+}
+
+.stat-card-change{
+    min-height:9px;
+    font-size:7px;
+    margin-top:1px;
+}
+
+.stat-card-change.pos{
+    color:var(--success);
+}
+
+.stat-card-change.neg{
+    color:var(--danger);
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions-title{
+    color:var(--muted);
+    font-size:8px;
+    letter-spacing:1px;
+    padding:2px 3px;
+}
+
+.actions-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.action-btn{
+    min-width:0;
+    padding:9px 8px;
+    text-align:left;
+    border:1px solid rgba(0,245,255,.24);
+    border-radius:8px;
+    background:var(--panel2);
+    color:var(--text);
+    cursor:pointer;
+    transition:.18s;
+}
+
+.action-btn:hover{
+    border-color:var(--neon);
+    background:rgba(0,245,255,.08);
+}
+
+.action-btn:disabled{
+    opacity:.38;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.action-name{
+    color:var(--neon);
+    font-size:9px;
+    font-weight:900;
+    margin-bottom:3px;
+}
+
+.action-desc{
+    color:var(--muted);
+    font-size:7px;
+    line-height:1.35;
+}
+
+.action-cost{
+    color:var(--gold);
+    font-size:7px;
+    margin-top:4px;
+}
+
+/* =========================
+   FOOTER / LOG
+========================= */
+
+.bottom-area{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:7px;
+    align-items:stretch;
+}
+
+.event-log{
+    min-height:62px;
+    max-height:78px;
+    overflow:auto;
+    padding:7px;
+}
+
+.log-entry{
+    color:var(--muted);
+    font-size:7px;
+    line-height:1.4;
+    margin-bottom:3px;
+}
+
+.log-entry.success{
+    color:var(--success);
+}
+
+.log-entry.warning{
+    color:var(--danger);
+}
+
+.log-entry.info{
+    color:var(--neon);
+}
+
+.game-controls{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.small-btn{
+    min-width:92px;
+    flex:1;
+    padding:6px 8px;
+    border-radius:7px;
+    border:1px solid rgba(0,245,255,.25);
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    font-size:8px;
+    font-weight:900;
+}
+
+/* =========================
+   VICTORY / DEFEAT
+========================= */
+
+.result-overlay{
+    position:fixed;
+    inset:0;
+    z-index:5000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+    background:rgba(2,5,15,.86);
+    backdrop-filter:blur(7px);
+}
+
+.result-overlay.show{
+    display:flex;
+}
+
+.result-card{
+    width:min(100%,420px);
+    padding:24px 18px;
+    text-align:center;
+    background:var(--panel2);
+    border:2px solid var(--neon);
+    border-radius:16px;
+    box-shadow:0 0 50px rgba(0,245,255,.25);
+}
+
+.result-icon{
+    font-size:42px;
+    margin-bottom:7px;
+}
+
+.result-title{
+    color:var(--gold);
+    font-size:22px;
+    font-weight:900;
+    margin-bottom:7px;
+}
+
+.result-text{
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.6;
+}
+
+.reward-box{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:15px 0;
+}
+
+.reward{
+    min-width:105px;
+    padding:10px;
+    border-radius:9px;
+    background:rgba(0,245,255,.08);
+    border:1px solid rgba(0,245,255,.25);
+}
+
+.reward strong{
+    display:block;
+    color:var(--neon);
+    font-size:18px;
+}
+
+.reward span{
+    color:var(--muted);
+    font-size:7px;
+}
+
+.result-actions{
+    display:flex;
+    gap:7px;
+}
+
+.result-actions button{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
+    border:1px solid var(--neon);
+    background:rgba(0,245,255,.08);
+    color:var(--neon);
+    font-size:9px;
+    font-weight:900;
+}
+
+.result-actions button.primary{
+    background:var(--neon);
+    color:var(--bg);
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.msg{
+    position:fixed;
+    top:58px;
+    left:50%;
+    z-index:6000;
+    max-width:min(92vw,500px);
+    padding:9px 13px;
+    border-radius:8px;
+    background:rgba(0,245,255,.96);
+    color:var(--bg);
+    font-size:9px;
+    font-weight:900;
+    text-align:center;
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,-20px);
+    transition:.25s;
+}
+
+.msg.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+    position:fixed;
+    inset:0;
+    z-index:7000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--bg);
+}
+
+.loading-card{
+    text-align:center;
+}
+
+.loading-icon{
+    font-size:35px;
+    animation:pulse 1s infinite;
+}
+
+.loading-text{
+    margin-top:8px;
+    color:var(--neon);
+    font-size:10px;
+}
+
+@keyframes pulse{
+    50%{transform:scale(1.08);opacity:.7}
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    .container{
+        padding:8px;
+    }
+
+    .header{
+        grid-template-columns:auto 1fr auto;
+    }
+
+    .logo{
+        font-size:12px;
+    }
+
+    .btn{
+        padding:6px 7px;
+        font-size:8px;
+    }
+
+    .btn-guide{
+        font-size:0;
+    }
+
+    .btn-guide::after{
+        content:'🔊';
+        font-size:12px;
+    }
+
+    .preview-stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .rules-card{
+        padding:11px 12px;
+    }
+
+    .rules-card p{
+        font-size:8px;
+    }
+
+    .stats-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .stat-card-value{
+        font-size:13px;
+    }
+
+    .actions-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .bottom-area{
+        grid-template-columns:1fr;
+    }
+
+    .game-controls{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .small-btn{
+        min-width:0;
+    }
+}
+
+@media(max-height:650px){
+
+    .container{
+        padding:6px;
+    }
+
+    .intro{
+        gap:7px;
+        padding:5px 0;
+    }
+
+    .dashboard-preview{
+        padding:10px;
+    }
+
+    .preview-title{
+        font-size:19px;
+    }
+
+    .rules-card{
+        padding:8px 10px;
+    }
+
+    .rules-card p{
+        line-height:1.35;
+        margin-bottom:2px;
+    }
+
+    .start-btn{
+        min-height:40px;
+    }
+
+    .game{
+        gap:5px;
+        padding-top:4px;
+    }
+
+    .turn-info{
+        padding:5px;
+    }
+
+    .action-btn{
+        padding:7px;
+    }
+
+    .event-log{
+        min-height:45px;
+        max-height:58px;
+    }
+}
+
+@media(max-width:380px){
+
+    .stats-grid{
+        grid-template-columns:repeat(4,1fr);
+        gap:3px;
+    }
+
+    .stat-card{
+        padding:5px 2px;
+    }
+
+    .stat-card-label{
+        font-size:6px;
+    }
+
+    .stat-card-value{
+        font-size:11px;
+    }
+
+    .actions-grid{
+        gap:4px;
+    }
+
+    .action-btn{
+        padding:7px 5px;
+    }
+
+    .action-name{
+        font-size:8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="loading" id="loading">
+    <div class="loading-card">
+        <div class="loading-icon">🌍</div>
+        <div class="loading-text">CONNECTING TO CODE ACADEMY...</div>
+    </div>
+</div>
+
+<div class="msg" id="msg"></div>
+
+<div class="result-overlay" id="resultOverlay">
+    <div class="result-card">
+
+        <div class="result-icon" id="resultIcon">🏆</div>
+
+        <div class="result-title" id="resultTitle">
+            Civilization Victorious
+        </div>
+
+        <div class="result-text" id="resultText"></div>
+
+        <div class="reward-box" id="rewardBox">
+            <div class="reward">
+                <strong id="rewardXP">+10</strong>
+                <span>XP EARNED</span>
+            </div>
+
+            <div class="reward">
+                <strong id="rewardCoins">+5</strong>
+                <span>COINS EARNED</span>
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button onclick="closeResult()">CONTINUE</button>
+            <button class="primary" onclick="newCampaign()">NEW CAMPAIGN</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <button class="btn btn-back" onclick="goBack()">
+            ← BACK
+        </button>
+
+        <div class="logo">
+            🌍 CIVILIZATION
+        </div>
+
+        <div class="controls">
+
+            <div class="timer-box" id="timer">
+                30
+            </div>
+
+            <button class="btn btn-pause"
+                    id="pauseBtn"
+                    onclick="togglePause()">
+                PAUSE
+            </button>
+
+            <button class="btn btn-guide"
+                    onclick="playGuide()"
+                    aria-label="AI Guide">
+                🔊 AI GUIDE
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- INTRO -->
+    <div class="intro" id="introPage">
+
+        <div class="dashboard-preview">
+
+            <div class="preview-title">
+                CIVILIZATION
+            </div>
+
+            <div class="preview-subtitle">
+                Every decision has consequences.
+            </div>
+
+            <div class="preview-stats">
+
+                <div class="stat-box">
+                    <div class="stat-label">POPULATION</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">FOOD</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">ENERGY</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">MONEY</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">KNOWLEDGE</div>
+                    <div class="stat-value">0</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">HAPPINESS</div>
+                    <div class="stat-value">100%</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="rules-card">
+
+            <h3>🏛️ HOW TO RULE</h3>
+
+            <p>
+                1. Begin with Population, Food, Energy, Money and Happiness at 100.
+            </p>
+
+            <p>
+                2. Each turn choose ONE civilization action.
+            </p>
+
+            <p>
+                3. Decisions can create delayed consequences several turns later.
+            </p>
+
+            <p>
+                4. Balance your resources or your civilization can collapse.
+            </p>
+
+            <p>
+                5. Droughts, crashes, diseases and breakthroughs may appear.
+            </p>
+
+            <p>
+                6. Survive 50 turns to achieve victory.
+            </p>
+
+            <p>
+                7. Victory gives your Code Academy account <b>+10 XP +5 Coins</b>.
+            </p>
+
+            <p>
+                8. Your campaign and rewards are synchronized with your account.
+            </p>
+
+        </div>
+
+        <div class="account-box">
+            ACCOUNT:
+            <span class="account-name" id="introAccount">
+                Connecting...
+            </span>
+        </div>
+
+        <button class="start-btn" onclick="startGame()">
+            ▶ BEGIN CIVILIZATION
+        </button>
+
+    </div>
+
+    <!-- GAME -->
+    <div class="game" id="gamePage">
+
+        <div class="turn-info card">
+
+            <div class="turn-title" id="turnTitle">
+                Turn 1
+            </div>
+
+            <div class="ruler-name" id="rulerNameDisplay">
+                Ruler: Leader
+            </div>
+
+            <div class="sync-status" id="syncStatus">
+                ● ACCOUNT SYNCED
+            </div>
+
+        </div>
+
+        <div class="alert-box" id="alertBox">
+            <div class="alert-text" id="alertText">
+                ⚠ No alerts
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="actions-title">
+            AVAILABLE DECISIONS
+        </div>
+
+        <div class="actions-grid" id="actionsGrid"></div>
+
+        <div class="bottom-area">
+
+            <div class="event-log card" id="eventLog">
+                <div class="log-entry info">
+                    Civilization founded. Awaiting first decision...
+                </div>
+            </div>
+
+            <div class="game-controls">
+
+                <button class="small-btn"
+                        onclick="restartCurrentTurn()">
+                    ↻ RESTART TURN
+                </button>
+
+                <button class="small-btn"
+                        onclick="confirmNewCampaign()">
+                    ⚠ NEW CAMPAIGN
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE / CODE ACADEMY ACCOUNT
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged,
+    getUserProfile
+} from "./authentication.js";
+
+import {
+    doc,
+    runTransaction,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================================
+   REWARD RULE
+========================================================= */
+
+const XP_PER_VICTORY = 10;
+const COINS_PER_VICTORY = XP_PER_VICTORY / 2;
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let currentUser = null;
+
+let rulerName = "Leader";
+
+let turn = 1;
+
+let timer = null;
+
+let timeLeft = 30;
+
+let isPaused = false;
+
+let gameRunning = false;
+
+let gameEnded = false;
+
+let processingAction = false;
+
+let usingExternalJS = false;
+
+let pendingEvents = [];
+
+let campaignLoaded = false;
+
+let campaignVictoryRewarded = false;
+
+
+/* =========================================================
+   RESOURCES
+========================================================= */
+
+const INITIAL_RESOURCES = {
+    population:100,
+    food:100,
+    energy:100,
+    knowledge:0,
+    money:100,
+    happiness:100,
+    pollution:0,
+    health:100
+};
+
+let resources = cloneResources(INITIAL_RESOURCES);
+
+let lastChange = {
+    population:0,
+    food:0,
+    energy:0,
+    knowledge:0,
+    money:0,
+    happiness:0,
+    pollution:0,
+    health:0
+};
+
+
+/* =========================================================
+   SNAPSHOT FOR RESTART TURN
+========================================================= */
+
+let turnSnapshot = null;
+
+
+function cloneResources(obj){
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+/* =========================================================
+   BUILT-IN ACTIONS
+========================================================= */
+
+const baseActions = [
+
+    {
+        id:'farm',
+        name:'Build Farm',
+        desc:'Increase food production.',
+        cost:'Money -20',
+
+        canExecute:() => resources.money >= 20,
+
+        effect:() => {
+
+            resources.money -= 20;
+            resources.food += 30;
+
+            pendingEvents.push({
+                turn:turn + 3,
+                effect:() => {
+
+                    resources.population += 20;
+
+                    logEvent(
+                        'Population grew from food surplus.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'school',
+        name:'Build School',
+        desc:'Increase knowledge.',
+        cost:'Money -15',
+
+        canExecute:() => resources.money >= 15,
+
+        effect:() => {
+
+            resources.money -= 15;
+            resources.knowledge += 10;
+
+            pendingEvents.push({
+                turn:turn + 5,
+                effect:() => {
+
+                    resources.food += 15;
+
+                    logEvent(
+                        'Knowledge improved farm efficiency.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'powerplant',
+        name:'Build Power Plant',
+        desc:'Generate energy but increase pollution.',
+        cost:'Money -25',
+
+        canExecute:() => resources.money >= 25,
+
+        effect:() => {
+
+            resources.money -= 25;
+            resources.energy += 40;
+            resources.pollution += 5;
+
+            pendingEvents.push({
+                turn:turn + 7,
+                effect:() => {
+
+                    resources.health -= 10;
+
+                    logEvent(
+                        'Pollution reduced population health.',
+                        'warning'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'hospital',
+        name:'Build Hospital',
+        desc:'Improve population health.',
+        cost:'Money -30',
+
+        canExecute:() => resources.money >= 30,
+
+        effect:() => {
+
+            resources.money -= 30;
+            resources.health += 20;
+
+            pendingEvents.push({
+                turn:turn + 4,
+                effect:() => {
+
+                    resources.population += 15;
+
+                    logEvent(
+                        'Better health increased population.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'factory',
+        name:'Build Factory',
+        desc:'Generate money at pollution cost.',
+        cost:'Energy -10',
+
+        canExecute:() => resources.energy >= 10,
+
+        effect:() => {
+
+            resources.energy -= 10;
+            resources.money += 20;
+            resources.pollution += 10;
+
+            pendingEvents.push({
+                turn:turn + 10,
+                effect:() => {
+
+                    resources.health -= 25;
+                    resources.population -= 15;
+
+                    logEvent(
+                        'Industrial pollution caused a crisis.',
+                        'warning'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'research',
+        name:'Research Technology',
+        desc:'Advance scientific knowledge.',
+        cost:'Money -10',
+
+        canExecute:() => resources.money >= 10,
+
+        effect:() => {
+
+            resources.money -= 10;
+            resources.knowledge += 15;
+
+            if(Math.random() > .7){
+
+                pendingEvents.push({
+                    turn:turn + 3,
+                    effect:() => {
+
+                        resources.knowledge += 30;
+
+                        logEvent(
+                            'Scientific breakthrough!',
+                            'success'
+                        );
+                    }
+                });
+
+            }
+        }
+    },
+
+    {
+        id:'tax_up',
+        name:'Increase Taxes',
+        desc:'Gain money now but reduce happiness.',
+        cost:'Happiness -15',
+
+        canExecute:() => resources.happiness >= 15,
+
+        effect:() => {
+
+            resources.happiness -= 15;
+            resources.money += 25;
+
+            pendingEvents.push({
+                turn:turn + 6,
+                effect:() => {
+
+                    resources.population -= 20;
+
+                    logEvent(
+                        'High taxes caused emigration.',
+                        'warning'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'tax_down',
+        name:'Reduce Taxes',
+        desc:'Increase happiness using money.',
+        cost:'Money -10',
+
+        canExecute:() => resources.money >= 10,
+
+        effect:() => {
+
+            resources.money -= 10;
+            resources.happiness += 15;
+
+            pendingEvents.push({
+                turn:turn + 5,
+                effect:() => {
+
+                    resources.population += 25;
+
+                    logEvent(
+                        'Low taxes attracted immigrants.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'park',
+        name:'Build Park',
+        desc:'Increase happiness and future health.',
+        cost:'Money -15',
+
+        canExecute:() => resources.money >= 15,
+
+        effect:() => {
+
+            resources.money -= 15;
+            resources.happiness += 20;
+
+            pendingEvents.push({
+                turn:turn + 4,
+                effect:() => {
+
+                    resources.health += 10;
+
+                    logEvent(
+                        'Parks improved citizen health.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'trade',
+        name:'Trade Center',
+        desc:'Boost the economy using energy.',
+        cost:'Energy -15',
+
+        canExecute:() => resources.energy >= 15,
+
+        effect:() => {
+
+            resources.energy -= 15;
+            resources.money += 35;
+
+            if(Math.random() > .6){
+
+                pendingEvents.push({
+                    turn:turn + 12,
+                    effect:() => {
+
+                        resources.money -= 50;
+
+                        logEvent(
+                            'Economic crash hit the trade center.',
+                            'warning'
+                        );
+                    }
+                });
+            }
+        }
+    },
+
+    {
+        id:'water',
+        name:'Build Reservoir',
+        desc:'Secure food and drought protection.',
+        cost:'Money -20',
+
+        canExecute:() => resources.money >= 20,
+
+        effect:() => {
+
+            resources.money -= 20;
+            resources.food += 10;
+
+            pendingEvents.push({
+                turn:turn + 8,
+                effect:() => {
+
+                    logEvent(
+                        'Reservoir prevented a drought disaster.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'entertainment',
+        name:'Entertainment Complex',
+        desc:'Boost happiness at energy cost.',
+        cost:'Money -18, Energy -5',
+
+        canExecute:() =>
+            resources.money >= 18 &&
+            resources.energy >= 5,
+
+        effect:() => {
+
+            resources.money -= 18;
+            resources.happiness += 25;
+            resources.energy -= 5;
+        }
+    },
+
+    {
+        id:'defense',
+        name:'Defense System',
+        desc:'Prepare the civilization for danger.',
+        cost:'Money -22',
+
+        canExecute:() => resources.money >= 22,
+
+        effect:() => {
+
+            resources.money -= 22;
+
+            pendingEvents.push({
+                turn:turn + 15,
+                effect:() => {
+
+                    logEvent(
+                        'Defense system prevented an attack.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'university',
+        name:'Build University',
+        desc:'Advanced research and technology.',
+        cost:'Money -35, Knowledge 20+',
+
+        canExecute:() =>
+            resources.money >= 35 &&
+            resources.knowledge >= 20,
+
+        effect:() => {
+
+            resources.money -= 35;
+            resources.knowledge += 25;
+
+            pendingEvents.push({
+                turn:turn + 10,
+                effect:() => {
+
+                    resources.knowledge += 50;
+                    resources.energy += 30;
+
+                    logEvent(
+                        'University breakthrough revolutionized civilization.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'bank',
+        name:'Build Bank',
+        desc:'Store wealth for future interest.',
+        cost:'Money -25',
+
+        canExecute:() => resources.money >= 25,
+
+        effect:() => {
+
+            resources.money -= 25;
+
+            pendingEvents.push({
+                turn:turn + 7,
+                effect:() => {
+
+                    resources.money += 40;
+
+                    logEvent(
+                        'Bank generated interest income.',
+                        'success'
+                    );
+                }
+            });
+        }
+    }
+
+];
+
+
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
+
+onAuthStateChanged(auth, async user => {
+
+    if(!user){
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    try{
+
+        const profile = await getUserProfile(user.uid);
+
+        const name =
+            profile?.displayName ||
+            user.displayName ||
+            user.email?.split('@')[0] ||
+            'Leader';
+
+        rulerName = name;
+
+        document.getElementById('introAccount').textContent =
+            name;
+
+        document.getElementById('rulerNameDisplay').textContent =
+            `Ruler: ${name}`;
+
+        await loadCampaign();
+
+    }catch(error){
+
+        console.error(error);
+
+        rulerName =
+            user.displayName ||
+            user.email?.split('@')[0] ||
+            'Leader';
+
+        document.getElementById('introAccount').textContent =
+            rulerName;
+    }
+
+    document.getElementById('loading').style.display = 'none';
+
+});
+
+
+/* =========================================================
+   LOAD SAVED CAMPAIGN
+========================================================= */
+
+async function loadCampaign(){
+
+    if(!currentUser) return;
+
+    try{
+
+        const profile = await getUserProfile(currentUser.uid);
+
+        const saved = profile?.civilizationGame;
+
+        if(saved){
+
+            turn =
+                Number(saved.turn || 1);
+
+            if(saved.resources){
+
+                resources = {
+                    ...cloneResources(INITIAL_RESOURCES),
+                    ...saved.resources
+                };
+            }
+
+            if(Array.isArray(saved.pendingEvents)){
+
+                /*
+                 * Functions cannot be stored in Firestore.
+                 * Delayed events therefore intentionally restart
+                 * as an empty queue when the page is reopened.
+                 */
+                pendingEvents = [];
+            }
+
+        }else{
+
+            turn = 1;
+            resources = cloneResources(INITIAL_RESOURCES);
+            pendingEvents = [];
+
+        }
+
+        campaignLoaded = true;
+
+    }catch(error){
+
+        console.error(
+            'Could not load civilization campaign:',
+            error
+        );
+
+        campaignLoaded = true;
+    }
+
+}
+
+
+/* =========================================================
+   SAVE CAMPAIGN
+========================================================= */
+
+async function saveCampaign(){
+
+    if(!currentUser) return;
+
+    try{
+
+        const userRef =
+            doc(db,'users',currentUser.uid);
+
+        await runTransaction(
+            db,
+            async transaction => {
+
+                const snap =
+                    await transaction.get(userRef);
+
+                if(!snap.exists()) return;
+
+                transaction.update(
+                    userRef,
+                    {
+                        civilizationGame:{
+                            turn:turn,
+                            resources:{
+                                ...resources
+                            },
+                            updatedAt:serverTimestamp()
+                        }
+                    }
+                );
+
+            }
+        );
+
+        document.getElementById('syncStatus').textContent =
+            '● ACCOUNT SYNCED';
+
+    }catch(error){
+
+        console.error(
+            'Campaign save failed:',
+            error
+        );
+
+        document.getElementById('syncStatus').textContent =
+            '● OFFLINE / SAVE RETRY';
+
+    }
+
+}
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+window.startGame = async function(){
+
+    if(!currentUser){
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    if(!campaignLoaded){
+
+        await loadCampaign();
+    }
+
+    gameEnded = false;
+    gameRunning = true;
+    processingAction = false;
+    isPaused = false;
+
+    document.getElementById('introPage')
+        .style.display = 'none';
+
+    document.getElementById('gamePage')
+        .classList.add('active');
+
+    document.getElementById('rulerNameDisplay')
+        .textContent =
+        `Ruler: ${rulerName}`;
+
+    document.getElementById('pauseBtn')
+        .textContent = 'PAUSE';
+
+    showMsg(
+        turn === 1
+            ? 'Civilization founded. Rule wisely.'
+            : `Campaign resumed at Turn ${turn}.`
+    );
+
+    takeTurnSnapshot();
+
+    updateDisplay();
+
+    startTimer();
+
+};
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+    clearInterval(timer);
+
+    if(!gameRunning || gameEnded || isPaused){
+        return;
+    }
+
+    timeLeft = 30;
+
+    updateTimer();
+
+    timer = setInterval(
+        updateTimer,
+        1000
+    );
+}
+
+
+function updateTimer(){
+
+    const timerElement =
+        document.getElementById('timer');
+
+    timerElement.textContent =
+        String(Math.max(0,timeLeft))
+            .padStart(2,'0');
+
+    if(timeLeft <= 10){
+
+        timerElement.classList.add('danger');
+
+    }else{
+
+        timerElement.classList.remove('danger');
+
+    }
+
+    if(isPaused){
+
+        timerElement.classList.add('paused');
+
+    }else{
+
+        timerElement.classList.remove('paused');
+
+    }
+
+    if(timeLeft <= 0){
+
+        clearInterval(timer);
+
+        showMsg(
+            'Time expired. Turn skipped.'
+        );
+
+        nextTurn();
+
+        return;
+    }
+
+    timeLeft--;
+
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+window.togglePause = function(){
+
+    if(!gameRunning || gameEnded){
+        return;
+    }
+
+    isPaused = !isPaused;
+
+    const button =
+        document.getElementById('pauseBtn');
+
+    if(isPaused){
+
+        clearInterval(timer);
+
+        button.textContent = 'RESUME';
+
+        document.getElementById('timer')
+            .classList.add('paused');
+
+        showMsg('Civilization paused.');
+
+    }else{
+
+        button.textContent = 'PAUSE';
+
+        document.getElementById('timer')
+            .classList.remove('paused');
+
+        startTimer();
+
+        showMsg('Civilization resumed.');
+
+    }
+
+};
+
+
+/* =========================================================
+   TURN SNAPSHOT
+========================================================= */
+
+function takeTurnSnapshot(){
+
+    turnSnapshot = {
+
+        turn:turn,
+
+        resources:
+            cloneResources(resources),
+
+        pendingEvents:
+            [...pendingEvents]
+
+    };
+
+}
+
+
+/* =========================================================
+   RESTART CURRENT TURN
+========================================================= */
+
+window.restartCurrentTurn = function(){
+
+    if(!gameRunning || !turnSnapshot){
+        return;
+    }
+
+    if(!confirm(
+        'Restart this turn? Your current turn decision will be lost.'
+    )){
+        return;
+    }
+
+    clearInterval(timer);
+
+    turn = turnSnapshot.turn;
+
+    resources =
+        cloneResources(turnSnapshot.resources);
+
+    pendingEvents =
+        [...turnSnapshot.pendingEvents];
+
+    processingAction = false;
+    gameEnded = false;
+
+    Object.keys(lastChange)
+        .forEach(key => {
+            lastChange[key] = 0;
+        });
+
+    updateDisplay();
+    startTimer();
+
+    logEvent(
+        'Current turn restarted.',
+        'info'
+    );
+
+};
+
+
+/* =========================================================
+   DISPLAY
+========================================================= */
+
+function updateDisplay(){
+
+    document.getElementById('turnTitle')
+        .textContent =
+        `Turn ${turn}`;
+
+    renderStats();
+    renderActions();
+    checkAlerts();
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function renderStats(){
+
+    const grid =
+        document.getElementById('statsGrid');
+
+    grid.innerHTML = '';
+
+    const statKeys = [
+        'population',
+        'food',
+        'energy',
+        'money',
+        'knowledge',
+        'happiness',
+        'health',
+        'pollution'
+    ];
+
+    statKeys.forEach(key => {
+
+        const card =
+            document.createElement('div');
+
+        card.className = 'stat-card';
+
+        if(
+            resources[key] < 20 &&
+            key !== 'knowledge' &&
+            key !== 'pollution'
+        ){
+
+            card.classList.add('critical');
+        }
+
+        const change =
+            Math.round(lastChange[key] || 0);
+
+        const changeClass =
+            change > 0
+                ? 'pos'
+                : change < 0
+                    ? 'neg'
+                    : '';
+
+        const changeText =
+            change > 0
+                ? `+${change}`
+                : change < 0
+                    ? `${change}`
+                    : '';
+
+        card.innerHTML = `
+
+            <div class="stat-card-label">
+                ${key.toUpperCase()}
+            </div>
+
+            <div class="stat-card-value">
+                ${Math.max(0,Math.floor(resources[key]))}
+            </div>
+
+            <div class="stat-card-change ${changeClass}">
+                ${changeText}
+            </div>
+        `;
+
+        grid.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+function renderActions(){
+
+    const grid =
+        document.getElementById('actionsGrid');
+
+    grid.innerHTML = '';
+
+    baseActions.forEach(action => {
+
+        const button =
+            document.createElement('button');
+
+        button.className = 'action-btn';
+
+        const affordable =
+            action.canExecute();
+
+        button.disabled =
+            !affordable ||
+            processingAction ||
+            isPaused ||
+            gameEnded;
+
+        button.innerHTML = `
+
+            <div class="action-name">
+                ${action.name}
+            </div>
+
+            <div class="action-desc">
+                ${action.desc}
+            </div>
+
+            <div class="action-cost">
+                ${affordable
+                    ? action.cost
+                    : 'INSUFFICIENT RESOURCES'}
+            </div>
+
+        `;
+
+        button.onclick =
+            () => executeAction(action);
+
+        grid.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================================================
+   EXECUTE ACTION
+========================================================= */
+
+async function executeAction(action){
+
+    if(
+        processingAction ||
+        !gameRunning ||
+        gameEnded ||
+        isPaused
+    ){
+
+        return;
+    }
+
+    if(!action.canExecute()){
+
+        showMsg(
+            'Insufficient resources for this action.'
+        );
+
+        return;
+    }
+
+    processingAction = true;
+
+    clearInterval(timer);
+
+    Object.keys(lastChange)
+        .forEach(k => {
+            lastChange[k] = 0;
+        });
+
+    const before =
+        cloneResources(resources);
+
+    try{
+
+        action.effect();
+
+    }catch(error){
+
+        console.error(error);
+
+        resources =
+            cloneResources(before);
+
+        processingAction = false;
+
+        showMsg(
+            'Action failed. Nothing was changed.'
+        );
+
+        startTimer();
+
+        return;
+    }
+
+    Object.keys(resources)
+        .forEach(k => {
+
+            lastChange[k] =
+                resources[k] - before[k];
+
+        });
+
+    logEvent(
+        `Decision: ${action.name}`,
+        'success'
+    );
+
+    await nextTurn();
+
+}
+
+
+/* =========================================================
+   NEXT TURN
+========================================================= */
+
+async function nextTurn(){
+
+    if(gameEnded) return;
+
+    turn++;
+
+    processPendingEvents();
+
+    applyNaturalConsumption();
+
+    applyResourceEffects();
+
+    if(Math.random() < .15){
+
+        triggerRandomEvent();
+    }
+
+    clampResources();
+
+    updateDisplay();
+
+    if(resources.population <= 0){
+
+        endGame(false);
+
+        return;
+    }
+
+    if(
+        resources.health <= 0 ||
+        resources.happiness <= 0
+    ){
+
+        endGame(false);
+
+        return;
+    }
+
+    if(turn >= 50){
+
+        endGame(true);
+
+        return;
+    }
+
+    takeTurnSnapshot();
+
+    processingAction = false;
+
+    await saveCampaign();
+
+    updateDisplay();
+
+    startTimer();
+
+}
+
+
+/* =========================================================
+   PENDING EVENTS
+========================================================= */
+
+function processPendingEvents(){
+
+    pendingEvents =
+        pendingEvents.filter(event => {
+
+            if(event.turn <= turn){
+
+                const before =
+                    cloneResources(resources);
+
+                try{
+
+                    event.effect();
+
+                }catch(error){
+
+                    console.error(
+                        'Delayed event failed:',
+                        error
+                    );
+
+                }
+
+                Object.keys(resources)
+                    .forEach(key => {
+
+                        lastChange[key] +=
+                            resources[key] -
+                            before[key];
+
+                    });
+
+                return false;
+            }
+
+            return true;
+
+        });
+
+}
+
+
+/* =========================================================
+   NATURAL CONSUMPTION
+========================================================= */
+
+function applyNaturalConsumption(){
+
+    const foodUse =
+        Math.floor(resources.population * .1);
+
+    const energyUse =
+        Math.floor(resources.population * .05);
+
+    resources.food -= foodUse;
+    resources.energy -= energyUse;
+
+    lastChange.food -= foodUse;
+    lastChange.energy -= energyUse;
+
+}
+
+
+/* =========================================================
+   RESOURCE EFFECTS
+========================================================= */
+
+function applyResourceEffects(){
+
+    if(
+        resources.food <
+        resources.population * .5
+    ){
+
+        resources.happiness -= 10;
+        lastChange.happiness -= 10;
+
+        logEvent(
+            'Food shortage reduced happiness.',
+            'warning'
+        );
+    }
+
+    if(
+        resources.energy <
+        resources.population * .3
+    ){
+
+        resources.happiness -= 8;
+        lastChange.happiness -= 8;
+
+        logEvent(
+            'Energy shortage caused unrest.',
+            'warning'
+        );
+    }
+
+    if(resources.pollution > 50){
+
+        const damage =
+            Math.floor(resources.pollution * .1);
+
+        resources.health -= damage;
+
+        lastChange.health -= damage;
+
+        logEvent(
+            `Pollution damaged health by ${damage}.`,
+            'warning'
+        );
+    }
+
+    if(resources.health < 50){
+
+        const populationLoss =
+            Math.floor(
+                (50 - resources.health) * .5
+            );
+
+        resources.population -= populationLoss;
+
+        lastChange.population -=
+            populationLoss;
+    }
+
+}
+
+
+/* =========================================================
+   RANDOM EVENTS
+========================================================= */
+
+function triggerRandomEvent(){
+
+    const events = [
+
+        {
+            name:'Drought',
+
+            effect:() => {
+
+                resources.food -= 30;
+                lastChange.food -= 30;
+
+                logEvent(
+                    'DROUGHT: Food -30.',
+                    'warning'
+                );
+            }
+        },
+
+        {
+            name:'Economic Crash',
+
+            effect:() => {
+
+                resources.money -= 20;
+                lastChange.money -= 20;
+
+                logEvent(
+                    'CRASH: Money -20.',
+                    'warning'
+                );
+            }
+        },
+
+        {
+            name:'Disease Outbreak',
+
+            effect:() => {
+
+                resources.population -= 10;
+                resources.health -= 15;
+
+                lastChange.population -= 10;
+                lastChange.health -= 15;
+
+                logEvent(
+                    'DISEASE: Population and health reduced.',
+                    'warning'
+                );
+            }
+        },
+
+        {
+            name:'Scientific Breakthrough',
+
+            effect:() => {
+
+                resources.knowledge += 50;
+
+                lastChange.knowledge += 50;
+
+                logEvent(
+                    'BREAKTHROUGH: Knowledge +50.',
+                    'success'
+                );
+            }
+        }
+
+    ];
+
+    const event =
+        events[
+            Math.floor(
+                Math.random() * events.length
+            )
+        ];
+
+    event.effect();
+
+}
+
+
+/* =========================================================
+   RESOURCE CLAMP
+========================================================= */
+
+function clampResources(){
+
+    Object.keys(resources)
+        .forEach(key => {
+
+            resources[key] =
+                Math.max(
+                    0,
+                    Math.floor(resources[key])
+                );
+
+        });
+
+    resources.happiness =
+        Math.min(100,resources.happiness);
+
+    resources.health =
+        Math.min(100,resources.health);
+
+}
+
+
+/* =========================================================
+   ALERT SYSTEM
+========================================================= */
+
+function checkAlerts(){
+
+    const box =
+        document.getElementById('alertBox');
+
+    const text =
+        document.getElementById('alertText');
+
+    if(
+        resources.food <
+        resources.population * .3
+    ){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ CRITICAL: Food reserves are dangerously low.';
+
+        return;
+    }
+
+    if(
+        resources.energy <
+        resources.population * .2
+    ){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ CRITICAL: Energy reserves are dangerously low.';
+
+        return;
+    }
+
+    if(resources.pollution > 60){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ WARNING: Pollution is creating a health crisis.';
+
+        return;
+    }
+
+    if(resources.health < 50){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ WARNING: Population health is deteriorating.';
+
+        return;
+    }
+
+    box.classList.remove('show');
+
+}
+
+
+/* =========================================================
+   EVENT LOG
+========================================================= */
+
+function logEvent(text,type='info'){
+
+    const log =
+        document.getElementById('eventLog');
+
+    const entry =
+        document.createElement('div');
+
+    entry.className =
+        `log-entry ${type}`;
+
+    entry.textContent =
+        `Turn ${turn}: ${text}`;
+
+    log.insertBefore(
+        entry,
+        log.firstChild
+    );
+
+    while(log.children.length > 10){
+
+        log.removeChild(
+            log.lastChild
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   VICTORY / DEFEAT
+========================================================= */
+
+async function endGame(victory){
+
+    if(gameEnded){
+        return;
+    }
+
+    gameEnded = true;
+    gameRunning = false;
+
+    clearInterval(timer);
+
+    processingAction = false;
+
+    if(victory){
+
+        document.getElementById('resultIcon')
+            .textContent = '🏆';
+
+        document.getElementById('resultTitle')
+            .textContent =
+            'CIVILIZATION VICTORIOUS';
+
+        document.getElementById('resultText')
+            .textContent =
+            `Congratulations ${rulerName}. ` +
+            `Your civilization survived 50 turns. ` +
+            `Your Code Academy account has been credited ` +
+            `with the victory reward.`;
+
+        await rewardVictory();
+
+    }else{
+
+        document.getElementById('resultIcon')
+            .textContent = '💀';
+
+        document.getElementById('resultTitle')
+            .textContent =
+            'CIVILIZATION COLLAPSED';
+
+        document.getElementById('resultText')
+            .textContent =
+            `Your civilization could not survive. ` +
+            `You can begin a new campaign and try a different strategy.`;
+
+        document.getElementById('rewardBox')
+            .style.display = 'none';
+
+        speak(
+            'Civilization has fallen. Your rule ends here.'
+        );
+
+    }
+
+    document.getElementById('resultOverlay')
+        .classList.add('show');
+
+}
+
+
+/* =========================================================
+   FIREBASE VICTORY REWARD
+========================================================= */
+
+async function rewardVictory(){
+
+    if(!currentUser){
+
+        showMsg(
+            'Victory achieved, but account was unavailable.'
+        );
+
+        return;
+    }
+
+    const userRef =
+        doc(db,'users',currentUser.uid);
+
+    try{
+
+        const result =
+            await runTransaction(
+                db,
+                async transaction => {
+
+                    const snap =
+                        await transaction.get(userRef);
+
+                    if(!snap.exists()){
+
+                        throw new Error(
+                            'User profile does not exist.'
+                        );
+                    }
+
+                    const data =
+                        snap.data();
+
+                    const civilization =
+                        data.civilizationGame || {};
+
+                    const alreadyRewarded =
+                        civilization.lastVictoryReward === true;
+
+                    const currentXP =
+                        Number(data.xp || 0);
+
+                    const currentCoins =
+                        Number(data.coins || 0);
+
+                    if(alreadyRewarded){
+
+                        return {
+                            already:true,
+                            xp:currentXP,
+                            coins:currentCoins
+                        };
+                    }
+
+                    transaction.update(
+                        userRef,
+                        {
+
+                            xp:
+                                currentXP +
+                                XP_PER_VICTORY,
+
+                            coins:
+                                currentCoins +
+                                COINS_PER_VICTORY,
+
+                            'civilizationGame.lastVictoryReward':
+                                true,
+
+                            'civilizationGame.victoryCount':
+                                Number(
+                                    civilization.victoryCount || 0
+                                ) + 1,
+
+                            'civilizationGame.completed':
+                                true,
+
+                            'civilizationGame.updatedAt':
+                                serverTimestamp()
+
+                        }
+                    );
+
+                    return {
+                        already:false,
+                        xp:
+                            currentXP +
+                            XP_PER_VICTORY,
+
+                        coins:
+                            currentCoins +
+                            COINS_PER_VICTORY
+                    };
+
+                }
+            );
+
+        campaignVictoryRewarded =
+            !result.already;
+
+        document.getElementById('rewardBox')
+            .style.display = 'flex';
+
+        document.getElementById('rewardXP')
+            .textContent =
+            result.already
+                ? '✓10'
+                : `+${XP_PER_VICTORY}`;
+
+        document.getElementById('rewardCoins')
+            .textContent =
+            result.already
+                ? '✓5'
+                : `+${COINS_PER_VICTORY}`;
+
+        if(result.already){
+
+            showMsg(
+                'Victory already rewarded. No duplicate XP or Coins.'
+            );
+
+        }else{
+
+            showMsg(
+                `VICTORY REWARD: +${XP_PER_VICTORY} XP +${COINS_PER_VICTORY} Coins`
+            );
+
+            speak(
+                `Victory achieved, ${rulerName}. ` +
+                `You earned ${XP_PER_VICTORY} XP and ` +
+                `${COINS_PER_VICTORY} coins.`
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            'Victory reward error:',
+            error
+        );
+
+        document.getElementById('rewardBox')
+            .style.display = 'flex';
+
+        document.getElementById('rewardXP')
+            .textContent = 'SYNC';
+
+        document.getElementById('rewardCoins')
+            .textContent = 'ERROR';
+
+        showMsg(
+            'Victory saved, but reward synchronization failed. Try again while online.'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RESULT CONTROLS
+========================================================= */
+
+window.closeResult = function(){
+
+    document.getElementById('resultOverlay')
+        .classList.remove('show');
+
+};
+
+
+window.confirmNewCampaign = function(){
+
+    if(confirm(
+        'Start a completely new civilization campaign? Your previous campaign progress will be replaced.'
+    )){
+
+        newCampaign();
+    }
+
+};
+
+
+window.newCampaign = async function(){
+
+    clearInterval(timer);
+
+    gameEnded = false;
+    gameRunning = true;
+    isPaused = false;
+    processingAction = false;
+
+    turn = 1;
+
+    resources =
+        cloneResources(INITIAL_RESOURCES);
+
+    pendingEvents = [];
+
+    campaignVictoryRewarded = false;
+
+    Object.keys(lastChange)
+        .forEach(key => {
+            lastChange[key] = 0;
+        });
+
+    document.getElementById('resultOverlay')
+        .classList.remove('show');
+
+    document.getElementById('resultBox');
+
+    document.getElementById('rewardBox')
+        .style.display = 'flex';
+
+    document.getElementById('pauseBtn')
+        .textContent = 'PAUSE';
+
+    document.getElementById('introPage')
+        .style.display = 'none';
+
+    document.getElementById('gamePage')
+        .classList.add('active');
+
+    takeTurnSnapshot();
+
+    updateDisplay();
+
+    logEvent(
+        'New civilization campaign founded.',
+        'success'
+    );
+
+    await saveCampaign();
+
+    startTimer();
+
+};
+
+
+/* =========================================================
+   BACK
+========================================================= */
+
+window.goBack = function(){
+
+    clearInterval(timer);
+
+    if(
+        gameRunning &&
+        !gameEnded
+    ){
+
+        if(
+            !confirm(
+                'Leave Civilization? Your saved campaign will remain in your account.'
+            )
+        ){
+
+            if(gameRunning){
+                startTimer();
+            }
+
+            return;
+        }
+
+    }
+
+    window.history.back();
+
+};
+
+
+/* =========================================================
+   SPEECH SYSTEM
+========================================================= */
+
+let speechQueue = [];
+let isSpeaking = false;
+
+
+function speak(text){
+
+    if(!('speechSynthesis' in window)){
+        return;
+    }
+
+    speechQueue.push(text);
+
+    if(!isSpeaking){
+        processSpeech();
+    }
+
+}
+
+
+function processSpeech(){
+
+    if(
+        speechQueue.length === 0 ||
+        !('speechSynthesis' in window)
+    ){
+
+        isSpeaking = false;
+        return;
+    }
+
+    isSpeaking = true;
+
+    const text =
+        speechQueue.shift();
+
+    speechSynthesis.cancel();
+
+    const utter =
+        new SpeechSynthesisUtterance(text);
+
+    utter.rate = .86;
+    utter.pitch = .72;
+    utter.volume = 1;
+
+    utter.onend = () => {
+
+        setTimeout(
+            processSpeech,
+            300
+        );
+
+    };
+
+    utter.onerror = () => {
+
+        isSpeaking = false;
+
+        setTimeout(
+            processSpeech,
+            100
+        );
+
+    };
+
+    speechSynthesis.speak(utter);
+
+}
+
+
+/* =========================================================
+   AI GUIDE
+========================================================= */
+
+window.playGuide = function(){
+
+    if(!currentUser){
+        return;
+    }
+
+    let message =
+        `Ruler ${rulerName}. Turn ${turn}. `;
+
+    if(
+        resources.food <
+        resources.population * .5
+    ){
+
+        message +=
+            'Your food reserves are under pressure. ' +
+            'Consider improving food production. ';
+    }
+
+    if(resources.energy < 40){
+
+        message +=
+            'Energy reserves are becoming dangerous. ';
+    }
+
+    if(resources.pollution > 40){
+
+        message +=
+            'Pollution is beginning to threaten health. ';
+    }
+
+    if(resources.money < 20){
+
+        message +=
+            'Your treasury is low. Look for a controlled source of income. ';
+    }
+
+    if(resources.knowledge >= 20){
+
+        message +=
+            'Your knowledge level is sufficient for advanced research. ';
+    }
+
+    if(
+        resources.food >= resources.population * .5 &&
+        resources.energy >= resources.population * .3 &&
+        resources.money >= 20 &&
+        resources.health >= 70
+    ){
+
+        message +=
+            'Your civilization is currently stable. ' +
+            'Think several turns ahead. ';
+    }
+
+    message +=
+        'I will guide your strategy, but I will not reveal hidden future consequences.';
+
+    speak(message);
+
+    showMsg(
+        'AI Guide analyzing your civilization...'
+    );
+
+};
+
+
+/* =========================================================
+   EXTERNAL ADVANCED ENGINE
+========================================================= */
+
+async function loadExternalJS(){
+
+    if(usingExternalJS){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch('civilization.js', {
+                cache:'no-store'
+            });
+
+        if(response.ok){
+
+            usingExternalJS = true;
+
+            logEvent(
+                'Advanced technology layer detected.',
+                'success'
+            );
+
+        }
+
+    }catch(error){
+
+        console.warn(
+            'Optional civilization.js unavailable.'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+let messageTimer = null;
+
+function showMsg(text){
+
+    const msg =
+        document.getElementById('msg');
+
+    msg.textContent = text;
+
+    msg.classList.add('show');
+
+    clearTimeout(messageTimer);
+
+    messageTimer =
+        setTimeout(() => {
+
+            msg.classList.remove('show');
+
+        },3000);
+
+}
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+window.addEventListener(
+    'beforeunload',
+    () => {
+
+        clearInterval(timer);
+
+        if(
+            'speechSynthesis' in window
+        ){
+
+            speechSynthesis.cancel();
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
