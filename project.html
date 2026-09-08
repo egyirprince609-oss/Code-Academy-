@@ -1,0 +1,2659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Projects - Code Academy</title>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
+
+<style>
+
+:root{
+    --bg:#020617;
+    --card:#0f172a;
+    --primary:#38bdf8;
+    --primary-glow:rgba(56,189,248,0.4);
+    --text:#f1f5f9;
+    --text-dim:#94a3b8;
+    --border:rgba(56,189,248,0.15);
+    --success:#22c55e;
+    --danger:#ef4444;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter','Segoe UI',sans-serif;
+}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    padding-bottom:100px;
+}
+
+body::before{
+    content:'';
+    position:fixed;
+    top:-50%;
+    left:-50%;
+    width:200%;
+    height:200%;
+
+    background:
+        radial-gradient(
+            circle at 20% 30%,
+            rgba(56,189,248,0.1) 0%,
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            rgba(168,85,247,0.08) 0%,
+            transparent 50%
+        );
+
+    z-index:-1;
+
+    animation:float 20s ease-in-out infinite;
+}
+
+@keyframes float{
+
+    0%,100%{
+        transform:translate(0,0);
+    }
+
+    50%{
+        transform:translate(40px,40px);
+    }
+
+}
+
+
+/* ============================================================
+   NAVBAR
+============================================================ */
+
+.navbar{
+    position:sticky;
+    top:0;
+
+    width:100%;
+    height:75px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:0 20px;
+
+    background:rgba(15,23,42,0.8);
+
+    backdrop-filter:blur(20px);
+
+    border-bottom:1px solid var(--border);
+
+    z-index:100;
+}
+
+.backBtn{
+    width:44px;
+    height:44px;
+
+    border-radius:14px;
+
+    background:rgba(30,41,59,0.6);
+
+    border:1px solid var(--border);
+
+    color:var(--primary);
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:all 0.3s;
+}
+
+.backBtn:hover{
+    background:var(--primary);
+    color:var(--bg);
+
+    transform:translateX(-4px);
+}
+
+.navBrand h2{
+    font-size:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--primary),
+            #0ea5e9
+        );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+
+    font-weight:800;
+}
+
+.addBtn{
+    width:44px;
+    height:44px;
+
+    border-radius:14px;
+
+    background:var(--primary);
+
+    border:none;
+
+    color:var(--bg);
+
+    font-size:20px;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:all 0.3s;
+
+    box-shadow:
+        0 8px 25px
+        var(--primary-glow);
+}
+
+.addBtn:hover{
+    transform:scale(1.1) rotate(90deg);
+
+    box-shadow:
+        0 12px 35px
+        var(--primary-glow);
+}
+
+
+/* ============================================================
+   CONTAINER
+============================================================ */
+
+.container{
+    max-width:900px;
+
+    margin:30px auto;
+
+    padding:0 20px;
+}
+
+.header{
+    margin-bottom:30px;
+}
+
+.header h1{
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:8px;
+}
+
+.header p{
+    color:var(--text-dim);
+    font-size:14px;
+}
+
+
+/* ============================================================
+   PROJECT GRID
+============================================================ */
+
+.projectsGrid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fill,
+            minmax(280px,1fr)
+        );
+
+    gap:20px;
+}
+
+.projectCard{
+    background:rgba(15,23,42,0.6);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    transition:all 0.4s;
+}
+
+.projectCard:hover{
+    transform:translateY(-10px);
+
+    border-color:var(--primary);
+
+    box-shadow:
+        0 25px 60px
+        var(--primary-glow);
+}
+
+
+/* ============================================================
+   THUMBNAIL
+============================================================ */
+
+.projectThumb{
+    width:100%;
+    height:160px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #1e293b,
+            #0f172a
+        );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:50px;
+
+    color:var(--primary);
+
+    position:relative;
+
+    cursor:pointer;
+
+    overflow:hidden;
+}
+
+.projectThumb img{
+    width:100%;
+    height:100%;
+
+    object-fit:cover;
+
+    transition:transform 0.4s;
+}
+
+.projectCard:hover .projectThumb img{
+    transform:scale(1.05);
+}
+
+.projectThumbOverlay{
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(2,6,23,0.45);
+
+    opacity:0;
+
+    transition:opacity 0.3s;
+
+    color:white;
+
+    font-size:14px;
+    font-weight:700;
+}
+
+.projectCard:hover .projectThumbOverlay{
+    opacity:1;
+}
+
+
+/* ============================================================
+   BODY
+============================================================ */
+
+.projectBody{
+    padding:20px;
+}
+
+.projectTitle{
+    font-size:18px;
+    font-weight:700;
+
+    margin-bottom:8px;
+
+    word-break:break-word;
+}
+
+.projectDesc{
+    font-size:13px;
+
+    color:var(--text-dim);
+
+    line-height:1.6;
+
+    margin-bottom:15px;
+
+    display:-webkit-box;
+
+    -webkit-line-clamp:2;
+
+    -webkit-box-orient:vertical;
+
+    overflow:hidden;
+}
+
+.projectTags{
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:15px;
+}
+
+.tag{
+    font-size:11px;
+
+    padding:4px 10px;
+
+    background:
+        rgba(56,189,248,0.15);
+
+    color:var(--primary);
+
+    border-radius:8px;
+
+    font-weight:600;
+}
+
+.projectFooter{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    padding-top:15px;
+
+    border-top:
+        1px solid var(--border);
+}
+
+.projectDate{
+    font-size:12px;
+
+    color:var(--text-dim);
+
+    white-space:nowrap;
+}
+
+.projectActions{
+    display:flex;
+
+    gap:7px;
+
+    flex-wrap:wrap;
+
+    justify-content:flex-end;
+}
+
+.actionBtn{
+    width:32px;
+    height:32px;
+
+    border-radius:10px;
+
+    background:
+        rgba(30,41,59,0.8);
+
+    border:1px solid var(--border);
+
+    color:var(--text-dim);
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    transition:all 0.2s;
+}
+
+.actionBtn:hover{
+    background:var(--primary);
+    color:var(--bg);
+}
+
+.actionBtn.delete:hover{
+    background:var(--danger);
+    color:white;
+}
+
+
+/* ============================================================
+   EMPTY
+============================================================ */
+
+.emptyState{
+    text-align:center;
+
+    padding:100px 20px;
+
+    grid-column:1/-1;
+}
+
+.emptyState i{
+    font-size:80px;
+
+    color:var(--primary);
+
+    opacity:0.3;
+
+    margin-bottom:20px;
+}
+
+.emptyState h3{
+    font-size:22px;
+
+    margin-bottom:10px;
+}
+
+.emptyState p{
+    color:var(--text-dim);
+}
+
+
+/* ============================================================
+   LOADING
+============================================================ */
+
+.loading{
+    text-align:center;
+
+    padding:100px 20px;
+
+    color:var(--primary);
+
+    font-size:15px;
+}
+
+.loading i{
+    margin-right:8px;
+}
+
+
+/* ============================================================
+   ERROR
+============================================================ */
+
+.errorState{
+    text-align:center;
+
+    padding:80px 20px;
+
+    grid-column:1/-1;
+}
+
+.errorState i{
+    font-size:55px;
+
+    color:var(--danger);
+
+    margin-bottom:18px;
+}
+
+.errorState h3{
+    font-size:20px;
+
+    margin-bottom:10px;
+}
+
+.errorState p{
+    color:var(--text-dim);
+
+    font-size:13px;
+
+    line-height:1.6;
+
+    max-width:500px;
+
+    margin:0 auto 20px;
+}
+
+.retryBtn{
+    border:none;
+
+    background:var(--primary);
+
+    color:var(--bg);
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+
+/* ============================================================
+   MODAL
+============================================================ */
+
+.modal{
+    position:fixed;
+
+    top:0;
+    left:0;
+
+    width:100%;
+    height:100%;
+
+    background:rgba(0,0,0,0.8);
+
+    backdrop-filter:blur(10px);
+
+    display:none;
+
+    align-items:center;
+    justify-content:center;
+
+    z-index:200;
+
+    padding:20px;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modalContent{
+    background:
+        rgba(15,23,42,0.97);
+
+    border:1px solid var(--border);
+
+    border-radius:24px;
+
+    padding:30px;
+
+    width:100%;
+
+    max-width:500px;
+
+    max-height:90vh;
+
+    overflow-y:auto;
+
+    animation:slideUp 0.3s;
+}
+
+@keyframes slideUp{
+
+    from{
+        transform:translateY(30px);
+        opacity:0;
+    }
+
+    to{
+        transform:translateY(0);
+        opacity:1;
+    }
+
+}
+
+.modalHeader{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.modalHeader h3{
+    font-size:22px;
+
+    font-weight:800;
+}
+
+.modalClose{
+    background:none;
+
+    border:none;
+
+    color:var(--text-dim);
+
+    font-size:24px;
+
+    cursor:pointer;
+}
+
+.formGroup{
+    margin-bottom:20px;
+}
+
+.formGroup label{
+    display:block;
+
+    font-size:13px;
+
+    font-weight:600;
+
+    margin-bottom:8px;
+
+    color:var(--text-dim);
+}
+
+.formGroup input,
+.formGroup textarea{
+    width:100%;
+
+    padding:14px;
+
+    background:
+        rgba(30,41,59,0.8);
+
+    border:1px solid var(--border);
+
+    border-radius:12px;
+
+    color:var(--text);
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:all 0.3s;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus{
+    border-color:var(--primary);
+
+    box-shadow:
+        0 0 0 3px
+        var(--primary-glow);
+}
+
+.formGroup textarea{
+    resize:vertical;
+
+    min-height:100px;
+}
+
+.modalActions{
+    display:flex;
+
+    gap:12px;
+
+    margin-top:25px;
+}
+
+.btn{
+    flex:1;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    border:none;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    cursor:pointer;
+
+    transition:all 0.3s;
+}
+
+.btn-primary{
+    background:var(--primary);
+
+    color:var(--bg);
+}
+
+.btn-primary:hover{
+    box-shadow:
+        0 8px 25px
+        var(--primary-glow);
+
+    transform:translateY(-2px);
+}
+
+.btn-secondary{
+    background:
+        rgba(30,41,59,0.8);
+
+    color:var(--text-dim);
+
+    border:1px solid var(--border);
+}
+
+.btn:disabled{
+    opacity:0.5;
+
+    cursor:not-allowed;
+}
+
+
+/* ============================================================
+   TOAST
+============================================================ */
+
+.toast{
+    position:fixed;
+
+    left:50%;
+
+    bottom:25px;
+
+    transform:
+        translate(-50%,20px);
+
+    background:
+        rgba(15,23,42,0.97);
+
+    border:1px solid var(--border);
+
+    color:white;
+
+    padding:14px 18px;
+
+    border-radius:13px;
+
+    font-size:13px;
+
+    z-index:500;
+
+    opacity:0;
+
+    pointer-events:none;
+
+    transition:
+        opacity 0.3s,
+        transform 0.3s;
+
+    max-width:90%;
+
+    text-align:center;
+}
+
+.toast.show{
+    opacity:1;
+
+    transform:
+        translate(-50%,0);
+}
+
+.toast.success{
+    border-color:
+        rgba(34,197,94,0.4);
+}
+
+.toast.error{
+    border-color:
+        rgba(239,68,68,0.4);
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media(max-width:640px){
+
+    .projectsGrid{
+        grid-template-columns:1fr;
+    }
+
+    .container{
+        padding:0 15px;
+    }
+
+    .modalContent{
+        padding:22px;
+    }
+
+    .projectFooter{
+        align-items:flex-start;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+
+<nav class="navbar">
+
+    <button
+        class="backBtn"
+        id="backBtn"
+        type="button"
+        aria-label="Go back"
+    >
+        <i class="fa fa-arrow-left"></i>
+    </button>
+
+
+    <div class="navBrand">
+        <h2>My Projects</h2>
+    </div>
+
+
+    <button
+        class="addBtn"
+        id="addBtn"
+        type="button"
+        aria-label="Add project"
+    >
+        <i class="fa fa-plus"></i>
+    </button>
+
+</nav>
+
+
+<!-- ============================================================
+     MAIN
+============================================================ -->
+
+<div class="container">
+
+    <div class="header">
+
+        <h1>
+            Portfolio Projects
+        </h1>
+
+        <p>
+            Projects you create in the editor appear here automatically.
+        </p>
+
+    </div>
+
+
+    <div
+        id="loading"
+        class="loading"
+    >
+
+        <i class="fa fa-spinner fa-spin"></i>
+
+        Loading projects...
+
+    </div>
+
+
+    <div
+        id="projectsGrid"
+        class="projectsGrid"
+        style="display:none;"
+    ></div>
+
+</div>
+
+
+<!-- ============================================================
+     MODAL
+============================================================ -->
+
+<div
+    class="modal"
+    id="projectModal"
+>
+
+    <div class="modalContent">
+
+        <div class="modalHeader">
+
+            <h3 id="modalTitle">
+                Add Project Details
+            </h3>
+
+            <button
+                class="modalClose"
+                id="modalClose"
+                type="button"
+                aria-label="Close"
+            >
+                <i class="fa fa-times"></i>
+            </button>
+
+        </div>
+
+
+        <form id="projectForm">
+
+            <div class="formGroup">
+
+                <label for="projTitle">
+                    Project Title *
+                </label>
+
+                <input
+                    type="text"
+                    id="projTitle"
+                    placeholder="Portfolio Website"
+                    maxlength="120"
+                    required
+                >
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label for="projDesc">
+                    Description
+                </label>
+
+                <textarea
+                    id="projDesc"
+                    placeholder="What does this project do?"
+                    maxlength="1000"
+                ></textarea>
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label for="projUrl">
+                    Live Demo URL
+                </label>
+
+                <input
+                    type="url"
+                    id="projUrl"
+                    placeholder="https://myproject.netlify.app"
+                >
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label for="projGithub">
+                    GitHub Repo
+                </label>
+
+                <input
+                    type="url"
+                    id="projGithub"
+                    placeholder="https://github.com/username/repo"
+                >
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label for="projTags">
+                    Tech Stack
+                </label>
+
+                <input
+                    type="text"
+                    id="projTags"
+                    placeholder="HTML, CSS, JavaScript"
+                    maxlength="300"
+                >
+
+            </div>
+
+
+            <div class="formGroup">
+
+                <label for="projImage">
+                    Thumbnail Image URL
+                </label>
+
+                <input
+                    type="url"
+                    id="projImage"
+                    placeholder="https://.../screenshot.png"
+                >
+
+            </div>
+
+
+            <div class="modalActions">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    id="cancelBtn"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="saveProjectBtn"
+                >
+                    Save Details
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ============================================================
+     TOAST
+============================================================ -->
+
+<div
+    id="toast"
+    class="toast"
+></div>
+
+
+<script type="module">
+
+/* ============================================================
+   IMPORTANT:
+   USE THE SAME FIREBASE SYSTEM AS THE REST OF CODE ACADEMY.
+
+   DO NOT initialize another Firebase app here.
+============================================================ */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+
+import {
+    collection,
+    addDoc,
+    getDocs,
+    doc,
+    updateDoc,
+    deleteDoc,
+    setDoc,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* ============================================================
+   ELEMENTS
+============================================================ */
+
+const backBtn =
+    document.getElementById("backBtn");
+
+const addBtn =
+    document.getElementById("addBtn");
+
+const modal =
+    document.getElementById("projectModal");
+
+const modalClose =
+    document.getElementById("modalClose");
+
+const cancelBtn =
+    document.getElementById("cancelBtn");
+
+const projectForm =
+    document.getElementById("projectForm");
+
+const projectsGrid =
+    document.getElementById("projectsGrid");
+
+const loading =
+    document.getElementById("loading");
+
+const modalTitle =
+    document.getElementById("modalTitle");
+
+const saveProjectBtn =
+    document.getElementById("saveProjectBtn");
+
+const toast =
+    document.getElementById("toast");
+
+
+/* ============================================================
+   FORM ELEMENTS
+============================================================ */
+
+const projTitle =
+    document.getElementById("projTitle");
+
+const projDesc =
+    document.getElementById("projDesc");
+
+const projUrl =
+    document.getElementById("projUrl");
+
+const projGithub =
+    document.getElementById("projGithub");
+
+const projTags =
+    document.getElementById("projTags");
+
+const projImage =
+    document.getElementById("projImage");
+
+
+/* ============================================================
+   STATE
+============================================================ */
+
+let currentUser = null;
+
+let editingId = null;
+
+let editorProjects = [];
+
+let loadingProjects = false;
+
+
+/* ============================================================
+   TOAST
+============================================================ */
+
+let toastTimer = null;
+
+function showToast(
+    text,
+    type = "success"
+){
+
+    clearTimeout(toastTimer);
+
+    toast.textContent =
+        text;
+
+    toast.className =
+        `toast show ${type}`;
+
+    toastTimer =
+        setTimeout(
+            () => {
+
+                toast.className =
+                    "toast";
+
+            },
+            3500
+        );
+}
+
+
+/* ============================================================
+   ESCAPE HTML
+============================================================ */
+
+function escapeHTML(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+}
+
+
+/* ============================================================
+   SAFE URL
+============================================================ */
+
+function safeURL(value){
+
+    if(!value){
+        return "";
+    }
+
+    try{
+
+        const url =
+            new URL(value);
+
+        if(
+            url.protocol === "http:" ||
+            url.protocol === "https:"
+        ){
+
+            return url.href;
+
+        }
+
+    }catch(error){
+
+        return "";
+
+    }
+
+    return "";
+}
+
+
+/* ============================================================
+   AUTH STATE
+============================================================ */
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        if(!user){
+
+            /*
+               User is not logged in.
+
+               Send them through the normal
+               Code Academy login flow.
+            */
+
+            window.location.replace(
+                "login.html"
+            );
+
+            return;
+        }
+
+
+        currentUser =
+            user;
+
+
+        await loadProjects();
+
+    }
+);
+
+
+/* ============================================================
+   BACK BUTTON
+============================================================ */
+
+backBtn.addEventListener(
+    "click",
+    () => {
+
+        if(
+            window.history.length > 1
+        ){
+
+            window.history.back();
+
+        }else{
+
+            window.location.href =
+                "menu.html";
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   OPEN MODAL
+============================================================ */
+
+function openModal(
+    project = null
+){
+
+    editingId =
+        project
+            ? project.id
+            : null;
+
+
+    modalTitle.textContent =
+        project
+            ? "Edit Project Details"
+            : "Add Project Details";
+
+
+    if(project){
+
+        projTitle.value =
+            project.title ||
+            project.name ||
+            "";
+
+        projDesc.value =
+            project.description ||
+            "";
+
+        projUrl.value =
+            project.url ||
+            "";
+
+        projGithub.value =
+            project.github ||
+            "";
+
+        projTags.value =
+            Array.isArray(project.tags)
+                ? project.tags.join(", ")
+                : "";
+
+        projImage.value =
+            project.image ||
+            "";
+
+    }else{
+
+        projectForm.reset();
+
+    }
+
+
+    modal.classList.add(
+        "active"
+    );
+
+
+    setTimeout(
+        () => {
+
+            projTitle.focus();
+
+        },
+        100
+    );
+
+}
+
+
+/* ============================================================
+   CLOSE MODAL
+============================================================ */
+
+function closeModal(){
+
+    modal.classList.remove(
+        "active"
+    );
+
+    projectForm.reset();
+
+    editingId =
+        null;
+
+    modalTitle.textContent =
+        "Add Project Details";
+
+}
+
+
+/* ============================================================
+   MODAL EVENTS
+============================================================ */
+
+addBtn.addEventListener(
+    "click",
+    () => openModal()
+);
+
+modalClose.addEventListener(
+    "click",
+    closeModal
+);
+
+cancelBtn.addEventListener(
+    "click",
+    closeModal
+);
+
+
+modal.addEventListener(
+    "click",
+    (event) => {
+
+        if(
+            event.target === modal
+        ){
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if(
+            event.key === "Escape" &&
+            modal.classList.contains("active")
+        ){
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   SAVE PROJECT
+============================================================ */
+
+projectForm.addEventListener(
+    "submit",
+    async (event) => {
+
+        event.preventDefault();
+
+
+        if(!currentUser){
+
+            showToast(
+                "You must be logged in.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const title =
+            projTitle.value.trim();
+
+        const description =
+            projDesc.value.trim();
+
+        const url =
+            safeURL(
+                projUrl.value.trim()
+            );
+
+        const github =
+            safeURL(
+                projGithub.value.trim()
+            );
+
+        const image =
+            safeURL(
+                projImage.value.trim()
+            );
+
+        const tags =
+            projTags.value
+                .split(",")
+                .map(
+                    tag =>
+                        tag.trim()
+                )
+                .filter(Boolean)
+                .slice(0,20);
+
+
+        if(!title){
+
+            showToast(
+                "Please enter a project title.",
+                "error"
+            );
+
+            projTitle.focus();
+
+            return;
+        }
+
+
+        saveProjectBtn.disabled =
+            true;
+
+        saveProjectBtn.textContent =
+            "Saving...";
+
+
+        try{
+
+            const projectData = {
+
+                title,
+
+                description,
+
+                url,
+
+                github,
+
+                tags,
+
+                image,
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+            const projectsRef =
+                collection(
+                    db,
+                    "users",
+                    currentUser.uid,
+                    "projects"
+                );
+
+
+            if(editingId){
+
+                await updateDoc(
+                    doc(
+                        db,
+                        "users",
+                        currentUser.uid,
+                        "projects",
+                        editingId
+                    ),
+                    projectData
+                );
+
+
+                showToast(
+                    "Project updated successfully."
+                );
+
+            }else{
+
+                projectData.createdAt =
+                    serverTimestamp();
+
+
+                await addDoc(
+                    projectsRef,
+                    projectData
+                );
+
+
+                showToast(
+                    "Project created successfully."
+                );
+
+            }
+
+
+            closeModal();
+
+            await loadProjects();
+
+        }catch(error){
+
+            console.error(
+                "PROJECT SAVE ERROR:",
+                error
+            );
+
+
+            showToast(
+                "Could not save project: " +
+                (error.message ||
+                "Unknown error"),
+                "error"
+            );
+
+        }finally{
+
+            saveProjectBtn.disabled =
+                false;
+
+            saveProjectBtn.textContent =
+                "Save Details";
+
+        }
+
+    }
+);
+
+
+/* ============================================================
+   LOAD PROJECTS
+============================================================ */
+
+async function loadProjects(){
+
+    if(
+        !currentUser ||
+        loadingProjects
+    ){
+
+        return;
+    }
+
+
+    loadingProjects =
+        true;
+
+
+    loading.style.display =
+        "block";
+
+    projectsGrid.style.display =
+        "none";
+
+
+    try{
+
+        const projectsRef =
+            collection(
+                db,
+                "users",
+                currentUser.uid,
+                "projects"
+            );
+
+
+        /*
+           We intentionally do not use:
+
+           orderBy("updatedAt")
+
+           here.
+
+           Older projects may not have that field,
+           and Firestore indexes / missing timestamps
+           can cause the entire query to fail.
+
+           We sort locally instead.
+        */
+
+        const snapshot =
+            await getDocs(
+                projectsRef
+            );
+
+
+        editorProjects = [];
+
+
+        snapshot.forEach(
+            (docSnap) => {
+
+                editorProjects.push({
+
+                    id:
+                        docSnap.id,
+
+                    ...docSnap.data()
+
+                });
+
+            }
+        );
+
+
+        editorProjects.sort(
+            (a,b) => {
+
+                const aTime =
+                    getTimestampMillis(
+                        a.updatedAt ||
+                        a.createdAt
+                    );
+
+                const bTime =
+                    getTimestampMillis(
+                        b.updatedAt ||
+                        b.createdAt
+                    );
+
+                return bTime - aTime;
+
+            }
+        );
+
+
+        renderProjects();
+
+
+    }catch(error){
+
+        console.error(
+            "PROJECT LOAD ERROR:",
+            error
+        );
+
+
+        projectsGrid.innerHTML = `
+
+            <div class="errorState">
+
+                <i class="fa fa-triangle-exclamation"></i>
+
+                <h3>
+                    Could not load projects
+                </h3>
+
+                <p>
+                    ${escapeHTML(
+                        error.message ||
+                        "Something went wrong while loading your projects."
+                    )}
+                </p>
+
+                <button
+                    class="retryBtn"
+                    id="retryBtn"
+                    type="button"
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        `;
+
+
+        projectsGrid.style.display =
+            "grid";
+
+
+        const retryBtn =
+            document.getElementById(
+                "retryBtn"
+            );
+
+
+        retryBtn?.addEventListener(
+            "click",
+            loadProjects
+        );
+
+    }finally{
+
+        loading.style.display =
+            "none";
+
+        projectsGrid.style.display =
+            "grid";
+
+        loadingProjects =
+            false;
+
+    }
+
+}
+
+
+/* ============================================================
+   TIMESTAMP
+============================================================ */
+
+function getTimestampMillis(
+    timestamp
+){
+
+    if(!timestamp){
+
+        return 0;
+
+    }
+
+
+    if(
+        typeof timestamp.toMillis ===
+        "function"
+    ){
+
+        return timestamp.toMillis();
+
+    }
+
+
+    if(
+        typeof timestamp.toDate ===
+        "function"
+    ){
+
+        return timestamp.toDate()
+            .getTime();
+
+    }
+
+
+    if(
+        timestamp instanceof Date
+    ){
+
+        return timestamp.getTime();
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* ============================================================
+   DATE FORMAT
+============================================================ */
+
+function formatDate(
+    timestamp
+){
+
+    if(!timestamp){
+
+        return "Just now";
+
+    }
+
+
+    let date = null;
+
+
+    try{
+
+        if(
+            typeof timestamp.toDate ===
+            "function"
+        ){
+
+            date =
+                timestamp.toDate();
+
+        }else if(
+            timestamp instanceof Date
+        ){
+
+            date =
+                timestamp;
+
+        }
+
+    }catch(error){
+
+        return "Just now";
+
+    }
+
+
+    if(!date){
+
+        return "Just now";
+
+    }
+
+
+    return date.toLocaleDateString(
+        undefined,
+        {
+            year:"numeric",
+            month:"short",
+            day:"numeric"
+        }
+    );
+
+}
+
+
+/* ============================================================
+   RENDER
+============================================================ */
+
+function renderProjects(){
+
+    projectsGrid.innerHTML =
+        "";
+
+
+    if(
+        editorProjects.length === 0
+    ){
+
+        projectsGrid.innerHTML = `
+
+            <div class="emptyState">
+
+                <i class="fa fa-folder-open"></i>
+
+                <h3>
+                    No projects yet
+                </h3>
+
+                <p>
+                    Create your first project and
+                    it will appear here.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    editorProjects.forEach(
+        (project) => {
+
+            const card =
+                createProjectCard(
+                    project
+                );
+
+            projectsGrid.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
+
+
+/* ============================================================
+   CREATE PROJECT CARD
+============================================================ */
+
+function createProjectCard(
+    project
+){
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "projectCard";
+
+
+    const id =
+        project.id;
+
+
+    const title =
+        project.title ||
+        project.name ||
+        "Untitled Project";
+
+
+    const description =
+        project.description ||
+        generateDescription(
+            project.files
+        );
+
+
+    const tags =
+        Array.isArray(project.tags) &&
+        project.tags.length
+            ? project.tags
+            : detectTags(
+                project.files
+            );
+
+
+    const image =
+        safeURL(
+            project.image
+        );
+
+
+    const liveURL =
+        safeURL(
+            project.url
+        );
+
+
+    const githubURL =
+        safeURL(
+            project.github
+        );
+
+
+    const date =
+        formatDate(
+            project.updatedAt ||
+            project.createdAt
+        );
+
+
+    const tagsHTML =
+        tags
+            .map(
+                tag =>
+                    `<span class="tag">${escapeHTML(tag)}</span>`
+            )
+            .join("");
+
+
+    const thumbnailHTML =
+        image
+
+            ? `
+
+                <img
+                    src="${escapeHTML(image)}"
+                    alt="${escapeHTML(title)}"
+                    loading="lazy"
+                    referrerpolicy="no-referrer"
+                >
+
+                <div class="projectThumbOverlay">
+                    <i class="fa fa-code"></i>
+                    &nbsp;
+                    Open in Editor
+                </div>
+
+            `
+
+            : `
+
+                <i class="fa fa-code"></i>
+
+                <div class="projectThumbOverlay">
+                    <i class="fa fa-code"></i>
+                    &nbsp;
+                    Open in Editor
+                </div>
+
+            `;
+
+
+    card.innerHTML = `
+
+        <div
+            class="projectThumb"
+            data-action="editor"
+        >
+
+            ${thumbnailHTML}
+
+        </div>
+
+
+        <div class="projectBody">
+
+            <h3 class="projectTitle">
+                ${escapeHTML(title)}
+            </h3>
+
+
+            <p class="projectDesc">
+                ${escapeHTML(description)}
+            </p>
+
+
+            <div class="projectTags">
+
+                ${tagsHTML}
+
+            </div>
+
+
+            <div class="projectFooter">
+
+                <span class="projectDate">
+
+                    ${escapeHTML(date)}
+
+                </span>
+
+
+                <div class="projectActions">
+
+
+                    <button
+                        class="actionBtn"
+                        type="button"
+                        data-action="editor"
+                        title="Open in Editor"
+                    >
+                        <i class="fa fa-code"></i>
+                    </button>
+
+
+                    ${
+                        liveURL
+
+                        ? `
+
+                            <button
+                                class="actionBtn"
+                                type="button"
+                                data-action="live"
+                                title="Live Demo"
+                            >
+                                <i class="fa fa-external-link"></i>
+                            </button>
+
+                        `
+
+                        : ""
+                    }
+
+
+                    ${
+                        githubURL
+
+                        ? `
+
+                            <button
+                                class="actionBtn"
+                                type="button"
+                                data-action="github"
+                                title="GitHub"
+                            >
+                                <i class="fa fa-github"></i>
+                            </button>
+
+                        `
+
+                        : ""
+                    }
+
+
+                    <button
+                        class="actionBtn"
+                        type="button"
+                        data-action="edit"
+                        title="Edit Details"
+                    >
+                        <i class="fa fa-edit"></i>
+                    </button>
+
+
+                    <button
+                        class="actionBtn delete"
+                        type="button"
+                        data-action="delete"
+                        title="Delete Project"
+                    >
+                        <i class="fa fa-trash"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    /* ========================================================
+       CARD ACTIONS
+    ======================================================== */
+
+    card.addEventListener(
+        "click",
+        (event) => {
+
+            const actionElement =
+                event.target.closest(
+                    "[data-action]"
+                );
+
+
+            if(!actionElement){
+
+                return;
+
+            }
+
+
+            const action =
+                actionElement.dataset.action;
+
+
+            if(action === "editor"){
+
+                openEditor(id);
+
+            }
+
+
+            if(action === "live"){
+
+                openExternal(
+                    liveURL
+                );
+
+            }
+
+
+            if(action === "github"){
+
+                openExternal(
+                    githubURL
+                );
+
+            }
+
+
+            if(action === "edit"){
+
+                const projectToEdit =
+                    editorProjects.find(
+                        item =>
+                            item.id === id
+                    );
+
+
+                if(projectToEdit){
+
+                    openModal(
+                        projectToEdit
+                    );
+
+                }
+
+            }
+
+
+            if(action === "delete"){
+
+                deleteProject(
+                    id
+                );
+
+            }
+
+        }
+    );
+
+
+    return card;
+
+}
+
+
+/* ============================================================
+   OPEN EDITOR
+============================================================ */
+
+function openEditor(
+    id
+){
+
+    if(!id){
+
+        return;
+
+    }
+
+
+    window.location.href =
+        `code_edit.html?id=${encodeURIComponent(id)}`;
+
+}
+
+
+/* ============================================================
+   OPEN EXTERNAL
+============================================================ */
+
+function openExternal(
+    url
+){
+
+    if(!url){
+
+        return;
+
+    }
+
+
+    window.open(
+        url,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+}
+
+
+/* ============================================================
+   GENERATE DESCRIPTION
+============================================================ */
+
+function generateDescription(
+    files
+){
+
+    if(!files){
+
+        return "Project created in Code Academy Editor";
+
+    }
+
+
+    const fileNames =
+        Object.keys(files);
+
+
+    const fileCount =
+        fileNames.length;
+
+
+    const hasHTML =
+        fileNames.some(
+            file =>
+                file.toLowerCase()
+                    .endsWith(".html")
+        );
+
+
+    const hasCSS =
+        fileNames.some(
+            file =>
+                file.toLowerCase()
+                    .endsWith(".css")
+        );
+
+
+    const hasJS =
+        fileNames.some(
+            file =>
+                file.toLowerCase()
+                    .endsWith(".js")
+        );
+
+
+    const tech = [];
+
+
+    if(hasHTML){
+
+        tech.push("HTML");
+
+    }
+
+
+    if(hasCSS){
+
+        tech.push("CSS");
+
+    }
+
+
+    if(hasJS){
+
+        tech.push("JavaScript");
+
+    }
+
+
+    return `${fileCount} file(s) • Built with ${
+        tech.length
+            ? tech.join(", ")
+            : "Web technologies"
+    }`;
+
+}
+
+
+/* ============================================================
+   DETECT TAGS
+============================================================ */
+
+function detectTags(
+    files
+){
+
+    if(!files){
+
+        return ["Web"];
+
+    }
+
+
+    const fileNames =
+        Object.keys(files);
+
+
+    const tags = [];
+
+
+    if(
+        fileNames.some(
+            file =>
+                file.toLowerCase()
+                    .endsWith(".html")
+        )
+    ){
+
+        tags.push("HTML");
+
+    }
+
+
+    if(
+        fileNames.some(
+            file =>
+                file.toLowerCase()
+                    .endsWith(".css")
+        )
+    ){
+
+        tags.push("CSS");
+
+    }
+
+
+    if(
+        fileNames.some(
+            file =>
+                file.toLowerCase()
+                    .endsWith(".js")
+        )
+    ){
+
+        tags.push("JavaScript");
+
+    }
+
+
+    return tags.length
+        ? tags
+        : ["Web"];
+
+}
+
+
+/* ============================================================
+   EDIT PROJECT
+============================================================ */
+
+function editProject(
+    id
+){
+
+    const project =
+        editorProjects.find(
+            item =>
+                item.id === id
+        );
+
+
+    if(project){
+
+        openModal(
+            project
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   DELETE PROJECT
+============================================================ */
+
+async function deleteProject(
+    id
+){
+
+    if(!currentUser){
+
+        showToast(
+            "You must be logged in.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const project =
+        editorProjects.find(
+            item =>
+                item.id === id
+        );
+
+
+    const title =
+        project?.title ||
+        project?.name ||
+        "this project";
+
+
+    const confirmed =
+        window.confirm(
+            `Delete "${title}"?\n\nThis will permanently delete the project document and its saved project data.`
+        );
+
+
+    if(!confirmed){
+
+        return;
+
+    }
+
+
+    try{
+
+        await deleteDoc(
+            doc(
+                db,
+                "users",
+                currentUser.uid,
+                "projects",
+                id
+            )
+        );
+
+
+        showToast(
+            "Project deleted successfully."
+        );
+
+
+        await loadProjects();
+
+    }catch(error){
+
+        console.error(
+            "PROJECT DELETE ERROR:",
+            error
+        );
+
+
+        showToast(
+            "Could not delete project: " +
+            (error.message ||
+            "Unknown error"),
+            "error"
+        );
+
+    }
+
+}
+
+
+/* ============================================================
+   EXPOSE ONLY IF OTHER OLD CODE NEEDS THEM
+============================================================ */
+
+window.openEditor =
+    openEditor;
+
+window.editProject =
+    editProject;
+
+window.deleteProject =
+    deleteProject;
+
+
+/* ============================================================
+   ONLINE / OFFLINE
+============================================================ */
+
+window.addEventListener(
+    "offline",
+    () => {
+
+        showToast(
+            "Internet connection lost.",
+            "error"
+        );
+
+    }
+);
+
+
+window.addEventListener(
+    "online",
+    () => {
+
+        showToast(
+            "Internet connection restored."
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
