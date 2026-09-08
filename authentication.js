@@ -965,3 +965,436 @@ export {
   increment,
   doc
 };
+
+
+
+
+
+
+/* =========================================================
+   CODE ACADEMY REFERRAL ENGINE
+========================================================= */
+
+const REFERRAL_REWARD_XP = 100;
+const REFERRAL_REWARD_COINS = 10;
+
+const NEW_USER_REWARD_XP = 50;
+const NEW_USER_REWARD_COINS = 5;
+
+
+/* ---------------------------------------------------------
+   CREATE SHORT REFERRAL CODE
+--------------------------------------------------------- */
+
+export function createReferralCode(uid){
+
+    const clean =
+        String(uid)
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .toUpperCase();
+
+    return "CA" + clean.slice(-8);
+}
+
+
+/* ---------------------------------------------------------
+   GET REFERRAL CODE FROM CURRENT URL
+--------------------------------------------------------- */
+
+export function getReferralCodeFromURL(){
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    return (
+        params.get("ref") ||
+        ""
+    ).trim().toUpperCase();
+
+}
+
+
+/* ---------------------------------------------------------
+   REMEMBER REFERRAL CODE
+--------------------------------------------------------- */
+
+export function rememberReferral(){
+
+    const code =
+        getReferralCodeFromURL();
+
+    if(!code){
+
+        return "";
+    }
+
+
+    /*
+       Keep it locally so the referral survives
+       signup/login navigation.
+    */
+
+    localStorage.setItem(
+        "codeAcademyReferral",
+        code
+    );
+
+    return code;
+}
+
+
+/* ---------------------------------------------------------
+   GET SAVED REFERRAL
+--------------------------------------------------------- */
+
+export function getSavedReferral(){
+
+    return (
+        localStorage.getItem(
+            "codeAcademyReferral"
+        ) || ""
+    ).trim().toUpperCase();
+
+}
+
+
+/* ---------------------------------------------------------
+   CLEAR SAVED REFERRAL
+--------------------------------------------------------- */
+
+export function clearSavedReferral(){
+
+    localStorage.removeItem(
+        "codeAcademyReferral"
+    );
+
+}
+
+
+/* ---------------------------------------------------------
+   FIND USER BY REFERRAL CODE
+---------------------------------------------------------
+
+   Because our code is generated from UID,
+   we can derive the UID from the code only if
+   we store a referralCodes collection.
+
+   Recommended structure:
+
+   referralCodes/{CODE}
+
+   {
+      uid: "firebase-user-id"
+   }
+
+--------------------------------------------------------- */
+
+export async function registerReferralCode(
+    user
+){
+
+    if(!user){
+
+        throw new Error(
+            "User is required."
+        );
+
+    }
+
+
+    const code =
+        createReferralCode(
+            user.uid
+        );
+
+
+    await setDoc(
+        doc(
+            db,
+            "referralCodes",
+            code
+        ),
+        {
+            uid: user.uid,
+            createdAt: serverTimestamp()
+        },
+        {
+            merge: true
+        }
+    );
+
+
+    return code;
+}
+
+
+/* ---------------------------------------------------------
+   PROCESS REFERRAL
+--------------------------------------------------------- */
+
+export async function processReferral(
+    newUser
+){
+
+    if(!newUser){
+
+        return {
+            success:false,
+            reason:"NO_USER"
+        };
+
+    }
+
+
+    const referralCode =
+        getSavedReferral();
+
+
+    if(!referralCode){
+
+        return {
+            success:false,
+            reason:"NO_REFERRAL"
+        };
+
+    }
+
+
+    const newUid =
+        newUser.uid;
+
+
+    try{
+
+        const result =
+            await runTransaction(
+                db,
+                async transaction => {
+
+                    /*
+                       Find referrer.
+                    */
+
+                    const codeRef =
+                        doc(
+                            db,
+                            "referralCodes",
+                            referralCode
+                        );
+
+                    const codeSnap =
+                        await transaction.get(
+                            codeRef
+                        );
+
+
+                    if(!codeSnap.exists()){
+
+                        throw new Error(
+                            "INVALID_REFERRAL"
+                        );
+
+                    }
+
+
+                    const referrerUid =
+                        codeSnap.data().uid;
+
+
+                    /*
+                       Prevent self-referral.
+                    */
+
+                    if(
+                        referrerUid ===
+                        newUid
+                    ){
+
+                        throw new Error(
+                            "SELF_REFERRAL"
+                        );
+
+                    }
+
+
+                    /*
+                       Referral document.
+
+                       The document ID is the
+                       NEW USER ID.
+
+                       This means the same new
+                       account cannot be rewarded
+                       twice.
+                    */
+
+                    const referralRef =
+                        doc(
+                            db,
+                            "users",
+                            referrerUid,
+                            "referrals",
+                            newUid
+                        );
+
+
+                    const referralSnap =
+                        await transaction.get(
+                            referralRef
+                        );
+
+
+                    if(
+                        referralSnap.exists()
+                    ){
+
+                        return {
+                            alreadyProcessed:true
+                        };
+
+                    }
+
+
+                    /*
+                       Referrer profile.
+                    */
+
+                    const referrerRef =
+                        doc(
+                            db,
+                            "users",
+                            referrerUid
+                        );
+
+
+                    /*
+                       New user's profile.
+                    */
+
+                    const newUserRef =
+                        doc(
+                            db,
+                            "users",
+                            newUid
+                        );
+
+
+                    /*
+                       Give referrer reward.
+                    */
+
+                    transaction.set(
+                        referrerRef,
+                        {
+                            xp:
+                                increment(
+                                    REFERRAL_REWARD_XP
+                                ),
+
+                            coins:
+                                increment(
+                                    REFERRAL_REWARD_COINS
+                                )
+                        },
+                        {
+                            merge:true
+                        }
+                    );
+
+
+                    /*
+                       Give new user half reward.
+                    */
+
+                    transaction.set(
+                        newUserRef,
+                        {
+                            xp:
+                                increment(
+                                    NEW_USER_REWARD_XP
+                                ),
+
+                            coins:
+                                increment(
+                                    NEW_USER_REWARD_COINS
+                                ),
+
+                            referredBy:
+                                referrerUid,
+
+                            referralCodeUsed:
+                                referralCode
+                        },
+                        {
+                            merge:true
+                        }
+                    );
+
+
+                    /*
+                       Record referral.
+                    */
+
+                    transaction.set(
+                        referralRef,
+                        {
+                            referredUserId:
+                                newUid,
+
+                            referralCode:
+                                referralCode,
+
+                            xpAwarded:
+                                REFERRAL_REWARD_XP,
+
+                            coinsAwarded:
+                                REFERRAL_REWARD_COINS,
+
+                            newUserXP:
+                                NEW_USER_REWARD_XP,
+
+                            newUserCoins:
+                                NEW_USER_REWARD_COINS,
+
+                            createdAt:
+                                serverTimestamp()
+                        }
+                    );
+
+
+                    return {
+                        alreadyProcessed:false
+                    };
+
+                }
+            );
+
+
+        clearSavedReferral();
+
+
+        return {
+            success:true,
+            ...result
+        };
+
+
+    }catch(error){
+
+        console.error(
+            "Referral processing failed:",
+            error
+        );
+
+
+        return {
+            success:false,
+            reason:
+                error.message
+        };
+
+    }
+
+}
