@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>C Programming Course | Code Academy</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top left, #123b2a, transparent 35%),
+        radial-gradient(circle at bottom right, #063b2c, transparent 35%),
+        #06130e;
+    color:#fff;
+}
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+    width:100%;
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    background:rgba(5,20,14,.92);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(0,255,150,.15);
+}
+
+.back-btn{
+    width:42px;
+    height:42px;
+    border:1px solid rgba(0,255,150,.3);
+    border-radius:12px;
+    background:#0b2419;
+    color:#7dffc4;
+    font-size:20px;
+    cursor:pointer;
+}
+
+.logo{
+    flex:1;
+}
+
+.logo h2{
+    font-size:clamp(17px,4vw,23px);
+    color:#fff;
+}
+
+.logo span{
+    font-size:12px;
+    color:#69dba7;
+}
+
+.xp-box{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:9px 13px;
+    border-radius:12px;
+    background:#0c291d;
+    border:1px solid rgba(0,255,150,.2);
+    color:#8dffca;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.hero{
+    max-width:1100px;
+    margin:0 auto;
+    padding:30px 18px 20px;
+}
+
+.hero-card{
+    padding:28px;
+    border-radius:24px;
+    background:linear-gradient(145deg,rgba(14,53,36,.95),rgba(7,27,18,.95));
+    border:1px solid rgba(0,255,150,.18);
+    box-shadow:0 15px 45px rgba(0,0,0,.3);
+}
+
+.badge{
+    display:inline-block;
+    padding:7px 12px;
+    border-radius:30px;
+    background:rgba(0,255,150,.1);
+    color:#72ffc0;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:13px;
+}
+
+.hero h1{
+    font-size:clamp(28px,6vw,48px);
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:#b3cfc2;
+    line-height:1.6;
+    max-width:800px;
+}
+
+.progress-area{
+    margin-top:22px;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-size:13px;
+    color:#9ac5b0;
+}
+
+.progress-bar{
+    width:100%;
+    height:9px;
+    border-radius:20px;
+    overflow:hidden;
+    background:#10281d;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    border-radius:20px;
+    background:#48e69b;
+    transition:.4s ease;
+}
+
+.container{
+    max-width:1100px;
+    margin:0 auto;
+    padding:10px 18px 50px;
+}
+
+.section-title{
+    margin:15px 0 18px;
+}
+
+.section-title h2{
+    font-size:23px;
+}
+
+.section-title p{
+    margin-top:5px;
+    color:#88a99a;
+    font-size:13px;
+}
+
+.lessons{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px;
+}
+
+.lesson-card{
+    position:relative;
+    padding:21px;
+    border-radius:19px;
+    background:rgba(10,32,22,.92);
+    border:1px solid rgba(0,255,150,.13);
+    transition:.25s ease;
+    overflow:hidden;
+}
+
+.lesson-card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(0,255,150,.4);
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+}
+
+.lesson-card.locked{
+    opacity:.58;
+}
+
+.lesson-number{
+    color:#66ffb5;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:9px;
+}
+
+.lesson-card h3{
+    font-size:19px;
+    margin-bottom:9px;
+}
+
+.lesson-card .learn{
+    color:#c0d8cc;
+    font-size:14px;
+    line-height:1.55;
+    margin-bottom:10px;
+}
+
+.summary{
+    color:#76988a;
+    font-size:13px;
+    line-height:1.5;
+    min-height:58px;
+}
+
+.lesson-footer{
+    margin-top:17px;
+}
+
+.lesson-btn{
+    display:block;
+    width:100%;
+    padding:12px 14px;
+    border:none;
+    border-radius:11px;
+    background:#38d98e;
+    color:#03130b;
+    font-weight:bold;
+    text-align:center;
+    text-decoration:none;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.lesson-btn:hover{
+    background:#63efaa;
+}
+
+.lesson-btn.completed{
+    background:#153f2b;
+    color:#7fffc0;
+    border:1px solid rgba(0,255,150,.25);
+}
+
+.lesson-btn.locked{
+    background:#17231d;
+    color:#6e8579;
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+.status{
+    display:inline-block;
+    margin-top:9px;
+    font-size:11px;
+    color:#6f9985;
+}
+
+.loading{
+    text-align:center;
+    padding:35px;
+    color:#79a995;
+}
+
+@media(max-width:700px){
+    .navbar{
+        padding:11px 12px;
+    }
+
+    .back-btn{
+        width:38px;
+        height:38px;
+    }
+
+    .xp-box{
+        padding:8px 10px;
+        font-size:13px;
+    }
+
+    .hero{
+        padding:20px 12px 12px;
+    }
+
+    .hero-card{
+        padding:21px;
+        border-radius:20px;
+    }
+
+    .container{
+        padding:8px 12px 35px;
+    }
+
+    .lessons{
+        grid-template-columns:1fr;
+        gap:13px;
+    }
+
+    .lesson-card{
+        padding:18px;
+    }
+
+    .summary{
+        min-height:auto;
+    }
+}
+
+@media(max-width:400px){
+    .logo span{
+        display:none;
+    }
+
+    .xp-box{
+        font-size:12px;
+    }
+
+    .hero h1{
+        font-size:29px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <button class="back-btn" onclick="history.back()">←</button>
+
+    <div class="logo">
+        <h2>Code Academy</h2>
+        <span>C Programming Course</span>
+    </div>
+
+    <div class="xp-box">
+        ⭐ <span id="xpDisplay">0 XP</span>
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+    <div class="hero-card">
+
+        <span class="badge">COURSE 07 • C PROGRAMMING</span>
+
+        <h1>Master C Programming</h1>
+
+        <p>
+            Learn the foundations of C programming, from variables and
+            functions to pointers, structures, memory management and
+            building complete programs.
+        </p>
+
+        <div class="progress-area">
+
+            <div class="progress-info">
+                <span>Course Progress</span>
+                <span id="progressText">0 / 10 lessons</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<main class="container">
+
+    <div class="section-title">
+        <h2>Course Lessons</h2>
+        <p>Complete each lesson to unlock the next one.</p>
+    </div>
+
+    <div class="lessons" id="lessonsContainer">
+
+        <div class="loading">
+            Loading your C course...
+        </div>
+
+    </div>
+
+</main>
+
+
+<script type="module">
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+const lessons = [
+
+    {
+        id:1,
+        title:"Introduction to C",
+        learn:"Understand what C is, where it came from, how it works, and why it is still important today.",
+        summary:"Learn the history of C, compilers, source code, executable programs and the basic structure of a C program."
+    },
+
+    {
+        id:2,
+        title:"Variables and Data Types",
+        learn:"Learn how C stores information using variables and different data types.",
+        summary:"Work with int, float, double, char and other fundamental types while understanding declarations and initialization."
+    },
+
+    {
+        id:3,
+        title:"Operators and Expressions",
+        learn:"Use mathematical, comparison, logical and assignment operators to build expressions.",
+        summary:"Understand arithmetic operators, relational operators, logical operators, increment and decrement operations."
+    },
+
+    {
+        id:4,
+        title:"Conditional Statements",
+        learn:"Make your programs make decisions using conditions.",
+        summary:"Learn if, else, else-if and switch statements and understand how C chooses which code to execute."
+    },
+
+    {
+        id:5,
+        title:"Loops and Repetition",
+        learn:"Repeat instructions efficiently using C loops.",
+        summary:"Master for, while and do-while loops, including counters, conditions and nested loops."
+    },
+
+    {
+        id:6,
+        title:"Functions",
+        learn:"Break large programs into reusable blocks of code.",
+        summary:"Learn function declarations, parameters, return values, scope and how to organize programs with functions."
+    },
+
+    {
+        id:7,
+        title:"Arrays and Strings",
+        learn:"Store collections of values and work with text in C.",
+        summary:"Understand arrays, indexing, character arrays, strings and common techniques for processing data."
+    },
+
+    {
+        id:8,
+        title:"Pointers and Memory",
+        learn:"Understand one of the most powerful features of C: pointers.",
+        summary:"Learn addresses, pointers, dereferencing, pointer arithmetic and how pointers interact with variables."
+    },
+
+    {
+        id:9,
+        title:"Structures and File Handling",
+        learn:"Create custom data structures and work with files.",
+        summary:"Learn structs, grouping related data, opening files, reading data, writing data and closing files safely."
+    },
+
+    {
+        id:10,
+        title:"C Project and Final Review",
+        learn:"Bring everything together by applying your C programming knowledge.",
+        summary:"Review the major concepts and build a practical C program using variables, conditions, loops, functions and data."
+    }
+
+];
+
+
+const TOTAL_LESSONS = lessons.length;
+
+let completedLessons = 0;
+
+
+/* =========================
+   LOAD USER
+========================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+        document.getElementById("lessonsContainer").innerHTML = `
+            <div class="loading">
+                Please log in to access your C course.
+            </div>
+        `;
+
+        return;
+    }
+
+    try {
+
+        const userRef = doc(db, "users", user.uid);
+        const snapshot = await getDoc(userRef);
+
+        let profile = {};
+
+        if (snapshot.exists()) {
+            profile = snapshot.data();
+        }
+
+        const xp = Number(profile.xp || 0);
+
+        document.getElementById("xpDisplay").textContent =
+            `${xp.toLocaleString()} XP`;
+
+
+        /*
+         * Supports the progress structure used
+         * by the main Code Academy lesson engine.
+         */
+
+        let courseProgress = 0;
+
+        if (
+            profile.progress &&
+            profile.progress.c
+        ) {
+
+            const cProgress = profile.progress.c;
+
+            if (typeof cProgress === "number") {
+
+                courseProgress = cProgress;
+
+            } else if (
+                typeof cProgress === "object"
+            ) {
+
+                courseProgress = Number(
+                    cProgress.completed || 0
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Fallback for the local progress format.
+         */
+
+        if (!courseProgress) {
+
+            try {
+
+                const local =
+                    JSON.parse(
+                        localStorage.getItem(
+                            "c_course_progress"
+                        ) || "{}"
+                    );
+
+                if (Array.isArray(local.completed)) {
+
+                    courseProgress =
+                        local.completed.length;
+
+                } else if (
+                    typeof local.completed === "number"
+                ) {
+
+                    courseProgress =
+                        local.completed;
+
+                }
+
+            } catch(error) {
+
+                console.warn(
+                    "Local C progress could not be read.",
+                    error
+                );
+
+            }
+
+        }
+
+
+        completedLessons =
+            Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    courseProgress
+                )
+            );
+
+
+        renderLessons();
+
+        updateProgress();
+
+    } catch(error) {
+
+        console.error(error);
+
+        /*
+         * Still render the dashboard if Firebase
+         * temporarily fails.
+         */
+
+        try {
+
+            const local =
+                JSON.parse(
+                    localStorage.getItem(
+                        "c_course_progress"
+                    ) || "{}"
+                );
+
+            if (Array.isArray(local.completed)) {
+                completedLessons =
+                    Math.min(
+                        TOTAL_LESSONS,
+                        local.completed.length
+                    );
+            }
+
+        } catch(e) {}
+
+        renderLessons();
+        updateProgress();
+
+    }
+
+});
+
+
+/* =========================
+   RENDER LESSONS
+========================= */
+
+function renderLessons() {
+
+    const container =
+        document.getElementById(
+            "lessonsContainer"
+        );
+
+    container.innerHTML = "";
+
+    lessons.forEach((lesson, index) => {
+
+        const lessonNumber = lesson.id;
+
+        const completed =
+            lessonNumber <= completedLessons;
+
+        const unlocked =
+            lessonNumber === 1 ||
+            lessonNumber <= completedLessons + 1;
+
+
+        const card =
+            document.createElement("article");
+
+        card.className =
+            `lesson-card ${!unlocked ? "locked" : ""}`;
+
+
+        let buttonHTML = "";
+
+        if (completed) {
+
+            buttonHTML = `
+                <a
+                    class="lesson-btn completed"
+                    href="lesson.html?course=c&lesson=${lesson.id}"
+                >
+                    ✓ Review Lesson
+                </a>
+
+                <span class="status">
+                    Lesson completed
+                </span>
+            `;
+
+        } else if (unlocked) {
+
+            buttonHTML = `
+                <a
+                    class="lesson-btn"
+                    href="lesson.html?course=c&lesson=${lesson.id}"
+                >
+                    Start Lesson →
+                </a>
+
+                <span class="status">
+                    Ready to learn
+                </span>
+            `;
+
+        } else {
+
+            buttonHTML = `
+                <span
+                    class="lesson-btn locked"
+                >
+                    🔒 Locked
+                </span>
+
+                <span class="status">
+                    Complete Lesson ${lesson.id - 1} first
+                </span>
+            `;
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="lesson-number">
+                LESSON ${String(lesson.id).padStart(2,"0")}
+            </div>
+
+            <h3>${lesson.title}</h3>
+
+            <p class="learn">
+                <strong>What you'll learn:</strong>
+                ${lesson.learn}
+            </p>
+
+            <p class="summary">
+                ${lesson.summary}
+            </p>
+
+            <div class="lesson-footer">
+                ${buttonHTML}
+            </div>
+
+        `;
+
+
+        container.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================
+   PROGRESS
+========================= */
+
+function updateProgress() {
+
+    const percentage =
+        Math.round(
+            (completedLessons / TOTAL_LESSONS) * 100
+        );
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        `${completedLessons} / ${TOTAL_LESSONS} lessons`;
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        `${percentage}%`;
+
+}
+
+</script>
+
+</body>
+</html>
