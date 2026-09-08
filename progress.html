@@ -1,0 +1,2219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>My Progress - Code Academy</title>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
+
+<style>
+:root{
+  --bg:#020617;
+  --card:#0f172a;
+  --card2:#111c31;
+  --hover:#1e293b;
+
+  --primary:#38bdf8;
+  --primary2:#0ea5e9;
+  --purple:#a855f7;
+
+  --success:#22c55e;
+  --warning:#facc15;
+  --danger:#ef4444;
+
+  --text:#f8fafc;
+  --muted:#94a3b8;
+
+  --border:rgba(56,189,248,.16);
+  --glow:rgba(56,189,248,.28);
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Inter,"Segoe UI",Arial,sans-serif;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  min-height:100vh;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  padding-bottom:80px;
+}
+
+/* ================= BACKGROUND ================= */
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:-40%;
+  z-index:-2;
+  pointer-events:none;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(56,189,248,.12),
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 80% 70%,
+      rgba(168,85,247,.10),
+      transparent 40%
+    );
+
+  animation:backgroundFloat 20s ease-in-out infinite;
+}
+
+@keyframes backgroundFloat{
+  0%,100%{
+    transform:translate(0,0);
+  }
+
+  50%{
+    transform:translate(25px,25px);
+  }
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+  position:sticky;
+  top:0;
+  z-index:1000;
+
+  width:100%;
+  height:72px;
+
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+
+  padding:0 18px;
+
+  background:rgba(2,6,23,.82);
+  backdrop-filter:blur(20px);
+
+  border-bottom:1px solid var(--border);
+}
+
+.navLeft{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.navBrand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.navBrand i{
+  color:var(--primary);
+  font-size:20px;
+}
+
+.navBrand h2{
+  font-size:19px;
+  font-weight:800;
+
+  background:linear-gradient(
+    135deg,
+    var(--primary),
+    #7dd3fc
+  );
+
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.navActions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.navBtn{
+  width:42px;
+  height:42px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border:1px solid var(--border);
+  border-radius:13px;
+
+  background:rgba(15,23,42,.8);
+  color:var(--primary);
+
+  cursor:pointer;
+  transition:.25s;
+}
+
+.navBtn:hover{
+  background:var(--primary);
+  color:var(--bg);
+  transform:translateY(-2px);
+}
+
+.backBtn:hover{
+  transform:translateX(-3px);
+}
+
+/* ================= PAGE ================= */
+
+.container{
+  width:min(100% - 30px,900px);
+  margin:28px auto;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+  min-height:60vh;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+
+  color:var(--primary);
+}
+
+.loading i{
+  font-size:32px;
+  margin-bottom:15px;
+}
+
+.loading p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+/* ================= ERROR ================= */
+
+.errorBox{
+  display:none;
+
+  padding:25px;
+  margin-top:30px;
+
+  background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.3);
+  border-radius:20px;
+
+  text-align:center;
+}
+
+.errorBox i{
+  color:var(--danger);
+  font-size:35px;
+  margin-bottom:12px;
+}
+
+.errorBox h3{
+  margin-bottom:8px;
+}
+
+.errorBox p{
+  color:var(--muted);
+  font-size:14px;
+  margin-bottom:18px;
+}
+
+.retryBtn{
+  border:none;
+  border-radius:12px;
+  padding:11px 18px;
+
+  background:var(--danger);
+  color:white;
+
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* ================= CONTENT ================= */
+
+#progressContent{
+  display:none;
+}
+
+/* ================= HERO ================= */
+
+.profileCard{
+  position:relative;
+  overflow:hidden;
+
+  padding:30px;
+
+  border:1px solid var(--border);
+  border-radius:26px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15,23,42,.85),
+      rgba(15,23,42,.55)
+    );
+
+  backdrop-filter:blur(20px);
+
+  box-shadow:
+    0 20px 70px rgba(0,0,0,.35);
+}
+
+.profileCard::before{
+  content:"";
+
+  position:absolute;
+  width:180px;
+  height:180px;
+
+  top:-100px;
+  right:-80px;
+
+  background:var(--primary);
+  opacity:.08;
+
+  border-radius:50%;
+  filter:blur(10px);
+}
+
+.profileHeader{
+  position:relative;
+  z-index:1;
+
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.avatar{
+  width:90px;
+  height:90px;
+
+  border-radius:50%;
+
+  object-fit:cover;
+
+  border:3px solid var(--primary);
+
+  box-shadow:
+    0 0 30px var(--glow);
+}
+
+.profileInfo{
+  flex:1;
+  min-width:0;
+}
+
+.userName{
+  font-size:26px;
+  font-weight:850;
+
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.userEmail{
+  color:var(--muted);
+  font-size:13px;
+
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+
+  margin-top:5px;
+}
+
+.accountBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+
+  margin-top:10px;
+
+  padding:5px 10px;
+
+  border-radius:20px;
+
+  background:rgba(34,197,94,.1);
+  border:1px solid rgba(34,197,94,.2);
+
+  color:var(--success);
+
+  font-size:11px;
+  font-weight:700;
+}
+
+/* ================= LEVEL ================= */
+
+.levelBox{
+  margin-top:28px;
+}
+
+.levelTop{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  margin-bottom:10px;
+}
+
+.levelName{
+  display:flex;
+  align-items:center;
+  gap:8px;
+
+  font-weight:800;
+}
+
+.levelName i{
+  color:var(--warning);
+}
+
+.levelXP{
+  color:var(--muted);
+  font-size:13px;
+}
+
+.xpBar{
+  width:100%;
+  height:14px;
+
+  background:#020617;
+
+  border:1px solid var(--border);
+  border-radius:20px;
+
+  overflow:hidden;
+}
+
+.xpFill{
+  height:100%;
+  width:0%;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--primary),
+      var(--primary2)
+    );
+
+  box-shadow:
+    0 0 20px var(--glow);
+
+  transition:width 1s ease;
+}
+
+.nextLevel{
+  margin-top:8px;
+
+  font-size:11px;
+  color:var(--muted);
+}
+
+/* ================= SECTION ================= */
+
+.sectionTitle{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  margin:34px 0 18px;
+
+  font-size:20px;
+  font-weight:850;
+}
+
+.sectionTitle i{
+  color:var(--primary);
+}
+
+/* ================= STATS ================= */
+
+.statsGrid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}
+
+.statCard{
+  padding:20px 12px;
+
+  text-align:center;
+
+  border:1px solid var(--border);
+  border-radius:20px;
+
+  background:rgba(15,23,42,.65);
+  backdrop-filter:blur(15px);
+
+  transition:.3s;
+}
+
+.statCard:hover{
+  transform:translateY(-5px);
+  border-color:var(--primary);
+  box-shadow:0 15px 35px rgba(56,189,248,.12);
+}
+
+.statCard i{
+  color:var(--primary);
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+.statCard h3{
+  font-size:25px;
+  margin-bottom:4px;
+}
+
+.statCard p{
+  color:var(--muted);
+  font-size:11px;
+  font-weight:700;
+}
+
+/* ================= SUMMARY ================= */
+
+.summaryGrid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:14px;
+}
+
+.summaryCard{
+  padding:20px;
+
+  border-radius:20px;
+  border:1px solid var(--border);
+
+  background:rgba(15,23,42,.6);
+}
+
+.summaryCard h4{
+  font-size:12px;
+  color:var(--muted);
+  margin-bottom:8px;
+}
+
+.summaryCard strong{
+  font-size:22px;
+}
+
+/* ================= COURSES ================= */
+
+.courseList{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.courseCard{
+  padding:20px;
+
+  border-radius:20px;
+  border:1px solid var(--border);
+
+  background:rgba(15,23,42,.65);
+
+  transition:.3s;
+}
+
+.courseCard:hover{
+  border-color:var(--primary);
+  transform:translateX(4px);
+}
+
+.courseTop{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.courseIcon{
+  width:52px;
+  height:52px;
+
+  object-fit:contain;
+
+  padding:9px;
+
+  border-radius:15px;
+
+  background:rgba(56,189,248,.08);
+  border:1px solid var(--border);
+}
+
+.courseInfo{
+  flex:1;
+  min-width:0;
+}
+
+.courseInfo h4{
+  font-size:16px;
+  margin-bottom:5px;
+}
+
+.courseInfo p{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.coursePercent{
+  font-size:15px;
+  font-weight:800;
+  color:var(--primary);
+}
+
+.progressWrapper{
+  margin-top:15px;
+}
+
+.progressBar{
+  height:9px;
+
+  background:#020617;
+
+  border-radius:20px;
+
+  overflow:hidden;
+}
+
+.progressFill{
+  height:100%;
+  width:0%;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      var(--primary),
+      var(--primary2)
+    );
+
+  transition:width .8s ease;
+}
+
+.progressBottom{
+  display:flex;
+  justify-content:space-between;
+
+  margin-top:7px;
+
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* ================= CERTIFICATES ================= */
+
+.certGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:15px;
+}
+
+.certCard{
+  padding:22px;
+
+  text-align:center;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(250,204,21,.08),
+      rgba(56,189,248,.05)
+    );
+
+  border:1px solid rgba(250,204,21,.3);
+
+  transition:.3s;
+}
+
+.certCard:hover{
+  transform:translateY(-5px);
+  box-shadow:0 15px 35px rgba(250,204,21,.1);
+}
+
+.certIcon{
+  font-size:34px;
+  color:var(--warning);
+  margin-bottom:10px;
+}
+
+.certCard h4{
+  font-size:15px;
+  margin-bottom:5px;
+}
+
+.certCard p{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.emptyBox{
+  grid-column:1/-1;
+
+  text-align:center;
+
+  padding:35px;
+
+  border:1px dashed var(--border);
+  border-radius:18px;
+
+  color:var(--muted);
+}
+
+.emptyBox i{
+  display:block;
+  font-size:30px;
+  margin-bottom:10px;
+  color:var(--primary);
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+  .container{
+    width:min(100% - 20px,900px);
+    margin-top:18px;
+  }
+
+  .profileCard{
+    padding:22px 18px;
+  }
+
+  .profileHeader{
+    align-items:flex-start;
+  }
+
+  .avatar{
+    width:72px;
+    height:72px;
+  }
+
+  .userName{
+    font-size:21px;
+  }
+
+  .statsGrid{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .summaryGrid{
+    grid-template-columns:1fr;
+  }
+
+  .certGrid{
+    grid-template-columns:1fr;
+  }
+
+  .coursePercent{
+    font-size:13px;
+  }
+}
+
+@media(max-width:400px){
+
+  .navBrand h2{
+    font-size:16px;
+  }
+
+  .navBtn{
+    width:38px;
+    height:38px;
+  }
+
+  .courseTop{
+    gap:10px;
+  }
+
+  .courseIcon{
+    width:45px;
+    height:45px;
+  }
+
+  .courseInfo h4{
+    font-size:14px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+  <div class="navLeft">
+
+    <button
+      id="backBtn"
+      class="navBtn backBtn"
+      type="button"
+      aria-label="Go back"
+    >
+      <i class="fa fa-arrow-left"></i>
+    </button>
+
+    <div class="navBrand">
+      <i class="fa fa-chart-line"></i>
+      <h2>My Progress</h2>
+    </div>
+
+  </div>
+
+  <div class="navActions">
+
+    <button
+      id="refreshBtn"
+      class="navBtn"
+      type="button"
+      aria-label="Refresh progress"
+      title="Refresh"
+    >
+      <i class="fa fa-refresh"></i>
+    </button>
+
+  </div>
+
+</nav>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+  <!-- LOADING -->
+
+  <section id="loading" class="loading">
+
+    <i class="fa fa-spinner fa-spin"></i>
+
+    <strong>Loading your progress...</strong>
+
+    <p>Connecting to your Code Academy account</p>
+
+  </section>
+
+
+  <!-- ERROR -->
+
+  <section id="errorBox" class="errorBox">
+
+    <i class="fa fa-triangle-exclamation"></i>
+
+    <h3>Unable to load your progress</h3>
+
+    <p id="errorMessage">
+      Something went wrong while loading your account.
+    </p>
+
+    <button
+      id="retryBtn"
+      class="retryBtn"
+      type="button"
+    >
+      <i class="fa fa-refresh"></i>
+      Try Again
+    </button>
+
+  </section>
+
+
+  <!-- CONTENT -->
+
+  <div id="progressContent">
+
+    <!-- ================= PROFILE ================= -->
+
+    <section class="profileCard">
+
+      <div class="profileHeader">
+
+        <img
+          id="userPhoto"
+          class="avatar"
+          src="logo.png"
+          alt="Profile photo"
+        >
+
+        <div class="profileInfo">
+
+          <h1
+            id="userName"
+            class="userName"
+          >
+            Coder
+          </h1>
+
+          <p
+            id="userEmail"
+            class="userEmail"
+          >
+            Loading...
+          </p>
+
+          <div class="accountBadge">
+            <i class="fa fa-circle-check"></i>
+            Account Active
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- LEVEL -->
+
+      <div class="levelBox">
+
+        <div class="levelTop">
+
+          <div class="levelName">
+
+            <i class="fa fa-bolt"></i>
+
+            <span>
+              Level <span id="userLevel">1</span>
+              •
+              <span id="levelTitle">Beginner</span>
+            </span>
+
+          </div>
+
+          <div class="levelXP">
+            <b id="currentXP">0</b>
+            /
+            <span id="xpRequired">100</span>
+            XP
+          </div>
+
+        </div>
+
+        <div class="xpBar">
+
+          <div
+            id="xpFill"
+            class="xpFill"
+          ></div>
+
+        </div>
+
+        <p
+          id="nextLevel"
+          class="nextLevel"
+        >
+          100 XP to next level
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= STATS ================= -->
+
+    <h2 class="sectionTitle">
+      <i class="fa fa-chart-simple"></i>
+      Your Stats
+    </h2>
+
+    <section class="statsGrid">
+
+      <div class="statCard">
+        <i class="fa fa-fire"></i>
+        <h3 id="streak">0</h3>
+        <p>DAY STREAK</p>
+      </div>
+
+      <div class="statCard">
+        <i class="fa fa-coins"></i>
+        <h3 id="coins">0</h3>
+        <p>COINS</p>
+      </div>
+
+      <div class="statCard">
+        <i class="fa fa-certificate"></i>
+        <h3 id="certCount">0</h3>
+        <p>CERTIFICATES</p>
+      </div>
+
+      <div class="statCard">
+        <i class="fa fa-check-circle"></i>
+        <h3 id="lessonsDone">0</h3>
+        <p>LESSONS DONE</p>
+      </div>
+
+    </section>
+
+
+    <!-- ================= SUMMARY ================= -->
+
+    <h2 class="sectionTitle">
+      <i class="fa fa-bullseye"></i>
+      Learning Summary
+    </h2>
+
+    <section class="summaryGrid">
+
+      <div class="summaryCard">
+        <h4>COURSES STARTED</h4>
+        <strong id="coursesStarted">0</strong>
+      </div>
+
+      <div class="summaryCard">
+        <h4>COURSES COMPLETED</h4>
+        <strong id="coursesCompleted">0</strong>
+      </div>
+
+      <div class="summaryCard">
+        <h4>OVERALL COMPLETION</h4>
+        <strong id="overallCompletion">0%</strong>
+      </div>
+
+    </section>
+
+
+    <!-- ================= COURSES ================= -->
+
+    <h2 class="sectionTitle">
+      <i class="fa fa-graduation-cap"></i>
+      Course Progress
+    </h2>
+
+    <section
+      id="coursesProgress"
+      class="courseList"
+    ></section>
+
+
+    <!-- ================= CERTIFICATES ================= -->
+
+    <h2 class="sectionTitle">
+      <i class="fa fa-award"></i>
+      Earned Certificates
+    </h2>
+
+    <section
+      id="certificatesGrid"
+      class="certGrid"
+    ></section>
+
+  </div>
+
+</main>
+
+
+<!-- ================= AUTH + PROGRESS ENGINE ================= -->
+
+<script type="module">
+
+/*
+===========================================================
+ CODE ACADEMY PROGRESS ENGINE
+===========================================================
+
+IMPORTANT:
+
+This page intentionally uses the SAME authentication engine
+as login.html, signup.html and menu.html.
+
+Do NOT create another Firebase app here.
+
+===========================================================
+*/
+
+
+/* ================= MAIN AUTH ENGINE ================= */
+
+import {
+  auth,
+  db,
+  onAuthStateChanged,
+  getDoc,
+  doc
+} from "./authentication.js";
+
+
+/* ================= DOM ================= */
+
+const loading =
+  document.getElementById("loading");
+
+const progressContent =
+  document.getElementById("progressContent");
+
+const errorBox =
+  document.getElementById("errorBox");
+
+const errorMessage =
+  document.getElementById("errorMessage");
+
+const retryBtn =
+  document.getElementById("retryBtn");
+
+const refreshBtn =
+  document.getElementById("refreshBtn");
+
+const backBtn =
+  document.getElementById("backBtn");
+
+
+/* ================= STATE ================= */
+
+let currentUser = null;
+
+
+/* ================= COURSE DATABASE ================= */
+
+/*
+   Keep these IDs synchronized with the progress IDs
+   used by your lesson engine.
+*/
+
+const courses = [
+
+  {
+    id:"html",
+    name:"HTML Fundamentals",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/732/732212.png"
+  },
+
+  {
+    id:"css",
+    name:"CSS Styling",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/732/732190.png"
+  },
+
+  {
+    id:"javascript",
+    name:"JavaScript",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968292.png"
+  },
+
+  {
+    id:"python",
+    name:"Python",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968350.png"
+  },
+
+  {
+    id:"react",
+    name:"React.js",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/1126/1126012.png"
+  },
+
+  {
+    id:"java",
+    name:"Java",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/226/226777.png"
+  },
+
+  {
+    id:"cpp",
+    name:"C++",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/6132/6132222.png"
+  },
+
+  {
+    id:"csharp",
+    name:"C#",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/6132/6132221.png"
+  },
+
+  {
+    id:"php",
+    name:"PHP",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968332.png"
+  },
+
+  {
+    id:"typescript",
+    name:"TypeScript",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968381.png"
+  },
+
+  {
+    id:"go",
+    name:"Go",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968866.png"
+  },
+
+  {
+    id:"rust",
+    name:"Rust",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/919/919845.png"
+  },
+
+  {
+    id:"kotlin",
+    name:"Kotlin",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968355.png"
+  },
+
+  {
+    id:"swift",
+    name:"Swift",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/5968/5968371.png"
+  },
+
+  {
+    id:"dart",
+    name:"Dart",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/919/919831.png"
+  },
+
+  {
+    id:"ruby",
+    name:"Ruby",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/919/919842.png"
+  },
+
+  {
+    id:"sql",
+    name:"SQL",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/2772/2772128.png"
+  },
+
+  {
+    id:"c",
+    name:"C Programming",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/6132/6132222.png"
+  },
+
+  {
+    id:"lua",
+    name:"Lua",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/6132/6132222.png"
+  },
+
+  {
+    id:"r",
+    name:"R Programming",
+    lessons:15,
+    icon:"https://cdn-icons-png.flaticon.com/512/6132/6132222.png"
+  }
+
+];
+
+
+/* ================= LEVEL ENGINE ================= */
+
+function getLevel(xp){
+
+  xp = Number(xp) || 0;
+
+  const level =
+    Math.floor(xp / 100) + 1;
+
+  const titles = [
+    "Beginner",
+    "Learner",
+    "Coder",
+    "Developer",
+    "Advanced Developer",
+    "Expert",
+    "Master",
+    "Legend"
+  ];
+
+  const title =
+    titles[
+      Math.min(
+        level - 1,
+        titles.length - 1
+      )
+    ];
+
+  const currentXP =
+    xp % 100;
+
+  const xpForNext =
+    100 - currentXP;
+
+  return {
+    level,
+    title,
+    currentXP,
+    xpForNext
+  };
+
+}
+
+
+/* ================= SAFE NUMBER ================= */
+
+function number(value){
+
+  const n = Number(value);
+
+  return Number.isFinite(n) ? n : 0;
+
+}
+
+
+/* ================= SHOW ERROR ================= */
+
+function showError(message){
+
+  loading.style.display = "none";
+
+  progressContent.style.display = "none";
+
+  errorBox.style.display = "block";
+
+  errorMessage.textContent =
+    message ||
+    "Unable to load your progress.";
+
+}
+
+
+/* ================= HIDE ERROR ================= */
+
+function hideError(){
+
+  errorBox.style.display = "none";
+
+}
+
+
+/* ================= IMAGE FALLBACK ================= */
+
+function setupImageFallback(){
+
+  const photo =
+    document.getElementById("userPhoto");
+
+  photo.addEventListener(
+    "error",
+    () => {
+
+      photo.src = "logo.png";
+
+    },
+    {
+      once:false
+    }
+  );
+
+}
+
+
+/* ================= LOAD ACCOUNT ================= */
+
+async function loadProgress(){
+
+  if(!currentUser){
+
+    window.location.href = "login.html";
+
+    return;
+
+  }
+
+  hideError();
+
+  loading.style.display = "flex";
+
+  progressContent.style.display = "none";
+
+
+  try{
+
+    /*
+      IMPORTANT:
+      Same Firestore location used by authentication.js:
+      
+      users/{uid}
+    */
+
+    const userRef =
+      doc(
+        db,
+        "users",
+        currentUser.uid
+      );
+
+    const snapshot =
+      await getDoc(userRef);
+
+
+    /*
+      Account document missing.
+
+      We do NOT crash.
+
+      Firebase Auth user still exists,
+      so we display account information
+      with default progress.
+    */
+
+    const data =
+      snapshot.exists()
+        ? snapshot.data()
+        : {};
+
+
+    renderAccount(data);
+
+
+    loading.style.display = "none";
+
+    progressContent.style.display = "block";
+
+
+  }catch(error){
+
+    console.error(
+      "Progress loading error:",
+      error
+    );
+
+
+    let message =
+      "We could not load your progress.";
+
+    if(
+      error &&
+      error.code ===
+      "permission-denied"
+    ){
+
+      message =
+        "Firebase denied access to your account data. Check the Firestore security rules for users/{uid}.";
+
+    }else if(
+      error &&
+      error.message
+    ){
+
+      message =
+        error.message;
+
+    }
+
+
+    showError(message);
+
+  }
+
+}
+
+
+/* ================= RENDER ACCOUNT ================= */
+
+function renderAccount(data){
+
+  /* ---------- USER ---------- */
+
+  const displayName =
+    data.displayName ||
+    currentUser.displayName ||
+    "Coder";
+
+  const email =
+    currentUser.email ||
+    data.email ||
+    "No email";
+
+  const photo =
+    currentUser.photoURL ||
+    data.photoURL ||
+    "logo.png";
+
+
+  document.getElementById(
+    "userName"
+  ).textContent = displayName;
+
+
+  document.getElementById(
+    "userEmail"
+  ).textContent = email;
+
+
+  document.getElementById(
+    "userPhoto"
+  ).src = photo;
+
+
+  /* ---------- XP ---------- */
+
+  const xp =
+    number(data.xp);
+
+  const level =
+    getLevel(xp);
+
+
+  document.getElementById(
+    "userLevel"
+  ).textContent =
+    level.level;
+
+
+  document.getElementById(
+    "levelTitle"
+  ).textContent =
+    level.title;
+
+
+  document.getElementById(
+    "currentXP"
+  ).textContent =
+    level.currentXP;
+
+
+  document.getElementById(
+    "xpRequired"
+  ).textContent =
+    100;
+
+
+  document.getElementById(
+    "xpFill"
+  ).style.width =
+    level.currentXP + "%";
+
+
+  document.getElementById(
+    "nextLevel"
+  ).textContent =
+    level.xpForNext === 100
+      ? "You need 100 XP to reach the next level."
+      : level.xpForNext +
+        " XP needed to reach the next level.";
+
+
+  /* ---------- STREAK ---------- */
+
+  document.getElementById(
+    "streak"
+  ).textContent =
+    number(data.streak);
+
+
+  /* ---------- COINS ---------- */
+
+  document.getElementById(
+    "coins"
+  ).textContent =
+    number(data.coins);
+
+
+  /* ---------- CERTIFICATES ---------- */
+
+  const certificates =
+    (
+      data.certificates &&
+      typeof data.certificates === "object"
+    )
+      ? data.certificates
+      : {};
+
+
+  const earnedCertificates =
+    Object.keys(certificates)
+      .filter(
+        key =>
+          certificates[key] === true
+      );
+
+
+  document.getElementById(
+    "certCount"
+  ).textContent =
+    earnedCertificates.length;
+
+
+  /* ---------- PROGRESS ---------- */
+
+  const progress =
+    (
+      data.progress &&
+      typeof data.progress === "object"
+    )
+      ? data.progress
+      : {};
+
+
+  let totalLessons = 0;
+
+  let totalPossibleLessons = 0;
+
+  let coursesStarted = 0;
+
+  let coursesCompleted = 0;
+
+
+  courses.forEach(course => {
+
+    const courseData =
+      progress[course.id] || {};
+
+    const completed =
+      Math.max(
+        0,
+        Math.min(
+          number(courseData.completed),
+          course.lessons
+        )
+      );
+
+
+    totalLessons += completed;
+
+    totalPossibleLessons +=
+      course.lessons;
+
+
+    if(completed > 0){
+
+      coursesStarted++;
+
+    }
+
+
+    if(completed >= course.lessons){
+
+      coursesCompleted++;
+
+    }
+
+  });
+
+
+  document.getElementById(
+    "lessonsDone"
+  ).textContent =
+    totalLessons;
+
+
+  document.getElementById(
+    "coursesStarted"
+  ).textContent =
+    coursesStarted;
+
+
+  document.getElementById(
+    "coursesCompleted"
+  ).textContent =
+    coursesCompleted;
+
+
+  const overall =
+    totalPossibleLessons > 0
+      ? Math.floor(
+          (
+            totalLessons /
+            totalPossibleLessons
+          ) * 100
+        )
+      : 0;
+
+
+  document.getElementById(
+    "overallCompletion"
+  ).textContent =
+    overall + "%";
+
+
+  renderCourses(
+    progress,
+    certificates
+  );
+
+
+  renderCertificates(
+    earnedCertificates
+  );
+
+}
+
+
+/* ================= RENDER COURSES ================= */
+
+function renderCourses(
+  progress,
+  certificates
+){
+
+  const container =
+    document.getElementById(
+      "coursesProgress"
+    );
+
+
+  container.innerHTML = "";
+
+
+  courses.forEach(course => {
+
+    const courseData =
+      progress[course.id] || {};
+
+
+    const completed =
+      Math.max(
+        0,
+        Math.min(
+          number(courseData.completed),
+          course.lessons
+        )
+      );
+
+
+    const percent =
+      Math.min(
+        100,
+        Math.floor(
+          (
+            completed /
+            course.lessons
+          ) * 100
+        )
+      );
+
+
+    let status =
+      "Not Started";
+
+    if(
+      certificates[course.id] === true
+    ){
+
+      status =
+        "Certificate Earned";
+
+    }else if(
+      completed >= course.lessons
+    ){
+
+      status =
+        "Course Completed";
+
+    }else if(
+      completed > 0
+    ){
+
+      status =
+        "In Progress";
+
+    }
+
+
+    const card =
+      document.createElement(
+        "article"
+      );
+
+    card.className =
+      "courseCard";
+
+
+    const top =
+      document.createElement(
+        "div"
+      );
+
+    top.className =
+      "courseTop";
+
+
+    const img =
+      document.createElement(
+        "img"
+      );
+
+    img.className =
+      "courseIcon";
+
+    img.src =
+      course.icon;
+
+    img.alt =
+      course.name;
+
+
+    img.addEventListener(
+      "error",
+      () => {
+
+        img.src = "logo.png";
+
+      }
+    );
+
+
+    const info =
+      document.createElement(
+        "div"
+      );
+
+    info.className =
+      "courseInfo";
+
+
+    const title =
+      document.createElement(
+        "h4"
+      );
+
+    title.textContent =
+      course.name;
+
+
+    const statusText =
+      document.createElement(
+        "p"
+      );
+
+    statusText.textContent =
+      status;
+
+
+    info.appendChild(title);
+
+    info.appendChild(statusText);
+
+
+    const percentText =
+      document.createElement(
+        "div"
+      );
+
+    percentText.className =
+      "coursePercent";
+
+    percentText.textContent =
+      percent + "%";
+
+
+    top.appendChild(img);
+
+    top.appendChild(info);
+
+    top.appendChild(percentText);
+
+
+    const wrapper =
+      document.createElement(
+        "div"
+      );
+
+    wrapper.className =
+      "progressWrapper";
+
+
+    const bar =
+      document.createElement(
+        "div"
+      );
+
+    bar.className =
+      "progressBar";
+
+
+    const fill =
+      document.createElement(
+        "div"
+      );
+
+    fill.className =
+      "progressFill";
+
+    fill.style.width =
+      percent + "%";
+
+
+    bar.appendChild(fill);
+
+
+    const bottom =
+      document.createElement(
+        "div"
+      );
+
+    bottom.className =
+      "progressBottom";
+
+
+    const lessons =
+      document.createElement(
+        "span"
+      );
+
+    lessons.textContent =
+      completed +
+      " / " +
+      course.lessons +
+      " lessons";
+
+
+    const statusBottom =
+      document.createElement(
+        "span"
+      );
+
+    statusBottom.textContent =
+      status;
+
+
+    bottom.appendChild(
+      lessons
+    );
+
+    bottom.appendChild(
+      statusBottom
+    );
+
+
+    wrapper.appendChild(bar);
+
+    wrapper.appendChild(bottom);
+
+
+    card.appendChild(top);
+
+    card.appendChild(wrapper);
+
+
+    container.appendChild(card);
+
+  });
+
+}
+
+
+/* ================= CERTIFICATES ================= */
+
+function renderCertificates(
+  earnedCertificates
+){
+
+  const container =
+    document.getElementById(
+      "certificatesGrid"
+    );
+
+
+  container.innerHTML = "";
+
+
+  if(
+    earnedCertificates.length === 0
+  ){
+
+    const empty =
+      document.createElement(
+        "div"
+      );
+
+    empty.className =
+      "emptyBox";
+
+
+    empty.innerHTML =
+      `
+        <i class="fa fa-lock"></i>
+        <strong>No certificates yet</strong>
+        <p>Complete a course to earn your first certificate.</p>
+      `;
+
+
+    container.appendChild(
+      empty
+    );
+
+    return;
+
+  }
+
+
+  earnedCertificates.forEach(
+    courseId => {
+
+      const course =
+        courses.find(
+          item =>
+            item.id === courseId
+        );
+
+
+      if(!course){
+
+        return;
+
+      }
+
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+      card.className =
+        "certCard";
+
+
+      const icon =
+        document.createElement(
+          "div"
+        );
+
+      icon.className =
+        "certIcon";
+
+      icon.innerHTML =
+        '<i class="fa fa-certificate"></i>';
+
+
+      const title =
+        document.createElement(
+          "h4"
+        );
+
+      title.textContent =
+        course.name;
+
+
+      const text =
+        document.createElement(
+          "p"
+        );
+
+      text.textContent =
+        "Course completed • Certificate earned";
+
+
+      card.appendChild(icon);
+
+      card.appendChild(title);
+
+      card.appendChild(text);
+
+
+      container.appendChild(card);
+
+    }
+  );
+
+}
+
+
+/* ================= EVENTS ================= */
+
+
+/*
+  Back button
+*/
+
+backBtn.addEventListener(
+  "click",
+  () => {
+
+    if(
+      window.history.length > 1
+    ){
+
+      window.history.back();
+
+    }else{
+
+      window.location.href =
+        "menu.html";
+
+    }
+
+  }
+);
+
+
+/*
+  Refresh button
+*/
+
+refreshBtn.addEventListener(
+  "click",
+  async () => {
+
+    refreshBtn.disabled = true;
+
+    refreshBtn
+      .querySelector("i")
+      .classList.add(
+        "fa-spin"
+      );
+
+
+    try{
+
+      await loadProgress();
+
+    }finally{
+
+      refreshBtn.disabled = false;
+
+      refreshBtn
+        .querySelector("i")
+        .classList.remove(
+          "fa-spin"
+        );
+
+    }
+
+  }
+);
+
+
+/*
+  Retry
+*/
+
+retryBtn.addEventListener(
+  "click",
+  async () => {
+
+    await loadProgress();
+
+  }
+);
+
+
+/*
+  Broken profile image fallback
+*/
+
+setupImageFallback();
+
+
+/* ================= AUTH ENGINE ================= */
+
+/*
+  This is the important part.
+
+  We listen to the SAME Firebase Auth object
+  used by authentication.js.
+
+  Therefore:
+
+  login.html
+       ↓
+  authentication.js
+       ↓
+  Firebase Auth
+       ↓
+  progress.html
+
+  There is no second Firebase project here.
+*/
+
+onAuthStateChanged(
+  auth,
+  async user => {
+
+    if(!user){
+
+      currentUser = null;
+
+      window.location.href =
+        "login.html";
+
+      return;
+
+    }
+
+
+    currentUser = user;
+
+
+    console.log(
+      "Progress page authenticated user:",
+      user.uid,
+      user.email
+    );
+
+
+    await loadProgress();
+
+  }
+);
+
+
+/* ================= GLOBAL ERROR PROTECTION ================= */
+
+window.addEventListener(
+  "error",
+  event => {
+
+    console.error(
+      "Progress page error:",
+      event.error || event.message
+    );
+
+  }
+);
+
+
+window.addEventListener(
+  "unhandledrejection",
+  event => {
+
+    console.error(
+      "Progress page promise error:",
+      event.reason
+    );
+
+  }
+);
+
+</script>
+
+</body>
+</html>
