@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Programming Course | Code Academy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{min-height:100vh;color:#fff;background:radial-gradient(circle at top left,#142d48,transparent 35%),radial-gradient(circle at bottom right,#083a4a,transparent 35%),#06111b}
+.navbar{position:sticky;top:0;z-index:100;padding:14px 18px;display:flex;align-items:center;gap:15px;background:rgba(5,17,27,.93);backdrop-filter:blur(12px);border-bottom:1px solid rgba(70,190,255,.16)}
+.back-btn{width:42px;height:42px;border:1px solid rgba(70,190,255,.3);border-radius:12px;background:#0b2030;color:#78d7ff;font-size:20px;cursor:pointer}
+.logo{flex:1}.logo h2{font-size:clamp(17px,4vw,23px)}.logo span{font-size:12px;color:#75b8d6}
+.xp-box{display:flex;align-items:center;gap:7px;padding:9px 13px;border-radius:12px;background:#0b2433;border:1px solid rgba(70,190,255,.2);color:#8bdcff;font-weight:bold;white-space:nowrap}
+.hero,.container{max-width:1100px;margin:0 auto}.hero{padding:30px 18px 20px}
+.hero-card{padding:28px;border-radius:24px;background:linear-gradient(145deg,rgba(15,47,69,.95),rgba(7,24,37,.95));border:1px solid rgba(70,190,255,.18);box-shadow:0 15px 45px rgba(0,0,0,.3)}
+.badge{display:inline-block;padding:7px 12px;border-radius:30px;background:rgba(70,190,255,.1);color:#79d9ff;font-size:12px;font-weight:bold;margin-bottom:13px}
+.hero h1{font-size:clamp(28px,6vw,48px);margin-bottom:10px}.hero p{color:#b3cad6;line-height:1.6;max-width:800px}
+.progress-area{margin-top:22px}.progress-info{display:flex;justify-content:space-between;margin-bottom:8px;font-size:13px;color:#91b3c4}
+.progress-bar{width:100%;height:9px;border-radius:20px;overflow:hidden;background:#102431}.progress-fill{height:100%;width:0;border-radius:20px;background:#42bdf5;transition:.4s}
+.container{padding:10px 18px 50px}.section-title{margin:15px 0 18px}.section-title h2{font-size:23px}.section-title p{margin-top:5px;color:#86a5b5;font-size:13px}
+.lessons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.lesson-card{padding:21px;border-radius:19px;background:rgba(9,29,43,.92);border:1px solid rgba(70,190,255,.13);transition:.25s;overflow:hidden}
+.lesson-card:hover{transform:translateY(-3px);border-color:rgba(70,190,255,.4);box-shadow:0 10px 30px rgba(0,0,0,.25)}.lesson-card.locked{opacity:.58}
+.lesson-number{color:#70d4ff;font-size:12px;font-weight:bold;margin-bottom:9px}.lesson-card h3{font-size:19px;margin-bottom:9px}
+.learn{color:#c0d5df;font-size:14px;line-height:1.55;margin-bottom:10px}.summary{color:#7898a8;font-size:13px;line-height:1.5;min-height:58px}.lesson-footer{margin-top:17px}
+.lesson-btn{display:block;width:100%;padding:12px 14px;border:none;border-radius:11px;background:#36b9f0;color:#03131d;font-weight:bold;text-align:center;text-decoration:none;cursor:pointer}
+.lesson-btn:hover{background:#65cdf7}.lesson-btn.completed{background:#123b50;color:#86ddff;border:1px solid rgba(70,190,255,.25)}.lesson-btn.locked{background:#17242c;color:#6d818c;cursor:not-allowed;pointer-events:none}
+.status{display:inline-block;margin-top:9px;font-size:11px;color:#6f91a2}.loading{text-align:center;padding:35px;color:#78a0b2}
+@media(max-width:700px){.navbar{padding:11px 12px}.back-btn{width:38px;height:38px}.xp-box{padding:8px 10px;font-size:13px}.hero{padding:20px 12px 12px}.hero-card{padding:21px;border-radius:20px}.container{padding:8px 12px 35px}.lessons{grid-template-columns:1fr;gap:13px}.lesson-card{padding:18px}.summary{min-height:auto}}
+@media(max-width:400px){.logo span{display:none}.xp-box{font-size:12px}.hero h1{font-size:29px}}
+</style>
+</head>
+<body>
+<nav class="navbar">
+<button class="back-btn" onclick="history.back()">←</button>
+<div class="logo"><h2>Code Academy</h2><span>C++ Programming Course</span></div>
+<div class="xp-box">⭐ <span id="xpDisplay">0 XP</span></div>
+</nav>
+
+<section class="hero"><div class="hero-card">
+<span class="badge">COURSE 08 • C++ PROGRAMMING</span>
+<h1>Master C++ Programming</h1>
+<p>Learn modern C++ programming from the fundamentals through object-oriented programming, STL, memory concepts and practical software development.</p>
+<div class="progress-area"><div class="progress-info"><span>Course Progress</span><span id="progressText">0 / 10 lessons</span></div><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div></div>
+</div></section>
+
+<main class="container">
+<div class="section-title"><h2>Course Lessons</h2><p>Complete each lesson to unlock the next one.</p></div>
+<div class="lessons" id="lessonsContainer"><div class="loading">Loading your C++ course...</div></div>
+</main>
+
+<script type="module">
+import {auth,db,onAuthStateChanged} from "./authentication.js";
+import {doc,getDoc} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const lessons=[
+{id:1,title:"Introduction to C++",learn:"Understand what C++ is, its relationship with C, how compilation works and where C++ is used.",summary:"Learn C++ program structure, source files, compilation, comments and your first working program."},
+{id:2,title:"Variables and Data Types",learn:"Store and work with information using C++ variables and built-in data types.",summary:"Learn int, float, double, char, bool, strings, constants, initialization and type conversion."},
+{id:3,title:"Operators and Expressions",learn:"Build expressions using arithmetic, comparison, logical, assignment and other C++ operators.",summary:"Practice calculations, comparisons, conditions, increment and decrement, and operator precedence."},
+{id:4,title:"Conditions and Decision Making",learn:"Make programs choose different actions based on conditions.",summary:"Master if, else, else-if, nested conditions, switch statements and conditional expressions."},
+{id:5,title:"Loops and Control Flow",learn:"Repeat instructions efficiently and control how loops execute.",summary:"Learn for, while and do-while loops, nested loops, break and continue."},
+{id:6,title:"Functions",learn:"Create reusable blocks of code and organize larger C++ programs.",summary:"Learn function declarations, parameters, return values, overloading, scope and basic recursion."},
+{id:7,title:"Arrays, Strings and Vectors",learn:"Store collections of data and work with text using common C++ containers.",summary:"Understand arrays, std::string, vectors, indexing, traversal and useful collection operations."},
+{id:8,title:"Classes and Object-Oriented Programming",learn:"Build programs around objects, classes and reusable designs.",summary:"Learn classes, objects, constructors, methods, access control, encapsulation and basic inheritance."},
+{id:9,title:"STL, Pointers and Memory",learn:"Explore powerful C++ tools for data structures and understand memory-related concepts.",summary:"Learn selected STL containers and algorithms plus pointers, references and safe memory concepts."},
+{id:10,title:"C++ Project and Final Review",learn:"Combine the major C++ concepts into a practical programming project.",summary:"Review core syntax, functions, collections and object-oriented programming while building a complete program."}
+];
+
+const TOTAL_LESSONS=10;
+let completedLessons=0;
+
+onAuthStateChanged(auth,async user=>{
+if(!user){document.getElementById("lessonsContainer").innerHTML='<div class="loading">Please log in to access your C++ course.</div>';return}
+try{
+const snap=await getDoc(doc(db,"users",user.uid));
+const profile=snap.exists()?snap.data():{};
+document.getElementById("xpDisplay").textContent=`${Number(profile.xp||0).toLocaleString()} XP`;
+let progress=0;
+if(profile.progress&&profile.progress.cplusplus){const p=profile.progress.cplusplus;progress=typeof p==="number"?p:Number(p.completed||0)}
+if(!progress){try{const local=JSON.parse(localStorage.getItem("cplusplus_course_progress")||"{}");progress=Array.isArray(local.completed)?local.completed.length:Number(local.completed||0)}catch(e){}}
+completedLessons=Math.max(0,Math.min(TOTAL_LESSONS,progress));
+}catch(e){console.error(e)}
+renderLessons();updateProgress();
+});
+
+function renderLessons(){
+const container=document.getElementById("lessonsContainer");container.innerHTML="";
+lessons.forEach(lesson=>{
+const completed=lesson.id<=completedLessons;
+const unlocked=lesson.id===1||lesson.id<=completedLessons+1;
+const card=document.createElement("article");card.className=`lesson-card ${!unlocked?"locked":""}`;
+let buttonHTML;
+if(completed)buttonHTML=`<a class="lesson-btn completed" href="lesson.html?course=cplusplus&lesson=${lesson.id}">✓ Review Lesson</a><span class="status">Lesson completed</span>`;
+else if(unlocked)buttonHTML=`<a class="lesson-btn" href="lesson.html?course=cplusplus&lesson=${lesson.id}">Start Lesson →</a><span class="status">Ready to learn</span>`;
+else buttonHTML=`<span class="lesson-btn locked">🔒 Locked</span><span class="status">Complete Lesson ${lesson.id-1} first</span>`;
+card.innerHTML=`<div class="lesson-number">LESSON ${String(lesson.id).padStart(2,"0")}</div><h3>${lesson.title}</h3><p class="learn"><strong>What you'll learn:</strong> ${lesson.learn}</p><p class="summary">${lesson.summary}</p><div class="lesson-footer">${buttonHTML}</div>`;
+container.appendChild(card);
+});
+}
+
+function updateProgress(){
+const percentage=Math.round((completedLessons/TOTAL_LESSONS)*100);
+document.getElementById("progressText").textContent=`${completedLessons} / ${TOTAL_LESSONS} lessons`;
+document.getElementById("progressFill").style.width=`${percentage}%`;
+}
+</script>
+</body>
+</html>
