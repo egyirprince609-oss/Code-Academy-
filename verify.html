@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+
+<title>Verify Certificate | Code Academy</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:20px;
+
+    font-family:Arial,sans-serif;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #172554,
+            #050816
+        );
+
+    color:white;
+}
+
+.card{
+
+    width:min(100%,600px);
+
+    background:#0f172a;
+
+    border:1px solid rgba(255,255,255,.1);
+
+    border-radius:22px;
+
+    padding:35px 25px;
+
+    text-align:center;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.45);
+
+}
+
+.icon{
+
+    width:75px;
+    height:75px;
+
+    margin:0 auto 20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    font-size:35px;
+}
+
+h1{
+
+    font-size:28px;
+
+    margin-bottom:10px;
+
+}
+
+.subtitle{
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+    margin-bottom:25px;
+
+}
+
+#result{
+
+    text-align:left;
+
+}
+
+.row{
+
+    padding:14px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+.label{
+
+    display:block;
+
+    color:#64748b;
+
+    font-size:10px;
+
+    text-transform:uppercase;
+
+    letter-spacing:1px;
+
+    margin-bottom:5px;
+
+}
+
+.value{
+
+    color:#e2e8f0;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    word-break:break-word;
+
+}
+
+.active{
+
+    color:#4ade80;
+
+}
+
+.invalid{
+
+    color:#f87171;
+
+}
+
+button{
+
+    margin-top:25px;
+
+    padding:12px 18px;
+
+    border:0;
+
+    border-radius:10px;
+
+    background:#38bdf8;
+
+    color:#001018;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="icon"
+         id="icon">
+
+        ✓
+
+    </div>
+
+    <h1 id="title">
+        Certificate Verification
+    </h1>
+
+    <p class="subtitle">
+        Code Academy Digital Credential Registry
+    </p>
+
+    <div id="result">
+        Checking certificate...
+    </div>
+
+    <button
+        onclick="window.location.href='certificate.html'">
+
+        Back to Code Academy
+
+    </button>
+
+</div>
+
+
+<script type="module">
+
+import {
+    db
+} from "./authentication.js";
+
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const id =
+    params.get("id");
+
+
+const result =
+    document.getElementById(
+        "result"
+    );
+
+
+const title =
+    document.getElementById(
+        "title"
+    );
+
+
+const icon =
+    document.getElementById(
+        "icon"
+    );
+
+
+function row(
+    label,
+    value
+){
+
+    return `
+
+        <div class="row">
+
+            <span class="label">
+                ${label}
+            </span>
+
+            <span class="value">
+                ${value || "--"}
+            </span>
+
+        </div>
+
+    `;
+
+}
+
+
+async function verify(){
+
+    if(!id){
+
+        throw new Error(
+            "No certificate ID was supplied."
+        );
+
+    }
+
+
+    const ref =
+        doc(
+            db,
+            "certificates",
+            id
+        );
+
+
+    const snap =
+        await getDoc(ref);
+
+
+    if(!snap.exists()){
+
+        throw new Error(
+            "Certificate not found in the Code Academy registry."
+        );
+
+    }
+
+
+    const certificate =
+        snap.data();
+
+
+    if(
+        certificate.status !==
+        "active"
+    ){
+
+        icon.textContent =
+            "!";
+
+        icon.classList.add(
+            "invalid"
+        );
+
+        title.textContent =
+            "Certificate Not Active";
+
+        result.innerHTML = `
+
+            ${row(
+                "Certificate ID",
+                certificate.certificateId || id
+            )}
+
+            ${row(
+                "Status",
+                certificate.status || "inactive"
+            )}
+
+        `;
+
+        return;
+
+    }
+
+
+    title.textContent =
+        "Certificate Verified";
+
+
+    result.innerHTML = `
+
+        ${row(
+            "Certificate ID",
+            certificate.certificateId || id
+        )}
+
+        ${row(
+            "Recipient",
+            certificate.recipientName
+        )}
+
+        ${row(
+            "Course",
+            certificate.courseName
+        )}
+
+        ${row(
+            "Level",
+            certificate.level
+        )}
+
+        ${row(
+            "Completion",
+            (certificate.completionPercentage || 100) + "%"
+        )}
+
+        ${row(
+            "Lessons",
+            `${certificate.completedLessons || 0}/${certificate.totalLessons || 0}`
+        )}
+
+        ${row(
+            "Issuer",
+            certificate.issuer || "Code Academy"
+        )}
+
+        ${row(
+            "Credential Type",
+            certificate.credentialType || "Certificate of Completion"
+        )}
+
+        ${row(
+            "Status",
+            "ACTIVE"
+        )}
+
+    `;
+
+}
+
+
+verify()
+
+.catch(error => {
+
+    icon.textContent =
+        "!";
+
+    icon.style.background =
+        "#ef4444";
+
+    title.textContent =
+        "Certificate Could Not Be Verified";
+
+    result.innerHTML = `
+
+        <div class="row">
+
+            <span class="label">
+                Result
+            </span>
+
+            <span class="value invalid">
+                ${error.message}
+            </span>
+
+        </div>
+
+    `;
+
+});
+
+</script>
+
+</body>
+</html>
