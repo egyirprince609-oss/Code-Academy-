@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Rust Course | Code Academy</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+    background:#0d0b0a;
+    color:#fff;
+}
+
+body{
+    overflow-x:hidden;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar{
+    width:100%;
+    min-height:70px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 20px;
+    background:rgba(13,11,10,.97);
+    border-bottom:1px solid rgba(222,82,46,.22);
+    position:sticky;
+    top:0;
+    z-index:100;
+    backdrop-filter:blur(12px);
+}
+
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.back-btn{
+    width:42px;
+    height:42px;
+    border:none;
+    border-radius:12px;
+    background:#241714;
+    color:#fff;
+    font-size:22px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.back-btn:hover{
+    background:#3a211b;
+    transform:translateX(-2px);
+}
+
+.logo{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#dea584,#ce422b);
+    color:#fff;
+    font-weight:900;
+    font-size:16px;
+    box-shadow:0 0 18px rgba(222,82,46,.3);
+}
+
+.course-title{
+    font-size:18px;
+    font-weight:800;
+}
+
+.course-subtitle{
+    font-size:11px;
+    color:#b29d96;
+    margin-top:3px;
+}
+
+.xp-box{
+    padding:10px 15px;
+    border-radius:12px;
+    background:#241714;
+    border:1px solid rgba(222,82,46,.2);
+    font-weight:700;
+    white-space:nowrap;
+}
+
+.xp-box span{
+    color:#ff9b7a;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+    width:min(1100px,94%);
+    margin:25px auto 15px;
+    padding:28px;
+    border-radius:22px;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(222,82,46,.23),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #211511,
+            #110d0b
+        );
+
+    border:1px solid rgba(222,82,46,.22);
+}
+
+.hero h1{
+    font-size:clamp(28px,5vw,44px);
+    margin-bottom:10px;
+}
+
+.hero h1 span{
+    color:#ff7858;
+}
+
+.hero p{
+    color:#c0aaa2;
+    line-height:1.7;
+    max-width:820px;
+}
+
+.progress-area{
+    margin-top:22px;
+}
+
+.progress-info{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+    color:#c0aaa2;
+    font-size:14px;
+}
+
+.progress-bar{
+    width:100%;
+    height:10px;
+    background:#2a1b17;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(
+        90deg,
+        #a93220,
+        #ce422b,
+        #ff8a68
+    );
+    border-radius:20px;
+    transition:width .5s ease;
+}
+
+/* =========================
+   LESSON GRID
+========================= */
+
+.container{
+    width:min(1100px,94%);
+    margin:0 auto 40px;
+}
+
+.section-title{
+    margin:25px 0 15px;
+    font-size:23px;
+}
+
+.lessons{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:16px;
+}
+
+.lesson-card{
+    position:relative;
+    padding:20px;
+    border-radius:18px;
+    background:#18110f;
+    border:1px solid rgba(255,255,255,.07);
+    transition:.25s ease;
+    overflow:hidden;
+}
+
+.lesson-card:hover{
+    transform:translateY(-3px);
+    border-color:rgba(222,82,46,.45);
+    box-shadow:0 12px 35px rgba(0,0,0,.25);
+}
+
+.lesson-card.locked{
+    opacity:.58;
+}
+
+.lesson-top{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+}
+
+.lesson-number{
+    min-width:43px;
+    height:43px;
+    border-radius:12px;
+    background:#321b16;
+    color:#ff9678;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+}
+
+.lesson-card.completed .lesson-number{
+    background:#173b2a;
+    color:#50e08a;
+}
+
+.lesson-content{
+    flex:1;
+}
+
+.lesson-content h3{
+    font-size:18px;
+    margin-bottom:7px;
+}
+
+.lesson-content p{
+    color:#b9a49d;
+    font-size:13px;
+    line-height:1.55;
+}
+
+.status{
+    margin-top:14px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.status.locked-text{
+    color:#897873;
+}
+
+.status.completed-text{
+    color:#50e08a;
+}
+
+.status.available-text{
+    color:#ff9678;
+}
+
+.lesson-btn{
+    width:100%;
+    margin-top:17px;
+    padding:12px 14px;
+    border:none;
+    border-radius:11px;
+    background:linear-gradient(
+        135deg,
+        #a93220,
+        #ce422b
+    );
+    color:white;
+    font-weight:800;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.lesson-btn:hover{
+    filter:brightness(1.15);
+    transform:translateY(-1px);
+}
+
+.lesson-btn:disabled{
+    background:#241916;
+    color:#705f59;
+    cursor:not-allowed;
+    transform:none;
+}
+
+/* =========================
+   AUTH MESSAGE
+========================= */
+
+.auth-message{
+    display:none;
+    width:min(700px,94%);
+    margin:30px auto;
+    padding:22px;
+    border-radius:16px;
+    background:#18110f;
+    border:1px solid rgba(255,255,255,.08);
+    text-align:center;
+}
+
+.auth-message p{
+    color:#c0aaa2;
+    line-height:1.6;
+}
+
+.auth-message button{
+    margin-top:15px;
+    padding:11px 20px;
+    border:0;
+    border-radius:10px;
+    background:#ce422b;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px){
+
+    .navbar{
+        padding:10px 12px;
+    }
+
+    .course-title{
+        font-size:15px;
+    }
+
+    .course-subtitle{
+        font-size:10px;
+    }
+
+    .logo{
+        width:38px;
+        height:38px;
+    }
+
+    .back-btn{
+        width:38px;
+        height:38px;
+    }
+
+    .xp-box{
+        padding:8px 10px;
+        font-size:12px;
+    }
+
+    .hero{
+        margin-top:16px;
+        padding:21px;
+        border-radius:18px;
+    }
+
+    .hero h1{
+        font-size:29px;
+    }
+
+    .lessons{
+        grid-template-columns:1fr;
+    }
+
+    .lesson-card{
+        padding:17px;
+    }
+}
+
+@media(max-width:430px){
+
+    .navbar{
+        gap:7px;
+    }
+
+    .course-title{
+        font-size:14px;
+    }
+
+    .xp-box{
+        font-size:11px;
+        padding:7px 8px;
+    }
+
+    .nav-left{
+        gap:7px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav class="navbar">
+
+    <div class="nav-left">
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+            aria-label="Go back">
+            ←
+        </button>
+
+        <div class="logo">
+            RS
+        </div>
+
+        <div>
+            <div class="course-title">
+                Rust Course
+            </div>
+
+            <div class="course-subtitle">
+                Code Academy
+            </div>
+        </div>
+
+    </div>
+
+    <div class="xp-box">
+        XP: <span id="xpValue">0</span>
+    </div>
+
+</nav>
+
+
+<!-- =========================
+     HERO
+========================= -->
+
+<section class="hero">
+
+    <h1>
+        Learn <span>Rust</span>
+    </h1>
+
+    <p>
+        Learn Rust from the fundamentals to safe, fast and
+        reliable systems programming. Complete all 10 lessons
+        and build a strong foundation in ownership, borrowing,
+        structs, traits, concurrency and modern Rust development.
+    </p>
+
+    <div class="progress-area">
+
+        <div class="progress-info">
+            <span>Course Progress</span>
+
+            <span id="progressText">
+                0 / 10 lessons
+            </span>
+        </div>
+
+        <div class="progress-bar">
+            <div
+                class="progress-fill"
+                id="progressFill">
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================
+     AUTH MESSAGE
+========================= -->
+
+<div
+    class="auth-message"
+    id="authMessage">
+
+    <p>
+        Please log in to your Code Academy account
+        to synchronize your Rust progress and XP.
+    </p>
+
+    <button onclick="location.href='login.html'">
+        Log In
+    </button>
+
+</div>
+
+
+<!-- =========================
+     LESSONS
+========================= -->
+
+<main class="container">
+
+    <h2 class="section-title">
+        Rust Lessons
+    </h2>
+
+    <div
+        class="lessons"
+        id="lessonContainer">
+    </div>
+
+</main>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================================
+   COURSE SETTINGS
+========================================================= */
+
+const COURSE_ID = "rust";
+const COURSE_NAME = "Rust";
+const TOTAL_LESSONS = 10;
+
+const LOCAL_KEY = "rust_course_progress";
+
+
+/* =========================================================
+   LESSON DATA
+========================================================= */
+
+const lessons = [
+
+    {
+        id:1,
+        title:"Introduction to Rust",
+        learn:"Understand Rust, its goals, features and development environment.",
+        summary:"Learn why Rust was created, where it is used, how to install Rust and how to create your first Rust program."
+    },
+
+    {
+        id:2,
+        title:"Variables, Mutability and Data Types",
+        learn:"Work with Rust variables, constants, mutability and fundamental data types.",
+        summary:"Learn let, mut, constants, integers, floating-point numbers, booleans, characters and type inference."
+    },
+
+    {
+        id:3,
+        title:"Functions, Expressions and Control Flow",
+        learn:"Build reusable functions and control program execution.",
+        summary:"Learn functions, parameters, return values, expressions, if, else, loops, while, for and match."
+    },
+
+    {
+        id:4,
+        title:"Ownership and Memory",
+        learn:"Understand Rust's most important memory-safety concept: ownership.",
+        summary:"Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector."
+    },
+
+    {
+        id:5,
+        title:"References and Borrowing",
+        learn:"Use references safely without taking ownership of values.",
+        summary:"Master borrowing, immutable references, mutable references, borrowing rules and lifetime-related concepts."
+    },
+
+    {
+        id:6,
+        title:"Structs, Enums and Pattern Matching",
+        learn:"Create custom data structures and model different states.",
+        summary:"Learn structs, methods, enums, Option, Result and powerful pattern matching with match and if let."
+    },
+
+    {
+        id:7,
+        title:"Collections, Strings and Error Handling",
+        learn:"Work with Rust collections and handle failures safely.",
+        summary:"Learn vectors, strings, hash maps, Result, panic, error propagation and practical error-handling techniques."
+    },
+
+    {
+        id:8,
+        title:"Traits, Generics and Lifetimes",
+        learn:"Create reusable and flexible Rust code using advanced type features.",
+        summary:"Learn generics, traits, trait bounds, implementations and the fundamentals of lifetime annotations."
+    },
+
+    {
+        id:9,
+        title:"Modules, Packages and Concurrency",
+        learn:"Organize Rust projects and understand safe concurrent programming.",
+        summary:"Learn modules, crates, packages, threads, channels and how Rust's ownership system helps make concurrency safer."
+    },
+
+    {
+        id:10,
+        title:"Rust Project and Final Review",
+        learn:"Combine your Rust skills into a practical application.",
+        summary:"Build a structured Rust project while reviewing ownership, borrowing, structs, enums, traits, error handling and concurrency."
+    }
+
+];
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let completedLessons = 0;
+let currentUser = null;
+
+
+/* =========================================================
+   LOCAL PROGRESS
+========================================================= */
+
+function getLocalProgress(){
+
+    try{
+
+        const saved =
+            localStorage.getItem(LOCAL_KEY);
+
+        if(!saved){
+            return 0;
+        }
+
+        const parsed =
+            JSON.parse(saved);
+
+        if(typeof parsed === "number"){
+
+            return Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    parsed
+                )
+            );
+        }
+
+        if(
+            parsed &&
+            typeof parsed.completed === "number"
+        ){
+
+            return Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    parsed.completed
+                )
+            );
+        }
+
+        if(Array.isArray(parsed)){
+
+            return Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    parsed.length
+                )
+            );
+        }
+
+        return 0;
+
+    }catch(error){
+
+        console.warn(
+            "Unable to read Rust local progress:",
+            error
+        );
+
+        return 0;
+    }
+}
+
+
+/* =========================================================
+   SAVE LOCAL PROGRESS
+========================================================= */
+
+function saveLocalProgress(value){
+
+    try{
+
+        localStorage.setItem(
+            LOCAL_KEY,
+            JSON.stringify({
+                completed:value
+            })
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Unable to save Rust progress:",
+            error
+        );
+    }
+}
+
+
+/* =========================================================
+   EXTRACT FIREBASE PROGRESS
+========================================================= */
+
+function extractCompleted(progress){
+
+    if(typeof progress === "number"){
+
+        return Math.max(
+            0,
+            Math.min(
+                TOTAL_LESSONS,
+                progress
+            )
+        );
+    }
+
+    if(
+        !progress ||
+        typeof progress !== "object"
+    ){
+
+        return 0;
+    }
+
+
+    /*
+       Main Code Academy lesson format:
+
+       progress[course].completed
+    */
+
+    if(typeof progress.completed === "number"){
+
+        return Math.max(
+            0,
+            Math.min(
+                TOTAL_LESSONS,
+                progress.completed
+            )
+        );
+    }
+
+
+    /*
+       Fallback for lesson1, lesson2, etc.
+    */
+
+    const lessonKeys =
+        Object.keys(progress)
+            .filter(key =>
+                /^lesson\d+$/i.test(key)
+            );
+
+
+    if(lessonKeys.length){
+
+        const numbers =
+            lessonKeys
+                .map(key =>
+                    parseInt(
+                        key.replace(/\D/g,""),
+                        10
+                    )
+                )
+                .filter(
+                    number =>
+                        Number.isFinite(number)
+                );
+
+
+        if(numbers.length){
+
+            return Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    Math.max(...numbers)
+                )
+            );
+        }
+    }
+
+    return 0;
+}
+
+
+/* =========================================================
+   LOAD USER DATA
+========================================================= */
+
+async function loadUserData(user){
+
+    currentUser = user;
+
+
+    if(!user){
+
+        document.getElementById(
+            "authMessage"
+        ).style.display = "block";
+
+        completedLessons =
+            getLocalProgress();
+
+        updateProgressUI();
+        renderLessons();
+
+        return;
+    }
+
+
+    document.getElementById(
+        "authMessage"
+    ).style.display = "none";
+
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        if(snapshot.exists()){
+
+            const profile =
+                snapshot.data();
+
+
+            /*
+               Firebase XP
+            */
+
+            const xp =
+                Number(profile.xp || 0);
+
+
+            document.getElementById(
+                "xpValue"
+            ).textContent =
+                xp.toLocaleString();
+
+
+            /*
+               Firebase Rust progress
+            */
+
+            const firebaseProgress =
+                profile.progress?.[COURSE_ID];
+
+
+            completedLessons =
+                extractCompleted(
+                    firebaseProgress
+                );
+
+
+            /*
+               Synchronize local cache.
+            */
+
+            saveLocalProgress(
+                completedLessons
+            );
+
+        }else{
+
+            completedLessons =
+                getLocalProgress();
+
+            document.getElementById(
+                "xpValue"
+            ).textContent = "0";
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Error loading Rust profile:",
+            error
+        );
+
+        completedLessons =
+            getLocalProgress();
+    }
+
+
+    updateProgressUI();
+    renderLessons();
+}
+
+
+/* =========================================================
+   UPDATE PROGRESS
+========================================================= */
+
+function updateProgressUI(){
+
+    const percentage =
+        Math.round(
+            (completedLessons / TOTAL_LESSONS) * 100
+        );
+
+
+    document.getElementById(
+        "progressText"
+    ).textContent =
+        `${completedLessons} / ${TOTAL_LESSONS} lessons`;
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        `${percentage}%`;
+}
+
+
+/* =========================================================
+   RENDER LESSONS
+========================================================= */
+
+function renderLessons(){
+
+    const container =
+        document.getElementById(
+            "lessonContainer"
+        );
+
+
+    container.innerHTML = "";
+
+
+    lessons.forEach(lesson => {
+
+        const isCompleted =
+            lesson.id <= completedLessons;
+
+
+        const isUnlocked =
+            lesson.id === 1 ||
+            lesson.id <= completedLessons + 1;
+
+
+        const card =
+            document.createElement(
+                "article"
+            );
+
+
+        card.className =
+            "lesson-card" +
+            (isCompleted
+                ? " completed"
+                : "") +
+            (!isUnlocked
+                ? " locked"
+                : "");
+
+
+        let statusHTML = "";
+
+
+        if(isCompleted){
+
+            statusHTML = `
+                <div class="status completed-text">
+                    ✓ Lesson Completed
+                </div>
+            `;
+
+        }else if(isUnlocked){
+
+            statusHTML = `
+                <div class="status available-text">
+                    ● Available Now
+                </div>
+            `;
+
+        }else{
+
+            statusHTML = `
+                <div class="status locked-text">
+                    🔒 Complete Lesson ${lesson.id - 1} to unlock
+                </div>
+            `;
+        }
+
+
+        card.innerHTML = `
+
+            <div class="lesson-top">
+
+                <div class="lesson-number">
+                    ${lesson.id}
+                </div>
+
+                <div class="lesson-content">
+
+                    <h3>
+                        ${lesson.title}
+                    </h3>
+
+                    <p>
+                        <strong>What you'll learn:</strong>
+                        ${lesson.learn}
+                    </p>
+
+                    <p style="margin-top:8px;">
+                        <strong>Summary:</strong>
+                        ${lesson.summary}
+                    </p>
+
+                </div>
+
+            </div>
+
+            ${statusHTML}
+
+            <button
+                class="lesson-btn"
+                ${!isUnlocked ? "disabled" : ""}
+                data-lesson="${lesson.id}">
+
+                ${
+                    isCompleted
+                    ? "Review Lesson"
+                    : "Start Lesson"
+                }
+
+            </button>
+        `;
+
+
+        const button =
+            card.querySelector(
+                ".lesson-btn"
+            );
+
+
+        if(isUnlocked){
+
+            button.addEventListener(
+                "click",
+                () => {
+                    openLesson(lesson.id);
+                }
+            );
+        }
+
+
+        container.appendChild(card);
+
+    });
+}
+
+
+/* =========================================================
+   OPEN LESSON
+========================================================= */
+
+function openLesson(lessonNumber){
+
+    /*
+       Existing root lesson.html receives:
+
+       ?course=rust&lesson=N
+    */
+
+    const url =
+        `lesson.html?course=${COURSE_ID}&lesson=${lessonNumber}`;
+
+
+    window.location.href = url;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+window.goBack = function(){
+
+    if(document.referrer){
+
+        history.back();
+
+    }else{
+
+        window.location.href =
+            "menu.html";
+    }
+};
+
+
+/* =========================================================
+   FIREBASE AUTH STATE
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        await loadUserData(user);
+
+    }
+);
+
+
+/* =========================================================
+   INITIAL LOCAL RENDER
+========================================================= */
+
+completedLessons =
+    getLocalProgress();
+
+updateProgressUI();
+renderLessons();
+
+</script>
+
+</body>
+</html>
