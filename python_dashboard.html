@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Python Development | Code Academy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#07111f;
+    --python:#ffd43b;
+    --python2:#3776ab;
+    --purple:#8b5cf6;
+    --text:#f8fafc;
+    --muted:#94a3b8;
+    --border:rgba(255,212,59,.16);
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    font-family:Inter,Arial,sans-serif;
+    color:var(--text);
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(55,118,171,.16),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(255,212,59,.10),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #020617,
+            #07111f 50%,
+            #0b1728
+        );
+}
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    width:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:14px clamp(14px,4vw,45px);
+
+    background:rgba(2,6,23,.82);
+
+    backdrop-filter:blur(18px);
+
+    border-bottom:
+        1px solid
+        rgba(148,163,184,.12);
+}
+
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+}
+
+.back-btn{
+    width:42px;
+    height:42px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.18);
+
+    border-radius:12px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+
+    background:
+        rgba(15,23,42,.8);
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.back-btn:hover{
+    transform:translateY(-2px);
+
+    border-color:
+        var(--python);
+
+    color:
+        var(--python);
+}
+
+.brand{
+    min-width:0;
+}
+
+.brand-title{
+    font-size:
+        clamp(16px,2vw,20px);
+
+    font-weight:900;
+
+    letter-spacing:-.5px;
+}
+
+.brand-subtitle{
+    color:var(--muted);
+
+    font-size:11px;
+
+    margin-top:2px;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.stat-pill{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    padding:9px 12px;
+
+    border-radius:12px;
+
+    border:
+        1px solid
+        rgba(148,163,184,.14);
+
+    background:
+        rgba(15,23,42,.72);
+
+    font-size:13px;
+
+    font-weight:800;
+
+    white-space:nowrap;
+}
+
+.stat-pill.xp i{
+    color:#facc15;
+}
+
+.stat-pill.coins i{
+    color:#fbbf24;
+}
+
+@media(max-width:520px){
+
+    .navbar{
+        padding:11px 12px;
+    }
+
+    .brand-subtitle{
+        display:none;
+    }
+
+    .stat-pill{
+        padding:8px 9px;
+        font-size:12px;
+    }
+
+    .back-btn{
+        width:38px;
+        height:38px;
+    }
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.container{
+    width:min(1180px,92%);
+
+    margin:0 auto;
+
+    padding:35px 0 60px;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:clamp(24px,5vw,42px);
+
+    border-radius:28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(55,118,171,.18),
+            rgba(15,23,42,.92) 55%,
+            rgba(255,212,59,.08)
+        );
+
+    border:
+        1px solid
+        rgba(255,212,59,.18);
+
+    box-shadow:
+        0 25px 80px
+        rgba(0,0,0,.28);
+
+    margin-bottom:32px;
+}
+
+.hero::before{
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    right:-100px;
+    top:-120px;
+
+    border-radius:50%;
+
+    background:
+        rgba(55,118,171,.14);
+
+    filter:blur(20px);
+}
+
+.hero-content{
+    position:relative;
+    z-index:1;
+
+    display:flex;
+    align-items:center;
+
+    gap:24px;
+}
+
+.course-icon{
+    flex:0 0 auto;
+
+    width:82px;
+    height:82px;
+
+    border-radius:22px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:40px;
+
+    color:#111827;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--python),
+            var(--python2)
+        );
+
+    box-shadow:
+        0 15px 35px
+        rgba(55,118,171,.28);
+}
+
+.hero-text{
+    flex:1;
+}
+
+.badge{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    padding:6px 11px;
+
+    margin-bottom:10px;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,212,59,.09);
+
+    border:
+        1px solid
+        rgba(255,212,59,.20);
+
+    color:
+        var(--python);
+
+    font-size:11px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+
+    letter-spacing:.7px;
+}
+
+.hero h1{
+    font-size:
+        clamp(28px,5vw,46px);
+
+    line-height:1.05;
+
+    letter-spacing:-1.5px;
+
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:var(--muted);
+
+    line-height:1.7;
+
+    max-width:720px;
+
+    font-size:14px;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress-section{
+    margin-top:25px;
+}
+
+.progress-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:8px;
+
+    font-size:12px;
+
+    font-weight:700;
+}
+
+.progress-percent{
+    color:
+        var(--python);
+}
+
+.progress-bar{
+    height:9px;
+
+    width:100%;
+
+    overflow:hidden;
+
+    border-radius:99px;
+
+    background:
+        rgba(148,163,184,.12);
+}
+
+.progress-fill{
+    width:0%;
+
+    height:100%;
+
+    border-radius:99px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--python2),
+            var(--python),
+            var(--purple)
+        );
+
+    transition:
+        width .6s ease;
+}
+
+/* =========================================================
+   SECTION HEADING
+========================================================= */
+
+.section-heading{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:17px;
+}
+
+.section-heading h2{
+    font-size:20px;
+
+    font-weight:900;
+}
+
+.section-heading span{
+    color:var(--muted);
+
+    font-size:12px;
+}
+
+/* =========================================================
+   LESSON GRID
+========================================================= */
+
+.lesson-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:18px;
+}
+
+/* =========================================================
+   LESSON CARD
+========================================================= */
+
+.lesson-card{
+    position:relative;
+
+    padding:22px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,31,51,.88),
+            rgba(8,20,35,.94)
+        );
+
+    border:
+        1px solid
+        var(--border);
+
+    box-shadow:
+        0 12px 35px
+        rgba(0,0,0,.18);
+
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:300px;
+}
+
+.lesson-card:not(.locked):hover{
+    transform:translateY(-5px);
+
+    border-color:
+        rgba(255,212,59,.42);
+
+    box-shadow:
+        0 18px 45px
+        rgba(0,0,0,.28),
+        0 0 25px
+        rgba(255,212,59,.06);
+}
+
+.lesson-number{
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    margin-bottom:16px;
+}
+
+.lesson-badge{
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:
+        var(--python);
+
+    font-size:11px;
+
+    font-weight:800;
+
+    text-transform:uppercase;
+}
+
+.status{
+    font-size:10px;
+
+    font-weight:800;
+
+    padding:5px 8px;
+
+    border-radius:999px;
+}
+
+.status.completed{
+    color:#4ade80;
+
+    background:
+        rgba(34,197,94,.1);
+}
+
+.status.current{
+    color:
+        var(--python);
+
+    background:
+        rgba(255,212,59,.10);
+}
+
+.status.locked{
+    color:#94a3b8;
+
+    background:
+        rgba(148,163,184,.08);
+}
+
+.lesson-card h3{
+    font-size:20px;
+
+    line-height:1.25;
+
+    margin-bottom:13px;
+}
+
+.lesson-card .label{
+    color:
+        var(--python);
+
+    font-size:10px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:.8px;
+
+    margin-bottom:6px;
+}
+
+.lesson-card p{
+    color:var(--muted);
+
+    font-size:13px;
+
+    line-height:1.65;
+
+    margin-bottom:14px;
+}
+
+.lesson-summary{
+    padding:12px;
+
+    border-radius:12px;
+
+    background:
+        rgba(2,6,23,.32);
+
+    border:
+        1px solid
+        rgba(148,163,184,.08);
+
+    margin-bottom:18px;
+}
+
+.lesson-footer{
+    margin-top:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.lesson-meta{
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+    font-weight:700;
+}
+
+.lesson-meta i{
+    color:#facc15;
+}
+
+.start-btn{
+    border:none;
+
+    border-radius:11px;
+
+    padding:10px 15px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:7px;
+
+    color:#111827;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--python),
+            var(--python2)
+        );
+
+    font-size:12px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.start-btn:hover{
+    transform:
+        translateY(-2px);
+
+    filter:
+        brightness(1.08);
+}
+
+.locked{
+    opacity:.58;
+}
+
+.locked .start-btn{
+    color:#cbd5e1;
+
+    background:
+        rgba(71,85,105,.45);
+
+    cursor:not-allowed;
+}
+
+.locked .start-btn:hover{
+    transform:none;
+
+    filter:none;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+    min-height:280px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:14px;
+
+    color:var(--muted);
+}
+
+.spinner{
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    border:
+        3px solid
+        rgba(148,163,184,.15);
+
+    border-top-color:
+        var(--python);
+
+    animation:
+        spin .8s linear infinite;
+}
+
+@keyframes spin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:800px){
+
+    .hero-content{
+        align-items:flex-start;
+    }
+
+    .course-icon{
+        width:68px;
+        height:68px;
+
+        font-size:32px;
+
+        border-radius:18px;
+    }
+
+    .lesson-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:560px){
+
+    .container{
+        width:94%;
+
+        padding-top:20px;
+    }
+
+    .hero{
+        padding:22px;
+
+        border-radius:22px;
+    }
+
+    .hero-content{
+        flex-direction:column;
+
+        gap:17px;
+    }
+
+    .course-icon{
+        width:62px;
+        height:62px;
+
+        font-size:28px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+
+    .lesson-card{
+        min-height:290px;
+
+        padding:19px;
+    }
+
+}
+</style>
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<nav class="navbar">
+
+    <div class="nav-left">
+
+        <button
+            class="back-btn"
+            id="backBtn"
+            aria-label="Back">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+        </button>
+
+
+        <div class="brand">
+
+            <div class="brand-title">
+                Code Academy
+            </div>
+
+            <div class="brand-subtitle">
+                Learn • Build • Master
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="nav-right">
+
+        <div class="stat-pill xp">
+
+            <i class="fa-solid fa-bolt"></i>
+
+            <span id="xpValue">
+                0 XP
+            </span>
+
+        </div>
+
+
+        <div class="stat-pill coins">
+
+            <i class="fa-solid fa-coins"></i>
+
+            <span id="coinsValue">
+                0
+            </span>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<main class="container">
+
+    <!-- =================================================
+         HERO
+    ================================================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="course-icon">
+
+                <i class="fa-brands fa-python"></i>
+
+            </div>
+
+
+            <div class="hero-text">
+
+                <div class="badge">
+
+                    <i class="fa-brands fa-python"></i>
+
+                    Python Development
+
+                </div>
+
+
+                <h1>
+                    Master Python
+                </h1>
+
+
+                <p>
+                    Learn Python from the fundamentals to
+                    practical software development. Build a
+                    strong programming foundation with variables,
+                    conditions, loops, functions, data structures,
+                    object-oriented programming and real projects.
+                </p>
+
+
+                <div class="progress-section">
+
+                    <div class="progress-top">
+
+                        <span>
+                            Course Progress
+                        </span>
+
+                        <span
+                            class="progress-percent"
+                            id="progressText">
+
+                            0%
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            id="progressFill">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         LESSONS
+    ================================================= -->
+
+    <section>
+
+        <div class="section-heading">
+
+            <h2>
+                Python Development Lessons
+            </h2>
+
+            <span id="lessonCount">
+                0 / 10 completed
+            </span>
+
+        </div>
+
+
+        <div id="lessonContainer">
+
+            <div class="loading">
+
+                <div class="spinner"></div>
+
+                <span>
+                    Loading your course...
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================================
+   COURSE CONFIG
+========================================================= */
+
+const COURSE_ID =
+    "python";
+
+const TOTAL_LESSONS =
+    10;
+
+
+/* =========================================================
+   LESSON DATA
+========================================================= */
+
+const lessons = [
+
+    {
+        id:1,
+
+        title:
+            "Introduction to Python",
+
+        learn:
+            "Understand Python, how it works and how to write your first Python programs.",
+
+        summary:
+            "Learn Python syntax, comments, print(), basic program structure and why Python is widely used in modern software development."
+    },
+
+
+    {
+        id:2,
+
+        title:
+            "Variables and Data Types",
+
+        learn:
+            "Store information and work with Python's fundamental data types.",
+
+        summary:
+            "Learn variables, strings, integers, floats, booleans, type conversion and how Python handles different kinds of values."
+    },
+
+
+    {
+        id:3,
+
+        title:
+            "Operators and Expressions",
+
+        learn:
+            "Perform calculations, comparisons and logical operations in Python.",
+
+        summary:
+            "Master arithmetic, assignment, comparison, identity, membership and logical operators while building useful expressions."
+    },
+
+
+    {
+        id:4,
+
+        title:
+            "Conditions and Decision Making",
+
+        learn:
+            "Make Python programs respond intelligently to different situations.",
+
+        summary:
+            "Learn if, elif and else statements, nested conditions and logical expressions for controlling program decisions."
+    },
+
+
+    {
+        id:5,
+
+        title:
+            "Loops and Iteration",
+
+        learn:
+            "Repeat operations efficiently using Python loops.",
+
+        summary:
+            "Learn for loops, while loops, range(), break, continue and iteration patterns for processing repeated tasks."
+    },
+
+
+    {
+        id:6,
+
+        title:
+            "Functions",
+
+        learn:
+            "Create reusable and organized Python code with functions.",
+
+        summary:
+            "Learn function definitions, parameters, arguments, return values, scope and how functions make programs easier to maintain."
+    },
+
+
+    {
+        id:7,
+
+        title:
+            "Lists, Tuples, Sets and Dictionaries",
+
+        learn:
+            "Store and organize collections of data using Python's core data structures.",
+
+        summary:
+            "Understand lists, tuples, sets and dictionaries and learn how to access, modify and process structured information."
+    },
+
+
+    {
+        id:8,
+
+        title:
+            "Files, Errors and Modules",
+
+        learn:
+            "Work with files, handle errors and organize Python programs into modules.",
+
+        summary:
+            "Learn file operations, exceptions, try/except, imports and basic program organization using reusable modules."
+    },
+
+
+    {
+        id:9,
+
+        title:
+            "Object-Oriented Python",
+
+        learn:
+            "Understand classes, objects, methods and the foundations of object-oriented programming.",
+
+        summary:
+            "Learn how classes and objects work and how object-oriented design can organize larger Python applications."
+    },
+
+
+    {
+        id:10,
+
+        title:
+            "Build a Complete Python Project",
+
+        learn:
+            "Combine your Python knowledge to create a complete practical application.",
+
+        summary:
+            "Bring variables, conditions, loops, functions, data structures, files and object-oriented concepts together in a real project."
+    }
+
+];
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const lessonContainer =
+    document.getElementById(
+        "lessonContainer"
+    );
+
+const xpValue =
+    document.getElementById(
+        "xpValue"
+    );
+
+const coinsValue =
+    document.getElementById(
+        "coinsValue"
+    );
+
+const progressText =
+    document.getElementById(
+        "progressText"
+    );
+
+const progressFill =
+    document.getElementById(
+        "progressFill"
+    );
+
+const lessonCount =
+    document.getElementById(
+        "lessonCount"
+    );
+
+const backBtn =
+    document.getElementById(
+        "backBtn"
+    );
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+backBtn.addEventListener(
+    "click",
+    () => {
+
+        if(
+            document.referrer &&
+            document.referrer.includes(
+                location.origin
+            )
+        ){
+
+            history.back();
+
+        }else{
+
+            window.location.href =
+                "menu.html";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOCAL FALLBACK
+========================================================= */
+
+function getLocalProgress(){
+
+    try{
+
+        const raw =
+            localStorage.getItem(
+                "python_course_progress"
+            );
+
+        if(!raw){
+            return 0;
+        }
+
+        const data =
+            JSON.parse(raw);
+
+        if(
+            typeof data.completed ===
+            "number"
+        ){
+
+            return Math.min(
+                TOTAL_LESSONS,
+                Math.max(
+                    0,
+                    data.completed
+                )
+            );
+
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Local Python progress error:",
+            error
+        );
+
+    }
+
+    return 0;
+
+}
+
+
+/* =========================================================
+   FIREBASE PROFILE
+========================================================= */
+
+async function loadUserData(user){
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+        const snapshot =
+            await getDoc(
+                userRef
+            );
+
+
+        if(!snapshot.exists()){
+
+            return {
+                xp:0,
+                coins:0,
+                completed:0
+            };
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        /* ---------------- XP ---------------- */
+
+        const xp =
+            Number(
+                data.xp ??
+                data.profile?.xp ??
+                0
+            );
+
+
+        /* ---------------- COINS ---------------- */
+
+        const coins =
+            Number(
+                data.coins ??
+                data.profile?.coins ??
+                0
+            );
+
+
+        /* ---------------- PROGRESS ---------------- */
+
+        let completed = 0;
+
+        const progress =
+            data.progress?.[COURSE_ID];
+
+
+        if(progress){
+
+            if(
+                typeof progress.completed ===
+                "number"
+            ){
+
+                completed =
+                    progress.completed;
+
+            }else if(
+                typeof progress ===
+                "number"
+            ){
+
+                completed =
+                    progress;
+
+            }
+
+        }
+
+
+        completed =
+            Math.min(
+                TOTAL_LESSONS,
+                Math.max(
+                    0,
+                    completed
+                )
+            );
+
+
+        return {
+            xp,
+            coins,
+            completed
+        };
+
+
+    }catch(error){
+
+        console.error(
+            "Firebase profile error:",
+            error
+        );
+
+
+        return {
+            xp:0,
+            coins:0,
+            completed:
+                getLocalProgress()
+        };
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE STATS
+========================================================= */
+
+function updateStats(data){
+
+    xpValue.textContent =
+        `${Number(
+            data.xp || 0
+        ).toLocaleString()} XP`;
+
+
+    coinsValue.textContent =
+        Number(
+            data.coins || 0
+        ).toLocaleString();
+
+}
+
+
+/* =========================================================
+   UPDATE PROGRESS
+========================================================= */
+
+function updateProgress(completed){
+
+    completed =
+        Math.min(
+            TOTAL_LESSONS,
+            Math.max(
+                0,
+                Number(completed) || 0
+            )
+        );
+
+
+    const percent =
+        Math.round(
+            (
+                completed /
+                TOTAL_LESSONS
+            ) * 100
+        );
+
+
+    progressText.textContent =
+        `${percent}%`;
+
+
+    progressFill.style.width =
+        `${percent}%`;
+
+
+    lessonCount.textContent =
+        `${completed} / ${TOTAL_LESSONS} completed`;
+
+}
+
+
+/* =========================================================
+   CREATE LESSON CARD
+========================================================= */
+
+function createLessonCard(
+    lesson,
+    completed
+){
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    const isCompleted =
+        lesson.id <= completed;
+
+
+    const isCurrent =
+        lesson.id ===
+        completed + 1;
+
+
+    const isLocked =
+        lesson.id >
+        completed + 1;
+
+
+    card.className =
+        `lesson-card ${
+            isLocked
+                ? "locked"
+                : ""
+        }`;
+
+
+    /* =====================================================
+       STATUS
+    ===================================================== */
+
+    let statusHTML = "";
+
+
+    if(isCompleted){
+
+        statusHTML = `
+
+            <span
+                class="status completed">
+
+                <i
+                    class="fa-solid fa-circle-check">
+                </i>
+
+                Completed
+
+            </span>
+
+        `;
+
+    }else if(isCurrent){
+
+        statusHTML = `
+
+            <span
+                class="status current">
+
+                <i
+                    class="fa-solid fa-play">
+                </i>
+
+                Current
+
+            </span>
+
+        `;
+
+    }else{
+
+        statusHTML = `
+
+            <span
+                class="status locked">
+
+                <i
+                    class="fa-solid fa-lock">
+                </i>
+
+                Locked
+
+            </span>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       BUTTON
+    ===================================================== */
+
+    let buttonHTML = "";
+
+
+    if(isLocked){
+
+        buttonHTML = `
+
+            <button
+                class="start-btn"
+                disabled>
+
+                <i
+                    class="fa-solid fa-lock">
+                </i>
+
+                Locked
+
+            </button>
+
+        `;
+
+    }else if(isCompleted){
+
+        buttonHTML = `
+
+            <button
+                class="start-btn"
+                data-lesson="${lesson.id}">
+
+                <i
+                    class="fa-solid fa-rotate-right">
+                </i>
+
+                Review
+
+            </button>
+
+        `;
+
+    }else{
+
+        buttonHTML = `
+
+            <button
+                class="start-btn"
+                data-lesson="${lesson.id}">
+
+                Start Lesson
+
+                <i
+                    class="fa-solid fa-arrow-right">
+                </i>
+
+            </button>
+
+        `;
+
+    }
+
+
+    /* =====================================================
+       CARD
+    ===================================================== */
+
+    card.innerHTML = `
+
+        <div class="lesson-number">
+
+            <span class="lesson-badge">
+
+                <i
+                    class="fa-brands fa-python">
+                </i>
+
+                Lesson ${lesson.id}
+
+            </span>
+
+            ${statusHTML}
+
+        </div>
+
+
+        <h3>
+            ${lesson.title}
+        </h3>
+
+
+        <div class="label">
+            What you'll learn
+        </div>
+
+
+        <p>
+            ${lesson.learn}
+        </p>
+
+
+        <div class="lesson-summary">
+
+            <div class="label">
+                Summary
+            </div>
+
+            <p style="margin:0">
+                ${lesson.summary}
+            </p>
+
+        </div>
+
+
+        <div class="lesson-footer">
+
+            <div class="lesson-meta">
+
+                <i
+                    class="fa-solid fa-bolt">
+                </i>
+
+                Learn + Practice
+
+            </div>
+
+
+            ${buttonHTML}
+
+        </div>
+
+    `;
+
+
+    /* =====================================================
+       LESSON BUTTON
+    ===================================================== */
+
+    const button =
+        card.querySelector(
+            "[data-lesson]"
+        );
+
+
+    if(button){
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const lessonNumber =
+                    button.dataset.lesson;
+
+
+                window.location.href =
+                    `lesson.html?course=${COURSE_ID}&lesson=${lessonNumber}`;
+
+            }
+        );
+
+    }
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   RENDER LESSONS
+========================================================= */
+
+function renderLessons(completed){
+
+    lessonContainer.innerHTML = "";
+
+
+    const grid =
+        document.createElement(
+            "div"
+        );
+
+    grid.className =
+        "lesson-grid";
+
+
+    lessons.forEach(
+        lesson => {
+
+            grid.appendChild(
+                createLessonCard(
+                    lesson,
+                    completed
+                )
+            );
+
+        }
+    );
+
+
+    lessonContainer.appendChild(
+        grid
+    );
+
+}
+
+
+/* =========================================================
+   AUTHENTICATION
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        if(!user){
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        /* ---------------- PROFILE ---------------- */
+
+        const data =
+            await loadUserData(
+                user
+            );
+
+
+        /* ---------------- UI ---------------- */
+
+        updateStats(data);
+
+        updateProgress(
+            data.completed
+        );
+
+        renderLessons(
+            data.completed
+        );
+
+
+        /* ---------------- LOCAL CACHE ---------------- */
+
+        try{
+
+            localStorage.setItem(
+                "python_course_progress",
+
+                JSON.stringify({
+                    completed:
+                        data.completed
+                })
+            );
+
+        }catch(error){
+
+            console.warn(
+                "Could not cache Python progress:",
+                error
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
