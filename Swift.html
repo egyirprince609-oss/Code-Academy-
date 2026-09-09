@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Swift Course | Code Academy</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    background:
+        radial-gradient(circle at top left, rgba(255,92,92,.15), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255,45,85,.12), transparent 35%),
+        #08080d;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    width:100%;
+    min-height:70px;
+    padding:12px clamp(15px,4vw,50px);
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+
+    background:rgba(12,12,20,.88);
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    backdrop-filter:blur(15px);
+}
+
+.back-btn{
+    width:42px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:12px;
+
+    background:#15151e;
+    color:#fff;
+
+    text-decoration:none;
+    font-size:22px;
+
+    transition:.25s;
+}
+
+.back-btn:hover{
+    transform:translateX(-3px);
+    background:#20202c;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    flex:1;
+}
+
+.logo{
+    width:40px;
+    height:40px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:11px;
+
+    background:linear-gradient(135deg,#ff375f,#ff7a90);
+
+    font-size:20px;
+    font-weight:900;
+
+    box-shadow:0 0 20px rgba(255,55,95,.3);
+}
+
+.course-title{
+    font-size:clamp(16px,3vw,21px);
+    font-weight:800;
+}
+
+.course-subtitle{
+    color:#888895;
+    font-size:12px;
+    margin-top:2px;
+}
+
+.xp-box{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    padding:9px 13px;
+
+    background:#15151e;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+
+    font-size:14px;
+    font-weight:700;
+}
+
+.xp-icon{
+    color:#ffd43b;
+}
+
+/* ================= HEADER ================= */
+
+.hero{
+    width:min(1100px,92%);
+    margin:0 auto;
+
+    padding:45px 0 30px;
+
+    text-align:center;
+}
+
+.swift-icon{
+    width:75px;
+    height:75px;
+
+    margin:0 auto 18px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:22px;
+
+    background:linear-gradient(135deg,#ff375f,#ff6b81);
+
+    font-size:38px;
+    font-weight:900;
+
+    box-shadow:
+        0 0 30px rgba(255,55,95,.3),
+        inset 0 1px rgba(255,255,255,.3);
+}
+
+.hero h1{
+    font-size:clamp(30px,6vw,52px);
+    margin-bottom:12px;
+
+    background:linear-gradient(90deg,#fff,#ff7188);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.hero p{
+    max-width:700px;
+    margin:auto;
+
+    color:#9999a5;
+    line-height:1.7;
+
+    font-size:15px;
+}
+
+/* ================= PROGRESS ================= */
+
+.progress-section{
+    width:min(1100px,92%);
+    margin:0 auto 35px;
+
+    padding:20px;
+
+    background:rgba(18,18,27,.85);
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:18px;
+}
+
+.progress-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin-bottom:12px;
+}
+
+.progress-title{
+    font-weight:800;
+}
+
+.progress-percent{
+    color:#ff627b;
+    font-weight:800;
+}
+
+.progress-bar{
+    width:100%;
+    height:10px;
+
+    background:#272732;
+    border-radius:20px;
+
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+
+    border-radius:20px;
+
+    background:linear-gradient(90deg,#ff375f,#ff8296);
+
+    transition:width .5s ease;
+}
+
+/* ================= LESSON GRID ================= */
+
+.lessons{
+    width:min(1100px,92%);
+    margin:0 auto 60px;
+
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:20px;
+}
+
+.lesson-card{
+    position:relative;
+
+    display:flex;
+    flex-direction:column;
+
+    min-height:300px;
+
+    padding:25px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(28,28,39,.95),
+            rgba(15,15,23,.95)
+        );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.lesson-card::before{
+    content:"";
+
+    position:absolute;
+    top:0;
+    left:0;
+
+    width:100%;
+    height:3px;
+
+    background:linear-gradient(
+        90deg,
+        #ff375f,
+        #ff8095
+    );
+
+    opacity:.8;
+}
+
+.lesson-card:hover{
+    transform:translateY(-5px);
+
+    border-color:rgba(255,75,100,.35);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+}
+
+.lesson-number{
+    color:#ff627b;
+
+    font-size:13px;
+    font-weight:800;
+
+    text-transform:uppercase;
+    letter-spacing:1px;
+
+    margin-bottom:12px;
+}
+
+.lesson-card h2{
+    font-size:21px;
+    line-height:1.3;
+
+    margin-bottom:13px;
+}
+
+.learn{
+    color:#c5c5cf;
+
+    font-size:14px;
+    line-height:1.6;
+
+    margin-bottom:12px;
+}
+
+.summary{
+    color:#858592;
+
+    font-size:13px;
+    line-height:1.6;
+
+    flex:1;
+}
+
+.lesson-btn{
+    width:100%;
+
+    margin-top:22px;
+    padding:13px 15px;
+
+    border:0;
+    border-radius:12px;
+
+    background:linear-gradient(
+        135deg,
+        #ff375f,
+        #ff647d
+    );
+
+    color:white;
+
+    font-size:14px;
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    text-decoration:none;
+    text-align:center;
+}
+
+.lesson-btn:hover{
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(255,55,95,.25);
+}
+
+.lesson-btn.locked{
+    background:#292933;
+    color:#777783;
+
+    cursor:not-allowed;
+
+    box-shadow:none;
+}
+
+.lesson-btn.completed{
+    background:#202a25;
+    color:#73e6a3;
+
+    border:1px solid rgba(115,230,163,.2);
+}
+
+/* ================= STATUS ================= */
+
+.status{
+    width:min(1100px,92%);
+    margin:0 auto 25px;
+
+    text-align:center;
+
+    color:#777783;
+    font-size:12px;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+    .navbar{
+        min-height:62px;
+        padding:10px 14px;
+    }
+
+    .course-subtitle{
+        display:none;
+    }
+
+    .logo{
+        width:36px;
+        height:36px;
+    }
+
+    .back-btn{
+        width:38px;
+        height:38px;
+    }
+
+    .xp-box{
+        padding:8px 10px;
+    }
+
+    .hero{
+        padding:32px 0 25px;
+    }
+
+    .swift-icon{
+        width:65px;
+        height:65px;
+
+        border-radius:18px;
+
+        font-size:31px;
+    }
+
+    .lessons{
+        grid-template-columns:1fr;
+        gap:15px;
+    }
+
+    .lesson-card{
+        min-height:280px;
+        padding:21px;
+    }
+}
+
+@media(max-width:400px){
+
+    .course-title{
+        font-size:15px;
+    }
+
+    .xp-box{
+        font-size:12px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+
+    .hero p{
+        font-size:14px;
+    }
+
+    .lesson-card h2{
+        font-size:19px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <a href="menu.html" class="back-btn">←</a>
+
+    <div class="logo-area">
+        <div class="logo">S</div>
+
+        <div>
+            <div class="course-title">Swift Course</div>
+            <div class="course-subtitle">10-Lesson Learning Path</div>
+        </div>
+    </div>
+
+    <div class="xp-box">
+        <span class="xp-icon">⚡</span>
+        <span id="xpDisplay">0 XP</span>
+    </div>
+
+</nav>
+
+
+<!-- ================= HERO ================= -->
+
+<section class="hero">
+
+    <div class="swift-icon">S</div>
+
+    <h1>Learn Swift</h1>
+
+    <p>
+        Master Swift from the fundamentals to building real applications.
+        Learn modern Swift syntax, optionals, collections, functions,
+        object-oriented programming, protocols, error handling,
+        concurrency and project development.
+    </p>
+
+</section>
+
+
+<!-- ================= PROGRESS ================= -->
+
+<section class="progress-section">
+
+    <div class="progress-top">
+
+        <span class="progress-title">
+            Course Progress
+        </span>
+
+        <span
+            class="progress-percent"
+            id="progressPercent"
+        >
+            0%
+        </span>
+
+    </div>
+
+    <div class="progress-bar">
+
+        <div
+            class="progress-fill"
+            id="progressFill"
+        ></div>
+
+    </div>
+
+</section>
+
+
+<div
+    class="status"
+    id="status"
+>
+    Loading your Swift progress...
+</div>
+
+
+<!-- ================= LESSONS ================= -->
+
+<main class="lessons" id="lessonsContainer">
+
+    <!-- LESSON 1 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 1
+        </div>
+
+        <h2>
+            Introduction to Swift
+        </h2>
+
+        <p class="learn">
+            Learn what Swift is, where it is used,
+            how Swift programs are structured and
+            how to write your first Swift code.
+        </p>
+
+        <p class="summary">
+            Understand Swift's purpose, syntax,
+            development environment and the basic
+            structure of a Swift program.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=1"
+            data-lesson="1"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 2 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 2
+        </div>
+
+        <h2>
+            Variables, Constants and Data Types
+        </h2>
+
+        <p class="learn">
+            Learn how to store information using
+            Swift variables and constants.
+        </p>
+
+        <p class="summary">
+            Work with let and var, strings, integers,
+            floating-point numbers, booleans and
+            Swift's type system.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=2"
+            data-lesson="2"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 3 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 3
+        </div>
+
+        <h2>
+            Operators and Expressions
+        </h2>
+
+        <p class="learn">
+            Learn how Swift performs calculations
+            and compares values.
+        </p>
+
+        <p class="summary">
+            Master arithmetic, comparison, logical,
+            assignment and range operators while
+            building useful expressions.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=3"
+            data-lesson="3"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 4 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 4
+        </div>
+
+        <h2>
+            Conditions and Control Flow
+        </h2>
+
+        <p class="learn">
+            Learn how programs make decisions
+            and execute different blocks of code.
+        </p>
+
+        <p class="summary">
+            Use if, else, switch, guard and conditional
+            logic to control how Swift programs behave.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=4"
+            data-lesson="4"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 5 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 5
+        </div>
+
+        <h2>
+            Loops, Arrays and Collections
+        </h2>
+
+        <p class="learn">
+            Learn how to repeat operations and
+            organize multiple values.
+        </p>
+
+        <p class="summary">
+            Work with for-in loops, while loops,
+            arrays, sets and dictionaries to manage
+            collections of data.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=5"
+            data-lesson="5"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 6 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 6
+        </div>
+
+        <h2>
+            Functions and Optionals
+        </h2>
+
+        <p class="learn">
+            Learn how to create reusable functions
+            and safely work with missing values.
+        </p>
+
+        <p class="summary">
+            Understand parameters, return values,
+            function scope, optional values,
+            optional binding and nil handling.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=6"
+            data-lesson="6"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 7 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 7
+        </div>
+
+        <h2>
+            Structures, Classes and OOP
+        </h2>
+
+        <p class="learn">
+            Learn how Swift represents real-world
+            objects and reusable data structures.
+        </p>
+
+        <p class="summary">
+            Explore structs, classes, properties,
+            methods, initializers, inheritance and
+            object-oriented programming concepts.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=7"
+            data-lesson="7"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 8 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 8
+        </div>
+
+        <h2>
+            Protocols, Extensions and Generics
+        </h2>
+
+        <p class="learn">
+            Learn advanced ways to design reusable
+            and flexible Swift code.
+        </p>
+
+        <p class="summary">
+            Understand protocols, protocol-oriented
+            programming, extensions and generic
+            functions and types.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=8"
+            data-lesson="8"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 9 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 9
+        </div>
+
+        <h2>
+            Error Handling and Concurrency
+        </h2>
+
+        <p class="learn">
+            Learn how Swift programs handle failures
+            and perform asynchronous work.
+        </p>
+
+        <p class="summary">
+            Work with throws, do-catch, errors,
+            async/await, Tasks and modern Swift
+            concurrency concepts.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=9"
+            data-lesson="9"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+
+    <!-- LESSON 10 -->
+
+    <article class="lesson-card">
+
+        <div class="lesson-number">
+            Lesson 10
+        </div>
+
+        <h2>
+            Swift Project and Final Review
+        </h2>
+
+        <p class="learn">
+            Combine your Swift knowledge by
+            designing a practical project.
+        </p>
+
+        <p class="summary">
+            Review Swift fundamentals, organize a
+            complete program and apply your knowledge
+            to a real-world development challenge.
+        </p>
+
+        <a
+            class="lesson-btn"
+            href="lesson.html?course=swift&lesson=10"
+            data-lesson="10"
+        >
+            Start Lesson
+        </a>
+
+    </article>
+
+</main>
+
+
+<!-- ================= FIREBASE ================= -->
+
+<script type="module">
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================
+   COURSE CONFIG
+========================================= */
+
+const COURSE_ID = "swift";
+const TOTAL_LESSONS = 10;
+
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const xpDisplay =
+    document.getElementById("xpDisplay");
+
+const progressFill =
+    document.getElementById("progressFill");
+
+const progressPercent =
+    document.getElementById("progressPercent");
+
+const status =
+    document.getElementById("status");
+
+const lessonButtons =
+    document.querySelectorAll(".lesson-btn");
+
+
+/* =========================================
+   LOCAL FALLBACK
+========================================= */
+
+function getLocalProgress(){
+
+    try{
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    "swift_course_progress"
+                ) || "{}"
+            );
+
+        return {
+            completed:
+                Number(saved.completed || 0),
+
+            xp:
+                Number(saved.xp || 0)
+        };
+
+    }catch(error){
+
+        return {
+            completed:0,
+            xp:0
+        };
+    }
+}
+
+
+/* =========================================
+   SAVE LOCAL PROGRESS
+========================================= */
+
+function saveLocalProgress(completed, xp){
+
+    try{
+
+        localStorage.setItem(
+            "swift_course_progress",
+            JSON.stringify({
+                completed,
+                xp
+            })
+        );
+
+    }catch(error){
+
+        console.warn(
+            "Unable to save local progress.",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   EXTRACT COMPLETED LESSON
+========================================= */
+
+function getCompletedLessons(progress){
+
+    if(!progress){
+        return 0;
+    }
+
+    /*
+       Supports:
+
+       progress.swift.completed = 5
+
+       OR
+
+       progress.swift.completed = {
+           value: 5
+       }
+    */
+
+    if(
+        typeof progress.completed === "number"
+    ){
+
+        return progress.completed;
+
+    }
+
+    if(
+        progress.completed &&
+        typeof progress.completed === "object"
+    ){
+
+        if(
+            typeof progress.completed.value === "number"
+        ){
+
+            return progress.completed.value;
+
+        }
+
+        if(
+            typeof progress.completed.lesson === "number"
+        ){
+
+            return progress.completed.lesson;
+
+        }
+    }
+
+    return 0;
+}
+
+
+/* =========================================
+   UPDATE UI
+========================================= */
+
+function updateUI(completed, xp){
+
+    completed = Math.max(
+        0,
+        Math.min(
+            TOTAL_LESSONS,
+            Number(completed) || 0
+        )
+    );
+
+    xp = Number(xp) || 0;
+
+
+    /* XP */
+
+    xpDisplay.textContent =
+        `${xp.toLocaleString()} XP`;
+
+
+    /* PROGRESS */
+
+    const percentage =
+        Math.round(
+            (completed / TOTAL_LESSONS) * 100
+        );
+
+    progressFill.style.width =
+        `${percentage}%`;
+
+    progressPercent.textContent =
+        `${percentage}%`;
+
+
+    /* LESSON LOCKING */
+
+    lessonButtons.forEach(button => {
+
+        const lesson =
+            Number(
+                button.dataset.lesson
+            );
+
+        button.classList.remove(
+            "locked",
+            "completed"
+        );
+
+        button.removeAttribute(
+            "aria-disabled"
+        );
+
+        if(lesson <= completed){
+
+            button.classList.add(
+                "completed"
+            );
+
+            button.textContent =
+                "✓ Review Lesson";
+
+        }
+        else if(lesson === completed + 1){
+
+            button.textContent =
+                "Start Lesson";
+
+        }
+        else{
+
+            button.classList.add(
+                "locked"
+            );
+
+            button.textContent =
+                "🔒 Locked";
+
+            button.setAttribute(
+                "aria-disabled",
+                "true"
+            );
+
+        }
+
+    });
+
+
+    /* STATUS */
+
+    if(completed >= TOTAL_LESSONS){
+
+        status.textContent =
+            "🎉 Swift course completed! You have finished all 10 lessons.";
+
+    }
+    else{
+
+        status.textContent =
+            `${completed} of ${TOTAL_LESSONS} lessons completed • Next lesson: ${completed + 1}`;
+
+    }
+
+}
+
+
+/* =========================================
+   PREVENT LOCKED LESSON ACCESS
+========================================= */
+
+lessonButtons.forEach(button => {
+
+    button.addEventListener(
+        "click",
+        event => {
+
+            if(
+                button.classList.contains(
+                    "locked"
+                )
+            ){
+
+                event.preventDefault();
+
+                const lesson =
+                    Number(
+                        button.dataset.lesson
+                    );
+
+                alert(
+                    `Complete Lesson ${lesson - 1} first to unlock this lesson.`
+                );
+
+            }
+
+        }
+    );
+
+});
+
+
+/* =========================================
+   AUTHENTICATION
+========================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        /*
+           No Firebase user:
+           use local progress.
+        */
+
+        if(!user){
+
+            const local =
+                getLocalProgress();
+
+            updateUI(
+                local.completed,
+                local.xp
+            );
+
+            status.textContent =
+                "Local progress mode • Sign in to sync your progress.";
+
+            return;
+        }
+
+
+        try{
+
+            const userRef =
+                doc(
+                    db,
+                    "users",
+                    user.uid
+                );
+
+            const snapshot =
+                await getDoc(userRef);
+
+
+            if(!snapshot.exists()){
+
+                const local =
+                    getLocalProgress();
+
+                updateUI(
+                    local.completed,
+                    local.xp
+                );
+
+                status.textContent =
+                    "Your account profile is not available yet. Local progress is being used.";
+
+                return;
+            }
+
+
+            const data =
+                snapshot.data();
+
+
+            /* =========================
+               XP
+            ========================= */
+
+            const firebaseXP =
+                Number(
+                    data.xp ??
+                    data.profile?.xp ??
+                    0
+                );
+
+
+            /* =========================
+               PROGRESS
+            ========================= */
+
+            const courseProgress =
+                data.progress?.[COURSE_ID];
+
+
+            let completed =
+                getCompletedLessons(
+                    courseProgress
+                );
+
+
+            /*
+               Keep local progress if it
+               is ahead of Firebase.
+            */
+
+            const local =
+                getLocalProgress();
+
+            if(
+                local.completed > completed
+            ){
+
+                completed =
+                    local.completed;
+
+            }
+
+
+            updateUI(
+                completed,
+                firebaseXP
+            );
+
+
+            saveLocalProgress(
+                completed,
+                firebaseXP
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Failed to load Swift progress:",
+                error
+            );
+
+
+            const local =
+                getLocalProgress();
+
+            updateUI(
+                local.completed,
+                local.xp
+            );
+
+
+            status.textContent =
+                "Unable to sync with Firebase right now. Local progress is displayed.";
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
