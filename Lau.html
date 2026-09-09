@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lua Course | Code Academy</title>
+
+<style>
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    min-height:100vh;
+    color:#fff;
+
+    background:
+        radial-gradient(
+            circle at 15% 10%,
+            rgba(75,105,220,.20),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(90,75,220,.15),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #070910,
+            #0d1020 48%,
+            #07090f
+        );
+
+    overflow-x:hidden;
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+========================================================= */
+
+body::before{
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+
+    z-index:-1;
+
+    opacity:.18;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.035) 1px,
+            transparent 1px
+        );
+
+    background-size:40px 40px;
+}
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:100;
+
+    width:100%;
+    min-height:70px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:15px;
+
+    padding:
+        12px
+        clamp(14px,4vw,50px);
+
+    background:rgba(6,8,15,.88);
+
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.08);
+}
+
+
+.nav-left{
+    display:flex;
+    align-items:center;
+
+    gap:14px;
+
+    min-width:0;
+}
+
+
+.back-btn{
+    width:42px;
+    height:42px;
+
+    flex-shrink:0;
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    border-radius:12px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:#fff;
+
+    cursor:pointer;
+
+    font-size:20px;
+
+    transition:.25s;
+}
+
+
+.back-btn:hover{
+    transform:translateX(-3px);
+
+    background:
+        rgba(75,105,220,.16);
+
+    border-color:
+        rgba(100,130,255,.42);
+}
+
+
+.brand{
+    min-width:0;
+}
+
+
+.brand-title{
+    font-size:18px;
+    font-weight:800;
+
+    letter-spacing:.3px;
+}
+
+
+.brand-subtitle{
+    margin-top:3px;
+
+    color:#a5a9b8;
+
+    font-size:11px;
+}
+
+
+.xp-box{
+    display:flex;
+    align-items:center;
+
+    gap:7px;
+
+    padding:
+        9px 13px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    border-radius:12px;
+
+    background:
+        rgba(255,255,255,.05);
+
+    white-space:nowrap;
+}
+
+
+.xp-icon{
+    font-size:17px;
+}
+
+
+#xpDisplay{
+    font-weight:800;
+    color:#8fa9ff;
+}
+
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+.container{
+    width:min(1180px,92%);
+
+    margin:0 auto;
+
+    padding:
+        35px 0 60px;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    position:relative;
+
+    overflow:hidden;
+
+    padding:
+        clamp(24px,5vw,48px);
+
+    margin-bottom:28px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.1);
+
+    border-radius:28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(75,105,220,.14),
+            rgba(255,255,255,.045) 45%,
+            rgba(75,55,180,.13)
+        );
+
+    box-shadow:
+        0 25px 70px
+        rgba(0,0,0,.28);
+}
+
+
+.hero::after{
+    content:"";
+
+    position:absolute;
+
+    width:280px;
+    height:280px;
+
+    right:-100px;
+    top:-120px;
+
+    border-radius:50%;
+
+    background:
+        rgba(75,105,220,.14);
+
+    filter:blur(25px);
+}
+
+
+.hero-top{
+    position:relative;
+    z-index:2;
+
+    display:flex;
+
+    align-items:flex-start;
+
+    justify-content:space-between;
+
+    gap:25px;
+}
+
+
+.course-icon{
+    width:76px;
+    height:76px;
+
+    flex-shrink:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:20px;
+
+    font-size:30px;
+    font-weight:900;
+
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #526fd8,
+            #6b48c8
+        );
+
+    box-shadow:
+        0 15px 35px
+        rgba(75,105,220,.28),
+
+        inset 0 1px
+        rgba(255,255,255,.2);
+}
+
+
+.course-info{
+    flex:1;
+}
+
+
+.course-badge{
+    display:inline-block;
+
+    padding:
+        7px 11px;
+
+    margin-bottom:12px;
+
+    border:
+        1px solid
+        rgba(120,140,255,.28);
+
+    border-radius:999px;
+
+    color:#9caeff;
+
+    background:
+        rgba(75,105,220,.10);
+
+    font-size:11px;
+
+    font-weight:800;
+
+    letter-spacing:.8px;
+}
+
+
+.hero h1{
+    font-size:
+        clamp(32px,6vw,56px);
+
+    line-height:1;
+
+    margin-bottom:15px;
+
+    letter-spacing:-1.5px;
+}
+
+
+.hero-description{
+    max-width:720px;
+
+    color:#b9bdca;
+
+    line-height:1.7;
+
+    font-size:15px;
+}
+
+
+/* =========================================================
+   COURSE STATS
+========================================================= */
+
+.stats{
+    position:relative;
+    z-index:2;
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,1fr);
+
+    gap:12px;
+
+    margin-top:30px;
+}
+
+
+.stat{
+    padding:16px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+    border-radius:15px;
+
+    background:
+        rgba(0,0,0,.18);
+}
+
+
+.stat-label{
+    color:#858a9a;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.6px;
+
+    margin-bottom:7px;
+}
+
+
+.stat-value{
+    font-size:14px;
+    font-weight:800;
+}
+
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress-section{
+    position:relative;
+    z-index:2;
+
+    margin-top:26px;
+}
+
+
+.progress-head{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:10px;
+}
+
+
+.progress-title{
+    font-size:13px;
+    font-weight:800;
+}
+
+
+#progressText{
+    color:#9eafff;
+
+    font-size:13px;
+
+    font-weight:800;
+}
+
+
+.progress-track{
+    width:100%;
+
+    height:10px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:
+        rgba(255,255,255,.08);
+}
+
+
+#progressBar{
+    height:100%;
+
+    width:0%;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #526fd8,
+            #9b72ff
+        );
+
+    box-shadow:
+        0 0 18px
+        rgba(90,105,240,.48);
+
+    transition:
+        width .5s ease;
+}
+
+
+.completion-badge{
+    display:none;
+
+    margin-top:12px;
+
+    padding:
+        10px 14px;
+
+    width:max-content;
+
+    border-radius:12px;
+
+    background:
+        rgba(38,190,110,.12);
+
+    border:
+        1px solid
+        rgba(38,190,110,.3);
+
+    color:#6ee7a5;
+
+    font-size:12px;
+
+    font-weight:800;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.section-header{
+    display:flex;
+
+    align-items:flex-end;
+
+    justify-content:space-between;
+
+    gap:15px;
+
+    margin:
+        38px 0 18px;
+}
+
+
+.section-title{
+    font-size:25px;
+
+    font-weight:900;
+}
+
+
+.section-subtitle{
+    margin-top:5px;
+
+    color:#858a99;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   LESSON GRID
+========================================================= */
+
+.lesson-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:18px;
+}
+
+
+/* =========================================================
+   LESSON CARD
+========================================================= */
+
+.lesson-card{
+    position:relative;
+
+    display:flex;
+
+    flex-direction:column;
+
+    min-height:310px;
+
+    padding:22px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    border-radius:21px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.055),
+            rgba(255,255,255,.025)
+        );
+
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.16);
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        background .25s ease;
+}
+
+
+.lesson-card.available:hover{
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(100,120,255,.38);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(75,105,220,.10),
+            rgba(255,255,255,.035)
+        );
+}
+
+
+.lesson-card.locked{
+    opacity:.62;
+}
+
+
+.lesson-card.completed{
+    border-color:
+        rgba(67,210,130,.24);
+}
+
+
+/* =========================================================
+   LESSON TOP
+========================================================= */
+
+.lesson-top{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:18px;
+}
+
+
+.lesson-number{
+    width:38px;
+    height:38px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:11px;
+
+    background:
+        rgba(75,105,220,.13);
+
+    border:
+        1px solid
+        rgba(100,120,255,.23);
+
+    color:#9badff;
+
+    font-size:13px;
+
+    font-weight:900;
+}
+
+
+.lesson-card.completed
+.lesson-number{
+    background:
+        rgba(67,210,130,.12);
+
+    border-color:
+        rgba(67,210,130,.25);
+
+    color:#6ee7a5;
+}
+
+
+/* =========================================================
+   STATUS
+========================================================= */
+
+.status{
+    padding:
+        6px 9px;
+
+    border-radius:999px;
+
+    font-size:10px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+}
+
+
+.status.available{
+    color:#9eafff;
+
+    background:
+        rgba(75,105,220,.10);
+}
+
+
+.status.locked{
+    color:#9296a4;
+
+    background:
+        rgba(255,255,255,.06);
+}
+
+
+.status.completed{
+    color:#6ee7a5;
+
+    background:
+        rgba(67,210,130,.10);
+}
+
+
+/* =========================================================
+   LESSON CONTENT
+========================================================= */
+
+.lesson-title{
+    font-size:20px;
+
+    line-height:1.3;
+
+    margin-bottom:16px;
+}
+
+
+.lesson-label{
+    color:#9aaeff;
+
+    font-size:10px;
+
+    font-weight:900;
+
+    text-transform:uppercase;
+
+    letter-spacing:.7px;
+
+    margin-bottom:6px;
+}
+
+
+.lesson-learn{
+    color:#d7d9e1;
+
+    font-size:13px;
+
+    line-height:1.55;
+
+    margin-bottom:14px;
+}
+
+
+.lesson-summary{
+    color:#9297a6;
+
+    font-size:12px;
+
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   LESSON FOOTER
+========================================================= */
+
+.lesson-footer{
+    margin-top:auto;
+
+    padding-top:20px;
+}
+
+
+.lesson-btn{
+    width:100%;
+
+    min-height:44px;
+
+    border:0;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    font-size:13px;
+
+    font-weight:900;
+
+    transition:.25s;
+}
+
+
+.lesson-btn.start{
+    color:#fff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #526fd8,
+            #684fc6
+        );
+
+    box-shadow:
+        0 8px 22px
+        rgba(75,105,220,.22);
+}
+
+
+.lesson-btn.start:hover{
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 12px 28px
+        rgba(75,105,220,.34);
+}
+
+
+.lesson-btn.locked{
+    cursor:not-allowed;
+
+    color:#777b88;
+
+    background:
+        rgba(255,255,255,.06);
+}
+
+
+.lesson-btn.completed{
+    color:#75e8a9;
+
+    background:
+        rgba(67,210,130,.09);
+
+    border:
+        1px solid
+        rgba(67,210,130,.18);
+}
+
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.loading{
+    text-align:center;
+
+    padding:30px;
+
+    color:#8c919f;
+
+    font-size:13px;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:760px){
+
+    .navbar{
+        min-height:64px;
+
+        padding:
+            10px 13px;
+    }
+
+
+    .brand-title{
+        font-size:15px;
+    }
+
+
+    .brand-subtitle{
+        font-size:9px;
+    }
+
+
+    .back-btn{
+        width:38px;
+        height:38px;
+    }
+
+
+    .xp-box{
+        padding:
+            8px 10px;
+
+        font-size:12px;
+    }
+
+
+    .container{
+        width:94%;
+
+        padding-top:20px;
+    }
+
+
+    .hero{
+        padding:22px;
+
+        border-radius:22px;
+    }
+
+
+    .hero-top{
+        flex-direction:column;
+    }
+
+
+    .course-icon{
+        width:64px;
+        height:64px;
+
+        font-size:25px;
+    }
+
+
+    .hero h1{
+        font-size:38px;
+    }
+
+
+    .hero-description{
+        font-size:13px;
+    }
+
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+
+    .lesson-grid{
+        grid-template-columns:1fr;
+    }
+
+
+    .lesson-card{
+        min-height:295px;
+    }
+
+
+    .section-title{
+        font-size:21px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media(max-width:420px){
+
+    .brand-subtitle{
+        display:none;
+    }
+
+
+    .xp-box{
+        padding:
+            7px 9px;
+    }
+
+
+    .hero h1{
+        font-size:34px;
+    }
+
+
+    .lesson-card{
+        padding:18px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =======================================================
+     NAVBAR
+======================================================= -->
+
+<nav class="navbar">
+
+
+    <div class="nav-left">
+
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+            aria-label="Go back">
+
+            ←
+
+        </button>
+
+
+        <div class="brand">
+
+            <div class="brand-title">
+                Code Academy
+            </div>
+
+            <div class="brand-subtitle">
+                Learn • Build • Master
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="xp-box">
+
+        <span class="xp-icon">
+            ⚡
+        </span>
+
+
+        <span id="xpDisplay">
+            0 XP
+        </span>
+
+    </div>
+
+
+</nav>
+
+
+
+<!-- =======================================================
+     MAIN
+======================================================= -->
+
+<main class="container">
+
+
+    <!-- ===================================================
+         HERO
+    =================================================== -->
+
+    <section class="hero">
+
+
+        <div class="hero-top">
+
+
+            <div class="course-icon">
+                LUA
+            </div>
+
+
+            <div class="course-info">
+
+
+                <div class="course-badge">
+                    COURSE 20 • LUA PROGRAMMING
+                </div>
+
+
+                <h1>
+                    Master Lua
+                </h1>
+
+
+                <p class="hero-description">
+
+                    Learn Lua from the fundamentals to practical
+                    programming. Master variables, tables,
+                    functions, loops, modules, object-oriented
+                    patterns, error handling and game-oriented
+                    programming concepts.
+
+                </p>
+
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             COURSE STATS
+        ================================================= -->
+
+        <div class="stats">
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Course Structure
+                </div>
+
+                <div class="stat-value">
+                    10 Structured Lessons
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Difficulty
+                </div>
+
+                <div class="stat-value">
+                    Beginner → Advanced
+                </div>
+
+            </div>
+
+
+            <div class="stat">
+
+                <div class="stat-label">
+                    Learning Style
+                </div>
+
+                <div class="stat-value">
+                    Practical Project-Based
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =================================================
+             PROGRESS
+        ================================================= -->
+
+        <div class="progress-section">
+
+
+            <div class="progress-head">
+
+
+                <span class="progress-title">
+                    Course Progress
+                </span>
+
+
+                <span id="progressText">
+                    0 / 10 lessons
+                </span>
+
+
+            </div>
+
+
+            <div class="progress-track">
+
+                <div id="progressBar"></div>
+
+            </div>
+
+
+            <div
+                id="completionBadge"
+                class="completion-badge">
+
+                ✓ Lua Course Completed
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ===================================================
+         LESSON HEADER
+    =================================================== -->
+
+    <div class="section-header">
+
+
+        <div>
+
+
+            <div class="section-title">
+                Lua Learning Path
+            </div>
+
+
+            <div class="section-subtitle">
+                Complete each lesson to unlock the next one.
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ===================================================
+         LESSON GRID
+    =================================================== -->
+
+    <section
+        id="lessonGrid"
+        class="lesson-grid">
+
+
+        <div class="loading">
+            Loading Lua lessons...
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =======================================================
+     FIREBASE + COURSE ENGINE
+======================================================= -->
+
+<script type="module">
+
+
+/* =========================================================
+   ROOT CODE ACADEMY AUTH
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+
+/* =========================================================
+   FIRESTORE SDK
+========================================================= */
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+
+/* =========================================================
+   COURSE CONFIGURATION
+========================================================= */
+
+const COURSE_ID = "lua";
+
+const TOTAL_LESSONS = 10;
+
+const STORAGE_KEY =
+    "lua_course_progress";
+
+
+
+/* =========================================================
+   LUA LESSON DATA
+========================================================= */
+
+const lessons = [
+
+
+    {
+        id:1,
+
+        title:
+            "Introduction to Lua",
+
+        learn:
+            "Lua syntax, comments, scripts, variables and the basic structure of Lua programs.",
+
+        summary:
+            "Understand what Lua is, where it is used and how to write and execute your first Lua programs."
+    },
+
+
+    {
+        id:2,
+
+        title:
+            "Variables and Data Types",
+
+        learn:
+            "Numbers, strings, booleans, nil, variables and dynamic typing.",
+
+        summary:
+            "Learn how Lua represents information and how to store and work with different types of values."
+    },
+
+
+    {
+        id:3,
+
+        title:
+            "Operators and Expressions",
+
+        learn:
+            "Arithmetic, relational, logical, concatenation and assignment operators.",
+
+        summary:
+            "Build expressions that perform calculations, compare values and combine information."
+    },
+
+
+    {
+        id:4,
+
+        title:
+            "Conditions and Control Flow",
+
+        learn:
+            "if, elseif, else, nested conditions and logical decision making.",
+
+        summary:
+            "Make Lua programs respond intelligently to different conditions and situations."
+    },
+
+
+    {
+        id:5,
+
+        title:
+            "Loops and Iteration",
+
+        learn:
+            "while, repeat-until, numeric for loops and generic for loops.",
+
+        summary:
+            "Automate repeated operations and efficiently process collections of information."
+    },
+
+
+    {
+        id:6,
+
+        title:
+            "Tables and Data Structures",
+
+        learn:
+            "Tables, arrays, dictionaries, indexing, insertion and iteration.",
+
+        summary:
+            "Master Lua's most important data structure and learn how tables can represent many kinds of information."
+    },
+
+
+    {
+        id:7,
+
+        title:
+            "Functions and Scope",
+
+        learn:
+            "Functions, parameters, return values, local variables, closures and scope.",
+
+        summary:
+            "Create reusable code and understand how Lua handles functions, variables and program scope."
+    },
+
+
+    {
+        id:8,
+
+        title:
+            "Modules, Metatables and OOP",
+
+        learn:
+            "Modules, require, metatables, metamethods and object-oriented programming patterns.",
+
+        summary:
+            "Organize larger Lua applications and understand how Lua can support object-oriented designs."
+    },
+
+
+    {
+        id:9,
+
+        title:
+            "Error Handling and Practical Lua",
+
+        learn:
+            "Errors, protected calls, debugging, modules and practical application structure.",
+
+        summary:
+            "Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks."
+    },
+
+
+    {
+        id:10,
+
+        title:
+            "Lua Project and Final Review",
+
+        learn:
+            "Combine Lua programming concepts into a complete practical project.",
+
+        summary:
+            "Build a final Lua project, review the major concepts and demonstrate your programming skills."
+    }
+
+
+];
+
+
+
+/* =========================================================
+   DOM ELEMENTS
+========================================================= */
+
+const lessonGrid =
+    document.getElementById(
+        "lessonGrid"
+    );
+
+
+const xpDisplay =
+    document.getElementById(
+        "xpDisplay"
+    );
+
+
+const progressText =
+    document.getElementById(
+        "progressText"
+    );
+
+
+const progressBar =
+    document.getElementById(
+        "progressBar"
+    );
+
+
+const completionBadge =
+    document.getElementById(
+        "completionBadge"
+    );
+
+
+
+/* =========================================================
+   LOCAL PROGRESS
+========================================================= */
+
+function getLocalProgress(){
+
+
+    try{
+
+
+        const saved =
+            JSON.parse(
+                localStorage.getItem(
+                    STORAGE_KEY
+                ) || "{}"
+            );
+
+
+        /* -----------------------------------------------
+           Direct number format
+        ----------------------------------------------- */
+
+        if(
+            typeof saved === "number"
+        ){
+
+            return Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    saved
+                )
+            );
+
+        }
+
+
+        /* -----------------------------------------------
+           Object format
+        ----------------------------------------------- */
+
+        if(
+            saved &&
+            typeof saved.completed === "number"
+        ){
+
+            return Math.max(
+                0,
+                Math.min(
+                    TOTAL_LESSONS,
+                    saved.completed
+                )
+            );
+
+        }
+
+
+    }catch(error){
+
+
+        console.warn(
+            "Unable to read local Lua progress:",
+            error
+        );
+
+
+    }
+
+
+    return 0;
+
+}
+
+
+
+/* =========================================================
+   SAVE LOCAL PROGRESS
+========================================================= */
+
+function saveLocalProgress(
+    completed
+){
+
+
+    try{
+
+
+        localStorage.setItem(
+
+            STORAGE_KEY,
+
+            JSON.stringify({
+                completed
+            })
+
+        );
+
+
+    }catch(error){
+
+
+        console.warn(
+            "Unable to save local Lua progress:",
+            error
+        );
+
+
+    }
+
+}
+
+
+
+/* =========================================================
+   EXTRACT FIREBASE PROGRESS
+========================================================= */
+
+function extractCompleted(
+    progress
+){
+
+
+    /* -----------------------------------------------
+       Number format
+    ----------------------------------------------- */
+
+    if(
+        typeof progress === "number"
+    ){
+
+        return progress;
+
+    }
+
+
+    /* -----------------------------------------------
+       Object format
+    ----------------------------------------------- */
+
+    if(
+        progress &&
+        typeof progress === "object"
+    ){
+
+
+        if(
+            typeof progress.completed === "number"
+        ){
+
+            return progress.completed;
+
+        }
+
+
+    }
+
+
+    return 0;
+
+}
+
+
+
+/* =========================================================
+   LOAD USER DATA
+========================================================= */
+
+async function loadUserData(
+    user
+){
+
+
+    let xp = 0;
+
+
+    let completed =
+        getLocalProgress();
+
+
+    try{
+
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(
+                userRef
+            );
+
+
+        if(
+            snapshot.exists()
+        ){
+
+
+            const data =
+                snapshot.data();
+
+
+
+            /* -----------------------------------------
+               XP FORMAT 1
+            ----------------------------------------- */
+
+            if(
+                typeof data.xp === "number"
+            ){
+
+                xp =
+                    data.xp;
+
+            }
+
+
+            /* -----------------------------------------
+               XP FORMAT 2
+            ----------------------------------------- */
+
+            else if(
+
+                data.profile &&
+                typeof data.profile.xp === "number"
+
+            ){
+
+                xp =
+                    data.profile.xp;
+
+            }
+
+
+
+            /* -----------------------------------------
+               COURSE PROGRESS
+            ----------------------------------------- */
+
+            if(
+
+                data.progress &&
+                data.progress[COURSE_ID] !== undefined
+
+            ){
+
+                completed =
+                    extractCompleted(
+                        data.progress[COURSE_ID]
+                    );
+
+            }
+
+
+        }
+
+
+    }catch(error){
+
+
+        console.warn(
+            "Could not load Lua Firebase progress:",
+            error
+        );
+
+
+    }
+
+
+
+    /* -----------------------------------------------
+       Keep progress inside valid range
+    ----------------------------------------------- */
+
+    completed =
+        Math.max(
+            0,
+            Math.min(
+                TOTAL_LESSONS,
+                Number(completed) || 0
+            )
+        );
+
+
+
+    /* -----------------------------------------------
+       Local backup
+    ----------------------------------------------- */
+
+    saveLocalProgress(
+        completed
+    );
+
+
+
+    /* -----------------------------------------------
+       Display XP
+    ----------------------------------------------- */
+
+    xpDisplay.textContent =
+        `${xp.toLocaleString()} XP`;
+
+
+
+    /* -----------------------------------------------
+       Render
+    ----------------------------------------------- */
+
+    renderLessons(
+        completed
+    );
+
+
+    updateProgress(
+        completed
+    );
+
+}
+
+
+
+/* =========================================================
+   UPDATE PROGRESS UI
+========================================================= */
+
+function updateProgress(
+    completed
+){
+
+
+    const percentage =
+        Math.round(
+            (
+                completed /
+                TOTAL_LESSONS
+            ) * 100
+        );
+
+
+    progressText.textContent =
+        `${completed} / ${TOTAL_LESSONS} lessons`;
+
+
+    progressBar.style.width =
+        `${percentage}%`;
+
+
+
+    if(
+        completed >= TOTAL_LESSONS
+    ){
+
+        completionBadge.style.display =
+            "block";
+
+    }else{
+
+        completionBadge.style.display =
+            "none";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   RENDER LESSONS
+========================================================= */
+
+function renderLessons(
+    completed
+){
+
+
+    lessonGrid.innerHTML =
+        "";
+
+
+
+    lessons.forEach(
+        lesson => {
+
+
+            /* -----------------------------------------
+               Lesson state
+            ----------------------------------------- */
+
+            const isCompleted =
+                lesson.id <= completed;
+
+
+            const isLocked =
+                lesson.id >
+                completed + 1;
+
+
+
+            let statusText =
+                "Available";
+
+
+            let statusClass =
+                "available";
+
+
+            let buttonText =
+                "Start Lesson";
+
+
+            let buttonClass =
+                "start";
+
+
+
+            /* -----------------------------------------
+               Completed
+            ----------------------------------------- */
+
+            if(
+                isCompleted
+            ){
+
+                statusText =
+                    "Completed";
+
+
+                statusClass =
+                    "completed";
+
+
+                buttonText =
+                    "Review Lesson";
+
+
+                buttonClass =
+                    "completed";
+
+            }
+
+
+
+            /* -----------------------------------------
+               Locked
+            ----------------------------------------- */
+
+            else if(
+                isLocked
+            ){
+
+                statusText =
+                    "Locked";
+
+
+                statusClass =
+                    "locked";
+
+
+                buttonText =
+                    `Complete Lesson ${
+                        lesson.id - 1
+                    } First`;
+
+
+                buttonClass =
+                    "locked";
+
+            }
+
+
+
+            /* -----------------------------------------
+               Create card
+            ----------------------------------------- */
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                `lesson-card ${
+                    isCompleted
+                        ? "completed"
+                        : isLocked
+                        ? "locked"
+                        : "available"
+                }`;
+
+
+
+            card.innerHTML = `
+
+                <div class="lesson-top">
+
+                    <div class="lesson-number">
+                        ${lesson.id}
+                    </div>
+
+
+                    <div
+                        class="status ${statusClass}">
+
+                        ${isCompleted ? "✓ " : ""}
+
+                        ${statusText}
+
+                    </div>
+
+                </div>
+
+
+                <h2 class="lesson-title">
+                    ${lesson.title}
+                </h2>
+
+
+                <div class="lesson-label">
+                    What you'll learn
+                </div>
+
+
+                <p class="lesson-learn">
+                    ${lesson.learn}
+                </p>
+
+
+                <div class="lesson-label">
+                    Lesson Summary
+                </div>
+
+
+                <p class="lesson-summary">
+                    ${lesson.summary}
+                </p>
+
+
+                <div class="lesson-footer">
+
+
+                    <button
+                        class="lesson-btn ${buttonClass}"
+                        ${isLocked ? "disabled" : ""}
+                        data-lesson="${lesson.id}">
+
+                        ${buttonText}
+
+                    </button>
+
+
+                </div>
+
+            `;
+
+
+
+            /* -----------------------------------------
+               Button
+            ----------------------------------------- */
+
+            const button =
+                card.querySelector(
+                    ".lesson-btn"
+                );
+
+
+
+            if(
+                !isLocked
+            ){
+
+                button.addEventListener(
+                    "click",
+
+                    () => {
+
+                        openLesson(
+                            lesson.id
+                        );
+
+                    }
+
+                );
+
+            }
+
+
+
+            lessonGrid.appendChild(
+                card
+            );
+
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   OPEN LESSON
+========================================================= */
+
+function openLesson(
+    lessonNumber
+){
+
+
+    /*
+     * Connect directly to the existing
+     * Code Academy lesson engine.
+     */
+
+    window.location.href =
+        `lesson.html?course=${COURSE_ID}&lesson=${lessonNumber}`;
+
+}
+
+
+
+/* =========================================================
+   FIREBASE AUTH STATE
+========================================================= */
+
+onAuthStateChanged(
+
+    auth,
+
+    async user => {
+
+
+        if(
+            user
+        ){
+
+
+            await loadUserData(
+                user
+            );
+
+
+        }else{
+
+
+            /*
+             * Do not force a login redirect.
+             * Local progress remains available.
+             */
+
+            const localProgress =
+                getLocalProgress();
+
+
+            xpDisplay.textContent =
+                "0 XP";
+
+
+            renderLessons(
+                localProgress
+            );
+
+
+            updateProgress(
+                localProgress
+            );
+
+
+        }
+
+
+    }
+
+);
+
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+window.goBack =
+    function(){
+
+
+        if(
+            document.referrer
+        ){
+
+            history.back();
+
+        }else{
+
+            window.location.href =
+                "menu.html";
+
+        }
+
+
+    };
+
+
+</script>
+
+</body>
+</html>
