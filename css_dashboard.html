@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CSS Course | Code Academy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+:root{
+    --bg:#07111f;
+    --card:rgba(15,31,51,.82);
+    --card2:rgba(11,24,41,.92);
+    --border:rgba(56,189,248,.16);
+
+    --css:#38bdf8;
+    --css2:#0ea5e9;
+    --purple:#8b5cf6;
+
+    --text:#f8fafc;
+    --muted:#94a3b8;
+
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    min-height:100vh;
+    font-family:Inter,Arial,sans-serif;
+    color:var(--text);
+    background:
+        radial-gradient(circle at 10% 10%,rgba(14,165,233,.15),transparent 30%),
+        radial-gradient(circle at 90% 20%,rgba(139,92,246,.12),transparent 30%),
+        linear-gradient(135deg,#020617,#07111f 50%,#0b1728);
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    position:sticky;
+    top:0;
+    z-index:1000;
+
+    width:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:14px clamp(14px,4vw,45px);
+
+    background:rgba(2,6,23,.82);
+    backdrop-filter:blur(18px);
+
+    border-bottom:1px solid rgba(148,163,184,.12);
+}
+
+.nav-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+}
+
+.back-btn{
+    width:42px;
+    height:42px;
+
+    border:1px solid rgba(148,163,184,.18);
+    border-radius:12px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+    background:rgba(15,23,42,.8);
+
+    cursor:pointer;
+    transition:.2s;
+}
+
+.back-btn:hover{
+    transform:translateY(-2px);
+    border-color:var(--css);
+    color:var(--css);
+}
+
+.brand{
+    min-width:0;
+}
+
+.brand-title{
+    font-size:clamp(16px,2vw,20px);
+    font-weight:900;
+    letter-spacing:-.5px;
+}
+
+.brand-subtitle{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:2px;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.stat-pill{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    padding:9px 12px;
+
+    border-radius:12px;
+    border:1px solid rgba(148,163,184,.14);
+
+    background:rgba(15,23,42,.72);
+
+    font-size:13px;
+    font-weight:800;
+    white-space:nowrap;
+}
+
+.stat-pill.xp i{
+    color:#facc15;
+}
+
+.stat-pill.coins i{
+    color:#fbbf24;
+}
+
+@media(max-width:520px){
+
+    .navbar{
+        padding:11px 12px;
+    }
+
+    .brand-subtitle{
+        display:none;
+    }
+
+    .stat-pill{
+        padding:8px 9px;
+        font-size:12px;
+    }
+
+    .back-btn{
+        width:38px;
+        height:38px;
+    }
+}
+
+/* ================= MAIN ================= */
+
+.container{
+    width:min(1180px,92%);
+    margin:0 auto;
+    padding:35px 0 60px;
+}
+
+/* ================= HERO ================= */
+
+.hero{
+    position:relative;
+    overflow:hidden;
+
+    padding:clamp(24px,5vw,42px);
+
+    border-radius:28px;
+
+    background:
+        linear-gradient(135deg,
+            rgba(14,165,233,.18),
+            rgba(15,23,42,.9) 55%,
+            rgba(139,92,246,.13)
+        );
+
+    border:1px solid rgba(56,189,248,.18);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.28);
+
+    margin-bottom:32px;
+}
+
+.hero::before{
+    content:"";
+
+    position:absolute;
+
+    width:250px;
+    height:250px;
+
+    right:-100px;
+    top:-120px;
+
+    border-radius:50%;
+
+    background:rgba(56,189,248,.12);
+    filter:blur(20px);
+}
+
+.hero-content{
+    position:relative;
+    z-index:1;
+
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+.course-icon{
+    flex:0 0 auto;
+
+    width:82px;
+    height:82px;
+
+    border-radius:22px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:42px;
+
+    color:#fff;
+
+    background:
+        linear-gradient(135deg,
+            var(--css),
+            var(--css2)
+        );
+
+    box-shadow:
+        0 15px 35px rgba(14,165,233,.25);
+}
+
+.hero-text{
+    flex:1;
+}
+
+.badge{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    padding:6px 11px;
+
+    margin-bottom:10px;
+
+    border-radius:999px;
+
+    background:rgba(56,189,248,.1);
+    border:1px solid rgba(56,189,248,.2);
+
+    color:var(--css);
+
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.7px;
+}
+
+.hero h1{
+    font-size:clamp(28px,5vw,46px);
+    line-height:1.05;
+    letter-spacing:-1.5px;
+    margin-bottom:10px;
+}
+
+.hero p{
+    color:var(--muted);
+    line-height:1.7;
+    max-width:720px;
+    font-size:14px;
+}
+
+/* ================= PROGRESS ================= */
+
+.progress-section{
+    margin-top:25px;
+}
+
+.progress-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:8px;
+
+    font-size:12px;
+    font-weight:700;
+}
+
+.progress-percent{
+    color:var(--css);
+}
+
+.progress-bar{
+    height:9px;
+
+    width:100%;
+
+    overflow:hidden;
+
+    border-radius:99px;
+
+    background:rgba(148,163,184,.12);
+}
+
+.progress-fill{
+    width:0%;
+    height:100%;
+
+    border-radius:99px;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--css),
+            var(--purple)
+        );
+
+    transition:width .6s ease;
+}
+
+/* ================= SECTION TITLE ================= */
+
+.section-heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:17px;
+}
+
+.section-heading h2{
+    font-size:20px;
+    font-weight:900;
+}
+
+.section-heading span{
+    color:var(--muted);
+    font-size:12px;
+}
+
+/* ================= LESSON GRID ================= */
+
+.lesson-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+    gap:18px;
+}
+
+/* ================= LESSON CARD ================= */
+
+.lesson-card{
+    position:relative;
+
+    padding:22px;
+
+    border-radius:20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,31,51,.88),
+            rgba(8,20,35,.94)
+        );
+
+    border:1px solid var(--border);
+
+    box-shadow:0 12px 35px rgba(0,0,0,.18);
+
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        box-shadow .22s ease;
+
+    display:flex;
+    flex-direction:column;
+
+    min-height:300px;
+}
+
+.lesson-card:not(.locked):hover{
+    transform:translateY(-5px);
+
+    border-color:rgba(56,189,248,.4);
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.28),
+        0 0 25px rgba(14,165,233,.07);
+}
+
+.lesson-number{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:16px;
+}
+
+.lesson-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    color:var(--css);
+
+    font-size:11px;
+    font-weight:800;
+
+    text-transform:uppercase;
+}
+
+.status{
+    font-size:10px;
+    font-weight:800;
+
+    padding:5px 8px;
+
+    border-radius:999px;
+}
+
+.status.completed{
+    color:#4ade80;
+    background:rgba(34,197,94,.1);
+}
+
+.status.current{
+    color:var(--css);
+    background:rgba(56,189,248,.1);
+}
+
+.status.locked{
+    color:#94a3b8;
+    background:rgba(148,163,184,.08);
+}
+
+.lesson-card h3{
+    font-size:20px;
+    line-height:1.25;
+
+    margin-bottom:13px;
+}
+
+.lesson-card .label{
+    color:var(--css);
+
+    font-size:10px;
+    font-weight:900;
+
+    text-transform:uppercase;
+    letter-spacing:.8px;
+
+    margin-bottom:6px;
+}
+
+.lesson-card p{
+    color:var(--muted);
+
+    font-size:13px;
+    line-height:1.65;
+
+    margin-bottom:14px;
+}
+
+.lesson-summary{
+    padding:12px;
+
+    border-radius:12px;
+
+    background:rgba(2,6,23,.32);
+
+    border:1px solid rgba(148,163,184,.08);
+
+    margin-bottom:18px;
+}
+
+.lesson-footer{
+    margin-top:auto;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:10px;
+}
+
+.lesson-meta{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    color:#94a3b8;
+
+    font-size:11px;
+    font-weight:700;
+}
+
+.lesson-meta i{
+    color:#facc15;
+}
+
+.start-btn{
+    border:none;
+
+    border-radius:11px;
+
+    padding:10px 15px;
+
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--css2),
+            var(--purple)
+        );
+
+    font-size:12px;
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.start-btn:hover{
+    transform:translateY(-2px);
+    filter:brightness(1.1);
+}
+
+.locked{
+    opacity:.58;
+}
+
+.locked .start-btn{
+    background:rgba(71,85,105,.45);
+    cursor:not-allowed;
+}
+
+.locked .start-btn:hover{
+    transform:none;
+    filter:none;
+}
+
+/* ================= LOADING ================= */
+
+.loading{
+    min-height:280px;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:center;
+
+    gap:14px;
+
+    color:var(--muted);
+}
+
+.spinner{
+    width:38px;
+    height:38px;
+
+    border-radius:50%;
+
+    border:3px solid rgba(148,163,184,.15);
+    border-top-color:var(--css);
+
+    animation:spin .8s linear infinite;
+}
+
+@keyframes spin{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:800px){
+
+    .hero-content{
+        align-items:flex-start;
+    }
+
+    .course-icon{
+        width:68px;
+        height:68px;
+        font-size:32px;
+        border-radius:18px;
+    }
+
+    .lesson-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:560px){
+
+    .container{
+        width:94%;
+        padding-top:20px;
+    }
+
+    .hero{
+        padding:22px;
+        border-radius:22px;
+    }
+
+    .hero-content{
+        flex-direction:column;
+        gap:17px;
+    }
+
+    .course-icon{
+        width:62px;
+        height:62px;
+        font-size:28px;
+    }
+
+    .hero h1{
+        font-size:31px;
+    }
+
+    .lesson-card{
+        min-height:290px;
+        padding:19px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<nav class="navbar">
+
+    <div class="nav-left">
+
+        <button class="back-btn" id="backBtn" aria-label="Back">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <div class="brand">
+            <div class="brand-title">
+                Code Academy
+            </div>
+
+            <div class="brand-subtitle">
+                Learn • Build • Master
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-right">
+
+        <div class="stat-pill xp">
+            <i class="fa-solid fa-bolt"></i>
+            <span id="xpValue">0 XP</span>
+        </div>
+
+        <div class="stat-pill coins">
+            <i class="fa-solid fa-coins"></i>
+            <span id="coinsValue">0</span>
+        </div>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="course-icon">
+                <i class="fa-brands fa-css3-alt"></i>
+            </div>
+
+            <div class="hero-text">
+
+                <div class="badge">
+                    <i class="fa-solid fa-palette"></i>
+                    CSS Course
+                </div>
+
+                <h1>
+                    Master CSS
+                </h1>
+
+                <p>
+                    Learn how to transform simple HTML into beautiful,
+                    responsive and professional websites using CSS.
+                    Build strong styling skills from the fundamentals
+                    to complete modern web layouts.
+                </p>
+
+                <div class="progress-section">
+
+                    <div class="progress-top">
+                        <span>
+                            Course Progress
+                        </span>
+
+                        <span
+                            class="progress-percent"
+                            id="progressText">
+                            0%
+                        </span>
+                    </div>
+
+                    <div class="progress-bar">
+
+                        <div
+                            class="progress-fill"
+                            id="progressFill">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= LESSONS ================= -->
+
+    <section>
+
+        <div class="section-heading">
+
+            <h2>
+                CSS Lessons
+            </h2>
+
+            <span id="lessonCount">
+                0 / 10 completed
+            </span>
+
+        </div>
+
+
+        <div id="lessonContainer">
+
+            <div class="loading">
+
+                <div class="spinner"></div>
+
+                <span>
+                    Loading your course...
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================================
+   COURSE CONFIG
+========================================================= */
+
+const COURSE_ID = "css";
+const TOTAL_LESSONS = 10;
+
+
+/* =========================================================
+   LESSON DATA
+========================================================= */
+
+const lessons = [
+
+    {
+        id:1,
+        title:"Introduction to CSS",
+        learn:"Understand what CSS is, why it exists, and how it connects to HTML.",
+        summary:"Learn the role of CSS, basic syntax, selectors, declarations and the different ways CSS can be added to a webpage."
+    },
+
+    {
+        id:2,
+        title:"CSS Selectors",
+        learn:"Target HTML elements using element, class, ID and attribute selectors.",
+        summary:"Master the selectors CSS uses to decide exactly which elements should receive a particular style."
+    },
+
+    {
+        id:3,
+        title:"Colors, Backgrounds and Borders",
+        learn:"Create attractive visual styles using colors, backgrounds, borders and gradients.",
+        summary:"Learn color formats, background images, gradients, border styles, rounded corners and visual decoration."
+    },
+
+    {
+        id:4,
+        title:"CSS Box Model",
+        learn:"Understand content, padding, borders, margins and element sizing.",
+        summary:"Master the CSS box model and learn how spacing and dimensions affect the appearance and position of elements."
+    },
+
+    {
+        id:5,
+        title:"Typography and Text Styling",
+        learn:"Control fonts, sizes, spacing, alignment and text appearance.",
+        summary:"Learn how to create readable and professional typography using font families, weights, line heights and text properties."
+    },
+
+    {
+        id:6,
+        title:"CSS Flexbox",
+        learn:"Build flexible one-dimensional layouts with Flexbox.",
+        summary:"Learn how to align, distribute and organize elements efficiently using containers, rows, columns and flexible sizing."
+    },
+
+    {
+        id:7,
+        title:"CSS Grid",
+        learn:"Create powerful two-dimensional website layouts using CSS Grid.",
+        summary:"Learn rows, columns, gaps, grid areas and responsive layouts for building complex page structures."
+    },
+
+    {
+        id:8,
+        title:"Responsive Web Design",
+        learn:"Make websites adapt beautifully to phones, tablets and desktops.",
+        summary:"Learn media queries, responsive units, flexible layouts and mobile-first techniques for modern websites."
+    },
+
+    {
+        id:9,
+        title:"Animations and Transitions",
+        learn:"Add smooth movement and interactive visual effects to webpages.",
+        summary:"Learn transitions, transforms, keyframe animations and hover effects without relying on JavaScript."
+    },
+
+    {
+        id:10,
+        title:"Build a Complete CSS Website",
+        learn:"Combine your CSS skills to create a polished responsive website.",
+        summary:"Put selectors, layout, typography, responsiveness, effects and visual design together in a complete project."
+    }
+
+];
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const lessonContainer =
+    document.getElementById("lessonContainer");
+
+const xpValue =
+    document.getElementById("xpValue");
+
+const coinsValue =
+    document.getElementById("coinsValue");
+
+const progressText =
+    document.getElementById("progressText");
+
+const progressFill =
+    document.getElementById("progressFill");
+
+const lessonCount =
+    document.getElementById("lessonCount");
+
+const backBtn =
+    document.getElementById("backBtn");
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+backBtn.addEventListener("click", () => {
+
+    if (
+        document.referrer &&
+        document.referrer.includes(location.origin)
+    ) {
+        history.back();
+    } else {
+        window.location.href = "menu.html";
+    }
+
+});
+
+
+/* =========================================================
+   LOCAL FALLBACK
+========================================================= */
+
+function getLocalProgress(){
+
+    try{
+
+        const raw =
+            localStorage.getItem("css_course_progress");
+
+        if(!raw){
+            return 0;
+        }
+
+        const data =
+            JSON.parse(raw);
+
+        if(
+            typeof data.completed === "number"
+        ){
+            return Math.min(
+                TOTAL_LESSONS,
+                Math.max(0,data.completed)
+            );
+        }
+
+    }catch(error){
+
+        console.warn(
+            "Local CSS progress error:",
+            error
+        );
+
+    }
+
+    return 0;
+}
+
+
+/* =========================================================
+   FIREBASE PROFILE
+========================================================= */
+
+async function loadUserData(user){
+
+    try{
+
+        const userRef =
+            doc(db,"users",user.uid);
+
+        const snapshot =
+            await getDoc(userRef);
+
+        if(!snapshot.exists()){
+
+            return {
+                xp:0,
+                coins:0,
+                completed:0
+            };
+
+        }
+
+        const data =
+            snapshot.data();
+
+
+        /* ---------- XP ---------- */
+
+        const xp =
+            Number(
+                data.xp ??
+                data.profile?.xp ??
+                0
+            );
+
+
+        /* ---------- COINS ---------- */
+
+        const coins =
+            Number(
+                data.coins ??
+                data.profile?.coins ??
+                0
+            );
+
+
+        /* ---------- PROGRESS ---------- */
+
+        let completed = 0;
+
+        const progress =
+            data.progress?.[COURSE_ID];
+
+
+        if(progress){
+
+            if(
+                typeof progress.completed === "number"
+            ){
+
+                completed =
+                    progress.completed;
+
+            }else if(
+                typeof progress === "number"
+            ){
+
+                completed =
+                    progress;
+
+            }
+
+        }
+
+
+        completed =
+            Math.min(
+                TOTAL_LESSONS,
+                Math.max(0,completed)
+            );
+
+
+        return {
+            xp,
+            coins,
+            completed
+        };
+
+    }catch(error){
+
+        console.error(
+            "Firebase profile error:",
+            error
+        );
+
+        return {
+            xp:0,
+            coins:0,
+            completed:getLocalProgress()
+        };
+
+    }
+
+}
+
+
+/* =========================================================
+   UPDATE HEADER
+========================================================= */
+
+function updateStats(data){
+
+    xpValue.textContent =
+        `${Number(data.xp || 0).toLocaleString()} XP`;
+
+    coinsValue.textContent =
+        Number(data.coins || 0).toLocaleString();
+
+}
+
+
+/* =========================================================
+   UPDATE PROGRESS
+========================================================= */
+
+function updateProgress(completed){
+
+    completed =
+        Math.min(
+            TOTAL_LESSONS,
+            Math.max(0,Number(completed) || 0)
+        );
+
+    const percent =
+        Math.round(
+            (completed / TOTAL_LESSONS) * 100
+        );
+
+    progressText.textContent =
+        `${percent}%`;
+
+    progressFill.style.width =
+        `${percent}%`;
+
+    lessonCount.textContent =
+        `${completed} / ${TOTAL_LESSONS} completed`;
+
+}
+
+
+/* =========================================================
+   CREATE LESSON CARD
+========================================================= */
+
+function createLessonCard(
+    lesson,
+    completed
+){
+
+    const card =
+        document.createElement("article");
+
+    const isCompleted =
+        lesson.id <= completed;
+
+    const isCurrent =
+        lesson.id === completed + 1;
+
+    const isLocked =
+        lesson.id > completed + 1;
+
+
+    card.className =
+        `lesson-card ${isLocked ? "locked" : ""}`;
+
+
+    /* ---------- STATUS ---------- */
+
+    let statusHTML = "";
+
+    if(isCompleted){
+
+        statusHTML = `
+            <span class="status completed">
+                <i class="fa-solid fa-circle-check"></i>
+                Completed
+            </span>
+        `;
+
+    }else if(isCurrent){
+
+        statusHTML = `
+            <span class="status current">
+                <i class="fa-solid fa-play"></i>
+                Current
+            </span>
+        `;
+
+    }else{
+
+        statusHTML = `
+            <span class="status locked">
+                <i class="fa-solid fa-lock"></i>
+                Locked
+            </span>
+        `;
+
+    }
+
+
+    /* ---------- BUTTON ---------- */
+
+    let buttonHTML = "";
+
+    if(isLocked){
+
+        buttonHTML = `
+            <button
+                class="start-btn"
+                disabled>
+                <i class="fa-solid fa-lock"></i>
+                Locked
+            </button>
+        `;
+
+    }else if(isCompleted){
+
+        buttonHTML = `
+            <button
+                class="start-btn"
+                data-lesson="${lesson.id}">
+                <i class="fa-solid fa-rotate-right"></i>
+                Review
+            </button>
+        `;
+
+    }else{
+
+        buttonHTML = `
+            <button
+                class="start-btn"
+                data-lesson="${lesson.id}">
+                Start Lesson
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        `;
+
+    }
+
+
+    card.innerHTML = `
+
+        <div class="lesson-number">
+
+            <span class="lesson-badge">
+                <i class="fa-brands fa-css3-alt"></i>
+                Lesson ${lesson.id}
+            </span>
+
+            ${statusHTML}
+
+        </div>
+
+
+        <h3>
+            ${lesson.title}
+        </h3>
+
+
+        <div class="label">
+            What you'll learn
+        </div>
+
+        <p>
+            ${lesson.learn}
+        </p>
+
+
+        <div class="lesson-summary">
+
+            <div class="label">
+                Summary
+            </div>
+
+            <p style="margin:0">
+                ${lesson.summary}
+            </p>
+
+        </div>
+
+
+        <div class="lesson-footer">
+
+            <div class="lesson-meta">
+                <i class="fa-solid fa-bolt"></i>
+                Learn + Practice
+            </div>
+
+            ${buttonHTML}
+
+        </div>
+
+    `;
+
+
+    /* ---------- BUTTON EVENT ---------- */
+
+    const button =
+        card.querySelector("[data-lesson]");
+
+    if(button){
+
+        button.addEventListener(
+            "click",
+            () => {
+
+                const lessonNumber =
+                    button.dataset.lesson;
+
+                window.location.href =
+                    `lesson.html?course=${COURSE_ID}&lesson=${lessonNumber}`;
+
+            }
+        );
+
+    }
+
+
+    return card;
+
+}
+
+
+/* =========================================================
+   RENDER LESSONS
+========================================================= */
+
+function renderLessons(completed){
+
+    lessonContainer.innerHTML = "";
+
+    const grid =
+        document.createElement("div");
+
+    grid.className =
+        "lesson-grid";
+
+
+    lessons.forEach(lesson => {
+
+        grid.appendChild(
+            createLessonCard(
+                lesson,
+                completed
+            )
+        );
+
+    });
+
+
+    lessonContainer.appendChild(grid);
+
+}
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        if(!user){
+
+            /*
+             * Do not leave the course dashboard
+             * available to anonymous users.
+             */
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        /* ---------- LOAD PROFILE ---------- */
+
+        const data =
+            await loadUserData(user);
+
+
+        /* ---------- UI ---------- */
+
+        updateStats(data);
+
+        updateProgress(data.completed);
+
+        renderLessons(data.completed);
+
+
+        /* ---------- SAVE LOCAL CACHE ---------- */
+
+        try{
+
+            localStorage.setItem(
+                "css_course_progress",
+                JSON.stringify({
+                    completed:data.completed
+                })
+            );
+
+        }catch(error){
+
+            console.warn(
+                "Could not cache progress:",
+                error
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
