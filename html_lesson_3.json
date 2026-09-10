@@ -1,0 +1,276 @@
+{
+  "course": "html",
+  "lessonNumber": 3,
+  "lessonId": "html-lesson-3",
+  "title": "Links and Navigation",
+  "subtitle": "Connect pages and build real app navigation",
+  "description": "Master anchor elements, absolute vs relative URLs, internal page navigation, external links, email and phone links, and build a professional navigation system for your final app.",
+  "level": "Beginner",
+  "xpReward": 90,
+  "coinsReward": 20,
+  "estimatedMinutes": 35,
+  "blocks": [
+    {
+      "id": "welcome-3",
+      "type": "heading",
+      "text": "Why links are the heart of the web"
+    },
+    {
+      "id": "w3-1",
+      "type": "sentence",
+      "text": "Welcome back! Let's think: Without links, internet would be just isolated pages you can't move between. No Google search results to click, no menu, no next lesson button. Links are what make the web WEB. Today your single page from Lesson 1 and 2 becomes a multi-page app."
+    },
+    {
+      "id": "w3-2",
+      "type": "sentence",
+      "text": "Open your editor now: Home > Menu > Practical. Today you will need 2 files to practice: index.html and about.html. Create both in the editor."
+    },
+    {
+      "id": "anchor-deep",
+      "type": "heading",
+      "text": "The anchor tag - deeper than you think"
+    },
+    {
+      "id": "a1",
+      "type": "sentence",
+      "text": "Everyone writes <a href=\"...\">Click</a> but few understand what really happens. a stands for anchor, href stands for Hypertext REFerence. The href value is not just a string - it's a URL that browser must resolve. If URL is wrong, link breaks. If href is missing, a tag is not a link - it's just a placeholder."
+    },
+    {
+      "id": "a2",
+      "type": "sentence",
+      "text": "The content inside <a> is what user sees and clicks. It can be text, image, even a whole div. The browser makes entire content clickable."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "html",
+      "title": "Anchor can wrap anything - not just text",
+      "code": "<a href=\"https://github.com\">Simple text link</a>\n\n<a href=\"about.html\">\n  <h2>About Me - Whole heading is clickable</h2>\n  <p>Clicking this paragraph takes you to about page</p>\n</a>\n\n<a href=\"https://example.com\">\n  <img src=\"https://via.placeholder.com/150\" alt=\"Click image to visit example\">\n</a>",
+      "output": "Simple text link\nAbout Me - Whole heading is clickable\n[Image clickable]"
+    },
+    {
+      "id": "url-types",
+      "type": "heading",
+      "text": "Absolute vs Relative URLs - where juniors get lost"
+    },
+    {
+      "id": "url1",
+      "type": "sentence",
+      "text": "This is critical for your final app: There are 3 types of URLs you will use daily. Absolute URL: full address with https:// like https://github.com/prince. Use for external sites. Relative URL: file name or path like about.html or pages/about.html. Use for files inside YOUR app. Root-relative: starts with / like /images/photo.jpg - means from root folder of your site."
+    },
+    {
+      "id": "url2",
+      "type": "sentence",
+      "text": "If your app structure is: index.html, about.html, projects/contact.html - then from index.html, link to contact.html is href=\"projects/contact.html\". From contact.html back to index.html is href=\"../index.html\" - .. means go up one folder. This .. is what confuses beginners."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "html",
+      "title": "Understanding URL paths",
+      "code": "<!-- From index.html -->\n<a href=\"about.html\">About (same folder)</a>\n<a href=\"projects/portfolio.html\">Portfolio (inside folder)</a>\n<a href=\"https://google.com\">Google (absolute - external)</a>\n\n<!-- From projects/portfolio.html back to home -->\n<a href=\"../index.html\">Back to Home (go up one level)</a>\n<a href=\"../about.html\">About (go up then about)</a>\n<a href=\"/index.html\">Home from root (root-relative)</a>",
+      "output": "About (same folder)\nPortfolio (inside folder)\nGoogle\nBack to Home"
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "html",
+      "title": "Your app structure practice",
+      "code": "<!-- Create this structure in Practical -->\n<!-- index.html -->\n<h1>My Portfolio App</h1>\n<a href=\"about.html\">About Me</a> | <a href=\"projects.html\">Projects</a>\n\n<!-- about.html -->\n<h1>About Me</h1>\n<a href=\"index.html\">Back to Home</a>\n\n<!-- projects.html -->\n<h1>My Projects</h1>\n<a href=\"index.html\">Back to Home</a>",
+      "output": "My Portfolio App\nAbout Me | Projects"
+    },
+    {
+      "id": "target-rel",
+      "type": "heading",
+      "text": "Target, Rel and why _blank can be dangerous"
+    },
+    {
+      "id": "tr1",
+      "type": "sentence",
+      "text": "By default link opens in same tab. If you want new tab, use target=\"_blank\". But here is what tutorials don't tell you: target=\"_blank\" alone is a security risk. The new page can access your page via window.opener and potentially redirect it. Always add rel=\"noopener noreferrer\" with _blank. This is mandatory for production apps."
+    },
+    {
+      "id": "tr2",
+      "type": "sentence",
+      "text": "Also, don't open EVERY link in new tab. Only external sites should open in new tab. Internal links (your own pages) should open in same tab so user doesn't have 10 tabs of your app."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "html",
+      "title": "Secure external links",
+      "code": "<!-- Internal - same tab (correct) -->\n<a href=\"about.html\">About Me</a>\n\n<!-- External - new tab with security (correct) -->\n<a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">My GitHub (opens new tab safely)</a>\n\n<!-- WRONG - security risk -->\n<a href=\"https://github.com\" target=\"_blank\">Unsafe - missing rel</a>",
+      "output": "About Me\nMy GitHub (opens new tab safely)\nUnsafe link"
+    },
+    {
+      "id": "special-links",
+      "type": "heading",
+      "text": "Email, phone, download and hash links - real apps use these daily"
+    },
+    {
+      "id": "sp1",
+      "type": "sentence",
+      "text": "Real portfolio apps need more than page links. You need mailto: to open email client, tel: to call on mobile, # for jumping to section on same page, and download attribute to force file download. Your final app in Lesson 10 will use all of these."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "html",
+      "title": "Special link types every app needs",
+      "code": "<a href=\"mailto:prince@example.com\">Email Me</a>\n<a href=\"mailto:prince@example.com?subject=Job%20Opportunity&body=Hello%20Prince\">Email with subject</a>\n<a href=\"tel:+233240000000\">Call Me: 0240000000</a>\n<a href=\"resume.pdf\" download>Download My Resume</a>\n<a href=\"resume.pdf\" download=\"Prince_Egyir_Resume.pdf\">Download with custom name</a>",
+      "output": "Email Me\nEmail with subject\nCall Me\nDownload My Resume"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "html",
+      "title": "Hash links - jump inside same page",
+      "code": "<!-- Navigation -->\n<a href=\"#about\">Jump to About</a>\n<a href=\"#projects\">Jump to Projects</a>\n<a href=\"#contact\">Jump to Contact</a>\n\n<!-- Sections far below -->\n<h2 id=\"about\">About Me</h2>\n<p>Content about me...</p>\n<h2 id=\"projects\">My Projects</h2>\n<p>Projects content...</p>\n<h2 id=\"contact\">Contact</h2>\n<p>Contact info...</p>\n<a href=\"#\">Back to Top</a>",
+      "output": "Jump to About | Jump to Projects | Jump to Contact\nAbout Me\nProjects\nContact\nBack to Top"
+    },
+    {
+      "id": "nav-semantic",
+      "type": "heading",
+      "text": "Building professional navigation with nav element"
+    },
+    {
+      "id": "nav1",
+      "type": "sentence",
+      "text": "Don't just throw <a> tags anywhere. Professional apps wrap navigation in <nav> element. Why? For accessibility and SEO. Screen readers announce 'navigation landmark' when they encounter nav, helping blind users. Google understands nav as main navigation. Also use ul > li inside nav for list of links - it's semantic and easy to style later with CSS."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "html",
+      "title": "Professional nav - what your final app will use",
+      "code": "<nav>\n  <ul>\n    <li><a href=\"index.html\">Home</a></li>\n    <li><a href=\"about.html\">About</a></li>\n    <li><a href=\"projects.html\">Projects</a></li>\n    <li><a href=\"#contact\">Contact</a></li>\n    <li><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub</a></li>\n  </ul>\n</nav>\n<!-- nav + ul + li is the industry standard for menus -->",
+      "output": "Home | About | Projects | Contact | GitHub"
+    },
+    {
+      "id": "q1",
+      "type": "quiz",
+      "question": "Your file structure: index.html at root, folder projects/ contains app.html. From app.html you need to link back to index.html and to about.html at root. Which hrefs are correct?",
+      "options": [
+        "<a href=\"index.html\"> and <a href=\"about.html\"> because relative links always work from any folder without ../",
+        "<a href=\"../index.html\"> and <a href=\"../about.html\"> because app.html is inside projects/ so you must go up one level with ../ to reach root files",
+        "<a href=\"/index.html\"> and <a href=\"/about.html\"> is the only correct way because ../ is deprecated in HTML5",
+        "<a href=\"./index.html\"> and <a href=\"./about.html\"> because ./ means root folder"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect path logic! ../ means parent directory. This is the core skill for multi-page apps.",
+      "incorrectFeedback": "Visualize folders: app.html is INSIDE projects/. index.html is OUTSIDE, one level up. How do you go up?",
+      "reasoning": "../ navigates to parent directory. From projects/app.html, ../index.html correctly resolves to root index.html.",
+      "xpReward": 30
+    },
+    {
+      "id": "q2",
+      "type": "quiz",
+      "question": "You use <a href=\"https://external.com\" target=\"_blank\"> without rel. Senior dev says it's a security vulnerability. What is the exact risk and correct fix?",
+      "options": [
+        "No risk, target=\"_blank\" is completely safe alone; adding rel is optional and only for SEO",
+        "Risk is performance - new tab consumes more memory; fix by using target=\"_self\" instead",
+        "Risk is that external page can access window.opener and potentially redirect your original page via phishing; fix with rel=\"noopener noreferrer\" to break opener connection",
+        "Risk is that link won't open in new tab without rel; fix by adding rel=\"_blank\" as well"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Excellent security awareness! This is called tabnabbing attack. noopener is mandatory for production.",
+      "incorrectFeedback": "Think about what window.opener does. Can the new page control the old page?",
+      "reasoning": "target=_blank gives new page access to window.opener. Malicious site could use window.opener.location = phishing site. noopener prevents this.",
+      "xpReward": 30
+    },
+    {
+      "id": "q3",
+      "type": "quiz",
+      "question": "You need internal navigation that jumps to #contact section on same page plus link to email with subject. Which combination is semantically correct?",
+      "options": [
+        "<a href=\"#contact\">Contact</a> and <a href=\"mailto:me@mail.com?subject=Hiring\">Email</a> because # is for same-page id navigation and mailto with query params sets subject",
+        "<a href=\"contact.html\">Contact</a> and <a href=\"mail:me@mail.com\">Email</a> because # is deprecated and mail: is correct protocol",
+        "<a href=\"@contact\">Contact</a> and <a href=\"email:me@mail.com\">Email</a> because @ symbol is used for section navigation",
+        "<a href=\"#contact\" target=\"_blank\">Contact</a> and <a href=\"mailto:me@mail.com\" rel=\"noopener\">Email</a> because hash links must open in new tab"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Perfect! You know hash navigation and mailto query params - exactly what real portfolios use.",
+      "incorrectFeedback": "How do you jump to id=\"contact\" on same page? What protocol opens email client?",
+      "reasoning": "#contact links to element with id=contact. mailto: opens email client, ?subject= sets subject via URL query string.",
+      "xpReward": 25
+    },
+    {
+      "id": "multi-page",
+      "type": "heading",
+      "text": "Build your multi-page app now - Lesson 3 project"
+    },
+    {
+      "id": "mp1",
+      "type": "sentence",
+      "text": "Time to turn your single page into a real multi-page app. In Menu > Practical, create 3 files: index.html, about.html, projects.html. This is exactly how your final complete app will be structured in Lesson 10, just with more features."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "html",
+      "title": "File 1: index.html - Your home with professional nav",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Home - Prince Egyir Portfolio</title>\n</head>\n<body>\n    <nav>\n      <ul>\n        <li><a href=\"index.html\">Home</a></li>\n        <li><a href=\"about.html\">About</a></li>\n        <li><a href=\"projects.html\">Projects</a></li>\n        <li><a href=\"#contact\">Contact</a></li>\n      </ul>\n    </nav>\n    <h1>Prince Egyir</h1>\n    <p><strong>Full-Stack Developer</strong> | Building apps for Africa</p>\n    <h2 id=\"contact\">Contact</h2>\n    <p><a href=\"mailto:prince@example.com\">prince@example.com</a></p>\n    <p><a href=\"tel:+233240000000\">Call: 0240000000</a></p>\n    <p><a href=\"https://github.com\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub - Opens new tab safely</a></p>\n    <p><a href=\"#\">Back to Top</a></p>\n</body>\n</html>",
+      "output": "Home | About | Projects | Contact\nPrince Egyir\nFull-Stack Developer"
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "html",
+      "title": "File 2: about.html and File 3: projects.html",
+      "code": "<!-- about.html -->\n<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>About - Prince</title></head>\n<body>\n<nav><ul><li><a href=\"index.html\">Home</a></li><li><a href=\"about.html\">About</a></li><li><a href=\"projects.html\">Projects</a></li></ul></nav>\n<h1>About Me</h1>\n<p>I'm a developer from Ghana learning HTML to build complete apps.</p>\n<a href=\"index.html\">← Back to Home</a>\n</body>\n</html>\n\n<!-- projects.html -->\n<h1>My Projects</h1>\n<p>Project 1: Code Academy App - Built with HTML</p>\n<a href=\"resume.pdf\" download>Download My Resume</a>\n<br><a href=\"index.html\">← Back to Home</a>",
+      "output": "About Me\nI'm a developer from Ghana...\nBack to Home\nMy Projects\nDownload My Resume"
+    },
+    {
+      "id": "mp2",
+      "type": "sentence",
+      "text": "Test it: Click About, click Home, click Contact jump, click GitHub. You now have a multi-page app with navigation! Save all 3 files. In Lesson 4 we will add images and multimedia to make it visual."
+    },
+    {
+      "id": "q4",
+      "type": "quiz",
+      "question": "You wrap navigation links directly in <div> instead of <nav><ul><li>. It looks same visually. Why will senior dev and accessibility auditor still reject it?",
+      "options": [
+        "They won't reject, div is actually preferred over nav because nav is deprecated in HTML5",
+        "Because <nav> provides landmark semantics for screen readers and SEO, and <ul><li> provides list semantics indicating related navigation items, while div has no semantic meaning",
+        "Because div is slower to render than nav and ul, causing performance issues on mobile",
+        "Because search engines can't crawl links inside div, only inside nav"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Visual same ≠ semantic same. Professionals code for humans, screen readers, and search engines, not just eyes.",
+      "incorrectFeedback": "Think beyond visual: What does screen reader announce? What does Google understand about navigation structure?",
+      "reasoning": "Semantic HTML matters: nav = navigation landmark, ul = list of related items. div is generic with no meaning.",
+      "xpReward": 25
+    },
+    {
+      "id": "q5",
+      "type": "quiz",
+      "question": "You need a link that: 1) Goes to external site 2) Opens new tab 3) Is secure 4) Shows custom download filename. Which attribute combination is correct and production-ready?",
+      "options": [
+        "<a href=\"https://example.com/file.pdf\" target=\"_blank\" rel=\"noopener noreferrer\" download=\"MyFile.pdf\"> - target for new tab, rel for security, download for custom filename",
+        "<a href=\"https://example.com/file.pdf\" target=\"_new\" rel=\"safe\" download> - _new is new standard, safe is security attribute",
+        "<a href=\"https://example.com/file.pdf\" blank=\"true\" secure=\"true\" filename=\"MyFile.pdf\"> - blank and secure are boolean attributes",
+        "<a href=\"https://example.com/file.pdf\" newtab download> - newtab and download are enough, no need for rel"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Production-ready code! You combined security, UX, and functionality correctly.",
+      "incorrectFeedback": "Which attributes actually exist in HTML spec? target, rel, download are real. blank, secure, newtab, safe are not.",
+      "reasoning": "target=_blank + rel=noopener noreferrer is secure external pattern. download attribute triggers download and can specify filename.",
+      "xpReward": 30
+    },
+    {
+      "id": "next-3",
+      "type": "heading",
+      "text": "You now have a multi-page app"
+    },
+    {
+      "id": "next3-1",
+      "type": "sentence",
+      "text": "You now understand anchor deeply, absolute vs relative vs root-relative URLs, ../ navigation, target and security with rel, mailto, tel, download, hash navigation, and professional nav structure with nav>ul>li."
+    },
+    {
+      "id": "next3-2",
+      "type": "sentence",
+      "text": "Next: Lesson 4 - Images and Multimedia. Your text-only app will become visual. You will learn how to add responsive images, accessibility with alt, figure captions, audio, video, and make your portfolio look like a real startup website. Practice your 3-page navigation in Menu > Practical until clicking feels natural!"
+    }
+  ]
+}

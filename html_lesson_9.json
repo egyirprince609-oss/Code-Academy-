@@ -1,0 +1,261 @@
+{
+  "course": "html",
+  "lessonNumber": 9,
+  "lessonId": "html-lesson-9",
+  "title": "Accessibility, Performance & Final Polish",
+  "subtitle": "Everything you need to build complete websites and apps that everyone can use",
+  "description": "Master accessibility (a11y), ARIA, skip links, keyboard navigation, focus management, performance optimization, validation, and final checklist that transforms your code from working to professional production-ready complete website and apps.",
+  "level": "Advanced",
+  "xpReward": 120,
+  "coinsReward": 30,
+  "estimatedMinutes": 50,
+  "blocks": [
+    {
+      "id": "welcome-9",
+      "type": "heading",
+      "text": "You can build websites - now let's build websites EVERYONE can use"
+    },
+    {
+      "id": "w9-1",
+      "type": "sentence",
+      "text": "You have learned tags, text, links, images, lists, tables, forms, semantics, modern HTML5. You CAN build complete websites and apps now. But can a blind person use your website? Can keyboard-only user navigate it? Will it load fast on slow Ghana mobile network? Will Google rank it? Today we cover what separates junior websites from professional production apps that serve millions."
+    },
+    {
+      "id": "w9-2",
+      "type": "sentence",
+      "text": "Open Menu > Practical and open your complete webpage index.html from Lesson 8. We will audit and polish it to 95% production ready. Lesson 10 will be deployment."
+    },
+    {
+      "id": "a11y-deep",
+      "type": "heading",
+      "text": "Accessibility is not optional - it's law and it's humanity"
+    },
+    {
+      "id": "a11y1",
+      "type": "sentence",
+      "text": "Accessibility (a11y) means your complete website and apps can be used by people with disabilities - blind users with screen readers, deaf users needing captions, motor impairment users using keyboard only, color blind users. WCAG guidelines require: 1) Perceivable - alt text, captions, contrast. 2) Operable - keyboard navigation, skip links. 3) Understandable - labels, clear language. 4) Robust - valid HTML, ARIA when needed."
+    },
+    {
+      "id": "a11y2",
+      "type": "sentence",
+      "text": "In many countries, inaccessible websites can be sued. But beyond law, think: if your client's customer is blind and can't order from their website because you didn't add alt or label, client loses money and you lose reputation. Professional complete websites and apps MUST be accessible."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "html",
+      "title": "Accessibility audit checklist - apply to your website",
+      "code": "<!-- ❌ INACCESSIBLE - fails audit -->\n<img src=\"product.jpg\">\n<input type=\"text\" placeholder=\"Name\">\n<div onclick=\"submit()\">Send</div>\n<a href=\"#\">Click here</a>\n\n<!-- ✅ ACCESSIBLE - passes WCAG -->\n<img src=\"product.jpg\" alt=\"Red Nike shoe size 42 for sale GH₵300\" width=\"300\" height=\"300\">\n<label for=\"name\">Full Name *</label>\n<input type=\"text\" id=\"name\" name=\"name\" required aria-required=\"true\">\n<button type=\"submit\">Send Project Inquiry</button>\n<a href=\"projects.html\">View my complete website projects</a>\n<!-- Good link text describes destination, not 'click here' -->",
+      "output": "Inaccessible vs Accessible examples"
+    },
+    {
+      "id": "skip-focus",
+      "type": "heading",
+      "text": "Skip links, focus management and keyboard navigation"
+    },
+    {
+      "id": "sf1",
+      "type": "sentence",
+      "text": "Keyboard users press Tab to navigate. If your website has 20 nav links, they must Tab 20 times on every page to reach main content. Skip link solves this: hidden link at very top that says Skip to main content, visible when focused, jumps to main. Also tabindex: tabindex=\"0\" makes custom element focusable, tabindex=\"-1\" makes it programmatically focusable but not in Tab order. Never use tabindex >0 - it breaks natural Tab order."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "html",
+      "title": "Skip link and keyboard - mandatory for complete websites",
+      "code": "<body>\n  <!-- Skip link - first element in body, hidden until focused -->\n  <a href=\"#main-content\" class=\"skip-link\">Skip to main content</a>\n  \n  <header>\n    <nav><ul><li><a href=\"#about\">About</a></li><li><a href=\"#projects\">Projects</a></li></ul></nav>\n  </header>\n  \n  <main id=\"main-content\" tabindex=\"-1\">\n    <!-- tabindex -1 allows skip link to focus main programmatically -->\n    <h1>Complete Website Portfolio</h1>\n    <section id=\"about\"><h2>About</h2></section>\n  </main>\n</body>\n\n<!-- CSS to show skip link on focus (you will learn in CSS course) -->\n<!-- .skip-link { position:absolute; top:-40px; } .skip-link:focus { top:0; background:#000; color:#fff; padding:8px; } -->\n\n<!-- Keyboard accessible custom button -->\n<div role=\"button\" tabindex=\"0\" onclick=\"openModal()\" onkeydown=\"if(event.key==='Enter'||event.key===' ')openModal()\">\n  Open Contact Modal - works with Enter and Space like real button\n</div>",
+      "output": "Skip link appears on Tab press, jumps to main content, saving 20 Tabs"
+    },
+    {
+      "id": "aria-deep",
+      "type": "heading",
+      "text": "ARIA - when semantic HTML is not enough"
+    },
+    {
+      "id": "aria1",
+      "type": "sentence",
+      "text": "First rule of ARIA: Don't use ARIA if semantic HTML can do it. Use button not div role=button. But sometimes you need ARIA: aria-label when visible text not descriptive enough, aria-labelledby to reference other element as label, aria-describedby for extra description, aria-required, aria-invalid for form validation, aria-expanded for collapsible, aria-hidden for hiding decorative. ARIA doesn't change behavior, only announces to assistive tech."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "html",
+      "title": "ARIA - correct usage for complete apps",
+      "code": "<!-- aria-label - when icon button has no text -->\n<button aria-label=\"Close modal\">X</button>\n<button aria-label=\"Menu, 5 items\" aria-expanded=\"false\">☰</button>\n\n<!-- aria-labelledby and describedby -->\n<h2 id=\"contact-heading\">Contact Form - Get Complete Website Built</h2>\n<p id=\"contact-desc\">Fill this form and I will reply within 24 hours</p>\n<form aria-labelledby=\"contact-heading\" aria-describedby=\"contact-desc\">\n  <label for=\"email\">Email *</label>\n  <input type=\"email\" id=\"email\" required aria-required=\"true\" aria-describedby=\"email-help\">\n  <span id=\"email-help\">We never share your email</span>\n  \n  <label for=\"msg\">Message</label>\n  <textarea id=\"msg\" aria-describedby=\"msg-help\"></textarea>\n  <span id=\"msg-help\">Describe your complete website needs</span>\n</form>\n\n<!-- aria-invalid for validation -->\n<label for=\"phone\">Phone</label>\n<input type=\"tel\" id=\"phone\" aria-invalid=\"true\" aria-describedby=\"phone-error\">\n<span id=\"phone-error\" role=\"alert\">Phone must be 10 digits starting with 0</span>\n\n<!-- aria-hidden for decorative -->\n<span aria-hidden=\"true\">★★★</span> <span>5 star rating</span>",
+      "output": "ARIA examples for accessible forms and buttons"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "html",
+      "title": "Lang, alt, title, and other must-knows for complete websites",
+      "code": "<!-- lang attribute - tells screen reader language to use correct pronunciation -->\n<html lang=\"en\">\n  <p lang=\"fr\">Bonjour - French pronunciation</p>\n  <p lang=\"tw\">Maakye - Twi language greeting</p>\n</html>\n\n<!-- alt decision tree -->\n<img src=\"logo.png\" alt=\"Code Academy - Learn Build Master - complete website school\">\n<img src=\"decorative-dots.png\" alt=\"\"> <!-- decorative, skip -->\n<img src=\"chart.png\" alt=\"Bar chart: 80% of businesses need complete websites, 20% need apps only\">\n\n<!-- title vs alt vs aria-label -->\n<img src=\"help.png\" alt=\"Help\" title=\"Click for help about building complete websites\">\n<!-- alt = for screen readers and when image fails -->\n<!-- title = tooltip on hover, not reliable for accessibility -->\n<!-- aria-label overrides alt for screen readers -->\n\n<!-- autocomplete for faster forms -->\n<input type=\"text\" name=\"name\" autocomplete=\"name\">\n<input type=\"email\" name=\"email\" autocomplete=\"email\">\n<input type=\"tel\" name=\"phone\" autocomplete=\"tel\">\n<input type=\"text\" name=\"address\" autocomplete=\"street-address\">\n<!-- Helps users fill forms faster, especially on mobile -->",
+      "output": "Lang, alt, autocomplete for complete websites"
+    },
+    {
+      "id": "performance",
+      "type": "heading",
+      "text": "Performance - make your complete websites fast on slow networks"
+    },
+    {
+      "id": "perf1",
+      "type": "sentence",
+      "text": "In Ghana, many users have slow 3G and expensive data. If your complete website and apps are heavy, they will leave. HTML performance tricks: loading=\"lazy\" for images and iframes offscreen, width and height to prevent layout shift CLS, preload=\"metadata\" for video not full video, link rel=\"preload\" for critical resources, avoid too many iframes, optimize images with correct format jpg for photos, png for transparent, svg for icons/logos, webp modern best."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "html",
+      "title": "Performance optimized complete website",
+      "code": "<!-- Optimized images -->\n<img src=\"profile-400.webp\" srcset=\"profile-200.webp 200w, profile-400.webp 400w\" sizes=\"(max-width:600px) 200px, 400px\" alt=\"Prince Egyir\" width=\"400\" height=\"400\" loading=\"lazy\">\n\n<!-- Optimized iframe - lazy load -->\n<iframe src=\"https://maps.google.com/...\" title=\"Location in Accra\" width=\"400\" height=\"250\" loading=\"lazy\" referrerpolicy=\"no-referrer\"></iframe>\n\n<!-- Preload critical resource -->\n<link rel=\"preload\" href=\"hero-image.webp\" as=\"image\">\n<link rel=\"preload\" href=\"main-font.woff2\" as=\"font\" type=\"font/woff2\" crossorigin>\n\n<!-- Video optimized -->\n<video controls width=\"400\" poster=\"poster.jpg\" preload=\"metadata\" muted>\n  <source src=\"demo.webm\" type=\"video/webm\">\n  <source src=\"demo.mp4\" type=\"video/mp4\">\n</video>\n<!-- preload metadata = only duration, not full video, saves data -->\n\n<!-- Favicon and app icons -->\n<link rel=\"icon\" href=\"favicon.ico\" sizes=\"any\">\n<link rel=\"icon\" href=\"icon.svg\" type=\"image/svg+xml\">\n<link rel=\"apple-touch-icon\" href=\"apple-icon.png\">\n<!-- Makes your complete website look professional on all devices -->",
+      "output": "Performance optimized website loads fast on 3G"
+    },
+    {
+      "id": "validation-seo",
+      "type": "heading",
+      "text": "Validation, SEO and complete website launch checklist"
+    },
+    {
+      "id": "val1",
+      "type": "sentence",
+      "text": "Before you say your complete website and apps are done, validate: 1) W3C Validator - check HTML valid no errors. 2) Lighthouse - test Performance, Accessibility, Best Practices, SEO scores aim 90+. 3) Keyboard test - unplug mouse, Tab through entire website, can you access everything? 4) Screen reader test - use NVDA or VoiceOver, does it announce correctly? 5) Mobile test - does it work on phone with viewport?"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "html",
+      "title": "Final validation checklist - must pass before Lesson 10 deployment",
+      "code": "<!-- FINAL CHECKLIST FOR COMPLETE WEBSITE AND APPS -->\n<!-- 1. Valid HTML5 - No errors in https://validator.w3.org/ -->\n<!-- 2. One h1 per page, headings hierarchy h1->h2->h3 no skipping -->\n<!-- 3. All images have alt - informative alt or empty alt=\"\" for decorative -->\n<!-- 4. All inputs have label with for/id connection -->\n<!-- 5. All iframes have title -->\n<!-- 6. lang attribute on html -->\n<!-- 7. viewport meta present -->\n<!-- 8. Skip link present -->\n<!-- 9. Semantic layout header/nav/main/section/article/aside/footer -->\n<!-- 10. Links have descriptive text, not click here -->\n<!-- 11. Forms have required, validation, fieldset/legend where needed -->\n<!-- 12. Performance: loading lazy, width height, preload metadata -->\n<!-- 13. SEO: description, og tags, title descriptive -->\n<!-- 14. Keyboard accessible - all interactive elements focusable and operable with Enter/Space -->\n<!-- 15. Color contrast checked (will be detailed in CSS course but keep in mind) -->\n\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <meta name=\"description\" content=\"Complete website portfolio\">\n  <title>Complete - Valid, Accessible, Performant</title>\n</head>\n<body>\n  <a href=\"#main\" class=\"skip-link\">Skip to main content</a>\n  <header>...</header>\n  <main id=\"main\">...</main>\n  <footer>...</footer>\n</body>\n</html>",
+      "output": "Final checklist - 15 points for production complete website"
+    },
+    {
+      "id": "q1",
+      "type": "quiz",
+      "question": "You have <div onclick=\"send()\">Send</div> styled as button. It looks like button but keyboard user can't Tab to it or press Enter. Also screen reader doesn't announce as button. What are two critical fixes for accessible complete website?",
+      "options": [
+        "Add style cursor:pointer to make it look more like button and add title=\"Send button\" for screen readers",
+        "Fix 1: Add tabindex=\"0\" to make it focusable and role=\"button\" plus keydown handler for Enter/Space to make it operable by keyboard. Fix 2: Better yet replace div with semantic <button> which is natively focusable, operable, announced as button without extra ARIA or JS - semantic HTML first rule",
+        "Add alt=\"Send button\" to div because div needs alt like img for accessibility",
+        "Wrap div in <a> tag because a tags are keyboard accessible so <a><div>Send</div></a> fixes keyboard issue"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Semantic button > div role=button. This is core accessibility for complete apps.",
+      "incorrectFeedback": "Can div be focused by Tab by default? What role does screen reader announce for div?",
+      "reasoning": "Div not focusable or announced as button by default. Button is natively accessible. If must use div, need tabindex, role, keyboard handlers - but semantic button is better.",
+      "xpReward": 35
+    },
+    {
+      "id": "q2",
+      "type": "quiz",
+      "question": "You build complete website without skip link. Page has header with 15 nav links then main content. Keyboard user must press Tab 15 times on every page to reach main content. Why is skip link mandatory and where should it be placed?",
+      "options": [
+        "Skip link is optional decoration, keyboard users can use mouse to skip nav, no need for skip link in complete websites",
+        "Skip link is mandatory for WCAG, must be first focusable element in body, hidden until focused, links to main content id, allows keyboard and screen reader users to bypass repetitive navigation and jump directly to main content saving 15 Tabs per page",
+        "Skip link should be at bottom of page after footer to skip back to top, not at top",
+        "Skip link should only be added with JavaScript because HTML cannot have skip links natively"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Excellent accessibility knowledge! Skip link is WCAG requirement for bypassing blocks.",
+      "incorrectFeedback": "Where would skip link be most useful? Top or bottom? For bypassing what?",
+      "reasoning": "WCAG 2.4.1 Bypass Blocks requires mechanism to bypass repeated content. Skip link as first focusable element linking to main satisfies this.",
+      "xpReward": 30
+    },
+    {
+      "id": "q3",
+      "type": "quiz",
+      "question": "You have email input <input type=\"email\" placeholder=\"Email\"> without label, and image <img src=\"team.jpg\"> without alt on your complete website. Accessibility audit fails both. What is correct fix and why placeholder and missing alt fail?",
+      "options": [
+        "Both pass, placeholder replaces label and images don't need alt if src is descriptive like team.jpg",
+        "Fix: Add label with for/id for email input because placeholder disappears on typing, low contrast, not reliably announced as label; add meaningful alt for informative image or empty alt for decorative - because screen readers need label to identify input purpose and alt to describe image content, without them blind users cannot use complete website",
+        "Fix: Add title attribute to both because title replaces label and alt for accessibility",
+        "Fix: Add aria-hidden=\"true\" to both to hide them from screen readers and avoid audit failure"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Label and alt are non-negotiable for accessible complete websites and apps.",
+      "incorrectFeedback": "What happens to placeholder after typing? What does screen reader announce for image without alt?",
+      "reasoning": "Label is persistent programmatic name, placeholder is hint only. Alt provides text alternative for images. Both mandatory for accessibility.",
+      "xpReward": 35
+    },
+    {
+      "id": "complete-95",
+      "type": "heading",
+      "text": "Your complete website is 95% ready - final polish practical"
+    },
+    {
+      "id": "cp1",
+      "type": "sentence",
+      "text": "Time to audit and polish your complete website to professional production standard. Open Menu > Practical, open your index.html from Lesson 8. Apply this final polish."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "html",
+      "title": "Add skip link and accessibility polish to your website",
+      "code": "<body>\n  <a href=\"#main-content\" class=\"skip-link\" style=\"position:absolute; top:-40px; left:0; background:#000; color:#fff; padding:8px; z-index:100;\">Skip to main content</a>\n  <header>\n    <h1>Prince Egyir - Complete Website Developer</h1>\n    <nav aria-label=\"Main navigation\">\n      <ul>\n        <li><a href=\"#about\">About</a></li>\n        <li><a href=\"#projects\">Projects - Complete Websites Built</a></li>\n        <li><a href=\"#pricing\">Pricing</a></li>\n        <li><a href=\"#contact\">Contact</a></li>\n      </ul>\n    </nav>\n  </header>\n  <main id=\"main-content\" tabindex=\"-1\">\n    <section id=\"about\"><h2>About Me</h2><p>Building accessible complete websites for everyone.</p></section>\n  </main>\n</body>\n\n<!-- Test: Press Tab on page load - skip link should appear first -->",
+      "output": "Skip link added, nav has aria-label, main has id and tabindex"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "html",
+      "title": "Complete accessible form for your final website",
+      "code": "<section id=\"contact\">\n  <h2>Contact - Get Your Accessible Complete Website Built</h2>\n  <p id=\"form-desc\">All fields marked * are required. I reply within 24 hours.</p>\n  <form action=\"#\" method=\"POST\" aria-labelledby=\"contact-heading\" aria-describedby=\"form-desc\">\n    <h3 id=\"contact-heading\" style=\"display:none;\">Contact Form</h3>\n    <fieldset>\n      <legend>Your Information</legend>\n      <label for=\"cname\">Full Name *</label><br>\n      <input type=\"text\" id=\"cname\" name=\"name\" required aria-required=\"true\" autocomplete=\"name\" minlength=\"2\"><br><br>\n      <label for=\"cemail\">Email *</label><br>\n      <input type=\"email\" id=\"cemail\" name=\"email\" required aria-required=\"true\" autocomplete=\"email\" aria-describedby=\"email-help\">\n      <span id=\"email-help\">We never share your email - privacy respected</span><br><br>\n      <label for=\"cphone\">Phone</label><br>\n      <input type=\"tel\" id=\"cphone\" name=\"phone\" autocomplete=\"tel\" pattern=\"0[0-9]{9}\" aria-describedby=\"phone-help\">\n      <span id=\"phone-help\">10 digits starting with 0, e.g., 0240000000</span><br>\n    </fieldset>\n    <br>\n    <fieldset>\n      <legend>Project Details</legend>\n      <label for=\"cservice\">Service Needed *</label><br>\n      <select id=\"cservice\" name=\"service\" required aria-required=\"true\">\n        <option value=\"\">-- Choose Service for Complete Website --</option>\n        <option value=\"portfolio\">Complete Portfolio Website - GH₵500</option>\n        <option value=\"business\">Complete Business Website - GH₵1500</option>\n        <option value=\"ecommerce\">Complete E-commerce Website + App - GH₵3000</option>\n      </select><br><br>\n      <label for=\"cmessage\">Tell me about your complete website needs *</label><br>\n      <textarea id=\"cmessage\" name=\"message\" rows=\"5\" cols=\"35\" required aria-required=\"true\" placeholder=\"I need a complete website for my business that...\"></textarea><br>\n    </fieldset>\n    <br>\n    <button type=\"submit\">Send Inquiry - Build My Complete Website</button>\n    <button type=\"reset\">Clear Form</button>\n  </form>\n  <address>Contact: <a href=\"mailto:prince@example.com\">prince@example.com</a> - Accra, Ghana - Building complete websites and apps for Africa</address>\n</section>",
+      "output": "Fully accessible form with aria, autocomplete, fieldset, help text, address"
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "html",
+      "title": "Your complete website 95% ready - final check",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <meta name=\"description\" content=\"Prince Egyir builds accessible, fast, complete websites and apps for businesses in Ghana - portfolio, e-commerce, business sites\">\n  <meta property=\"og:title\" content=\"Prince Egyir - Complete Website Developer\">\n  <meta property=\"og:image\" content=\"preview.jpg\">\n  <meta name=\"theme-color\" content=\"#0A192F\">\n  <title>Prince Egyir | Accessible Complete Website Developer - 9 Lessons Completed</title>\n  <link rel=\"icon\" href=\"favicon.ico\">\n</head>\n<body>\n  <a href=\"#main-content\" class=\"skip-link\">Skip to main content</a>\n  <header><h1>Prince Egyir</h1><nav aria-label=\"Main\">...</nav></header>\n  <main id=\"main-content\" tabindex=\"-1\">\n    <section id=\"about\"><h2>About</h2><img src=\"profile-400.webp\" alt=\"Prince Egyir, developer building complete websites\" width=\"400\" height=\"400\" loading=\"lazy\"></section>\n    <section id=\"projects\"><h2>Complete Websites Built</h2><article><h3>Code Academy App</h3><p>Accessible complete website built with semantic HTML</p></article></section>\n    <section id=\"faq\"><h2>FAQ</h2><details><summary>What is a complete website?</summary><p>A website with semantic structure, accessible forms, responsive images, SEO meta, ready for deployment and real users.</p></details></section>\n    <section id=\"contact\"><!-- accessible form from previous code --></section>\n  </main>\n  <footer><p>© 2026 - Complete Website Built with 9 Lessons - Accessible, Fast, Production-Ready</p></footer>\n</body>\n</html>\n<!-- Test: Validator, Lighthouse, Tab navigation, screen reader -->",
+      "output": "95% complete website - accessible, performant, semantic, modern"
+    },
+    {
+      "id": "q4",
+      "type": "quiz",
+      "question": "You use <img src=\"hero.jpg\" alt=\"\"> with empty alt for large hero image that shows text 'Welcome to My Portfolio' inside image. Lighthouse says accessible but blind user says they can't know what hero says. What is critical error?",
+      "options": [
+        "Empty alt is always correct for large images, blind user is wrong, hero images should always have empty alt",
+        "Error is that image contains important text but alt is empty - empty alt is only for decorative images, if image conveys information or text, alt must describe that information. Also important text should not be inside image only - should be real HTML text over image for accessibility and SEO",
+        "Error is that hero image should have title not alt, so add title=\"Welcome to My Portfolio\" and keep alt empty",
+        "Error is that hero image is too large, should be small icon with empty alt, text should be in separate div"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Excellent! Text in images is accessibility failure - use real HTML text.",
+      "incorrectFeedback": "Does empty alt mean decorative or informative? Where should important text live - inside image or as HTML?",
+      "reasoning": "Empty alt = decorative, skip. Informative images need meaningful alt. Text inside images fails accessibility because screen readers can't read text in pixels, and not translatable or responsive.",
+      "xpReward": 30
+    },
+    {
+      "id": "q5",
+      "type": "quiz",
+      "question": "You build complete website with no lang attribute on html, no width/height on images, no loading=lazy, and iframe without title. What are 4 impacts on complete website quality?",
+      "options": [
+        "No impact, these attributes are optional and only for advanced developers, complete website works without them",
+        "Impact 1: No lang - screen readers use wrong pronunciation. Impact 2: No width/height - causes layout shift CLS hurting SEO and UX. Impact 3: No loading=lazy - loads all images immediately slowing page on slow networks. Impact 4: Iframe no title - fails accessibility audit, screen readers announce 'frame' without description - all hurt production quality of complete website and apps",
+        "Impact is only SEO, accessibility and performance are not affected by these attributes, only SEO ranking drops slightly",
+        "Impact is that website won't load at all without these attributes, browser blocks rendering until they are added"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect production knowledge! These 4 attributes define professional vs amateur complete websites.",
+      "incorrectFeedback": "What does lang do for pronunciation? What does width/height prevent? What does lazy do? What does iframe title provide?",
+      "reasoning": "Lang = pronunciation, width/height = prevent CLS, loading=lazy = defer offscreen, iframe title = accessible name. All critical for production complete websites and apps.",
+      "xpReward": 35
+    },
+    {
+      "id": "next-9",
+      "type": "heading",
+      "text": "You now know EVERYTHING to build complete websites and apps"
+    },
+    {
+      "id": "next9-1",
+      "type": "sentence",
+      "text": "Let's recap what you need to build complete websites and apps: Semantic HTML header/nav/main/section/article/aside/footer, accessible forms with labels and validation, images with alt and performance, lists tables, links navigation, modern features details/dialog/datalist/progress/iframe, SEO meta OG tags, accessibility skip links ARIA focus management, performance lazy loading width height. You have 95% of professional complete website. You can now build any website or app structure - portfolio, business site, e-commerce layout, blog, dashboard."
+    },
+    {
+      "id": "next9-2",
+      "type": "sentence",
+      "text": "Final Lesson 10: Complete Website Build & Deployment. We will combine ALL 9 lessons into one final production complete website and app - multi-page, accessible, SEO ready, performant - and deploy it to internet so you can share link with clients and employers. You are one lesson away from your deployable complete website! Practice accessibility audit in Menu > Practical - Tab through your website without mouse, can you reach everything?"
+    }
+  ]
+}

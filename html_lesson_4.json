@@ -1,0 +1,266 @@
+{
+  "course": "html",
+  "lessonNumber": 4,
+  "lessonId": "html-lesson-4",
+  "title": "Images and Multimedia",
+  "subtitle": "Make your app visual, accessible and professional",
+  "description": "Learn how to add responsive images correctly, understand alt text for accessibility and SEO, use figure and figcaption, and embed audio and video like production apps do.",
+  "level": "Beginner",
+  "xpReward": 90,
+  "coinsReward": 20,
+  "estimatedMinutes": 38,
+  "blocks": [
+    {
+      "id": "welcome-4",
+      "type": "heading",
+      "text": "Your app is text-only - let's make it visual"
+    },
+    {
+      "id": "w4-1",
+      "type": "sentence",
+      "text": "Welcome back! Right now your app from Lesson 3 is just text and links. Real apps are visual. Think of YouTube without thumbnails, or Jumia without product images - nobody would use them. Today we make your portfolio look like a real product with images, audio and video."
+    },
+    {
+      "id": "w4-2",
+      "type": "sentence",
+      "text": "Open your lab: Home > Menu > Practical. You will be adding images to your index.html, about.html and projects.html today."
+    },
+    {
+      "id": "img-deep",
+      "type": "heading",
+      "text": "The img tag is not just src - it's a system"
+    },
+    {
+      "id": "img1",
+      "type": "sentence",
+      "text": "Everyone writes <img src=\"photo.jpg\"> but production apps need more. src is where the file is, alt is mandatory description for when image fails and for blind users, width and height prevent layout shift (CLS - Cumulative Layout Shift, a Google ranking factor), loading=\"lazy\" makes page load faster by loading images only when needed."
+    },
+    {
+      "id": "img2",
+      "type": "sentence",
+      "text": "Most important: Never leave alt empty for important images. If image is decorative only, then alt=\"\" is correct to tell screen readers to ignore it. But if image conveys information like your profile photo, alt must describe it meaningfully."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "html",
+      "title": "Production-ready image - not just src",
+      "code": "<!-- Basic but incomplete -->\n<img src=\"profile.jpg\">\n\n<!-- Professional - accessible, performant, stable -->\n<img \n src=\"profile.jpg\" \n alt=\"Prince Egyir smiling, wearing Code Academy t-shirt, working on laptop\"\n width=\"300\" \n height=\"300\"\n loading=\"lazy\">\n\n<!-- Decorative image - should be ignored by screen readers -->\n<img src=\"decorative-line.png\" alt=\"\" width=\"100\" height=\"20\">",
+      "output": "[Prince Egyir smiling... 300x300 lazy loaded]\n[decorative line ignored by screen readers]"
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "html",
+      "title": "Absolute vs relative image paths",
+      "code": "<!-- From internet - absolute URL -->\n<img src=\"https://via.placeholder.com/200\" alt=\"Placeholder\">\n\n<!-- From your app folder - relative -->\n<img src=\"images/profile.jpg\" alt=\"My profile\">\n<img src=\"../images/logo.png\" alt=\"Logo from parent folder\">\n<img src=\"/images/banner.jpg\" alt=\"Banner from root\">\n\n<!-- Common mistake -->\n<img src=\"C:\\Users\\Prince\\Desktop\\photo.jpg\" alt=\"This will break on web\">\n<!-- Local computer paths never work on live websites -->",
+      "output": "[Placeholder]\n[My profile]\n[Logo]\n[Banner]"
+    },
+    {
+      "id": "fig-deep",
+      "type": "heading",
+      "text": "Figure and figcaption - for professional image captions"
+    },
+    {
+      "id": "fig1",
+      "type": "sentence",
+      "text": "When you have image with caption like in news sites or portfolios, don't just put <p> below <img>. Use <figure> to wrap image and <figcaption> for caption. This is semantic - it tells browser and Google that caption belongs to that image. It also groups them together for styling."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "html",
+      "title": "Figure with caption - portfolio standard",
+      "code": "<figure>\n <img src=\"https://via.placeholder.com/300x200\" alt=\"Code Academy App dashboard showing HTML lessons\" width=\"300\" height=\"200\">\n <figcaption>Fig 1: My Code Academy App - HTML Course Dashboard built in Lesson 3</figcaption>\n</figure>\n\n<figure>\n <img src=\"https://via.placeholder.com/300x200\" alt=\"E-commerce website project\" width=\"300\" height=\"200\">\n <figcaption>Fig 2: E-commerce project for local business in Accra</figcaption>\n</figure>",
+      "output": "[Code Academy App dashboard]\nFig 1: My Code Academy App...\n[E-commerce website project]\nFig 2: E-commerce project..."
+    },
+    {
+      "id": "responsive",
+      "type": "heading",
+      "text": "Responsive images - why your image looks blurry on phones"
+    },
+    {
+      "id": "res1",
+      "type": "sentence",
+      "text": "A 4000px image on mobile is wasteful - slow loading, data cost. Real apps serve different sizes. Use srcset to give browser options: small image for phones, large for desktops. Browser chooses best. Also sizes tells browser how much space image will take."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "html",
+      "title": "Responsive images - production pattern",
+      "code": "<img \n src=\"profile-400.jpg\" \n srcset=\"profile-200.jpg 200w, profile-400.jpg 400w, profile-800.jpg 800w\"\n sizes=\"(max-width: 600px) 200px, 400px\"\n alt=\"Prince Egyir developer portrait\"\n width=\"400\" height=\"400\">\n<!-- Browser: If screen <600px, use 200px image, else 400px. Choose from srcset -->\n\n<!-- Simple responsive - width 100% via CSS later, but HTML gives hints -->\n<img src=\"banner.jpg\" alt=\"Banner\" width=\"1200\" height=\"600\" style=\"max-width:100%; height:auto;\">",
+      "output": "[Responsive portrait - browser picks best size]\n[Responsive banner]"
+    },
+    {
+      "id": "audio-video",
+      "type": "heading",
+      "text": "Audio and Video - not just YouTube embeds"
+    },
+    {
+      "id": "av1",
+      "type": "sentence",
+      "text": "HTML5 has native <audio> and <video> tags - no Flash needed. They support controls attribute to show play/pause, autoplay (avoid unless muted), loop, muted, poster for video thumbnail, and multiple source formats because not all browsers support same format. Always include fallback text."
+    },
+    {
+      "id": "av2",
+      "type": "sentence",
+      "text": "Critical: autoplay with sound is blocked by most browsers to avoid annoying users. If you need autoplay, must be muted. Also preload=\"none\" saves data - don't load video until user clicks play."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "html",
+      "title": "Audio tag - professional usage",
+      "code": "<audio controls preload=\"metadata\">\n <source src=\"intro.mp3\" type=\"audio/mpeg\">\n <source src=\"intro.ogg\" type=\"audio/ogg\">\n Your browser does not support audio tag. Download <a href=\"intro.mp3\">MP3</a>\n</audio>\n\n<!-- With autoplay muted - allowed -->\n<audio controls autoplay muted loop>\n <source src=\"background.mp3\" type=\"audio/mpeg\">\n</audio>",
+      "output": "[Audio player with controls]\n[Background audio muted loop]"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "html",
+      "title": "Video tag - professional usage",
+      "code": "<video \n controls \n width=\"400\" \n poster=\"https://via.placeholder.com/400x225?text=Click+to+Play\"\n preload=\"metadata\">\n <source src=\"project-demo.mp4\" type=\"video/mp4\">\n <source src=\"project-demo.webm\" type=\"video/webm\">\n Your browser does not support video. <a href=\"project-demo.mp4\">Download video</a>\n</video>\n\n<!-- Video with captions for accessibility -->\n<video controls width=\"400\">\n <source src=\"tutorial.mp4\" type=\"video/mp4\">\n <track kind=\"captions\" srclang=\"en\" label=\"English captions\" src=\"captions.vtt\" default>\n</video>",
+      "output": "[Video player with poster]\n[Video with English captions]"
+    },
+    {
+      "id": "access-deep",
+      "type": "heading",
+      "text": "Accessibility - what senior devs check first"
+    },
+    {
+      "id": "acc1",
+      "type": "sentence",
+      "text": "Alt text is not optional - it's law in many countries for public sites. Good alt describes content and function: alt=\"Prince Egyir smiling at laptop\" is good, alt=\"image\" or alt=\"photo\" is useless. For decorative images like lines or background patterns, alt=\"\" tells screen reader to skip it. Also never put important text inside image only - screen readers can't read text inside jpg."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "html",
+      "title": "Alt text - good vs bad - impacts SEO and accessibility",
+      "code": "<!-- BAD alt - useless -->\n<img src=\"profile.jpg\" alt=\"image\">\n<img src=\"profile.jpg\" alt=\"photo\">\n<img src=\"profile.jpg\" alt=\"profile.jpg\">\n\n<!-- GOOD alt - descriptive and functional -->\n<img src=\"profile.jpg\" alt=\"Prince Egyir, full-stack developer from Ghana, working on Code Academy App\">\n<img src=\"chart.png\" alt=\"Bar chart showing 80% of users prefer mobile apps over websites\">\n<img src=\"logo.png\" alt=\"Code Academy - Learn Build Master\">\n\n<!-- Decorative - empty alt is CORRECT -->\n<img src=\"divider.png\" alt=\"\">",
+      "output": "[Bad alt examples - avoid]\n[Good alt - descriptive]\n[Decorative ignored]"
+    },
+    {
+      "id": "q1",
+      "type": "quiz",
+      "question": "You add <img src=\"profile.jpg\" width=\"300\" height=\"300\"> without alt. It looks fine visually. Why will accessibility audit and Google Lighthouse fail it and what is correct?",
+      "options": [
+        "It will pass because width/height are enough, alt is optional for local images and only required for external images",
+        "It fails because alt is mandatory for all informative images - screen readers need description, and missing width/height causes layout shift (CLS). Correct is alt with meaningful description plus width/height plus loading=lazy",
+        "It fails because jpg format requires alt but png doesn't, so convert to png to avoid alt requirement",
+        "It fails because src must be absolute URL, relative src like profile.jpg is invalid and requires alt as fallback"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! You understand CLS, accessibility, and why alt is mandatory - this is production-level thinking.",
+      "incorrectFeedback": "Think: What does screen reader announce when alt missing? What does Google measure for CLS? Is alt optional?",
+      "reasoning": "Missing alt fails WCAG accessibility. Missing width/height causes layout shift (CLS) hurting SEO and UX. Both are required for production.",
+      "xpReward": 30
+    },
+    {
+      "id": "q2",
+      "type": "quiz",
+      "question": "You need to show a project screenshot with caption 'My e-commerce app built for Accra market'. Which markup is semantically correct and best for SEO?",
+      "options": [
+        "<img src=\"app.jpg\" alt=\"app\"><p>My e-commerce app built for Accra market</p> because p is enough for captions and figure is deprecated",
+        "<figure><img src=\"app.jpg\" alt=\"Screenshot of e-commerce app showing product listing for Ghana market\" width=\"400\" height=\"300\"><figcaption>My e-commerce app built for Accra market</figcaption></figure> because figure groups image with caption semantically and figcaption is programmatically associated",
+        "<div><img src=\"app.jpg\" alt=\"app\"><span>My e-commerce app built for Accra market</span></div> because div and span are more flexible than figure",
+        "<img src=\"app.jpg\" alt=\"My e-commerce app built for Accra market\" title=\"My e-commerce app\"> because title attribute replaces need for figcaption"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Figure/figcaption association is what Google uses to understand image context.",
+      "incorrectFeedback": "Which element programmatically associates caption with image for SEO and assistive tech?",
+      "reasoning": "figure + figcaption semantically links image and caption. div/p doesn't. alt describes image content, figcaption provides caption/context.",
+      "xpReward": 25
+    },
+    {
+      "id": "q3",
+      "type": "quiz",
+      "question": "You have a 4000px banner image. On mobile it loads slow and costs user data. You add srcset with 400w, 800w, 1200w versions and sizes=\"(max-width: 600px) 400px, 800px\". How does browser choose?",
+      "options": [
+        "Browser always loads largest image from srcset regardless of sizes to ensure best quality on all devices",
+        "Browser uses sizes to know rendered width, then picks best file from srcset based on screen width, pixel density and network - e.g., 400w for phone <600px, 800w for desktop, saving data and improving performance",
+        "srcset is ignored if src exists, browser only loads src file, srcset is just for SEO description",
+        "Browser loads all images in srcset at once to cache them for future use, so it doesn't save data"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Brilliant performance knowledge! This is how real apps save data and load fast on Ghana mobile networks.",
+      "incorrectFeedback": "What is purpose of srcset and sizes? Do browsers load all or choose best?",
+      "reasoning": "srcset provides options, sizes hints at rendered size, browser chooses optimal file based on viewport, DPR, network - key for responsive performance.",
+      "xpReward": 30
+    },
+    {
+      "id": "build-visual",
+      "type": "heading",
+      "text": "Make your portfolio visual - Lesson 4 upgrade"
+    },
+    {
+      "id": "bv1",
+      "type": "sentence",
+      "text": "Now upgrade your 3-page app from Lesson 3. Add profile photo, project screenshots with captions, and a demo video poster. Go to Menu > Practical and edit your index.html."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "html",
+      "title": "Upgrade index.html with professional visuals",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Prince Egyir | Developer</title></head>\n<body>\n<nav><ul><li><a href=\"index.html\">Home</a></li><li><a href=\"about.html\">About</a></li><li><a href=\"projects.html\">Projects</a></li></ul></nav>\n<h1>Prince Egyir</h1>\n<img src=\"https://via.placeholder.com/200\" alt=\"Prince Egyir, full-stack developer from Ghana, smiling in Code Academy t-shirt\" width=\"200\" height=\"200\" loading=\"lazy\">\n<p><strong>Full-Stack Developer</strong> building for Africa</p>\n<h2>Featured Project</h2>\n<figure>\n <img src=\"https://via.placeholder.com/400x225\" alt=\"Code Academy App dashboard showing HTML lessons and progress\" width=\"400\" height=\"225\" loading=\"lazy\">\n <figcaption>Code Academy App - My HTML course dashboard with 10 lessons</figcaption>\n</figure>\n<h2 id=\"contact\">Contact</h2>\n<p><a href=\"mailto:prince@example.com\">Email Me</a></p>\n</body>\n</html>",
+      "output": "Prince Egyir\n[Profile photo 200x200]\nFull-Stack Developer\n[Featured project with caption]\nContact"
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "html",
+      "title": "Add video and audio to projects.html",
+      "code": "<!-- projects.html additions -->\n<h1>My Projects</h1>\n<h2>Project Demo Video</h2>\n<video controls width=\"400\" poster=\"https://via.placeholder.com/400x225?text=Demo+Video\" preload=\"metadata\">\n <source src=\"demo.mp4\" type=\"video/mp4\">\n <source src=\"demo.webm\" type=\"video/webm\">\n Your browser doesn't support video. <a href=\"demo.mp4\">Download demo</a>\n</video>\n<h2>Project Presentation Audio</h2>\n<audio controls preload=\"none\">\n <source src=\"pitch.mp3\" type=\"audio/mpeg\">\n <source src=\"pitch.ogg\" type=\"audio/ogg\">\n <a href=\"pitch.mp3\">Download audio pitch</a>\n</audio>\n<br><br><a href=\"index.html\">← Back to Home</a>",
+      "output": "My Projects\n[Video with poster]\n[Audio player]\nBack to Home"
+    },
+    {
+      "id": "q4",
+      "type": "quiz",
+      "question": "You have decorative divider line image that adds no information, just visual separation. What is correct alt handling and why?",
+      "options": [
+        "alt=\"decorative divider line\" because every image must have descriptive alt regardless of purpose",
+        "alt=\"\" (empty alt) because decorative images should be ignored by screen readers to avoid noise, and empty alt tells assistive tech to skip it",
+        "Omit alt attribute completely because decorative images don't need alt attribute at all",
+        "alt=\"divider\" and aria-hidden=\"false\" to ensure screen readers announce decorative images"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect accessibility knowledge! Empty alt is intentional and correct for decorative images.",
+      "incorrectFeedback": "Should screen readers announce every decorative line? What does empty alt signal?",
+      "reasoning": "Empty alt alt=\"\" indicates decorative image, assistive tech skips it. Omitting alt causes screen readers to announce file name, which is noisy.",
+      "xpReward": 25
+    },
+    {
+      "id": "q5",
+      "type": "quiz",
+      "question": "You add <video autoplay> with sound on homepage. Chrome blocks autoplay. Users complain video doesn't play. What is correct production fix and why does Chrome block?",
+      "options": [
+        "Chrome blocks autoplay with sound to prevent annoying users and save data; fix with autoplay muted or remove autoplay and let user click controls, optionally add playsinline for mobile",
+        "Chrome blocks because mp4 format is not supported, fix by converting to avi format which allows autoplay",
+        "Chrome blocks because video tag requires JavaScript to autoplay, fix by adding JavaScript autoplay script",
+        "Chrome blocks because width attribute is missing, fix by adding width=\"100%\" to allow autoplay"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Exactly! User experience first. Autoplay with sound is blocked by policy, muted autoplay or user-initiated play is correct.",
+      "incorrectFeedback": "Why would browsers block autoplay with sound? Think user experience and data.",
+      "reasoning": "Browsers block autoplay with sound to avoid unexpected noise and data usage. Muted autoplay is allowed. Best is controls without autoplay.",
+      "xpReward": 30
+    },
+    {
+      "id": "next-4",
+      "type": "heading",
+      "text": "Your app is now visual - what's next?"
+    },
+    {
+      "id": "next4-1",
+      "type": "sentence",
+      "text": "You now know production image patterns: src, alt, width/height for CLS, loading=lazy, figure/figcaption, srcset/sizes for responsive, audio/video with multiple sources and accessibility. Your portfolio now has profile photo, project screenshots with captions, and media - it looks like a real startup site."
+    },
+    {
+      "id": "next4-2",
+      "type": "sentence",
+      "text": "Next: Lesson 5 - HTML Lists and Tables. You will learn how to structure skills as lists, create pricing tables, build data tables for your projects, and make your app organized like professional dashboards. Keep practicing in Menu > Practical - try adding figure to all your images!"
+    }
+  ]
+}
