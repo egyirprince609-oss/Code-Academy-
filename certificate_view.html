@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Certificate | Code Academy</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia, serif}
+body{min-height:100vh;background:#020617;color:#fff;padding-bottom:40px}
+.topbar{position:sticky;top:0;z-index:1000;min-height:72px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.08)}
+.logoBox{display:flex;align-items:center;gap:12px}.logoBox img{width:42px;height:42px;border-radius:10px}.logoBox h2{font-size:16px;color:#38bdf8;font-family:Arial}
+.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-family:Arial;font-weight:bold;font-size:12px}
+.btn-back{background:#1e293b;color:#fff;border:1px solid #334155 !important}
+.btn-download{background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff}
+.btn-share{background:#16a34a;color:#fff}
+.btn-verify{background:#0f172a;color:#94a3b8;border:1px solid #334155 !important}
+.container{width:min(1100px,96%);margin:25px auto}
+.status{padding:14px;border-radius:12px;margin-bottom:15px;font-family:Arial;font-size:13px;display:none}
+.status.show{display:block}.status.error{background:#450a0a;border:1px solid #7f1d1d;color:#fecaca}.status.success{background:#052e16;border:1px solid #166534;color:#bbf7d0}
+
+#certificatePaper{
+width:min(900px,100%);margin:auto;background:#fff;color:#0f172a;
+border-radius:18px;padding:28px;position:relative;overflow:hidden;
+border:8px double #2563eb;box-shadow:0 25px 70px rgba(0,0,0,.4)
+}
+.cert-header{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;border-bottom:2px solid #e2e8f0;padding-bottom:18px;margin-bottom:20px}
+.cert-logo{display:flex;align-items:center;gap:12px}
+.cert-logo img{width:55px;height:55px;border-radius:12px;object-fit:cover}
+.cert-logo h3{color:#2563eb;font-size:18px;line-height:1.1}.cert-logo p{color:#64748b;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:Arial}
+.cert-id{font-family:Arial;font-size:10px;color:#64748b;text-align:right}
+.cert-id strong{color:#0f172a;display:block;font-size:12px;margin-top:3px}
+
+.cert-body{text-align:center;padding:10px 0}
+.cert-body h1{font-size:clamp(26px,5vw,42px);color:#1e40af;margin-bottom:8px;letter-spacing:1px}
+.cert-body .sub{font-family:Arial;color:#64748b;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:22px}
+.student-photo-wrap{width:125px;height:125px;margin:0 auto 15px;border-radius:50%;overflow:hidden;border:4px solid #38bdf8;box-shadow:0 8px 20px rgba(37,99,235,.25)}
+.student-photo-wrap img{width:100%;height:100%;object-fit:cover}
+.awarded{font-family:Arial;color:#64748b;font-size:13px;margin-bottom:6px}
+.studentName{font-size:clamp(24px,4vw,34px);color:#0f172a;margin-bottom:18px;border-bottom:2px solid #38bdf8;display:inline-block;padding-bottom:4px;min-width:260px}
+.courseDesc{font-family:Arial;color:#475569;font-size:14px;line-height:1.6;max-width:600px;margin:0 auto 20px}
+.courseName{font-size:22px;color:#2563eb;margin-bottom:20px;display:block}
+
+.skills{max-width:650px;margin:15px auto;display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.skills span{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:6px 10px;border-radius:999px;font-family:Arial;font-size:10px;font-weight:bold}
+
+.cert-footer{margin-top:28px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;align-items:end;border-top:2px solid #e2e8f0;padding-top:18px}
+.footer-box{text-align:center}.footer-box span{display:block;font-family:Arial;color:#94a3b8;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.footer-box strong{font-size:12px;color:#0f172a}.footer-box img{max-width:130px;max-height:55px;object-fit:contain;border-bottom:1px solid #e2e8f0;padding-bottom:5px}
+.qrBox{width:92px;height:92px;margin:0 auto 6px;background:#fff;padding:5px;border:1px solid #e2e8f0;border-radius:8px}
+.verifyLink{font-family:Arial;font-size:8px;color:#64748b;word-break:break-all;margin-top:6px;display:block}
+
+.watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:110px;opacity:.03;pointer-events:none;font-weight:900;color:#2563eb}
+
+.loadingScreen{position:fixed;inset:0;z-index:9999;background:#020617;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loadingScreen i{font-size:34px;color:#38bdf8;animation:spin 1s linear infinite}
+.loadingScreen p{font-family:Arial;color:#94a3b8;font-size:13px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:700px){
+.cert-footer{grid-template-columns:1fr;gap:20px}
+#certificatePaper{padding:18px;border-width:5px}
+.actions{width:100%;justify-content:center}
+}
+@media print{
+body{background:#fff}.topbar,.container> .status,.actions{display:none !important}
+#certificatePaper{box-shadow:none;border:10px double #2563eb;margin:0;width:100%}
+}
+</style>
+</head>
+<body>
+<div class="loadingScreen" id="loadingScreen"><i class="fas fa-spinner"></i><p>Loading official certificate...</p></div>
+
+<header class="topbar">
+<div class="logoBox"><img src="logo.png" alt="Code Academy"><h2>Code Academy</h2></div>
+<div class="actions">
+<button class="btn-back" id="backBtn"><i class="fas fa-arrow-left"></i> Back</button>
+<button class="btn-verify" id="verifyBtn"><i class="fas fa-shield-check"></i> Verify</button>
+<button class="btn-share" id="shareBtn"><i class="fas fa-share-nodes"></i> Share</button>
+<button class="btn-download" id="downloadBtn"><i class="fas fa-download"></i> Download PDF</button>
+</div>
+</header>
+
+<main class="container">
+<div id="statusBox" class="status"></div>
+
+<!-- THIS IS WHAT YOU DOWNLOAD -->
+<div id="certificatePaper">
+<div class="watermark">CODE ACADEMY</div>
+
+<div class="cert-header">
+<div class="cert-logo">
+<img src="logo.png" alt="Logo">
+<div><h3>Code Academy</h3><p>Learn • Build • Grow</p></div>
+</div>
+<div class="cert-id">
+CERTIFICATE ID
+<strong id="certIdText">--</strong>
+<span id="issueDateText">--</span>
+</div>
+</div>
+
+<div class="cert-body">
+<h1>Certificate of Completion</h1>
+<div class="sub">This certificate is proudly presented to</div>
+
+<div class="student-photo-wrap"><img id="studentPhoto" src="logo.png" alt="Student"></div>
+
+<div class="awarded">Awarded to</div>
+<div class="studentName" id="studentName">Student Name</div>
+
+<div class="courseDesc">
+For successfully completing all required lessons and demonstrating outstanding proficiency in
+<span class="courseName" id="courseTitle">HTML Developer</span>
+</div>
+
+<div class="skills" id="skillsList"></div>
+</div>
+
+<div class="cert-footer">
+<div class="footer-box">
+<img id="signatureImg" src="" alt="Signature" style="display:none">
+<div id="noSig" style="font-family:Arial;color:#94a3b8;font-size:11px;padding:10px 0;border-bottom:1px solid #e2e8f0">No signature</div>
+<span>Learner Signature</span>
+<strong id="footerName">Student</strong>
+</div>
+
+<div class="footer-box">
+<div class="qrBox" id="qrCode"></div>
+<span>Verify Certificate</span>
+<strong>Scan to Verify</strong>
+<a class="verifyLink" id="verifyLinkText" target="_blank">--</a>
+</div>
+
+<div class="footer-box">
+<img src="logo.png" alt="Seal" style="width:65px;height:65px;border-radius:50%;border:2px solid #2563eb">
+<span>Official Seal</span>
+<strong>Code Academy</strong>
+<span>Learning Department</span>
+</div>
+</div>
+</div>
+</main>
+
+<script type="module">
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const loadingScreen = document.getElementById("loadingScreen");
+const statusBox = document.getElementById("statusBox");
+const certIdText = document.getElementById("certIdText");
+const issueDateText = document.getElementById("issueDateText");
+const studentNameEl = document.getElementById("studentName");
+const studentPhoto = document.getElementById("studentPhoto");
+const courseTitle = document.getElementById("courseTitle");
+const skillsList = document.getElementById("skillsList");
+const signatureImg = document.getElementById("signatureImg");
+const noSig = document.getElementById("noSig");
+const footerName = document.getElementById("footerName");
+const qrDiv = document.getElementById("qrCode");
+const verifyLinkText = document.getElementById("verifyLinkText");
+const downloadBtn = document.getElementById("downloadBtn");
+const shareBtn = document.getElementById("shareBtn");
+const verifyBtn = document.getElementById("verifyBtn");
+
+let currentUser = null;
+let certificateData = null;
+let qrGenerated = false;
+
+function showStatus(msg,type="success"){
+ statusBox.textContent = msg;
+ statusBox.className = `status show ${type}`;
+ setTimeout(()=>{ statusBox.className="status"; },4000);
+}
+
+function getParams(){
+ const url = new URLSearchParams(window.location.search);
+ let id = url.get("id");
+ let course = url.get("course");
+ // fallback from setup.html sessionStorage
+ if(!id) id = sessionStorage.getItem("certificateId");
+ if(!course) course = sessionStorage.getItem("certificateCourse");
+ let stored = null;
+ try{ stored = JSON.parse(sessionStorage.getItem("certificateUser")||"null"); }catch{}
+ return { id, course, stored };
+}
+
+async function loadCertificate(user){
+ const { id, course, stored } = getParams();
+ if(!id){ showStatus("No certificate ID found. Go back to Certificate Center.","error"); return; }
+
+ // 1. Try users/{uid}/certificates/{course}
+ let data = null;
+ if(course){
+   try{
+     const ref = doc(db,"users",user.uid,"certificates",course);
+     const snap = await getDoc(ref);
+     if(snap.exists()) data = snap.data();
+   }catch(e){ console.warn(e); }
+ }
+
+ // 2. Try certificates/{id} (public registry)
+ if(!data){
+   try{
+     const ref = doc(db,"certificates",id);
+     const snap = await getDoc(ref);
+     if(snap.exists()) data = snap.data();
+   }catch(e){ console.warn(e); }
+ }
+
+ // 3. Fallback to sessionStorage
+ if(!data && stored){
+   data = {
+     id: stored.id || id,
+     studentName: stored.name,
+     course: stored.course,
+     courseId: stored.courseId || course,
+     photo: stored.photo,
+     signature: stored.signature,
+     issueDate: stored.date,
+     email: stored.email
+   };
+ }
+
+ if(!data){
+   showStatus("Certificate not found in your account. Please regenerate from certificate_setup.html","error");
+   return;
+ }
+
+ certificateData = data;
+
+ // Render
+ certIdText.textContent = data.id || id;
+ issueDateText.textContent = data.issueDate ? new Date(data.issueDate).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}) : new Date().toLocaleDateString();
+ studentNameEl.textContent = data.studentName || data.name || user.displayName || "Student";
+ footerName.textContent = data.studentName || data.name || "Student";
+ studentPhoto.src = data.photo || user.photoURL || "logo.png";
+ courseTitle.textContent = data.course || data.courseId || course || "Developer Course";
+
+ // Skills
+ skillsList.innerHTML = "";
+ (data.skills || ["Completion","Practical Skills","Problem Solving"]).forEach(s=>{
+   const span = document.createElement("span"); span.textContent = s; skillsList.appendChild(span);
+ });
+
+ // Signature
+ if(data.signature && data.signature.startsWith("data:image")){
+   signatureImg.src = data.signature;
+   signatureImg.style.display = "inline-block";
+   noSig.style.display = "none";
+ } else if(data.signature){
+   signatureImg.src = data.signature;
+   signatureImg.style.display = "inline-block";
+   noSig.style.display = "none";
+ }
+
+ // Verification URL - FIXED
+ const base = window.location.origin + window.location.pathname.replace(/[^/]*$/,"");
+ const verifyURL = data.verificationURL || `${base}verify.html?id=${encodeURIComponent(data.id||id)}`;
+ verifyLinkText.textContent = verifyURL;
+ verifyLinkText.href = verifyURL;
+ verifyBtn.onclick = ()=> window.open(verifyURL,"_blank");
+ document.getElementById("verifyLinkText").onclick = (e)=>{ e.preventDefault(); window.open(verifyURL,"_blank"); };
+
+ // Generate QR + Save to user account
+ if(!qrGenerated){
+   qrDiv.innerHTML = "";
+   new QRCode(qrDiv, { text: verifyURL, width:82, height:82, correctLevel: QRCode.CorrectLevel.H });
+   qrGenerated = true;
+
+   // Store QR data in user's certificate doc for future
+   setTimeout(async ()=>{
+     try{
+       const canvas = qrDiv.querySelector("canvas");
+       let qrDataUrl = "";
+       if(canvas) qrDataUrl = canvas.toDataURL("image/png");
+       if(course){
+         const userCertRef = doc(db,"users",user.uid,"certificates",course);
+         await updateDoc(userCertRef, { qrCode: qrDataUrl, verificationURL: verifyURL, lastViewedAt: serverTimestamp() });
+       }
+       // also update public registry
+       const pubRef = doc(db,"certificates", data.id||id);
+       await updateDoc(pubRef, { qrCode: qrDataUrl, verificationURL: verifyURL }).catch(()=>{});
+     }catch(err){ console.log("QR save error:", err); }
+   }, 800);
+ }
+
+ showStatus(`Certificate ${data.id} loaded successfully`,"success");
+}
+
+async function downloadPDF(){
+ if(!certificateData){ showStatus("Certificate not loaded yet","error"); return; }
+ downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Generating...`;
+ try{
+   const paper = document.getElementById("certificatePaper");
+   const canvas = await html2canvas(paper,{scale:2,useCORS:true,allowTaint:true,backgroundColor:"#ffffff"});
+   const imgData = canvas.toDataURL("image/png");
+   const { jsPDF } = window.jspdf;
+   const pdf = new jsPDF({ orientation:"landscape", unit:"px", format:[canvas.width, canvas.height] });
+   pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
+   pdf.save(`${certificateData.course||"Certificate"}_${certificateData.id}.pdf`);
+   showStatus("PDF downloaded","success");
+ }catch(e){
+   console.error(e);
+   // fallback to image download
+   const paper = document.getElementById("certificatePaper");
+   const canvas = await html2canvas(paper,{scale:2,useCORS:true});
+   const link = document.createElement("a");
+   link.download = `${certificateData.id||"certificate"}.png`;
+   link.href = canvas.toDataURL();
+   link.click();
+ }finally{
+   downloadBtn.innerHTML = `<i class="fas fa-download"></i> Download PDF`;
+ }
+}
+
+async function shareCertificate(){
+ if(!certificateData) return;
+ const verifyURL = verifyLinkText.href;
+ if(navigator.share){
+   try{
+     await navigator.share({
+       title: `${certificateData.course} Certificate - Code Academy`,
+       text: `I just earned my ${certificateData.course} certificate from Code Academy! Verify: ${verifyURL}`,
+       url: verifyURL
+     });
+   }catch(e){}
+ }else{
+   try{
+     await navigator.clipboard.writeText(verifyURL);
+     showStatus("Verification link copied to clipboard","success");
+   }catch{
+     prompt("Copy this verification link:", verifyURL);
+   }
+ }
+}
+
+downloadBtn.addEventListener("click", downloadPDF);
+shareBtn.addEventListener("click", shareCertificate);
+document.getElementById("backBtn").addEventListener("click", ()=>{ window.location.href = "certificate.html"; });
+
+onAuthStateChanged(auth, async (user)=>{
+ if(!user){ window.location.href="login.html"; return; }
+ currentUser = user;
+ try{ await loadCertificate(user); }catch(e){ showStatus(e.message,"error"); }
+ finally{ loadingScreen.style.display="none"; }
+});
+</script>
+</body>
+</html>
