@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020617">
+<title>Code Academy | Certificates</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:#f8fafc;background:radial-gradient(circle at 10% 10%,rgba(37,99,235,.16),transparent 30%),radial-gradient(circle at 90% 20%,rgba(14,165,233,.10),transparent 28%),#020617;overflow-x:hidden}
+header{position:sticky;top:0;z-index:1000;background:rgba(2,6,23,.90);backdrop-filter:blur(18px);border-bottom:1px solid rgba(148,163,184,.12)}
+.navbar{width:min(1250px,94%);min-height:72px;margin:auto;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:white}
+.brand img{width:45px;height:45px;border-radius:50%}
+.brand-text{display:flex;flex-direction:column}
+.brand-name{font-size:18px;font-weight:800}
+.brand-sub{color:#64748b;font-size:9px;letter-spacing:1.5px;text-transform:uppercase}
+.nav-actions{display:flex;gap:8px}
+.icon-btn{position:relative;width:43px;height:43px;border:1px solid #1e293b;border-radius:12px;background:#0f172a;color:white;cursor:pointer}
+.notification-badge{position:absolute;top:-5px;right:-5px;min-width:19px;height:19px;padding:0 5px;display:none;align-items:center;justify-content:center;border-radius:999px;background:#ef4444;color:white;border:2px solid #020617;font-size:9px;font-weight:bold}
+.container{width:min(1250px,94%);margin:auto;padding:30px 0 70px}
+.hero{padding:40px 32px;margin-bottom:22px;border:1px solid rgba(59,130,246,.25);border-radius:24px;background:linear-gradient(135deg,rgba(30,64,175,.22),rgba(15,23,42,.90))}
+.hero-badge{display:inline-flex;gap:8px;padding:7px 12px;margin-bottom:14px;border:1px solid rgba(96,165,250,.25);border-radius:999px;background:rgba(37,99,235,.10);color:#93c5fd;font-size:11px;font-weight:bold}
+.hero h1{font-size:clamp(30px,6vw,50px);margin-bottom:13px}.hero h1 span{color:#60a5fa}.hero p{color:#94a3b8;line-height:1.7;font-size:14px}
+.user-bar{display:flex;justify-content:space-between;padding:15px;margin-bottom:22px;border:1px solid #1e293b;border-radius:17px;background:rgba(15,23,42,.80)}
+.user-info{display:flex;align-items:center;gap:12px}.user-info img{width:50px;height:50px;border-radius:50%;border:2px solid #334155}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
+.stat{padding:17px;border:1px solid #1e293b;border-radius:16px;background:rgba(15,23,42,.75)}
+.stat-icon{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:11px;background:#172033;color:#60a5fa;margin-bottom:11px}
+.stat strong{display:block;font-size:23px;margin-bottom:4px}.stat span{color:#64748b;font-size:11px}
+.toolbar{display:flex;justify-content:space-between;gap:20px;margin-bottom:20px}
+.search{position:relative;width:310px}.search i{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#64748b}
+.search input{width:100%;height:45px;padding:0 14px 0 42px;border:1px solid #1e293b;border-radius:12px;background:#0f172a;color:white;outline:none}
+.certificate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.certificate-card{padding:20px;border:1px solid #1e293b;border-radius:19px;background:linear-gradient(180deg,rgba(15,23,42,.98),rgba(10,16,29,.98));transition:.25s}
+.certificate-card:hover{transform:translateY(-4px);border-color:rgba(59,130,246,.50)}.certificate-card.earned{border-color:rgba(34,197,94,.40)}
+.course-icon{width:58px;height:58px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;border-radius:15px;background:#172033}.course-icon img{width:40px;height:40px}
+.certificate-card h3{font-size:17px;margin-bottom:6px}.course-description{min-height:40px;color:#94a3b8;font-size:11px;margin-bottom:13px}
+.status-row{display:flex;justify-content:space-between;margin-bottom:11px}.status{padding:5px 9px;border-radius:999px;font-size:9px;font-weight:bold;text-transform:uppercase}.status.earned{background:rgba(34,197,94,.10);color:#86efac}.status.locked{background:rgba(148,163,184,.08);color:#94a3b8}
+.progress-track{width:100%;height:7px;margin-bottom:8px;border-radius:999px;background:#1e293b;overflow:hidden}.progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#2563eb,#60a5fa)}
+.progress-label{display:flex;justify-content:space-between;color:#64748b;font-size:10px;margin-bottom:15px}
+.card-btn{width:100%;height:42px;display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;font-size:12px;font-weight:bold;cursor:pointer}.card-btn.earned-btn{background:linear-gradient(135deg,#16a34a,#22c55e);color:white}.card-btn.locked-btn{background:#172033;color:#64748b;cursor:not-allowed}
+.lock-message{padding:9px 10px;margin-bottom:11px;border-radius:9px;background:rgba(245,158,11,.07);color:#fbbf24;font-size:10px}
+.loading{min-height:65vh;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#94a3b8}.loading i{font-size:35px;color:#60a5fa;margin-bottom:14px;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.notification-overlay{position:fixed;inset:0;z-index:3000;display:none;justify-content:flex-end;padding:82px 20px 20px;background:rgba(0,0,0,.35)}.notification-overlay.active{display:flex}.notification-panel{width:390px;max-height:75vh;overflow:hidden;border:1px solid #334155;border-radius:18px;background:#0b1220}.notification-header{display:flex;justify-content:space-between;padding:15px;border-bottom:1px solid #1e293b}.notification-list{max-height:60vh;overflow-y:auto}.notification-item{padding:14px;border-bottom:1px solid #172033}.notification-item.unread{background:rgba(37,99,235,.08)}
+footer{padding:30px;text-align:center;color:#64748b;font-size:11px;border-top:1px solid #1e293b}
+@media(max-width:1050px){.certificate-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.toolbar{flex-direction:column}.search{width:100%}}@media(max-width:600px){.certificate-grid{grid-template-columns:1fr}.user-bar{flex-direction:column}}
+</style>
+</head>
+<body>
+<header><nav class="navbar"><a href="menu.html" class="brand"><img src="logo.png"><div class="brand-text"><span class="brand-name">Code Academy</span><span class="brand-sub">Learn • Build • Grow</span></div></a><div class="nav-actions"><button class="icon-btn" id="notificationBtn"><i class="fas fa-bell"></i><span class="notification-badge" id="notificationBadge">0</span></button><button class="icon-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button></div></nav></header>
+<div class="notification-overlay" id="notificationOverlay"><div class="notification-panel"><div class="notification-header"><h3>Notifications</h3><button id="markAllReadBtn">Mark all read</button></div><div class="notification-list" id="notificationList"></div></div></div>
+<main class="container">
+<div class="loading" id="loading"><i class="fas fa-spinner"></i><p>Loading your certificates...</p></div>
+<div id="content" style="display:none;">
+<section class="hero"><div class="hero-badge"><i class="fas fa-graduation-cap"></i> CERTIFICATE CENTER</div><h1>Your <span>Achievements</span></h1><p>Complete all 10 lessons to unlock your certificate.</p></section>
+<section class="user-bar"><div class="user-info"><img id="userPhoto" src="logo.png"><div><strong id="userName">Student</strong><span id="userEmail"></span></div></div></section>
+<section class="stats"><div class="stat"><div class="stat-icon"><i class="fas fa-award"></i></div><strong id="earnedCertificates">0</strong><span>Certificates Earned</span></div><div class="stat"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><strong id="overallProgress">0%</strong><span>Overall Progress</span></div><div class="stat"><div class="stat-icon"><i class="fas fa-book-open"></i></div><strong id="completedLessons">0</strong><span>Lessons Completed</span></div><div class="stat"><div class="stat-icon"><i class="fas fa-star"></i></div><strong id="xpValue">0</strong><span>Total XP</span></div></section>
+<section class="toolbar"><div><h2>My Certificates</h2><p style="color:#64748b;font-size:12px">10 lessons required for each certificate</p></div><div class="search"><i class="fas fa-search"></i><input id="searchInput" type="search" placeholder="Search..."></div></section>
+<section class="certificate-grid" id="certificateGrid"></section>
+</div>
+</main>
+<footer>© 2026 Code Academy</footer>
+<script type="module">
+import { auth, db, onAuthStateChanged, getDoc, doc, updateDoc } from "./authentication.js";
+import { collection, addDoc, getDocs, query, orderBy, limit, serverTimestamp, writeBatch, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+const loading=$("loading"),content=$("content"),certificateGrid=$("certificateGrid"),searchInput=$("searchInput"),userName=$("userName"),userEmail=$("userEmail"),userPhoto=$("userPhoto"),earnedCertificates=$("earnedCertificates"),overallProgress=$("overallProgress"),completedLessonsEl=$("completedLessons"),xpValue=$("xpValue"),notificationBtn=$("notificationBtn"),notificationBadge=$("notificationBadge"),notificationOverlay=$("notificationOverlay"),notificationList=$("notificationList"),markAllReadBtn=$("markAllReadBtn"),backBtn=$("backBtn");
+let currentUser=null,currentUserData={};
+
+const COURSES=[
+{id:"html",name:"HTML",title:"HTML Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg",description:"Build modern websites with HTML."},
+{id:"css",name:"CSS",title:"CSS Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg",description:"Master styling and responsive UI."},
+{id:"javascript",name:"JavaScript",title:"JavaScript Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg",description:"Learn interactive web development."},
+{id:"python",name:"Python",title:"Python Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg",description:"Learn Python for software and AI."},
+{id:"react",name:"React",title:"React Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg",description:"Build modern React apps."},
+{id:"java",name:"Java",title:"Java Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg",description:"Learn OOP with Java."},
+{id:"c",name:"C",title:"C Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg",description:"Learn C fundamentals."},
+{id:"cpp",name:"C++",title:"C++ Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg",description:"Learn C++ systems programming."},
+{id:"csharp",name:"C#",title:"C# Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/csharp/csharp-original.svg",description:"Learn C# for apps and games."},
+{id:"php",name:"PHP",title:"PHP Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg",description:"Build dynamic PHP sites."},
+{id:"typescript",name:"TypeScript",title:"TypeScript Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg",description:"Build typed JavaScript apps."},
+{id:"go",name:"Go",title:"Go Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/go/go-original-wordmark.svg",description:"Learn fast Go development."},
+{id:"rust",name:"Rust",title:"Rust Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/rust/rust-original.svg",description:"Learn safe systems programming."},
+{id:"kotlin",name:"Kotlin",title:"Kotlin Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/kotlin/kotlin-original.svg",description:"Learn Kotlin for Android."},
+{id:"swift",name:"Swift",title:"Swift Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/swift/swift-original.svg",description:"Learn Swift programming."},
+{id:"dart",name:"Dart",title:"Dart Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg",description:"Learn Dart cross-platform."},
+{id:"ruby",name:"Ruby",title:"Ruby Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/ruby/ruby-original.svg",description:"Learn elegant Ruby."},
+{id:"sql",name:"SQL",title:"SQL Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg",description:"Learn databases and queries."},
+{id:"r",name:"R",title:"R Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/r/r-original.svg",description:"Learn R data analysis."},
+{id:"lua",name:"Lua",title:"Lua Developer",lessons:10,icon:"https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/lua/lua-original.svg",description:"Learn Lua scripting."}
+];
+
+function getCompletedCount(data,courseId,total){
+let h=0;
+const p=data?.progress||{},cp=p?.[courseId];
+if(typeof cp==="number")h=Math.max(h,cp);
+if(cp&&typeof cp==="object"){if(typeof cp.completed==="number")h=Math.max(h,cp.completed);}
+const cl=data?.completedLessons;
+if(Array.isArray(cl)){h=Math.max(h,cl.filter(x=>String(x).toLowerCase().startsWith(courseId+"_lesson_")).length);}
+if(cl&&typeof cl==="object"&&!Array.isArray(cl)){let c=0;Object.entries(cl).forEach(([k,v])=>{if(v&&k.toLowerCase().startsWith(courseId+"_lesson_"))c++;});h=Math.max(h,c);}
+return Math.min(Math.max(h,0),total);
+}
+function isComplete(d,c){return getCompletedCount(d,c.id,c.lessons)>=c.lessons;}
+function makeId(uid,cid){return "CA-"+cid.toUpperCase()+"-"+String(uid).replace(/[^a-zA-Z0-9]/g,"").slice(0,8).toUpperCase();}
+
+function renderCertificates(data){
+certificateGrid.innerHTML="";
+let earned=0,totalC=0,totalP=0;
+const q=searchInput.value.trim().toLowerCase();
+COURSES.forEach(course=>{
+const comp=getCompletedCount(data,course.id,course.lessons);
+const complete=comp>=course.lessons;
+const perc=Math.round((comp/course.lessons)*100);
+if(complete)earned++;
+totalC+=comp;totalP+=course.lessons;
+if(q&&!(course.name+" "+course.title).toLowerCase().includes(q))return;
+const card=document.createElement("article");
+card.className="certificate-card "+(complete?"earned":"locked");
+card.innerHTML=`<div class="course-icon"><img src="${course.icon}"></div><h3>${course.title}</h3><p class="course-description">${course.description}</p><div class="status-row"><span class="status ${complete?'earned':'locked'}">${complete?'Earned':'Locked'}</span><span style="color:#64748b;font-size:10px">${perc}%</span></div><div class="progress-track"><div class="progress-fill" style="width:${perc}%"></div></div><div class="progress-label"><span>${comp} / ${course.lessons} lessons</span><span>${complete?'Complete':'In Progress'}</span></div>${complete?`<button class="card-btn earned-btn" data-course="${course.id}"><i class="fas fa-certificate"></i> Setup Certificate</button>`:`<div class="lock-message">Complete ${course.lessons-comp} more lessons</div><button class="card-btn locked-btn" disabled><i class="fas fa-lock"></i> Locked</button>`}`;
+certificateGrid.appendChild(card);
+});
+earnedCertificates.textContent=earned;
+completedLessonsEl.textContent=totalC;
+overallProgress.textContent=(totalP?Math.round((totalC/totalP)*100):0)+"%";
+if(certificateGrid.children.length===0)certificateGrid.innerHTML=`<div style="grid-column:1/-1;text-align:center;color:#64748b;padding:40px">No results</div>`;
+}
+
+async function openCertificate(courseId){
+const course=COURSES.find(c=>c.id===courseId);
+if(!course)return;
+const uref=doc(db,"users",currentUser.uid);
+const snap=await getDoc(uref);
+if(!snap.exists())return alert("Profile not found");
+const data=snap.data();
+const comp=getCompletedCount(data,course.id,course.lessons);
+if(comp<course.lessons)return alert(`Locked: ${comp}/${course.lessons} completed. Complete all lessons first.`);
+sessionStorage.setItem("certificateCourse",course.id);
+sessionStorage.setItem("certificateUser",JSON.stringify({uid:currentUser.uid,name:data.displayName||currentUser.displayName||"Student",email:data.email||currentUser.email||"",photo:data.photoURL||currentUser.photoURL||"",certificateId:data?.certificateIds?.[course.id]||makeId(currentUser.uid,course.id)}));
+// DIRECT TO SETUP
+window.location.href=`certificate_setup.html?course=${encodeURIComponent(course.id)}`;
+}
+
+certificateGrid.addEventListener("click",e=>{
+const btn=e.target.closest("[data-course]");
+if(!btn)return;
+openCertificate(btn.dataset.course);
+});
+searchInput.addEventListener("input",()=>renderCertificates(currentUserData));
+
+async function loadUser(){
+const uref=doc(db,"users",currentUser.uid);
+const snap=await getDoc(uref);
+currentUserData=snap.exists()?snap.data():{displayName:currentUser.displayName||"Student",email:currentUser.email||"",xp:0,certificates:{},certificateIds:{},progress:{},completedLessons:[]};
+userName.textContent=currentUserData.displayName||currentUser.displayName||"Student";
+userEmail.textContent=currentUserData.email||currentUser.email||"";
+userPhoto.src=currentUserData.photoURL||currentUser.photoURL||"logo.png";
+xpValue.textContent=Number(currentUserData.xp||0);
+renderCertificates(currentUserData);
+}
+
+async function loadNotifications(){
+try{
+const ref=collection(db,"users",currentUser.uid,"notifications");
+let snap;try{snap=await getDocs(query(ref,orderBy("createdAt","desc"),limit(30)));}catch{snap=await getDocs(query(ref,limit(30)));}
+const list=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+notificationList.innerHTML=list.length?list.map(n=>`<div class="notification-item ${n.read?'':'unread'}" style="padding:12px;border-bottom:1px solid #172033"><strong style="font-size:12px">${n.title||''}</strong><p style="color:#94a3b8;font-size:11px">${n.message||''}</p></div>`).join(""):`<div style="padding:30px;text-align:center;color:#64748b">No notifications</div>`;
+const unread=list.filter(x=>!x.read).length;
+notificationBadge.style.display=unread?"flex":"none";
+notificationBadge.textContent=unread;
+}catch{}
+}
+
+notificationBtn.addEventListener("click",async e=>{e.stopPropagation();notificationOverlay.classList.add("active");await loadNotifications();});
+notificationOverlay.addEventListener("click",e=>{if(e.target===notificationOverlay)notificationOverlay.classList.remove("active");});
+markAllReadBtn.addEventListener("click",async()=>{const ref=collection(db,"users",currentUser.uid,"notifications");const s=await getDocs(ref);const b=writeBatch(db);s.docs.forEach(d=>{if(!d.data().read)b.update(d.ref,{read:true});});await b.commit();await loadNotifications();});
+backBtn.addEventListener("click",()=>window.location.href="menu.html");
+
+onAuthStateChanged(auth,async u=>{
+if(!u){window.location.href="login.html";return;}
+currentUser=u;
+try{await loadUser();await loadNotifications();}catch(e){alert(e.message);}
+loading.style.display="none";content.style.display="block";
+});
+</script>
+</body>
+</html>
