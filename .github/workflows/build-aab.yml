@@ -1,0 +1,33 @@
+name: Build AAB
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install Bubblewrap
+        run: npm i -g @bubblewrap/cli
+      - name: Init and Build
+        run: |
+          rm -rf twa-build
+          mkdir twa-build
+          cd twa-build
+          npx bubblewrap init --manifest https://egyirprince609-oss.github.io/Code-Academy-/manifest.json --manifestUrl https://egyirprince609-oss.github.io/Code-Academy-/manifest.json --skipPwaValidation || true
+          cat twa-manifest.json || true
+          npx bubblewrap build || npx bubblewrap build --skipPwaValidation || true
+          ls -R
+      - name: Upload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: |
+            twa-build/app/build/outputs/
+            twa-build/**/*.aab
+            twa-build/**/*.apk
