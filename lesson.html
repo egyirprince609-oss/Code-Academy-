@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#080c18">
+<title>Code Academy — Lesson Engine</title>
+<link rel="icon" href="logo.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+ --bg:#080c18; --panel:#151d33; --panel2:#1c2742; --line:rgba(148,163,184,.12); --line2:rgba(148,163,184,.20);
+ --text:#e8ebf2; --muted:#8a94a8; --dim:#5c667a; --primary:#38bdf8; --primary2:#818cf8; --success:#22c55e; --danger:#ff3b5c; --heart:#ff2e63;
+ --code-bg:#0d1117; --code-border:#21262d;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100dvh;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+button{border:0;background:none;font:inherit}.hidden{display:none!important}
+
+/* LOADER - FIXED SERIAL */
+#loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(1200px 600px at 50% -10%,rgba(56,189,248,.18),transparent),radial-gradient(900px 500px at 90% 10%,rgba(129,140,248,.14),transparent),var(--bg);padding:20px}
+.loader-orb{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(56,189,248,.10),transparent 60%);filter:blur(24px);animation:orb 5s ease-in-out infinite alternate}
+@keyframes orb{from{transform:translate(-8%,-8%) scale(1)}to{transform:translate(8%,8%) scale(1.12)}}
+.loader-card{position:relative;z-index:2;width:min(440px,100%);padding:30px 24px;border-radius:28px;background:linear-gradient(180deg,rgba(21,29,51,.95),rgba(13,20,40,.96));border:1px solid rgba(148,163,184,.18);box-shadow:0 30px 100px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.07);text-align:center}
+.loader-logo{width:84px;height:84px;margin:0 auto 18px;border-radius:22px;overflow:hidden;background:#0f172a;border:1px solid rgba(148,163,184,.15);box-shadow:0 16px 40px rgba(56,189,248,.35);display:flex;align-items:center;justify-content:center;animation:float 3s ease-in-out infinite}
+.loader-logo img{width:100%;height:100%;object-fit:cover;display:block}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.loader-title{font-size:22px;font-weight:900}.loader-title span{background:linear-gradient(90deg,var(--primary),var(--primary2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.loader-sub{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.5}
+.loader-progress{margin-top:22px;height:4px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.loader-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--primary),var(--primary2));transition:width.6s cubic-bezier(.4,0,.2,1)}
+.loader-percent{margin-top:8px;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.loader-serial{margin-top:20px;text-align:left;background:rgba(0,0,0,.22);border:1px solid rgba(148,163,184,.10);border-radius:14px;padding:12px}
+.serial-item{display:flex;align-items:center;gap:10px;padding:8px 4px;font-size:12px;color:var(--dim);transition:.4s;opacity:.5}
+.serial-item.active{opacity:1;color:var(--text);transform:translateX(4px)}.serial-item.done{opacity:1;color:var(--success)}
+.serial-icon{width:20px;height:20px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:10px;flex:none}
+
+/* Topbar */
+.topbar{position:sticky;top:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 16px;background:rgba(8,12,24,.94);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-logo{width:38px;height:38px;border-radius:11px;overflow:hidden;background:var(--panel);border:1px solid var(--line);flex:none}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.brand-title{font-size:13px;font-weight:800}.brand-path{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-return{font-size:9px;color:var(--dim);text-transform:uppercase}
+.top-controls{display:flex;gap:6px}
+.ctrl-btn{width:38px;height:38px;display:flex;align-items:center;justify-content:center;border-radius:10px;color:var(--muted);background:var(--panel);border:1px solid var(--line);cursor:pointer}
+.ctrl-btn:hover{color:var(--text)}.ctrl-btn.active{color:var(--success);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.08)}
+.ctrl-btn.speaking{color:var(--primary);border-color:rgba(56,189,248,.35);background:rgba(56,189,248,.12);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,.4)}50%{box-shadow:0 0 0 8px rgba(56,189,248,0)}}
+
+/* Hearts */
+.hearts-wrap{position:sticky;top:64px;z-index:90;background:rgba(8,12,24,.90);backdrop-filter:blur(16px);border-bottom:1px solid rgba(148,163,184,.06)}
+.hearts-inner{max-width:1120px;margin:auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hearts-left{display:flex;align-items:center;gap:12px}.hearts{display:flex;gap:6px}
+.heart{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,46,99,.11);border:1px solid rgba(255,46,99,.20);color:var(--heart);font-size:13px;transition:.35s}
+.heart.empty{background:rgba(255,255,255,.03);border-color:var(--line);color:var(--dim);filter:grayscale(1);transform:scale(.9)}
+.hearts-info{font-size:11px;color:var(--muted)}.hearts-info strong{color:var(--text)}
+.progress-bar{flex:1;max-width:300px;height:3px;background:rgba(255,255,255,.08);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0%;transition:width.4s ease}
+
+/* Stage - PAGINATED */
+.stage{width:min(1120px,100%);margin:0 auto;padding:22px 16px calc(84px + 16px);display:flex;flex-direction:column;gap:22px}
+.lesson-page{width:100%;min-height:520px;background:linear-gradient(180deg,rgba(21,29,51,.90),rgba(16,22,42,.90));border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);animation:pageIn.5s cubic-bezier(.4,0,.2,1)}
+@keyframes pageIn{from{opacity:0;transform:translateY(20px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.lesson-head{padding:28px 28px 20px;border-bottom:1px solid var(--line)}
+.course-chip{display:inline-flex;padding:5px 10px;border-radius:20px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.14);color:var(--primary);font-size:10px;font-weight:700}
+.lesson-title{margin-top:12px;font-size:clamp(24px,4vw,32px);font-weight:800;line-height:1.1}
+.lesson-sub{margin-top:8px;color:var(--muted);font-size:13px;line-height:1.6}
+.lesson-content{padding:24px 28px 32px;display:flex;flex-direction:column;gap:22px}
+.page-indicator{padding:10px 28px;background:rgba(0,0,0,.15);border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--dim);letter-spacing:.06em;text-transform:uppercase}
+
+.content-block{animation:in.4s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.block-heading{display:flex;gap:12px;align-items:flex-start}
+.block-heading.ic{width:36px;height:36px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--primary)}
+.block-heading h2{font-size:21px;font-weight:700}
+.text-block{padding-left:18px;border-left:2px solid transparent;margin-left:2px}
+.text-block.active{border-left-color:var(--primary)}
+.text-body{color:#d2d8e6;font-size:15px;line-height:1.85}
+
+.code-card{border:1px solid var(--code-border);border-radius:14px;overflow:hidden;background:var(--code-bg);box-shadow:0 10px 30px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.04)}
+.code-top{display:flex;justify-content:space-between;align-items:center;height:44px;padding:0 14px;background:#161b22;border-bottom:1px solid var(--code-border)}
+.code-left{display:flex;align-items:center;gap:10px}.dots{display:flex;gap:6px}.dot{width:10px;height:10px;border-radius:50%}.dot.r{background:#ff5f57}.dot.y{background:#febc2e}.dot.g{background:#28c840}
+.code-lang{font-size:11px;font-weight:700;color:#8b949e;text-transform:uppercase}
+.code-btn{padding:6px 10px;border-radius:7px;background:#21262d;border:1px solid #30363d;color:#8b949e;font-size:11px;font-weight:600;cursor:pointer;display:flex;gap:5px;align-items:center}
+.code-btn:hover{background:#30363d;color:#e6edf3}.code-btn.copied{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.25);color:#22c55e}
+.code-body{position:relative;overflow:auto;max-height:520px}.code-body pre{margin:0;padding:18px 18px 18px 54px}
+.code-body code{font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;white-space:pre}
+.line-nums{position:absolute;left:0;top:0;bottom:0;width:42px;padding:18px 0;background:#0d1117;border-right:1px solid var(--code-border);color:#484f58;font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1.7;text-align:right;user-select:none}
+
+.output-card{border:1px solid rgba(34,197,94,.15);border-radius:12px;overflow:hidden;background:rgba(34,197,94,.03)}
+.output-top{padding:9px 14px;background:rgba(34,197,94,.06);border-bottom:1px solid rgba(34,197,94,.1);color:#4ade80;font-size:11px;font-weight:700;display:flex;gap:8px;align-items:center}
+.output-body{padding:14px 18px;color:#bbf7d0;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.6}
+
+.quiz-card{border:1px solid rgba(129,140,248,.18);border-radius:16px;background:linear-gradient(180deg,rgba(30,36,64,.6),rgba(22,28,48,.6));padding:20px}
+.quiz-head{display:flex;justify-content:space-between;margin-bottom:14px}
+.quiz-tag{font-size:10px;font-weight:800;color:#a5b4fc;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.2);padding:5px 10px;border-radius:20px}
+.quiz-q{font-size:17px;font-weight:650;line-height:1.45;margin-bottom:16px}
+.quiz-opts{display:grid;gap:10px}
+.quiz-opt{display:flex;gap:12px;padding:13px 14px;border-radius:12px;background:rgba(255,255,255,.02);border:1px solid var(--line);cursor:pointer;text-align:left;transition:.15s}
+.quiz-opt:hover{border-color:rgba(56,189,248,.25);background:rgba(255,255,255,.04);transform:translateY(-1px)}
+.quiz-opt.selected{border-color:var(--primary);background:rgba(56,189,248,.08);box-shadow:0 0 0 3px rgba(56,189,248,.1)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(34,197,94,.08)}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(239,68,68,.08)}
+.opt-letter{width:28px;height:28px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12px;font-weight:700}
+.opt-text{flex:1;font-size:14px;line-height:1.5}
+.quiz-submit{margin-top:14px;width:100%;height:44px;border-radius:11px;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#000;font-weight:800;font-size:13px;cursor:pointer}
+.quiz-submit:disabled{opacity:.35;cursor:not-allowed}
+.quiz-feedback{margin-top:12px;padding:12px;border-radius:10px;font-size:13px;line-height:1.5}
+.quiz-feedback.correct{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);color:#bbf7d0}
+.quiz-feedback.wrong{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.18);color:#fecaca}
+
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:90;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 16px calc(0px + env(safe-area-inset-bottom));background:rgba(8,12,24,.94);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+.btm-btn{min-width:110px;height:42px;padding:0 16px;border-radius:11px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btm-prev{background:var(--panel);border:1px solid var(--line);color:var(--muted)}.btm-next{background:#fff;color:#000;font-weight:800}.btm-btn:disabled{opacity:.3}
+
+#completeScreen{width:min(760px,calc(100% - 24px));margin:24px auto calc(84px + 20px);padding:36px 24px;text-align:center;border-radius:20px;background:linear-gradient(180deg,rgba(21,29,51,.95),rgba(16,22,42,.95));border:1px solid var(--line)}
+.complete-badge{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:linear-gradient(135deg,#22c55e,#16a34a);display:flex;align-items:center;justify-content:center;color:#fff;font-size:26px}
+
+.modal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.65);backdrop-filter:blur(12px)}
+.modal.show{display:flex}
+.modal-box{width:min(460px,100%);background:linear-gradient(180deg,#1a2442,#151d33);border:1px solid var(--line2);border-radius:20px;padding:24px;box-shadow:0 30px 90px rgba(0,0,0,.6)}
+.m-btn{padding:11px 16px;border-radius:11px;font-size:12px;font-weight:750;cursor:pointer}
+.m-cancel{background:var(--panel2);border:1px solid var(--line);color:var(--muted)}.m-confirm{background:#fff;color:#000}.m-danger{background:var(--danger);color:#fff}.m-success{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
+.timer-box{margin:14px 0;padding:14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line);text-align:center}
+.timer-box strong{font-size:28px;display:block}
+.cost-row{display:flex;gap:10px;margin:12px 0}.cost-card{flex:1;padding:12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line);text-align:center}
+
+#shareMenu{position:fixed;top:72px;right:14px;z-index:300;width:300px;padding:12px;border-radius:16px;background:rgba(20,26,45,.98);border:1px solid var(--line2);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.share-title{font-size:11px;font-weight:800;color:var(--muted);padding:4px 8px 10px}
+.share-item{width:100%;display:flex;gap:12px;align-items:center;padding:11px 12px;border-radius:10px;color:var(--text);cursor:pointer;font-size:13px;text-align:left}
+.share-item:hover{background:rgba(255,255,255,.05)}
+.share-icon{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+
+.download-fab{position:fixed;right:16px;bottom:88px;z-index:80;width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:var(--panel);border:1px solid var(--line2);color:var(--muted);cursor:pointer}
+#toast{position:fixed;left:50%;bottom:86px;z-index:1000;transform:translate(-50%,16px);opacity:0;pointer-events:none;padding:10px 14px;border-radius:10px;background:#1a2238;border:1px solid var(--line2);color:var(--text);font-size:12px;font-weight:600;transition:.25s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#errorPanel{width:min(760px,calc(100% - 24px));margin:24px auto;padding:20px;border-radius:14px;background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.2)}
+@media(max-width:700px){.stage{padding:14px 12px calc(84px + 14px)}.lesson-head{padding:22px 18px 18px}.lesson-content{padding:18px}}
+</style>
+</head>
+<body>
+
+<div id="loader">
+<div class="loader-orb"></div>
+<div class="loader-card">
+<div class="loader-logo"><img src="logo.png" alt="Code Academy" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fa-solid fa-graduation-cap\' style=\'color:#fff;font-size:32px\'></i>'"></div>
+<div class="loader-title"><span>CODE ACADEMY</span> ENGINE</div>
+<div class="loader-sub" id="loaderSub">Preparing senior lesson engine...</div>
+<div class="loader-progress"><div id="loaderFill" class="loader-fill"></div></div>
+<div class="loader-percent" id="loaderPercent">0% • Initializing</div>
+<div class="loader-serial">
+<div class="serial-item" id="s1"><div class="serial-icon"><i class="fa-solid fa-microchip"></i></div><span>Initializing lesson engine</span></div>
+<div class="serial-item" id="s2"><div class="serial-icon"><i class="fa-solid fa-heart"></i></div><span id="s2Text">Checking hearts • 5/5 lives</span></div>
+<div class="serial-item" id="s3"><div class="serial-icon"><i class="fa-solid fa-cloud-arrow-down"></i></div><span>Syncing progress & XP</span></div>
+<div class="serial-item" id="s4"><div class="serial-icon"><i class="fa-solid fa-book-open"></i></div><span id="s4Text">Loading HTML Lesson 1</span></div>
+</div>
+</div>
+</div>
+
+<header class="topbar">
+<div class="brand"><div class="brand-logo"><img src="logo.png" alt=""></div><div class="brand-meta"><div class="brand-title" id="brandTitle">CODE ACADEMY</div><div class="brand-path" id="lessonLabel">Loading...</div><div class="brand-return" id="fromLabel"></div></div></div>
+<div class="top-controls">
+<button id="voiceBtn" class="ctrl-btn active" title="Voice ON - Tap to mute"><i class="fa-solid fa-volume-high"></i></button>
+<button id="shareBtn" class="ctrl-btn" title="Share"><i class="fa-solid fa-share-nodes"></i></button>
+<button id="exitBtn" class="ctrl-btn danger" title="Exit"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</header>
+
+<div class="hearts-wrap"><div class="hearts-inner">
+<div class="hearts-left"><div class="hearts" id="heartsDisplay"></div><div class="hearts-info"><strong id="heartsCount">5 / 5</strong></div></div>
+<div style="display:flex;align-items:center;gap:12px;flex:1;justify-content:flex-end"><div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div><div style="font-size:11px;color:var(--muted)" id="itemCounter">0 / 0</div></div>
+</div></div>
+
+<main id="lessonScreen" class="hidden"><div class="stage" id="stage"></div></main>
+
+<section id="completeScreen" class="hidden"><div class="complete-badge"><i class="fa-solid fa-check"></i></div><h2 style="font-size:26px;font-weight:800">Lesson Completed</h2><p id="completionText" style="color:var(--muted);margin:10px auto 0;max-width:520px;font-size:14px;line-height:1.6">Great work.</p><div style="margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button id="nextLessonBtn" class="m-btn m-confirm" style="padding:12px 20px">Next Lesson</button><button id="returnDashboardBtn" class="m-btn m-cancel" style="padding:12px 20px">Dashboard</button></div></section>
+
+<div id="exitModal" class="modal"><div class="modal-box"><h3>Exit Lesson?</h3><p id="exitModalText">Your progress is saved. You will return to the dashboard you came from.</p><div style="display:flex;gap:10px;justify-content:flex-end"><button id="cancelExit" class="m-btn m-cancel">Stay</button><button id="confirmExit" class="m-btn m-danger">Exit</button></div></div></div>
+
+<div id="noHeartsModal" class="modal"><div class="modal-box"><h3><i class="fa-solid fa-heart-crack" style="color:var(--heart)"></i> No Hearts Left</h3><p>You have used all 5 hearts. Wrong answers cost 1 heart.</p>
+<div class="timer-box"><strong id="timerDisplay">60:00</strong><span>Time until refill</span></div>
+<div class="cost-row"><div class="cost-card"><i class="fa-solid fa-bolt" style="color:#facc15"></i><strong>200 XP</strong></div><div class="cost-card"><i class="fa-solid fa-coins" style="color:#f59e0b"></i><strong>100 Coins</strong></div></div>
+<div id="refillStatus" style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:12px"></div>
+<div style="display:flex;flex-direction:column;gap:8px"><button id="refillBtn" class="m-btn m-success" style="width:100%"><i class="fa-solid fa-heart"></i> Refill for 200 XP + 100 Coins</button><button id="waitBtn" class="m-btn m-cancel" style="width:100%">Wait 1 Hour</button><button id="exitNoHearts" class="m-btn m-cancel" style="width:100%;border:none;background:transparent">Exit to Dashboard</button></div>
+</div></div>
+
+<div id="shareMenu" class="hidden"><div class="share-title">Professional Share</div>
+<button class="share-item" data-platform="native"><span class="share-icon"><i class="fa-solid fa-arrow-up-from-bracket"></i></span><div><div style="font-weight:600">System Share</div><div style="font-size:11px;color:var(--muted)">Native sheet</div></div></button>
+<button class="share-item" data-platform="copy"><span class="share-icon"><i class="fa-solid fa-link"></i></span><div><div style="font-weight:600">Copy Link</div><div style="font-size:11px;color:var(--muted)" id="shareUrlText">code-academy...</div></div></button>
+<button class="share-item" data-platform="whatsapp"><span class="share-icon"><i class="fa-brands fa-whatsapp"></i></span>WhatsApp</button>
+</div>
+
+<button id="pdfBtn" class="download-fab" title="Download PDF"><i class="fa-solid fa-file-arrow-down"></i></button>
+<footer class="bottom"><button id="prevBtn" class="btm-btn btm-prev"><i class="fa-solid fa-chevron-left"></i> PREV</button><button id="nextBtn" class="btm-btn btm-next">NEXT <i class="fa-solid fa-chevron-right"></i></button></footer>
+
+<section id="errorPanel" class="hidden"><div style="color:#fca5a5;font-weight:700;margin-bottom:8px"><i class="fa-solid fa-triangle-exclamation"></i> Engine Error</div><div id="errorMessage" style="color:#fecaca;font-family:monospace;font-size:12px;white-space:pre-wrap"></div><div style="margin-top:12px;display:flex;gap:8px"><button id="retryBtn" class="m-btn m-confirm">Retry</button><button id="errorBackBtn" class="m-btn m-cancel">Dashboard</button></div></section>
+<div id="toast"></div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged, getDoc, doc } from "./authentication.js";
+import { runTransaction, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const params = new URLSearchParams(location.search);
+const course = (params.get("course")||"html").toLowerCase();
+const lessonNum = Math.max(1, Number(params.get("lesson")||1));
+const fromParam = params.get("from")||"";
+const $ = id => document.getElementById(id);
+
+let currentUser=null, userData={}, lessonData=null, blocks=[], currentBlockIndex=0;
+let voiceEnabled=true, typingToken=0, speakingToken=0, quizResults=[], selectedQuizAnswer=null;
+let returnUrl="", hearts=5, maxHearts=5, heartsDepletedAt=null, timerInterval=null;
+let userXP=0, userCoins=0;
+let currentPageEl=null, currentContentEl=null, pageCount=0, blocksInCurrentPage=0;
+let speechVoices=[], voiceReady=false;
+
+function escapeHTML(v){return String(v??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;")}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function showToast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>t.classList.remove("show"),3000)}
+function showError(e){console.error(e);$("lessonScreen").classList.add("hidden");$("completeScreen").classList.add("hidden");$("errorPanel").classList.remove("hidden");$("errorMessage").textContent=e.message||String(e);$("loader").style.display="none"}
+function resolveReturnUrl(){
+ if(fromParam){ if(fromParam.includes(".html")) return fromParam; if(/^[a-z]+$/i.test(fromParam)) return `${fromParam}.html`; return fromParam; }
+ const last=sessionStorage.getItem("codeacademy_last_dashboard"); if(last) return last;
+ try{ const ref=document.referrer; if(ref){ const u=new URL(ref); const file=u.pathname.split("/").pop(); if(file.endsWith(".html")&&!file.includes("lesson")) return file; } }catch{}
+ return `${course}.html`;
+}
+function courseName(){const n={html:"HTML",css:"CSS",javascript:"JavaScript",python:"Python",react:"React",java:"Java",c:"C",cpp:"C++",csharp:"C#",php:"PHP",typescript:"TypeScript",go:"Go",rust:"Rust",kotlin:"Kotlin",swift:"Swift",dart:"Dart",ruby:"Ruby",sql:"SQL",r:"R",lua:"Lua"}; return n[course]||course.charAt(0).toUpperCase()+course.slice(1);}
+
+// LOADER SERIAL - FIXED MOVING
+async function runAmazingLoader(){
+ $("loaderSub").textContent=`Preparing ${courseName()} Lesson ${lessonNum}...`;
+ $("s4Text").textContent=`Loading ${courseName()} Lesson ${lessonNum}`;
+ const steps=[
+  {id:"s1", percent:25, label:"25% • Engine ready"},
+  {id:"s2", percent:50, label:"50% • Hearts synced"},
+  {id:"s3", percent:75, label:"75% • Progress ready"},
+  {id:"s4", percent:100, label:"100% • Ready"},
+ ];
+ $("s2Text").textContent=`Checking hearts • ${hearts}/${maxHearts} lives`;
+ $("loaderFill").style.width="0%"; $("loaderPercent").textContent="0% • Initializing";
+ for(let i=0;i<steps.length;i++){
+  const s=steps[i]; const el=document.getElementById(s.id);
+  el.classList.add("active"); el.querySelector(".serial-icon").innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i>`;
+  $("loaderFill").style.width=s.percent+"%"; $("loaderPercent").textContent=s.label;
+  await sleep(650);
+  el.classList.remove("active"); el.classList.add("done"); el.querySelector(".serial-icon").innerHTML=`<i class="fa-solid fa-check"></i>`;
+ }
+ $("loaderPercent").textContent="100% • Launching..."; await sleep(400);
+}
+
+function renderHearts(){
+ const wrap=$("heartsDisplay"); wrap.innerHTML="";
+ for(let i=0;i<maxHearts;i++){ const h=document.createElement("div"); h.className="heart"+(i>=hearts?" empty":""); h.innerHTML=`<i class="fa-solid fa-heart"></i>`; wrap.appendChild(h); }
+ $("heartsCount").textContent=`${hearts} / ${maxHearts}`;
+}
+function startHeartsTimer(){
+ if(timerInterval) clearInterval(timerInterval);
+ if(!heartsDepletedAt) return;
+ timerInterval=setInterval(()=>{
+  const diff=(heartsDepletedAt+60*60*1000)-Date.now();
+  if(diff<=0){ hearts=maxHearts; heartsDepletedAt=null; renderHearts(); clearInterval(timerInterval); $("noHeartsModal").classList.remove("show"); showToast("Hearts refilled! ❤️ 5/5"); saveHearts(); return; }
+  const m=Math.floor(diff/60000); const s=Math.floor((diff%60000)/1000);
+  $("timerDisplay").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+ },1000);
+}
+async function saveHearts(){
+ if(!currentUser) return;
+ try{
+  const ref=doc(db,"users",currentUser.uid);
+  await runTransaction(db, async(tx)=>{
+   const snap=await tx.get(ref); tx.set(ref,{ hearts, heartsDepletedAt: heartsDepletedAt||null, xp:userXP, coins:userCoins, lastActive:serverTimestamp() },{merge:true});
+  });
+ }catch{}
+}
+function loseHeart(){
+ if(hearts<=0) return; hearts--; renderHearts();
+ if(hearts<=0){ heartsDepletedAt=Date.now(); startHeartsTimer(); saveHearts(); setTimeout(()=> $("noHeartsModal").classList.add("show"), 600); }
+ else { saveHearts(); showToast(`-1 heart • ${hearts} left`); }
+}
+async function refillHeartsWithCost(){
+ if(userXP<200 || userCoins<100){ $("refillStatus").textContent=`Need 200 XP (have ${userXP}) + 100 coins (have ${userCoins})`; $("refillStatus").style.color="#ff3b5c"; return; }
+ userXP-=200; userCoins-=100; hearts=maxHearts; heartsDepletedAt=null; renderHearts(); if(timerInterval) clearInterval(timerInterval);
+ await saveHearts(); $("refillStatus").textContent="Refilled! ❤️ 5/5"; $("refillStatus").style.color="#22c55e"; setTimeout(()=> $("noHeartsModal").classList.remove("show"), 900); showToast("Hearts refilled!");
+}
+
+// ===== PAGINATED PAGE CREATION - FIXES SCROLL =====
+function createNewPage(isFirst=false){
+ pageCount++;
+ const stage=$("stage");
+ const page=document.createElement("div");
+ page.className="lesson-page";
+ page.dataset.page=pageCount;
+ if(isFirst){
+  page.innerHTML=`
+   <div class="lesson-head"><span id="courseChip" class="course-chip">LOADING</span><h1 id="lessonTitle" class="lesson-title">Loading...</h1><p id="lessonSubtitle" class="lesson-sub"></p></div>
+   <div class="lesson-content" id="content-${pageCount}"></div>
+   <div class="page-indicator"><span>Page ${pageCount}</span><span id="pageProgress">0 blocks</span></div>
+  `;
+ } else {
+  page.innerHTML=`
+   <div class="lesson-head" style="padding:18px 28px"><span class="course-chip">${courseName().toUpperCase()} • PAGE ${pageCount}</span><div style="margin-top:6px;font-size:12px;color:var(--muted)">Continued • ${lessonData?.title||""}</div></div>
+   <div class="lesson-content" id="content-${pageCount}"></div>
+   <div class="page-indicator"><span>Page ${pageCount}</span><span>${blocks.length} blocks total</span></div>
+  `;
+ }
+ stage.appendChild(page);
+ currentPageEl=page;
+ currentContentEl=page.querySelector(".lesson-content");
+ blocksInCurrentPage=0;
+ page.scrollIntoView({behavior:"smooth", block:"start"});
+ return currentContentEl;
+}
+
+function shouldCreateNewPage(){
+ // Create new page if current page has 3 blocks OR height > 700px OR contains a quiz
+ if(blocksInCurrentPage>=3) return true;
+ if(currentContentEl && currentContentEl.scrollHeight>650) return true;
+ // If last block was quiz, start fresh page for next concept
+ const lastChild=currentContentEl?.lastElementChild;
+ if(lastChild?.classList.contains("quiz-card") && blocksInCurrentPage>=1) return true;
+ return false;
+}
+
+function lessonPath(){return `${course}_lesson_${lessonNum}.json`}
+async function loadLesson(){
+ const path=lessonPath();
+ const res=await fetch(path,{cache:"no-store"});
+ if(!res.ok) throw new Error(`Lesson not found: ${path}`);
+ const data=await res.json();
+ if(!Array.isArray(data.blocks)) throw new Error("Invalid lesson file");
+ lessonData=data; blocks=data.blocks;
+
+ // Create first page
+ createNewPage(true);
+ $("brandTitle").textContent=`${courseName().toUpperCase()} • L${lessonNum}`;
+ $("lessonLabel").textContent=`${courseName()} • Lesson ${lessonNum} • ${data.title||""}`;
+ $("fromLabel").textContent=`Return: ${returnUrl}`;
+ $("courseChip").textContent=`${courseName().toUpperCase()} • LESSON ${lessonNum}`;
+ $("lessonTitle").textContent=data.title||`${courseName()} Lesson ${lessonNum}`;
+ $("lessonSubtitle").textContent=data.subtitle||"";
+ $("shareUrlText").textContent=location.href.slice(0,32)+"...";
+
+ $("loader").style.opacity="0"; $("loader").style.transition="opacity.5s ease";
+ setTimeout(()=>{ $("loader").style.display="none"; $("lessonScreen").classList.remove("hidden"); },500);
+ const saved=userData.progress?.[course]?.lastBlock||0;
+ if(saved>0 && saved < blocks.length){ currentBlockIndex=saved; showToast(`Resumed ${saved}/${blocks.length}`); }
+ renderBlock();
+}
+function updateProgress(){
+ const total=blocks.length; const cur=Math.min(currentBlockIndex,total); const pct=total?Math.round(cur/total*100):0;
+ $("itemCounter").textContent=`${cur} / ${total} • ${pct}%`; $("progressFill").style.width=`${pct}%`;
+ if(currentPageEl){ const ind=currentPageEl.querySelector("#pageProgress"); if(ind) ind.textContent=`${blocksInCurrentPage} blocks • Page ${pageCount}`; }
+}
+function bText(b){return String(b?.text??b?.content??"")}
+
+// FIXED VOICE ENGINE
+function initVoiceEngine(){
+ if(!("speechSynthesis" in window)){ voiceEnabled=false; $("voiceBtn").classList.remove("active"); return; }
+ speechVoices=speechSynthesis.getVoices();
+ if(speechVoices.length===0){
+  speechSynthesis.addEventListener("voiceschanged", ()=>{
+   speechVoices=speechSynthesis.getVoices();
+   voiceReady=true;
+  }, {once:true});
+ } else { voiceReady=true; }
+ // unlock on first click
+ document.addEventListener("click", ()=>{ if(speechSynthesis.state==="suspended") speechSynthesis.resume(); }, {once:true});
+}
+function stopVoice(){
+ speakingToken++;
+ try{ speechSynthesis.cancel(); }catch{}
+ $("voiceBtn").classList.remove("speaking");
+}
+function speak(t){
+ stopVoice();
+ if(!voiceEnabled) return;
+ if(!("speechSynthesis" in window)){ showToast("Voice not supported"); return; }
+ if(speechSynthesis.state==="suspended") speechSynthesis.resume();
+ const text=String(t||"").replace(/<[^>]*>/g,"").trim().slice(0,400);
+ if(!text) return;
+ const utter=new SpeechSynthesisUtterance(text);
+ const voices=speechSynthesis.getVoices();
+ // Prefer natural English voice
+ const preferred=voices.find(v=>v.name.includes("Google")&&v.lang.startsWith("en")) || voices.find(v=>v.lang.startsWith("en")) || voices[0];
+ if(preferred) utter.voice=preferred;
+ utter.rate=0.92; utter.pitch=1; utter.volume=1;
+ utter.onstart=()=>{ $("voiceBtn").classList.add("speaking"); speakingToken++; }
+ utter.onend=()=>{ $("voiceBtn").classList.remove("speaking"); }
+ utter.onerror=()=>{ $("voiceBtn").classList.remove("speaking"); }
+ const token=speakingToken;
+ utter.onend=()=>{ if(token!==speakingToken) return; $("voiceBtn").classList.remove("speaking"); }
+ try{ speechSynthesis.speak(utter); }catch(e){ console.warn(e); }
+}
+
+async function typeEffect(target,text){
+ const token=++typingToken; target.innerHTML=""; const node=document.createTextNode(""); target.appendChild(node);
+ const cur=document.createElement("span"); cur.className="type-cursor"; cur.style.cssText="display:inline-block;width:2px;height:1.1em;background:var(--primary);margin-left:2px;vertical-align:-.15em;animation:blink.9s infinite"; target.appendChild(cur);
+ for(let i=0;i<text.length;i++){ if(token!==typingToken) return; node.data=text.slice(0,i+1); await sleep(10); }
+ cur.remove();
+ // After typing, trigger voice
+ if(voiceEnabled && target.closest(".text-block")){ speak(text); }
+}
+async function copy(t){try{await navigator.clipboard.writeText(t)}catch{const a=document.createElement("textarea");a.value=t;document.body.appendChild(a);a.select();document.execCommand("copy");a.remove()}}
+
+function renderBlock(){
+ if(hearts<=0){ $("noHeartsModal").classList.add("show"); return; }
+ if(shouldCreateNewPage()){ createNewPage(false); }
+ const block=blocks[currentBlockIndex];
+ if(!block){ finish(); return; }
+ const t=(block.type||"").toLowerCase(); let el;
+ if(t==="heading"||block.heading) el=headingBlock(block);
+ else if(t==="code"||block.code) el=codeBlock(block);
+ else if(t==="output") el=outputBlock(block);
+ else if(t==="quiz"||block.question) el=quizBlock(block);
+ else el=textBlock(block);
+
+ currentContentEl.appendChild(el);
+ el.scrollIntoView({behavior:"smooth",block:"center"});
+ currentBlockIndex++; blocksInCurrentPage++; updateProgress(); saveProgress();
+ if(currentBlockIndex>=blocks.length) $("nextBtn").textContent="FINISH";
+}
+function headingBlock(b){const d=document.createElement("div"); d.className="content-block"; d.innerHTML=`<div class="block-heading"><div class="ic"><i class="fa-solid fa-book-open"></i></div><h2>${escapeHTML(b.heading||b.title||"")}</h2></div>`; return d;}
+function textBlock(b){const d=document.createElement("div"); d.className="content-block text-block active"; d.innerHTML=`<div class="text-body"></div>`; typeEffect(d.querySelector(".text-body"), bText(b)); return d;}
+function codeBlock(b){
+ const d=document.createElement("div"); d.className="content-block code-card";
+ const lang=(b.language||"code").toLowerCase(); const code=String(b.code||b.text||""); const nums=code.split("\n").map((_,i)=>i+1).join("\n");
+ d.innerHTML=`<div class="code-top"><div class="code-left"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="code-lang"><i class="fa-solid fa-code"></i> ${escapeHTML(lang)}</div></div><div><button class="code-btn copy"><i class="fa-regular fa-copy"></i> Copy</button></div></div><div class="code-body"><div class="line-nums">${escapeHTML(nums)}</div><pre><code class="language-${escapeHTML(lang)}"></code></pre></div>`;
+ const cE=d.querySelector("code"); cE.textContent=code; try{ hljs.highlightElement(cE); }catch{}
+ const btn=d.querySelector(".copy"); btn.addEventListener("click", async()=>{ await copy(code); btn.innerHTML=`<i class="fa-solid fa-check"></i> Copied`; btn.classList.add("copied"); showToast("Code copied"); setTimeout(()=>{btn.innerHTML=`<i class="fa-regular fa-copy"></i> Copy`; btn.classList.remove("copied")},2000); });
+ return d;
+}
+function outputBlock(b){const d=document.createElement("div"); d.className="content-block output-card"; d.innerHTML=`<div class="output-top"><i class="fa-solid fa-terminal"></i> OUTPUT</div><div class="output-body">${escapeHTML(b.output||b.text||"").replaceAll("\n","<br>")}</div>`; return d;}
+function quizBlock(b){
+ const d=document.createElement("div"); d.className="content-block quiz-card";
+ const q=b.question||b.text||"Question"; const opts=b.options||[]; const correct=b.correctAnswer??b.correct??0;
+ d.innerHTML=`<div class="quiz-head"><span class="quiz-tag">QUESTION • -1 <i class="fa-solid fa-heart" style="color:var(--heart)"></i> if wrong</span><span style="font-size:11px;color:var(--muted)">${opts.length} options</span></div><div class="quiz-q">${escapeHTML(q)}</div><div class="quiz-opts"></div><button class="quiz-submit" disabled>Select answer</button><div class="quiz-feedback hidden"></div>`;
+ const wrap=d.querySelector(".quiz-opts"); const submit=d.querySelector(".quiz-submit"); const fb=d.querySelector(".quiz-feedback");
+ opts.forEach((opt,i)=>{
+  const btn=document.createElement("button"); btn.className="quiz-opt"; btn.innerHTML=`<div class="opt-letter">${String.fromCharCode(65+i)}</div><div class="opt-text">${escapeHTML(opt)}</div>`;
+  btn.addEventListener("click",()=>{ if(hearts<=0){ $("noHeartsModal").classList.add("show"); return; } d.querySelectorAll(".quiz-opt").forEach(x=>x.classList.remove("selected")); btn.classList.add("selected"); selectedQuizAnswer=i; submit.disabled=false; submit.textContent="Submit"; });
+  wrap.appendChild(btn);
+ });
+ submit.addEventListener("click", async()=>{
+  if(selectedQuizAnswer===null || hearts<=0) return;
+  const isCorrect=selectedQuizAnswer==correct;
+  d.querySelectorAll(".quiz-opt").forEach((el,i)=>{ if(i==correct) el.classList.add("correct"); else if(i==selectedQuizAnswer&&!isCorrect) el.classList.add("wrong"); el.style.pointerEvents="none"; });
+  fb.classList.remove("hidden"); fb.className=`quiz-feedback ${isCorrect?"correct":"wrong"}`;
+  fb.innerHTML=`<strong>${isCorrect?"Correct!":"Wrong — -1 Heart"}</strong> — ${escapeHTML(b.explanation|| (isCorrect?"Well done":`Answer: ${opts[correct]}`))}`;
+  quizResults.push({isCorrect});
+  if(!isCorrect){ loseHeart(); speak("Wrong answer. You lost one heart."); } else { userXP+=10; showToast("+10 XP"); speak("Correct! Well done."); }
+  try{ if(currentUser) await addDoc(collection(db,"users",currentUser.uid,"lessonHistory"),{course,lesson:lessonNum,question:q,selected:selectedQuizAnswer,correct,isCorrect,createdAt:serverTimestamp()}); }catch{}
+  selectedQuizAnswer=null; submit.disabled=true; submit.textContent=isCorrect?"Correct":"Continue";
+  if(hearts<=0){ setTimeout(()=> $("noHeartsModal").classList.add("show"), 700); }
+  // After quiz, force new page for next content
+  blocksInCurrentPage=3;
+ });
+ return d;
+}
+async function saveProgress(){
+ if(!currentUser) return;
+ try{
+  const ref=doc(db,"users",currentUser.uid);
+  await runTransaction(db, async(tx)=>{
+   const snap=await tx.get(ref); const data=snap.exists()?snap.data():{};
+   const prog=data.progress||{};
+   tx.set(ref,{ progress:{...prog,[course]:{lastBlock:currentBlockIndex,total:blocks.length,completed:Math.max(prog[course]?.completed||0,currentBlockIndex)}}, hearts, heartsDepletedAt, xp:userXP, coins:userCoins, lastActive:serverTimestamp() },{merge:true});
+  });
+ }catch{}
+}
+async function finish(){
+ $("lessonScreen").classList.add("hidden"); $("completeScreen").classList.remove("hidden");
+ const total=quizResults.length; const correct=quizResults.filter(r=>r.isCorrect).length; const pct=total?Math.round(correct/total*100):100;
+ $("completionText").textContent=`Completed ${courseName()} Lesson ${lessonNum} • ${pct}% • Hearts ${hearts}/${maxHearts} • Returning to ${returnUrl}`;
+ try{
+  const ref=doc(db,"users",currentUser.uid);
+  await runTransaction(db, async(tx)=>{
+   const snap=await tx.get(ref); const d=snap.exists()?snap.data():{};
+   const cl=d.completedLessons||{}; cl[`${course}_lesson_${lessonNum}`]=true;
+   tx.set(ref,{ completedLessons:cl, xp:userXP+25, coins:userCoins+10, hearts, lastActive:serverTimestamp() },{merge:true});
+  });
+ }catch{}
+ stopVoice(); if(voiceEnabled) speak(`Lesson completed with ${pct} percent and ${hearts} hearts remaining`);
+}
+async function downloadPDF(){
+ try{
+  const { jsPDF }=window.jspdf; const pdf=new jsPDF({unit:"pt",format:"a4"});
+  let y=50; pdf.setFontSize(18); pdf.setFont(undefined,"bold"); pdf.text(`${courseName()} - Lesson ${lessonNum}`,40,y); y+=26;
+  pdf.setFontSize(11); pdf.setFont(undefined,"normal"); pdf.text(lessonData.title||"",40,y,{maxWidth:515}); y+=30;
+  blocks.forEach((b,i)=>{ const txt=String(bText(b)||b.question||b.heading||b.code||b.output||"").slice(0,900); const lines=pdf.splitTextToSize(`${i+1}. ${txt}`,515); if(y+lines.length*13>760){pdf.addPage(); y=40} pdf.text(lines,40,y); y+=lines.length*13+14; });
+  pdf.save(`CodeAcademy-${course}-L${lessonNum}.pdf`); showToast("PDF downloaded");
+ }catch(e){ showError(e); }
+}
+function setupEvents(){
+ $("exitBtn").addEventListener("click",()=>{ $("exitModalText").textContent=`Exit ${courseName()} Lesson ${lessonNum}? Progress ${currentBlockIndex}/${blocks.length} saved. Hearts: ${hearts}/${maxHearts}. Return to ${returnUrl}.`; $("exitModal").classList.add("show"); });
+ $("cancelExit").addEventListener("click",()=> $("exitModal").classList.remove("show"));
+ $("confirmExit").addEventListener("click",()=> location.href=returnUrl);
+ $("exitModal").addEventListener("click",(e)=>{ if(e.target===$("exitModal")) $("exitModal").classList.remove("show"); });
+
+ $("prevBtn").addEventListener("click",()=>{
+  if(pageCount>1 && blocksInCurrentPage===0){
+   // go to previous page
+   const pages=document.querySelectorAll(".lesson-page");
+   pages[pages.length-1]?.remove();
+   pageCount--; const remaining=document.querySelectorAll(".lesson-page");
+   currentPageEl=remaining[remaining.length-1]; currentContentEl=currentPageEl.querySelector(".lesson-content");
+   currentBlockIndex=Math.max(0,currentBlockIndex-1); blocksInCurrentPage=Math.max(0, currentContentEl.children.length);
+   updateProgress(); showToast(`Page ${pageCount}`);
+  } else if(currentBlockIndex>1){
+   currentBlockIndex=Math.max(0,currentBlockIndex-2); currentContentEl.lastChild?.remove(); blocksInCurrentPage=Math.max(0,blocksInCurrentPage-1); renderBlock();
+  }
+ });
+ $("nextBtn").addEventListener("click",()=>{ if(hearts<=0){ $("noHeartsModal").classList.add("show"); return; } renderBlock(); });
+
+ $("voiceBtn").addEventListener("click",()=>{
+  voiceEnabled=!voiceEnabled;
+  $("voiceBtn").classList.toggle("active",voiceEnabled);
+  $("voiceBtn").innerHTML=voiceEnabled?`<i class="fa-solid fa-volume-high"></i>`:`<i class="fa-solid fa-volume-xmark"></i>`;
+  if(!voiceEnabled){ stopVoice(); showToast("Voice OFF"); }
+  else { showToast("Voice ON • Tap text to hear"); initVoiceEngine(); if(blocks[currentBlockIndex-1]) speak(bText(blocks[currentBlockIndex-1])); }
+ });
+
+ $("shareBtn").addEventListener("click",(e)=>{ e.stopPropagation(); $("shareMenu").classList.toggle("hidden"); });
+ document.addEventListener("click",(e)=>{ if(!e.target.closest("#shareMenu")&&!e.target.closest("#shareBtn")) $("shareMenu").classList.add("hidden"); });
+ document.querySelectorAll(".share-item").forEach(btn=>{
+  btn.addEventListener("click", async()=>{
+   const url=location.href; const title=`${courseName()} Lesson ${lessonNum} - Code Academy`; const text=`${lessonData.title||""} - Learn ${courseName()}`;
+   if(btn.dataset.platform==="native" && navigator.share){ try{ await navigator.share({title,text,url}); showToast("Shared"); }catch{} }
+   else if(btn.dataset.platform==="copy"){ await copy(url); showToast("Link copied"); }
+   else if(btn.dataset.platform==="whatsapp"){ window.open(`https://wa.me/?text=${encodeURIComponent(text+" "+url)}`,"_blank"); }
+   $("shareMenu").classList.add("hidden");
+  });
+ });
+
+ $("pdfBtn").addEventListener("click",downloadPDF);
+ $("retryBtn").addEventListener("click",()=> location.reload());
+ $("errorBackBtn").addEventListener("click",()=> location.href=returnUrl);
+ $("nextLessonBtn").addEventListener("click",()=> location.href=`lesson.html?course=${course}&lesson=${lessonNum+1}&from=${encodeURIComponent(returnUrl)}`);
+ $("returnDashboardBtn").addEventListener("click",()=> location.href=returnUrl);
+ $("refillBtn").addEventListener("click", refillHeartsWithCost);
+ $("waitBtn").addEventListener("click", ()=>{ showToast("Timer running... 60:00 until refill"); });
+ $("exitNoHearts").addEventListener("click", ()=> location.href=returnUrl);
+}
+
+onAuthStateChanged(auth, async user=>{
+ if(!user){ location.href="login.html"; return; }
+ currentUser=user;
+ returnUrl=resolveReturnUrl();
+ sessionStorage.setItem("codeacademy_last_dashboard", returnUrl);
+ try{
+  const snap=await getDoc(doc(db,"users",user.uid));
+  userData=snap.exists()?snap.data():{};
+  hearts = typeof userData.hearts==="number"? userData.hearts : 5;
+  userXP=userData.xp||0; userCoins=userData.coins||0;
+  heartsDepletedAt=userData.heartsDepletedAt? (userData.heartsDepletedAt.seconds? userData.heartsDepletedAt.seconds*1000 : userData.heartsDepletedAt) : null;
+  if(hearts<=0 && heartsDepletedAt){
+   const diff=Date.now()-heartsDepletedAt;
+   if(diff>=60*60*1000){ hearts=maxHearts; heartsDepletedAt=null; }
+  }
+  if(hearts<=0 && heartsDepletedAt){ startHeartsTimer(); }
+ }catch{ hearts=5; }
+ renderHearts();
+ initVoiceEngine();
+ await runAmazingLoader();
+ setupEvents();
+ try{ await loadLesson(); }catch(err){ showError(err); }
+});
+</script>
+</body>
+</html>
