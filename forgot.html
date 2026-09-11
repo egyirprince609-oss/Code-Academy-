@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>Recover Password | Code Academy</title>
+
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
+
+<style>
+/* =========================================================
+   CODE ACADEMY — PASSWORD RECOVERY
+   ========================================================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+  --bg:#020617;
+  --panel:#0b1224;
+  --panel2:#101a31;
+  --border:rgba(255,255,255,.09);
+
+  --cyan:#38bdf8;
+  --blue:#0ea5e9;
+  --purple:#8b5cf6;
+
+  --text:#f8fafc;
+  --muted:#94a3b8;
+
+  --success:#22c55e;
+  --danger:#ef4444;
+}
+
+html,
+body{
+  width:100%;
+  min-height:100%;
+}
+
+body{
+  min-height:100dvh;
+  overflow:hidden;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  padding:18px;
+
+  color:var(--text);
+
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Arial,
+    sans-serif;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(56,189,248,.12),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(139,92,246,.12),
+      transparent 35%
+    ),
+    linear-gradient(
+      145deg,
+      #020617,
+      #050b1c 50%,
+      #080b1c
+    );
+}
+
+/* Background grid */
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+
+  background-image:
+    linear-gradient(
+      rgba(56,189,248,.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(139,92,246,.025) 1px,
+      transparent 1px
+    );
+
+  background-size:36px 36px;
+
+  pointer-events:none;
+}
+
+/* Glowing background objects */
+
+.glow{
+  position:fixed;
+  width:180px;
+  height:180px;
+
+  border-radius:50%;
+
+  filter:blur(70px);
+
+  opacity:.25;
+
+  pointer-events:none;
+}
+
+.glow.one{
+  top:-70px;
+  left:-60px;
+  background:var(--cyan);
+}
+
+.glow.two{
+  right:-70px;
+  bottom:-70px;
+  background:var(--purple);
+}
+
+/* =========================================================
+   MAIN CARD
+   ========================================================= */
+
+.reset-card{
+  position:relative;
+
+  width:100%;
+  max-width:430px;
+
+  padding:30px 25px 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(15,23,42,.96),
+      rgba(8,15,31,.98)
+    );
+
+  border:1px solid var(--border);
+
+  border-radius:26px;
+
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.55),
+    0 0 60px rgba(56,189,248,.06);
+
+  animation:
+    cardIn .55s ease both;
+}
+
+@keyframes cardIn{
+  from{
+    opacity:0;
+    transform:translateY(20px) scale(.97);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+/* Top glowing line */
+
+.reset-card::before{
+  content:"";
+
+  position:absolute;
+
+  top:-1px;
+  left:12%;
+  right:12%;
+
+  height:2px;
+
+  border-radius:20px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      var(--cyan),
+      var(--purple),
+      transparent
+    );
+
+  box-shadow:
+    0 0 20px rgba(56,189,248,.7);
+}
+
+/* =========================================================
+   LOGO
+   ========================================================= */
+
+.logo{
+  text-align:center;
+  margin-bottom:24px;
+}
+
+.logo-image-wrap{
+  position:relative;
+
+  width:76px;
+  height:76px;
+
+  margin:0 auto 13px;
+}
+
+.logo-image-wrap::before{
+  content:"";
+
+  position:absolute;
+  inset:-7px;
+
+  border-radius:50%;
+
+  border:1px solid rgba(56,189,248,.25);
+
+  box-shadow:
+    0 0 25px rgba(56,189,248,.15);
+}
+
+.logo img{
+  position:relative;
+
+  width:76px;
+  height:76px;
+
+  object-fit:cover;
+
+  border-radius:50%;
+
+  border:2px solid rgba(56,189,248,.35);
+
+  box-shadow:
+    0 0 25px rgba(56,189,248,.2);
+}
+
+.logo h1{
+  font-size:24px;
+  line-height:1.2;
+
+  font-weight:800;
+
+  letter-spacing:-.5px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffffff,
+      var(--cyan),
+      #c4b5fd
+    );
+
+  -webkit-background-clip:text;
+  background-clip:text;
+
+  color:transparent;
+
+  margin-bottom:7px;
+}
+
+.logo p{
+  color:var(--muted);
+
+  font-size:12px;
+  line-height:1.5;
+}
+
+/* =========================================================
+   STATUS MESSAGE
+   ========================================================= */
+
+.message{
+  display:none;
+
+  padding:12px 13px;
+
+  margin-bottom:15px;
+
+  border-radius:13px;
+
+  font-size:12px;
+  line-height:1.5;
+
+  animation:messageIn .25s ease;
+}
+
+@keyframes messageIn{
+  from{
+    opacity:0;
+    transform:translateY(-5px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+.success-msg{
+  color:#bbf7d0;
+
+  background:
+    rgba(34,197,94,.10);
+
+  border:1px solid rgba(34,197,94,.28);
+}
+
+.error-msg{
+  color:#fecaca;
+
+  background:
+    rgba(239,68,68,.10);
+
+  border:1px solid rgba(239,68,68,.28);
+}
+
+/* =========================================================
+   FORM
+   ========================================================= */
+
+.form-group{
+  margin-bottom:15px;
+}
+
+.form-label{
+  display:block;
+
+  margin-bottom:7px;
+
+  color:#cbd5e1;
+
+  font-size:12px;
+  font-weight:700;
+}
+
+.input-box{
+  position:relative;
+}
+
+.input-box > i{
+  position:absolute;
+
+  left:15px;
+  top:50%;
+
+  transform:translateY(-50%);
+
+  color:var(--cyan);
+
+  font-size:14px;
+
+  pointer-events:none;
+}
+
+.input-box input{
+  width:100%;
+
+  height:51px;
+
+  padding:
+    0 15px
+    0 43px;
+
+  color:white;
+
+  background:
+    rgba(15,23,42,.92);
+
+  border:
+    1px solid rgba(255,255,255,.09);
+
+  border-radius:13px;
+
+  outline:none;
+
+  font-size:14px;
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease,
+    background .2s ease;
+}
+
+.input-box input::placeholder{
+  color:#64748b;
+}
+
+.input-box input:focus{
+  border-color:rgba(56,189,248,.65);
+
+  background:#111c32;
+
+  box-shadow:
+    0 0 0 3px rgba(56,189,248,.08),
+    0 0 20px rgba(56,189,248,.06);
+}
+
+/* Validation state */
+
+.input-box.valid input{
+  border-color:rgba(34,197,94,.55);
+}
+
+.input-box.invalid input{
+  border-color:rgba(239,68,68,.55);
+}
+
+/* =========================================================
+   RECOVERY INFO
+   ========================================================= */
+
+.security-note{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+
+  padding:12px;
+
+  margin:4px 0 16px;
+
+  border-radius:13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(56,189,248,.06),
+      rgba(139,92,246,.06)
+    );
+
+  border:1px solid rgba(56,189,248,.10);
+}
+
+.security-note i{
+  color:var(--cyan);
+
+  font-size:14px;
+
+  margin-top:2px;
+}
+
+.security-note p{
+  color:#94a3b8;
+
+  font-size:11px;
+
+  line-height:1.55;
+}
+
+.security-note strong{
+  color:#dbeafe;
+}
+
+/* =========================================================
+   BUTTON
+   ========================================================= */
+
+.btn-primary{
+  width:100%;
+  height:52px;
+
+  border:0;
+  border-radius:14px;
+
+  color:white;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--cyan),
+      var(--blue),
+      var(--purple)
+    );
+
+  font-size:14px;
+  font-weight:800;
+
+  cursor:pointer;
+
+  box-shadow:
+    0 10px 30px rgba(14,165,233,.18);
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease,
+    opacity .2s ease;
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px);
+
+  box-shadow:
+    0 14px 35px rgba(56,189,248,.28);
+}
+
+.btn-primary:active{
+  transform:translateY(0);
+}
+
+.btn-primary:disabled{
+  cursor:not-allowed;
+  opacity:.65;
+  transform:none;
+}
+
+/* Loading */
+
+.loading-content{
+  display:none;
+
+  align-items:center;
+  justify-content:center;
+
+  gap:9px;
+}
+
+.btn-primary.loading .normal-content{
+  display:none;
+}
+
+.btn-primary.loading .loading-content{
+  display:flex;
+}
+
+.spinner{
+  width:16px;
+  height:16px;
+
+  border:
+    2px solid rgba(255,255,255,.35);
+
+  border-top-color:white;
+
+  border-radius:50%;
+
+  animation:
+    spin .7s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* =========================================================
+   SUCCESS SCREEN
+   ========================================================= */
+
+.success-screen{
+  display:none;
+
+  text-align:center;
+
+  animation:
+    successIn .4s ease both;
+}
+
+@keyframes successIn{
+  from{
+    opacity:0;
+    transform:scale(.96);
+  }
+
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+.success-icon{
+  width:70px;
+  height:70px;
+
+  margin:0 auto 17px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  border-radius:50%;
+
+  color:#86efac;
+
+  background:
+    rgba(34,197,94,.10);
+
+  border:
+    1px solid rgba(34,197,94,.25);
+
+  box-shadow:
+    0 0 35px rgba(34,197,94,.12);
+}
+
+.success-icon i{
+  font-size:28px;
+}
+
+.success-screen h2{
+  font-size:20px;
+
+  margin-bottom:9px;
+}
+
+.success-screen p{
+  color:var(--muted);
+
+  font-size:12px;
+  line-height:1.65;
+
+  margin-bottom:20px;
+}
+
+/* =========================================================
+   BACK LINK
+   ========================================================= */
+
+.back-link{
+  text-align:center;
+
+  margin-top:18px;
+
+  color:#64748b;
+
+  font-size:12px;
+}
+
+.back-link a{
+  color:var(--cyan);
+
+  text-decoration:none;
+
+  font-weight:700;
+}
+
+.back-link a:hover{
+  text-decoration:underline;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+  margin-top:19px;
+
+  padding-top:15px;
+
+  border-top:
+    1px solid rgba(255,255,255,.06);
+
+  text-align:center;
+
+  color:#475569;
+
+  font-size:10px;
+}
+
+.footer i{
+  color:var(--cyan);
+  margin-right:4px;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:390px){
+
+  body{
+    padding:12px;
+  }
+
+  .reset-card{
+    padding:
+      24px 18px
+      19px;
+  }
+
+  .logo{
+    margin-bottom:19px;
+  }
+
+  .logo-image-wrap,
+  .logo img{
+    width:65px;
+    height:65px;
+  }
+
+  .logo h1{
+    font-size:21px;
+  }
+
+  .input-box input{
+    height:48px;
+  }
+
+  .btn-primary{
+    height:49px;
+  }
+
+  .security-note{
+    padding:10px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="glow one"></div>
+<div class="glow two"></div>
+
+<main class="reset-card">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <div class="logo">
+
+    <div class="logo-image-wrap">
+      <img
+        src="logo.png"
+        alt="Code Academy Logo"
+      >
+    </div>
+
+    <h1>Recover Your Account</h1>
+
+    <p>
+      Securely reset your Code Academy password
+    </p>
+
+  </div>
+
+  <!-- =====================================================
+       FORM VIEW
+       ===================================================== -->
+
+  <section id="formView">
+
+    <div
+      id="successMsg"
+      class="message success-msg"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <div
+      id="errorMsg"
+      class="message error-msg"
+      role="alert"
+      aria-live="assertive"
+    ></div>
+
+    <form
+      id="resetForm"
+      novalidate
+    >
+
+      <!-- EMAIL -->
+
+      <div class="form-group">
+
+        <label
+          class="form-label"
+          for="email"
+        >
+          Account Email
+        </label>
+
+        <div class="input-box" id="emailBox">
+
+          <i class="fa-solid fa-envelope"></i>
+
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Enter your registered email"
+            autocomplete="email"
+            inputmode="email"
+            maxlength="254"
+            required
+          >
+
+        </div>
+
+      </div>
+
+      <!-- CONFIRM EMAIL -->
+
+      <div class="form-group">
+
+        <label
+          class="form-label"
+          for="confirmEmail"
+        >
+          Confirm Email
+        </label>
+
+        <div
+          class="input-box"
+          id="confirmEmailBox"
+        >
+
+          <i class="fa-solid fa-shield-halved"></i>
+
+          <input
+            type="email"
+            id="confirmEmail"
+            name="confirmEmail"
+            placeholder="Enter your email again"
+            autocomplete="email"
+            inputmode="email"
+            maxlength="254"
+            required
+          >
+
+        </div>
+
+      </div>
+
+      <!-- SECURITY INFORMATION -->
+
+      <div class="security-note">
+
+        <i class="fa-solid fa-lock"></i>
+
+        <p>
+          <strong>Secure recovery:</strong>
+          Code Academy will send a password-reset link to
+          the email you provide. You must have access to that
+          email to complete the recovery.
+        </p>
+
+      </div>
+
+      <!-- SUBMIT -->
+
+      <button
+        type="submit"
+        class="btn-primary"
+        id="resetBtn"
+      >
+
+        <span class="normal-content">
+          <i class="fa-solid fa-paper-plane"></i>
+          &nbsp; Send Secure Reset Link
+        </span>
+
+        <span class="loading-content">
+          <span class="spinner"></span>
+          Sending secure link...
+        </span>
+
+      </button>
+
+    </form>
+
+    <div class="back-link">
+      Remember your password?
+      <a href="login.html">
+        Back to Login
+      </a>
+    </div>
+
+  </section>
+
+  <!-- =====================================================
+       SUCCESS VIEW
+       ===================================================== -->
+
+  <section
+    id="successScreen"
+    class="success-screen"
+  >
+
+    <div class="success-icon">
+      <i class="fa-solid fa-envelope-circle-check"></i>
+    </div>
+
+    <h2>Check Your Email</h2>
+
+    <p>
+      If the email belongs to a Code Academy account,
+      Firebase has sent a secure password-reset link.
+      Open that email and follow the instructions to
+      create a new password.
+    </p>
+
+    <button
+      class="btn-primary"
+      id="backLoginBtn"
+      type="button"
+    >
+      <i class="fa-solid fa-arrow-left"></i>
+      &nbsp; Back to Login
+    </button>
+
+  </section>
+
+  <div class="footer">
+    <i class="fa-solid fa-shield-halved"></i>
+    Your account recovery is handled securely by Firebase Authentication.
+  </div>
+
+</main>
+
+<script type="module">
+
+/* =========================================================
+   CODE ACADEMY PASSWORD RECOVERY ENGINE
+   Uses the existing authentication.js
+   ========================================================= */
+
+import {
+  resetPassword
+} from "./authentication.js";
+
+
+/* =========================================================
+   ELEMENTS
+   ========================================================= */
+
+const form =
+  document.getElementById("resetForm");
+
+const emailInput =
+  document.getElementById("email");
+
+const confirmEmailInput =
+  document.getElementById("confirmEmail");
+
+const resetBtn =
+  document.getElementById("resetBtn");
+
+const successMsg =
+  document.getElementById("successMsg");
+
+const errorMsg =
+  document.getElementById("errorMsg");
+
+const formView =
+  document.getElementById("formView");
+
+const successScreen =
+  document.getElementById("successScreen");
+
+const backLoginBtn =
+  document.getElementById("backLoginBtn");
+
+const emailBox =
+  document.getElementById("emailBox");
+
+const confirmEmailBox =
+  document.getElementById("confirmEmailBox");
+
+
+/* =========================================================
+   MESSAGE HELPERS
+   ========================================================= */
+
+function showError(message){
+
+  errorMsg.textContent = message;
+
+  errorMsg.style.display = "block";
+
+  successMsg.style.display = "none";
+}
+
+
+function showSuccess(message){
+
+  successMsg.textContent = message;
+
+  successMsg.style.display = "block";
+
+  errorMsg.style.display = "none";
+}
+
+
+function clearMessages(){
+
+  successMsg.style.display = "none";
+
+  errorMsg.style.display = "none";
+}
+
+
+/* =========================================================
+   EMAIL VALIDATION
+   ========================================================= */
+
+function isValidEmail(email){
+
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+
+/* =========================================================
+   LIVE EMAIL CHECK
+   ========================================================= */
+
+emailInput.addEventListener("input", () => {
+
+  const email =
+    emailInput.value.trim();
+
+  emailBox.classList.remove(
+    "valid",
+    "invalid"
+  );
+
+  if(!email) return;
+
+  if(isValidEmail(email)){
+
+    emailBox.classList.add("valid");
+
+  }else{
+
+    emailBox.classList.add("invalid");
+
+  }
+
+});
+
+
+/* =========================================================
+   CONFIRM EMAIL CHECK
+   ========================================================= */
+
+confirmEmailInput.addEventListener("input", () => {
+
+  const email =
+    confirmEmailInput.value.trim();
+
+  const original =
+    emailInput.value.trim();
+
+  confirmEmailBox.classList.remove(
+    "valid",
+    "invalid"
+  );
+
+  if(!email) return;
+
+  if(
+    isValidEmail(email) &&
+    email === original
+  ){
+
+    confirmEmailBox.classList.add("valid");
+
+  }else{
+
+    confirmEmailBox.classList.add("invalid");
+
+  }
+
+});
+
+
+/* =========================================================
+   FIREBASE ERROR TRANSLATOR
+   ========================================================= */
+
+function getFriendlyError(error){
+
+  const code =
+    error?.code || "";
+
+  switch(code){
+
+    case "auth/invalid-email":
+      return "Please enter a valid email address.";
+
+    case "auth/missing-email":
+      return "Please enter your account email.";
+
+    case "auth/too-many-requests":
+      return "Too many recovery attempts. Please wait a while and try again.";
+
+    case "auth/network-request-failed":
+      return "Network connection failed. Check your internet connection and try again.";
+
+    case "auth/user-disabled":
+      return "This account has been disabled. Please contact Code Academy support.";
+
+    case "auth/operation-not-allowed":
+      return "Password recovery is not currently enabled for this account type.";
+
+    default:
+      return "We could not process the password recovery request. Please try again.";
+  }
+
+}
+
+
+/* =========================================================
+   LOADING STATE
+   ========================================================= */
+
+function setLoading(isLoading){
+
+  resetBtn.disabled =
+    isLoading;
+
+  if(isLoading){
+
+    resetBtn.classList.add("loading");
+
+  }else{
+
+    resetBtn.classList.remove("loading");
+
+  }
+
+}
+
+
+/* =========================================================
+   SUBMIT
+   ========================================================= */
+
+form.addEventListener("submit", async (event) => {
+
+  event.preventDefault();
+
+  clearMessages();
+
+  const email =
+    emailInput.value.trim().toLowerCase();
+
+  const confirmEmail =
+    confirmEmailInput.value.trim().toLowerCase();
+
+
+  /* ---------------------------------------------
+     VALIDATE EMAIL
+     --------------------------------------------- */
+
+  if(!email){
+
+    showError(
+      "Please enter the email connected to your Code Academy account."
+    );
+
+    emailInput.focus();
+
+    return;
+  }
+
+
+  if(!isValidEmail(email)){
+
+    showError(
+      "Please enter a valid email address."
+    );
+
+    emailInput.focus();
+
+    return;
+  }
+
+
+  /* ---------------------------------------------
+     VERIFY EMAIL MATCH
+     --------------------------------------------- */
+
+  if(!confirmEmail){
+
+    showError(
+      "Please confirm your email address."
+    );
+
+    confirmEmailInput.focus();
+
+    return;
+  }
+
+
+  if(email !== confirmEmail){
+
+    showError(
+      "The two email addresses do not match."
+    );
+
+    confirmEmailInput.focus();
+
+    return;
+  }
+
+
+  /* ---------------------------------------------
+     SEND FIREBASE RESET REQUEST
+     --------------------------------------------- */
+
+  setLoading(true);
+
+  try{
+
+    /*
+      authentication.js handles Firebase
+      Authentication.
+
+      We do NOT create another Firebase app here.
+    */
+
+    await resetPassword(email);
+
+
+    /* -------------------------------------------
+       SUCCESS
+       ------------------------------------------- */
+
+    formView.style.display =
+      "none";
+
+    successScreen.style.display =
+      "block";
+
+
+  }catch(error){
+
+    console.error(
+      "Password recovery error:",
+      error
+    );
+
+    setLoading(false);
+
+    showError(
+      getFriendlyError(error)
+    );
+
+  }
+
+});
+
+
+/* =========================================================
+   BACK TO LOGIN
+   ========================================================= */
+
+backLoginBtn.addEventListener(
+  "click",
+  () => {
+
+    window.location.href =
+      "login.html";
+
+  }
+);
+
+</script>
+
+</body>
+</html>
