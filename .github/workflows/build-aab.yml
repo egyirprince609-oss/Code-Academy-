@@ -1,0 +1,43 @@
+name: Build AAB
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Build APK and AAB
+        run: |
+          mkdir -p build-twa
+          cd build-twa
+          echo '{"packageId":"com.wm.codeacademy","name":"Code Academy","display":"standalone","themeColor":"#050914","backgroundColor":"#050914","startUrl":"/index.html","host":"egyirprince609-oss.github.io","manifestUrl":"https://egyirprince609-oss.github.io/Code-Academy-/manifest.json","enableNotifications":false}' > twa-manifest.json
+          cat twa-manifest.json
+          bubblewrap build --skipPwaValidation || true
+          find . -name "*.aab" -o -name "*.apk" | head -20
+          ls -R
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: |
+            build-twa/**/*.aab
+            build-twa/**/*.apk
+            build-twa/app/build/outputs/
+          if-no-files-found: warn
