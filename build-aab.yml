@@ -1,0 +1,27 @@
+name: Build AAB
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Bubblewrap
+        run: npm i -g @bubblewrap/cli
+      - name: Build TWA
+        run: |
+          npx @bubblewrap/cli init --manifest https://egyirprince609-oss.github.io/Code-Academy-/manifest.json --skipPwaValidation --packageId com.wm.codeacademy --name "Code Academy" --display standalone --themeColor "#050914" --backgroundColor "#050914" --startUrl "/index.html"
+          npx @bubblewrap/cli build --skipPwaValidation
+      - name: Upload AAB & APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          path: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk
