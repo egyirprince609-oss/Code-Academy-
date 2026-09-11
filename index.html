@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Code Academy</title>
+
+<!-- PWA LINKS - FULL -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#050914">
+<meta name="background-color" content="#050914">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Code Academy">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="icon" type="image/png" sizes="192x192" href="logo.png">
+<link rel="icon" type="image/png" sizes="512x512" href="logo.png">
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- YOUR KEYS FILE -->
+<script src="authentication.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050914;color:#fff;font-family:Inter,Segoe UI,sans-serif;overflow:hidden;height:100vh;width:100vw}
+canvas#bg{position:absolute;inset:0;width:100%;height:100%}
+.vignette{position:absolute;inset:0;background:radial-gradient(820px at 50% 10%, rgba(56,189,248,.32), transparent 60%), radial-gradient(1100px at 50% 120%, rgba(139,92,246,.24), transparent 70%);pointer-events:none;z-index:2}
+.flash{position:absolute;inset:0;background:radial-gradient(600px at 50% 30%, #e0f2fe, transparent), #fff;opacity:0;z-index:4;pointer-events:none;mix-blend-mode:screen}
+.flash.on{animation:flash.55s ease}
+@keyframes flash{0%{opacity:0}12%{opacity:.92}28%{opacity:.18}52%{opacity:.68}100%{opacity:0}}
+.center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:10;display:flex;flex-direction:column;align-items:center;width:100%}
+.logo-stage{position:relative;width:230px;height:230px;transform-style:preserve-3d;animation:stageSpin 13s linear infinite}
+.layer{position:absolute;inset:0;border-radius:42px;overflow:hidden;transform-style:preserve-3d}
+.layer img{width:100%;height:100%;object-fit:cover}
+.l1{transform:translateZ(0);box-shadow:0 0 80px rgba(56,189,248,1),0 0 160px rgba(56,189,248,.5), inset 0 0 30px rgba(255,255,255,.35);border:1px solid rgba(125,211,252,.6)}
+.l2{transform:translateZ(-40px) scale(.89);opacity:.42;border:1.5px solid #38bdf8;filter:blur(.5px)}
+.l3{transform:translateZ(-90px) scale(.8);opacity:.24;border:1.5px solid #a78bfa;filter:blur(1.8px)}
+.l4{transform:translateZ(-145px) scale(.71);opacity:.11;border:1.5px solid #38bdf8;filter:blur(5px)}
+.halo{position:absolute;inset:-44px;background:conic-gradient(from 0deg,#38bdf8,#a78bfa,#22d3ee,#38bdf8);border-radius:70px;filter:blur(32px);z-index:-1;animation:haloSpin 3s linear infinite;opacity:.75}
+.glow-ring{position:absolute;inset:-18px;border:1px dashed rgba(56,189,248,.25);border-radius:48px;animation:haloSpin 18s linear infinite reverse}
+@keyframes haloSpin{to{transform:rotate(360deg)}}
+@keyframes stageSpin{0%{transform:rotateY(0) rotateX(15deg)}100%{transform:rotateY(360deg) rotateX(15deg)}}
+.brand{margin-top:54px;text-align:center}
+.brand h1{font-size:54px;font-weight:950;letter-spacing:13px;background:linear-gradient(100deg,#fff 8%,#7dd3fc 32%,#a78bfa 58%,#fff 80%);background-size:350% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shine 2.4s linear infinite;filter:drop-shadow(0 0 28px rgba(56,189,248,.9))}
+@keyframes shine{to{background-position:350% center}}
+.brand p{margin-top:10px;letter-spacing:16px;font-size:12px;font-weight:900;color:#7dd3fc;text-shadow:0 0 16px #38bdf8}
+.statements{margin-top:42px;width:440px;height:70px;position:relative}
+.st{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:0;transform:translateY(22px) scale(.93);filter:blur(8px);transition:all.85s cubic-bezier(.16,1,.3,1)}
+.st.on{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+.st b{font-size:18px;font-weight:900}
+.st span{margin-top:6px;font-size:13px;color:#94a3b8;letter-spacing:1.2px}
+.loader-wrap{margin-top:32px;width:380px}
+.track{height:6px;background:rgba(255,255,255,.07);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);box-shadow:inset 0 0 10px rgba(0,0,0,.5)}
+.fill{height:100%;width:0%;background:linear-gradient(90deg,#38bdf8,#a78bfa,#22d3ee,#38bdf8);background-size:300% auto;box-shadow:0 0 26px #38bdf8;animation:grad 1.6s linear infinite;transition:width.12s linear}
+@keyframes grad{to{background-position:300% center}}
+.meta{display:flex;justify-content:space-between;margin-top:12px;font-size:11px;letter-spacing:3px;color:#64748b}
+.sound-btn{position:absolute;top:18px;right:18px;z-index:20;width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(10px)}
+.sound-btn.muted{opacity:.45}
+#installBox{display:none;position:fixed;left:14px;right:14px;bottom:14px;z-index:100;background:rgba(15,23,42,.94);backdrop-filter:blur(24px);border:1px solid rgba(56,189,248,.28);padding:20px 20px 28px;border-radius:28px;box-shadow:0 -10px 50px rgba(0,0,0,.8)}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div class="vignette"></div>
+<div class="flash" id="flash"></div>
+
+<button class="sound-btn" id="soundBtn" title="Sound On/Off">🔊</button>
+
+<div class="center">
+  <div class="logo-stage">
+    <div class="halo"></div>
+    <div class="glow-ring"></div>
+    <div class="layer l1"><img src="logo.png" onerror="this.style.background='#0f172a'"></div>
+    <div class="layer l2"><img src="logo.png"></div>
+    <div class="layer l3"><img src="logo.png"></div>
+    <div class="layer l4"><img src="logo.png"></div>
+  </div>
+  <div class="brand">
+    <h1>CODE ACADEMY</h1>
+    <p>LEARN • BUILD • DOMINATE</p>
+  </div>
+  <div class="statements">
+    <div class="st on"><b>⚡ Igniting Quantum Engine</b><span>Immersive lab booting</span></div>
+    <div class="st"><b>🔐 Verifying via authentication.js</b><span>Firebase membership check</span></div>
+    <div class="st"><b>📚 Loading Elite Tracks</b><span>HTML • CSS • JS • Firebase</span></div>
+    <div class="st"><b>🧠 Compiling Playground</b><span>Live editor + challenges</span></div>
+    <div class="st"><b>🚀 Ready for Launch</b><span>Sync complete</span></div>
+  </div>
+  <div class="loader-wrap">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="meta"><span id="pct">0%</span><span id="status">BOOTING</span></div>
+  </div>
+</div>
+
+<div id="installBox">
+  <div style="width:38px;height:5px;background:#334155;border-radius:10px;margin:0 auto 16px"></div>
+  <div style="display:flex;gap:14px;align-items:center">
+    <img src="logo.png" style="width:60px;height:60px;border-radius:16px;box-shadow:0 0 20px rgba(56,189,248,.5)">
+    <div><div style="font-weight:900;font-size:19px">Install Code Academy</div><div style="color:#94a3b8;font-size:13px;margin-top:3px">Fast, offline, native-like experience</div></div>
+  </div>
+  <div style="display:flex;gap:12px;margin-top:18px">
+    <button onclick="doClose()" style="flex:1;padding:16px;border-radius:14px;background:#1e293b;color:#fff;border:1px solid #334155;font-weight:700">Later</button>
+    <button onclick="doInstall()" style="flex:1.5;padding:16px;border-radius:14px;background:#fff;color:#000;font-weight:900;border:0;box-shadow:0 0 20px rgba(255,255,255,.4)">Install App</button>
+  </div>
+</div>
+
+<!-- PWA LOGIC -->
+<script>
+// PWA install logic - also in pwa.js but embedded for safety
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt', e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('installBox').style.display='block'; });
+setTimeout(()=>{ if(!window.matchMedia('(display-mode: standalone)').matches){ const b=document.getElementById('installBox'); if(b &&!localStorage.getItem('pwa_closed_recent')) b.style.display='block'; } }, 2800);
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registered')).catch(()=>{}); }
+async function doInstall(){ if(deferredPrompt){ deferredPrompt.prompt(); const c=await deferredPrompt.userChoice; deferredPrompt=null; document.getElementById('installBox').style.display='none'; } else { alert('Android: Tap 3 dots (⋮) -> Install app or Add to Home Screen\n\niPhone: Tap Share -> Add to Home Screen'); } }
+function doClose(){ document.getElementById('installBox').style.display='none'; localStorage.setItem('pwa_closed_recent', Date.now()); }
+</script>
+
+<script>
+// BG GRID ENGINE
+const c=document.getElementById('bg'),x=c.getContext('2d');
+function rs(){c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';x.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);}rs();addEventListener('resize',rs);
+let T=0;
+(function loop(){
+  T+=0.011; x.clearRect(0,0,innerWidth,innerHeight);
+  const hor=innerHeight*0.54;
+  x.strokeStyle='rgba(56,189,248,0.09)'; x.lineWidth=1;
+  for(let i=0;i<40;i++){ const y=hor + (i/40)*(innerHeight-hor)*1.25; x.beginPath(); x.moveTo(0,y); x.lineTo(innerWidth,y); x.stroke(); }
+  for(let i=-20;i<=20;i++){ x.beginPath(); x.moveTo(innerWidth/2+i*46,hor); x.lineTo(innerWidth/2+i*320,innerHeight); x.stroke(); }
+  for(let i=0;i<90;i++){
+    const px=(Math.sin(i*12.9+T*0.55)*0.5+0.5)*innerWidth;
+    const py=(Math.cos(i*8.3+T*0.35)*0.5+0.5)*innerHeight;
+    const a=0.12+Math.sin(T*2+i)*0.16;
+    x.fillStyle=`rgba(125,211,252,${a})`; x.beginPath(); x.arc(px,py,i%4==0?2.4:1.1,0,Math.PI*2); x.fill();
+  }
+  requestAnimationFrame(loop);
+})();
+
+// FLASH
+const flashEl=document.getElementById('flash');
+function triggerFlash(){ flashEl.classList.remove('on'); void flashEl.offsetWidth; flashEl.classList.add('on'); playThunder(); }
+setInterval(()=>{ if(Math.random()<0.24) triggerFlash(); }, 950);
+
+// STATEMENTS
+const sts=[...document.querySelectorAll('.st')]; let si=0;
+setInterval(()=>{ sts[si].classList.remove('on'); si=(si+1)%sts.length; sts[si].classList.add('on'); playTick(); }, 1150);
+
+// SOUND ENGINE - HIGH QUALITY
+let AC,gain,bass,air,muted=false;
+function initAudio(){
+  try{
+    AC=new (window.AudioContext||window.webkitAudioContext)();
+    gain=AC.createGain(); gain.gain.value=0; gain.connect(AC.destination);
+    // Bass hum
+    bass=AC.createOscillator(); bass.frequency.value=52; bass.type='sine';
+    const bassGain=AC.createGain(); bassGain.gain.value=0.18;
+    bass.connect(bassGain); bassGain.connect(gain);
+    // Air whoosh
+    air=AC.createOscillator(); air.frequency.value=110; air.type='triangle';
+    const airGain=AC.createGain(); airGain.gain.value=0.08;
+    air.connect(airGain); airGain.connect(gain);
+    bass.start(); air.start();
+    gain.gain.linearRampToValueAtTime(0.09, AC.currentTime+1.2);
+    // wobble
+    setInterval(()=>{ if(!AC||muted) return; bass.frequency.linearRampToValueAtTime(52+Math.random()*10, AC.currentTime+0.7); air.frequency.linearRampToValueAtTime(110+Math.random()*25, AC.currentTime+0.6); }, 550);
+  }catch(e){}
+}
+function playTick(){
+  if(!AC||muted) return;
+  const o=AC.createOscillator(), gg=AC.createGain();
+  o.frequency.value=1200+Math.random()*600; gg.gain.value=0.12;
+  o.connect(gg); gg.connect(AC.destination);
+  o.start(); gg.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime+0.12); o.stop(AC.currentTime+0.13);
+}
+function playThunder(){
+  if(!AC||muted) return;
+  const o=AC.createOscillator(), gg=AC.createGain(), f=AC.createBiquadFilter();
+  f.type='bandpass'; f.frequency.value=800+Math.random()*800;
+  o.frequency.value=60; o.type='sawtooth';
+  gg.gain.value=0.35;
+  o.connect(f); f.connect(gg); gg.connect(AC.destination);
+  o.start(); gg.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime+0.45); o.stop(AC.currentTime+0.5);
+}
+document.body.addEventListener('click',()=>{ if(!AC) initAudio(); if(AC && AC.state==='suspended') AC.resume(); }, {once:true});
+setTimeout(()=>{ if(!AC) initAudio(); }, 600);
+document.getElementById('soundBtn').onclick=(e)=>{
+  e.stopPropagation(); muted=!muted;
+  document.getElementById('soundBtn').textContent=muted?'🔇':'🔊';
+  document.getElementById('soundBtn').classList.toggle('muted', muted);
+  if(gain) gain.gain.value=muted?0:0.09;
+};
+
+// PROGRESS + FIREBASE AUTH CHECK
+let p=0; const fill=document.getElementById('fill'),pct=document.getElementById('pct'),st=document.getElementById('status');
+const states=['BOOTING','AUTH CHECK','LOADING CORE','SYNCING LAB','READY'];
+let stateI=0;
+const progInt=setInterval(()=>{
+  p+=Math.random()*4.5+0.9; if(p>100)p=100;
+  fill.style.width=p+'%'; pct.textContent=Math.floor(p)+'%';
+  if(p>stateI*20){ st.textContent=states[Math.min(stateI,4)]; stateI++; }
+  if(p>=100){ clearInterval(progInt); launchCheck(); }
+}, 85);
+
+function launchCheck(){
+  if(gain) gain.gain.linearRampToValueAtTime(0, AC.currentTime+0.9);
+  st.textContent='VERIFYING';
+  if(typeof firebase==='undefined' ||!firebase.auth){
+    console.error('authentication.js missing or not init');
+    setTimeout(()=>location.href='signup.html', 700); return;
+  }
+  let done=false;
+  const auth=firebase.auth();
+  auth.onAuthStateChanged(user=>{
+    if(done) return; done=true;
+    if(user){
+      location.href='menu.html';
+    }else{
+      location.href='signup.html';
+    }
+  });
+  setTimeout(()=>{ if(!done) location.href='signup.html'; }, 3500);
+}
+</script>
+<script src="pwa.js"></script>
+</body>
+</html>
