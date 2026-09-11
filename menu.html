@@ -1,0 +1,4893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<meta name="theme-color" content="#050816">
+
+<title>Code Academy | Dashboard</title>
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+>
+
+<style>
+
+/* =========================================================
+   CODE ACADEMY COMMAND CENTER
+   ZERO-PAGE-SCROLL DASHBOARD
+========================================================= */
+
+:root{
+    --bg:#050816;
+    --panel:#0a1020;
+    --panel2:#0d1528;
+    --panel3:#111c33;
+
+    --cyan:#38bdf8;
+    --blue:#2563eb;
+    --purple:#8b5cf6;
+    --green:#22c55e;
+    --yellow:#facc15;
+    --red:#ef4444;
+
+    --text:#f8fafc;
+    --muted:#8fa0b8;
+    --line:rgba(148,163,184,.12);
+
+    --radius:18px;
+}
+
+/* =========================================================
+   RESET
+========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+body{
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(56,189,248,.09),
+            transparent 25%
+        ),
+        radial-gradient(
+            circle at 90% 15%,
+            rgba(139,92,246,.10),
+            transparent 25%
+        ),
+        #050816;
+
+    color:var(--text);
+}
+
+/* =========================================================
+   BACKGROUND ENGINE
+========================================================= */
+
+body::before{
+    content:"";
+
+    position:fixed;
+    inset:0;
+
+    pointer-events:none;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.025) 1px,
+            transparent 1px
+        );
+
+    background-size:40px 40px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent
+        );
+
+    z-index:0;
+}
+
+.orb{
+    position:fixed;
+
+    width:180px;
+    height:180px;
+
+    border-radius:50%;
+
+    filter:blur(70px);
+
+    opacity:.18;
+
+    pointer-events:none;
+
+    z-index:0;
+}
+
+.orb.one{
+    background:#38bdf8;
+    top:-70px;
+    left:-60px;
+}
+
+.orb.two{
+    background:#8b5cf6;
+    right:-70px;
+    bottom:-70px;
+}
+
+/* =========================================================
+   APP SHELL
+========================================================= */
+
+.app{
+    width:100%;
+    height:100%;
+
+    display:flex;
+    flex-direction:column;
+
+    position:relative;
+    z-index:1;
+}
+
+/* =========================================================
+   TOP BAR
+========================================================= */
+
+.topbar{
+    height:68px;
+    flex:0 0 68px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 18px;
+
+    background:rgba(5,8,22,.86);
+
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+
+    border-bottom:1px solid var(--line);
+
+    position:relative;
+    z-index:100;
+}
+
+/* =========================================================
+   BRAND
+========================================================= */
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+
+    min-width:0;
+}
+
+.brand img{
+    width:42px;
+    height:42px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+
+    border:1px solid rgba(56,189,248,.35);
+
+    box-shadow:
+        0 0 20px rgba(56,189,248,.12);
+}
+
+.brandText{
+    min-width:0;
+}
+
+.brandText strong{
+    display:block;
+
+    font-size:15px;
+    letter-spacing:.2px;
+
+    white-space:nowrap;
+}
+
+.brandText span{
+    display:block;
+
+    font-size:9px;
+
+    color:var(--muted);
+
+    margin-top:2px;
+
+    letter-spacing:1.5px;
+}
+
+/* =========================================================
+   TOP ACTIONS
+========================================================= */
+
+.topActions{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.iconBtn{
+    width:40px;
+    height:40px;
+
+    border:1px solid var(--line);
+
+    border-radius:12px;
+
+    background:rgba(15,23,42,.8);
+
+    color:#cbd5e1;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    transition:.22s ease;
+
+    position:relative;
+}
+
+.iconBtn:hover{
+    border-color:rgba(56,189,248,.4);
+    color:var(--cyan);
+    background:#111c33;
+    transform:translateY(-1px);
+}
+
+.iconBtn:active{
+    transform:scale(.95);
+}
+
+/* =========================================================
+   NOTIFICATION BADGE
+========================================================= */
+
+.badge{
+    position:absolute;
+
+    top:-4px;
+    right:-4px;
+
+    min-width:17px;
+    height:17px;
+
+    padding:0 4px;
+
+    border-radius:20px;
+
+    background:#ef4444;
+
+    color:white;
+
+    font-size:8px;
+    font-weight:800;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    border:2px solid #050816;
+}
+
+.badge.show{
+    display:flex;
+}
+
+/* =========================================================
+   MAIN AREA
+========================================================= */
+
+.main{
+    flex:1;
+
+    min-height:0;
+
+    display:grid;
+
+    grid-template-columns:minmax(0,1.65fr) minmax(260px,.75fr);
+
+    gap:14px;
+
+    padding:14px;
+
+    overflow:hidden;
+}
+
+/* =========================================================
+   LEFT COMMAND AREA
+========================================================= */
+
+.leftArea{
+    min-width:0;
+    min-height:0;
+
+    display:grid;
+
+    grid-template-rows:auto minmax(0,1fr);
+
+    gap:14px;
+}
+
+/* =========================================================
+   WELCOME COMMAND CARD
+========================================================= */
+
+.welcome{
+    min-height:145px;
+
+    border:1px solid rgba(56,189,248,.13);
+
+    border-radius:22px;
+
+    padding:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(15,23,42,.96),
+            rgba(10,17,35,.94)
+        );
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,.18);
+}
+
+.welcome::after{
+    content:"";
+
+    position:absolute;
+
+    width:260px;
+    height:260px;
+
+    border-radius:50%;
+
+    right:-130px;
+    top:-150px;
+
+    border:1px solid rgba(56,189,248,.12);
+
+    box-shadow:
+        0 0 0 30px rgba(56,189,248,.025),
+        0 0 0 60px rgba(56,189,248,.018),
+        0 0 0 90px rgba(56,189,248,.012);
+}
+
+.welcomeTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+
+    gap:15px;
+
+    position:relative;
+    z-index:2;
+}
+
+.welcome h1{
+    font-size:clamp(19px,2.2vw,28px);
+
+    line-height:1.2;
+
+    margin-bottom:7px;
+}
+
+.welcome h1 span{
+    color:var(--cyan);
+}
+
+.welcome p{
+    max-width:620px;
+
+    color:#9fb0c7;
+
+    font-size:10px;
+
+    line-height:1.55;
+}
+
+.status{
+    display:flex;
+    align-items:center;
+    gap:6px;
+
+    white-space:nowrap;
+
+    padding:7px 9px;
+
+    border-radius:20px;
+
+    background:rgba(34,197,94,.08);
+
+    border:1px solid rgba(34,197,94,.16);
+
+    color:#86efac;
+
+    font-size:8px;
+    font-weight:700;
+}
+
+.statusDot{
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:#22c55e;
+
+    box-shadow:0 0 10px #22c55e;
+}
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quickActions{
+    display:flex;
+
+    gap:8px;
+
+    margin-top:15px;
+
+    position:relative;
+    z-index:3;
+}
+
+.quickBtn{
+    border:none;
+
+    padding:9px 12px;
+
+    border-radius:10px;
+
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    font-size:9px;
+    font-weight:800;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.quickBtn.primary{
+    background:var(--cyan);
+    color:#03101a;
+}
+
+.quickBtn.secondary{
+    background:#17233a;
+    color:#dbeafe;
+    border:1px solid var(--line);
+}
+
+.quickBtn:hover{
+    transform:translateY(-2px);
+}
+
+/* =========================================================
+   FEATURE GRID
+========================================================= */
+
+.featureArea{
+    min-height:0;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,minmax(0,1fr));
+
+    grid-template-rows:repeat(2,minmax(0,1fr));
+
+    gap:10px;
+}
+
+/* =========================================================
+   FEATURE CARD
+========================================================= */
+
+.feature{
+    min-width:0;
+    min-height:0;
+
+    border:1px solid var(--line);
+
+    border-radius:16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15,23,42,.94),
+            rgba(9,15,30,.96)
+        );
+
+    padding:13px;
+
+    cursor:pointer;
+
+    position:relative;
+
+    overflow:hidden;
+
+    transition:
+        transform .22s ease,
+        border-color .22s ease,
+        background .22s ease;
+}
+
+.feature::before{
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+        linear-gradient(
+            120deg,
+            transparent 30%,
+            rgba(56,189,248,.055),
+            transparent 70%
+        );
+
+    transform:translateX(-100%);
+
+    transition:.5s;
+}
+
+.feature:hover::before{
+    transform:translateX(100%);
+}
+
+.feature:hover{
+    transform:translateY(-3px);
+
+    border-color:rgba(56,189,248,.28);
+
+    background:#0e1930;
+}
+
+.feature:active{
+    transform:scale(.98);
+}
+
+.featureIcon{
+    width:35px;
+    height:35px;
+
+    border-radius:10px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#111e34;
+
+    color:var(--cyan);
+
+    margin-bottom:9px;
+
+    position:relative;
+    z-index:2;
+}
+
+.featureIcon.purple{
+    color:#a78bfa;
+}
+
+.featureIcon.green{
+    color:#4ade80;
+}
+
+.featureIcon.yellow{
+    color:#fde047;
+}
+
+.featureIcon.red{
+    color:#fb7185;
+}
+
+.feature h3{
+    font-size:11px;
+
+    margin-bottom:5px;
+
+    position:relative;
+    z-index:2;
+}
+
+.feature p{
+    font-size:8px;
+
+    line-height:1.45;
+
+    color:#8191a8;
+
+    position:relative;
+    z-index:2;
+}
+
+.featureArrow{
+    position:absolute;
+
+    right:11px;
+    bottom:11px;
+
+    color:#475569;
+
+    font-size:9px;
+}
+
+/* =========================================================
+   RIGHT INTELLIGENCE PANEL
+========================================================= */
+
+.rightArea{
+    min-width:0;
+    min-height:0;
+
+    display:grid;
+
+    grid-template-rows:auto auto minmax(0,1fr);
+
+    gap:10px;
+}
+
+/* =========================================================
+   PROFILE PANEL
+========================================================= */
+
+.profilePanel{
+    border:1px solid var(--line);
+
+    border-radius:20px;
+
+    padding:14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0d162a,
+            #090f20
+        );
+}
+
+.profileHead{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.profilePhoto{
+    width:48px;
+    height:48px;
+
+    border-radius:15px;
+
+    object-fit:cover;
+
+    background:#17233a;
+
+    border:1px solid rgba(56,189,248,.28);
+}
+
+.profileInfo{
+    min-width:0;
+}
+
+.profileInfo strong{
+    display:block;
+
+    font-size:12px;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.profileInfo span{
+    display:block;
+
+    font-size:8px;
+
+    color:#718198;
+
+    margin-top:3px;
+}
+
+.profileArrow{
+    margin-left:auto;
+
+    width:31px;
+    height:31px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#152039;
+
+    color:#94a3b8;
+
+    cursor:pointer;
+}
+
+.profileStats{
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:7px;
+
+    margin-top:11px;
+}
+
+.stat{
+    padding:9px;
+
+    background:#070d1b;
+
+    border:1px solid rgba(148,163,184,.08);
+
+    border-radius:10px;
+
+    text-align:center;
+}
+
+.stat strong{
+    display:block;
+
+    font-size:13px;
+
+    color:var(--cyan);
+}
+
+.stat span{
+    display:block;
+
+    color:#66768e;
+
+    font-size:7px;
+
+    margin-top:2px;
+}
+
+/* =========================================================
+   AI MENTOR
+========================================================= */
+
+.mentor{
+    border-radius:18px;
+
+    padding:13px;
+
+    border:1px solid rgba(139,92,246,.18);
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(76,29,149,.20),
+            rgba(15,23,42,.96)
+        );
+
+    position:relative;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.mentor:hover{
+    transform:translateY(-2px);
+
+    border-color:rgba(167,139,250,.4);
+}
+
+.mentorTop{
+    display:flex;
+    align-items:center;
+    gap:9px;
+}
+
+.mentorIcon{
+    width:34px;
+    height:34px;
+
+    border-radius:10px;
+
+    background:rgba(139,92,246,.15);
+
+    color:#c4b5fd;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.mentor h3{
+    font-size:11px;
+}
+
+.mentor small{
+    color:#8b7bb1;
+    font-size:7px;
+}
+
+.mentor p{
+    margin-top:8px;
+
+    font-size:8px;
+
+    line-height:1.45;
+
+    color:#a8b2c2;
+}
+
+.coming{
+    position:absolute;
+
+    top:10px;
+    right:10px;
+
+    font-size:6px;
+
+    padding:4px 6px;
+
+    border-radius:20px;
+
+    color:#c4b5fd;
+
+    background:rgba(139,92,246,.12);
+
+    border:1px solid rgba(139,92,246,.2);
+}
+
+/* =========================================================
+   ACTIVITY PANEL
+========================================================= */
+
+.activity{
+    min-height:0;
+
+    border:1px solid var(--line);
+
+    border-radius:18px;
+
+    padding:13px;
+
+    background:#090f1e;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.panelTitle{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:9px;
+}
+
+.panelTitle h3{
+    font-size:11px;
+}
+
+.panelTitle span{
+    font-size:7px;
+    color:#64748b;
+}
+
+.activityList{
+    min-height:0;
+
+    display:flex;
+    flex-direction:column;
+
+    gap:7px;
+}
+
+.activityItem{
+    display:flex;
+    align-items:center;
+
+    gap:9px;
+
+    padding:9px;
+
+    border-radius:10px;
+
+    background:#0d1629;
+
+    border:1px solid rgba(148,163,184,.06);
+}
+
+.activityIcon{
+    width:29px;
+    height:29px;
+
+    flex:0 0 29px;
+
+    border-radius:8px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:#111d32;
+
+    color:var(--cyan);
+
+    font-size:10px;
+}
+
+.activityText{
+    min-width:0;
+}
+
+.activityText strong{
+    display:block;
+
+    font-size:8px;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.activityText span{
+    display:block;
+
+    color:#64748b;
+
+    font-size:7px;
+
+    margin-top:2px;
+}
+
+/* =========================================================
+   SIDE MENU
+========================================================= */
+
+#sideMenu{
+    position:fixed;
+
+    top:0;
+    right:-360px;
+
+    width:340px;
+    max-width:92vw;
+
+    height:100vh;
+
+    background:
+        linear-gradient(
+            180deg,
+            #0a1020,
+            #070d1a
+        );
+
+    border-left:1px solid var(--line);
+
+    z-index:1000;
+
+    padding:16px;
+
+    transition:right .28s cubic-bezier(.4,0,.2,1);
+
+    box-shadow:-30px 0 70px rgba(0,0,0,.45);
+
+    overflow:hidden;
+}
+
+#sideMenu.active{
+    right:0;
+}
+
+#menuOverlay{
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.62);
+
+    backdrop-filter:blur(3px);
+
+    z-index:999;
+
+    display:none;
+}
+
+#menuOverlay.active{
+    display:block;
+}
+
+.menuHeader{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    margin-bottom:12px;
+}
+
+.menuHeader h2{
+    font-size:14px;
+}
+
+.closeBtn{
+    width:32px;
+    height:32px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#162137;
+
+    color:#cbd5e1;
+
+    cursor:pointer;
+}
+
+.sideProfile{
+    padding:12px;
+
+    border-radius:14px;
+
+    background:#0e1729;
+
+    border:1px solid var(--line);
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:12px;
+}
+
+.sideProfile img{
+    width:42px;
+    height:42px;
+
+    border-radius:12px;
+
+    object-fit:cover;
+}
+
+.sideProfileInfo{
+    min-width:0;
+}
+
+.sideProfileInfo strong{
+    display:block;
+
+    font-size:10px;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.sideProfileInfo span{
+    display:block;
+
+    font-size:7px;
+
+    color:#64748b;
+
+    margin-top:3px;
+}
+
+.searchBox{
+    position:relative;
+
+    margin-bottom:10px;
+}
+
+.searchBox input{
+    width:100%;
+
+    height:38px;
+
+    border-radius:10px;
+
+    border:1px solid var(--line);
+
+    outline:none;
+
+    background:#0e1729;
+
+    color:white;
+
+    padding:0 35px 0 11px;
+
+    font-size:9px;
+}
+
+.searchBox i{
+    position:absolute;
+
+    right:12px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    color:#64748b;
+
+    font-size:10px;
+}
+
+.searchResults{
+    position:absolute;
+
+    left:16px;
+    right:16px;
+
+    z-index:10;
+}
+
+.searchItem{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:9px;
+
+    background:#101b30;
+
+    color:#dbeafe;
+
+    border-bottom:1px solid var(--line);
+
+    text-decoration:none;
+
+    font-size:8px;
+}
+
+.menuSection{
+    color:#4e627f;
+
+    font-size:7px;
+
+    letter-spacing:1.4px;
+
+    margin:12px 3px 7px;
+}
+
+.menuGrid{
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:7px;
+}
+
+.menuLink{
+    min-width:0;
+
+    display:flex;
+    align-items:center;
+
+    gap:8px;
+
+    padding:9px;
+
+    border-radius:10px;
+
+    background:#0e1729;
+
+    border:1px solid rgba(148,163,184,.07);
+
+    text-decoration:none;
+
+    color:#dbe4f0;
+
+    font-size:8px;
+
+    transition:.2s;
+}
+
+.menuLink:hover{
+    border-color:rgba(56,189,248,.25);
+
+    background:#132039;
+
+    color:var(--cyan);
+}
+
+.menuLink i{
+    width:16px;
+
+    text-align:center;
+
+    color:var(--cyan);
+}
+
+.menuLink.danger{
+    color:#fca5a5;
+}
+
+.menuLink.danger i{
+    color:#ef4444;
+}
+
+/* =========================================================
+   NOTIFICATION PANEL
+========================================================= */
+
+#notificationPanel{
+    position:fixed;
+
+    top:0;
+    right:-400px;
+
+    width:370px;
+    max-width:94vw;
+
+    height:100vh;
+
+    background:#09101f;
+
+    border-left:1px solid var(--line);
+
+    z-index:1200;
+
+    transition:right .28s ease;
+
+    display:flex;
+    flex-direction:column;
+
+    box-shadow:-25px 0 60px rgba(0,0,0,.5);
+}
+
+#notificationPanel.active{
+    right:0;
+}
+
+#notificationOverlay{
+    position:fixed;
+
+    inset:0;
+
+    z-index:1199;
+
+    background:rgba(0,0,0,.6);
+
+    display:none;
+}
+
+#notificationOverlay.active{
+    display:block;
+}
+
+.notificationHead{
+    height:64px;
+
+    padding:0 15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    border-bottom:1px solid var(--line);
+}
+
+.notificationHead h2{
+    font-size:14px;
+}
+
+.notificationHead h2 i{
+    color:var(--cyan);
+    margin-right:6px;
+}
+
+.notificationButtons{
+    display:flex;
+    gap:5px;
+}
+
+.smallBtn{
+    border:none;
+
+    background:#142038;
+
+    color:#aab7c9;
+
+    border-radius:8px;
+
+    padding:7px 8px;
+
+    font-size:7px;
+
+    cursor:pointer;
+}
+
+#notificationList{
+    flex:1;
+
+    min-height:0;
+
+    overflow:hidden;
+
+    padding:10px;
+}
+
+.notificationItem{
+    display:flex;
+
+    gap:9px;
+
+    padding:11px;
+
+    margin-bottom:7px;
+
+    border-radius:11px;
+
+    background:#0e1729;
+
+    border:1px solid transparent;
+}
+
+.notificationItem.unread{
+    border-color:rgba(56,189,248,.25);
+
+    background:#101d33;
+}
+
+.notificationIcon{
+    width:31px;
+    height:31px;
+
+    flex:0 0 31px;
+
+    border-radius:9px;
+
+    background:#07101e;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:var(--cyan);
+
+    font-size:10px;
+}
+
+.notificationContent{
+    min-width:0;
+}
+
+.notificationContent strong{
+    display:block;
+
+    font-size:9px;
+
+    margin-bottom:3px;
+}
+
+.notificationContent p{
+    font-size:8px;
+
+    line-height:1.4;
+
+    color:#8fa0b7;
+}
+
+.notificationTime{
+    display:block;
+
+    color:#52647c;
+
+    font-size:6px;
+
+    margin-top:5px;
+}
+
+/* =========================================================
+   ORIENTATION SYSTEM
+========================================================= */
+
+#tourOverlay{
+    position:fixed;
+
+    inset:0;
+
+    z-index:3000;
+
+    background:rgba(1,4,12,.82);
+
+    backdrop-filter:blur(5px);
+
+    display:none;
+}
+
+#tourOverlay.active{
+    display:block;
+}
+
+#tourSpotlight{
+    position:fixed;
+
+    border:2px solid var(--cyan);
+
+    border-radius:14px;
+
+    box-shadow:
+        0 0 0 9999px rgba(1,4,12,.72),
+        0 0 35px rgba(56,189,248,.45);
+
+    pointer-events:none;
+
+    transition:
+        left .3s ease,
+        top .3s ease,
+        width .3s ease,
+        height .3s ease;
+
+    z-index:3001;
+}
+
+#tourCard{
+    position:fixed;
+
+    z-index:3002;
+
+    width:min(330px,calc(100vw - 30px));
+
+    padding:16px;
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #101b31,
+            #090f1f
+        );
+
+    border:1px solid rgba(56,189,248,.28);
+
+    box-shadow:
+        0 25px 80px rgba(0,0,0,.6),
+        0 0 40px rgba(56,189,248,.08);
+
+    transition:
+        left .3s ease,
+        top .3s ease;
+}
+
+.tourTop{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:10px;
+}
+
+.tourTag{
+    font-size:7px;
+
+    color:var(--cyan);
+
+    letter-spacing:1.5px;
+
+    font-weight:800;
+}
+
+.tourCounter{
+    font-size:7px;
+
+    color:#64748b;
+}
+
+#tourCard h2{
+    font-size:15px;
+
+    margin-bottom:7px;
+}
+
+#tourCard p{
+    font-size:9px;
+
+    color:#a9b7ca;
+
+    line-height:1.55;
+}
+
+.tourProgress{
+    height:3px;
+
+    background:#1e293b;
+
+    border-radius:20px;
+
+    margin:13px 0;
+}
+
+#tourProgressBar{
+    height:100%;
+
+    width:0%;
+
+    border-radius:20px;
+
+    background:linear-gradient(
+        90deg,
+        var(--cyan),
+        var(--purple)
+    );
+
+    transition:.3s;
+}
+
+.tourActions{
+    display:flex;
+    justify-content:flex-end;
+
+    gap:7px;
+}
+
+.tourBtn{
+    border:none;
+
+    border-radius:9px;
+
+    padding:8px 11px;
+
+    font-size:8px;
+
+    font-weight:800;
+
+    cursor:pointer;
+}
+
+.tourBtn.skip{
+    background:#172237;
+
+    color:#94a3b8;
+}
+
+.tourBtn.next{
+    background:var(--cyan);
+
+    color:#03101a;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+#toastContainer{
+    position:fixed;
+
+    left:50%;
+    bottom:15px;
+
+    transform:translateX(-50%);
+
+    z-index:4000;
+
+    width:min(92%,360px);
+
+    pointer-events:none;
+}
+
+.toast{
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    padding:10px 12px;
+
+    border-radius:11px;
+
+    background:#101a2e;
+
+    border:1px solid rgba(56,189,248,.2);
+
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+
+    animation:toastIn .25s ease;
+
+    margin-top:6px;
+}
+
+.toast i{
+    color:var(--cyan);
+}
+
+.toast span{
+    font-size:8px;
+    color:#dbeafe;
+}
+
+@keyframes toastIn{
+    from{
+        opacity:0;
+        transform:translateY(12px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+#authLoading{
+    position:fixed;
+
+    inset:0;
+
+    z-index:5000;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    background:#050816;
+
+    transition:opacity .35s ease;
+}
+
+.loadingBox{
+    text-align:center;
+}
+
+.loadingBox img{
+    width:60px;
+    height:60px;
+
+    border-radius:16px;
+
+    margin-bottom:12px;
+
+    animation:logoPulse 1.3s infinite;
+}
+
+.loadingBox p{
+    font-size:9px;
+
+    color:#718198;
+
+    letter-spacing:1px;
+}
+
+@keyframes logoPulse{
+    0%,100%{
+        transform:scale(1);
+        box-shadow:0 0 0 rgba(56,189,248,0);
+    }
+
+    50%{
+        transform:scale(1.06);
+        box-shadow:0 0 30px rgba(56,189,248,.2);
+    }
+}
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media(max-width:900px){
+
+    .main{
+        grid-template-columns:1fr;
+    }
+
+    .rightArea{
+        display:none;
+    }
+
+    .featureArea{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+}
+
+/* =========================================================
+   PHONE
+========================================================= */
+
+@media(max-width:600px){
+
+    .topbar{
+        height:58px;
+        flex-basis:58px;
+
+        padding:0 10px;
+    }
+
+    .brand img{
+        width:36px;
+        height:36px;
+
+        border-radius:10px;
+    }
+
+    .brandText strong{
+        font-size:12px;
+    }
+
+    .brandText span{
+        font-size:6px;
+    }
+
+    .iconBtn{
+        width:35px;
+        height:35px;
+    }
+
+    .main{
+        padding:9px;
+
+        display:block;
+    }
+
+    .leftArea{
+        height:100%;
+        display:grid;
+
+        grid-template-rows:auto minmax(0,1fr);
+
+        gap:9px;
+    }
+
+    .welcome{
+        min-height:145px;
+
+        padding:14px;
+
+        border-radius:17px;
+    }
+
+    .welcome h1{
+        font-size:18px;
+    }
+
+    .welcome p{
+        font-size:8px;
+
+        max-width:90%;
+    }
+
+    .status{
+        font-size:6px;
+        padding:5px 7px;
+    }
+
+    .quickActions{
+        margin-top:11px;
+    }
+
+    .quickBtn{
+        padding:8px 9px;
+        font-size:7px;
+    }
+
+    .featureArea{
+        grid-template-columns:repeat(2,1fr);
+
+        grid-template-rows:repeat(4,minmax(0,1fr));
+
+        gap:7px;
+    }
+
+    .feature{
+        padding:10px;
+
+        border-radius:13px;
+    }
+
+    .featureIcon{
+        width:29px;
+        height:29px;
+
+        border-radius:8px;
+
+        margin-bottom:6px;
+    }
+
+    .feature h3{
+        font-size:9px;
+    }
+
+    .feature p{
+        font-size:7px;
+    }
+
+    .featureArrow{
+        right:8px;
+        bottom:8px;
+    }
+
+    #sideMenu{
+        width:310px;
+    }
+
+}
+
+/* =========================================================
+   VERY SMALL PHONES
+========================================================= */
+
+@media(max-width:370px){
+
+    .welcome{
+        min-height:135px;
+    }
+
+    .welcome h1{
+        font-size:16px;
+    }
+
+    .welcome p{
+        font-size:7px;
+    }
+
+    .feature h3{
+        font-size:8px;
+    }
+
+    .feature p{
+        font-size:6px;
+    }
+
+}
+
+/* =========================================================
+   REDUCE MOTION
+========================================================= */
+
+@media(prefers-reduced-motion:reduce){
+
+    *,
+    *::before,
+    *::after{
+        animation:none !important;
+        transition:none !important;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+<!-- =========================================================
+     AUTH LOADING
+========================================================= -->
+
+<div id="authLoading">
+
+    <div class="loadingBox">
+
+        <img src="logo.png" alt="Code Academy">
+
+        <p>AUTHENTICATING CODE ACADEMY...</p>
+
+    </div>
+
+</div>
+
+
+<div class="app">
+
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
+
+<header class="topbar">
+
+    <div class="brand">
+
+        <img
+            src="logo.png"
+            alt="Code Academy"
+        >
+
+        <div class="brandText">
+
+            <strong>Code Academy</strong>
+
+            <span>COMMAND CENTER</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="topActions">
+
+        <button
+            class="iconBtn"
+            id="notificationBtn"
+            aria-label="Notifications"
+        >
+
+            <i class="fa-solid fa-bell"></i>
+
+            <span
+                class="badge"
+                id="notificationBadge"
+            >
+                0
+            </span>
+
+        </button>
+
+
+        <button
+            class="iconBtn"
+            id="menuBtn"
+            aria-label="Open menu"
+        >
+
+            <i class="fa-solid fa-bars"></i>
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================================
+     MAIN DASHBOARD
+========================================================= -->
+
+<main class="main">
+
+    <!-- LEFT -->
+
+    <section class="leftArea">
+
+
+        <!-- WELCOME -->
+
+        <div class="welcome">
+
+            <div class="welcomeTop">
+
+                <div>
+
+                    <h1>
+                        Welcome back,
+                        <span id="welcomeName">
+                            Developer
+                        </span>
+                    </h1>
+
+                    <p>
+                        Your coding workspace is ready.
+                        Learn, build, practice, save your work,
+                        earn certificates and keep moving forward.
+                    </p>
+
+                </div>
+
+
+                <div class="status">
+
+                    <span class="statusDot"></span>
+
+                    ONLINE
+
+                </div>
+
+            </div>
+
+
+            <div class="quickActions">
+
+                <button
+                    class="quickBtn primary"
+                    id="continueBtn"
+                >
+
+                    <i class="fa-solid fa-play"></i>
+
+                    Continue Learning
+
+                </button>
+
+
+                <button
+                    class="quickBtn secondary"
+                    id="aiMentorBtn"
+                >
+
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+                    AI Mentor
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- POWER GRID -->
+
+        <div class="featureArea">
+
+
+            <!-- COURSES -->
+
+            <div
+                class="feature"
+                data-tour="courses"
+                data-url="course.html"
+            >
+
+                <div class="featureIcon">
+
+                    <i class="fa-solid fa-book-open"></i>
+
+                </div>
+
+                <h3>Courses</h3>
+
+                <p>
+                    Explore available coding courses
+                    and continue structured lessons.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- PROJECTS -->
+
+            <div
+                class="feature"
+                data-tour="projects"
+                data-url="project.html"
+            >
+
+                <div class="featureIcon purple">
+
+                    <i class="fa-solid fa-code"></i>
+
+                </div>
+
+                <h3>Projects</h3>
+
+                <p>
+                    Create practical projects and
+                    turn what you learn into real work.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- PROGRESS -->
+
+            <div
+                class="feature"
+                data-tour="progress"
+                data-url="progress.html"
+            >
+
+                <div class="featureIcon green">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                </div>
+
+                <h3>Progress</h3>
+
+                <p>
+                    Monitor learning activity,
+                    XP, achievements and milestones.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- CERTIFICATES -->
+
+            <div
+                class="feature"
+                data-tour="certificates"
+                data-url="certificate.html"
+            >
+
+                <div class="featureIcon yellow">
+
+                    <i class="fa-solid fa-award"></i>
+
+                </div>
+
+                <h3>Certificates</h3>
+
+                <p>
+                    View certificates earned from
+                    completed learning achievements.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- SAVED CODE -->
+
+            <div
+                class="feature"
+                data-tour="savedCode"
+                data-url="CODEEDITOR.html"
+            >
+
+                <div class="featureIcon purple">
+
+                    <i class="fa-solid fa-terminal"></i>
+
+                </div>
+
+                <h3>Saved Code</h3>
+
+                <p>
+                    Write, save and run HTML, CSS
+                    and JavaScript code in your workspace.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- SAVED NOTES -->
+
+            <div
+                class="feature"
+                data-tour="savedNotes"
+                data-url="note.html"
+            >
+
+                <div class="featureIcon green">
+
+                    <i class="fa-solid fa-note-sticky"></i>
+
+                </div>
+
+                <h3>Saved Notes</h3>
+
+                <p>
+                    Write personal learning notes,
+                    edit them later or permanently delete them.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- GAMES -->
+
+            <div
+                class="feature"
+                data-tour="games"
+                data-url="games_dash.html"
+            >
+
+                <div class="featureIcon yellow">
+
+                    <i class="fa-solid fa-gamepad"></i>
+
+                </div>
+
+                <h3>Side Games</h3>
+
+                <p>
+                    Practice your coding knowledge
+                    through interactive challenges and games.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+
+            <!-- COMMUNITY -->
+
+            <div
+                class="feature"
+                data-tour="community"
+                data-url="community.html"
+            >
+
+                <div class="featureIcon">
+
+                    <i class="fa-solid fa-users"></i>
+
+                </div>
+
+                <h3>Community</h3>
+
+                <p>
+                    Connect with learners, share progress
+                    and participate in the academy community.
+                </p>
+
+                <span class="featureArrow">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- RIGHT INTELLIGENCE -->
+
+    <aside class="rightArea">
+
+
+        <!-- USER PROFILE -->
+
+        <div class="profilePanel">
+
+            <div class="profileHead">
+
+                <img
+                    id="profilePhoto"
+                    class="profilePhoto"
+                    src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+                    alt="User"
+                >
+
+                <div class="profileInfo">
+
+                    <strong id="profileName">
+                        Loading...
+                    </strong>
+
+                    <span id="profileEmail">
+                        Loading account...
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="profileArrow"
+                    id="profileBtn"
+                >
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+            </div>
+
+
+            <div class="profileStats">
+
+                <div class="stat">
+
+                    <strong id="xpValue">
+                        0
+                    </strong>
+
+                    <span>XP</span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="coinValue">
+                        0
+                    </strong>
+
+                    <span>COINS</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- AI MENTOR -->
+
+        <div
+            class="mentor"
+            id="mentorCard"
+            data-tour="aiMentor"
+        >
+
+            <span class="coming">
+                COMING SOON
+            </span>
+
+            <div class="mentorTop">
+
+                <div class="mentorIcon">
+
+                    <i class="fa-solid fa-robot"></i>
+
+                </div>
+
+                <div>
+
+                    <h3>
+                        AI Mentor
+                    </h3>
+
+                    <small>
+                        Your future coding assistant
+                    </small>
+
+                </div>
+
+            </div>
+
+            <p>
+                Ask coding questions, understand difficult
+                concepts and receive guided programming help.
+                This feature is currently being prepared.
+            </p>
+
+        </div>
+
+
+        <!-- SYSTEM ACTIVITY -->
+
+        <div class="activity">
+
+            <div class="panelTitle">
+
+                <h3>
+                    Academy Services
+                </h3>
+
+                <span>
+                    READY
+                </span>
+
+            </div>
+
+
+            <div class="activityList">
+
+                <div class="activityItem">
+
+                    <div class="activityIcon">
+
+                        <i class="fa-solid fa-cloud"></i>
+
+                    </div>
+
+                    <div class="activityText">
+
+                        <strong>
+                            Cloud Learning
+                        </strong>
+
+                        <span>
+                            Your learning data is connected.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activityItem">
+
+                    <div class="activityIcon">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                    </div>
+
+                    <div class="activityText">
+
+                        <strong>
+                            Saved Workspace
+                        </strong>
+
+                        <span>
+                            Your saved code and notes stay available.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="activityItem">
+
+                    <div class="activityIcon">
+
+                        <i class="fa-solid fa-bell"></i>
+
+                    </div>
+
+                    <div class="activityText">
+
+                        <strong>
+                            Academy Notifications
+                        </strong>
+
+                        <span>
+                            Important updates appear here.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="activityItem"
+                    id="buyDataService"
+                    style="cursor:pointer"
+                >
+
+                    <div class="activityIcon">
+
+                        <i class="fa-solid fa-wifi"></i>
+
+                    </div>
+
+                    <div class="activityText">
+
+                        <strong>
+                            Buy Data
+                        </strong>
+
+                        <span>
+                            Access available data services.
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </aside>
+
+</main>
+
+</div>
+
+
+<!-- =========================================================
+     SIDE MENU
+========================================================= -->
+
+<div id="menuOverlay"></div>
+
+<aside id="sideMenu">
+
+    <div class="menuHeader">
+
+        <h2>
+            Academy Menu
+        </h2>
+
+        <button
+            class="closeBtn"
+            id="closeMenu"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <div class="sideProfile">
+
+        <img
+            id="sidePhoto"
+            src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+            alt="User"
+        >
+
+        <div class="sideProfileInfo">
+
+            <strong id="sideName">
+                Loading...
+            </strong>
+
+            <span id="sideEmail">
+                Loading...
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="searchBox">
+
+        <input
+            id="searchInput"
+            type="text"
+            placeholder="Search academy..."
+            autocomplete="off"
+        >
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+    </div>
+
+
+    <div
+        class="searchResults"
+        id="searchResults"
+    ></div>
+
+
+    <div class="menuSection">
+        LEARNING
+    </div>
+
+
+    <div class="menuGrid">
+
+        <a
+            href="course.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-book"></i>
+            Courses
+
+        </a>
+
+
+        <a
+            href="project.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-code"></i>
+            Projects
+
+        </a>
+
+
+        <a
+            href="progress.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-chart-line"></i>
+            Progress
+
+        </a>
+
+
+        <a
+            href="community.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-users"></i>
+            Community
+
+        </a>
+
+    </div>
+
+
+    <div class="menuSection">
+        MY WORKSPACE
+    </div>
+
+
+    <div class="menuGrid">
+
+        <a
+            href="certificate.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-award"></i>
+            Certificates
+
+        </a>
+
+
+        <a
+            href="CODEEDITOR.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-terminal"></i>
+            Saved Code
+
+        </a>
+
+
+        <a
+            href="note.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-note-sticky"></i>
+            Saved Notes
+
+        </a>
+
+
+        <a
+            href="games_dash.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-gamepad"></i>
+            Side Games
+
+        </a>
+
+    </div>
+
+
+    <div class="menuSection">
+        ACCOUNT & SERVICES
+    </div>
+
+
+    <div class="menuGrid">
+
+        <a
+            href="profile.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-user"></i>
+            Profile
+
+        </a>
+
+
+        <a
+            href="aboutus.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-circle-info"></i>
+            About Us
+
+        </a>
+
+
+        <a
+            href="contactus.html"
+            class="menuLink"
+        >
+
+            <i class="fa-solid fa-headset"></i>
+            Support
+
+        </a>
+
+
+        <a
+            href="data.html"
+            class="menuLink"
+            id="buyDataLink"
+        >
+
+            <i class="fa-solid fa-wifi"></i>
+            Buy Data
+
+        </a>
+
+
+        <button
+            class="menuLink"
+            id="menuMentorBtn"
+            style="border:none;text-align:left;cursor:pointer"
+        >
+
+            <i class="fa-solid fa-robot"></i>
+            AI Mentor
+
+        </button>
+
+
+        <a
+            href="#"
+            class="menuLink danger"
+            id="logoutLink"
+        >
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+
+        </a>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     NOTIFICATIONS
+========================================================= -->
+
+<div id="notificationOverlay"></div>
+
+<aside id="notificationPanel">
+
+    <div class="notificationHead">
+
+        <h2>
+
+            <i class="fa-solid fa-bell"></i>
+
+            Notifications
+
+        </h2>
+
+
+        <div class="notificationButtons">
+
+            <button
+                class="smallBtn"
+                id="markAllRead"
+            >
+                Mark all read
+            </button>
+
+            <button
+                class="smallBtn"
+                id="closeNotifications"
+            >
+                Close
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div id="notificationList">
+
+        <div
+            style="
+                text-align:center;
+                padding:40px 15px;
+                color:#64748b;
+                font-size:8px;
+            "
+        >
+            Loading notifications...
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================================================
+     FIRST USER ORIENTATION
+========================================================= -->
+
+<div id="tourOverlay">
+
+    <div id="tourSpotlight"></div>
+
+    <div id="tourCard">
+
+        <div class="tourTop">
+
+            <span class="tourTag">
+                CODE ACADEMY ORIENTATION
+            </span>
+
+            <span
+                class="tourCounter"
+                id="tourCounter"
+            >
+                1 / 13
+            </span>
+
+        </div>
+
+
+        <h2 id="tourTitle">
+            Welcome to Code Academy
+        </h2>
+
+
+        <p id="tourText">
+            Let's take a quick tour of your new
+            coding command center.
+        </p>
+
+
+        <div class="tourProgress">
+
+            <div id="tourProgressBar"></div>
+
+        </div>
+
+
+        <div class="tourActions">
+
+            <button
+                class="tourBtn skip"
+                id="tourSkip"
+            >
+                Skip Tour
+            </button>
+
+            <button
+                class="tourBtn next"
+                id="tourNext"
+            >
+                Next
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TOAST
+========================================================= -->
+
+<div id="toastContainer"></div>
+
+
+<!-- =========================================================
+     APPLICATION ENGINE
+========================================================= -->
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE AUTHENTICATION
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged
+} from "./authentication.js";
+
+
+import {
+    doc,
+    getDoc,
+    setDoc,
+    collection,
+    query,
+    getDocs,
+    onSnapshot,
+    updateDoc,
+    writeBatch,
+    limit
+} from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+import {
+    signOut
+} from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+/* =========================================================
+   CONSTANTS
+========================================================= */
+
+const DEFAULT_PHOTO =
+"https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const authLoading =
+    document.getElementById("authLoading");
+
+const welcomeName =
+    document.getElementById("welcomeName");
+
+const profileName =
+    document.getElementById("profileName");
+
+const profileEmail =
+    document.getElementById("profileEmail");
+
+const profilePhoto =
+    document.getElementById("profilePhoto");
+
+const xpValue =
+    document.getElementById("xpValue");
+
+const coinValue =
+    document.getElementById("coinValue");
+
+const sideName =
+    document.getElementById("sideName");
+
+const sideEmail =
+    document.getElementById("sideEmail");
+
+const sidePhoto =
+    document.getElementById("sidePhoto");
+
+const menuBtn =
+    document.getElementById("menuBtn");
+
+const closeMenu =
+    document.getElementById("closeMenu");
+
+const sideMenu =
+    document.getElementById("sideMenu");
+
+const menuOverlay =
+    document.getElementById("menuOverlay");
+
+const notificationBtn =
+    document.getElementById("notificationBtn");
+
+const notificationPanel =
+    document.getElementById("notificationPanel");
+
+const notificationOverlay =
+    document.getElementById("notificationOverlay");
+
+const closeNotifications =
+    document.getElementById("closeNotifications");
+
+const notificationList =
+    document.getElementById("notificationList");
+
+const notificationBadge =
+    document.getElementById("notificationBadge");
+
+const markAllRead =
+    document.getElementById("markAllRead");
+
+const logoutLink =
+    document.getElementById("logoutLink");
+
+const aiMentorBtn =
+    document.getElementById("aiMentorBtn");
+
+const mentorCard =
+    document.getElementById("mentorCard");
+
+const menuMentorBtn =
+    document.getElementById("menuMentorBtn");
+
+const continueBtn =
+    document.getElementById("continueBtn");
+
+const profileBtn =
+    document.getElementById("profileBtn");
+
+const buyDataService =
+    document.getElementById("buyDataService");
+
+const buyDataLink =
+    document.getElementById("buyDataLink");
+
+const searchInput =
+    document.getElementById("searchInput");
+
+const searchResults =
+    document.getElementById("searchResults");
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let currentUserData = {};
+
+let unsubscribeNotifications = null;
+
+
+/* =========================================================
+   SIDE MENU
+========================================================= */
+
+function openMenu(){
+
+    sideMenu.classList.add("active");
+
+    menuOverlay.classList.add("active");
+
+}
+
+
+function closeSideMenu(){
+
+    sideMenu.classList.remove("active");
+
+    menuOverlay.classList.remove("active");
+
+}
+
+
+menuBtn.addEventListener(
+    "click",
+    openMenu
+);
+
+
+closeMenu.addEventListener(
+    "click",
+    closeSideMenu
+);
+
+
+menuOverlay.addEventListener(
+    "click",
+    closeSideMenu
+);
+
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+function openNotifications(){
+
+    notificationPanel.classList.add("active");
+
+    notificationOverlay.classList.add("active");
+
+}
+
+
+function closeNotificationPanel(){
+
+    notificationPanel.classList.remove("active");
+
+    notificationOverlay.classList.remove("active");
+
+}
+
+
+notificationBtn.addEventListener(
+    "click",
+    openNotifications
+);
+
+
+closeNotifications.addEventListener(
+    "click",
+    closeNotificationPanel
+);
+
+
+notificationOverlay.addEventListener(
+    "click",
+    closeNotificationPanel
+);
+
+
+/* =========================================================
+   ESCAPE
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(event.key === "Escape"){
+
+            closeSideMenu();
+
+            closeNotificationPanel();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   AI MENTOR
+========================================================= */
+
+function showAIMentorComingSoon(){
+
+    createToast(
+        "AI Mentor is coming soon. We are preparing something powerful."
+    );
+
+}
+
+
+aiMentorBtn.addEventListener(
+    "click",
+    showAIMentorComingSoon
+);
+
+
+mentorCard.addEventListener(
+    "click",
+    showAIMentorComingSoon
+);
+
+
+menuMentorBtn.addEventListener(
+    "click",
+    () => {
+
+        closeSideMenu();
+
+        showAIMentorComingSoon();
+
+    }
+);
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+document
+.querySelectorAll("[data-url]")
+.forEach(card => {
+
+    card.addEventListener(
+        "click",
+        () => {
+
+            const url =
+                card.dataset.url;
+
+            if(url){
+
+                window.location.href = url;
+
+            }
+
+        }
+    );
+
+});
+
+
+continueBtn.addEventListener(
+    "click",
+    () => {
+
+        window.location.href =
+            "course.html";
+
+    }
+);
+
+
+profileBtn.addEventListener(
+    "click",
+    () => {
+
+        window.location.href =
+            "profile.html";
+
+    }
+);
+
+
+/* =========================================================
+   BUY DATA
+========================================================= */
+
+buyDataService.addEventListener(
+    "click",
+    () => {
+
+        window.location.href =
+            "data.html";
+
+    }
+);
+
+
+/* =========================================================
+   USER PROFILE
+========================================================= */
+
+async function loadUserProfile(user){
+
+    if(!user){
+
+        return;
+
+    }
+
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        if(snapshot.exists()){
+
+            currentUserData =
+                snapshot.data();
+
+        }else{
+
+            currentUserData = {};
+
+        }
+
+
+        const name =
+            currentUserData.displayName ||
+            user.displayName ||
+            "Code Academy User";
+
+
+        const email =
+            currentUserData.email ||
+            user.email ||
+            "Authenticated user";
+
+
+        const photo =
+            currentUserData.photoURL ||
+            user.photoURL ||
+            DEFAULT_PHOTO;
+
+
+        const xp =
+            Number(
+                currentUserData.xp || 0
+            );
+
+
+        const coins =
+            Number(
+                currentUserData.coins || 0
+            );
+
+
+        welcomeName.textContent =
+            name.split(" ")[0];
+
+
+        profileName.textContent =
+            name;
+
+
+        profileEmail.textContent =
+            email;
+
+
+        sideName.textContent =
+            name;
+
+
+        sideEmail.textContent =
+            email;
+
+
+        profilePhoto.src =
+            photo;
+
+
+        sidePhoto.src =
+            photo;
+
+
+        profilePhoto.onerror =
+            () => {
+
+                profilePhoto.src =
+                    DEFAULT_PHOTO;
+
+            };
+
+
+        sidePhoto.onerror =
+            () => {
+
+                sidePhoto.src =
+                    DEFAULT_PHOTO;
+
+            };
+
+
+        xpValue.textContent =
+            xp.toLocaleString();
+
+
+        coinValue.textContent =
+            coins.toLocaleString();
+
+    }catch(error){
+
+        console.error(
+            "Profile loading error:",
+            error
+        );
+
+
+        welcomeName.textContent =
+            user.displayName ||
+            "Developer";
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTH ENGINE
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if(!user){
+
+            if(unsubscribeNotifications){
+
+                unsubscribeNotifications();
+
+                unsubscribeNotifications =
+                    null;
+
+            }
+
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        await loadUserProfile(user);
+
+
+        startNotificationListener(
+            user.uid
+        );
+
+
+        authLoading.style.opacity =
+            "0";
+
+
+        setTimeout(
+            () => {
+
+                authLoading.style.display =
+                    "none";
+
+            },
+            350
+        );
+
+
+        /* ---------------------------------------------
+           FIRST USER ORIENTATION
+        --------------------------------------------- */
+
+        await checkFirstUser(user);
+
+    }
+);
+
+
+/* =========================================================
+   NOTIFICATION ICONS
+========================================================= */
+
+function getNotificationIcon(type){
+
+    const icons = {
+
+        lesson_start:
+            "fa-play",
+
+        lesson_complete:
+            "fa-circle-check",
+
+        certificate:
+            "fa-award",
+
+        referral:
+            "fa-user-plus",
+
+        xp:
+            "fa-star",
+
+        coins:
+            "fa-coins",
+
+        achievement:
+            "fa-trophy",
+
+        system:
+            "fa-bell"
+
+    };
+
+
+    return icons[type] ||
+        "fa-bell";
+
+}
+
+
+/* =========================================================
+   TIMESTAMP
+========================================================= */
+
+function getTimeValue(timestamp){
+
+    if(!timestamp){
+
+        return 0;
+
+    }
+
+
+    try{
+
+        if(
+            typeof timestamp.toMillis ===
+            "function"
+        ){
+
+            return timestamp.toMillis();
+
+        }
+
+
+        if(
+            typeof timestamp.toDate ===
+            "function"
+        ){
+
+            return timestamp
+                .toDate()
+                .getTime();
+
+        }
+
+
+        return new Date(
+            timestamp
+        ).getTime();
+
+    }catch{
+
+        return 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   TIME DISPLAY
+========================================================= */
+
+function formatTime(timestamp){
+
+    const value =
+        getTimeValue(timestamp);
+
+
+    if(!value){
+
+        return "Just now";
+
+    }
+
+
+    const seconds =
+        Math.floor(
+            (Date.now() - value) / 1000
+        );
+
+
+    if(seconds < 60){
+
+        return "Just now";
+
+    }
+
+
+    if(seconds < 3600){
+
+        return (
+            Math.floor(
+                seconds / 60
+            ) +
+            " min ago"
+        );
+
+    }
+
+
+    if(seconds < 86400){
+
+        return (
+            Math.floor(
+                seconds / 3600
+            ) +
+            " hr ago"
+        );
+
+    }
+
+
+    return new Date(
+        value
+    ).toLocaleDateString();
+
+}
+
+
+/* =========================================================
+   NOTIFICATION LISTENER
+========================================================= */
+
+function startNotificationListener(uid){
+
+    if(unsubscribeNotifications){
+
+        unsubscribeNotifications();
+
+    }
+
+
+    const ref =
+        collection(
+            db,
+            "users",
+            uid,
+            "notifications"
+        );
+
+
+    const q =
+        query(
+            ref,
+            limit(50)
+        );
+
+
+    unsubscribeNotifications =
+        onSnapshot(
+            q,
+            snapshot => {
+
+                const notifications =
+                    snapshot.docs.map(
+                        item => ({
+                            id:item.id,
+                            ...item.data()
+                        })
+                    );
+
+
+                notifications.sort(
+                    (a,b) =>
+                        getTimeValue(
+                            b.createdAt
+                        ) -
+                        getTimeValue(
+                            a.createdAt
+                        )
+                );
+
+
+                renderNotifications(
+                    notifications
+                );
+
+            },
+
+            error => {
+
+                console.error(
+                    "Notification error:",
+                    error
+                );
+
+                notificationList.innerHTML = `
+
+                    <div
+                        style="
+                            text-align:center;
+                            padding:45px 20px;
+                            color:#64748b;
+                            font-size:8px;
+                        "
+                    >
+
+                        <i
+                            class="fa-solid fa-triangle-exclamation"
+                            style="
+                                font-size:25px;
+                                display:block;
+                                margin-bottom:10px;
+                            "
+                        ></i>
+
+                        Notifications could not be loaded.
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+}
+
+
+/* =========================================================
+   RENDER NOTIFICATIONS
+========================================================= */
+
+function renderNotifications(
+    notifications
+){
+
+    notificationList.innerHTML = "";
+
+
+    if(!notifications.length){
+
+        notificationBadge.classList.remove(
+            "show"
+        );
+
+
+        notificationList.innerHTML = `
+
+            <div
+                style="
+                    text-align:center;
+                    padding:55px 20px;
+                    color:#64748b;
+                    font-size:8px;
+                "
+            >
+
+                <i
+                    class="fa-regular fa-bell"
+                    style="
+                        font-size:30px;
+                        display:block;
+                        margin-bottom:12px;
+                        color:#334155;
+                    "
+                ></i>
+
+                You don't have any notifications yet.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    let unread =
+        0;
+
+
+    notifications.forEach(
+        notification => {
+
+            if(
+                notification.read !== true
+            ){
+
+                unread++;
+
+            }
+
+
+            const item =
+                document.createElement("div");
+
+
+            item.className =
+                "notificationItem" +
+                (
+                    notification.read
+                    ? ""
+                    : " unread"
+                );
+
+
+            const icon =
+                document.createElement("div");
+
+
+            icon.className =
+                "notificationIcon";
+
+
+            icon.innerHTML =
+                `
+                    <i
+                        class="fa-solid ${getNotificationIcon(
+                            notification.type
+                        )}"
+                    ></i>
+                `;
+
+
+            const content =
+                document.createElement("div");
+
+
+            content.className =
+                "notificationContent";
+
+
+            const title =
+                document.createElement("strong");
+
+
+            title.textContent =
+                notification.title ||
+                "Code Academy";
+
+
+            const message =
+                document.createElement("p");
+
+
+            message.textContent =
+                notification.message ||
+                "";
+
+
+            const time =
+                document.createElement("span");
+
+
+            time.className =
+                "notificationTime";
+
+
+            time.textContent =
+                formatTime(
+                    notification.createdAt
+                );
+
+
+            content.appendChild(title);
+
+            content.appendChild(message);
+
+            content.appendChild(time);
+
+
+            item.appendChild(icon);
+
+            item.appendChild(content);
+
+
+            item.addEventListener(
+                "click",
+                () => {
+
+                    markNotificationRead(
+                        notification.id
+                    );
+
+                }
+            );
+
+
+            notificationList.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    if(unread > 0){
+
+        notificationBadge.classList.add(
+            "show"
+        );
+
+
+        notificationBadge.textContent =
+            unread > 99
+            ? "99+"
+            : unread;
+
+    }else{
+
+        notificationBadge.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MARK ONE READ
+========================================================= */
+
+async function markNotificationRead(
+    id
+){
+
+    if(!currentUser){
+
+        return;
+
+    }
+
+
+    try{
+
+        await updateDoc(
+            doc(
+                db,
+                "users",
+                currentUser.uid,
+                "notifications",
+                id
+            ),
+            {
+                read:true,
+                readAt:new Date()
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "Read notification error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MARK ALL READ
+========================================================= */
+
+markAllRead.addEventListener(
+    "click",
+    async () => {
+
+        if(!currentUser){
+
+            return;
+
+        }
+
+
+        try{
+
+            const ref =
+                collection(
+                    db,
+                    "users",
+                    currentUser.uid,
+                    "notifications"
+                );
+
+
+            const snapshot =
+                await getDocs(
+                    query(
+                        ref,
+                        limit(100)
+                    )
+                );
+
+
+            const unread =
+                snapshot.docs.filter(
+                    item =>
+                        item.data().read !== true
+                );
+
+
+            if(!unread.length){
+
+                createToast(
+                    "All notifications are already read."
+                );
+
+                return;
+
+            }
+
+
+            const batch =
+                writeBatch(db);
+
+
+            unread.forEach(
+                item => {
+
+                    batch.update(
+                        item.ref,
+                        {
+                            read:true,
+                            readAt:new Date()
+                        }
+                    );
+
+                }
+            );
+
+
+            await batch.commit();
+
+
+            createToast(
+                "All notifications marked as read."
+            );
+
+        }catch(error){
+
+            console.error(
+                error
+            );
+
+            createToast(
+                "Unable to update notifications."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SEARCH ENGINE
+========================================================= */
+
+const pages = [
+
+    ["Courses","course.html","fa-book"],
+    ["Projects","project.html","fa-code"],
+    ["Community","community.html","fa-users"],
+    ["Progress","progress.html","fa-chart-line"],
+    ["Certificates","certificate.html","fa-award"],
+    ["Saved Code","CODEEDITOR.html","fa-terminal"],
+    ["Saved Notes","note.html","fa-note-sticky"],
+    ["Side Games","games_dash.html","fa-gamepad"],
+    ["Profile","profile.html","fa-user"],
+    ["About Us","aboutus.html","fa-circle-info"],
+    ["Customer Support","contactus.html","fa-headset"],
+    ["Buy Data","data.html","fa-wifi"]
+
+];
+
+
+searchInput.addEventListener(
+    "input",
+    () => {
+
+        const term =
+            searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+        searchResults.innerHTML = "";
+
+
+        if(!term){
+
+            return;
+
+        }
+
+
+        const matches =
+            pages.filter(
+                page =>
+                    page[0]
+                    .toLowerCase()
+                    .includes(term)
+            );
+
+
+        matches.forEach(
+            page => {
+
+                const link =
+                    document.createElement("a");
+
+
+                link.href =
+                    page[1];
+
+
+                link.className =
+                    "searchItem";
+
+
+                link.innerHTML =
+                    `
+                        <i
+                            class="fa-solid ${page[2]}"
+                        ></i>
+
+                        ${page[0]}
+                    `;
+
+
+                searchResults.appendChild(
+                    link
+                );
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+logoutLink.addEventListener(
+    "click",
+    async event => {
+
+        event.preventDefault();
+
+
+        try{
+
+            await signOut(auth);
+
+
+            window.location.href =
+                "login.html";
+
+        }catch(error){
+
+            console.error(
+                "Logout error:",
+                error
+            );
+
+
+            createToast(
+                "Logout failed. Please try again."
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+function createToast(message){
+
+    const container =
+        document.getElementById(
+            "toastContainer"
+        );
+
+
+    const toast =
+        document.createElement("div");
+
+
+    toast.className =
+        "toast";
+
+
+    toast.innerHTML =
+        `
+            <i
+                class="fa-solid fa-circle-info"
+            ></i>
+
+            <span></span>
+        `;
+
+
+    toast.querySelector(
+        "span"
+    ).textContent =
+        message;
+
+
+    container.appendChild(
+        toast
+    );
+
+
+    setTimeout(
+        () => {
+
+            toast.remove();
+
+        },
+        4200
+    );
+
+}
+
+
+/* =========================================================
+   FIRST USER DETECTION
+========================================================= */
+
+async function checkFirstUser(user){
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        const data =
+            snapshot.exists()
+            ? snapshot.data()
+            : {};
+
+
+        /*
+           PRIMARY DATABASE CHECK
+
+           onboardingCompleted === true
+           means the user has already completed
+           or skipped the orientation.
+        */
+
+        if(
+            data.onboardingCompleted === true
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           SECONDARY LOCAL CHECK
+
+           Useful if the user's Firestore profile
+           is temporarily unavailable.
+        */
+
+        const localKey =
+            "codeAcademy_onboarding_" +
+            user.uid;
+
+
+        if(
+            localStorage.getItem(localKey)
+            ===
+            "completed"
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           New user.
+           Start orientation.
+        */
+
+        setTimeout(
+            () => {
+
+                startTour();
+
+            },
+            700
+        );
+
+    }catch(error){
+
+        console.error(
+            "First user check error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   ORIENTATION STEPS
+========================================================= */
+
+const tourSteps = [
+
+    {
+        selector:".welcome",
+        title:"Welcome to your Command Center",
+        text:
+        "This is your Code Academy dashboard. From here you can access your courses, projects, progress, saved work, community and other academy services."
+    },
+
+    {
+        selector:"[data-tour='courses']",
+        title:"Courses",
+        text:
+        "Courses is where your structured learning happens. Open available courses, start lessons and continue building your programming knowledge."
+    },
+
+    {
+        selector:"[data-tour='projects']",
+        title:"Projects",
+        text:
+        "Projects lets you turn your knowledge into practical work. Build coding projects and use what you learn outside individual lessons."
+    },
+
+    {
+        selector:"[data-tour='progress']",
+        title:"Progress",
+        text:
+        "Progress is your learning statistics center. Track XP, achievements, learning activity and your overall development."
+    },
+
+    {
+        selector:"[data-tour='certificates']",
+        title:"Certificates",
+        text:
+        "Certificates contains the certificates you earn after completing qualifying Code Academy courses or achievements."
+    },
+
+    {
+        selector:"[data-tour='savedCode']",
+        title:"Saved Code",
+        text:
+        "Saved Code is your coding workspace for HTML, CSS and JavaScript. Write code, save your work, edit it later and run it to see your result."
+    },
+
+    {
+        selector:"[data-tour='savedNotes']",
+        title:"Saved Notes",
+        text:
+        "Saved Notes is your personal learning notebook. Write things you learn, save them permanently, edit them whenever necessary and delete notes you no longer need."
+    },
+
+    {
+        selector:"[data-tour='games']",
+        title:"Side Games",
+        text:
+        "Side Games gives you another way to practice coding knowledge through interactive challenges while keeping your learning experience interesting."
+    },
+
+    {
+        selector:"[data-tour='community']",
+        title:"Community",
+        text:
+        "Community is where learners can connect, share ideas, participate and grow together inside the Code Academy ecosystem."
+    },
+
+    {
+        selector:"#mentorCard",
+        title:"AI Mentor",
+        text:
+        "AI Mentor will become your intelligent coding assistant. It is currently under development, so clicking it will show a Coming Soon message."
+    },
+
+    {
+        selector:"#notificationBtn",
+        title:"Notifications",
+        text:
+        "The bell keeps you informed. Important Code Academy updates, achievements, learning events and other notifications can appear here."
+    },
+
+    {
+        selector:"#menuBtn",
+        title:"Academy Menu",
+        text:
+        "The menu contains the complete navigation system. You can access your profile, saved work, games, support, Buy Data and other academy services from here."
+    },
+
+    {
+        selector:".profilePanel",
+        title:"Your Account",
+        text:
+        "This area shows your Code Academy identity, XP and coins. Your account information is loaded from Firebase after authentication."
+    }
+
+];
+
+
+let currentTourStep = 0;
+
+
+/* =========================================================
+   TOUR ELEMENTS
+========================================================= */
+
+const tourOverlay =
+    document.getElementById(
+        "tourOverlay"
+    );
+
+const tourSpotlight =
+    document.getElementById(
+        "tourSpotlight"
+    );
+
+const tourCard =
+    document.getElementById(
+        "tourCard"
+    );
+
+const tourTitle =
+    document.getElementById(
+        "tourTitle"
+    );
+
+const tourText =
+    document.getElementById(
+        "tourText"
+    );
+
+const tourCounter =
+    document.getElementById(
+        "tourCounter"
+    );
+
+const tourProgressBar =
+    document.getElementById(
+        "tourProgressBar"
+    );
+
+const tourNext =
+    document.getElementById(
+        "tourNext"
+    );
+
+const tourSkip =
+    document.getElementById(
+        "tourSkip"
+    );
+
+
+/* =========================================================
+   START TOUR
+========================================================= */
+
+function startTour(){
+
+    currentTourStep = 0;
+
+    tourOverlay.classList.add(
+        "active"
+    );
+
+    document.body.style.pointerEvents =
+        "auto";
+
+    renderTourStep();
+
+}
+
+
+/* =========================================================
+   POSITION TOUR
+========================================================= */
+
+function renderTourStep(){
+
+    const step =
+        tourSteps[
+            currentTourStep
+        ];
+
+
+    const target =
+        document.querySelector(
+            step.selector
+        );
+
+
+    if(!target){
+
+        finishTour();
+
+        return;
+
+    }
+
+
+    /*
+       Make sure the target is visible.
+       Since the dashboard itself does not
+       scroll, this only recalculates position.
+    */
+
+    const rect =
+        target.getBoundingClientRect();
+
+
+    const padding =
+        5;
+
+
+    tourSpotlight.style.left =
+        `${rect.left - padding}px`;
+
+
+    tourSpotlight.style.top =
+        `${rect.top - padding}px`;
+
+
+    tourSpotlight.style.width =
+        `${rect.width + padding * 2}px`;
+
+
+    tourSpotlight.style.height =
+        `${rect.height + padding * 2}px`;
+
+
+    tourTitle.textContent =
+        step.title;
+
+
+    tourText.textContent =
+        step.text;
+
+
+    tourCounter.textContent =
+        `${currentTourStep + 1} / ${tourSteps.length}`;
+
+
+    tourProgressBar.style.width =
+        `${(
+            (currentTourStep + 1)
+            /
+            tourSteps.length
+            *
+            100
+        )}%`;
+
+
+    tourNext.textContent =
+        currentTourStep ===
+        tourSteps.length - 1
+        ? "Finish"
+        : "Next";
+
+
+    /*
+       Decide where the explanation card goes.
+    */
+
+    const cardWidth =
+        Math.min(
+            330,
+            window.innerWidth - 30
+        );
+
+
+    const cardHeight =
+        180;
+
+
+    let left =
+        (window.innerWidth -
+        cardWidth) / 2;
+
+
+    let top;
+
+
+    const spaceBelow =
+        window.innerHeight -
+        rect.bottom;
+
+
+    const spaceAbove =
+        rect.top;
+
+
+    if(
+        spaceBelow >=
+        cardHeight + 20
+    ){
+
+        top =
+            rect.bottom + 15;
+
+    }else if(
+        spaceAbove >=
+        cardHeight + 20
+    ){
+
+        top =
+            rect.top -
+            cardHeight -
+            15;
+
+    }else{
+
+        top =
+            window.innerHeight -
+            cardHeight -
+            15;
+
+    }
+
+
+    left =
+        Math.max(
+            15,
+            Math.min(
+                left,
+                window.innerWidth -
+                cardWidth -
+                15
+            )
+        );
+
+
+    top =
+        Math.max(
+            15,
+            Math.min(
+                top,
+                window.innerHeight -
+                cardHeight -
+                15
+            )
+        );
+
+
+    tourCard.style.width =
+        `${cardWidth}px`;
+
+
+    tourCard.style.left =
+        `${left}px`;
+
+
+    tourCard.style.top =
+        `${top}px`;
+
+}
+
+
+/* =========================================================
+   NEXT TOUR STEP
+========================================================= */
+
+tourNext.addEventListener(
+    "click",
+    () => {
+
+        if(
+            currentTourStep <
+            tourSteps.length - 1
+        ){
+
+            currentTourStep++;
+
+            renderTourStep();
+
+        }else{
+
+            finishTour();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   SKIP TOUR
+========================================================= */
+
+tourSkip.addEventListener(
+    "click",
+    () => {
+
+        finishTour();
+
+    }
+);
+
+
+/* =========================================================
+   FINISH TOUR
+========================================================= */
+
+async function finishTour(){
+
+    tourOverlay.classList.remove(
+        "active"
+    );
+
+
+    const localKey =
+        "codeAcademy_onboarding_" +
+        currentUser.uid;
+
+
+    localStorage.setItem(
+        localKey,
+        "completed"
+    );
+
+
+    /*
+       Save permanently to Firestore.
+       This makes the orientation stay completed
+       even when the user changes browser/device.
+    */
+
+    try{
+
+        await setDoc(
+            doc(
+                db,
+                "users",
+                currentUser.uid
+            ),
+            {
+                onboardingCompleted:true,
+                onboardingCompletedAt:new Date()
+            },
+            {
+                merge:true
+            }
+        );
+
+    }catch(error){
+
+        console.error(
+            "Could not save onboarding status:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   KEEP TOUR ALIGNED
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if(
+            tourOverlay.classList.contains(
+                "active"
+            )
+        ){
+
+            renderTourStep();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PREVENT ACCIDENTAL PAGE SCROLL
+========================================================= */
+
+document.addEventListener(
+    "touchmove",
+    event => {
+
+        /*
+           The dashboard is intentionally
+           a fixed viewport application.
+        */
+
+        if(
+            !event.target.closest(
+                "#tourCard"
+            )
+        ){
+
+            event.preventDefault();
+
+        }
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================================================
+   PWA SERVICE WORKER
+========================================================= */
+
+if(
+    "serviceWorker"
+    in navigator
+){
+
+    window.addEventListener(
+        "load",
+        () => {
+
+            navigator.serviceWorker
+                .register("sw.js")
+                .then(
+                    registration => {
+
+                        console.log(
+                            "Code Academy PWA ready:",
+                            registration.scope
+                        );
+
+                    }
+                )
+                .catch(
+                    error => {
+
+                        console.log(
+                            "PWA service worker unavailable:",
+                            error
+                        );
+
+                    }
+                );
+
+        }
+    );
+
+}
+
+</script>
+
+</body>
+</html>
