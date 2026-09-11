@@ -3467,7 +3467,34 @@ sideMenu
 
     });
 
-</script>
 
+// PWA Install
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(r=> console.log('PWA ready:', r.scope))
+      .catch(e=> console.log('SW fail:', e));
+  });
+}
+
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show your own install button if you want
+  const btn = document.createElement('button');
+  btn.textContent = 'Install App';
+  btn.style.cssText = 'position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:999;padding:12px 20px;border-radius:12px;background:#fff;color:#000;font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.3)';
+  btn.onclick = async ()=>{
+    deferredPrompt.prompt();
+    const {outcome} = await deferredPrompt.userChoice;
+    console.log(outcome);
+    deferredPrompt = null;
+    btn.remove();
+  };
+  document.body.appendChild(btn);
+  setTimeout(()=> btn.remove(), 8000);
+});
+    </script>
 </body>
 </html>
