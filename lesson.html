@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#060a14">
+<title>Code Academy — Lesson</title>
+
+<!-- WHATSAPP / FACEBOOK LINK PREVIEW - DYNAMIC OG -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Code Academy">
+<meta property="og:title" id="ogTitle" content="Code Academy — Learn to Code">
+<meta property="og:description" id="ogDesc" content="Professional coding lessons - HTML, CSS, JavaScript, Python, React. Earn XP, keep hearts, build real projects.">
+<meta property="og:image" id="ogImage" content="logo.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" id="twTitle" content="Code Academy">
+<meta name="twitter:description" id="twDesc" content="Learn to code - professional lessons">
+<meta name="twitter:image" id="twImage" content="logo.png">
+
+<link rel="icon" href="logo.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+--bg:#060a14;--panel:#0f182e;--text:#eef2ff;--muted:#8ea0b8;--dim:#5b6b84;--cyan:#38bdf8;--violet:#a78bfa;--green:#22c55e;--red:#ff4567;--heart:#ff2e63;
+--line:rgba(148,163,184,.13);--line2:rgba(148,163,184,.22);
+--top:56px;--hud:48px;--bot:68px;
+--font-body: clamp(13.5px, 0.35vw + 12.8px, 16px);
+--font-small: clamp(12px, 0.3vw + 11px, 13.5px);
+--font-code: clamp(11px, 0.3vw + 10px, 12.5px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,sans-serif}
+#app{position:fixed;inset:0;background:radial-gradient(800px 400px at 20% -10%, rgba(56,189,248,.12), transparent 60%),radial-gradient(600px 400px at 95% 110%, rgba(167,139,250,.10), transparent 60%),var(--bg)}
+#loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:var(--bg);transition:.45s}
+#loader.hide{opacity:0;pointer-events:none}
+.loader-card{width:min(360px,90%);padding:22px;border-radius:22px;background:linear-gradient(180deg,#111d37,#0a1123);border:1px solid var(--line2);text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.7)}
+.loader-logo{width:60px;height:60px;margin:0 auto 10px;border-radius:14px;overflow:hidden;border:1px solid var(--line2)}
+.loader-logo img{width:100%;height:100%;object-fit:cover}
+.loader-bar{height:4px;background:rgba(255,255,255,.07);border-radius:99px;margin-top:14px;overflow:hidden}
+.loader-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width.4s}
+.topbar{position:absolute;top:0;left:0;right:0;height:var(--top);z-index:500;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:rgba(6,10,20,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:9px;min-width:0}
+.brand-logo{width:34px;height:34px;border-radius:10px;overflow:hidden;background:#0f182e;border:1px solid var(--line2);flex:none}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.brand-title{font-size:11px;font-weight:900}
+.brand-path{font-size:8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:140px}
+.nav-actions{display:flex;gap:5px}
+.nav-btn{width:32px;height:32px;border-radius:9px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px}
+.nav-btn.active{color:var(--cyan);background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.25)}
+.nav-btn.talking{box-shadow:0 0 0 4px rgba(56,189,248,.15);animation:pulse 1.2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+.hud{position:absolute;top:var(--top);left:0;right:0;height:var(--hud);z-index:450;display:flex;align-items:center;gap:8px;padding:0 12px;background:rgba(6,10,20,.75);backdrop-filter:blur(14px);border-bottom:1px solid rgba(148,163,184,.08)}
+.hearts{display:flex;gap:4px;align-items:center}
+.heart{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(255,46,99,.11);border:1px solid rgba(255,46,99,.16);color:var(--heart);font-size:10px}
+.heart.empty{background:rgba(255,255,255,.04);color:#3a455c;filter:grayscale(1);transform:scale(.88)}
+.progress-track{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width.3s}
+.lesson-stage{position:absolute;left:0;right:0;top:calc(var(--top) + var(--hud));bottom:var(--bot);display:flex;justify-content:center;align-items:flex-start;padding:10px 12px;overflow:hidden}
+.scene{width:min(720px,100%);height:100%;display:flex;flex-direction:column;overflow:hidden}
+.scene-meta{display:flex;justify-content:space-between;font-size:7px;font-weight:800;color:var(--dim);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.scene-body{flex:1;overflow:hidden;display:flex;flex-direction:column;gap:10px;justify-content:flex-start;align-items:flex-start;width:100%}
+.chat-sentence{font-size:var(--font-body);line-height:1.65;color:#e6ecf8;font-weight:500;max-width:100%;white-space:pre-wrap;word-break:break-word;width:100%}
+.cursor{display:inline-block;width:2px;height:1.15em;background:var(--cyan);margin-left:2px;vertical-align:-.15em;animation:blink 1s infinite}
+@keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+.code-card{width:100%;border-radius:14px;overflow:hidden;background:#080c16;border:1px solid #1d2740;box-shadow:0 12px 40px rgba(0,0,0,.35);margin:2px 0}
+.code-top{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;background:#0e1526;border-bottom:1px solid #1d2740}
+.code-content pre{margin:0;padding:10px}
+.code-content code{font-family:JetBrains Mono,monospace;font-size:var(--font-code);line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.preview-box{width:100%;border-radius:10px;overflow:hidden;border:1px solid rgba(56,189,248,.18);background:white;display:none;margin-top:6px}
+.preview-box.show{display:block}
+.preview-box iframe{width:100%;height:140px;border:none;background:white}
+.quiz-wrap{width:100%}
+.quiz-badge{display:inline-flex;gap:5px;padding:5px 9px;border-radius:99px;background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.22);color:#d8ccff;font-size:8px;font-weight:900}
+.quiz-q{margin-top:8px;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg, rgba(167,139,250,.16), rgba(56,189,248,.10));border:1px solid rgba(167,139,250,.25);font-size:clamp(14px,0.8vw + 12px,17px);font-weight:800;line-height:1.35;color:white}
+.quiz-options{display:grid;gap:8px;margin-top:10px}
+.quiz-option{width:100%;min-height:46px;display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:12px;background:#121c33;border:1px solid rgba(148,163,184,.22);cursor:pointer;text-align:left;transition:.15s}
+.quiz-option:hover{border-color:rgba(56,189,248,.35);background:#162447}
+.quiz-option.selected{border-color:var(--cyan);background:rgba(56,189,248,.16);box-shadow:0 0 0 3px rgba(56,189,248,.10)}
+.quiz-option.correct{background:rgba(34,197,94,.18);border-color:var(--green)}
+.quiz-option.wrong{background:rgba(255,69,103,.18);border-color:var(--red)}
+.quiz-option.disabled{pointer-events:none;opacity:.95}
+.opt-letter{width:26px;height:26px;flex:none;display:flex;align-items:center;justify-content:center;border-radius:8px;background:#1c2946;border:1px solid rgba(148,163,184,.2);font-size:10px;font-weight:900;color:#e2e8f0;margin-top:1px}
+.opt-text{font-size:var(--font-small);line-height:1.4;flex:1;color:#f1f5ff;word-break:break-word}
+.quiz-action{margin-top:10px}
+.quiz-btn{width:100%;height:42px;border-radius:11px;border:none;font-weight:900;font-size:11px;cursor:pointer}
+.quiz-btn.check{background:linear-gradient(135deg,#38bdf8,#818cf8);color:#060a14}
+.quiz-btn.next{background:white;color:#060a14}
+.bottom-nav{position:absolute;left:0;right:0;bottom:0;height:var(--bot);z-index:500;display:flex;align-items:center;justify-content:center;gap:8px;padding:0 12px calc(4px + env(safe-area-inset-bottom));background:rgba(6,10,20,.94);backdrop-filter:blur(20px);border-top:1px solid var(--line)}
+.btn{height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;gap:6px;font-weight:900;font-size:11px;cursor:pointer;border:none}
+.btn-prev{width:84px;background:#0f182e;border:1px solid var(--line);color:var(--muted)}
+.btn-next{flex:1;max-width:260px;background:white;color:#060a14}
+.btn:disabled{opacity:.28;pointer-events:none}
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1400;display:none}#overlay.active{display:block}
+#historyPanel{position:fixed;top:0;right:-400px;width:380px;max-width:100%;height:100%;background:#060a14;z-index:1500;border-left:1px solid var(--line);transition:.32s;display:flex;flex-direction:column}#historyPanel.active{right:0}
+.modal{position:fixed;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.7);backdrop-filter:blur(14px)}.modal.show{display:flex}
+.modal-card{width:min(420px,100%);border-radius:20px;background:linear-gradient(180deg,#17223d,#0f172b);border:1px solid var(--line2);padding:18px;max-height:90vh;overflow:auto}
+#measure{position:fixed;top:-9999px;left:-9999px;visibility:hidden;pointer-events:none;overflow:hidden}
+#toastBox{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:5000;width:min(340px,90%)}.toast{background:#10182e;border:1px solid rgba(56,189,248,.28);padding:10px 12px;border-radius:10px;display:flex;gap:8px;margin-top:6px;font-size:11px}
+</style>
+</head>
+<body>
+<div id="app">
+<div id="loader">
+<div class="loader-card">
+<div class="loader-logo"><img src="logo.png" alt=""></div>
+<div style="font-size:17px;font-weight:900">Code <span style="background:linear-gradient(90deg,#38bdf8,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Academy</span></div>
+<div style="font-size:10px;color:#8ea0b8;margin-top:4px" id="loaderName">Loading engine...</div>
+<div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
+<div id="loaderStatus" style="margin-top:8px;font-size:9px;color:#8ea0b8;font-weight:700">Booting...</div>
+</div>
+</div>
+
+<div class="topbar">
+<div class="brand"><div class="brand-logo"><img src="logo.png"></div><div><div class="brand-title" id="brandTitle">HTML • L1</div><div class="brand-path" id="brandPath">Engine ready</div></div></div>
+<div class="nav-actions">
+<button class="nav-btn active talking" id="voiceBtn" title="Voice"><i class="fa-solid fa-volume-high"></i></button>
+<button class="nav-btn" id="historyBtn"><i class="fa-solid fa-clock-rotate-left"></i></button>
+<button class="nav-btn" id="pdfBtn"><i class="fa-solid fa-file-pdf"></i></button>
+<button class="nav-btn" id="shareBtn"><i class="fa-solid fa-share-nodes"></i></button>
+<button class="nav-btn" id="exitBtn"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</div>
+
+<div class="hud">
+<div class="hearts" id="hearts" title="Tap to refill"></div>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+<div style="min-width:70px;text-align:right"><strong id="xpLive" style="display:block;color:white;font-size:11px">0 XP</strong><span id="hudInfo" style="font-size:8px;color:#5b6b84">00:00</span></div>
+</div>
+
+<div class="lesson-stage" id="lessonStage"></div>
+
+<div class="bottom-nav">
+<button class="btn btn-prev" id="prevBtn"><i class="fa-solid fa-chevron-left"></i> Prev</button>
+<button class="btn btn-next" id="nextBtn">Next →</button>
+</div>
+</div>
+
+<div id="overlay"></div>
+<aside id="historyPanel">
+<div style="padding:14px;display:flex;justify-content:space-between;border-bottom:1px solid var(--line)"><h3 style="font-size:13px"><i class="fa-solid fa-clock-rotate-left" style="color:#38bdf8"></i> History</h3><button id="closeHistory" style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--line);color:white">×</button></div>
+<div style="padding:8px;display:flex;gap:6px"><input id="historySearch" placeholder="Search history..." style="flex:1;padding:10px;border-radius:10px;background:#0f182e;border:1px solid var(--line);color:white;font-size:12px"><select id="historyFilter" style="padding:10px;border-radius:10px;background:#0f182e;border:1px solid var(--line);color:white;font-size:11px"><option value="all">All</option><option value="correct">Correct</option><option value="wrong">Wrong</option></select></div>
+<div id="historyStats" style="padding:0 10px;font-size:9px;color:#8ea0b8"></div>
+<div id="historyList" style="flex:1;overflow:auto;padding:8px"></div>
+</aside>
+
+<div class="modal" id="exitModal"><div class="modal-card"><h3 style="font-weight:900">Leave Lesson?</h3><p style="font-size:11px;color:#8ea0b8;margin:8px 0">Time: <b id="exitTime">00:00</b> • Progress saved.</p><div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button id="stayBtn" class="btn btn-prev" style="width:auto;padding:0 14px">Stay</button><button id="confirmExit" class="btn btn-next" style="width:auto;padding:0 14px;background:#38bdf8">Exit</button></div></div></div>
+
+<div class="modal" id="noHeartsModal"><div class="modal-card" style="text-align:center">
+<h3 style="color:#ff4567;font-size:14px"><i class="fa-solid fa-heart-crack"></i> 0 / 5 Hearts</h3>
+<div style="display:grid;gap:8px;text-align:left;margin:12px 0">
+<div style="padding:12px;border-radius:12px;background:rgba(56,189,248,.08);border:1px solid rgba(56,189,248,.2)"><b style="font-size:11px">⚡ Instant Refill</b><div style="font-size:9px;color:#8ea0b8;margin-top:3px">200 XP + 100 Coins → 5 hearts now</div><button id="refillBtn" class="btn btn-next" style="width:100%;margin-top:8px;background:linear-gradient(135deg,#38bdf8,#a78bfa);height:38px">Refill Now</button></div>
+<div style="padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line)"><b style="font-size:11px">⏳ JS Auto Regen</b><div style="font-size:9px;color:#8ea0b8">1 heart / 6 min • Full 30 min</div><div id="heartTimer" style="font-size:18px;font-weight:900;margin-top:4px">06:00</div><div id="heartCalc" style="font-size:8px;color:#5b6b84">Calculating...</div></div>
+</div>
+<button onclick="document.getElementById('noHeartsModal').classList.remove('show')" class="btn btn-prev" style="width:100%;height:36px">Close</button>
+</div></div>
+
+<div class="modal" id="shareModal"><div class="modal-card" style="text-align:center;padding:0;overflow:hidden">
+<div style="background:white;padding:16px">
+<div style="display:flex;align-items:center;gap:12px;text-align:left">
+<div style="width:56px;height:56px;border-radius:14px;overflow:hidden;flex:none;border:1px solid #e2e8f0"><img src="logo.png" style="width:100%;height:100%;object-fit:cover"></div>
+<div><div style="font-weight:900;color:#0f172a;font-size:16px">Code Academy</div><div style="font-size:10px;color:#64748b">Reliable Code, Anytime, Anywhere</div></div>
+</div>
+<div style="margin-top:12px;text-align:left"><div style="font-weight:800;color:#0f172a;font-size:13px" id="shareTitle">Code Academy — Buy Affordable Data</div><div style="font-size:11px;color:#475569;margin-top:4px" id="shareDesc">Professional coding lessons for MTN, Vodafone, AirtelTigo & Telecel. Fast delivery, 24/7 support.</div><div style="margin-top:8px;display:flex;align-items:center;gap:6px;font-size:10px;color:#0f172a"><i class="fa-solid fa-link"></i> <span id="shareDomain">codeacademy.app</span></div></div>
+</div>
+<div style="padding:12px;background:#0f172b">
+<div style="font-size:10px;color:#8ea0b8;text-align:left;word-break:break-all;background:#060a14;padding:8px;border-radius:8px;border:1px solid var(--line)" id="shareLink"></div>
+<div style="font-size:9px;color:#5b6b84;margin-top:6px;text-align:left" id="shareReferral"></div>
+<div style="display:flex;gap:8px;margin-top:10px"><button id="copyShare" class="btn btn-next" style="flex:1;background:#38bdf8;height:40px">Copy Link</button><button onclick="document.getElementById('shareModal').classList.remove('show')" class="btn btn-prev" style="flex:1;height:40px">Close</button></div>
+</div>
+</div></div>
+
+<div class="modal" id="completeModal"><div class="modal-card" id="completeBox"></div></div>
+
+<div id="measure"></div>
+<div id="toastBox"></div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import { doc, getDoc, runTransaction, serverTimestamp, collection, setDoc, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const params=new URLSearchParams(location.search);
+let course=(params.get('course')||'html').toLowerCase().trim();
+let lessonNum=parseInt(params.get('lesson')||'1');
+let explicitPage=params.get('page')?parseInt(params.get('page')):null;
+let fromParam=params.get('from');
+const courseMap={html:'html',css:'css',javascript:'javascript',js:'javascript',python:'python',py:'python',react:'react'};
+const baseCourse=courseMap[course]||course;
+const dashboardMap={html:'html_dashboard.html',css:'css_dashboard.html',javascript:'javascript_dashboard.html',python:'python_dashboard.html',react:'react_dashboard.html'};
+
+let currentUser=null,userData={},lessonJSON=null,pages=[],currentPage=0,sentenceIdx=0,totalXP=0,earnedXP=0,hearts=5,heartsDepletedAt=null,questionResults={},historyCache=[],isVoiceOn=true,voiceEnabled=true,lessonStartTime=Date.now(),userName='Coder',selectedQuiz=null,globalXP=0;
+
+const el=id=>document.getElementById(id);
+const stage=el('lessonStage'),measure=el('measure');
+
+function toast(m){let b=el('toastBox');let d=document.createElement('div');d.className='toast';d.innerHTML=`<i class="fa-solid fa-bell" style="color:#38bdf8"></i><span>${m}</span>`;b.appendChild(d);setTimeout(()=>d.remove(),3200)}
+function setHearts(){ let h=el('hearts'); h.innerHTML=''; for(let i=0;i<5;i++){let d=document.createElement('div');d.className='heart'+(i>=hearts?' empty':'');d.textContent='♥';h.appendChild(d)} el('xpLive').textContent=globalXP+' XP'; if(hearts<=0) el('noHeartsModal').classList.add('show') }
+
+function speak(text){
+ if(!voiceEnabled||!isVoiceOn) return;
+ try{ speechSynthesis.cancel(); }catch{}
+ let u=new SpeechSynthesisUtterance(text.slice(0,280));
+ let vs=speechSynthesis.getVoices();
+ let en=vs.find(v=>v.lang.startsWith('en')&&v.name.includes('Google'))||vs.find(v=>v.lang.startsWith('en'))||vs[0];
+ if(en) u.voice=en; u.rate=0.96; u.pitch=1; u.volume=0.9;
+ u.onstart=()=>el('voiceBtn').classList.add('talking');
+ u.onend=()=>el('voiceBtn').classList.remove('talking');
+ try{ speechSynthesis.speak(u); }catch{}
+}
+
+onAuthStateChanged(auth, async user=>{
+ el('loaderFill').style.width='25%'; el('loaderStatus').textContent='Auth...';
+ if(!user){location.href='login.html';return}
+ currentUser=user;
+ userName=user.displayName||user.email?.split('@')[0]||'Coder';
+ el('loaderName').textContent=`Hey ${userName}, setting up your lesson...`;
+ speak(`${userName}, we are setting up your lesson please wait`);
+ try{
+  let snap=await getDoc(doc(db,'users',user.uid)); userData=snap.exists()?snap.data():{};
+  globalXP=userData.xp??0; hearts=userData.hearts??5;
+  heartsDepletedAt=userData.heartsDepletedAt?.toMillis?.()||(userData.heartsDepletedAt?.seconds?userData.heartsDepletedAt.seconds*1000:null)||null;
+  if(hearts<5&&heartsDepletedAt){
+   let elapsedMin=Math.floor((Date.now()-heartsDepletedAt)/60000);
+   let regen=Math.floor(elapsedMin/6);
+   if(regen>0){ hearts=Math.min(5,hearts+regen); if(hearts>=5) heartsDepletedAt=null; try{await setDoc(doc(db,'users',currentUser.uid),{hearts, heartsDepletedAt:hearts>=5?null:heartsDepletedAt},{merge:true})}catch{} }
+  }
+  startTimer(); startHeartEngine(); updateOG();
+  await loadLesson();
+ }catch(e){ showError('Firebase: '+e.message)}
+});
+
+function updateOG(){
+ let title=`Code Academy — Learn ${baseCourse.toUpperCase()} Lesson ${lessonNum}`;
+ let desc=`Professional ${baseCourse} lesson ${lessonNum} on Code Academy. ${userName} is learning. Earn XP, keep hearts, build projects. Reliable Code, Anytime, Anywhere.`;
+ let url=location.href;
+ el('ogTitle').setAttribute('content', title);
+ el('ogDesc').setAttribute('content', desc);
+ el('twTitle').setAttribute('content', title);
+ el('twDesc').setAttribute('content', desc);
+ document.title=title;
+}
+
+function startTimer(){
+ lessonStartTime=Date.now();
+ setInterval(()=>{
+  let diff=Math.floor((Date.now()-lessonStartTime)/1000);
+  let m=Math.floor(diff/60), s=diff%60;
+  el('hudInfo').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el('exitTime').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+ },1000);
+}
+function startHeartEngine(){
+ setInterval(async()=>{
+  if(hearts>=5||!heartsDepletedAt) return;
+  let elapsed=Date.now()-heartsDepletedAt;
+  let next=6*60*1000 - (elapsed%(6*60*1000));
+  let m=Math.floor(next/60000), s=Math.floor((next%60000)/1000);
+  el('heartTimer').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  el('heartCalc').textContent=`JS Engine: ${hearts}/5 • ${Math.floor(elapsed/1000)}s elapsed • Next ${m}m ${s}s`;
+  if(next<=1200){
+   hearts=Math.min(5,hearts+1); setHearts(); toast(hearts===5?'♥ Fully restored!':'♥ +1 Heart'); speak(hearts===5?'Hearts fully restored':`You earned one heart, ${userName}`);
+   if(hearts>=5) heartsDepletedAt=null; else heartsDepletedAt=Date.now();
+   try{ await setDoc(doc(db,'users',currentUser.uid),{hearts, heartsDepletedAt},{merge:true}) }catch{}
+  }
+ },1000);
+}
+
+async function loadLesson(){
+ const variants=[`${baseCourse}_lesson_${lessonNum}.json`, `${baseCourse}_Lesson_${lessonNum}.json`, `${course}_lesson_${lessonNum}.json`];
+ for(let p of variants){ try{ let r=await fetch(p,{cache:'no-store'}); if(r.ok){ lessonJSON=await r.json(); localStorage.setItem(`lesson_${baseCourse}_${lessonNum}`, JSON.stringify(lessonJSON)); break } }catch{} }
+ if(!lessonJSON){ let c=localStorage.getItem(`lesson_${baseCourse}_${lessonNum}`); if(c) lessonJSON=JSON.parse(c); }
+ if(!lessonJSON){ showError(`Not found: ${variants.join(', ')}`); return }
+ normalize(); await loadResults(); buildPagesReal();
+ currentPage=explicitPage? Math.max(0,Math.min(explicitPage-1,pages.length-1)) : 0;
+ sentenceIdx=0;
+ el('loaderFill').style.width='100%'; el('loaderStatus').textContent='Ready!';
+ setTimeout(()=>{ el('loader').classList.add('hide'); renderSentence(); setHearts(); speak(`Alright ${userName}, lesson ${lessonNum} is ready. Let's start.`) },400);
+}
+
+function normalize(){
+ let blocks=[]; let arr=lessonJSON.blocks||lessonJSON.content||lessonJSON;
+ if(!Array.isArray(arr)) arr=Array.isArray(lessonJSON)? lessonJSON : [];
+ if(arr.length===0 && lessonJSON.title) blocks.push({type:'heading', text:lessonJSON.title});
+ for(let b of arr){
+  if(!b) continue;
+  if(b.heading||b.title) blocks.push({type:'heading', text:b.heading||b.title});
+  if(b.text||b.content){
+   let sentences=(b.text||b.content).match(/[^.!?]+[.!?]+/g)||[b.text||b.content];
+   sentences.forEach(s=>{ if(s.trim()) blocks.push({type:'text', text:s.trim()}) });
+  }
+  if(b.code||b.example) blocks.push({type:'code', code:b.code||b.example, language:b.language||'html'});
+  if(b.question){
+   let id=b.id||`q_${baseCourse}_${lessonNum}_${hash(b.question)}`;
+   blocks.push({type:'quiz', id, question:b.question, options:b.options||[], correctAnswer:b.correctAnswer??0, xp:b.xp||10, explanation:b.explanation||''});
+  }
+ }
+ if(blocks.length===0 && lessonJSON.questions){ lessonJSON.questions.forEach((q,i)=>blocks.push({type:'quiz', id:q.id||`q_${i}`, question:q.question, options:q.options||[], correctAnswer:q.correctAnswer??0, xp:q.xp||10})) }
+ lessonJSON._blocks=blocks;
+ totalXP=blocks.filter(b=>b.type==='quiz').reduce((s,b)=>s+(b.xp||10),0);
+ el('brandTitle').textContent=`${baseCourse.toUpperCase()} • L${lessonNum}`; el('brandPath').textContent=lessonJSON.title||`${baseCourse} lesson`;
+}
+function hash(s){let h=0;for(let i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0}return Math.abs(h).toString(36)}
+async function loadResults(){ try{ let snap=await getDoc(doc(db,'users',currentUser.uid)); if(!snap.exists()) return; let d=snap.data(); let key=`${baseCourse}_${lessonNum}`; questionResults=d.lessonQuestionResults?.[key]||{}; earnedXP=0; Object.values(questionResults).forEach(r=>{if(r.correct) earnedXP+=r.xpEarned||0}) }catch{} }
+
+// REAL PAGE CALCULATOR - USES ACTUAL STAGE SIZE
+function buildPagesReal(){
+ pages=[]; let cur=[];
+ let stageRect=el('lessonStage').getBoundingClientRect();
+ let maxH=stageRect.height - 10;
+ let maxW=stageRect.width - 24;
+ measure.style.width=maxW+'px';
+ measure.style.fontSize='var(--font-body)';
+ let mBody=document.createElement('div'); mBody.style.width='100%'; mBody.style.display='flex'; mBody.style.flexDirection='column'; mBody.style.gap='10px'; measure.appendChild(mBody);
+
+ for(let block of lessonJSON._blocks){
+  if(block.type==='quiz'||block.type==='code'){
+   let test=document.createElement('div'); test.style.width='100%'; test.innerHTML=renderStatic(block); mBody.appendChild(test);
+   if(mBody.scrollHeight>maxH && cur.length>0){ pages.push([...cur]); cur=[]; mBody.innerHTML=''; mBody.appendChild(test); }
+   cur.push(block);
+   if(block.type==='quiz'){ pages.push([...cur]); cur=[]; mBody.innerHTML=''; }
+   continue;
+  }
+  let test=document.createElement('div'); test.className='chat-sentence'; test.style.width='100%'; test.textContent=block.text; mBody.appendChild(test);
+  if(mBody.scrollHeight>maxH){
+   mBody.removeChild(test);
+   if(cur.length>0){ pages.push([...cur]); cur=[]; mBody.innerHTML=''; mBody.appendChild(test); }
+   if(mBody.scrollHeight>maxH){
+    // split by words
+    let words=block.text.split(' '); let part='';
+    mBody.innerHTML='';
+    for(let w of words){
+     let prev=part; part+= (part?' ':'')+w;
+     test.textContent=part; mBody.innerHTML=''; mBody.appendChild(test);
+     if(mBody.scrollHeight>maxH && prev){ pages.push([{type:'text', text:prev}]); part=w; test.textContent=part; mBody.innerHTML=''; mBody.appendChild(test); }
+    }
+    if(part) cur.push({type:'text', text:part});
+   } else cur.push(block);
+  } else cur.push(block);
+ }
+ if(cur.length) pages.push(cur);
+ measure.innerHTML='';
+}
+
+function renderStatic(b){
+ if(b.type==='heading') return `<div class="chat-sentence" style="font-size:clamp(18px,1vw + 14px,24px);font-weight:900">${esc(b.text)}</div>`;
+ if(b.type==='text') return `<div class="chat-sentence">${esc(b.text)}</div>`;
+ if(b.type==='code') return `<div class="code-card"><div class="code-top"><span style="font-family:JetBrains Mono;font-size:8px;color:#8ea0b8">${esc(b.language||'code')}</span><div style="display:flex;gap:5px"><button onclick="window.copyCode('${encodeURIComponent(b.code)}')" style="padding:5px 9px;border-radius:7px;background:#1a2338;border:1px solid #2a3655;color:#8ea0b8;font-size:9px">Copy</button><button onclick="window.togglePreview(this)" style="padding:5px 9px;border-radius:7px;background:#38bdf8;color:#060a14;font-size:9px;font-weight:800">Preview</button></div></div><div class="code-content"><pre><code>${esc(b.code)}</code></pre></div><div class="preview-box"><iframe></iframe></div></div>`;
+ if(b.type==='quiz'){
+  let saved=questionResults[b.id];
+  let opts=(b.options||[]).map((o,i)=>`<button class="quiz-option ${saved?'disabled':''} ${saved? (i===saved.correctIndex?'correct': i===saved.selectedIndex&&!saved.correct?'wrong':''):''}" data-qid="${b.id}" data-idx="${i}"><div class="opt-letter">${String.fromCharCode(65+i)}</div><div class="opt-text">${esc(typeof o==='string'?o:o.text||o)}</div></button>`).join('');
+  return `<div class="quiz-wrap"><span class="quiz-badge">QUESTION • ${b.xp||10} XP</span><div class="quiz-q">${esc(b.question)}</div><div class="quiz-options">${opts}</div><div class="quiz-action" id="quizAction-${b.id}">${saved? `<div style="padding:8px;border-radius:10px;font-size:10px;background:${saved.correct?'rgba(34,197,94,.15)':'rgba(255,69,103,.15)'}">${saved.correct?'✓ Correct +'+saved.xpEarned+' XP':'✗ Wrong -1 Heart'} ${b.explanation?'• '+b.explanation:''}</div>` : ''}</div></div>`;
+ }
+ return '';
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+let isTyping=false;
+async function renderSentence(){
+ if(!pages.length) return;
+ let page=pages[currentPage];
+ stage.innerHTML=`<div class="scene"><div class="scene-meta"><span>${baseCourse.toUpperCase()} • LESSON ${lessonNum}</span><span>${userName.toUpperCase()} • ${earnedXP}/${totalXP} XP</span></div><div class="scene-body" id="sceneBody"></div></div>`;
+ let body=el('sceneBody');
+ for(let i=0;i<sentenceIdx;i++){
+  let div=document.createElement('div'); div.innerHTML=renderStatic(page[i]); let child=div.firstChild; body.appendChild(child);
+  if(page[i].type==='code') child.querySelectorAll('pre code').forEach(c=>hljs.highlightElement(c));
+ }
+ if(sentenceIdx<page.length){
+  let block=page[sentenceIdx];
+  if(block.type==='text'||block.type==='heading'){
+   let div=document.createElement('div'); div.className='chat-sentence'; body.appendChild(div);
+   isTyping=true; el('nextBtn').disabled=true; el('nextBtn').innerHTML='Typing...';
+   await typeSentence(div, block.text);
+   isTyping=false; el('nextBtn').disabled=false; el('nextBtn').innerHTML= (sentenceIdx===page.length-1 && currentPage===pages.length-1)? 'Finish ✓' : (sentenceIdx===page.length-1? 'Next Page →' : 'Next →');
+   if(isVoiceOn) speak(block.text);
+  } else {
+   let div=document.createElement('div'); div.innerHTML=renderStatic(block); let child=div.firstChild; body.appendChild(child);
+   if(block.type==='code'){ child.querySelectorAll('pre code').forEach(c=>hljs.highlightElement(c)) }
+   if(block.type==='quiz'){
+    let saved=questionResults[block.id];
+    if(!saved){
+     child.querySelectorAll('.quiz-option').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+       child.querySelectorAll('.quiz-option').forEach(x=>x.classList.remove('selected')); btn.classList.add('selected'); selectedQuiz={qid:btn.dataset.qid, idx:parseInt(btn.dataset.idx), container:child};
+       let action=child.querySelector(`#quizAction-${block.id}`);
+       action.innerHTML=`<button class="quiz-btn check" id="checkBtn">Check Answer</button>`;
+       el('nextBtn').disabled=true;
+       child.querySelector('#checkBtn').onclick=()=>handleAnswer(selectedQuiz.qid, selectedQuiz.idx, child);
+      });
+     });
+     el('nextBtn').disabled=true;
+    } else { el('nextBtn').disabled=false; }
+    if(isVoiceOn &&!saved) speak(`Question for you, ${userName}: ${block.question}`);
+   }
+  }
+ }
+ el('progressFill').style.width=((currentPage+1)/pages.length*100)+'%';
+}
+
+function typeSentence(el, text){
+ return new Promise(res=>{
+  let i=0; el.innerHTML=''; let cursor=document.createElement('span'); cursor.className='cursor'; el.appendChild(cursor);
+  let timer=setInterval(()=>{ if(i>=text.length){ cursor.remove(); clearInterval(timer); res(); return } cursor.insertAdjacentText('beforebegin', text[i]); i++; }, 16);
+ });
+}
+
+async function handleAnswer(qId, idx, container){
+ if(questionResults[qId]||hearts<=0) return;
+ let block=lessonJSON._blocks.find(b=>b.id===qId);
+ let correctIdx=typeof block.correctAnswer==='number'? block.correctAnswer : 0;
+ if(block.options&&block.options.some(o=>typeof o==='object'&&o.correct)) correctIdx=block.options.findIndex(o=>o.correct);
+ let isCorrect=idx===correctIdx; let xpEarn=isCorrect?(block.xp||10):0;
+ try{
+  await runTransaction(db, async(tx)=>{
+   let ref=doc(db,'users',currentUser.uid); let snap=await tx.get(ref); if(!snap.exists()) throw 'No user';
+   let data=snap.data(); let key=`${baseCourse}_${lessonNum}`; if(data.lessonQuestionResults?.[key]?.[qId]) throw 'Already';
+   let newHearts=data.hearts??hearts; let newXP=data.xp??globalXP;
+   if(isCorrect) newXP+=xpEarn; else newHearts=Math.max(0,newHearts-1);
+   let newResults={...(data.lessonQuestionResults||{})}; if(!newResults[key]) newResults[key]={};
+   newResults[key][qId]={answered:true, correct:isCorrect, xpEarned:xpEarn, selectedIndex:idx, correctIndex:correctIdx, question:block.question, createdAt:serverTimestamp()};
+   let upd={hearts:newHearts, xp:newXP, lessonQuestionResults:newResults};
+   if(newHearts===0) upd.heartsDepletedAt=serverTimestamp();
+   let histRef=doc(collection(db,'users',currentUser.uid,'lessonHistory'));
+   tx.set(histRef,{course:baseCourse, lesson:lessonNum, questionId:qId, question:block.question, selected:idx, correct:correctIdx, isCorrect, xpEarned:xpEarn, heartsAfter:newHearts, createdAt:serverTimestamp()});
+   tx.update(ref, upd);
+  });
+  questionResults[qId]={correct:isCorrect, xpEarned:xpEarn, selectedIndex:idx, correctIndex:correctIdx};
+  if(isCorrect){ earnedXP+=xpEarn; globalXP+=xpEarn; toast(`✓ Correct +${xpEarn} XP`); speak(`Correct, ${userName}! Plus ${xpEarn} XP`) } else { hearts=Math.max(0,hearts-1); toast('✗ -1 Heart'); speak(`Wrong answer, ${userName}, minus one heart`); if(hearts===0) heartsDepletedAt=Date.now(); }
+  setHearts();
+  let action=container.querySelector(`#quizAction-${qId}`);
+  action.innerHTML=`<div style="padding:8px;border-radius:10px;font-size:10px;background:${isCorrect?'rgba(34,197,94,.15)':'rgba(255,69,103,.15)'};border:1px solid ${isCorrect?'var(--green)':'var(--red)'}">${isCorrect? '✓ Correct +'+xpEarn+' XP' : '✗ Wrong -1 Heart'} ${block.explanation?'• '+block.explanation:''}</div><button class="quiz-btn next" style="margin-top:8px" onclick="document.getElementById('nextBtn').click()">Continue →</button>`;
+  container.querySelectorAll('.quiz-option').forEach((b,i)=>{ if(i===correctIdx) b.classList.add('correct'); if(i===idx&&!isCorrect) b.classList.add('wrong'); b.classList.add('disabled') });
+  el('nextBtn').disabled=false;
+ }catch(e){ if(String(e).includes('Already')){ el('nextBtn').disabled=false; } else toast('Save failed: '+e) }
+}
+
+el('nextBtn').addEventListener('click',()=>{
+ if(isTyping) return;
+ let page=pages[currentPage];
+ if(sentenceIdx<page.length-1){ sentenceIdx++; renderSentence() }
+ else { if(currentPage<pages.length-1){ currentPage++; sentenceIdx=0; renderSentence() } else { showComplete() } }
+});
+el('prevBtn').addEventListener('click',()=>{
+ if(isTyping) return;
+ if(sentenceIdx>0){ sentenceIdx--; renderSentence() }
+ else if(currentPage>0){ currentPage--; sentenceIdx=pages[currentPage].length-1; renderSentence() }
+});
+document.addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT') return; if(e.key==='ArrowRight') el('nextBtn').click(); if(e.key==='ArrowLeft') el('prevBtn').click(); if(e.key==='Escape'){ document.querySelectorAll('.modal').forEach(m=>m.classList.remove('show')); closeHist() } });
+
+el('exitBtn').addEventListener('click',()=>el('exitModal').classList.add('show'));
+el('stayBtn').addEventListener('click',()=>el('exitModal').classList.remove('show'));
+el('confirmExit').addEventListener('click',()=>{ let dash=dashboardMap[baseCourse]||'course.html'; let url=fromParam &&!fromParam.includes('http')&&!fromParam.includes('..')? fromParam : dash; location.href=url });
+el('hearts').addEventListener('click',()=>el('noHeartsModal').classList.add('show'));
+
+el('voiceBtn').addEventListener('click',()=>{
+ isVoiceOn=!isVoiceOn; voiceEnabled=isVoiceOn;
+ el('voiceBtn').classList.toggle('active', isVoiceOn);
+ el('voiceBtn').innerHTML=isVoiceOn? '<i class="fa-solid fa-volume-high"></i>' : '<i class="fa-solid fa-volume-xmark"></i>';
+ if(isVoiceOn){ toast(`Voice ON - Hi ${userName}`); speak(`Voice on, ${userName}`) } else { try{speechSynthesis.cancel()}catch{} toast('Voice muted'); el('voiceBtn').classList.remove('talking') }
+});
+
+el('pdfBtn').addEventListener('click', async()=>{
+ const {jsPDF}=window.jspdf; let pdf=new jsPDF(); let y=18;
+ try{
+  let img=new Image(); img.src='logo.png'; await new Promise(r=>{ img.onload=r; img.onerror=r; setTimeout(r,800) });
+  if(img.complete&&img.naturalWidth){ pdf.setGState(new pdf.GState({opacity:0.07})); pdf.addImage(img,'PNG',55,80,100,100); pdf.setGState(new pdf.GState({opacity:1})); }
+ }catch{}
+ pdf.setFontSize(16); pdf.text(`Code Academy - ${baseCourse.toUpperCase()} L${lessonNum}`,14,y); y+=8;
+ pdf.setFontSize(10); pdf.setTextColor(100); pdf.text(`Student: ${userName} • ${new Date().toLocaleDateString()} • ${globalXP} XP`,14,y); y+=10; pdf.setTextColor(0);
+ lessonJSON._blocks.forEach(b=>{
+  let txt=(b.text||b.question||b.code||'').slice(0,700);
+  let lines=pdf.splitTextToSize(txt,180);
+  if(y+lines.length*5>280){ pdf.addPage(); y=18 }
+  pdf.setFontSize(b.type==='heading'?12:9); pdf.text(lines,14,y); y+=lines.length*5+5;
+ });
+ pdf.save(`${baseCourse}_lesson_${lessonNum}_${userName}.pdf`);
+ toast('PDF with logo downloaded');
+});
+
+// SHARE - LIKE REGENT DATAHUB RECTANGLE
+el('shareBtn').addEventListener('click', ()=>{
+ let url=`${location.origin}${location.pathname}?course=${course}&lesson=${lessonNum}`;
+ let ref=userData.referralCode||userData.uid?.slice(0,6)||'';
+ let fullUrl=ref? `${url}&ref=${ref}&from=${userName}` : url;
+ el('shareTitle').textContent=`${baseCourse.toUpperCase()} Lesson ${lessonNum} — Code Academy`;
+ el('shareDesc').textContent=`Professional ${baseCourse} lessons. ${userName} is learning on Code Academy. Reliable Code, Anytime, Anywhere. Earn XP, keep hearts.`;
+ el('shareLink').textContent=fullUrl;
+ el('shareReferral').textContent=ref? `Referral: ${ref} • Shared by ${userName} • ${fullUrl}` : `Shared by ${userName}`;
+ document.getElementById('ogTitle').setAttribute('content', el('shareTitle').textContent);
+ document.getElementById('ogDesc').setAttribute('content', el('shareDesc').textContent);
+ el('shareModal').classList.add('show');
+ speak(`Share this lesson, ${userName}. Your referral link is ready.`);
+ if(navigator.share){
+  navigator.share({title: el('shareTitle').textContent, text: el('shareDesc').textContent + ' ' + fullUrl, url: fullUrl}).catch(()=>{});
+ }
+});
+el('copyShare').addEventListener('click', async()=>{ try{ await navigator.clipboard.writeText(el('shareLink').textContent); toast('Link + referral copied') }catch{ toast('Copy failed') } });
+
+el('historyBtn').addEventListener('click',()=>{ el('historyPanel').classList.add('active'); el('overlay').classList.add('active'); loadHist() });
+el('closeHistory').addEventListener('click',closeHist); el('overlay').addEventListener('click',closeHist);
+function closeHist(){ el('historyPanel').classList.remove('active'); el('overlay').classList.remove('active') }
+async function loadHist(){
+ try{
+  let q=query(collection(db,'users',currentUser.uid,'lessonHistory'), orderBy('createdAt','desc'), limit(100));
+  let snap=await getDocs(q); let items=snap.docs.map(d=>d.data()).filter(d=>d.course===baseCourse&&d.lesson===lessonNum);
+  historyCache=items; renderHist(items);
+ }catch(e){ el('historyList').innerHTML=`<div style="color:#ff4567;font-size:11px">Failed: ${e.message}<br>Check Firestore index: lessonHistory createdAt desc</div>` }
+}
+function renderHist(items){
+ let search=(el('historySearch').value||'').toLowerCase(); let filter=el('historyFilter').value;
+ let f=items.filter(i=>{
+  if(search &&!(i.question||'').toLowerCase().includes(search)) return false;
+  if(filter==='correct' &&!i.isCorrect) return false;
+  if(filter==='wrong' && i.isCorrect) return false;
+  return true;
+ });
+ el('historyStats').textContent=`${f.length} shown • ${f.filter(x=>x.isCorrect).length} correct • ${f.filter(x=>!x.isCorrect).length} wrong • ${f.reduce((s,x)=>s+(x.xpEarned||0),0)} XP • User: ${userName}`;
+ el('historyList').innerHTML=f.map(i=>`<div style="background:#0f182e;padding:10px;border-radius:10px;margin-bottom:6px;border:1px solid var(--line)"><div style="font-size:11px;font-weight:700">${esc(i.question||'').slice(0,90)}</div><div style="font-size:9px;color:${i.isCorrect?'#22c55e':'#ff4567'};margin-top:4px">${i.isCorrect?'✓ +'+(i.xpEarned||0)+' XP':'✗ Wrong'} • ${i.createdAt?.toDate?.()?.toLocaleTimeString?.()||''}</div></div>`).join('')||'<div style="text-align:center;color:#5b6b84;padding:16px;font-size:11px">No history yet for this lesson</div>';
+}
+el('historySearch').addEventListener('input',()=>renderHist(historyCache));
+el('historyFilter').addEventListener('change',()=>renderHist(historyCache));
+
+el('refillBtn').addEventListener('click', async()=>{ if((userData.xp||0)<200||(userData.coins||0)<100){ toast('Need 200 XP + 100 Coins'); return } try{ await runTransaction(db, async(tx)=>{ let ref=doc(db,'users',currentUser.uid); let snap=await tx.get(ref); let d=snap.data(); if(d.xp<200||d.coins<100) throw 'No funds'; tx.update(ref,{xp:d.xp-200, coins:d.coins-100, hearts:5, heartsDepletedAt:null}) }); hearts=5; setHearts(); el('noHeartsModal').classList.remove('show'); toast('♥ Restored'); speak(`Hearts restored, ${userName}`) }catch(e){ toast('Refill failed: '+e) } });
+
+function showComplete(){
+ let need=totalXP; let qual=earnedXP>=need;
+ let diff=Math.floor((Date.now()-lessonStartTime)/1000); let m=Math.floor(diff/60), s=diff%60; let timeStr=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+ let correct=Object.values(questionResults).filter(r=>r.correct).length;
+ let wrong=Object.values(questionResults).filter(r=>!r.correct).length;
+ let totalQ=correct+wrong||1;
+ let canvasId='pie'+Date.now();
+ el('completeBox').innerHTML=`
+ <h2 style="font-weight:900;font-size:16px">${qual?'Lesson Complete 🎉':'Not Qualified'}</h2>
+ <div style="display:flex;gap:12px;margin:12px 0;align-items:center">
+ <canvas id="${canvasId}" width="110" height="110" style="flex:none"></canvas>
+ <div style="font-size:11px;line-height:1.7">
+ <div>⏱ Time: <b style="color:#38bdf8">${timeStr}</b></div>
+ <div>✅ Correct: <b style="color:#22c55e">${correct}</b> / ${totalQ}</div>
+ <div>❌ Wrong: <b style="color:#ff4567">${wrong}</b></div>
+ <div>⭐ Earned: <b style="color:#38bdf8">${earnedXP}</b> / ${totalXP} XP</div>
+ <div>🔥 Global XP: <b>${globalXP}</b> (from Firebase)</div>
+ <div style="margin-top:4px;color:${qual?'#22c55e':'#ff4567'};font-weight:800">${qual?`Unlocked! ${userName}`:`Need ${totalXP} XP, you have ${earnedXP}`}</div>
+ </div>
+ </div>
+ <div style="display:flex;gap:8px;margin-top:12px">
+ <button id="goNext" style="flex:1;padding:11px;border-radius:11px;background:${qual?'#fff':'#1a2338'};color:${qual?'#060a14':'white'};font-weight:900;border:none;opacity:${qual?1:.5}" ${!qual?'disabled':''}>${qual?'Next Lesson →':'Locked'}</button>
+ <button onclick="location.href='${fromParam&&!fromParam.includes('http')? fromParam : dashboardMap[baseCourse]||'course.html'}'" style="padding:11px 14px;border-radius:11px;background:#0f182e;color:white;border:1px solid var(--line);font-weight:800">Dashboard</button>
+ </div>`;
+ el('completeModal').classList.add('show');
+ setTimeout(()=>{
+  let c=document.getElementById(canvasId); if(!c) return; let ctx=c.getContext('2d');
+  let data=[correct, wrong]; let colors=['#22c55e','#ff4567']; let total=data.reduce((a,b)=>a+b,0)||1; let start=-Math.PI/2;
+  data.forEach((v,i)=>{ ctx.beginPath(); ctx.moveTo(55,55); ctx.arc(55,55,50,start,start+(v/total)*2*Math.PI); ctx.closePath(); ctx.fillStyle=colors[i]; ctx.fill(); start+=(v/total)*2*Math.PI; });
+ },100);
+ el('completeBox').querySelector('#goNext')?.addEventListener('click',()=>{ if(qual) location.href=`lesson.html?course=${baseCourse}&lesson=${lessonNum+1}` });
+ speak(`${userName}, you spent ${m} minutes ${s} seconds. Correct ${correct}, wrong ${wrong}. Global XP ${globalXP}. ${qual?'Next lesson unlocked':'Need full XP'}`);
+ (async()=>{ try{ let ref=doc(db,'users',currentUser.uid); await setDoc(ref,{[`progress.${baseCourse}.${lessonNum}`]:{earnedXP,totalXP,thresholdXP:need,qualified:qual,timeSpent:diff,correct,wrong,completed:true,updatedAt:serverTimestamp()}},{merge:true}) }catch{} })();
+}
+
+function showError(m){ el('loader').classList.add('hide'); stage.innerHTML=`<div style="text-align:center;padding:20px"><i class="fa-solid fa-triangle-exclamation" style="font-size:28px;color:#ff4567"></i><h3 style="margin-top:10px;font-weight:900;font-size:14px">Lesson couldn't be loaded</h3><p style="font-size:11px;color:#8ea0b8;margin-top:8px;line-height:1.5">${m}</p></div>` }
+
+window.copyCode=async(c)=>{ try{ await navigator.clipboard.writeText(decodeURIComponent(c)); toast('✓ Code copied') }catch{ toast('Copy failed') } }
+window.togglePreview=(btn)=>{
+ let card=btn.closest('.code-card'); let box=card.querySelector('.preview-box'); let iframe=box.querySelector('iframe');
+ if(box.classList.contains('show')){ box.classList.remove('show'); btn.textContent='Preview'; return }
+ let code=card.querySelector('code').textContent; iframe.srcdoc=code; box.classList.add('show'); btn.textContent='Hide';
+ if(isVoiceOn) speak('Previewing code now');
+}
+
+let ro=new ResizeObserver(()=>{ if(lessonJSON){ buildPagesReal(); if(currentPage>=pages.length) currentPage=pages.length-1; if(sentenceIdx>=pages[currentPage]?.length) sentenceIdx=pages[currentPage].length-1; renderSentence() } }); ro.observe(el('lessonStage'));
+if('speechSynthesis' in window){ setTimeout(()=>{ speechSynthesis.getVoices(); }, 500) }
+</script>
+</body>
+</html>
