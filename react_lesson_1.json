@@ -1,0 +1,430 @@
+{
+  "course": "react",
+  "lessonNumber": 1,
+  "lessonId": "react-lesson-1",
+  "title": "Introduction to React - The Complete Guide",
+  "subtitle": "History, Why It Exists, Importance, Limitations & Standard Structure",
+  "description": "The ultimate beginner foundation. From who created React at Facebook, why it was needed, Virtual DOM, JSX, component model, ecosystem, advantages, limitations, and the professional folder structure used by real companies.",
+  "level": "Beginner",
+  "xpReward": 150,
+  "coinsReward": 40,
+  "estimatedMinutes": 45,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Welcome - Let's Talk Real"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey, it's me again. Before you write even one line of React, I need to tell you the STORY behind it. Because if you understand WHY React exists, you will understand HOW to use it better than 90% of beginners who just copy code."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "By the end of this lesson, you will know: Who created React and when, why Facebook had to invent it, what problems it solves, why every company wants React devs, what React CANNOT do, and the exact professional folder structure you will use for all your projects."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "IMPORTANT: You can run all codes in this lesson inside your app. Go to Home Page > Menu Tab > Click Practical or Practice > Select React. Paste the code there and Run. Please don't just read - experiment."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: The History - Who Created React?"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Year is 2011. Facebook's codebase is becoming a nightmare. Their news feed, chat, likes - everything is messy. A Facebook engineer named Jordan Walke, working on Facebook Ads, was frustrated with how slow and buggy the code was."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "He created an early prototype called FaxJS - a new way to build UIs where the UI automatically updates when data changes. It worked so well that Facebook started using it internally in 2011 for Facebook.com and later Instagram.com after they bought Instagram."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "In May 2013 at JSConf US, Facebook made it open source. People HATED it at first! They said 'Why put HTML inside JavaScript? That's wrong!' But slowly, companies realized it solves real problems. Today, React has over 220 million downloads per week on NPM. It's the most used frontend library in the world."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Timeline to remember: 2011 - FaxJS prototype by Jordan Walke at Facebook, 2012 - Used on Facebook & Instagram, 2013 - Open sourced, 2015 - React Native launched (build mobile apps with React), 2022 - React 18 with concurrent features."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Why Does React Exist? The Problem Before React"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Before React, we used jQuery and direct DOM manipulation. Imagine you have a comment list. When a new comment comes, you manually find the HTML element and append it. When someone likes, you manually find the like count and change it. For small websites it's okay. For Facebook with 1000 dynamic things happening at once? It's hell."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Two big problems existed: 1. DOM manipulation is SLOW. Every time you touch the real DOM, browser recalculates layout, repaints. Do it 100 times per second? App freezes. 2. State and UI get out of sync. You update data but forget to update UI. Users see old likes, old messages. Bugs everywhere."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "React's core philosophy solved this: DON'T tell React HOW to update the UI. Just tell React WHAT you want to see for a given data. If data = { likes: 5 }, show 5. If data becomes { likes: 6 }, React will figure out HOW to update only the number. This is called Declarative programming vs Imperative."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Imperative (Old Way with jQuery) vs Declarative (React Way)",
+      "code": "// IMPERATIVE - You tell HOW step by step (Old way)\n// You manually find element and update it\nconst button = document.querySelector('#likeBtn');\nconst countSpan = document.querySelector('#count');\nlet likes = 5;\nbutton.addEventListener('click', () => {\n likes++;\n countSpan.innerText = likes; // You manually update UI\n});\n\n// DECLARATIVE - You tell WHAT you want (React way)\nfunction LikeButton() {\n const [likes, setLikes] = React.useState(5);\n return <button onClick={() => setLikes(likes + 1)}>Likes: {likes}</button>;\n // You just say WHAT UI should be for given likes. React updates it!\n}",
+      "output": "Likes: 5 (React automatically updates to 6 when clicked)"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Who created the first prototype of React (FaxJS) at Facebook?",
+      "options": [
+        "Mark Zuckerberg",
+        "Jordan Walke in 2011",
+        "Elon Musk",
+        "Brendan Eich"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! Jordan Walke created FaxJS in 2011 to solve Facebook Ads complexity, which became React.",
+      "incorrectFeedback": "It was Jordan Walke, a Facebook engineer working on Ads, who built FaxJS in 2011.",
+      "reasoning": "History of React starts with Jordan Walke at Facebook.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: How React Works - The 3 Superpowers"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Superpower 1: Component-Based Architecture. Your app is not one big file. It's like Lego. You build small reusable pieces: Button, Navbar, Post, Comment. Combine them to build big apps. Each component has its own logic, style, and data."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Superpower 2: Virtual DOM. Real DOM is slow. Virtual DOM is a lightweight copy of Real DOM in memory. When data changes, React creates a NEW Virtual DOM, compares it with OLD Virtual DOM (this comparison is called Diffing / Reconciliation), calculates the smallest changes, and updates ONLY those parts in Real DOM. That's why React is fast."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Superpower 3: Unidirectional Data Flow + JSX. Data flows down from parent to child via props. Makes debugging easy - you always know where data came from. And JSX lets you write HTML inside JavaScript, so logic and UI live together, not in separate files."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Component-Based - Reuse Everything",
+      "code": "// One component definition\nfunction Post({ author, text }) {\n return (\n <div style={{border: '1px solid gray', padding: '10px', margin: '5px'}}>\n <h3>{author}</h3>\n <p>{text}</p>\n <button>Like</button>\n </div>\n );\n}\n\n// Reuse it many times with different data\nfunction Feed() {\n return (\n <div>\n <Post author=\"Prince\" text=\"Learning React is fun!\" />\n <Post author=\"Ama\" text=\"Just built my first component\" />\n <Post author=\"Kwame\" text=\"Virtual DOM is fast!\" />\n </div>\n );\n}",
+      "output": "Prince - Learning React is fun! [Like]\nAma - Just built my first component [Like]"
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Why Is React So Important? Why Learn It?"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Reason 1: Jobs. In Ghana, Nigeria, US, UK - React is the #1 requested frontend skill. On LinkedIn, there are 5x more React jobs than Vue or Angular. Companies pay $500-$3000 for React freelancers."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Reason 2: Ecosystem. Learn React for web, and you can use React Native to build REAL mobile apps for Android and iOS with same knowledge. Instagram, Facebook App, Shopify, Discord mobile apps are all React Native."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "Reason 3: Performance & Community. Backed by Meta (Facebook), huge community, thousands of free libraries (MUI, Tailwind, Redux). You never build alone. If you have a problem, someone already solved it."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Reason 4: Your Code Academy App itself - this beautiful dark React course page you built - is React! You're already using it. Now you're learning to build what you're using."
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "What is Virtual DOM?",
+      "options": [
+        "A real browser DOM that is slow",
+        "A lightweight in-memory copy of Real DOM that React uses to calculate minimal updates",
+        "A database for storing React code",
+        "A new HTML version"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Virtual DOM + Diffing is why React apps feel instant.",
+      "incorrectFeedback": "Virtual DOM is React's fast in-memory copy. It diffs old vs new and updates only changed parts in real DOM.",
+      "reasoning": "Virtual DOM and reconciliation algorithm is core to React performance.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Limitations - What React Cannot Do"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "I will be honest - React is not perfect. You must know its weaknesses so you are not shocked later."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "Limitation 1: React is ONLY the View layer. It only handles UI. It doesn't handle routing, API calls, or state management for big apps by itself. You need extra libraries: React Router for navigation, Redux or Zustand for big state, Axios/Fetch for API. That's extra learning."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "Limitation 2: JSX Learning Curve. Mixing HTML inside JavaScript feels weird at first. Beginners from pure HTML background get confused by {} and camelCase like className instead of class."
+    },
+    {
+      "id": "p6-4",
+      "type": "sentence",
+      "text": "Limitation 3: SEO Problem (for beginners). Since React builds page in browser with JavaScript, search engines like Google initially see an empty div. You need Next.js (React framework) to fix SEO. But for your learning now, not a problem."
+    },
+    {
+      "id": "p6-5",
+      "type": "sentence",
+      "text": "Limitation 4: Build Tools Required. You cannot just write React and open in browser like HTML. You need Node.js, Vite or Create-React-App, npm. It's heavier to start. But once set up, it's smooth."
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Which is a true limitation of React?",
+      "options": [
+        "React handles everything including backend and database alone",
+        "React is only the View - you need extra libraries for routing and large state",
+        "React cannot build mobile apps",
+        "React is slower than direct DOM manipulation for huge apps"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! React is View only. You add Router, Redux, etc. That's the ecosystem.",
+      "incorrectFeedback": "React is just UI. For routing you need React Router, for heavy state you need Redux/Zustand.",
+      "reasoning": "Understanding limitations helps you plan architecture.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Standard Structure - Like HTML Skeleton, React Has Its Own"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Just like you taught in HTML that every professional HTML page needs <!DOCTYPE>, <html>, <head>, <body>, React also has a standard professional structure. If you use Vite (modern way), this is what you get."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "text",
+      "title": "Example 3: Professional React Folder Structure (Vite)",
+      "code": "my-react-app/\n├── node_modules/ # All libraries installed by npm\n├── public/ # Static files, images, favicon\n│ └── vite.svg\n├── src/ # YOUR CODE LIVES HERE - 99% work here\n│ ├── assets/ # Images, logos\n│ ├── components/ # Reusable pieces - Button.jsx, Header.jsx\n│ ├── App.jsx # Main component - like body of your app\n│ ├── App.css # Styles for App.jsx\n│ ├── main.jsx # Entry point - connects React to HTML\n│ └── index.css # Global styles\n├── index.html # Only HTML file, has <div id=\"root\"></div>\n├── package.json # List of dependencies and scripts\n├── vite.config.js # Vite configuration\n└── README.md",
+      "output": "This is the structure used by Netflix, Facebook, your Code Academy app"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "html",
+      "title": "Example 4: The Only HTML File - index.html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n <head>\n <meta charset=\"UTF-8\" />\n <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n <title>Code Academy React App</title>\n </head>\n <body>\n <div id=\"root\"></div> <!-- React will inject EVERYTHING here -->\n <script type=\"module\" src=\"/src/main.jsx\"></script>\n </body>\n</html>",
+      "output": "Browser sees empty div, React fills it"
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: The Entry Point - src/main.jsx (Like a Bridge)",
+      "code": "import React from 'react'\nimport ReactDOM from 'react-dom/client'\nimport App from './App.jsx'\nimport './index.css'\n\n// Find #root and render <App /> inside it\nReactDOM.createRoot(document.getElementById('root')).render(\n <React.StrictMode>\n <App />\n </React.StrictMode>,\n)",
+      "output": "App component now visible on page"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: The Heart - src/App.jsx (Your Main App Component)",
+      "code": "// This is THE standard App.jsx structure - copy this for every project\nimport { useState } from 'react'\nimport './App.css'\n\nfunction App() {\n const [count, setCount] = useState(0)\n\n return (\n <>\n <h1>Code Academy - React App</h1>\n <div className=\"card\">\n <button onClick={() => setCount(count + 1)}>\n Count is {count}\n </button>\n <p>This is your standard App.jsx</p>\n </div>\n </>\n )\n}\n\nexport default App",
+      "output": "Code Academy - React App [Button: Count is 0]"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Understanding package.json and Imports"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Two things confuse beginners: imports and package.json. Let me demystify."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "json",
+      "title": "Example 7: package.json - Your Project's ID Card",
+      "code": "{\n \"name\": \"my-react-app\",\n \"version\": \"0.0.1\",\n \"scripts\": {\n \"dev\": \"vite\", // npm run dev - starts development server\n \"build\": \"vite build\", // npm run build - builds for production\n \"preview\": \"vite preview\"\n },\n \"dependencies\": {\n \"react\": \"^18.2.0\", // React library itself\n \"react-dom\": \"^18.2.0\" // Needed to show React on web\n }\n}",
+      "output": "Run npm install to get react and react-dom in node_modules"
+    },
+    {
+      "id": "p8-2",
+      "type": "sentence",
+      "text": "import means 'bring code from another file'. export default means 'let other files use this component'. It's like importing ingredients before cooking. You must export what you cook so others can eat it."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Where does 99% of your React code live?",
+      "options": [
+        "In node_modules folder",
+        "In src/ folder - especially App.jsx, components/, main.jsx",
+        "In public/ folder",
+        "In index.html only"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! src/ is your workshop. Everything else is setup.",
+      "incorrectFeedback": "Your real work is in src/ - App.jsx, main.jsx, components folder.",
+      "reasoning": "src folder contains application code, others are config/static.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: React vs Other Technologies"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Students always ask: Should I learn React, Angular, or Vue? Quick honest answer: Angular is a full framework by Google - heavy, enterprise, steep learning. Vue is easy, light, popular in Asia. React is library, flexible, most jobs globally, backed by Meta. For your Code Academy app, React is perfect because you can build web app and later mobile app with React Native using same skills."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 8: Why React Feels Better Than jQuery for Same Task",
+      "code": "// Task: Show list of 3 lessons - how would you do it?\n// jQuery way: Manually create <li> elements with document.createElement - 10 lines\n// React way: Just map over data - 3 lines and clean!\n\nfunction LessonsList() {\n const lessons = [\"Introduction\", \"JSX & Components\", \"Props\"];\n return (\n <ul>\n {lessons.map((lesson, index) => (\n <li key={index}>{lesson}</li>\n ))}\n </ul>\n );\n}",
+      "output": "- Introduction\n- JSX & Components\n- Props"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: The Two Ways to Write React Components"
+    },
+    {
+      "id": "p10-1",
+      "type": "sentence",
+      "text": "There are two syntaxes: Old Class Components (before 2019) and New Functional Components with Hooks (modern way). We will ONLY use Functional Components because that's what every company uses now since 2019. If you see class MyComponent extends React.Component online - that's old style, ignore it for now."
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 9: Modern Functional Component (We Use This) vs Old Class (Don't Use)",
+      "code": "// MODERN WAY - Functional + Hooks - USE THIS\nfunction Welcome() {\n const [name] = React.useState(\"Prince\");\n return <h1>Hello {name}</h1>;\n}\n\n// OLD WAY - Class Component - DON'T USE, just recognize it\nclass WelcomeOld extends React.Component {\n render() {\n return <h1>Hello {this.state.name}</h1>;\n }\n}\n// In interviews they may ask difference. Say: Functional is simpler, hooks, modern.",
+      "output": "Hello Prince"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Which component style do modern companies use since 2019?",
+      "options": [
+        "Class components with extends React.Component",
+        "Functional components with Hooks like useState, useEffect",
+        "Only HTML files",
+        "jQuery components"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! Functional + Hooks is the standard now. Your Code Academy app uses this.",
+      "incorrectFeedback": "Modern React = Functional components + Hooks. Class components are legacy.",
+      "reasoning": "React Hooks introduced in 2019 made functional components the standard.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-11-heading",
+      "type": "heading",
+      "text": "PAGE 11: Setting Up Your First React App (Practical Steps)"
+    },
+    {
+      "id": "p11-1",
+      "type": "sentence",
+      "text": "On your laptop (not phone), open terminal: Step 1: Install Node.js from nodejs.org. Step 2: Run npm create vite@latest my-app -- --template react. Step 3: cd my-app. Step 4: npm install. Step 5: npm run dev. Your app will open at localhost:5173. That's your React app running!"
+    },
+    {
+      "id": "p11-2",
+      "type": "sentence",
+      "text": "Don't have laptop now? No problem. Use your app's Practical editor or use StackBlitz.com - online React editor, no install needed. Just search StackBlitz React and start coding."
+    },
+    {
+      "id": "page-12-heading",
+      "type": "heading",
+      "text": "PAGE 12: Final Practical - Build Your First Standard React App Structure"
+    },
+    {
+      "id": "p12-1",
+      "type": "sentence",
+      "text": "Mission: Go to Menu > Practical > React editor. Recreate this standard structure. This is your boilerplate for ALL future React projects. Understand it, don't just copy."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Complete Standard React App",
+      "code": "// File: src/App.jsx - This is the standard every pro uses\nimport { useState } from 'react';\n\n// Component 1: Header\nfunction Header() {\n return (\n <header>\n <h1>Code Academy</h1>\n <p>Learn • Build • Master React</p>\n </header>\n );\n}\n\n// Component 2: About React (What you learned today)\nfunction AboutReact() {\n return (\n <div>\n <h2>What is React?</h2>\n <ul>\n <li>Created by Jordan Walke at Facebook in 2011 (FaxJS)</li>\n <li>Open sourced in 2013</li>\n <li>Library for building UIs with components</li>\n <li>Uses Virtual DOM for speed</li>\n <li>Declarative: Tell WHAT, not HOW</li>\n </ul>\n </div>\n );\n}\n\n// Component 3: Counter to show React is interactive\nfunction Counter() {\n const [count, setCount] = useState(0);\n return (\n <div>\n <h2>Interactive Demo - React State</h2>\n <p>You clicked {count} times - React updates ONLY this number, not whole page!</p>\n <button onClick={() => setCount(count + 1)}>Click Me</button>\n </div>\n );\n}\n\n// Main App - Combines all\nfunction App() {\n return (\n <div>\n <Header />\n <AboutReact />\n <Counter />\n <footer>\n <p>Built with React Standard Structure | Lesson 1 Complete</p>\n </footer>\n </div>\n );\n}\n\nexport default App;\n\n// HOMEWORK: Change Header text to your name, add a new component called Limitations that lists 3 limitations of React you learned in Page 6",
+      "output": "Code Academy\nWhat is React? Created by Jordan Walke...\nInteractive Demo [Click Me] You clicked 0 times"
+    },
+    {
+      "id": "page-13-heading",
+      "type": "heading",
+      "text": "PAGE 13: Summary - What You Now Know"
+    },
+    {
+      "id": "p13-1",
+      "type": "sentence",
+      "text": "Let's recap like a senior dev: React was created by Jordan Walke at Facebook in 2011 to fix Facebook's complex UI bugs. Open sourced 2013. It exists because direct DOM manipulation is slow and error-prone. It works via components, Virtual DOM diffing, and declarative JSX. It's important because jobs, React Native, huge ecosystem. Limitations: View only, needs extra libs, needs build tools, SEO needs Next.js. Standard structure: index.html with #root, src/main.jsx as entry, src/App.jsx as main component, src/components/ for reusables, package.json for dependencies."
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "In React's standard Vite structure, what does main.jsx do?",
+      "options": [
+        "It stores images",
+        "It is the entry file that finds #root in index.html and renders App.jsx inside it",
+        "It is the database file",
+        "It deletes node_modules"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! main.jsx is the bridge between index.html and App.jsx. You now understand structure like a pro!",
+      "incorrectFeedback": "main.jsx is the entry point - it uses ReactDOM.createRoot to put App inside #root.",
+      "reasoning": "Understanding entry point is crucial for React architecture.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-14-heading",
+      "type": "heading",
+      "text": "PAGE 14: Next Steps & Homework"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You have completed the most comprehensive Introduction to React lesson. Most YouTube videos don't even cover half of what you now know. You understand history, why, how, limitations, and structure."
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework 1: In Practical editor, create a component called Limitations that lists the 4 limitations from Page 6. Homework 2: Go to StackBlitz.com, create a new React project, and explore the folder structure - match it with Example 3 from Page 7."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next Lesson: Lesson 2 - JSX and Components Deep Dive. We will master JSX rules, fragments, inline styles, className, conditional rendering, and you will build 6 reusable components for your portfolio app. You are now ready - see you in Lesson 2!"
+    }
+  ]
+}

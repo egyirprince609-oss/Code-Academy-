@@ -1,0 +1,318 @@
+{
+  "course": "react",
+  "lessonNumber": 7,
+  "lessonId": "react-lesson-7",
+  "title": "Lists, Keys and Conditional Rendering",
+  "subtitle": "Display Dynamic Data Like Your Dashboard - 10 Lessons, 1 Component",
+  "description": "Master map() for lists, why keys matter for performance, conditional rendering patterns (ternary, &&, if-else), empty states, loading states, no results states - exactly how your dashboard shows lessons.",
+  "level": "Intermediate",
+  "xpReward": 180,
+  "coinsReward": 50,
+  "estimatedMinutes": 55,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Why Lists Matter - Your Dashboard Has 10 Lessons From One Array"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! In Lesson 3 you learned props + map, in Lesson 6 you filtered lessons with search. Now deep dive into LISTS. Real apps are lists: Your dashboard lessons list, Facebook feed, YouTube videos, Jumia products, WhatsApp chats - all are arrays mapped to components."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Pattern: You have array of data (from Firebase, API, state) -> You map over it -> Return component for each item -> React renders list. But there are traps: Keys, empty lists, loading, no results after search. Today you master all."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Open Practical > React. We build list features your dashboard actually uses."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: map() - The Only Way to Render Lists in React"
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: map() Basics - From Array to UI",
+      "code": "function LessonList() {\n const lessons = [\n {id: 1, title: \"Introduction to React\"},\n {id: 2, title: \"JSX and Components\"},\n {id: 3, title: \"Props\"},\n ];\n\n return (\n <div>\n {/* map() transforms array of data -> array of JSX */}\n {lessons.map((lesson) => {\n return <p key={lesson.id}>{lesson.id}: {lesson.title}</p>;\n })}\n </div>\n );\n}\n// Shorter arrow function version (pro way)\nfunction LessonListPro() {\n const lessons = [{id: 1, title: \"Intro\"}, {id: 2, title: \"JSX\"}];\n return (\n <div>\n {lessons.map(lesson => <p key={lesson.id}>{lesson.title}</p>)}\n </div>\n );\n}",
+      "output": "1: Introduction to React\n2: JSX and Components\n3: Props"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Remember: map() returns new array. You put {lessons.map(...)} inside JSX {}. For each lesson object, you return <LessonCard /> with props from lesson."
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: You fetched 20 products from API into products array. How to show ProductCard for each?",
+      "options": [
+        "Write <ProductCard /> 20 times manually",
+        "Use products.map(product => <ProductCard key={product.id} {...product} />) - one line renders 20 cards",
+        "Use for loop inside JSX directly",
+        "You cannot render lists in React"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! map() + key + spread props = standard for all lists. Facebook feed, Jumia, your dashboard all use this.",
+      "incorrectFeedback": "map() is the React way: {products.map(p => <ProductCard key={p.id} {...p} />)}. For loop cannot be used directly inside JSX.",
+      "reasoning": "map() is fundamental for dynamic lists from API data.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Keys - Why Your Dashboard Needs Them (Interview Favorite!)"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Key is special prop React uses to track which item changed, added, removed. Imagine you have lessons [1,2,3]. You delete lesson 2. Without keys, React doesn't know which one deleted, it may re-render all 3. With keys id=1,2,3, React knows id=2 deleted, only removes that one DOM element - fast!"
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Rules: Key must be unique among siblings, stable (don't change), and use id from data, NOT index. Index as key causes bugs when you reorder, delete, add."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Keys - Correct vs Buggy (Index as Key Bug)",
+      "code": "function CorrectKeys() {\n const lessons = [{id: 101, title: \"Intro\"}, {id: 102, title: \"JSX\"}];\n return (\n <div>\n {lessons.map(lesson => (\n <p key={lesson.id}>{lesson.title}</p> // ✅ Correct: stable id from data\n ))}\n </div>\n );\n}\n\nfunction BuggyKeys() {\n const lessons = [{id: 101, title: \"Intro\"}, {id: 102, title: \"JSX\"}];\n return (\n <div>\n {lessons.map((lesson, index) => (\n <p key={index}>{lesson.title}</p> // ❌ Buggy: index as key\n ))}\n </div>\n );\n}\n// Bug scenario: lessons = [Intro, JSX]. Delete Intro. \n// With id keys: React removes id 101, keeps id 102 with its state.\n// With index keys: After delete, JSX gets index 0 (was 1), React thinks it's same element, keeps old state -> input values, checkboxes get mixed!",
+      "output": "Both show Intro, JSX but buggy version breaks when deleting/reordering with state inside"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: You have todo list with checkbox state inside each TodoItem. You use index as key. User deletes first todo. What bug happens?",
+      "options": [
+        "No bug, index as key works fine always",
+        "Checkbox states shift - second todo now shows first todo's checked state because React thinks index 0 is same component, but data changed - keys must be stable id, not index",
+        "App crashes",
+        "Todos disappear all"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! This is the classic index-as-key bug - state gets mixed when deleting/reordering. Always use id from database!",
+      "incorrectFeedback": "Index as key bug: When you delete item 0, item 1 becomes index 0, React reuses component with old state. Use id from data as key!",
+      "reasoning": "Keys must be stable and unique - id from API, not array index.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Conditional Rendering - Show Different UI Based on Data"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Your dashboard shows different badge: green COMPLETED, blue CURRENT, gray LOCKED. Shows Start button only if not locked. Shows progress bar width based on completed count. All conditional rendering! 4 patterns: if-else outside JSX, ternary? :, && for show/hide, switch for many conditions."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: 4 Conditional Patterns - Your Dashboard Uses All",
+      "code": "function LessonCard({ status, title }) {\n // Pattern 1: if-else outside (for early return)\n if (status === 'locked') {\n return <div>🔒 {title} - Locked - Complete previous lesson</div>;\n }\n\n return (\n <div>\n <h3>{title}</h3>\n {/* Pattern 2: Ternary? : for if-else inside JSX */}\n <span style={{color: status==='completed'? 'green' : 'blue'}}>\n {status==='completed'? '✓ Completed' : '▶ Current'}\n </span>\n\n {/* Pattern 3: && for conditional show (only if true, show) */}\n {status==='current' && <button>Start Lesson</button>}\n {status==='completed' && <button>Review Again</button>}\n\n {/* Pattern 4: Switch logic via object map for many statuses */}\n {(() => {\n const badge = {\n completed: <span>✅</span>,\n current: <span>▶️</span>,\n locked: <span>🔒</span>\n };\n return badge[status];\n })()}\n </div>\n );\n}",
+      "output": "If locked: 🔒 Lesson - Locked\nIf current: Title ▶ Current [Start Lesson] ▶️\nIf completed: Title ✓ Completed [Review Again] ✅"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: Your Real Dashboard Status Logic",
+      "code": "function StatusBadge({ status }) {\n if (status === 'completed') {\n return <span style={{background: 'rgba(34,197,94,0.14)', color: '#4ade80', padding: '5px 10px', borderRadius: '999px'}}>COMPLETED</span>;\n }\n if (status === 'current') {\n return <span style={{background: 'rgba(97,218,251,0.14)', color: '#61dafb', padding: '5px 10px', borderRadius: '999px'}}>CURRENT</span>;\n }\n return <span style={{background: 'rgba(148,163,184,0.14)', color: '#94a3b8', padding: '5px 10px', borderRadius: '999px'}}>LOCKED</span>;\n}\n\nfunction LessonCard({ id, title, status }) {\n return (\n <div style={{border: '1px solid #1e293b', padding: '15px', borderRadius: '12px'}}>\n <p>LESSON {id}</p>\n <h3>{title}</h3>\n <StatusBadge status={status} />\n {status!== 'locked' && <button style={{marginLeft: '10px'}}>Start →</button>}\n </div>\n );\n}",
+      "output": "LESSON 1 Introduction COMPLETED [Start →]\nLESSON 3 Props LOCKED (no button)"
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Empty States, Loading States, No Results - Professional UI"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Junior devs only handle happy path - data exists, show list. Senior devs handle all states: Loading (fetching from Firebase - show spinner), Empty (no lessons yet - show 'No lessons, add one'), No Results (search 'xyz' matches 0 - show 'No lessons match xyz'), Error (fetch failed - show retry). Your dashboard HTML has loading spinner and error handling - now you understand why!"
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: All UI States - Loading, Empty, No Results, Error (Pro Pattern)",
+      "code": "function LessonGrid({ lessons, loading, error, search }) {\n // State 1: Loading\n if (loading) {\n return <div style={{textAlign: 'center', padding: '40px'}}>Loading your course... spinner</div>;\n }\n\n // State 2: Error\n if (error) {\n return <div style={{color: 'red', padding: '20px'}}>Failed to load: {error} <button>Retry</button></div>;\n }\n\n // State 3: Empty (no lessons at all)\n if (lessons.length === 0) {\n return <div style={{textAlign: 'center', padding: '40px'}}><p>No lessons yet</p><button>+ Add First Lesson</button></div>;\n }\n\n // Filter for search\n const filtered = lessons.filter(l => l.title.toLowerCase().includes(search.toLowerCase()));\n\n // State 4: No Results (search matches 0)\n if (filtered.length === 0) {\n return <div style={{textAlign: 'center', padding: '40px'}}><p>No lessons match \"{search}\"</p><p>Try different search</p></div>;\n }\n\n // State 5: Happy path - show list\n return (\n <div style={{display: 'grid', gap: '12px'}}>\n {filtered.map(lesson => <p key={lesson.id}>{lesson.title}</p>)}\n </div>\n );\n}",
+      "output": "Loading... -> Error with Retry -> Empty with Add button -> No results for 'xyz' -> List of lessons"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: User searches 'Advanced Hooks' but no lesson has that title. What should UI show?",
+      "options": [
+        "Show blank white page - nothing",
+        "Show 'No lessons match \"Advanced Hooks\" - Try different search' with clear button - good UX, not blank",
+        "Show error and crash app",
+        "Show all lessons ignoring search"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! No results state is crucial UX - don't show blank, show helpful message. Your dashboard should handle this!",
+      "incorrectFeedback": "Always handle no results: Show message with search term and suggestion. Blank screen confuses users.",
+      "reasoning": "Handling all UI states (loading, empty, no results, error) is professional UX.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Filtering and Sorting Lists - Like Your Dashboard"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Filter + Sort - Real Dashboard Features",
+      "code": "import { useState } from 'react';\n\nfunction LessonDashboard() {\n const [lessons] = useState([\n {id: 1, title: \"Introduction\", status: \"completed\", xp: 100},\n {id: 2, title: \"JSX\", status: \"completed\", xp: 100},\n {id: 3, title: \"Props\", status: \"current\", xp: 50},\n {id: 4, title: \"State\", status: \"locked\", xp: 0},\n ]);\n const [filter, setFilter] = useState(\"all\");\n const [sortBy, setSortBy] = useState(\"id\");\n\n // Filter\n const filtered = lessons.filter(l => filter===\"all\" || l.status===filter);\n \n // Sort\n const sorted = [...filtered].sort((a,b) => {\n if (sortBy===\"title\") return a.title.localeCompare(b.title);\n if (sortBy===\"xp\") return b.xp - a.xp;\n return a.id - b.id;\n });\n\n return (\n <div>\n <div style={{display: 'flex', gap: '10px'}}>\n <select value={filter} onChange={(e) => setFilter(e.target.value)}><option value=\"all\">All</option><option value=\"completed\">Completed</option></select>\n <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}><option value=\"id\">Sort by ID</option><option value=\"title\">Sort by Title</option></select>\n </div>\n <p>Showing {sorted.length} lessons</p>\n {sorted.map(l => <p key={l.id}>{l.id}: {l.title} - {l.status} - {l.xp} XP</p>)}\n </div>\n );\n}\n// Change filter to completed -> shows 2 lessons\n// Change sort to title -> alphabetical order",
+      "output": "[Filter: All] [Sort: ID]\nShowing 4 lessons\n1: Introduction - completed - 100 XP..."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: You have 10 lessons. You want to show completed lessons first, then current, then locked. How to sort?",
+      "options": [
+        "You cannot sort by status, only by id",
+        "Create status order map {completed: 0, current: 1, locked: 2} and sort by that order value: lessons.sort((a,b)=> order[a.status]-order[b.status])",
+        "Filter only, cannot sort",
+        "Manually reorder array in database"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Custom sort with order map - senior dev pattern. Completed first makes sense for user progress!",
+      "incorrectFeedback": "Map status to number: completed=0, current=1, locked=2, then sort by that number. Custom sorting!",
+      "reasoning": "Custom sort logic is common for status-based ordering.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Nested Lists - Lessons Inside Modules"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: Nested Lists - Module Contains Lessons (Advanced)",
+      "code": "function CourseOutline() {\n const modules = [\n {id: 1, name: \"React Basics\", lessons: [{id: 1, title: \"Introduction\"}, {id: 2, title: \"JSX\"}]},\n {id: 2, name: \"Intermediate\", lessons: [{id: 3, title: \"Props\"}, {id: 4, title: \"State\"}]},\n ];\n\n return (\n <div>\n {modules.map(module => (\n <div key={module.id} style={{border: '1px solid gray', padding: '15px', margin: '10px', borderRadius: '8px'}}>\n <h3>{module.name}</h3>\n {/* Nested map - lessons inside module */}\n <ul>\n {module.lessons.map(lesson => (\n <li key={lesson.id}>{lesson.title}</li>\n ))}\n </ul>\n </div>\n ))}\n </div>\n );\n}\n// Outer map for modules, inner map for lessons inside each module\n// Each level needs its own key!",
+      "output": "React Basics\n- Introduction\n- JSX\nIntermediate\n- Props\n- State"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Performance - Why Keys Matter for Speed"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Without keys, when you add one lesson to list of 100, React re-renders all 100 DOM nodes - slow! With keys, React knows only one new id added, it creates one DOM node - fast! Keys help Virtual DOM diffing. Also, avoid anonymous functions inside map for performance in huge lists, but for your 10 lessons it's okay."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 8: List Performance Tips",
+      "code": "function OptimizedList({ lessons }) {\n // ✅ Good: key with id\n // ✅ Good: Extract component to avoid re-creating function inside map (for huge lists)\n return (\n <div>\n {lessons.map(lesson => (\n <LessonCard key={lesson.id} lesson={lesson} />\n ))}\n </div>\n );\n}\n\nfunction LessonCard({ lesson }) {\n // Component outside map - not recreated each render\n return <p>{lesson.title}</p>;\n}\n\n// For 10 lessons, performance difference tiny\n// For 1000 lessons (like Facebook feed), keys + extracted component = huge speed boost",
+      "output": "10 lessons rendered fast with keys\n1000 lessons would also be fast with correct keys"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Dashboard with All States"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "This final combines everything: loading, error, empty, no results, filter, sort, keys, conditional rendering - exactly your dashboard production code! Paste in Practical editor."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Production Dashboard with All List States",
+      "code": "import { useState, useEffect } from 'react';\n\nfunction App() {\n const [lessons, setLessons] = useState([]);\n const [loading, setLoading] = useState(true);\n const [search, setSearch] = useState(\"\");\n const [filter, setFilter] = useState(\"all\");\n const [sortBy, setSortBy] = useState(\"id\");\n\n useEffect(() => {\n setTimeout(() => {\n setLessons([\n {id: 1, title: \"Introduction to React\", status: \"completed\", xp: 100},\n {id: 2, title: \"JSX and Components\", status: \"completed\", xp: 100},\n {id: 3, title: \"Props and Communication\", status: \"current\", xp: 50},\n {id: 4, title: \"State and Interaction\", status: \"locked\", xp: 0},\n {id: 5, title: \"React Hooks\", status: \"locked\", xp: 0},\n ]);\n setLoading(false);\n }, 1000);\n }, []);\n\n const filtered = lessons.filter(l => {\n const matchSearch = l.title.toLowerCase().includes(search.toLowerCase());\n const matchFilter = filter===\"all\" || l.status===filter;\n return matchSearch && matchFilter;\n });\n\n const sorted = [...filtered].sort((a,b) => sortBy===\"title\"? a.title.localeCompare(b.title) : a.id - b.id);\n\n function getBadge(status) {\n if (status===\"completed\") return <span style={{background: '#22c55e20', color: '#4ade80', padding: '4px 8px', borderRadius: '99px', fontSize: '10px'}}>COMPLETED</span>;\n if (status===\"current\") return <span style={{background: '#61dafb20', color: '#61dafb', padding: '4px 8px', borderRadius: '99px', fontSize: '10px'}}>CURRENT</span>;\n return <span style={{background: '#94a3b820', color: '#94a3b8', padding: '4px 8px', borderRadius: '99px', fontSize: '10px'}}>LOCKED</span>;\n }\n\n if (loading) return <div style={{padding: '40px', textAlign: 'center', background: '#07111f', color: 'white', minHeight: '100vh'}}>Loading your course... spinner (useEffect fetch)</div>;\n if (lessons.length===0) return <div style={{padding: '40px', textAlign: 'center'}}>No lessons yet <button>+ Add First</button></div>;\n\n return (\n <div style={{background: '#07111f', color: 'white', minHeight: '100vh', padding: '20px'}}>\n <h2>React Development - {lessons.filter(l => l.status==='completed').length}/{lessons.length} completed</h2>\n <div style={{display: 'flex', gap: '10px', margin: '15px 0', flexWrap: 'wrap'}}>\n <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder=\"Search lessons...\" style={{padding: '8px', flex: 1, minWidth: '200px'}} />\n <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{padding: '8px'}}><option value=\"all\">All</option><option value=\"completed\">Completed</option><option value=\"current\">Current</option><option value=\"locked\">Locked</option></select>\n <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} style={{padding: '8px'}}><option value=\"id\">Sort by ID</option><option value=\"title\">Sort by Title</option></select>\n </div>\n {sorted.length===0? (\n <div style={{textAlign: 'center', padding: '40px', color: '#94a3b8'}}><p>No lessons match \"{search}\" with filter \"{filter}\"</p><button onClick={() => {setSearch(\"\"); setFilter(\"all\");}}>Clear Filters</button></div>\n ) : (\n <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px'}}>\n {sorted.map(lesson => (\n <div key={lesson.id} style={{background: 'rgba(15,31,51,0.88)', border: '1px solid rgba(97,218,251,0.16)', borderRadius: '20px', padding: '20px'}}>\n <div style={{display: 'flex', justifyContent: 'space-between'}}><span style={{color: '#61dafb', fontSize: '11px'}}>LESSON {String(lesson.id).padStart(2,'0')}</span>{getBadge(lesson.status)}</div>\n <h3 style={{margin: '10px 0'}}>{lesson.title}</h3>\n <p style={{color: '#94a3b8', fontSize: '13px'}}>{lesson.xp} XP</p>\n {lesson.status!== 'locked' && <button style={{marginTop: '10px', padding: '8px 12px', background: '#61dafb', border: 'none', borderRadius: '8px', fontWeight: '700'}}>Start →</button>}\n </div>\n ))}\n </div>\n )}\n </div>\n );\n}\nexport default App;",
+      "output": "Loading 1s -> React Development 2/5 completed\n[Search] [Filter All] [Sort ID]\n[Cards] with COMPLETED/CURRENT/LOCKED badges\nType 'xyz' -> No lessons match xyz [Clear Filters]"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Next Steps"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered: map() to render lists from arrays, keys must be stable unique id not index to avoid state bugs and for performance, conditional rendering 4 patterns (if outside for early return, ternary? : for if-else inside JSX, && for show/hide, object map for many conditions), all UI states (loading spinner while fetching, error with retry, empty with add button, no results with clear filters, happy path list), filtering + sorting + search combined, nested lists (modules -> lessons), and performance with keys helping Virtual DOM diff only changed items."
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "MASTER APPLICATION: Your dashboard needs to: Show loading while Firebase fetch, if error show retry, if no lessons show 'Add First Lesson', if search matches 0 show 'No results for xyz', otherwise show filtered sorted lessons with correct badge colors. Which pattern?",
+      "options": [
+        "Only map() without any conditions",
+        "Early returns for loading/error/empty, then filter + sort, then conditional for no results vs list, ternary for badge colors, && for Start button only if not locked, keys with id",
+        "Use only if-else inside map",
+        "You need 5 different components for each state"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You just described production dashboard architecture - early returns + filter/sort + ternary + && + keys. That's exactly how your HTML dashboard works!",
+      "incorrectFeedback": "Handle all states: if loading return spinner, if error return error, if empty return empty UI, filter, if filtered empty return no results, else map with keys and conditional badge/button.",
+      "reasoning": "Handling all list states is what separates junior from senior React dev - your Lesson 10 target needs this.",
+      "xpReward": 30
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "BUG FIX: You used index as key and have input inside each LessonCard. When you delete lesson 2, input values shift to wrong cards. Why?",
+      "options": [
+        "Because index as key makes React reuse DOM nodes by position, not by id - when you delete index 1, index 2 becomes index 1 but keeps old DOM state",
+        "Because React doesn't support inputs in lists",
+        "Because you forgot useEffect",
+        "Index as key is always correct"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! Index bug - React tracks by position not identity. Use stable id from data as key to preserve correct state per item.",
+      "incorrectFeedback": "Index as key = React thinks position 0 is same component even if data changed. Use id to track identity, not position.",
+      "reasoning": "Understanding key bug is crucial for forms inside lists.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "When to use && vs ternary? : for conditional rendering?",
+      "options": [
+        "Use && when you want to show something or nothing (show/hide), use ternary when you want to show either A or B (if-else)",
+        "They are same, interchangeable always",
+        "&& is for loops, ternary for conditions",
+        "You should only use if-else outside JSX"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Exactly! && = show or hide one thing. Ternary = choose between two things. Your dashboard uses && for Start button, ternary for badge colors.",
+      "incorrectFeedback": "&&: {isLoggedIn && <Logout />} - show if true else nothing. Ternary: {status==='completed'? <Completed/> : <Locked/>} - choose one of two.",
+      "reasoning": "Choosing right conditional pattern makes code cleaner.",
+      "xpReward": 20
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Add module grouping - group lessons by module like Example 7. 2. Add drag to reorder lessons (advanced). 3. Add pagination - show 3 lessons per page with Next/Prev buttons using slice()."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next: Lesson 8 - Styling in React. You have functionality, now make it beautiful like your dashboard design - inline styles, CSS modules, Tailwind, styled-components, and the exact dark glassmorphism design system you used. See you there!"
+    }
+  ]
+}
+
+
+
+
+

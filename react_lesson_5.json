@@ -1,0 +1,338 @@
+{
+  "course": "react",
+  "lessonNumber": 5,
+  "lessonId": "react-lesson-5",
+  "title": "React Hooks",
+  "subtitle": "The Superpowers of Modern React - useState, useEffect & Beyond",
+  "description": "Master Hooks rules, useState deep dive, useEffect for data fetching like your Firebase dashboard, dependency array, cleanup, useRef, and build real features: live timer, auto-save, API calls.",
+  "level": "Intermediate",
+  "xpReward": 180,
+  "coinsReward": 50,
+  "estimatedMinutes": 60,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Why Hooks? The Story Before and After"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! Before 2019, if you wanted state or lifecycle (like fetching data when component loads), you HAD to use Class components with this.state and componentDidMount - complicated, confusing this keyword, lots of code. Functional components were dumb - they could only show UI, no state, no side effects."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "In 2019, React team introduced Hooks. Hooks = functions that let functional components use state, lifecycle, and other React features. Now functional components can do EVERYTHING class components did, but simpler, cleaner, no this. That's why your dashboard you gave me uses functional components + hooks - it's modern standard."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Today you master 2 most important hooks that power 90% of your Lesson 10 final app: useState (we started in Lesson 4, now deep dive) and useEffect (for data fetching, timers, saving to Firebase). These two hooks alone build your entire dashboard loading logic!"
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "INTERACTIVE RULE: Before we start, open Menu > Practical > React. We will test every hook live. Don't skip."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: The 2 Golden Rules of Hooks - Break Them and App Crashes"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Rule 1: Only call hooks at TOP LEVEL of your component. Never inside if, for, nested function, or after return. Why? React relies on order of hooks to track state. If you call useState inside if, order changes, React gets confused, bug!"
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Rule 2: Only call hooks INSIDE React functional components or custom hooks. Never inside normal JavaScript function, class, or outside component. Hooks need React context to work."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: Rules of Hooks - Wrong vs Correct (MOST COMMON INTERVIEW QUESTION)",
+      "code": "import { useState, useEffect } from 'react';\n\n// ❌ WRONG - Hook inside if condition\nfunction Wrong1({ isLoggedIn }) {\n if (isLoggedIn) {\n const [user, setUser] = useState(null); // BAD! Order changes if isLoggedIn false\n }\n return <p>Hi</p>;\n}\n\n// ❌ WRONG - Hook inside nested function\nfunction Wrong2() {\n function getState() {\n const [count, setCount] = useState(0); // BAD! Not top level\n }\n return <p>Hi</p>;\n}\n\n// ✅ CORRECT - All hooks at top level, always same order\nfunction Correct({ isLoggedIn }) {\n const [user, setUser] = useState(null); // Always called, top level\n const [count, setCount] = useState(0); // Always called, second\n\n // Logic AFTER hooks\n if (isLoggedIn) {\n // Use user state here, but don't create hooks here\n }\n\n return <p>Hi {count}</p>;\n}",
+      "output": "Correct version always works, Wrong versions cause 'Rendered more hooks than during previous render' error"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: You have a component that shows user profile only if user is logged in. You wrote: if (loggedIn) { const [profile, setProfile] = useState(null); }. What happens?",
+      "options": [
+        "Works fine",
+        "Crashes with 'Rendered more hooks than previous render' because hook order changes when loggedIn changes",
+        "Profile will be undefined always",
+        "Hooks can be inside if conditions"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! This is the #1 hooks bug in real jobs. Always call hooks at top, outside any condition.",
+      "incorrectFeedback": "Rule 1: Never inside if/for. Call useState at top always, then use its value inside if.",
+      "reasoning": "Hooks order must be consistent across renders - React's core mechanism.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: useState Deep Dive - Beyond Simple Counter"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "You know basic useState from Lesson 4. Now deep dive: useState with object, array, functional updates, and lazy initialization. Real apps don't just count 0,1,2 - they manage user object, lessons array, form data object."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: useState with Object - Your User Profile State",
+      "code": "import { useState } from 'react';\n\nfunction UserProfile() {\n const [user, setUser] = useState({\n name: \"Prince\",\n xp: 150,\n coins: 30,\n completedLessons: [1,2,3]\n });\n\n function addXP() {\n // ❌ WRONG: user.xp += 50 - mutating state directly!\n // ✅ CORRECT: Create new object with spread operator\n setUser({\n...user, // Keep all old properties\n xp: user.xp + 50 // Update only xp\n });\n }\n\n function completeLesson(lessonId) {\n setUser({\n...user,\n completedLessons: [...user.completedLessons, lessonId], // Add to array immutably\n xp: user.xp + 50\n });\n }\n\n return (\n <div>\n <p>{user.name} - {user.xp} XP - {user.coins} coins</p>\n <p>Completed: {user.completedLessons.join(\", \")}</p>\n <button onClick={addXP}>Add 50 XP</button>\n <button onClick={() => completeLesson(4)}>Complete Lesson 4</button>\n </div>\n );\n}",
+      "output": "Prince - 150 XP - 30 coins\nCompleted: 1,2,3\n[Add 50 XP] [Complete Lesson 4]"
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: Functional Update - When New State Depends on Old State",
+      "code": "import { useState } from 'react';\n\nfunction FastCounter() {\n const [count, setCount] = useState(0);\n\n function handleTripleClick() {\n // ❌ WRONG - count is stale (0) for all 3 calls, result = 1 not 3\n // setCount(count + 1);\n // setCount(count + 1);\n // setCount(count + 1);\n\n // ✅ CORRECT - Functional update gets latest value\n setCount(prev => prev + 1);\n setCount(prev => prev + 1);\n setCount(prev => prev + 1);\n // Result = 3! Each prev is latest value\n }\n\n return <button onClick={handleTripleClick}>Count: {count} - Click to +3</button>;\n}\n// Real app use case: Rapid XP updates, multiple lesson completions quickly",
+      "output": "Count: 0 - Click to +3 (becomes 3 after click, not 1)"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: You have const [user, setUser] = useState({name: 'Ama', xp: 100}). You want to update xp to 150 but keep name. Which is correct?",
+      "options": [
+        "user.xp = 150; // Direct mutation",
+        "setUser({ xp: 150 }) // Only xp, name lost!",
+        "setUser({...user, xp: 150 }) // Spread old, overwrite xp",
+        "setUser(user.xp + 50)"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Perfect! Spread...user keeps all old properties, then xp: 150 overwrites only xp. Immutable update pattern.",
+      "incorrectFeedback": "Never mutate directly. Always create new object: setUser({...user, xp: 150}) - spread keeps name, xp updates.",
+      "reasoning": "Immutable updates are required for React to detect changes and re-render.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: useEffect - The Side Effect Manager (Most Important Hook After useState)"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "State is for data inside component. But what about things OUTSIDE component? Fetching lessons from Firebase, setting timer, saving XP to localStorage, changing document title. These are Side Effects - things that affect outside world. useEffect handles side effects."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Think: Your component is a person. useState is person's memory. useEffect is person's actions that affect outside world - like calling API (phone call), setting interval (alarm), saving to database (writing diary). useEffect runs AFTER component renders."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Syntax: useEffect(() => { // side effect code }, [dependencies]). Dependencies array tells React WHEN to run effect. No array = run after every render. [] empty = run only once after first render (mount). [xp] = run when xp changes."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: useEffect - Your Dashboard Loading Logic Explained",
+      "code": "import { useState, useEffect } from 'react';\n\nfunction CoursePage() {\n const [lessons, setLessons] = useState([]);\n const [loading, setLoading] = useState(true);\n\n // This useEffect is EXACTLY like your dashboard Firebase code!\n useEffect(() => {\n // This runs ONLY ONCE after first render (because [] empty)\n console.log(\"Component mounted - Fetching lessons from Firebase...\");\n \n // Simulate Firebase fetch\n setTimeout(() => {\n const fetchedLessons = [\n {id: 1, title: \"Intro\"},\n {id: 2, title: \"JSX\"}\n ];\n setLessons(fetchedLessons);\n setLoading(false);\n }, 2000);\n\n }, []); // Empty array = run once on mount\n\n if (loading) return <div>Loading your course... spinner</div>;\n return <div>{lessons.map(l => <p key={l.id}>{l.title}</p>)}</div>;\n}\n// This is why you saw loading spinner in your HTML - useEffect fetching data!",
+      "output": "First shows: Loading your course... spinner\nAfter 2 seconds: Intro\nJSX"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: In your dashboard, you have loading spinner that shows while fetching from Firebase, then shows lessons. Which useEffect dependency makes fetch run only once on page load?",
+      "options": [
+        "useEffect(() => { fetch() }) // No dependency array - runs after every render - infinite loop!",
+        "useEffect(() => { fetch() }, []) // Empty array - runs only once after first mount - CORRECT for initial fetch",
+        "useEffect(() => { fetch() }, [lessons]) // Runs every time lessons changes - also infinite loop!",
+        "You don't need useEffect for fetching"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "YES! [] empty = mount only once. That's your dashboard's loading logic. No array = infinite loop bug!",
+      "incorrectFeedback": "Empty [] = run once on mount - perfect for initial Firebase fetch. No array = runs every render = infinite loop fetching!",
+      "reasoning": "Dependency array controls when effect runs - critical for data fetching.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: useEffect Dependencies - The Tricky Part Made Simple"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Dependency array is like a watch list. React watches those values. If any value in array changes since last render, effect runs again. If empty [], nothing to watch, so runs only once. If [xp], runs when xp changes. If no array at all, React doesn't know what to watch, so runs after EVERY render."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: Dependencies in Action - Auto-Save XP to localStorage",
+      "code": "import { useState, useEffect } from 'react';\n\nfunction XPTracker() {\n const [xp, setXp] = useState(0);\n const [coins, setCoins] = useState(0);\n\n // Effect 1: Run only once - Load saved XP on mount\n useEffect(() => {\n const savedXP = localStorage.getItem(\"xp\");\n if (savedXP) setXp(Number(savedXP));\n console.log(\"Loaded XP from storage\");\n }, []); // Empty = mount only\n\n // Effect 2: Run when xp changes - Save XP whenever it changes\n useEffect(() => {\n localStorage.setItem(\"xp\", xp);\n console.log(`XP saved: ${xp}`);\n }, [xp]); // Watch xp - when xp changes, save\n\n // Effect 3: Run when coins changes - Different save\n useEffect(() => {\n localStorage.setItem(\"coins\", coins);\n }, [coins]);\n\n return (\n <div>\n <p>XP: {xp} Coins: {coins}</p>\n <button onClick={() => setXp(xp + 10)}>+10 XP</button>\n <button onClick={() => setCoins(coins + 5)}>+5 Coins</button>\n </div>\n );\n}\n// Click +10 XP -> Effect 2 runs -> saves to localStorage\n// Click +5 Coins -> Effect 3 runs -> saves coins",
+      "output": "XP: 0 Coins: 0 [+10 XP] [+5 Coins]\nClicking saves automatically to localStorage"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: You want document title to show 'React Course - 3/10 completed'. Title should update whenever completed count changes. How?",
+      "options": [
+        "useEffect(() => { document.title = `React Course - ${completed}/10` }, [completed]) // Runs when completed changes",
+        "useEffect(() => { document.title =... }, []) // Empty array - title never updates after first time",
+        "Set document.title directly in component body without useEffect",
+        "You cannot change document title in React"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Perfect! Dependency [completed] means title updates whenever completed changes. That's reactive!",
+      "incorrectFeedback": "Put completed in dependency array so effect re-runs when completed count changes and updates title.",
+      "reasoning": "Dependency array makes effects reactive to specific state changes.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Cleanup - The Most Overlooked But Critical Part"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "What if you set an interval timer with setInterval in useEffect, but user navigates to another page? Interval keeps running, memory leak, app slows! Cleanup function solves this: Return a function from useEffect that cleans up - clearInterval, remove event listener, cancel fetch. Cleanup runs before next effect and when component unmounts."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Cleanup - Timer and Event Listener (Real App Need)",
+      "code": "import { useState, useEffect } from 'react';\n\nfunction LiveClock() {\n const [time, setTime] = useState(new Date().toLocaleTimeString());\n\n useEffect(() => {\n console.log(\"Clock mounted - Starting interval\");\n const interval = setInterval(() => {\n setTime(new Date().toLocaleTimeString());\n }, 1000);\n\n // CLEANUP: Runs when component unmounts or before next effect\n return () => {\n console.log(\"Clock unmounting - Clearing interval\");\n clearInterval(interval); // Stop timer, prevent memory leak!\n };\n }, []); // Empty = set interval once on mount, cleanup on unmount\n\n return <p>Time: {time}</p>;\n}\n\nfunction App() {\n const [showClock, setShowClock] = useState(true);\n return (\n <div>\n <button onClick={() => setShowClock(!showClock)}>{showClock? \"Hide\" : \"Show\"} Clock</button>\n {showClock && <LiveClock />}\n </div>\n );\n}\n// Click Hide -> LiveClock unmounts -> cleanup runs -> interval cleared\n// No cleanup = interval keeps running even when hidden = bug!",
+      "output": "Time: 10:30:45 AM [Hide Clock]\nClick Hide -> interval stops (cleanup works)"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "APPLICATION: You added window.addEventListener('resize',...) in useEffect to track screen size. User navigates away but resize listener still fires and causes error. What did you miss?",
+      "options": [
+        "You forgot cleanup - return () => window.removeEventListener('resize',...) in useEffect",
+        "You need to add more event listeners",
+        "useEffect doesn't need cleanup for event listeners",
+        "Resize listener auto-removes itself"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Exactly! Every addEventListener in useEffect needs removeEventListener in cleanup return. Otherwise memory leak!",
+      "incorrectFeedback": "Cleanup is mandatory for subscriptions: intervals, event listeners, WebSocket connections. Return cleanup function.",
+      "reasoning": "Cleanup prevents memory leaks - essential for production apps like your Code Academy app.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: useRef - The Secret Hook for DOM and Values That Don't Trigger Re-render"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "useRef is like a box that holds value but changing it does NOT trigger re-render. Two uses: 1. Access DOM element directly (focus input, measure div). 2. Store value that persists across renders but doesn't need to trigger re-render (like previous value, timer id). Syntax: const inputRef = useRef(null); <input ref={inputRef} />; then inputRef.current.focus()."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: useRef - Focus Input Like Pro Apps Do",
+      "code": "import { useState, useEffect, useRef } from 'react';\n\nfunction SearchWithFocus() {\n const [search, setSearch] = useState(\"\");\n const inputRef = useRef(null); // Create ref\n const renderCount = useRef(0); // Count renders without triggering re-render\n\n useEffect(() => {\n renderCount.current++; // Update ref, no re-render triggered\n console.log(`Rendered ${renderCount.current} times`);\n });\n\n function handleFocus() {\n inputRef.current.focus(); // Directly focus input DOM element\n inputRef.current.style.border = \"2px solid #61dafb\";\n }\n\n return (\n <div>\n <input \n ref={inputRef} // Attach ref to input\n value={search}\n onChange={(e) => setSearch(e.target.value)}\n placeholder=\"Search lessons...\"\n />\n <button onClick={handleFocus}>Focus Input</button>\n <p>Render count (via ref): {renderCount.current}</p>\n </div>\n );\n}\n// Click Focus Input -> input gets focused and blue border - direct DOM access via ref",
+      "output": "[Input: Search lessons...] [Focus Input Button]\nRender count: 5"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Building Your Real Dashboard Feature - Firebase + useEffect"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Let's build exactly what your HTML dashboard does: Show loading spinner, fetch user data from Firebase (simulated), show XP/coins/progress. This combines useState + useEffect + cleanup."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 8: Real Dashboard Logic - Your Firebase Code Explained",
+      "code": "import { useState, useEffect } from 'react';\n\nfunction Dashboard() {\n const [user, setUser] = useState(null);\n const [lessons, setLessons] = useState([]);\n const [loading, setLoading] = useState(true);\n const [error, setError] = useState(null);\n\n useEffect(() => {\n let isMounted = true; // Flag to prevent state update if unmounted\n\n async function fetchDashboardData() {\n try {\n setLoading(true);\n // Simulate Firebase calls: getDoc(doc(db, 'users', userId))\n await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay\n \n if (!isMounted) return; // Don't update if component unmounted\n \n const userData = { xp: 120, coins: 30, completed: [1,2] };\n const lessonsData = [\n {id: 1, title: \"Introduction\", status: \"completed\"},\n {id: 2, title: \"JSX\", status: \"current\"},\n ];\n \n setUser(userData);\n setLessons(lessonsData);\n } catch (err) {\n if (isMounted) setError(\"Failed to load course\");\n } finally {\n if (isMounted) setLoading(false);\n }\n }\n\n fetchDashboardData();\n\n return () => {\n isMounted = false; // Cleanup: Mark as unmounted so no state update after unmount\n console.log(\"Dashboard unmounted - canceling fetch\");\n };\n }, []); // Empty = fetch once on mount - exactly like your authentication.js code!\n\n if (loading) return <div className=\"loading\"><div className=\"spinner\"></div>Loading your course...</div>;\n if (error) return <p>{error}</p>;\n return <div>Welcome {user.xp} XP - {lessons.length} lessons loaded</div>;\n}",
+      "output": "First 1.5s: Loading spinner\nThen: Welcome 120 XP - 2 lessons loaded"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "FINAL APPLICATION: Your dashboard code has: const [loading, setLoading] = useState(true) and useEffect with [] that fetches Firebase. Why do you need isMounted flag and cleanup?",
+      "options": [
+        "You don't need it, it's extra code",
+        "If user navigates away before fetch finishes, component unmounts, but fetch tries to setState on unmounted component causing memory leak warning - isMounted prevents that",
+        "isMounted makes fetch faster",
+        "Firebase requires isMounted flag"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "BINGO! This is production-level bug fix - prevents 'Can't perform React state update on unmounted component' error. Senior devs always add this!",
+      "incorrectFeedback": "Cleanup with isMounted prevents state update after unmount - essential when fetching data that takes time.",
+      "reasoning": "Handling async operations with cleanup is crucial for real Firebase apps like yours.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Interactive Dashboard with Hooks"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "This final practical combines EVERYTHING: useState for XP/coins/lessons, useEffect for loading + auto-save + timer, useRef for focus, cleanup for interval. Paste in Practical editor - this is mini version of your real dashboard!"
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Full Hooks Dashboard (Your App Mini Version)",
+      "code": "import { useState, useEffect, useRef } from 'react';\n\nfunction App() {\n const [lessons, setLessons] = useState([]);\n const [loading, setLoading] = useState(true);\n const [xp, setXp] = useState(0);\n const [studyTime, setStudyTime] = useState(0);\n const searchRef = useRef(null);\n\n // Effect 1: Initial load like Firebase (mount once)\n useEffect(() => {\n const timer = setTimeout(() => {\n setLessons([\n {id: 1, title: \"Introduction to React\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", status: \"current\"},\n {id: 3, title: \"Props\", status: \"locked\"},\n ]);\n setXp(100);\n setLoading(false);\n }, 1000);\n return () => clearTimeout(timer);\n }, []);\n\n // Effect 2: Study timer - runs every second, cleanup on unmount\n useEffect(() => {\n const interval = setInterval(() => setStudyTime(t => t + 1), 1000);\n return () => clearInterval(interval);\n }, []);\n\n // Effect 3: Auto-save XP when xp changes\n useEffect(() => {\n if (xp > 0) {\n localStorage.setItem(\"xp\", xp);\n console.log(`Auto-saved XP: ${xp}`);\n }\n }, [xp]);\n\n // Effect 4: Focus search on mount\n useEffect(() => {\n if (searchRef.current) searchRef.current.focus();\n }, []);\n\n function completeLesson(id) {\n setLessons(lessons.map(l => l.id===id? {...l, status: 'completed'} : l.id===id+1? {...l, status: 'current'} : l));\n setXp(prev => prev + 50); // Functional update - safe for rapid clicks\n }\n\n if (loading) return <div style={{padding: '40px', textAlign: 'center'}}>Loading your course... (useEffect fetching)</div>;\n\n return (\n <div style={{background: '#07111f', color: 'white', minHeight: '100vh', padding: '20px'}}>\n <div style={{display: 'flex', gap: '10px', flexWrap: 'wrap'}}>\n <span>⚡ {xp} XP (auto-saved via useEffect)</span>\n <span>⏱️ Study: {studyTime}s (via useEffect interval)</span>\n <span>📚 {lessons.filter(l => l.status==='completed').length}/{lessons.length}</span>\n </div>\n <input ref={searchRef} placeholder=\"Search (auto-focused via useRef)\" style={{marginTop: '15px', padding: '8px', width: '100%'}} />\n <div style={{marginTop: '20px', display: 'grid', gap: '10px'}}>\n {lessons.map(l => (\n <div key={l.id} style={{border: '1px solid #61dafb', padding: '15px', borderRadius: '12px'}}>\n <p>{l.title} - {l.status}</p>\n {l.status==='current' && <button onClick={() => completeLesson(l.id)}>Complete +50 XP</button>}\n </div>\n ))}\n </div>\n <p style={{marginTop: '20px', color: '#94a3b8', fontSize: '12px'}}>Check console: useEffect logs for mount, XP save, timer. Try leaving page - interval cleanup prevents leak!</p>\n </div>\n );\n}\nexport default App;",
+      "output": "Loading... 1s then dashboard:\n⚡ 100 XP ⏱️ Study: 5s 📚 1/3\n[Search input auto-focused]\n[Lesson cards with Complete buttons]"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & What's Next"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered Hooks: Rules (top level only, inside components), useState deep dive (object spread...user, array spread [...arr], functional update prev=>prev+1 for rapid changes), useEffect (side effects after render, []=mount once for Firebase fetch, [xp]=run when xp changes for auto-save, no array=every render), cleanup (return ()=>clearInterval for timers, removeEventListener, prevent memory leaks, isMounted flag for async fetch), useRef (box that doesn't trigger re-render, for DOM focus and render count)."
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "MASTER APPLICATION: You need to build feature: When user opens React course page, fetch lessons from Firebase (once), show loading, start study timer that counts seconds, auto-save XP to localStorage whenever XP changes, and auto-focus search input. Which hooks and dependencies?",
+      "options": [
+        "Only useState for everything",
+        "useState for lessons/loading/xp/timer, useEffect [] for fetch + focus, useEffect [] for timer with cleanup, useEffect [xp] for auto-save, useRef for search input focus",
+        "Use only useEffect with no dependencies",
+        "You need class components for this"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You just architected your real dashboard! That's exactly how your HTML file's Firebase logic works - useState + multiple useEffects with correct dependencies + useRef + cleanup. You are now job-ready for Hooks!",
+      "incorrectFeedback": "Break down: Fetch = useEffect [], Timer = useEffect [] + cleanup interval, Auto-save = useEffect [xp], Focus = useRef + useEffect [].",
+      "reasoning": "Combining multiple hooks with correct dependencies is how real production dashboards like yours are built - this is Lesson 10 target foundation.",
+      "xpReward": 35
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Add useEffect that changes document.title to show XP. 2. Add useRef to count how many times user completed lesson without triggering re-render. 3. Simulate error handling in fetch with try/catch."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next: Lesson 6 - Forms and Events. Now that you know useState + useEffect + useRef, you will build controlled forms, validation, handle submit, and create a real Add Lesson form for your dashboard. See you there - you're halfway to Lesson 10 complete app!"
+    }
+  ]
+}

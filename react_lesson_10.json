@@ -1,0 +1,366 @@
+{
+  "course": "react",
+  "lessonNumber": 10,
+  "lessonId": "react-lesson-10",
+  "title": "Build Complete React Application",
+  "subtitle": "Capstone - Combine Everything Into Production App Like Your Dashboard",
+  "description": "Final project combining lessons 1-9 into complete React app with routing, context, hooks, forms, lists, styling, Firebase. Tricky interview-level application questions.",
+  "level": "Advanced",
+  "xpReward": 250,
+  "coinsReward": 80,
+  "estimatedMinutes": 90,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Your Final Target - What You Will Build"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! This is it. Lesson 10 final project is your dashboard you gave me - React course page with: Navbar XP/coins, Hero with progress, LessonGrid with 10 cards, Search + Filter, Add Lesson form, Glassmorphism design, Firebase loading, Routing /react -> /lesson/:id, Context for XP, Custom hooks, Performance with memo."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "No long theory today. We go straight to tricky application scenarios you WILL face in real job and interviews. Each question has close options - read carefully! Open Practical > React editor for code samples."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Final App Blueprint - Structure You Will Build",
+      "code": "my-react-app/\nsrc/\n├── components/\n│ ├── Navbar.jsx // Context XP, memo\n│ ├── Hero.jsx // Progress bar dynamic width\n│ ├── LessonCard.jsx // Glassmorphism + status colors via props\n│ └── LessonGrid.jsx // map + keys + filter + sort + all UI states\n├── context/\n│ └── AppContext.jsx // XP, coins, theme global\n├── hooks/\n│ ├── useLocalStorage.js // Custom hook\n│ └── useFetch.js // Custom hook for Firebase\n├── pages/\n│ ├── CoursePage.jsx // /react - combines all\n│ └── LessonPage.jsx // /lesson/:id - useParams\n├── App.jsx // Router + Provider\n└── main.jsx // Entry\n\n// Tech stack: React + Router + Context + Hooks + Firebase + Glassmorphism",
+      "output": "Complete app structure - exactly like your dashboard HTML but React version"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Tricky Questions - State vs Props vs Context"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have search text that only LessonGrid uses to filter lessons. Where should search state live?",
+      "options": [
+        "In AppContext global context so every component can access search",
+        "In LessonGrid itself or its parent CoursePage with useState - because only LessonGrid needs it, no need to make it global. Lifting to AppContext would cause unnecessary re-renders of Navbar, Hero etc.",
+        "In localStorage only",
+        "In LessonCard component"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! Search is local to grid, not global. Don't put everything in Context - only global data like XP/user/theme. Local state for local features!",
+      "incorrectFeedback": "Search is used only in LessonGrid - keep state close to where it's used (CoursePage or LessonGrid). Context is for truly global data needed in many places.",
+      "reasoning": "State colocation - keep state as close as possible to where it's needed, not always global.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: LessonCard receives title, status, onComplete as props. Inside it you have const [isHovered, setIsHovered] = useState(false) for hover effect. Is isHovered props or state? Why?",
+      "options": [
+        "Props, because parent passes it",
+        "State, because it changes inside LessonCard itself (hover), not from parent, and only LessonCard needs it - internal UI state",
+        "Context, because hover is global",
+        "It should be in Firebase"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Hover is internal UI state, changes inside component, not from parent. Props = external data from parent, State = internal data that changes inside.",
+      "incorrectFeedback": "Hover state: Changes inside card on mouse enter/leave, only card needs it, doesn't affect parent. That's internal state, not props.",
+      "reasoning": "Distinguishing props (external) vs state (internal) is core React thinking.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: XP needs to be shown in Navbar, LessonCard, ProfilePage - 3 different branches. You used props drilling: App -> CoursePage -> LessonGrid -> LessonCard passes xp through 3 levels. What's better and why?",
+      "options": [
+        "Keep drilling, it's fine for 3 levels",
+        "Use Context - XP is global data needed in many places at different depths, drilling makes middle components receive xp just to pass down even if they don't use it - Context gives direct access via useContext anywhere",
+        "Use localStorage only, no state",
+        "Put XP in LessonCard state"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Global data = Context. Prop drilling through 3+ levels is code smell - middle components cluttered with props they don't use.",
+      "incorrectFeedback": "XP needed in many places, different branches = Context. Props drilling = App passes to CoursePage (doesn't use xp, just passes) to LessonGrid (doesn't use) to LessonCard (uses) - wasteful.",
+      "reasoning": "Context solves prop drilling for global data like XP, user, theme.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Tricky Questions - useEffect Dependencies"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You have useEffect(() => { fetchLessons() }, []) that fetches from Firebase on mount. Inside fetchLessons you use search state to filter. Search changes but fetch doesn't re-run with new search. Why?",
+      "options": [
+        "Because dependency array is [] empty, so effect runs only once on mount, doesn't watch search changes - if you need to re-fetch when search changes, add search to deps: [search]",
+        "Because Firebase doesn't support search",
+        "Because useEffect cannot have dependencies",
+        "Because fetchLessons is not defined"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! [] = mount once. If effect uses search inside, and you want it to re-run when search changes, add search to dependency array. Otherwise it uses stale search value from first render!",
+      "incorrectFeedback": "Empty [] = run once, ignores later search changes. If effect depends on search, put search in deps: [search] so it re-runs when search changes.",
+      "reasoning": "Dependency array must include all values used inside effect that can change.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You wrote useEffect(() => { setInterval(() => setTime(...), 1000) }) with NO dependency array. What happens?",
+      "options": [
+        "Interval set once, works fine",
+        "Interval set after EVERY render - every time component re-renders (e.g., XP changes), new interval created, old not cleared, 10 intervals running after 10 renders - memory leak! Must add [] and cleanup return () => clearInterval",
+        "Interval never runs",
+        "No array is same as []"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! No deps = run after every render = many intervals! Always use [] for mount-only effects + cleanup. This is common production bug!",
+      "incorrectFeedback": "No dependency array = effect runs after every render = new interval each render = memory leak. Use [] + cleanup clearInterval.",
+      "reasoning": "Missing dependency array causes effect to run every render - critical bug for intervals/listeners.",
+      "xpReward": 20
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Code Sample: Correct useEffect with Cleanup",
+      "code": "useEffect(() => {\n const interval = setInterval(() => setTime(new Date()), 1000);\n return () => clearInterval(interval); // Cleanup!\n}, []); // Empty = mount once, cleanup on unmount\n\n// vs Buggy:\nuseEffect(() => {\n setInterval(() => setTime(new Date()), 1000); // No cleanup, no deps = leak!\n});",
+      "output": "Correct: 1 interval, cleared on unmount\nBuggy: Many intervals, never cleared"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Tricky Questions - Keys and Lists"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have lessons [{id: 1, title: 'Intro'}, {id: 2, title: 'JSX'}]. You render with key={index}. You delete lesson id 1. You have input inside LessonCard with user typed text 'My notes'. What bug?",
+      "options": [
+        "No bug, works fine",
+        "Input text 'My notes' that was in lesson 2 card now appears in lesson 1 position? Actually after delete, lesson 2 becomes index 0, React thinks it's same component as old index 0 (because key 0 same), so it keeps old DOM with 'My notes' but data is now JSX - state mismatch! Use key={id} not index",
+        "App crashes",
+        "Lessons disappear all"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Index as key bug - React reuses DOM by position, not identity. id as key preserves correct identity and state per item.",
+      "incorrectFeedback": "Index key: After delete id1, id2 becomes index0, React thinks key 0 same component, keeps old input state 'My notes' for wrong lesson. id key: id2 stays id2, correct state.",
+      "reasoning": "Keys must be stable id, not index, to preserve component identity and state.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have 1000 lessons, you filter with search. You use lessons.filter(...).map(...) directly in render. Every time parent re-renders (XP changes), filter runs again even though lessons and search didn't change - wasteful. How to optimize?",
+      "options": [
+        "Keep as is, filtering 1000 items every render is fine",
+        "Use useMemo(() => lessons.filter(...), [lessons, search]) - memoize filtered result, only re-filter when lessons or search actually changes, not when XP changes",
+        "Use useEffect for filtering",
+        "You cannot optimize lists"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! useMemo for expensive calculations - filter 1000 items only when deps change, not on every parent re-render. Performance win!",
+      "incorrectFeedback": "useMemo caches filtered array: useMemo(()=> filter, [lessons, search]) - only re-filters when lessons or search changes, skips when XP changes.",
+      "reasoning": "useMemo optimizes expensive calculations like filtering large lists.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Tricky Questions - Forms and Controlled Components"
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: You have <input value={search} onChange={(e)=>setSearch(e.target.value)} /> but you forgot value prop, only onChange. User types, input shows text but search state updates? What type is this?",
+      "options": [
+        "Controlled - because you have onChange",
+        "Uncontrolled - because without value prop, input controls its own DOM value, React state may update but input not driven by state, they get out of sync for features like clear button setSearch('') won't clear input",
+        "Both controlled and uncontrolled same",
+        "Input cannot work without value"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! Controlled needs BOTH value={state} + onChange. Missing value = uncontrolled, DOM controls value, setSearch('') won't clear input visually!",
+      "incorrectFeedback": "Controlled = value + onChange both. Only onChange without value = uncontrolled - DOM holds value, React state not source of truth, clear button fails.",
+      "reasoning": "Controlled component requires value prop to be source of truth.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-9",
+      "type": "quiz",
+      "question": "Q9: You have form with handleSubmit that does fetch('/api/lessons', {method: 'POST', body: form}). You forgot e.preventDefault(). What happens on submit?",
+      "options": [
+        "Form submits via fetch and stays on page - fine",
+        "Browser does default form submission - full page reload, React state lost, fetch may be cancelled by reload, lessons disappear - must preventDefault()",
+        "Nothing happens",
+        "preventDefault is optional"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Without preventDefault, browser reloads page (old HTML behavior), SPA state lost. Always preventDefault in React forms!",
+      "incorrectFeedback": "No preventDefault = browser reloads page, React app unmounts, state reset, fetch interrupted. Must e.preventDefault() first line in handleSubmit.",
+      "reasoning": "preventDefault stops browser's default reload behavior for SPA forms.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Tricky Questions - Performance and Memo"
+    },
+    {
+      "id": "quiz-10",
+      "type": "quiz",
+      "question": "Q10: You wrapped LessonCard with memo but it still re-renders when parent XP changes, even though LessonCard props (title, status) didn't change. You pass onComplete={() => handleComplete(id)} as prop. Why memo not working?",
+      "options": [
+        "memo doesn't work in React",
+        "Because onComplete is new arrow function every parent render - () => handleComplete(id) creates new function reference each time, memo sees prop changed (new function), so re-renders. Fix: useCallback for handleComplete and pass stable reference",
+        "Because title changed",
+        "Memo only works for class components"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Arrow function in render = new reference each time = memo thinks prop changed. useCallback memoizes function reference.",
+      "incorrectFeedback": "New function each render breaks memo: onComplete={() =>...} creates new function, memo shallow compares, sees different reference, re-renders. Use useCallback to keep stable reference.",
+      "reasoning": "Functions as props break memo if not memoized with useCallback.",
+      "xpReward": 20
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Fix for Q10 - useCallback",
+      "code": "// Buggy - new function each render, breaks memo\nfunction App() {\n return <LessonCard onComplete={() => handleComplete(id)} />\n}\n\n// Fixed - stable function reference\nfunction App() {\n const handleComplete = useCallback((id) => {\n // complete logic\n }, []);\n return <LessonCard onComplete={handleComplete} />\n // Now memo works - onComplete reference stable unless deps change\n}",
+      "output": "Buggy: LessonCard re-renders every parent render\nFixed: LessonCard only re-renders when title/status actually changes"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Tricky Questions - Routing and Navigation"
+    },
+    {
+      "id": "quiz-11",
+      "type": "quiz",
+      "question": "Q11: User on /react page has search='hooks' filtering lessons. Clicks Start Lesson 2 which does navigate('/lesson/2'). Then clicks Back button which does navigate('/react'). Search is now empty, not 'hooks'. Why and how to preserve?",
+      "options": [
+        "Search should be in local state of CoursePage - when navigate away, CoursePage unmounts, state lost. To preserve, lift search to App state or Context or URL query param?search=hooks so back navigation restores it",
+        "Search automatically preserved by Router",
+        "You cannot preserve search",
+        "Use window.location"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! Local state lost on unmount. Preserve via Context, App state, or URL search params - so back button restores filter!",
+      "incorrectFeedback": "CoursePage unmounts on navigate to /lesson/2, its search state destroyed. When back to /react, new CoursePage mounts with initial search ''. Lift to Context or URL param to preserve.",
+      "reasoning": "State persistence across routes requires lifting state or URL params.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-12",
+      "type": "quiz",
+      "question": "Q12: You have <Link to='/lesson/2'>Start</Link> and also onClick that does addXP(50). Clicking Start navigates but XP not added. Why?",
+      "options": [
+        "Link prevents onClick",
+        "Because Link navigation happens immediately, component may unmount before addXP state update completes - need to add XP before navigate or use navigate with state, or handle XP in LessonPage mount via useEffect",
+        "addXP cannot be called with Link",
+        "Link and onClick cannot be together"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! Navigation unmounts current page, state update may be lost. Add XP before navigate, or in next page's useEffect, or use Context with localStorage persistence.",
+      "incorrectFeedback": "Race condition: navigate unmounts CoursePage, setXp may not complete. Solution: addXP before navigate, or make XP persistent via Context + localStorage so it survives navigation.",
+      "reasoning": "Handling state updates with navigation requires ordering or persistence.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Tricky Questions - Custom Hooks and Context"
+    },
+    {
+      "id": "quiz-13",
+      "type": "quiz",
+      "question": "Q13: You created custom hook useLocalStorage that returns [value, setValue] and uses useEffect to save to localStorage. You use it in 2 components: Navbar uses const [xp] = useLocalStorage('xp',0) and LessonCard uses const [xp, setXp] = useLocalStorage('xp',0). Navbar shows 0 but LessonCard shows 150. Why not synced?",
+      "options": [
+        "Because each useLocalStorage call creates independent state - they both read initial 0, but only LessonCard updates its own state + localStorage, Navbar's state doesn't know about localStorage change from other component - need Context to share same state instance, or use storage event listener, or lift to common parent",
+        "localStorage automatically syncs all hooks",
+        "Custom hooks share state automatically",
+        "You need to use same key"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! Custom hook instance per component = independent state. Same key in localStorage doesn't auto-sync state. Need Context for shared state, or window storage event.",
+      "incorrectFeedback": "Each hook call = separate useState. Component A updates localStorage + its state, Component B still has old state. Context shares one state instance across components.",
+      "reasoning": "Custom hooks don't share state between components - each call is independent. Context shares state.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Mini Complete App with All Lessons"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now build mini final app combining all tricky concepts - Context, memo, useCallback, useMemo, Router logic, controlled forms. This is your interview-ready code!"
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL - Capstone App (All Lessons 1-9 Combined)",
+      "code": "import { createContext, useContext, useState, useEffect, useMemo, useCallback, memo } from 'react';\n\n// Context for global XP (Lesson 9)\nconst AppContext = createContext();\nfunction useXP() { return useContext(AppContext); }\n\n// Custom hook (Lesson 9)\nfunction useLocalStorage(key, initial) {\n const [val, setVal] = useState(() => JSON.parse(localStorage.getItem(key) || JSON.stringify(initial)));\n useEffect(() => localStorage.setItem(key, JSON.stringify(val)), [key, val]);\n return [val, setVal];\n}\n\n// Memoized card with dynamic styling (Lesson 8 + 7 + 4)\nconst LessonCard = memo(function Card({ id, title, status, onComplete }) {\n const badge = { completed: {c: '#4ade80', t: 'COMPLETED'}, current: {c: '#61dafb', t: 'CURRENT'}, locked: {c: '#94a3b8', t: 'LOCKED'}}[status];\n return (\n <div style={{background: 'rgba(15,31,51,0.88)', backdropFilter: 'blur(18px)', border: `1px solid ${badge.c}30`, borderRadius: '20px', padding: '20px'}}>\n <div style={{display: 'flex', justifyContent: 'space-between'}}>\n <span style={{color: '#61dafb', fontSize: '11px'}}>LESSON {String(id).padStart(2,'0')}</span>\n <span style={{color: badge.c, background: badge.c+'20', padding: '5px 8px', borderRadius: '999px', fontSize: '10px'}}>{badge.t}</span>\n </div>\n <h3 style={{color: 'white'}}>{title}</h3>\n {status!=='locked' && <button onClick={() => onComplete(id)} style={{background: '#61dafb', border: 'none', padding: '8px 12px', borderRadius: '8px', marginTop: '10px', fontWeight: '700'}}>Start →</button>}\n </div>\n );\n});\n\nfunction App() {\n const [lessons, setLessons] = useLocalStorage(\"lessons\", [\n {id: 1, title: \"Introduction to React\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", status: \"current\"},\n {id: 3, title: \"Props\", status: \"locked\"},\n ]);\n const [xp, setXp] = useLocalStorage(\"xp\", 120);\n const [search, setSearch] = useState(\"\"); // Local state (not global)\n const [filter, setFilter] = useState(\"all\");\n\n const filtered = useMemo(() => lessons.filter(l => {\n const matchSearch = l.title.toLowerCase().includes(search.toLowerCase());\n const matchFilter = filter==='all' || l.status===filter;\n return matchSearch && matchFilter;\n }), [lessons, search, filter]); // useMemo for performance\n\n const handleComplete = useCallback((id) => {\n setLessons(prev => prev.map(l => l.id===id? {...l, status: 'completed'} : l.id===id+1? {...l, status: 'current'} : l));\n setXp(prev => prev + 50);\n }, [setLessons, setXp]); // useCallback stable reference for memo\n\n const completed = useMemo(() => lessons.filter(l => l.status==='completed').length, [lessons]);\n const progress = (completed / lessons.length) * 100;\n\n return (\n <AppContext.Provider value={{ xp }}>\n <div style={{background: '#07111f', minHeight: '100vh', padding: '20px', color: 'white'}}>\n <div style={{display: 'flex', gap: '10px'}}><span>⚡ {xp} XP</span><span>{completed}/{lessons.length} {Math.round(progress)}%</span></div>\n <div style={{height: '9px', background: 'rgba(148,163,184,0.12)', borderRadius: '99px', margin: '15px 0'}}><div style={{width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #61dafb, #8b5cf6)', borderRadius: '99px', transition: 'width 0.6s ease'}}></div></div>\n <div style={{display: 'flex', gap: '10px', marginBottom: '15px'}}>\n <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder=\"Search...\" style={{padding: '8px', flex: 1}} />\n <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{padding: '8px'}}><option value=\"all\">All</option><option value=\"completed\">Completed</option><option value=\"current\">Current</option></select>\n </div>\n {filtered.length===0? <p>No lessons match \"{search}\" <button onClick={() => {setSearch(\"\"); setFilter(\"all\");}}>Clear</button></p> : <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px'}}>{filtered.map(l => <LessonCard key={l.id} {...l} onComplete={handleComplete} />)}</div>}\n </div>\n </AppContext.Provider>\n );\n}\nexport default App;",
+      "output": "⚡ 120 XP 1/3 33% [Progress bar]\n[Search] [Filter All]\n[Cards] with COMPLETED/CURRENT badges\nType search -> filtered with useMemo, Clear button for no results"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Final Tricky Quiz + You Are React Developer!"
+    },
+    {
+      "id": "quiz-14",
+      "type": "quiz",
+      "question": "FINAL Q14: In final app, you have: useState for lessons, useLocalStorage for XP (custom hook), useState for search, useMemo for filtered, useCallback for handleComplete, memo for LessonCard, Context for XP, Router for /lesson/:id. User types in search input. Which states cause filtered to recalculate and which cause LessonCard to re-render?",
+      "options": [
+        "Search changes -> filtered recalculates (useMemo dep includes search), LessonCard re-renders only if its props changed? Actually search change causes App re-render, but memo + useCallback means LessonCard only re-renders if its id/title/status changed, not just because search changed - but filtered array new reference causes all visible cards to re-render anyway. XP change -> App re-render, filtered NOT recalculated (search/lessons same), but Context XP change causes all Context consumers to re-render",
+        "No re-renders happen",
+        "All cards always re-render on any state change",
+        "Search doesn't affect anything"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "PERFECT! You understand re-render flow: useMemo deps control recalculation, memo + useCallback control child re-renders, Context consumers re-render on Context change. This is senior-level React mental model!",
+      "incorrectFeedback": "Search -> App re-render -> useMemo recalculates filtered (search dep) -> new filtered array -> map creates cards -> memo checks props, cards with same props skip, but filtered is new array so visible cards re-render. XP Context change -> all useContext consumers re-render.",
+      "reasoning": "Mastering re-render flow with useMemo, memo, useCallback, Context is what makes you senior React dev - ready for job!",
+      "xpReward": 35
+    },
+    {
+      "id": "quiz-15",
+      "type": "quiz",
+      "question": "Q15: Your final app works on desktop but on mobile, lesson grid shows 1 card per row but cards are too narrow with huge padding. You used gridTemplateColumns: repeat(auto-fit, minmax(320px, 1fr)) and padding 22px. What's issue and fix?",
+      "options": [
+        "320px min too large for mobile 360px screen - 320px + 22px padding + gap = overflow, cards shrink. Fix: Use minmax(280px, 1fr) or 100% on mobile via media query or clamp, reduce padding on mobile with @media or responsive padding",
+        "Grid cannot work on mobile",
+        "You need fixed 3 columns always",
+        "Padding doesn't affect grid"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! minmax min too big for mobile causes overflow/narrow cards. Use 280px min or responsive: minmax(min(100%, 320px), 1fr) or media query for padding. That's responsive debugging!",
+      "incorrectFeedback": "320px min on 360px screen leaves only 40px for gaps/padding, cards overflow. Use smaller min like 280px or min(100%, 320px) and responsive padding.",
+      "reasoning": "Responsive grid needs appropriate min values for mobile - real-world mobile bug!",
+      "xpReward": 20
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You completed 10 lessons! You now know: Lesson 1-2 JSX components, Lesson 3 props, Lesson 4 state, Lesson 5 hooks useState useEffect useRef, Lesson 6 forms controlled, Lesson 7 lists keys conditional, Lesson 8 styling glassmorphism variables responsive, Lesson 9 Context custom hooks Router memo performance, Lesson 10 capstone combining all with tricky real-world bugs."
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Final challenge: Build your complete React course dashboard from scratch using this capstone code as starter, add Firebase (like your HTML), add Router with 2 routes, add dark/light toggle, deploy to Vercel, and share link - you are now React developer! Congratulations from Code Academy!"
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "All 10 lessons done! You have XP, coins, progress tracking, search, filter, glass design, Context, custom hooks - exactly your dashboard you gave me but now you understand every line. Go build and get that React job!"
+    }
+  ]
+}

@@ -1,0 +1,398 @@
+{
+  "course": "react",
+  "lessonNumber": 2,
+  "lessonId": "react-lesson-2",
+  "title": "JSX and Components",
+  "subtitle": "The Language of React - How to Build Reusable Lego Blocks",
+  "description": "Master JSX syntax, all JSX rules, JavaScript inside JSX, functional components, composition, fragments, styling in React, and how to structure components like real companies do.",
+  "level": "Beginner",
+  "xpReward": 150,
+  "coinsReward": 40,
+  "estimatedMinutes": 50,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Welcome - Where Real React Starts"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! In Lesson 1 you learned WHY React exists. Now in Lesson 2 you learn HOW to write it. This is the most important lesson in your whole React course. If you master JSX and Components today, Lessons 3-10 will be easy."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Goal for today: By the end, you will be able to create 5 reusable components - Header, ProfileCard, Skills, LessonCard, Footer - and combine them to build the first version of your portfolio app that will become your final project in Lesson 10."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Remember: Run everything in Home > Menu > Practical > React editor. Don't just read. Type it, break it, fix it."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: What is JSX? Not HTML, Not JavaScript"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "JSX = JavaScript XML. It's a syntax extension that lets you write HTML-like code INSIDE JavaScript. Example: const element = <h1>Hello</h1>; This line is NOT HTML, it's JSX. React converts it behind the scenes to React.createElement('h1', null, 'Hello')."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Why did Facebook invent JSX? Because they realized: Logic and UI belong together. In old days we separated HTML, CSS, JS in different files. But for a Button, the logic (what happens when clicked), the UI (how it looks), and the state (is it loading?) are all related. JSX puts them together in one component file."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "JSX looks like HTML but has superpowers: You can embed JavaScript, use components, and write dynamic UIs. It's not a string, it's not HTML - it's syntactic sugar for React.createElement."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: What JSX Really Becomes - Behind The Scenes",
+      "code": "// What YOU write (JSX - easy to read)\nconst element = <h1 className=\"title\">Hello Prince</h1>;\n\n// What React CONVERTS it to (JavaScript - hard to read)\nconst element2 = React.createElement('h1', {className: 'title'}, 'Hello Prince');\n\n// Both do same thing! JSX is just easier syntax\n// This conversion is done by Babel compiler automatically",
+      "output": "Hello Prince (both versions show same)"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: The 7 Golden Rules of JSX - Must Know"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Rule 1: Return ONE parent element. You cannot return <h1> and <p> as siblings without wrapping. Use <div> or Fragment <> </>."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Rule 2: class becomes className. Because class is a reserved keyword in JavaScript. So <div class='box'> in HTML becomes <div className='box'> in JSX."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "Rule 3: All tags must be closed. <img> must be <img /> or <img></img>. <br> becomes <br />. In HTML you could leave it open, in JSX you cannot."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Rule 4: camelCase for attributes. onclick becomes onClick, onchange becomes onChange, tabindex becomes tabIndex. Rule 5: Use {} for JavaScript expressions. Rule 6: Style is an object, not string. Rule 7: Comments are {/* comment */} not <!-- comment -->."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: All JSX Rules in One Component",
+      "code": "function RulesDemo() {\n return (\n // Rule 1: ONE parent - using fragment <>\n <>\n {/* Rule 7: This is how you comment in JSX */}\n {/* Rule 2: className not class */}\n {/* Rule 3: Self-closed tags */}\n <h1 className=\"title\">My Title</h1>\n <img src=\"logo.png\" alt=\"Logo\" />\n <br />\n {/* Rule 5: JS inside {} */}\n <p>{2 + 2} Rules Learned</p>\n {/* Rule 4: camelCase event */}\n <button onClick={() => alert('Clicked')}>Click</button>\n {/* Rule 6: Style as object */}\n <div style={{color: 'blue', backgroundColor: 'lightgray', padding: '10px'}}>\n Styled Box\n </div>\n </>\n );\n}",
+      "output": "My Title\n[Logo]\n4 Rules Learned [Button]\nStyled Box (blue text)"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "In JSX, what do you use instead of class?",
+      "options": [
+        "class",
+        "className",
+        "classes",
+        "myClass"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! className because class is reserved in JavaScript. This trips every beginner.",
+      "incorrectFeedback": "In JSX it's className, not class. Example: <div className='box'>",
+      "reasoning": "JSX attribute naming follows JavaScript camelCase and reserved words avoidance.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: JavaScript Inside JSX - The {} Magic"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "This is what makes JSX powerful. Anything inside {} is executed as JavaScript. You can put variables, calculations, function calls, ternary operators, map(). You CANNOT put if statements or for loops directly inside {} - you need to put them outside or use ternary/map."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: Everything You Can Do Inside {}",
+      "code": "function JSInsideJSX() {\n const name = \"Prince\";\n const age = 24;\n const isStudent = true;\n const skills = [\"React\", \"JavaScript\", \"HTML\"];\n\n function getGreeting() {\n return \"Welcome to Code Academy\";\n }\n\n return (\n <div>\n <h1>Hello {name}</h1> {/* Variable */}\n <p>Age next year: {age + 1}</p> {/* Calculation */}\n <p>{getGreeting()}</p> {/* Function call */}\n <p>{name.toUpperCase()}</p> {/* Method */}\n <p>{isStudent? \"Student\" : \"Not Student\"}</p> {/* Ternary - IF logic */}\n <p>Skills: {skills.join(\", \")}</p> {/* Array method */}\n </div>\n );\n}",
+      "output": "Hello Prince\nAge next year: 25\nWelcome to Code Academy\nPRINCE\nStudent\nSkills: React, JavaScript, HTML"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: What You CANNOT Do Inside {}",
+      "code": "function WrongExample() {\n return (\n <div>\n {/* ❌ WRONG - if statement directly inside JSX */}\n {/* {if(true) { <p>Hi</p> }} */}\n\n {/* ✅ CORRECT - Use ternary */}\n {true? <p>Hi</p> : <p>Bye</p>}\n\n {/* ❌ WRONG - for loop inside JSX */}\n {/* {for(let i=0; i<3; i++) { <p>{i}</p> }} */}\n\n {/* ✅ CORRECT - Use map outside or inside */}\n {[0,1,2].map(num => <p key={num}>{num}</p>)}\n </div>\n );\n}",
+      "output": "Hi\n0\n1\n2"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Can you put an if statement directly inside JSX {}?",
+      "options": [
+        "Yes, you can write if() inside {}",
+        "No, you must use ternary? : or && or move logic outside",
+        "Yes, but only for loops",
+        "No, JSX doesn't allow any JavaScript"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! if/for cannot go inside JSX directly. Use ternary or map().",
+      "incorrectFeedback": "You cannot put if/for inside {}. Use ternary: {condition? <A/> : <B/>} or map().",
+      "reasoning": "JSX {} only accepts expressions, not statements like if/for.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: What is a Component? Your Lego Block"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "A Component is a function that returns JSX. That's it! But there are rules: Name MUST start with Capital Letter (Header not header), must return JSX (or null), and can be reused. There are two types but we use Functional Components - modern standard."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Why components? Imagine your Code Academy app dashboard from Page you gave me - that beautiful page with course-icon, hero, lesson-grid, lesson-card. Each of those is a component! You build LessonCard once, and you reuse it 10 times for 10 lessons with different data. That's why React is scalable."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: Your First 3 Components - The Right Way",
+      "code": "// Component 1: Simple\nfunction Header() {\n return <h1>Code Academy</h1>;\n}\n\n// Component 2: With multiple elements - must wrap\nfunction Hero() {\n return (\n <div>\n <h2>Master React Development</h2>\n <p>Learn components, hooks, routing</p>\n </div>\n );\n}\n\n// Component 3: Using other components inside (Composition)\nfunction App() {\n return (\n <div>\n <Header />\n <Hero />\n <p>This App uses Header and Hero</p>\n </div>\n );\n}\n\nexport default App;",
+      "output": "Code Academy\nMaster React Development\nLearn components, hooks, routing"
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Composition & Reusability - The Real Power"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Composition means building big components from small ones. This is how you reach your Lesson 10 target - complete app. You don't build one huge App.jsx with 500 lines. You build small pieces and compose them."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Composition - Building Dashboard Like Yours",
+      "code": "function CourseIcon() {\n return <div style={{fontSize: '40px'}}>⚛️</div>;\n}\n\nfunction Badge() {\n return <span style={{background: '#61dafb', padding: '5px'}}>React Development</span>;\n}\n\nfunction ProgressBar() {\n return <div style={{background: 'gray', height: '10px', width: '50%'}}></div>;\n}\n\nfunction HeroSection() {\n // Hero is composed of smaller components\n return (\n <div>\n <CourseIcon />\n <Badge />\n <h1>Master React Development</h1>\n <ProgressBar />\n </div>\n );\n}\n\nfunction App() {\n return <HeroSection />;\n}",
+      "output": "⚛️ React Development\nMaster React Development\n[Progress 50%]"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "What is Composition in React?",
+      "options": [
+        "Writing all code in one big file",
+        "Building big components by combining smaller reusable components",
+        "Copying code from Stack Overflow",
+        "Using only HTML"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Like Lego - small blocks combine to build big app. That's how you will build Lesson 10 project.",
+      "incorrectFeedback": "Composition = Small components + Small components = Big component. Like Header + Hero + LessonGrid = Dashboard.",
+      "reasoning": "Composition is core to scalable React architecture.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Fragments and Why We Need Them"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Remember Rule 1: Return ONE parent. But sometimes you don't want extra <div> in HTML because it breaks styling. Example: Your lesson-grid needs direct children lesson-card, not wrapped in div. Solution: Fragment - <></> or <React.Fragment>. It doesn't create extra DOM element."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: Fragment - Avoid Extra Div",
+      "code": "function LessonList() {\n // ❌ With div - adds extra div in DOM\n return (\n <div>\n <h3>Lesson 1</h3>\n <h3>Lesson 2</h3>\n </div>\n );\n}\n\nfunction LessonListGood() {\n // ✅ With Fragment - no extra div\n return (\n <>\n <h3>Lesson 1</h3>\n <h3>Lesson 2</h3>\n </>\n );\n}\n\n// Both work, but Fragment is cleaner for grids, tables, lists",
+      "output": "Lesson 1\nLesson 2 (Fragment version has no extra wrapper div)"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Styling in JSX - 3 Ways Professionals Use"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Way 1: Inline style object - style={{color: 'red'}}. Notice double {{}} - outer {} for JS, inner {} for object. Way 2: className with CSS file - import './App.css' then className='card'. Way 3: CSS Modules / Tailwind (we will use in Lesson 9). For your dashboard you used CSS variables --react, --bg - that's professional Way 2."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 8: Styling Like Your Dashboard - Professional Way",
+      "code": "import './App.css'; // You import CSS file\n\nfunction LessonCard() {\n // Way 1: Inline style for dynamic colors\n const reactColor = { color: '#61dafb', background: '#07111f', padding: '20px' };\n\n return (\n <div style={reactColor}>\n {/* Way 2: className from App.css */}\n <h3 className=\"lesson-title\">Introduction to React</h3>\n <p className=\"muted-text\">Learn React ecosystem...</p>\n </div>\n );\n}\n\n/* App.css would contain:\n.lesson-title { font-size: 20px; font-weight: 900; }\n.muted-text { color: #94a3b8; }\n*/",
+      "output": "[Styled card with #61dafb color]"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "How do you write inline style in JSX?",
+      "options": [
+        "style=\"color: red\" like HTML",
+        "style={{color: 'red'}} - object with double braces and camelCase",
+        "css=\"color: red\"",
+        "You cannot style in JSX"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct! style={{color: 'red', backgroundColor: 'blue'}} - object, camelCase.",
+      "incorrectFeedback": "It's style={{color: 'red'}} - outer {} for JS, inner {} for style object, camelCase properties.",
+      "reasoning": "JSX style is JavaScript object, not CSS string.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: Organizing Components Like a Pro - Folder Structure"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Don't put all components in one file. Real companies do this: src/components/Header.jsx, src/components/LessonCard.jsx, src/components/Hero.jsx. Each component in its own file, then import where needed. This is how you keep your Lesson 10 final project clean and scalable."
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 9: Professional File Organization",
+      "code": "// File: src/components/Header.jsx\nfunction Header() {\n return <h1>Code Academy - React Course</h1>;\n}\nexport default Header;\n\n// File: src/components/LessonCard.jsx\nfunction LessonCard() {\n return (\n <div className=\"lesson-card\">\n <h3>JSX and Components</h3>\n <p>Create reusable components...</p>\n </div>\n );\n}\nexport default LessonCard;\n\n// File: src/App.jsx - Import and use them\nimport Header from './components/Header.jsx';\nimport LessonCard from './components/LessonCard.jsx';\n\nfunction App() {\n return (\n <div>\n <Header />\n <LessonCard />\n <LessonCard />\n </div>\n );\n}\n// This structure scales to 100 components!",
+      "output": "Code Academy - React Course\n[Card] JSX and Components\n[Card] JSX and Components"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Conditional Rendering in JSX - Show/Hide UI"
+    },
+    {
+      "id": "p10-1",
+      "type": "sentence",
+      "text": "In your dashboard, some cards are locked, some are current, some completed. How? Conditional rendering. In JSX you use ternary? : or && to show different UI based on data. This is crucial for Lesson 7 target where you show loading states, different UI states."
+    },
+    {
+      "id": "code-10",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 10: Conditional Rendering Like Your Dashboard",
+      "code": "function LessonCard({ status }) {\n // status can be 'completed', 'current', 'locked'\n return (\n <div>\n <h3>React Lesson</h3>\n {/* Ternary for status badge */}\n {status === 'completed'? (\n <span style={{color: 'green'}}>✓ Completed</span>\n ) : status === 'current'? (\n <span style={{color: '#61dafb'}}>▶ Current</span>\n ) : (\n <span>🔒 Locked</span>\n )}\n\n {/* && operator - show button only if not locked */}\n {status!== 'locked' && <button>Start Lesson</button>}\n </div>\n );\n}\n\nfunction App() {\n return (\n <>\n <LessonCard status=\"completed\" />\n <LessonCard status=\"current\" />\n <LessonCard status=\"locked\" />\n </>\n );\n}",
+      "output": "React Lesson ✓ Completed [Start Lesson]\nReact Lesson ▶ Current [Start Lesson]\nReact Lesson 🔒 Locked"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "How do you show different UI based on condition in JSX?",
+      "options": [
+        "Using if statement directly inside JSX",
+        "Using ternary operator? : or && operator",
+        "You cannot conditionally render in JSX",
+        "Using HTML if tag"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Ternary and && are the standard for conditional UI - exactly like your dashboard does for locked/current/completed.",
+      "incorrectFeedback": "Use {condition? <A/> : <B/>} or {condition && <A/>} for conditional rendering.",
+      "reasoning": "Conditional rendering is essential for dynamic apps.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-11-heading",
+      "type": "heading",
+      "text": "PAGE 11: Towards Your Target - Building Blocks for Final App"
+    },
+    {
+      "id": "p11-1",
+      "type": "sentence",
+      "text": "Let's connect to your target. Your Lesson 10 target says: Combine components, JSX, props, state, hooks, events, data, routing together in complete React project. Today you mastered first 2. Here's the roadmap: Lesson 2 (today) - JSX & Components building blocks. Lesson 3 - Props to make blocks dynamic. Lesson 4 - State to make them interactive. Lesson 5 - Hooks for power. Lesson 10 - Combine all into final app."
+    },
+    {
+      "id": "p11-2",
+      "type": "sentence",
+      "text": "Every lesson we build components that will be used in final project. Today we build static components. Next lesson we make them accept props to show different lesson titles, summaries like your dashboard data."
+    },
+    {
+      "id": "page-12-heading",
+      "type": "heading",
+      "text": "PAGE 12: Common Mistakes & How to Debug"
+    },
+    {
+      "id": "p12-1",
+      "type": "sentence",
+      "text": "Mistake 1: Forgetting to export/import - You create Header.jsx but forget export default Header, then App cannot find it. Error: Component not defined. Fix: Always export."
+    },
+    {
+      "id": "p12-2",
+      "type": "sentence",
+      "text": "Mistake 2: Small letter component - function header() will not work, React thinks it's HTML tag. Always Capital. Mistake 3: Returning multiple elements without wrapper - use <> fragment. Mistake 4: Using class instead of className - React will warn you."
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "You created a component but it doesn't show. You wrote function lessonCard() { return <h1>Hi</h1> }. What's wrong?",
+      "options": [
+        "Function name must start with capital letter - LessonCard not lessonCard",
+        "You need to use HTML not JSX",
+        "React doesn't support components",
+        "You need to use class"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Exactly! Capital letter is mandatory. React uses it to distinguish from HTML tags.",
+      "incorrectFeedback": "Component names must be Capitalized - LessonCard, not lessonCard. Small letter = HTML tag to React.",
+      "reasoning": "Component naming convention is critical for React to work.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-13-heading",
+      "type": "heading",
+      "text": "PAGE 13: FINAL PRACTICAL - Build Your Dashboard Components"
+    },
+    {
+      "id": "p13-1",
+      "type": "sentence",
+      "text": "Final mission: Go to Menu > Practical > React. Build these 4 components that match your dashboard design you gave me. This code will be reused and improved in Lessons 3-10 until final app."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Build Dashboard Components (Towards Lesson 10 Target)",
+      "code": "// Component 1: Course Icon - like your React icon\nfunction CourseIcon() {\n return (\n <div style={{width: '82px', height: '82px', background: 'linear-gradient(135deg, #61dafb, #0ea5e9)', borderRadius: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '42px'}}>\n ⚛️\n </div>\n );\n}\n\n// Component 2: Badge - React Development badge\nfunction Badge() {\n return (\n <span style={{background: 'rgba(97,218,251,0.1)', border: '1px solid rgba(97,218,251,0.2)', color: '#61dafb', padding: '6px 11px', borderRadius: '999px', fontSize: '11px', fontWeight: '800'}}>REACT DEVELOPMENT</span>\n );\n}\n\n// Component 3: Lesson Card - static version, Lesson 3 we make it dynamic with props\nfunction LessonCard() {\n return (\n <div style={{background: 'rgba(15,31,51,0.88)', border: '1px solid rgba(97,218,251,0.16)', borderRadius: '20px', padding: '22px'}}>\n <div style={{display: 'flex', justifyContent: 'space-between'}}>\n <span style={{color: '#61dafb', fontSize: '11px', fontWeight: '800'}}>LESSON 02</span>\n <span style={{color: '#61dafb', background: 'rgba(97,218,251,0.1)', padding: '5px 8px', borderRadius: '999px', fontSize: '10px'}}>CURRENT</span>\n </div>\n <h3 style={{fontSize: '20px', margin: '13px 0'}}>JSX and Components</h3>\n <p style={{color: '#94a3b8', fontSize: '13px'}}>Create reusable React components and write UI using JSX.</p>\n <button style={{background: 'linear-gradient(135deg, #61dafb, #0ea5e9)', border: 'none', borderRadius: '11px', padding: '10px 15px', fontWeight: '800', marginTop: '15px'}}>Start Lesson</button>\n </div>\n );\n}\n\n// Main App - Composition of all components towards final target\nfunction App() {\n return (\n <div style={{background: '#07111f', color: 'white', padding: '20px', minHeight: '100vh'}}>\n <CourseIcon />\n <div style={{marginTop: '15px'}}><Badge /></div>\n <h1 style={{fontSize: '32px', marginTop: '10px'}}>Master React Development</h1>\n <p style={{color: '#94a3b8'}}>Learn components and JSX - building blocks for complete app.</p>\n <div style={{marginTop: '20px', display: 'grid', gap: '18px'}}>\n <LessonCard />\n <LessonCard />\n </div>\n <p style={{marginTop: '20px', color: '#61dafb'}}>HOMEWORK: Create 2 more components - ProgressBar and Navbar from your dashboard</p>\n </div>\n );\n}\n\nexport default App;",
+      "output": "⚛️ [Badge] REACT DEVELOPMENT\nMaster React Development\n[Card] JSX and Components [Start Lesson]\n[Card] JSX and Components [Start Lesson]"
+    },
+    {
+      "id": "page-14-heading",
+      "type": "heading",
+      "text": "PAGE 14: Summary & Next Lesson"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered today: What JSX is (JS + HTML-like syntax that compiles to React.createElement), 7 golden rules (one parent, className, closed tags, camelCase, {} for JS, style object, comments), embedding JavaScript inside JSX, functional components (capital letter, return JSX), composition (small + small = big), fragments <> to avoid extra div, styling with className and style object, file organization with components/ folder, and conditional rendering with ternary and &&."
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "This directly builds towards your target: In Lesson 3 you will make LessonCard dynamic with props (so it can show Lesson 1, 2, 3 with different titles from your lessons array). In Lesson 4 you will add state to make progress bar interactive. By Lesson 10 you combine all into complete React app like your dashboard."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Homework: Create components FolderIcon, ProgressBar from your dashboard code. Next Lesson: Lesson 3 - Props and Component Communication - where we make these static cards dynamic and reusable with props. See you there!"
+    }
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "course": "react",
+  "lessonNumber": 9,
+  "lessonId": "react-lesson-9",
+  "title": "Advanced Patterns & Routing",
+  "subtitle": "Context, Custom Hooks, Performance & Navigation - Senior Dev Level",
+  "description": "Master Context API to avoid prop drilling, custom hooks to reuse logic, memo for performance, and React Router for navigation - exactly how your dashboard navigates between lessons.",
+  "level": "Advanced",
+  "xpReward": 200,
+  "coinsReward": 60,
+  "estimatedMinutes": 65,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: The Problem - Prop Drilling Hell in Your Dashboard"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! In Lesson 3 you learned prop drilling: App -> Navbar -> Header -> UserAvatar passing user name through 3 levels even though Navbar and Header don't need it. In your dashboard you have XP, coins, user, theme, lessons - if you drill through 5 levels, nightmare! Every middle component receives props just to pass down. Hard to maintain."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Solution 1: Context API - Create global store: XP, user, theme available anywhere without drilling. Solution 2: Custom Hooks - Extract reusable logic like useLocalStorage, useFetch, useXP. Solution 3: React Router - Navigate between /react, /lesson/1, /profile without page reload. Solution 4: Performance - memo, useMemo, useCallback to avoid unnecessary re-renders when you have 10 lesson cards."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Today you become senior dev - these 4 patterns separate junior (props drilling everywhere) from senior (clean architecture). Your Lesson 10 final app NEEDS these."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Context API - Global Store Without Prop Drilling"
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: Context API - XP Available Everywhere Without Drilling",
+      "code": "import { createContext, useContext, useState } from 'react';\n\n// Step 1: Create Context\nconst XPContext = createContext();\n\n// Step 2: Create Provider - holds state and provides to all children\nfunction XPProvider({ children }) {\n const [xp, setXp] = useState(150);\n const [coins, setCoins] = useState(30);\n \n function addXP(amount) {\n setXp(prev => prev + amount);\n setCoins(prev => prev + Math.floor(amount/5));\n }\n\n return (\n <XPContext.Provider value={{ xp, coins, addXP }}>\n {children}\n </XPContext.Provider>\n );\n}\n\n// Step 3: Use context anywhere - no prop drilling!\nfunction Navbar() {\n const { xp, coins } = useContext(XPContext); // Direct access, no props!\n return <div>⚡ {xp} XP 🪙 {coins} Coins</div>;\n}\n\nfunction LessonCard({ id }) {\n const { addXP } = useContext(XPContext);\n return <button onClick={() => addXP(50)}>Complete Lesson {id} +50 XP</button>;\n}\n\nfunction App() {\n return (\n <XPProvider>\n <Navbar /> {/* No props needed! */}\n <LessonCard id={1} /> {/* No props drilling for XP */}\n <LessonCard id={2} />\n </XPProvider>\n );\n}\n// Before: App -> Navbar props.xp, App -> LessonGrid -> LessonCard props.addXP - drilling!\n// After: Any component uses useContext(XPContext) - direct access!",
+      "output": "⚡ 150 XP 🪙 30 Coins\n[Complete Lesson 1 +50 XP] [Complete Lesson 2 +50 XP]\nClick -> XP updates in Navbar automatically via Context"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: Your dashboard has 5 levels: App -> CoursePage -> LessonGrid -> LessonCard -> CompleteButton. CompleteButton needs addXP function from App. Without Context, how many levels of prop drilling?",
+      "options": [
+        "0 levels - direct access",
+        "4 levels - App passes to CoursePage, to LessonGrid, to LessonCard, to CompleteButton - all middle components receive addXP just to pass down, even if they don't use it",
+        "1 level only",
+        "Prop drilling is not needed in React"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! 4 levels of drilling - messy! Context solves this - CompleteButton uses useContext directly, middle components don't need to know about XP.",
+      "incorrectFeedback": "Prop drilling: Each level passes prop down. 5 levels = 4 drilling steps. Context = 0 drilling, direct access anywhere.",
+      "reasoning": "Context API eliminates prop drilling for global data like XP, user, theme.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Custom Hooks - Reuse Logic Like useLocalStorage, useFetch"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "You wrote useEffect for localStorage save in Lesson 5, and fetch logic in Lesson 5 example 8. If you need same logic in 5 components, you copy paste useEffect 5 times - duplication! Custom Hook extracts logic into reusable function: useLocalStorage(key, initialValue) that any component can use. Rule: Custom hook name must start with use, and can call other hooks inside."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Custom Hooks - useLocalStorage and useFetch (Your Dashboard Needs Both)",
+      "code": "import { useState, useEffect } from 'react';\n\n// Custom Hook 1: useLocalStorage - Reusable localStorage logic\nfunction useLocalStorage(key, initialValue) {\n const [value, setValue] = useState(() => {\n const saved = localStorage.getItem(key);\n return saved? JSON.parse(saved) : initialValue;\n });\n\n useEffect(() => {\n localStorage.setItem(key, JSON.stringify(value));\n }, [key, value]);\n\n return [value, setValue];\n}\n\n// Custom Hook 2: useFetch - Reusable Firebase fetch logic\nfunction useFetch(url) {\n const [data, setData] = useState(null);\n const [loading, setLoading] = useState(true);\n const [error, setError] = useState(null);\n\n useEffect(() => {\n async function fetchData() {\n try {\n setLoading(true);\n await new Promise(r => setTimeout(r, 1000)); // Simulate fetch\n setData([{id: 1, title: \"Intro\"}, {id: 2, title: \"JSX\"}]);\n } catch (err) {\n setError(\"Failed to fetch\");\n } finally {\n setLoading(false);\n }\n }\n fetchData();\n }, [url]);\n\n return { data, loading, error };\n}\n\n// Usage - Super clean!\nfunction Dashboard() {\n const [xp, setXp] = useLocalStorage(\"xp\", 0); // Auto saves to localStorage!\n const { data: lessons, loading } = useFetch(\"/api/lessons\"); // Auto fetches!\n\n if (loading) return <p>Loading...</p>;\n return <div>XP: {xp} - {lessons?.length} lessons <button onClick={() => setXp(xp+50)}>+50 XP</button></div>;\n}\n// Before: 15 lines useEffect for localStorage in each component\n// After: 1 line useLocalStorage hook - reusable!",
+      "output": "XP: 0 - 2 lessons [+50 XP]\nXP auto-saved to localStorage via custom hook"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: You need localStorage for XP in Navbar, LessonCard, and ProfilePage - 3 components. Without custom hook, what happens?",
+      "options": [
+        "Write same useState + useEffect localStorage logic 3 times - duplication, hard to maintain",
+        "Create custom hook useLocalStorage once, use in 3 components: const [xp, setXp] = useLocalStorage('xp', 0) - DRY, maintainable",
+        "You cannot share localStorage logic",
+        "Only one component can use localStorage"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Custom hook = Write once, use everywhere. That's senior dev DRY principle - Don't Repeat Yourself.",
+      "incorrectFeedback": "Custom hooks extract reusable logic. useLocalStorage encapsulates get + set + useEffect save. Use in any component with one line.",
+      "reasoning": "Custom hooks are essential for reusable logic across components.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: React Router - Navigation Without Page Reload (Your Dashboard Navigation)"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Your dashboard has: / (home), /react (React course page you gave me), /lesson/1, /lesson/2, /profile. In old HTML, each navigation reloads page. In React SPA with React Router, navigation is instant - no reload, state preserved, XP stays, just component changes. That's why your backBtn and Start Lesson buttons should use Router, not window.location."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: React Router - Navigation Like Your Dashboard",
+      "code": "// Install: npm install react-router-dom\nimport { BrowserRouter, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';\n\nfunction Home() { return <div>Home Page <Link to=\"/react\">Go to React Course</Link></div>; }\nfunction ReactCourse() { return <div>React Course Page with 10 lessons <Link to=\"/lesson/2\">Start Lesson 2</Link></div>; }\nfunction LessonPage() {\n const { id } = useParams(); // Get id from URL /lesson/:id\n const navigate = useNavigate();\n return (\n <div>\n <h1>Lesson {id}</h1>\n <button onClick={() => navigate(\"/react\")}>← Back to Course</button>\n <button onClick={() => navigate(`/lesson/${Number(id)+1}`)}>Next Lesson →</button>\n </div>\n );\n}\n\nfunction App() {\n return (\n <BrowserRouter>\n <Routes>\n <Route path=\"/\" element={<Home />} />\n <Route path=\"/react\" element={<ReactCourse />} />\n <Route path=\"/lesson/:id\" element={<LessonPage />} />\n </Routes>\n </BrowserRouter>\n );\n}\n// Click Link -> URL changes /react -> /lesson/2, component changes, NO page reload, XP preserved!\n// Your dashboard's backBtn should use navigate('/react') not window.history.back()",
+      "output": "Home Page [Go to React Course]\nClick -> React Course Page [Start Lesson 2]\nClick -> Lesson 2 with Back and Next buttons"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: In your dashboard, user is on /react page with 150 XP. Clicks Start Lesson 2. You want to go to /lesson/2 without losing XP state and without page reload. How?",
+      "options": [
+        "Use window.location = '/lesson/2' - causes full page reload, state lost, XP resets to 0, slow",
+        "Use React Router Link or useNavigate('/lesson/2') - SPA navigation, no reload, state preserved, instant, XP stays 150",
+        "You must reload page for navigation",
+        "Router cannot preserve state"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! React Router = SPA navigation, no reload, state stays. window.location = MPA, reload, state lost. That's why your app needs Router for Lesson 10!",
+      "incorrectFeedback": "Router: <Link to='/lesson/2'> or navigate('/lesson/2') - no reload, state preserved. window.location = reload, state lost.",
+      "reasoning": "SPA routing preserves state and is instant - essential for dashboard navigation.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Performance - memo, useMemo, useCallback (Your 10 Cards Re-render Problem)"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "You have 10 LessonCards. When XP changes in Navbar, App re-renders, all 10 LessonCards re-render too even though their props didn't change - wasted work! For 10 cards it's okay, for 1000 it's slow. Solution: React.memo - memoizes component, only re-renders if props actually changed. useMemo - memoizes expensive calculation. useCallback - memoizes function to avoid recreating each render."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: Performance - memo Prevents Unnecessary Re-renders",
+      "code": "import { useState, memo, useMemo, useCallback } from 'react';\n\n// Without memo - re-renders every time parent re-renders\nfunction LessonCardNormal({ title }) {\n console.log(`Rendering ${title}`); // Logs every parent render, even if title same\n return <p>{title}</p>;\n}\n\n// With memo - only re-renders if title prop changes\nconst LessonCardMemo = memo(function LessonCard({ title }) {\n console.log(`Memo rendering ${title}`); // Only logs when title actually changes\n return <p>{title}</p>;\n});\n\nfunction App() {\n const [xp, setXp] = useState(0);\n const [lessons] = useState([{id: 1, title: \"Intro\"}, {id: 2, title: \"JSX\"}]);\n\n // useMemo - expensive calculation only runs when lessons changes, not when xp changes\n const completedCount = useMemo(() => {\n console.log(\"Calculating completed\");\n return lessons.filter(l => l.status==='completed').length;\n }, [lessons]);\n\n // useCallback - function not recreated each render, so memo child doesn't re-render\n const handleComplete = useCallback((id) => {\n console.log(\"Complete\", id);\n }, []); // Empty deps = function never changes\n\n return (\n <div>\n <p>XP: {xp} Completed: {completedCount}</p>\n <button onClick={() => setXp(xp+10)}>+10 XP (triggers parent re-render)</button>\n <LessonCardNormal title=\"Intro\" /> {/* Re-renders on XP change - wasted! */}\n <LessonCardMemo title=\"Intro\" /> {/* Does NOT re-render on XP change - optimized! */}\n </div>\n );\n}\n// Click +10 XP: Normal card logs 'Rendering Intro' again (wasted), Memo card doesn't log (optimized)",
+      "output": "XP: 0 Completed: 0 [+10 XP]\nRendering Intro (normal - waste)\nMemo rendering Intro only once (optimized)"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: Your dashboard has 50 lesson cards. User types in search input (search state changes). Without memo, what happens?",
+      "options": [
+        "Only search input re-renders",
+        "All 50 lesson cards re-render even though their props didn't change (only search changed) - wasteful, slow for 50 cards",
+        "No components re-render",
+        "Memo makes it slower"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Parent state change re-renders all children by default. memo prevents re-render if props same - crucial for large lists!",
+      "incorrectFeedback": "By default, parent re-render = all children re-render. memo checks props, if same, skip re-render. Saves performance for 50 cards.",
+      "reasoning": "Performance optimization with memo is essential for large lists like your dashboard.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Compound Components and Render Props - Advanced Composition"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "You haven't seen this but need it for flexible components: Compound Components - like <Select><Select.Option>Option 1</Select.Option></Select> - parent and children share state via Context implicitly. Render Props - component receives function as prop that returns JSX: <DataFetch render={data => <p>{data.title}</p>} />. These patterns make components super flexible like your dashboard's card that can have different content."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: Compound Components - Flexible Card Like Your Dashboard",
+      "code": "import { createContext, useContext } from 'react';\n\nconst CardContext = createContext();\n\nfunction Card({ children, status }) {\n return (\n <CardContext.Provider value={{ status }}>\n <div style={{background: 'rgba(15,31,51,0.88)', border: '1px solid rgba(97,218,251,0.16)', borderRadius: '20px', padding: '22px'}}>\n {children}\n </div>\n </CardContext.Provider>\n );\n}\n\nCard.Header = function Header({ children }) {\n const { status } = useContext(CardContext);\n return <div style={{display: 'flex', justifyContent: 'space-between'}}><span>LESSON</span><span>{status}</span>{children}</div>;\n}\n\nCard.Title = function Title({ children }) {\n return <h3 style={{color: 'white', margin: '10px 0'}}>{children}</h3>;\n}\n\nCard.Action = function Action({ children }) {\n return <button style={{background: '#61dafb', padding: '10px', borderRadius: '8px', border: 'none', marginTop: '10px'}}>{children}</button>;\n}\n\nfunction App() {\n return (\n <Card status=\"current\">\n <Card.Header />\n <Card.Title>JSX and Components</Card.Title>\n <p style={{color: '#94a3b8'}}>Create reusable components</p>\n <Card.Action>Start Lesson →</Card.Action>\n </Card>\n );\n}\n// Flexible: Can arrange Header, Title, Action in any order, add/remove parts without prop changes!",
+      "output": "Card with Header (LESSON CURRENT), Title, description, Start button - compound pattern"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Error Boundaries and Suspense - What Happens When Component Crashes?"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "What if LessonCard crashes due to bug? Without error boundary, entire app crashes - white screen! Error Boundary catches error and shows fallback UI: 'Something went wrong - Retry'. Suspense handles loading states for code splitting and data fetching - shows fallback spinner while component loads. Your dashboard has loading spinner and error states - now you know advanced version."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Error Handling - Prevent White Screen Crash",
+      "code": "import { Component } from 'react';\n\nclass ErrorBoundary extends Component {\n constructor(props) { super(props); this.state = { hasError: false }; }\n static getDerivedStateFromError(error) { return { hasError: true }; }\n componentDidCatch(error, info) { console.log(\"Error caught:\", error); }\n render() {\n if (this.state.hasError) {\n return <div style={{padding: '20px', background: '#fee2e2', color: '#dc2626', borderRadius: '12px'}}><h3>Something went wrong in this lesson card</h3><button onClick={() => this.setState({hasError: false})}>Retry</button></div>;\n }\n return this.props.children;\n }\n}\n\nfunction BuggyLessonCard({ title }) {\n if (title===undefined) throw new Error(\"Title missing!\"); // Simulate bug\n return <p>{title}</p>;\n}\n\nfunction App() {\n return (\n <div>\n <ErrorBoundary><BuggyLessonCard title=\"JSX\" /></ErrorBoundary> {/* Works */}\n <ErrorBoundary><BuggyLessonCard title={undefined} /></ErrorBoundary> {/* Crashes but caught, shows fallback */}\n <p>Rest of app still works - not white screen!</p>\n </div>\n );\n}\n// Without ErrorBoundary, undefined title would crash entire app white screen\n// With ErrorBoundary, only that card shows error, rest of dashboard works!",
+      "output": "JSX card shows fine\nSecond card shows: Something went wrong [Retry]\nRest of app still works"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Code Splitting - Load Only What You Need (Your App Is Getting Big!)"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Your final Lesson 10 app will have 10 lessons, dashboard, profile, settings - big bundle! If user opens home page, why load all 10 lessons code? Code splitting with React.lazy and Suspense loads component only when needed: const LessonPage = lazy(() => import('./LessonPage')) - code for LessonPage only downloaded when user navigates to /lesson/:id. Makes initial load fast - crucial for mobile users in Ghana!"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: Code Splitting - Fast Initial Load",
+      "code": "import { lazy, Suspense } from 'react';\n\n// Normal import - loaded immediately in bundle\n// import LessonPage from './LessonPage';\n\n// Lazy import - loaded only when needed\nconst LessonPage = lazy(() => import('./LessonPage'));\nconst ProfilePage = lazy(() => import('./ProfilePage'));\n\nfunction App() {\n return (\n <div>\n <Suspense fallback={<div>Loading lesson page... spinner</div>}>\n {/* LessonPage code only downloaded when this component renders */}\n <LessonPage />\n </Suspense>\n </div>\n );\n}\n// Initial bundle: Home + Navbar only - small, fast load (50kb)\n// When user clicks Lesson: Download LessonPage chunk (30kb) + show fallback spinner while loading\n// Without splitting: Initial bundle 500kb with all pages - slow on 3G!",
+      "output": "First load: Home page fast (small bundle)\nClick Lesson -> Loading spinner 0.5s -> Lesson page appears (chunk loaded)"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "APPLICATION: Your Code Academy app final bundle is 800kb with all 10 lessons. Users on slow 3G in Accra wait 8 seconds initial load. How to make initial load 2 seconds?",
+      "options": [
+        "Remove 7 lessons from app",
+        "Use React.lazy + Suspense code splitting - split each lesson page into separate chunk, initial load only home + course list (150kb), lesson chunks load on demand when user clicks Start Lesson",
+        "Make bundle even bigger",
+        "Code splitting makes it slower"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Code splitting = fast initial load + on-demand chunks. Essential for mobile users with slow network!",
+      "incorrectFeedback": "Lazy load: const LessonPage = lazy(()=>import('./LessonPage')) + <Suspense fallback={spinner}>. Initial bundle small, chunks load when needed.",
+      "reasoning": "Code splitting optimizes loading performance for large apps.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Context + Custom Hook + Router + Memo Dashboard"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "This final combines ALL advanced patterns: Context for XP global, custom hook useLocalStorage, memo for lesson cards, router navigation. This is architecture for your Lesson 10 final app!"
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Advanced Dashboard Architecture (Lesson 10 Blueprint)",
+      "code": "import { createContext, useContext, useState, useEffect, memo, useCallback } from 'react';\n\n// Custom Hook: useLocalStorage (reusable logic)\nfunction useLocalStorage(key, initial) {\n const [value, setValue] = useState(() => {\n const saved = localStorage.getItem(key);\n return saved? JSON.parse(saved) : initial;\n });\n useEffect(() => { localStorage.setItem(key, JSON.stringify(value)); }, [key, value]);\n return [value, setValue];\n}\n\n// Context: Global XP store (avoid prop drilling)\nconst AppContext = createContext();\nfunction AppProvider({ children }) {\n const [xp, setXp] = useLocalStorage(\"xp\", 120);\n const [coins, setCoins] = useLocalStorage(\"coins\", 30);\n const addXP = useCallback((amount) => {\n setXp(prev => prev + amount);\n setCoins(prev => prev + Math.floor(amount/5));\n }, [setXp, setCoins]);\n return <AppContext.Provider value={{ xp, coins, addXP }}>{children}</AppContext.Provider>;\n}\n\n// Memoized component - only re-renders if props change (performance)\nconst LessonCard = memo(function LessonCard({ id, title, status, onComplete }) {\n const { xp } = useContext(AppContext);\n console.log(`Rendering card ${id}`); // Check console - memo prevents re-render when xp changes? Actually xp is context, so it will re-render when xp changes - but title/status same won't re-render for other cards\n return (\n <div style={{background: 'rgba(15,31,51,0.88)', border: '1px solid rgba(97,218,251,0.16)', borderRadius: '20px', padding: '20px', margin: '10px'}}>\n <div style={{display: 'flex', justifyContent: 'space-between'}}>\n <span>LESSON {String(id).padStart(2,'0')}</span>\n <span style={{color: status==='completed'? '#4ade80' : '#61dafb', background: status==='completed'? 'rgba(34,197,94,0.14)' : 'rgba(97,218,251,0.14)', padding: '5px 8px', borderRadius: '999px', fontSize: '10px'}}>{status.toUpperCase()}</span>\n </div>\n <h3>{title}</h3>\n <p style={{color: '#94a3b8', fontSize: '12px'}}>XP Context: {xp} (from Context, no prop drilling)</p>\n {status==='current' && <button onClick={() => onComplete(id)} style={{background: '#61dafb', border: 'none', padding: '8px 12px', borderRadius: '8px', fontWeight: '700', marginTop: '10px'}}>Complete +50 XP</button>}\n </div>\n );\n});\n\nfunction Navbar() {\n const { xp, coins } = useContext(AppContext); // Direct access via Context - no props!\n return <div style={{display: 'flex', gap: '10px', padding: '15px', background: '#020617', color: 'white'}}><span>⚡ {xp} XP</span><span>🪙 {coins}</span></div>;\n}\n\nfunction App() {\n const [lessons, setLessons] = useState([\n {id: 1, title: \"Introduction\", status: \"completed\"},\n {id: 2, title: \"JSX\", status: \"current\"},\n {id: 3, title: \"Props\", status: \"locked\"},\n ]);\n const { addXP } = useContext(AppContext);\n\n const handleComplete = useCallback((id) => {\n setLessons(prev => prev.map(l => l.id===id? {...l, status: 'completed'} : l.id===id+1? {...l, status: 'current'} : l));\n addXP(50);\n }, [addXP]);\n\n return (\n <div style={{background: '#07111f', minHeight: '100vh'}}>\n <Navbar />\n <div style={{padding: '20px'}}>\n <h2 style={{color: 'white'}}>Advanced Patterns Demo - Context + Custom Hook + Memo</h2>\n <p style={{color: '#94a3b8', fontSize: '13px'}}>Check console: Only completed card re-renders when XP changes? Actually context change re-renders all consumers - but memo + useCallback still helps for props.</p>\n <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '10px'}}>\n {lessons.map(l => <LessonCard key={l.id} {...l} onComplete={handleComplete} />)}\n </div>\n </div>\n </div>\n );\n}\n\n// Wrap with Provider\nfunction Root() {\n return <AppProvider><App /></AppProvider>;\n}\nexport default Root;",
+      "output": "⚡ 120 XP 🪙 30\n[Cards] LESSON 01 completed, LESSON 02 current [Complete +50 XP], LESSON 03 locked\nClick Complete -> XP updates in Navbar via Context, no prop drilling, cards memoized"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary - You Are Now Senior Dev Ready for Final App"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered today: Context API - createContext + Provider value + useContext anywhere to avoid prop drilling for XP/user/theme, Custom Hooks - useLocalStorage, useFetch - extract reusable logic, start name with use, can call other hooks, React Router - BrowserRouter + Routes + Route + Link + useParams + useNavigate for SPA navigation without reload, Performance - memo(Component) prevents re-render if props same, useMemo for expensive calculations, useCallback for stable functions, Compound Components - <Card><Card.Header><Card.Title> flexible composition via Context, Error Boundaries - class component catches crash, shows fallback, not white screen, Code Splitting - lazy(()=>import()) + Suspense fallback for on-demand chunks, fast initial load."
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "MASTER APPLICATION: Your final Lesson 10 app needs: XP accessible in Navbar, LessonCards, Profile without drilling, reusable fetch logic, navigation /react to /lesson/:id without reload, 50 lesson cards not re-rendering on every XP change, and fast initial load on 3G. Which stack?",
+      "options": [
+        "Props drilling for XP, copy-paste fetch logic, window.location for navigation, no memo, one big bundle",
+        "Context for XP global store, custom hook useFetch for reusable fetch, React Router Link/navigate for SPA navigation, memo + useMemo + useCallback for 50 cards performance, lazy + Suspense code splitting for fast initial load - senior architecture",
+        "Only useState is enough",
+        "Advanced patterns make app slower"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You just designed senior-level architecture - Context + Custom Hooks + Router + Performance + Code Splitting. This is exactly what Lesson 10 complete app needs. You are job-ready!",
+      "incorrectFeedback": "Senior stack: Context eliminates drilling, Custom Hooks DRY, Router SPA navigation, memo/useMemo/useCallback performance, lazy/Suspense fast load. Combined = production app.",
+      "reasoning": "Combining all advanced patterns builds scalable production apps like your Code Academy dashboard.",
+      "xpReward": 35
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "When to use Context vs Props?",
+      "options": [
+        "Always use Context for everything",
+        "Use props for direct parent-child (1-2 levels), Context for global data needed in many places at different nesting levels (XP, user, theme, auth) to avoid drilling through 4+ levels",
+        "Context and props are same",
+        "Props should never be used"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Props for direct, Context for global. Don't overuse Context - only for truly global data, otherwise props is simpler!",
+      "incorrectFeedback": "Props = explicit, good for 1-2 levels. Context = global, good for XP/user/theme needed everywhere. Use right tool for right depth.",
+      "reasoning": "Knowing when to use Context vs Props is key architectural decision.",
+      "xpReward": 20
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Create ThemeContext with dark/light toggle using Context. 2. Build custom hook useXP that handles XP + coins + localStorage. 3. Add React Router to your previous dashboard with 2 routes: / and /lesson/:id. 4. Wrap LessonCard with memo and check console logs for re-renders."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next: Lesson 10 - Build Complete React Application! You will combine ALL lessons 1-9: components, JSX, props, state, hooks, forms, lists, styling, context, custom hooks, router, performance into ONE production app exactly like your dashboard you gave me - with Firebase, XP, progress, navigation, search, add lesson, dark glass design. This is your capstone - after this you are React developer ready for jobs! See you in final lesson!"
+    }
+  ]
+}

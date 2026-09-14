@@ -1,0 +1,304 @@
+{
+  "course": "react",
+  "lessonNumber": 4,
+  "lessonId": "react-lesson-4",
+  "title": "State and User Interaction",
+  "subtitle": "Make Your App Alive - From Static to Dynamic",
+  "description": "Master useState, how state triggers re-renders, events, interactive UIs. Build live progress tracking, like buttons, and unlock system for your dashboard.",
+  "level": "Beginner",
+  "xpReward": 150,
+  "coinsReward": 40,
+  "estimatedMinutes": 45,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: The Problem - Why Props Alone Is Not Enough"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! In Lesson 3 you made LessonCards dynamic with props. But they are still STATIC. If user completes Lesson 3, how does Lesson 4 automatically unlock? How does progress bar go from 20% to 30%? Props cannot change by themselves - props are read-only!"
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "You need STATE. State = data that changes over time inside a component, and when it changes, React automatically re-renders that component. Props = data passed from parent (external). State = data managed inside component (internal) that can change."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Think: Props is like a letter you receive - you read it but cannot change it. State is like your mood - it changes, and your face (UI) changes automatically. Let's make your dashboard mood change!"
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Open Menu > Practical > React editor. We build live from Page 1."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: useState - Your First Interactive Component"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "useState is a Hook - a function that gives superpowers to functional components. Syntax: const [count, setCount] = useState(0). count = current value, setCount = function to change it, 0 = initial value. When you call setCount(1), React re-renders component with count=1."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: Counter - The Hello World of State",
+      "code": "import { useState } from 'react';\n\nfunction Counter() {\n const [count, setCount] = useState(0); // 0 is initial\n\n return (\n <div>\n <p>You clicked {count} times</p>\n <button onClick={() => setCount(count + 1)}>Click +1</button>\n <button onClick={() => setCount(count - 1)}>Click -1</button>\n <button onClick={() => setCount(0)}>Reset</button>\n </div>\n );\n}\n\n// Try it: Click +1, count goes 0->1->2, UI updates automatically!\n// No manual DOM manipulation like old jQuery way",
+      "output": "You clicked 0 times [Click +1] [Click -1] [Reset]"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: You have a Like button for a post. Likes start at 10. When user clicks Like, likes should become 11 instantly without page reload. What do you use?",
+      "options": [
+        "Props only - <LikeButton likes={10} />",
+        "State with useState - const [likes, setLikes] = useState(10) and setLikes(likes+1) on click",
+        "You need to reload the whole page",
+        "You cannot do instant updates in React"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! State is for data that changes with user interaction. Likes change, so it's state.",
+      "incorrectFeedback": "Data that changes over time = State. Use useState for likes. Props cannot change by child.",
+      "reasoning": "State manages changing UI data, props are for passing static/config data.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Events - How User Actions Change State"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "User clicks button, types input, scrolls - these are events. In React you handle with onClick, onChange, onSubmit. Inside event handler you call setState function. Pattern: Event -> setState -> React re-renders -> UI updates. This loop is the heart of interactive apps."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Your Dashboard Unlock System with State",
+      "code": "import { useState } from 'react';\n\nfunction LessonTracker() {\n const [completed, setCompleted] = useState(2); // 2 lessons completed\n const total = 10;\n const progress = (completed / total) * 100;\n\n function completeLesson() {\n if (completed < total) {\n setCompleted(completed + 1); // Change state!\n }\n }\n\n return (\n <div style={{background: '#07111f', color: 'white', padding: '20px'}}>\n <p>Course Progress: {completed}/{total} - {progress}%</p>\n <div style={{background: 'gray', height: '9px', borderRadius: '99px'}}>\n <div style={{width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #61dafb, #8b5cf6)', borderRadius: '99px'}}></div>\n </div>\n <button onClick={completeLesson} style={{marginTop: '15px', padding: '10px'}}>Complete Next Lesson</button>\n </div>\n );\n}\n// Click button: completed 2->3, progress 20%->30%, bar moves automatically!",
+      "output": "Course Progress: 2/10 - 20%\n[Progress bar 20%] [Complete Next Lesson Button]"
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "YOUR TURN: In Practical editor, change total to 5, see progress calculation auto updates. That's state + derived value. This is exactly how your progressFill width in your HTML works!"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Why State Triggers Re-Render - The Magic"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Critical question: Why not just do let count=0; count++? Why need useState? Because React doesn't know let variable changed! When you call setCount(), you are telling React: 'Hey, data changed, please re-render me!' React then calls your component function again with new state value and updates only changed DOM via Virtual DOM."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: Wrong vs Correct - Let vs useState",
+      "code": "function WrongCounter() {\n let count = 0; // Normal variable - React doesn't watch it\n function handleClick() {\n count++; // Changes variable but UI never updates!\n console.log(count); // Console shows 1,2,3 but UI still shows 0\n }\n return <button onClick={handleClick}>Count: {count}</button>;\n}\n\nfunction CorrectCounter() {\n const [count, setCount] = useState(0); // State - React watches it\n function handleClick() {\n setCount(count + 1); // Tell React to re-render!\n }\n return <button onClick={handleClick}>Count: {count}</button>;\n // Click: UI 0->1->2 updates! Because setCount triggers re-render\n}",
+      "output": "WrongCounter button always shows 0 even after clicks\nCorrectCounter button shows 0,1,2... updates correctly"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: You used let status = 'locked'; status = 'current'; but UI didn't update. Why?",
+      "options": [
+        "React only re-renders when you use setState from useState, not when you change a let variable",
+        "You need to refresh browser manually",
+        "let doesn't work in React at all",
+        "You need to use props"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! React watches only state changes via setState. let change is invisible to React.",
+      "incorrectFeedback": "React re-render is triggered ONLY by setState (or props change from parent). let variable change doesn't trigger re-render.",
+      "reasoning": "Understanding re-render mechanism is crucial for debugging.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Multiple States & Objects in State"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "You can have many useState in one component. Also state can be object, array, not just number. For your dashboard you might need: completedCount, currentLessonId, xp, coins - 4 states! Or one object state with all."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: Your Real App State - XP, Coins, Progress",
+      "code": "import { useState } from 'react';\n\nfunction DashboardStats() {\n const [xp, setXp] = useState(120);\n const [coins, setCoins] = useState(30);\n const [completed, setCompleted] = useState(2);\n\n function completeLesson() {\n setCompleted(completed + 1);\n setXp(xp + 50); // Gain 50 XP per lesson\n setCoins(coins + 10); // Gain 10 coins\n }\n\n return (\n <div style={{background: '#020617', color: 'white', padding: '20px'}}>\n <div style={{display: 'flex', gap: '10px'}}>\n <span>⚡ {xp} XP</span>\n <span>🪙 {coins}</span>\n <span>{completed}/10 completed</span>\n </div>\n <button onClick={completeLesson} style={{marginTop: '10px'}}>Complete Lesson +50 XP</button>\n </div>\n );\n}\n// One click updates 3 states at once - XP, coins, completed all update together!",
+      "output": "⚡ 120 XP 🪙 30 2/10 completed [Complete Lesson +50 XP]"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: In your navbar you show XP and Coins (stat-pill). User completes lesson, XP should go from 0 to 100, coins 0 to 20. How?",
+      "options": [
+        "Use props only in navbar",
+        "Use useState in parent App for xp and coins, pass to Navbar as props, update state when lesson completes",
+        "Hardcode XP as 0 always",
+        "You need backend database for XP"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Parent holds state, passes to children as props. When state updates, Navbar props update, UI updates. Props + State combo!",
+      "incorrectFeedback": "Parent App holds xp state, passes to Navbar via props. When lesson completed, setXp(xp+50) -> Navbar re-renders with new XP.",
+      "reasoning": "Lifting state up + props down is core pattern for shared data like XP.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: State with Objects & Arrays - Your Lessons Array Becomes Dynamic"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Your lessons array from dashboard is static now. But what if you want to change status of lesson 4 from locked to current when lesson 3 completes? You need lessons array IN STATE, and update it with setLessons."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: Dynamic Lessons Array in State - Unlock Next Lesson",
+      "code": "import { useState } from 'react';\n\nfunction App() {\n const [lessons, setLessons] = useState([\n {id: 1, title: \"Intro\", status: \"completed\"},\n {id: 2, title: \"JSX\", status: \"current\"},\n {id: 3, title: \"Props\", status: \"locked\"},\n ]);\n\n function completeCurrent() {\n // Find current lesson, mark completed, unlock next\n setLessons(lessons.map(lesson => {\n if (lesson.status === 'current') {\n return {...lesson, status: 'completed'}; // Mark current as completed\n }\n if (lesson.id === 2 && lessons[1].status === 'current') {\n // If lesson 2 is current and completing, unlock lesson 3\n // Simplified logic for demo - in real app find next locked\n return lesson;\n }\n return lesson;\n }));\n }\n\n return (\n <div>\n {lessons.map(l => <p key={l.id}>{l.id}: {l.title} - {l.status}</p>)}\n <button onClick={completeCurrent}>Complete Current Lesson</button>\n </div>\n );\n}\n// Clicking updates array in state -> map re-renders -> UI shows new status",
+      "output": "1: Intro - completed\n2: JSX - current\n3: Props - locked\n[Complete Current Lesson]"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Interactive Challenge - Build Like Button & Input"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Two most common interactions: Button click changes state, Input typing changes state. Let's build both - you will need this for Lesson 6 Forms."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Input State - Controlled Component Preview",
+      "code": "import { useState } from 'react';\n\nfunction SearchLessons() {\n const [search, setSearch] = useState(\"\");\n const lessons = [\"Introduction\", \"JSX and Components\", \"Props\", \"State\", \"Hooks\"];\n \n const filtered = lessons.filter(lesson => \n lesson.toLowerCase().includes(search.toLowerCase())\n );\n\n return (\n <div>\n <input \n type=\"text\" \n placeholder=\"Search lessons...\" \n value={search}\n onChange={(e) => setSearch(e.target.value)}\n style={{padding: '8px', width: '200px'}}\n />\n <p>Searching for: {search}</p>\n <ul>\n {filtered.map((lesson, i) => <li key={i}>{lesson}</li>)}\n </ul>\n </div>\n );\n}\n// Type \"JSX\" -> filtered shows only JSX and Components\n// This is live search - state + filter + map",
+      "output": "[Input: Search lessons...]\nSearching for: \n- Introduction\n- JSX and Components\n- Props..."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: You want a search bar in your React course page to filter lessons by title. User types 'hooks', only Hooks lessons show. How?",
+      "options": [
+        "Use state for search text, onChange updates search state, filter lessons array using search state",
+        "You need to create new component for each search",
+        "Search cannot be done in React",
+        "Use props only"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! search state + onChange + filter + map = live search. You'll build this in Lesson 7 too!",
+      "incorrectFeedback": "Controlled input: value={search} onChange={(e)=>setSearch(e.target.value)} then lessons.filter(...).",
+      "reasoning": "Input state pattern is foundation for forms and filtering.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Lifting State Up - Sharing State Between Components"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Your LessonCard needs to tell App that lesson is completed so App can update progress bar and XP. But LessonCard is child, App is parent. How? LIFT STATE UP: Put state in parent App, pass state and setState function as props to children. Children call function prop to update parent state. This is the most important pattern for your final app!"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: Lifting State Up - Child Updates Parent's Progress",
+      "code": "import { useState } from 'react';\n\nfunction LessonCard({ id, title, status, onComplete }) {\n return (\n <div style={{border: '1px solid gray', padding: '10px', margin: '5px'}}>\n <p>{title} - {status}</p>\n {status === 'current' && (\n <button onClick={() => onComplete(id)}>Mark Completed</button>\n )}\n </div>\n );\n}\n\nfunction App() {\n const [lessons, setLessons] = useState([\n {id: 1, title: \"Intro\", status: \"completed\"},\n {id: 2, title: \"JSX\", status: \"current\"},\n {id: 3, title: \"Props\", status: \"locked\"},\n ]);\n const completed = lessons.filter(l => l.status === 'completed').length;\n\n function handleComplete(id) {\n setLessons(lessons.map(l => \n l.id === id? {...l, status: 'completed'} : \n l.id === id + 1? {...l, status: 'current'} : l\n ));\n }\n\n return (\n <div>\n <h2>Progress: {completed}/{lessons.length}</h2>\n {lessons.map(lesson => (\n <LessonCard key={lesson.id} {...lesson} onComplete={handleComplete} />\n ))}\n </div>\n );\n}\n// Child button click -> calls parent handleComplete -> parent updates lessons state -> progress updates",
+      "output": "Progress: 1/3\nIntro - completed\nJSX - current [Mark Completed]\nProps - locked"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "APPLICATION: Your dashboard has Navbar showing XP and LessonGrid showing cards. Both need same completed count. Where should completed state live?",
+      "options": [
+        "Inside Navbar only",
+        "Inside LessonCard only",
+        "In parent App - lifted up, then pass as prop to both Navbar and LessonGrid",
+        "State cannot be shared between components"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Exactly! Lift state to common parent App, share via props to both Navbar and LessonGrid. That's how real apps share data.",
+      "incorrectFeedback": "When two components need same data, lift state to their closest common parent App.",
+      "reasoning": "Lifting state up is solution for shared state between siblings.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Interactive Dashboard with Live Progress"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "This is your dashboard but now ALIVE with state! Paste in Practical editor. Click 'Complete Lesson' and watch progress bar, XP, coins, and unlock next lesson - all with state!"
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Live Interactive Dashboard (State + Props)",
+      "code": "import { useState } from 'react';\n\nfunction LessonCard({ id, title, learn, status, onComplete }) {\n const isLocked = status === 'locked';\n const badgeColor = status === 'completed'? '#22c55e' : status === 'current'? '#61dafb' : '#94a3b8';\n return (\n <div style={{background: 'rgba(15,31,51,0.82)', border: `1px solid ${badgeColor}30`, borderRadius: '20px', padding: '22px', opacity: isLocked? 0.58 : 1}}>\n <div style={{display: 'flex', justifyContent: 'space-between'}}>\n <span style={{color: '#61dafb', fontSize: '11px', fontWeight: '800'}}>LESSON {String(id).padStart(2,'0')}</span>\n <span style={{color: badgeColor, background: badgeColor+'1A', padding: '5px 8px', borderRadius: '999px', fontSize: '10px'}}>{status.toUpperCase()}</span>\n </div>\n <h3 style={{color: 'white', margin: '10px 0'}}>{title}</h3>\n <p style={{color: '#94a3b8', fontSize: '13px'}}>{learn}</p>\n {!isLocked? (\n <button onClick={() => onComplete(id)} style={{background: status==='completed'? '#22c55e20' : 'linear-gradient(135deg, #61dafb, #0ea5e9)', color: status==='completed'? '#4ade80' : '#06121d', border: 'none', borderRadius: '11px', padding: '10px 15px', fontWeight: '800', marginTop: '12px', cursor: 'pointer'}}>\n {status==='completed'? '✓ Completed' : 'Start → Complete'}\n </button>\n ) : (\n <button disabled style={{background: 'rgba(71,85,105,0.45)', color: '#cbd5e1', border: 'none', borderRadius: '11px', padding: '10px 15px', marginTop: '12px'}}>🔒 Locked</button>\n )}\n </div>\n );\n}\n\nfunction App() {\n const [lessons, setLessons] = useState([\n {id: 1, title: \"Introduction to React\", learn: \"Understand React ecosystem\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", learn: \"Create reusable components\", status: \"completed\"},\n {id: 3, title: \"Props and Communication\", learn: \"Pass data between components\", status: \"completed\"},\n {id: 4, title: \"State and Interaction\", learn: \"Make UI interactive with state\", status: \"current\"},\n {id: 5, title: \"React Hooks\", learn: \"Use powerful hooks\", status: \"locked\"},\n ]);\n const [xp, setXp] = useState(150);\n const [coins, setCoins] = useState(30);\n\n const completed = lessons.filter(l => l.status==='completed').length;\n const progress = (completed / lessons.length) * 100;\n\n function handleComplete(id) {\n if (lessons.find(l => l.id===id).status==='completed') return;\n setLessons(lessons.map(l => {\n if (l.id===id) return {...l, status: 'completed'};\n if (l.id===id+1 && l.status==='locked') return {...l, status: 'current'};\n return l;\n }));\n setXp(xp + 50);\n setCoins(coins + 10);\n }\n\n return (\n <div style={{background: '#07111f', minHeight: '100vh', padding: '20px', color: 'white'}}>\n <div style={{display: 'flex', gap: '10px', marginBottom: '20px'}}>\n <span style={{background: 'rgba(15,23,42,0.72)', padding: '9px 12px', borderRadius: '12px'}}>⚡ {xp} XP</span>\n <span style={{background: 'rgba(15,23,42,0.72)', padding: '9px 12px', borderRadius: '12px'}}>🪙 {coins}</span>\n <span style={{color: '#94a3b8', padding: '9px'}}>{completed}/{lessons.length} completed - {Math.round(progress)}%</span>\n </div>\n <div style={{height: '9px', background: 'rgba(148,163,184,0.12)', borderRadius: '99px', marginBottom: '20px'}}>\n <div style={{width: `${progress}%`, height: '100%', background: 'linear-gradient(90deg, #61dafb, #8b5cf6)', borderRadius: '99px', transition: 'width 0.6s ease'}}></div>\n </div>\n <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '18px'}}>\n {lessons.map(lesson => <LessonCard key={lesson.id} {...lesson} onComplete={handleComplete} />)}\n </div>\n </div>\n );\n}\nexport default App;",
+      "output": "⚡ 150 XP 🪙 30 3/5 completed - 60%\n[Progress bar 60%]\n[Cards] with Start → Complete buttons - click to see progress move!"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Next Steps"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered today: useState syntax [value, setValue], why let doesn't trigger re-render but setState does, events onClick/onChange -> setState -> re-render loop, multiple states (xp, coins, completed), object/array state with lessons array, lifting state up to parent App to share between Navbar and LessonGrid, and function props to let child update parent state. Your dashboard is now INTERACTIVE, not static!"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "FINAL APPLICATION: User completes Lesson 4. You need to: 1) Mark Lesson 4 as completed 2) Unlock Lesson 5 to current 3) Add 50 XP 4) Update progress bar from 60% to 80% 5) Update navbar XP. How many states need to update and where?",
+      "options": [
+        "Update only one state inside LessonCard",
+        "Update lessons array state (for status), xp state, coins state in parent App - one handleComplete function updates all, props pass new values to Navbar and ProgressBar which auto re-render",
+        "You need to manually edit HTML file",
+        "State cannot update multiple things at once"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "BINGO! One function in parent App updates lessons, xp, coins states together. Child components receive new props and re-render automatically. That's the full flow towards Lesson 10 target!",
+      "incorrectFeedback": "Parent App holds lessons, xp, coins states. handleComplete does setLessons + setXp + setCoins together. All children re-render with new props.",
+      "reasoning": "State lifting + multiple setStates + props down = interactive app architecture.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Add search input state to filter lessons like Example 6. 2. Add like button state to each LessonCard. 3. Try to make coin animation when XP increases."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next: Lesson 5 - React Hooks (useState deep dive + useEffect). You will learn how to fetch your lessons from Firebase like in your dashboard loading spinner, save progress to database, and run code when component mounts. That's where your app becomes REAL with backend! See you there."
+    }
+  ]
+}

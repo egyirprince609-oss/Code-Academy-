@@ -1,0 +1,305 @@
+{
+  "course": "react",
+  "lessonNumber": 6,
+  "lessonId": "react-lesson-6",
+  "title": "Forms and Events",
+  "subtitle": "Handle User Input Like a Pro - From Search to Login to Add Lesson",
+  "description": "Master controlled components, onChange, onSubmit, form validation, handling multiple inputs, checkboxes, and build real forms: search, add lesson, contact - everything your dashboard needs.",
+  "level": "Intermediate",
+  "xpReward": 180,
+  "coinsReward": 50,
+  "estimatedMinutes": 60,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: The Problem - HTML Forms vs React Forms"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! In HTML, when you type in <input>, browser automatically keeps the value inside DOM. You read it later with document.getElementById('input').value. In React, we don't want DOM to be source of truth - we want STATE to be source of truth. Why? Because if state holds input value, you can instantly validate, filter lessons live, show character count, enable/disable button - all without touching DOM."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "React form pattern is called Controlled Component: Input's value comes from state: value={search}. And onChange updates state: onChange={(e)=>setSearch(e.target.value)}. State -> Input value, Input change -> setState -> new State -> new Input value. Two-way binding via state!"
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Uncontrolled is old HTML way - DOM holds value, you read via ref. We will use Controlled 99% - it's modern standard for your dashboard search, login, add lesson form."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Open Practical > React editor. We build every form type today."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Controlled Input - The Heart of React Forms"
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: Your Search Bar - Controlled Component Pattern",
+      "code": "import { useState } from 'react';\n\nfunction SearchBar() {\n const [search, setSearch] = useState(\"\"); // State is source of truth\n\n return (\n <div>\n <input \n type=\"text\"\n value={search} // Value from state - CONTROLLED\n onChange={(e) => setSearch(e.target.value)} // Update state on typing\n placeholder=\"Search lessons...\"\n style={{padding: '10px', width: '100%'}}\n />\n <p>You are searching for: <strong>{search}</strong></p>\n <p>Character count: {search.length}</p>\n {/* Live validation example */}\n {search.length > 0 && search.length < 3 && <p style={{color: 'orange'}}>Keep typing... at least 3 chars</p>}\n </div>\n );\n}\n// Type 're' -> state='re' -> input shows 're' -> count 2 -> warning shows\n// Type 'react' -> state='react' -> count 5 -> warning disappears",
+      "output": "[Input: Search lessons...]\nYou are searching for: react\nCharacter count: 5"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "See magic? Because state holds search, you instantly show count, validation, without extra code. In old HTML way you would need to manually read DOM each time. Here React does it via state."
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: You have search input for lessons. You need to show live filtered results as user types. Why controlled component?",
+      "options": [
+        "Because controlled keeps input value in state, you can filter lessons array using search state instantly on every keystroke",
+        "Because uncontrolled is faster",
+        "You cannot do live filtering in React",
+        "Controlled means browser controls value, not React"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Exactly! State holds search -> filter lessons.filter(l=>l.title.includes(search)) -> map -> live results. That's your dashboard search feature!",
+      "incorrectFeedback": "Controlled = state is source of truth. search state -> filter lessons -> live results update each keystroke.",
+      "reasoning": "Controlled components enable instant UI reactions to input changes.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Handling Multiple Inputs - Your Add Lesson Form Needs 4 Inputs"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Your Add Lesson form needs title, learn, summary, status - 4 inputs! You could create 4 useState: const [title, setTitle] = useState(''), const [learn, setLearn] = useState('')... but better way: ONE object state for whole form: const [form, setForm] = useState({title:'', learn:'', summary:'', status:'locked'}). Update with spread."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Multiple Inputs - One Object State Pattern",
+      "code": "import { useState } from 'react';\n\nfunction AddLessonForm() {\n const [form, setForm] = useState({\n title: \"\",\n learn: \"\",\n summary: \"\",\n status: \"locked\"\n });\n\n function handleChange(e) {\n const { name, value } = e.target; // name = input's name attribute, value = typed value\n setForm({\n...form, // Keep other fields\n [name]: value // Update only changed field - dynamic key\n });\n }\n\n return (\n <div style={{display: 'grid', gap: '10px', maxWidth: '400px'}}>\n <input name=\"title\" value={form.title} onChange={handleChange} placeholder=\"Lesson Title\" />\n <input name=\"learn\" value={form.learn} onChange={handleChange} placeholder=\"What you will learn\" />\n <input name=\"summary\" value={form.summary} onChange={handleChange} placeholder=\"Summary\" />\n <select name=\"status\" value={form.status} onChange={handleChange}>\n <option value=\"locked\">Locked</option>\n <option value=\"current\">Current</option>\n <option value=\"completed\">Completed</option>\n </select>\n <p>Preview: {form.title} - {form.status}</p>\n </div>\n );\n}\n// One handleChange for all inputs! Uses name attribute to know which field changed",
+      "output": "[Title input]\n[Learn input]\n[Summary input]\n[Status dropdown]\nPreview: JSX and Components - current"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: You have form with 5 fields: name, email, password, age, country. What's efficient way to handle state?",
+      "options": [
+        "Create 5 separate useState hooks and 5 handleChange functions",
+        "Create one object state {name:'', email:'',...} and one handleChange using e.target.name to update correct field",
+        "Use 5 different forms",
+        "You cannot handle 5 inputs in one form"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! One object state + one dynamic handleChange = clean code. This is standard in real companies for large forms.",
+      "incorrectFeedback": "One form object + [name]: value pattern handles all inputs with one function. Saves 80% code.",
+      "reasoning": "Object state pattern scales to any number of inputs.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: onSubmit - Preventing Page Reload (Critical!)"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "In HTML, when you submit <form>, browser reloads page and sends data to server - old way. In React SPA (Single Page App), we DON'T want reload - we want to handle submit in JavaScript, add lesson to state, show success message. So we use e.preventDefault() inside onSubmit handler to stop reload!"
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: onSubmit with preventDefault - Add Lesson Without Reload",
+      "code": "import { useState } from 'react';\n\nfunction AddLesson() {\n const [lessons, setLessons] = useState([]);\n const [form, setForm] = useState({ title: \"\", learn: \"\" });\n\n function handleChange(e) {\n setForm({...form, [e.target.name]: e.target.value});\n }\n\n function handleSubmit(e) {\n e.preventDefault(); // STOP page reload - MOST IMPORTANT LINE!\n if (!form.title.trim()) {\n alert(\"Title required!\");\n return;\n }\n const newLesson = {\n id: lessons.length + 1,\n title: form.title,\n learn: form.learn,\n status: \"locked\"\n };\n setLessons([...lessons, newLesson]); // Add to list\n setForm({ title: \"\", learn: \"\" }); // Clear form\n alert(\"Lesson added!\");\n }\n\n return (\n <div>\n <form onSubmit={handleSubmit}>\n <input name=\"title\" value={form.title} onChange={handleChange} placeholder=\"Title\" required />\n <input name=\"learn\" value={form.learn} onChange={handleChange} placeholder=\"Learn\" />\n <button type=\"submit\">Add Lesson</button>\n </form>\n <ul>{lessons.map(l => <li key={l.id}>{l.title}</li>)}</ul>\n </div>\n );\n}\n// Without e.preventDefault(), page would reload and lessons state lost!",
+      "output": "[Title] [Learn] [Add Lesson Button]\nAfter submit: List shows new lesson, no page reload"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: You built add lesson form but when you click Submit, whole page reloads and lessons disappear. What did you forget?",
+      "options": [
+        "You forgot e.preventDefault() in handleSubmit to stop browser's default form reload",
+        "You forgot to use useEffect",
+        "Forms always reload in React, cannot prevent",
+        "You need to use uncontrolled components"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Exactly! e.preventDefault() stops reload. This bug happens to every beginner - remember it!",
+      "incorrectFeedback": "Add e.preventDefault() as first line in handleSubmit. Without it, browser reloads and React state resets.",
+      "reasoning": "Preventing default form submission is essential for SPA behavior.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Validation - Show Errors Before Submit"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Real forms need validation: Title required, min 5 chars, learn text required, email must contain @. In React we validate using state: Keep errors object state, check on submit or on change, show error messages conditionally."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: Live Validation Like Professional Apps",
+      "code": "import { useState } from 'react';\n\nfunction LessonFormWithValidation() {\n const [form, setForm] = useState({ title: \"\", email: \"\" });\n const [errors, setErrors] = useState({});\n\n function validate() {\n const newErrors = {};\n if (!form.title.trim()) newErrors.title = \"Title is required\";\n else if (form.title.length < 5) newErrors.title = \"Title must be at least 5 characters\";\n if (!form.email.includes(\"@\")) newErrors.email = \"Valid email required\";\n setErrors(newErrors);\n return Object.keys(newErrors).length === 0; // Valid if no errors\n }\n\n function handleSubmit(e) {\n e.preventDefault();\n if (validate()) {\n alert(\"Form valid! Submitting: \" + form.title);\n // Submit to Firebase here\n }\n }\n\n return (\n <form onSubmit={handleSubmit} style={{display: 'grid', gap: '8px', maxWidth: '400px'}}>\n <input name=\"title\" value={form.title} onChange={(e) => setForm({...form, title: e.target.value})} placeholder=\"Title\" style={{border: errors.title? '1px solid red' : '1px solid gray'}} />\n {errors.title && <span style={{color: 'red', fontSize: '12px'}}>{errors.title}</span>}\n \n <input name=\"email\" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} placeholder=\"Email\" style={{border: errors.email? '1px solid red' : '1px solid gray'}} />\n {errors.email && <span style={{color: 'red', fontSize: '12px'}}>{errors.email}</span>}\n \n <button type=\"submit\">Submit Lesson</button>\n </form>\n );\n}\n// Type 'ab' in title -> error \"must be at least 5 chars\" shows instantly\n// Empty title -> \"Title is required\"",
+      "output": "[Title input with red border if error]\nError: Title must be at least 5 characters\n[Email input]\n[Submit Button]"
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Checkboxes, Radio, Select - Other Input Types"
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: All Input Types - Checkbox, Radio, Select (Your Dashboard Filters)",
+      "code": "import { useState } from 'react';\n\nfunction Filters() {\n const [filters, setFilters] = useState({\n status: \"all\",\n showCompleted: true,\n difficulty: \"beginner\"\n });\n\n function handleChange(e) {\n const { name, value, type, checked } = e.target;\n setFilters({\n...filters,\n [name]: type === 'checkbox'? checked : value // Checkbox uses checked, others use value\n });\n }\n\n return (\n <div style={{display: 'grid', gap: '10px'}}>\n <select name=\"status\" value={filters.status} onChange={handleChange}>\n <option value=\"all\">All Lessons</option>\n <option value=\"completed\">Completed Only</option>\n <option value=\"current\">Current Only</option>\n </select>\n\n <label><input type=\"checkbox\" name=\"showCompleted\" checked={filters.showCompleted} onChange={handleChange} /> Show Completed</label>\n\n <div>\n <label><input type=\"radio\" name=\"difficulty\" value=\"beginner\" checked={filters.difficulty==='beginner'} onChange={handleChange} /> Beginner</label>\n <label><input type=\"radio\" name=\"difficulty\" value=\"advanced\" checked={filters.difficulty==='advanced'} onChange={handleChange} /> Advanced</label>\n </div>\n\n <p>Filters: {JSON.stringify(filters)}</p>\n </div>\n );\n}\n// Select uses value, Checkbox uses checked, Radio uses checked comparison\n// One handleChange handles all types with type check!",
+      "output": "[Dropdown: All Lessons]\n[Checkbox: Show Completed checked]\n[Radio: Beginner selected]\nFilters: {\"status\":\"all\",...}"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: You have checkbox 'Show only completed lessons'. How do you handle its state?",
+      "options": [
+        "Use value property like text input",
+        "Use checked property and e.target.checked - because checkbox value is boolean true/false, not text",
+        "Checkboxes don't need state in React",
+        "Use onSubmit only, not onChange"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Checkbox = checked={state} and e.target.checked. Text input = value={state} and e.target.value. Different!",
+      "incorrectFeedback": "Checkbox is special: <input type='checkbox' checked={showCompleted} onChange={(e)=>setShowCompleted(e.target.checked)} />",
+      "reasoning": "Different input types have different properties for controlled pattern.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Events Deep Dive - onClick, onChange, onSubmit, Key Events"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: All Important Events - Click, Change, Submit, KeyPress",
+      "code": "import { useState } from 'react';\n\nfunction EventDemo() {\n const [text, setText] = useState(\"\");\n const [lessons, setLessons] = useState([\"Intro\"]);\n\n function handleKeyPress(e) {\n if (e.key === 'Enter' && text.trim()) {\n setLessons([...lessons, text]);\n setText(\"\");\n }\n }\n\n function handleClickLesson(id) {\n console.log(\"Clicked lesson\", id);\n alert(`Opening lesson ${id}`);\n }\n\n return (\n <div>\n <input \n value={text}\n onChange={(e) => setText(e.target.value)}\n onKeyPress={handleKeyPress} // Press Enter to add\n placeholder=\"Type lesson and press Enter\"\n />\n <p>Press Enter to add, Click lesson to open</p>\n {lessons.map((lesson, i) => (\n <div key={i} onClick={() => handleClickLesson(i)} style={{padding: '8px', border: '1px solid gray', margin: '5px', cursor: 'pointer'}}>\n {lesson}\n </div>\n ))}\n </div>\n );\n}\n// onChange for typing, onKeyPress for Enter key, onClick for clicking lesson card\n// These 3 events power 90% of your dashboard interactions!",
+      "output": "[Input: Type lesson and press Enter]\n[Lesson card: Intro - clickable]\nType 'JSX' + Enter -> new card appears"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Real App Challenge - Search + Filter Combined"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Now combine search input + status filter + lessons list - exactly like your dashboard needs. This uses everything: useState for search and filter, onChange, filter(), map(), props."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: Search + Filter - Your Dashboard Real Feature",
+      "code": "import { useState } from 'react';\n\nfunction LessonSearch() {\n const [search, setSearch] = useState(\"\");\n const [filter, setFilter] = useState(\"all\");\n const lessons = [\n {id: 1, title: \"Introduction to React\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", status: \"current\"},\n {id: 3, title: \"Props and Communication\", status: \"locked\"},\n {id: 4, title: \"React Hooks Deep Dive\", status: \"locked\"},\n ];\n\n const filtered = lessons.filter(lesson => {\n const matchesSearch = lesson.title.toLowerCase().includes(search.toLowerCase());\n const matchesFilter = filter === \"all\" || lesson.status === filter;\n return matchesSearch && matchesFilter;\n });\n\n return (\n <div>\n <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder=\"Search...\" style={{padding: '8px', width: '200px'}} />\n <select value={filter} onChange={(e) => setFilter(e.target.value)} style={{padding: '8px', marginLeft: '10px'}}>\n <option value=\"all\">All</option>\n <option value=\"completed\">Completed</option>\n <option value=\"current\">Current</option>\n <option value=\"locked\">Locked</option>\n </select>\n <p>Showing {filtered.length} of {lessons.length} lessons</p>\n {filtered.map(l => <p key={l.id}>{l.title} - {l.status}</p>)}\n </div>\n );\n}\n// Type \"hooks\" + filter \"locked\" -> shows only \"React Hooks Deep Dive - locked\"\n// Live search + filter without page reload - pure React power!",
+      "output": "[Search input] [Filter dropdown All]\nShowing 4 of 4 lessons\nType 'JSX' -> Showing 1 of 4"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "APPLICATION: User types 'hooks' in search and selects 'locked' filter. You need to show lessons that match BOTH search AND filter. How?",
+      "options": [
+        "Use two separate filters that override each other",
+        "Chain filters: lessons.filter(l => l.title.includes(search) && (filter==='all' || l.status===filter)) - must match both conditions",
+        "You need backend for filtering",
+        "Filtering cannot combine search and status"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! && means AND - must match search AND filter. That's how your dashboard's search + filter will work together.",
+      "incorrectFeedback": "Use && to combine conditions: matchesSearch && matchesFilter. Both must be true to show lesson.",
+      "reasoning": "Combining multiple filter criteria is common real-world requirement.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Add Lesson Form + Live Dashboard"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "This final combines everything: Form with validation, multiple inputs, onSubmit with preventDefault, search, filter, add new lesson to state - your complete Lesson 6 target! This is what you will demo in Lesson 10."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Add Lesson Form + Live Search (Full Feature)",
+      "code": "import { useState } from 'react';\n\nfunction App() {\n const [lessons, setLessons] = useState([\n {id: 1, title: \"Introduction to React\", learn: \"What is React\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", learn: \"Build components\", status: \"current\"},\n ]);\n const [form, setForm] = useState({ title: \"\", learn: \"\", status: \"locked\" });\n const [search, setSearch] = useState(\"\");\n const [errors, setErrors] = useState({});\n const [showForm, setShowForm] = useState(false);\n\n function handleFormChange(e) {\n setForm({...form, [e.target.name]: e.target.value});\n if (errors[e.target.name]) setErrors({...errors, [e.target.name]: \"\"}); // Clear error on typing\n }\n\n function validate() {\n const newErrors = {};\n if (!form.title.trim()) newErrors.title = \"Title required\";\n else if (form.title.length < 5) newErrors.title = \"Min 5 chars\";\n if (!form.learn.trim()) newErrors.learn = \"Learn field required\";\n setErrors(newErrors);\n return Object.keys(newErrors).length === 0;\n }\n\n function handleSubmit(e) {\n e.preventDefault();\n if (!validate()) return;\n const newLesson = { id: lessons.length + 1,...form };\n setLessons([...lessons, newLesson]);\n setForm({ title: \"\", learn: \"\", status: \"locked\" });\n setShowForm(false);\n }\n\n const filtered = lessons.filter(l => l.title.toLowerCase().includes(search.toLowerCase()));\n\n return (\n <div style={{background: '#07111f', color: 'white', minHeight: '100vh', padding: '20px'}}>\n <div style={{display: 'flex', gap: '10px', marginBottom: '20px'}}>\n <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder=\"Search lessons...\" style={{padding: '10px', flex: 1}} />\n <button onClick={() => setShowForm(!showForm)} style={{padding: '10px 15px', background: '#61dafb', border: 'none', borderRadius: '8px', fontWeight: '800'}}>{showForm? \"Cancel\" : \"+ Add Lesson\"}</button>\n </div>\n\n {showForm && (\n <form onSubmit={handleSubmit} style={{background: 'rgba(15,31,51,0.88)', padding: '20px', borderRadius: '16px', display: 'grid', gap: '10px', marginBottom: '20px'}}>\n <input name=\"title\" value={form.title} onChange={handleFormChange} placeholder=\"Lesson Title (min 5 chars)\" style={{padding: '10px', border: errors.title? '1px solid red' : '1px solid #1e293b', borderRadius: '8px'}} />\n {errors.title && <span style={{color: '#ef4444', fontSize: '12px'}}>{errors.title}</span>}\n <input name=\"learn\" value={form.learn} onChange={handleFormChange} placeholder=\"What you will learn\" style={{padding: '10px', border: errors.learn? '1px solid red' : '1px solid #1e293b', borderRadius: '8px'}} />\n {errors.learn && <span style={{color: '#ef4444', fontSize: '12px'}}>{errors.learn}</span>}\n <select name=\"status\" value={form.status} onChange={handleFormChange} style={{padding: '10px', borderRadius: '8px'}}>\n <option value=\"locked\">Locked</option><option value=\"current\">Current</option><option value=\"completed\">Completed</option>\n </select>\n <button type=\"submit\" style={{padding: '12px', background: 'linear-gradient(135deg, #61dafb, #0ea5e9)', border: 'none', borderRadius: '8px', fontWeight: '800'}}>Create Lesson</button>\n </form>\n )}\n\n <p style={{color: '#94a3b8'}}>Showing {filtered.length} lessons</p>\n <div style={{display: 'grid', gap: '12px', marginTop: '15px'}}>\n {filtered.map(l => (\n <div key={l.id} style={{border: '1px solid rgba(97,218,251,0.16)', padding: '15px', borderRadius: '12px'}}>\n <h4>{l.title} - {l.status}</h4><p style={{color: '#94a3b8', fontSize: '13px'}}>{l.learn}</p>\n </div>\n ))}\n </div>\n </div>\n );\n}\nexport default App;",
+      "output": "[Search input] [+ Add Lesson button]\nClick + Add Lesson -> Form with validation appears\nFill form -> Submit -> New lesson appears in list without reload"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Next Steps"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered today: Controlled components (value={state} + onChange), multiple inputs with one object state + [name]: value dynamic key, e.preventDefault() to stop reload, validation with errors object state, different input types (select uses value, checkbox uses checked + e.target.checked, radio uses checked comparison), events (onChange typing, onSubmit form, onKeyPress Enter, onClick card), and combining search + filter + add form into live dashboard."
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "MASTER APPLICATION: You need to build feedback form: name, email, rating (1-5 stars radio), comments textarea, newsletter checkbox, submit without reload, validate name min 3 chars and email contains @, show errors, add feedback to list. Which concepts?",
+      "options": [
+        "Only useState for one input",
+        "Object state for all fields, [name]: value for dynamic update, checked for checkbox, e.preventDefault in handleSubmit, errors state + validate(), map to show feedback list",
+        "You need backend for validation",
+        "Forms cannot be built with React"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You just described full professional form architecture - that's exactly what real companies use. You're ready for Lesson 10 complete app!",
+      "incorrectFeedback": "Full form needs: Object state, dynamic handleChange, preventDefault, validation, errors state, and display list. All concepts from today combined.",
+      "reasoning": "Combining all form concepts builds real production forms like your Code Academy feedback and add lesson features.",
+      "xpReward": 30
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "BUG FIX: You typed in input but value doesn't show, stays empty. You wrote <input onChange={(e)=>setSearch(e.target.value)} /> without value prop. What's wrong?",
+      "options": [
+        "You forgot value={search} - without value prop it's uncontrolled, React state and input are not synced, it becomes uncontrolled component",
+        "You need to use useEffect",
+        "onChange is wrong event",
+        "Input cannot be controlled"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! Controlled needs BOTH value={state} AND onChange. Missing value = uncontrolled = state not driving UI.",
+      "incorrectFeedback": "Controlled component requires value={search} + onChange. Without value prop, input is uncontrolled and state doesn't control display.",
+      "reasoning": "Understanding controlled vs uncontrolled prevents common form bugs.",
+      "xpReward": 20
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Add textarea for summary in add lesson form. 2. Add character count limit 100 for learn field with warning. 3. Add edit functionality - click lesson card to populate form for editing."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next: Lesson 7 - Lists, Keys and Conditional Rendering. You already used map and filter, now deep dive into keys why they matter, advanced conditional rendering, and build dynamic lesson grid with empty states, loading states, no results states. See you there - you're 60% to complete app!"
+    }
+  ]
+}

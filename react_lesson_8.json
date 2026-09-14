@@ -1,0 +1,315 @@
+
+
+
+{
+  "course": "react",
+  "lessonNumber": 8,
+  "lessonId": "react-lesson-8",
+  "title": "Styling in React",
+  "subtitle": "From Basic to Glassmorphism - Build Your Dashboard's Dark Premium Design",
+  "description": "Master 5 styling methods, CSS variables for theming, glassmorphism, responsive grids, animations, dynamic styling with props, Tailwind, and the exact design system from your dashboard.",
+  "level": "Intermediate",
+  "xpReward": 180,
+  "coinsReward": 50,
+  "estimatedMinutes": 60,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Why Styling in React Is Different - 5 Ways Professionals Style"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! You know basic inline style and className from Lesson 2. But real premium apps like your dashboard don't use basic styling - they use design systems. Your dashboard uses: CSS variables (--react, --bg), glassmorphism (backdrop-filter: blur), gradients, responsive grid, animations, and dynamic styles based on props (status colors)."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "5 ways to style in React: 1. Inline style object - style={{color: 'red'}} - good for dynamic values. 2. CSS file - import './App.css' + className - good for static styles. 3. CSS Modules - App.module.css - scoped styles, no conflicts. 4. Tailwind CSS - className='bg-blue-500 p-4' - utility classes, fastest for pros. 5. Styled-components - CSS in JS with props - dynamic theming. Your dashboard uses Way 1 + 2 + 4 combined!"
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Today you learn all 5 plus advanced topics you haven't seen: CSS variables for theming, glassmorphism, responsive design, animations, and dynamic styling based on status prop. This is what makes your app look premium vs beginner."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: CSS Variables - Your Dashboard's Secret for Theming"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Look at your dashboard HTML: :root { --react: #61dafb; --bg: #07111f; --card: rgba(15,31,51,0.88) }. These are CSS variables - you define colors once, reuse everywhere. Want to change React blue to purple? Change one variable, all cards update! Also enables dark/light mode switch instantly."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: CSS Variables - Theming System Like Your Dashboard",
+      "code": "/* App.css - Define variables once */\n:root {\n --react: #61dafb;\n --react-2: #0ea5e9;\n --bg: #07111f;\n --card: rgba(15, 31, 51, 0.88);\n --muted: #94a3b8;\n --success: #22c55e;\n --border: rgba(97, 218, 251, 0.16);\n}\n\n/* Use variables everywhere */\n.lesson-card {\n background: var(--card);\n border: 1px solid var(--border);\n border-radius: 20px;\n padding: 22px;\n}\n\n.lesson-title {\n color: var(--react);\n font-size: 20px;\n}\n\n/* Change theme by changing variables - dark to light mode */\n.light-mode {\n --bg: #ffffff;\n --card: #f8fafc;\n --muted: #64748b;\n}",
+      "output": "All cards use same variables - change --react to #8b5cf6 and all titles become purple instantly"
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Using CSS Variables in React Inline + CSS File Combo",
+      "code": "import './App.css'; // Contains :root variables\n\nfunction LessonCard({ status }) {\n // Dynamic style using CSS variable + status prop\n const cardStyle = {\n background: 'var(--card)', // From CSS variable\n border: `1px solid ${status==='completed'? 'var(--success)' : 'var(--border)'}`,\n borderRadius: '20px',\n padding: '22px',\n backdropFilter: 'blur(18px)', // Glassmorphism from your dashboard!\n WebkitBackdropFilter: 'blur(18px)'\n };\n\n return (\n <div style={cardStyle} className=\"lesson-card-hover\">\n <h3 style={{color: 'var(--react)'}}>Lesson Title</h3>\n <p style={{color: 'var(--muted)'}}>What you will learn</p>\n </div>\n );\n}\n// CSS variables + inline dynamic + className = your dashboard's exact pattern",
+      "output": "Card with glass blur effect, React blue title, muted text - premium look"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: Your boss says 'Change primary color from React blue #61dafb to purple #8b5cf6 across entire app with 50 components'. How with CSS variables?",
+      "options": [
+        "Find and replace #61dafb in 50 files manually - 2 hours work",
+        "Change one line in :root { --react: #8b5cf6 } - all 50 components update instantly because they use var(--react)",
+        "You cannot change theme quickly in React",
+        "You need to rewrite all CSS files"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! That's why pros use CSS variables - one variable change = entire app theme change. Dark/light mode becomes 1 line!",
+      "incorrectFeedback": "CSS variables = single source of truth for colors. Change :root variable, all var(--react) usages update.",
+      "reasoning": "CSS variables enable scalable theming - essential for large apps.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Glassmorphism - Your Dashboard's Premium Look Explained"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Your dashboard cards have that frosted glass premium look - semi-transparent background + blur behind it + subtle border. That's glassmorphism - 2023-2026 trend used by Apple, Stripe, your app. How: background: rgba(15,31,51,0.88) (semi-transparent) + backdrop-filter: blur(18px) (blur background behind) + border: 1px solid rgba(255,255,255,0.1) (subtle border). Add box-shadow for depth."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: Glassmorphism Card - Your Dashboard's Exact Style",
+      "code": "function GlassCard() {\n const glassStyle = {\n background: 'rgba(15, 31, 51, 0.82)', // Semi-transparent - key!\n backdropFilter: 'blur(18px)', // Blur behind card - key!\n WebkitBackdropFilter: 'blur(18px)', // For Safari\n border: '1px solid rgba(97, 218, 251, 0.16)', // Subtle colored border\n borderRadius: '20px',\n padding: '22px',\n boxShadow: '0 24px 60px rgba(0,0,0,0.48), 0 0 0 1px rgba(97,218,251,0.08) inset', // Depth + inner glow\n };\n\n return (\n <div style={{background: 'linear-gradient(135deg, #020617 0%, #07111f 45%, #0a1a2f 100%)', padding: '40px'}}>\n <div style={glassStyle}>\n <h3 style={{color: '#61dafb'}}>Glassmorphism Card</h3>\n <p style={{color: '#94a3b8'}}>This is how your dashboard looks premium - blur + transparency + border + shadow</p>\n </div>\n </div>\n );\n}\n// Try removing backdrop-filter - loses premium blur effect!\n// Try making background solid #0f1f33 - loses glass transparency!",
+      "output": "Dark background with frosted glass card floating - premium dashboard look"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Dynamic Styling with Props - Status Colors, Progress Width"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Your LessonCard badge color changes based on status prop: completed=green, current=blue, locked=gray. Progress bar width changes based on progress prop: width: `${progress}%`. This is dynamic styling - style object uses props to calculate values. This is what you haven't mastered yet but need for Lesson 10."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: Dynamic Styles Based on Props - Your Dashboard Logic",
+      "code": "function LessonCard({ status, progress }) {\n // Dynamic values based on props\n const badgeConfig = {\n completed: { color: '#4ade80', bg: 'rgba(34,197,94,0.14)', text: 'COMPLETED' },\n current: { color: '#61dafb', bg: 'rgba(97,218,251,0.14)', text: 'CURRENT' },\n locked: { color: '#94a3b8', bg: 'rgba(148,163,184,0.14)', text: 'LOCKED' }\n };\n\n const config = badgeConfig[status] || badgeConfig.locked;\n\n return (\n <div style={{background: 'var(--card)', border: '1px solid var(--border)', borderRadius: '20px', padding: '22px'}}>\n <div style={{display: 'flex', justifyContent: 'space-between'}}>\n <span>LESSON 02</span>\n <span style={{color: config.color, background: config.bg, padding: '5px 10px', borderRadius: '999px', fontSize: '10px', fontWeight: '800'}}>\n {config.text}\n </span>\n </div>\n {/* Dynamic width based on progress prop */}\n <div style={{height: '6px', background: 'rgba(148,163,184,0.12)', borderRadius: '99px', marginTop: '12px'}}>\n <div style={{width: `${progress}%`, height: '100%', background: `linear-gradient(90deg, ${config.color}, #8b5cf6)`, borderRadius: '99px', transition: 'width 0.6s ease'}}></div>\n </div>\n </div>\n );\n}\n\nfunction App() {\n return (\n <>\n <LessonCard status=\"completed\" progress={100} />\n <LessonCard status=\"current\" progress={60} />\n <LessonCard status=\"locked\" progress={0} />\n </>\n );\n}\n// Same component, different colors and widths based on props - dynamic styling!",
+      "output": "COMPLETED badge green with 100% progress bar\nCURRENT badge blue with 60% bar\nLOCKED badge gray with 0% bar"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: Progress bar width should be 60% when 3 of 5 lessons completed. How to make width dynamic?",
+      "options": [
+        "Hardcode width: '60%' in CSS file always",
+        "Use inline style with template literal: style={{width: `${progress}%`}} where progress = (completed/total)*100 from props/state",
+        "You cannot make width dynamic in React",
+        "Use className only"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Dynamic width via template literal - progress prop drives UI. That's your progressFill logic!",
+      "incorrectFeedback": "Dynamic style: width: `${progress}%` - progress calculated from state/props, bar animates automatically when progress changes.",
+      "reasoning": "Dynamic inline styles with props enable data-driven UI like progress bars.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: CSS Modules and Tailwind - What Pros Use for Large Apps"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Problem with normal CSS file: All styles are global. If you have.card in LessonCard.css and.card in Navbar.css, they conflict! CSS Modules solve: App.module.css - styles are scoped locally,.card becomes.card_abc123 unique. Tailwind solves differently: Utility classes - className='bg-[#07111f] p-5 rounded-[20px] backdrop-blur-[18px]' - you build design directly in JSX without writing CSS file. Your dashboard uses Tailwind-like utilities + CSS variables combo."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: CSS Modules vs Tailwind vs Normal CSS",
+      "code": "// File: LessonCard.module.css (CSS Modules - scoped)\n//.card { background: var(--card); border-radius: 20px; }\n//.title { color: var(--react); }\n\nimport styles from './LessonCard.module.css'; // Import as object\n\nfunction LessonCardModule() {\n return <div className={styles.card}><h3 className={styles.title}>Title</h3></div>;\n // styles.card becomes unique class like card_abc123 - no conflict!\n}\n\n// Tailwind way (if you have Tailwind installed)\nfunction LessonCardTailwind() {\n return (\n <div className=\"bg-[rgba(15,31,51,0.88)] border border-[rgba(97,218,251,0.16)] rounded-[20px] p-[22px] backdrop-blur-[18px]\">\n <h3 className=\"text-[#61dafb] text-[20px] font-black\">Title</h3>\n </div>\n );\n // No CSS file needed - all styles in className utilities\n}\n\n// Your dashboard uses: CSS variables + Tailwind utilities + inline dynamic = best of all worlds",
+      "output": "Both produce same premium card, but Modules scoped, Tailwind utility-based"
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Responsive Design - Your Dashboard Works on Mobile Too"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Your dashboard has grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) - this means: On desktop, show 3 cards per row, on tablet 2, on mobile 1 - automatically! No media queries needed for basic responsiveness. Also uses flex-wrap, clamp() for font sizes. You must know responsive for Lesson 10 final project - users will view on phone!"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Responsive Grid - Your Dashboard's Layout System",
+      "code": "function ResponsiveDashboard() {\n const gridStyle = {\n display: 'grid',\n gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', // Magic responsive!\n // 320px min card width, auto-fit as many as possible, 1fr = equal width\n gap: '18px',\n };\n\n const heroStyle = {\n display: 'flex',\n flexWrap: 'wrap', // Wrap on mobile\n gap: '24px',\n alignItems: 'center',\n };\n\n return (\n <div style={{background: '#07111f', padding: '20px', minHeight: '100vh'}}>\n <div style={heroStyle}>\n <div style={{width: '82px', height: '82px', background: '#61dafb', borderRadius: '22px'}}></div>\n <div>\n <h1 style={{fontSize: 'clamp(24px, 5vw, 32px)', color: 'white'}}>Master React Development</h1>\n {/* clamp: min 24px, preferred 5vw, max 32px - responsive font! */}\n </div>\n </div>\n <div style={{...gridStyle, marginTop: '20px'}}>\n <div style={{background: 'rgba(15,31,51,0.88)', padding: '20px', borderRadius: '20px', color: 'white'}}>Card 1</div>\n <div style={{background: 'rgba(15,31,51,0.88)', padding: '20px', borderRadius: '20px', color: 'white'}}>Card 2</div>\n <div style={{background: 'rgba(15,31,51,0.88)', padding: '20px', borderRadius: '20px', color: 'white'}}>Card 3</div>\n </div>\n </div>\n );\n}\n// Resize browser: Desktop 3 columns, tablet 2, mobile 1 - auto responsive!",
+      "output": "Desktop: [Card1] [Card2] [Card3] in one row\nMobile: [Card1]\n[Card2]\n[Card3] stacked"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: You have lesson grid with 10 cards. On desktop you want 3 per row, mobile 1 per row. How without media queries?",
+      "options": [
+        "Use fixed 3 columns grid-template-columns: repeat(3, 1fr) - breaks on mobile, needs media queries",
+        "Use repeat(auto-fit, minmax(320px, 1fr)) - automatically fits as many 320px cards as possible, wraps on mobile - responsive without media queries",
+        "You must write 10 media queries",
+        "Grid cannot be responsive"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! auto-fit + minmax is the modern responsive grid trick - your dashboard uses this exact code!",
+      "incorrectFeedback": "auto-fit + minmax(320px, 1fr) = responsive magic. Desktop fits 3x320px, mobile only 1x320px, auto wraps.",
+      "reasoning": "Modern CSS grid enables responsive layouts without complex media queries.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Animations and Transitions - Make App Feel Alive"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: Animations - Hover, Progress Transition, Fade In",
+      "code": "function AnimatedCard() {\n const [hovered, setHovered] = useState(false);\n\n const cardStyle = {\n background: 'rgba(15,31,51,0.88)',\n border: '1px solid rgba(97,218,251,0.16)',\n borderRadius: '20px',\n padding: '22px',\n transform: hovered? 'translateY(-4px) scale(1.02)' : 'translateY(0) scale(1)', // Lift on hover\n boxShadow: hovered? '0 20px 40px rgba(0,0,0,0.4)' : '0 4px 12px rgba(0,0,0,0.2)',\n transition: 'all 0.3s ease', // Smooth transition\n cursor: 'pointer',\n };\n\n return (\n <div style={{background: '#07111f', padding: '40px'}}>\n <div \n style={cardStyle}\n onMouseEnter={() => setHovered(true)}\n onMouseLeave={() => setHovered(false)}\n >\n <h3 style={{color: '#61dafb'}}>Hover Me!</h3>\n <p style={{color: '#94a3b8'}}>I lift up on hover with smooth transition</p>\n {/* Progress bar with transition */}\n <div style={{height: '6px', background: 'rgba(148,163,184,0.12)', borderRadius: '99px', marginTop: '12px', overflow: 'hidden'}}>\n <div style={{width: hovered? '100%' : '60%', height: '100%', background: 'linear-gradient(90deg, #61dafb, #8b5cf6)', borderRadius: '99px', transition: 'width 0.6s ease'}}></div>\n </div>\n </div>\n </div>\n );\n}\n// Hover -> card lifts, shadow grows, progress bar animates 60%->100% - feels alive!",
+      "output": "Card that lifts on hover, progress bar animates - premium interaction"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Dark Mode and Theming - Advanced Topic You Must Know Before End"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Your dashboard is dark mode. But what if user wants light mode? With CSS variables you can toggle theme by changing class on body. Also you haven't learned about CSS-in-JS with props for theming - styled-components can change theme based on props. This is advanced but essential for final project polish."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 8: Dark/Light Theme Toggle - Must Know Before Course Ends",
+      "code": "import { useState, useEffect } from 'react';\n\nfunction ThemeToggle() {\n const [theme, setTheme] = useState('dark');\n\n useEffect(() => {\n // Apply theme to body via CSS variables\n document.body.className = theme;\n }, [theme]);\n\n const appStyle = {\n background: theme==='dark'? '#07111f' : '#f8fafc',\n color: theme==='dark'? 'white' : '#0f172a',\n minHeight: '100vh',\n padding: '20px',\n transition: 'all 0.3s ease'\n };\n\n const cardStyle = {\n background: theme==='dark'? 'rgba(15,31,51,0.88)' : 'white',\n border: `1px solid ${theme==='dark'? 'rgba(97,218,251,0.16)' : '#e2e8f0'}`,\n borderRadius: '20px',\n padding: '22px',\n boxShadow: theme==='dark'? '0 24px 60px rgba(0,0,0,0.48)' : '0 4px 12px rgba(0,0,0,0.1)'\n };\n\n return (\n <div style={appStyle}>\n <button onClick={() => setTheme(theme==='dark'? 'light' : 'dark')} style={{padding: '10px 15px', background: '#61dafb', border: 'none', borderRadius: '8px', fontWeight: '800'}}>\n Switch to {theme==='dark'? 'Light' : 'Dark'} Mode\n </button>\n <div style={{...cardStyle, marginTop: '20px'}}>\n <h3>Theme: {theme}</h3>\n <p>This card changes with theme - dark has glass, light has white</p>\n </div>\n </div>\n );\n}\n// Click button -> theme state changes -> useEffect applies class -> styles update via conditional\n// This is how you add dark/light toggle to your final app!",
+      "output": "Dark mode: Dark bg, glass card\nClick Switch -> Light mode: Light bg, white card"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: You want to add light/dark mode toggle to your Code Academy app. User clicks button, entire app theme changes. How?",
+      "options": [
+        "Rewrite all CSS files for light mode",
+        "Use theme state + CSS variables or conditional styles: theme==='dark'? darkStyles : lightStyles, toggle state on button click, all components use theme-based styles",
+        "You need two separate apps",
+        "Dark mode cannot be toggled in React"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Theme state + conditional styles/variables = instant theme switch. One state controls entire app look!",
+      "incorrectFeedback": "Theme toggle = useState for theme + conditional styling based on theme + button to toggle. CSS variables make it even easier.",
+      "reasoning": "Theming with state is essential for modern apps - light/dark mode is expected feature.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Your Premium Dashboard Card with All Techniques"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "This final combines EVERYTHING you haven't fully mastered yet: CSS variables, glassmorphism, dynamic props styling, responsive grid, hover animation, progress transition. This is your dashboard's actual card - study it line by line!"
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Premium Dashboard Card (All Styling Techniques)",
+      "code": "import { useState } from 'react';\n\nfunction App() {\n const [hoveredId, setHoveredId] = useState(null);\n const lessons = [\n {id: 2, title: \"JSX and Components\", learn: \"Create reusable React components and write UI using JSX.\", summary: \"Master JSX syntax, component structure, expressions inside JSX and how React components become reusable building blocks.\", status: \"current\", progress: 60},\n {id: 3, title: \"Props and Communication\", learn: \"Pass information between components using props.\", summary: \"Learn how components communicate, share data, and build composable UIs.\", status: \"locked\", progress: 0},\n ];\n\n function getStatusConfig(status) {\n if (status==='completed') return { color: '#4ade80', bg: 'rgba(34,197,94,0.14)', border: 'rgba(34,197,94,0.22)', text: 'COMPLETED', btn: 'Review →' };\n if (status==='current') return { color: '#61dafb', bg: 'rgba(97,218,251,0.14)', border: 'rgba(97,218,251,0.22)', text: 'CURRENT', btn: 'Start Lesson →' };\n return { color: '#94a3b8', bg: 'rgba(148,163,184,0.14)', border: 'rgba(148,163,184,0.18)', text: 'LOCKED', btn: '🔒 Locked' };\n }\n\n return (\n <div style={{background: 'linear-gradient(135deg, #020617 0%, #07111f 45%, #0a1a2f 100%)', minHeight: '100vh', padding: '20px', fontFamily: 'Inter, sans-serif'}}>\n <style>{` :root { --react: #61dafb; --react-2: #0ea5e9; --muted: #94a3b8; }.card-hover:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(0,0,0,0.5); } `}</style>\n <h1 style={{color: 'white', fontSize: 'clamp(24px, 5vw, 32px)', fontWeight: '900'}}>React Development - Styling Mastery</h1>\n <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '18px', marginTop: '20px'}}>\n {lessons.map(lesson => {\n const config = getStatusConfig(lesson.status);\n const isHovered = hoveredId===lesson.id;\n return (\n <div key={lesson.id} className=\"card-hover\" onMouseEnter={() => setHoveredId(lesson.id)} onMouseLeave={() => setHoveredId(null)} style={{background: 'rgba(15,31,51,0.82)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)', border: `1px solid ${isHovered? config.border : 'rgba(97,218,251,0.16)'}`, borderRadius: '20px', padding: '22px', boxShadow: isHovered? '0 24px 60px rgba(0,0,0,0.48), 0 0 0 1px rgba(97,218,251,0.08) inset' : '0 10px 30px rgba(0,0,0,0.35)', transform: isHovered? 'translateY(-4px)' : 'translateY(0)', transition: 'all 0.3s ease', cursor: 'pointer', opacity: lesson.status==='locked'? 0.58 : 1}}>\n <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>\n <span style={{color: 'var(--react)', fontSize: '11px', fontWeight: '800', letterSpacing: '0.08em'}}>LESSON {String(lesson.id).padStart(2,'0')}</span>\n <span style={{color: config.color, background: config.bg, border: `1px solid ${config.border}`, padding: '5px 8px', borderRadius: '999px', fontSize: '10px', fontWeight: '800'}}>{config.text}</span>\n </div>\n <h3 style={{color: 'white', fontSize: '20px', fontWeight: '800', margin: '13px 0 0'}}>{lesson.title}</h3>\n <p style={{color: 'var(--muted)', fontSize: '13px', marginTop: '10px', lineHeight: '1.5'}}>{lesson.learn}</p>\n <p style={{color: '#cbd5e1', fontSize: '13px', marginTop: '8px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden'}}>{lesson.summary}</p>\n <div style={{height: '6px', background: 'rgba(148,163,184,0.12)', borderRadius: '99px', marginTop: '16px', overflow: 'hidden'}}><div style={{width: `${lesson.progress}%`, height: '100%', background: `linear-gradient(90deg, ${config.color}, #8b5cf6)`, borderRadius: '99px', transition: 'width 0.8s ease'}}></div></div>\n <button disabled={lesson.status==='locked'} style={{marginTop: '16px', width: '100%', padding: '12px', borderRadius: '11px', border: 'none', background: lesson.status==='locked'? 'rgba(71,85,105,0.45)' : `linear-gradient(135deg, ${config.color}, #0ea5e9)`, color: lesson.status==='locked'? '#cbd5e1' : '#06121d', fontWeight: '800', cursor: lesson.status==='locked'? 'not-allowed' : 'pointer'}}>{config.btn}</button>\n </div>\n );\n })}\n </div>\n </div>\n );\n}\nexport default App;",
+      "output": "Premium dark dashboard with 2 glassmorphism cards, hover lift effect, status colors, progress bars animating, responsive grid"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & What You Must Know Before Course Ends"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered today: 5 styling methods (inline dynamic, CSS file, CSS Modules scoped, Tailwind utilities, styled-components), CSS variables :root {--react: #61dafb} for theming - change one variable entire app updates, glassmorphism - rgba(15,31,51,0.82) + backdrop-filter: blur(18px) + subtle border + shadow = premium look like your dashboard, dynamic styling with props - status colors, progress width `${progress}%`, badge config objects, responsive - repeat(auto-fit, minmax(320px, 1fr)) for auto responsive grid + clamp() for fonts + flex-wrap, animations - transform translateY + transition all 0.3s ease + hover states, dark/light theme toggle with state + conditional styles."
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "MASTER APPLICATION: Your final Lesson 10 app needs premium dark glass cards, status badge colors from props, progress bar width from progress prop, hover lift animation, responsive 3 cols desktop 1 col mobile, and dark/light toggle. Which techniques combined?",
+      "options": [
+        "Only inline styles",
+        "CSS variables for colors, glassmorphism with backdrop-filter blur + rgba, dynamic inline styles with props for colors/width, grid auto-fit minmax for responsive, transform + transition for hover, theme state + conditional styles for dark/light - all combined like your dashboard",
+        "Only Tailwind",
+        "Styling is not important for final app"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You now know the exact styling stack of your dashboard - variables + glass + dynamic props + responsive grid + animations + theming. This is senior-level styling!",
+      "incorrectFeedback": "Combine: CSS variables + glassmorphism + dynamic props styles + responsive auto-fit grid + hover transitions + theme state. That's premium dashboard stack.",
+      "reasoning": "Premium styling combines multiple techniques - this is what makes your Code Academy app look professional vs beginner.",
+      "xpReward": 35
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "What does backdrop-filter: blur(18px) do in your dashboard cards?",
+      "options": [
+        "Makes card solid color",
+        "Blurs the background BEHIND the semi-transparent card, creating frosted glass effect - key to glassmorphism premium look",
+        "Blurs the card content itself",
+        "It has no visual effect"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Blur behind + semi-transparent bg = glass. Remove blur and premium look disappears!",
+      "incorrectFeedback": "backdrop-filter blurs area behind element, not element itself. Combined with rgba transparency = glassmorphism.",
+      "reasoning": "Glassmorphism is modern premium design trend you must know.",
+      "xpReward": 20
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Things you must know before course ends that we added today: CSS variables theming system, glassmorphism design, dynamic styling with props (status colors, progress width), responsive auto-fit grid, animations/transitions, dark/light toggle, CSS Modules vs Tailwind tradeoffs. These were missing in earlier lessons but crucial for Lesson 10 final app to look like your dashboard, not like beginner project."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Homework: 1. Add dark/light toggle to your previous lessons dashboard. 2. Recreate your exact dashboard card with glassmorphism from scratch without looking. 3. Make progress bar animate from 0 to target width on mount using useEffect. Next: Lesson 9 - Advanced Patterns (Context, Performance, Custom Hooks) - final preparation before Lesson 10 complete app! You're 80% there!"
+    }
+  ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

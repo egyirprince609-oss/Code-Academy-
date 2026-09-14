@@ -1,0 +1,409 @@
+{
+  "course": "react",
+  "lessonNumber": 3,
+  "lessonId": "react-lesson-3",
+  "title": "Props and Component Communication",
+  "subtitle": "Make Your Components Dynamic - One Card, 10 Different Lessons",
+  "description": "Master props, props destructuring, default props, children props, prop drilling, and how parent-child communication makes your dashboard scalable. Build dynamic LessonCards that render from data.",
+  "level": "Beginner",
+  "xpReward": 150,
+  "coinsReward": 40,
+  "estimatedMinutes": 55,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: The Problem - Why Your Dashboard Needs Props"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey! Look at your dashboard code you gave me. You have 10 lessons defined in an array, but you don't want to write 10 different LessonCard components, right? Imagine: LessonCard1, LessonCard2... LessonCard10 - copy paste 10 times! If you want to change design, you change 10 files. Nightmare!"
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Props solve this. Props = Properties. Think of components as functions. In normal functions you pass arguments: add(2,3). In React components you pass props: <LessonCard title=\"React Hooks\" status=\"current\" />. Same component, different data, different UI."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Today's target: Make your LessonCard dynamic so it can show Lesson 1, 2, 3... 10 from data. This is exactly how your dashboard will work in Lesson 10 final project."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Quick task: Open Menu > Practical > React editor now. Keep it open - we will build live together every page."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: What Are Props? The Real-Life Analogy"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Imagine you order a shirt online. You choose: size=M, color=Blue, text='Code Academy'. The shirt factory is the Component, your choices are Props. Factory makes same shirt design but with YOUR props. Different props = different shirt, same factory."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "In React: Component = Shirt Factory. Props = Your choices. You call <Shirt size=\"M\" color=\"blue\" />. Component receives props object: {size: \"M\", color: \"blue\"} and builds UI accordingly."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Key rules: 1. Props flow DOWN from parent to child only (unidirectional). 2. Props are READ-ONLY - child cannot change props, only parent can. 3. Props can be anything: string, number, array, object, function, even another component!"
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 1: Props = Function Arguments (Your First Props)",
+      "code": "// Normal function with arguments\nfunction greet(name) {\n return \"Hello \" + name;\n}\ngreet(\"Prince\"); // Pass argument\n\n// React Component with props - SAME IDEA\nfunction Greet(props) {\n // props is an object: { name: \"Prince\" }\n return <h1>Hello {props.name}</h1>;\n}\n\n// How parent passes props\nfunction App() {\n return (\n <>\n <Greet name=\"Prince\" />\n <Greet name=\"Ama\" />\n <Greet name=\"Kwame\" />\n </>\n );\n}\n// One component, 3 different outputs!",
+      "output": "Hello Prince\nHello Ama\nHello Kwame"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "APPLICATION: You have a Button component. You want one button to say 'Start Lesson' and another to say 'Locked'. How do you do it with props?",
+      "options": [
+        "Create two different components: StartButton and LockedButton",
+        "Create one Button component with prop: <Button text=\"Start Lesson\" /> and <Button text=\"Locked\" />",
+        "You cannot reuse buttons in React",
+        "Copy paste HTML 2 times"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "YES! That's props power - one component, different text prop. This is how your dashboard Start buttons work.",
+      "incorrectFeedback": "Think shirt factory analogy - same factory, different text prop. <Button text=\"Start Lesson\" /> vs <Button text=\"Locked\" />",
+      "reasoning": "Props enable reusability - core React pattern.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Passing Multiple Props - Your LessonCard Needs 4 Props"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Look at your dashboard LessonCard: It needs id, title, learn text, summary, and status. That's 5 props! You pass them like HTML attributes."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 2: Your Real LessonCard with Multiple Props",
+      "code": "function LessonCard(props) {\n // props = { id: 2, title: \"JSX and Components\", learn: \"Create reusable...\", status: \"current\" }\n return (\n <div style={{border: '1px solid #61dafb', padding: '20px', borderRadius: '20px', margin: '10px'}}>\n <span>LESSON {props.id}</span>\n <h3>{props.title}</h3>\n <p style={{color: '#94a3b8'}}>{props.learn}</p>\n <span>{props.status}</span>\n </div>\n );\n}\n\nfunction App() {\n return (\n <>\n <LessonCard id={1} title=\"Introduction to React\" learn=\"Understand what React is...\" status=\"completed\" />\n <LessonCard id={2} title=\"JSX and Components\" learn=\"Create reusable components...\" status=\"current\" />\n <LessonCard id={3} title=\"Props and Communication\" learn=\"Pass info between components...\" status=\"locked\" />\n </>\n );\n}",
+      "output": "LESSON 1 Introduction to React... completed\nLESSON 2 JSX and Components... current"
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "INTERACTIVE CHECK: Before you continue, type this in your Practical editor. Change the props - make id={10}, title=\"Build Complete App\", status=\"locked\". See how UI changes instantly? That's props!"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Destructuring Props - Clean Code Pro Way"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Writing props.title, props.learn, props.status every time is tiring. Pro developers destructure: function LessonCard({ id, title, learn, status }) - directly extract what you need. Same result, cleaner code."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 3: Props Destructuring - Old vs Pro Way",
+      "code": "// ❌ Beginner way - long\nfunction LessonCard1(props) {\n return <h3>{props.title} - {props.status}</h3>;\n}\n\n// ✅ Pro way - destructured - USE THIS\nfunction LessonCard2({ id, title, learn, status }) {\n return (\n <div>\n <span>LESSON {id}</span>\n <h3>{title}</h3>\n <p>{learn}</p>\n <span>{status}</span>\n </div>\n );\n}\n\n// Even cleaner with default values (we learn next page)\nfunction LessonCard3({ id, title = \"Untitled Lesson\", status = \"locked\" }) {\n return <h3>{id}: {title} - {status}</h3>;\n}",
+      "output": "LESSON 2: JSX and Components - current\n1: Untitled Lesson - locked (default used)"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "APPLICATION: Your designer says LessonCard should show status badge color: green for completed, blue for current, gray for locked. How would props help?",
+      "options": [
+        "Hardcode green color always",
+        "Pass status prop and use conditional inside component: {status==='completed'? green : status==='current'? blue : gray}",
+        "Create 3 separate CSS files",
+        "Props cannot control colors"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Props + conditional rendering = dynamic colors. This is exactly how your dashboard badge colors work.",
+      "incorrectFeedback": "Use prop to decide color: status prop tells component which color to show. Same component, different colors based on props.",
+      "reasoning": "Props drive conditional UI - essential for real dashboards.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Default Props - What If Parent Forgets to Pass Prop?"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "What if you render <LessonCard title=\"React Hooks\" /> but forget status? Then props.status is undefined, UI breaks. Default props give fallback: function LessonCard({ status = \"locked\" }) - if parent doesn't pass status, use \"locked\" as default. Your dashboard should default to locked for safety!"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 4: Default Props - Safety Net",
+      "code": "function LessonCard({ id = 0, title = \"No Title\", status = \"locked\" }) {\n return (\n <div style={{border: '1px solid gray', padding: '15px', margin: '5px'}}>\n <p>Lesson {id}: {title}</p>\n <p>Status: {status}</p>\n </div>\n );\n}\n\nfunction App() {\n return (\n <>\n {/* All props passed */}\n <LessonCard id={5} title=\"React Hooks\" status=\"current\" />\n {/* Forgot status - default 'locked' used */}\n <LessonCard id={6} title=\"Forms and Events\" />\n {/* Forgot everything - all defaults used */}\n <LessonCard />\n </>\n );\n}",
+      "output": "Lesson 5: React Hooks Status: current\nLesson 6: Forms and Events Status: locked\nLesson 0: No Title Status: locked"
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Children Prop - The Special Prop"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Children is a special prop. Whatever you put BETWEEN opening and closing tag becomes props.children. Example: <Card> <h1>Hello</h1> </Card> - the <h1> is children of Card. This is how you make wrapper components like your hero, card, layout."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 5: Children Prop - Wrapper Components",
+      "code": "function Card({ children }) {\n // children = whatever is between <Card> and </Card>\n return (\n <div style={{background: 'rgba(15,31,51,0.88)', border: '1px solid #61dafb', borderRadius: '20px', padding: '22px'}}>\n {children}\n </div>\n );\n}\n\nfunction App() {\n return (\n <>\n <Card>\n <h3>Introduction to React</h3>\n <p>Learn ecosystem...</p>\n <button>Start</button>\n </Card>\n\n <Card>\n <h2>⚛️ React Development</h2>\n <p>Master React Development course</p>\n </Card>\n </>\n );\n}\n// Card is reusable wrapper, children changes!",
+      "output": "[Card] Introduction to React... [Start]\n[Card] ⚛️ React Development..."
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "APPLICATION: You want a <Layout> component that shows Navbar at top, whatever content you put inside in middle, Footer at bottom. Which prop helps?",
+      "options": [
+        "Use props.children - <Layout><MyPage /></Layout> and inside Layout render {children} between Navbar and Footer",
+        "You need 3 different layouts",
+        "Children prop doesn't exist in React",
+        "Use props.title only"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Perfect! Children prop is for layout wrappers - Navbar + {children} + Footer pattern used by every real app.",
+      "incorrectFeedback": "Children prop: Whatever between tags becomes children. Layout uses it to wrap any page content.",
+      "reasoning": "Children prop enables composition and layout patterns.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Props Are Read-Only - The Golden Rule"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Never do props.title = \"New Title\" inside child. Props are immutable, read-only. Why? If child changes props, parent doesn't know, data flow breaks, bugs everywhere. It's like child changing parent's shirt order without telling parent. Rule: Child can READ props, only parent can CHANGE props by passing new props."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 6: Wrong vs Correct - Don't Mutate Props",
+      "code": "function LessonCard({ title }) {\n // ❌ WRONG - Never mutate props\n // title = \"Hacked Title\"; // Don't do this!\n // props.title = \"Hacked\"; // Don't do this!\n\n // ✅ CORRECT - Read props, display it\n // If you need to change, parent should pass new prop\n return <h3>{title}</h3>;\n}\n\nfunction App() {\n // Parent controls what prop to pass\n const lessonTitle = \"JSX and Components\";\n return <LessonCard title={lessonTitle} />;\n // To change title, parent changes lessonTitle variable and passes again\n}",
+      "output": "JSX and Components (child only reads, parent controls)"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Rendering Lists with Props - Your Dashboard Real Logic"
+    },
+    {
+      "id": "p8-1",
+      "type": "sentence",
+      "text": "Now the magic that powers your dashboard. You have lessons array with 10 objects. You map over array and render LessonCard for each, passing props from array item. ONE map, 10 cards, dynamic!"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 7: The Real Dashboard Logic - Map + Props (MOST IMPORTANT)",
+      "code": "function LessonCard({ id, title, learn, status }) {\n return (\n <div style={{border: '1px solid #61dafb', padding: '15px', borderRadius: '12px', margin: '5px'}}>\n <p>LESSON {id} | {status}</p>\n <h3>{title}</h3>\n <p style={{color: 'gray'}}>{learn}</p>\n </div>\n );\n}\n\nfunction App() {\n // This is YOUR lessons array from dashboard you gave me!\n const lessons = [\n {id: 1, title: \"Introduction to React\", learn: \"Understand what React is...\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", learn: \"Create reusable components...\", status: \"current\"},\n {id: 3, title: \"Props and Communication\", learn: \"Pass info between...\", status: \"locked\"},\n ];\n\n return (\n <div>\n <h1>React Lessons - {lessons.length} lessons</h1>\n {/* Map over data, pass props */}\n {lessons.map(lesson => (\n <LessonCard \n key={lesson.id}\n id={lesson.id}\n title={lesson.title}\n learn={lesson.learn}\n status={lesson.status}\n />\n ))}\n </div>\n );\n}",
+      "output": "React Lessons - 3 lessons\nLESSON 1... Introduction to React completed\nLESSON 2... JSX and Components current\nLESSON 3... Props and Communication locked"
+    },
+    {
+      "id": "p8-2",
+      "type": "sentence",
+      "text": "YOUR TURN! In Practical editor, add a 4th lesson object to array: {id: 4, title: \"State and Interaction\", learn: \"Create dynamic interfaces...\", status: \"locked\"}. Save and see 4th card appear automatically! No extra component needed. That's props + map power."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "APPLICATION: You have 100 products from API. You need to show ProductCard for each. What's the efficient React way?",
+      "options": [
+        "Write <ProductCard /> 100 times manually",
+        "Create one ProductCard with props and do products.map(product => <ProductCard key={product.id} {...product} />)",
+        "You cannot show 100 products in React",
+        "Use HTML table only"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "YES! Map + props + key - that's how real e-commerce sites like Jumia show products. One component, 100 different data.",
+      "incorrectFeedback": "Don't copy paste 100 times. Use map() to loop data and pass props to one ProductCard component.",
+      "reasoning": "List rendering with props is fundamental for real applications.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: Props Drilling - Passing Props Down Multiple Levels"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "What if App has user name, but Header is inside Navbar which is inside App, and UserAvatar is inside Header? You need to pass prop through: App -> Navbar -> Header -> UserAvatar. This chain is called Prop Drilling. It works but can get annoying if chain is long. In Lesson 9 we will learn better ways (Context API), but for now, drilling is okay and you must understand it."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 8: Prop Drilling - Passing Down Chain",
+      "code": "function UserAvatar({ name }) {\n return <p>Avatar: {name}</p>;\n}\n\nfunction Header({ name }) {\n // Header receives name just to pass to UserAvatar\n return (\n <div>\n <h1>Code Academy</h1>\n <UserAvatar name={name} />\n </div>\n );\n}\n\nfunction Navbar({ name }) {\n // Navbar receives name just to pass to Header\n return <Header name={name} />;\n}\n\nfunction App() {\n const userName = \"Prince\";\n return <Navbar name={userName} />;\n // Chain: App (has name) -> Navbar (passes) -> Header (passes) -> UserAvatar (uses)\n}",
+      "output": "Code Academy\nAvatar: Prince (drilled through 3 levels)"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Props Can Be Functions - Child Talks Back to Parent!"
+    },
+    {
+      "id": "p10-1",
+      "type": "sentence",
+      "text": "Wait, I said props flow down only, how can child talk back? Trick: Parent passes a FUNCTION as prop. Child calls that function when something happens. Parent's function runs. So child can notify parent! This is crucial for Lesson 4 (state) and Lesson 6 (forms)."
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 9: Function as Prop - Child to Parent Communication",
+      "code": "function LessonCard({ title, onStart }) {\n return (\n <div style={{border: '1px solid blue', padding: '10px'}}>\n <h3>{title}</h3>\n {/* When button clicked, call parent's function passed as prop */}\n <button onClick={onStart}>Start Lesson</button>\n </div>\n );\n}\n\nfunction App() {\n function handleStartLesson(lessonTitle) {\n alert(\"Starting: \" + lessonTitle + \" - Navigating to lesson page...\");\n // In your real app: window.location = `/lesson/${id}` or using Router\n }\n\n return (\n <>\n <LessonCard title=\"Introduction\" onStart={() => handleStartLesson(\"Introduction\")} />\n <LessonCard title=\"JSX\" onStart={() => handleStartLesson(\"JSX\")} />\n </>\n );\n}\n// Child button click -> calls parent function -> parent does navigation",
+      "output": "[Card] Introduction [Start Lesson Button]\nClick triggers alert: Starting: Introduction..."
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "APPLICATION: In your dashboard, when user clicks 'Start Lesson' button inside LessonCard, you want to navigate to that lesson's page. How?",
+      "options": [
+        "LessonCard should directly change window.location by itself without props",
+        "App passes a function prop onStart to LessonCard, LessonCard calls onStart when button clicked, App handles navigation",
+        "You cannot navigate from child component",
+        "Props cannot be functions"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! That's the pattern - parent passes function as prop, child calls it on event. This is how your backBtn and lesson navigation will work!",
+      "incorrectFeedback": "Pass function as prop: Parent gives child a function like onStart, child calls it on button click to notify parent.",
+      "reasoning": "Function props enable child-to-parent communication for events.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-11-heading",
+      "type": "heading",
+      "text": "PAGE 11: Interactive Challenge - Fix The Bug!"
+    },
+    {
+      "id": "p11-1",
+      "type": "sentence",
+      "text": "Time to think like a debugger. I will show you buggy code that many students in Accra wrote. Your job: Spot bug and fix in Practical editor."
+    },
+    {
+      "id": "code-10",
+      "type": "code",
+      "language": "jsx",
+      "title": "Example 10: Bug Hunt - Can You Fix It?",
+      "code": "// BUGGY CODE - 3 bugs inside! Can you find them?\nfunction LessonCard(props) {\n return (\n <div>\n <h3>{props.Title}</h3> {/* Bug 1 */}\n <p>{props.learn}</p>\n <span>{props.status}</span>\n </div>\n );\n}\n\nfunction App() {\n return (\n <div>\n {/* Bug 2 and 3 */}\n <LessonCard Title=\"React\" learn=\"Learn React\" status=\"current\" />\n <LessonCard title=\"JSX\" Learn=\"Create components\" status=\"locked\" />\n </div>\n );\n}\n// HINT: Bug 1: props.Title vs props.title - case sensitive!\n// Bug 2: In first card, Title capital T but component expects title small\n// Bug 3: In second card, Learn capital L but component expects learn small\n// Props are case-sensitive! Always check spelling.",
+      "output": "Buggy: First card shows empty title, Second card shows empty learn text"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "BUG FIX: You wrote <LessonCard title=\"React\" /> but inside component you wrote props.Title with capital T. What happens?",
+      "options": [
+        "It works fine, React ignores case",
+        "It shows undefined / empty because props.title!= props.Title - case sensitive",
+        "App crashes completely",
+        "Props automatically convert to lowercase"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Case sensitive bug - most common props bug. title vs Title are different props.",
+      "incorrectFeedback": "Props are case-sensitive like JavaScript variables. title!= Title. Always match spelling exactly.",
+      "reasoning": "Understanding case sensitivity prevents common props bugs.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-12-heading",
+      "type": "heading",
+      "text": "PAGE 12: Towards Your Final Target - How Props Build Lesson 10 App"
+    },
+    {
+      "id": "p12-1",
+      "type": "sentence",
+      "text": "Let's connect dots to your target: Lesson 10 says Build Complete React Application combining components, JSX, props, state, hooks, routing. Today you mastered props - the glue."
+    },
+    {
+      "id": "p12-2",
+      "type": "sentence",
+      "text": "Your dashboard you built: hero uses CourseIcon + Badge + ProgressBar (composition). LessonGrid maps lessons array and renders LessonCard with props (id, title, learn, status, summary). LessonCard receives status prop and shows different badge color + button text (conditional rendering with props). When user clicks Start, LessonCard calls onStart function prop to navigate (child to parent communication). That's props everywhere!"
+    },
+    {
+      "id": "p12-3",
+      "type": "sentence",
+      "text": "In Lesson 4, we will make status dynamic with state - when user completes Lesson 2, status prop changes from locked to current automatically. Props + State = Magic."
+    },
+    {
+      "id": "page-13-heading",
+      "type": "heading",
+      "text": "PAGE 13: FINAL PRACTICAL - Build Dynamic Dashboard With Props"
+    },
+    {
+      "id": "p13-1",
+      "type": "sentence",
+      "text": "Final mission: This is your dashboard logic - exactly what you have in your HTML file but now DYNAMIC with props. Paste in Menu > Practical > React. Change data and see UI update!"
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "jsx",
+      "title": "FINAL PRACTICAL TASK - Dynamic Dashboard with Props (Your Real App Logic)",
+      "code": "function LessonCard({ id, title, learn, status, onStart }) {\n const badgeColor = status === 'completed'? '#4ade80' : status === 'current'? '#61dafb' : '#94a3b8';\n const badgeText = status === 'completed'? 'COMPLETED' : status === 'current'? 'CURRENT' : 'LOCKED';\n\n return (\n <div style={{background: 'rgba(15,31,51,0.88)', border: '1px solid rgba(97,218,251,0.16)', borderRadius: '20px', padding: '22px', margin: '10px'}}>\n <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>\n <span style={{color: '#61dafb', fontSize: '11px', fontWeight: '800'}}>LESSON {String(id).padStart(2,'0')}</span>\n <span style={{color: badgeColor, background: badgeColor+'20', padding: '5px 8px', borderRadius: '999px', fontSize: '10px', fontWeight: '800'}}>{badgeText}</span>\n </div>\n <h3 style={{fontSize: '20px', margin: '13px 0', color: 'white'}}>{title}</h3>\n <p style={{color: '#94a3b8', fontSize: '13px'}}>What you will learn: {learn}</p>\n {status!== 'locked'? (\n <button onClick={() => onStart(id)} style={{background: 'linear-gradient(135deg, #61dafb, #0ea5e9)', border: 'none', borderRadius: '11px', padding: '10px 15px', fontWeight: '800', marginTop: '15px', cursor: 'pointer'}}>Start Lesson →</button>\n ) : (\n <button disabled style={{background: 'rgba(71,85,105,0.45)', color: '#cbd5e1', border: 'none', borderRadius: '11px', padding: '10px 15px', marginTop: '15px'}}>🔒 Locked</button>\n )}\n </div>\n );\n}\n\nfunction App() {\n const lessons = [\n {id: 1, title: \"Introduction to React\", learn: \"Understand what React is and Virtual DOM\", status: \"completed\"},\n {id: 2, title: \"JSX and Components\", learn: \"Create reusable components with JSX\", status: \"completed\"},\n {id: 3, title: \"Props and Communication\", learn: \"Pass data between components with props\", status: \"current\"},\n {id: 4, title: \"State and Interaction\", learn: \"Make UI interactive with state\", status: \"locked\"},\n {id: 5, title: \"React Hooks\", learn: \"Use useState and useEffect like a pro\", status: \"locked\"},\n ];\n\n function handleStart(id) {\n alert(\"Opening Lesson \" + id + \" - In real app, navigate to /lesson/\" + id);\n }\n\n return (\n <div style={{background: '#07111f', minHeight: '100vh', padding: '20px', fontFamily: 'Inter'}}>\n <h1 style={{color: 'white'}}>React Development Lessons</h1>\n <p style={{color: '#94a3b8'}}>{lessons.filter(l => l.status==='completed').length} / {lessons.length} completed</p>\n <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '18px', marginTop: '20px'}}>\n {lessons.map(lesson => (\n <LessonCard key={lesson.id} id={lesson.id} title={lesson.title} learn={lesson.learn} status={lesson.status} onStart={handleStart} />\n ))}\n </div>\n <p style={{color: '#61dafb', marginTop: '20px'}}>YOUR CHALLENGE: Add Lesson 6 object to array and see new card appear automatically!</p>\n </div>\n );\n}\n\nexport default App;",
+      "output": "React Development Lessons 2/5 completed\n[Card] LESSON 01 Introduction to React COMPLETED [Start →]\n[Card] LESSON 02 JSX and Components COMPLETED\n[Card] LESSON 03 Props and Communication CURRENT"
+    },
+    {
+      "id": "page-14-heading",
+      "type": "heading",
+      "text": "PAGE 14: Summary & Application Quiz"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered: Props = arguments for components, passing multiple props, destructuring {id, title}, default props {status='locked'}, children prop for wrappers, props are read-only, rendering lists with map + props + key, prop drilling chain, and function as prop for child-to-parent talk. This is exactly how your dashboard renders 10 lessons from one component."
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "FINAL APPLICATION: Your boss says: 'We have 50 lessons now, not 10. Dashboard must show all 50 without copying code.' What do you do?",
+      "options": [
+        "Copy paste LessonCard 50 times and manually change titles",
+        "Keep ONE LessonCard component with props, put 50 lesson objects in lessons array, use lessons.map(lesson => <LessonCard key={lesson.id} {...lesson} />) - automatically shows 50 cards",
+        "Create 50 different files: LessonCard1.jsx to LessonCard50.jsx",
+        "Props cannot handle 50 items"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "BINGO! That's the power of props + map - scale from 10 to 50 to 1000 lessons with zero extra component code. You are now thinking like a senior React dev!",
+      "incorrectFeedback": "One component + props + map = infinite scalability. Data drives UI. Add more objects to array, UI auto updates.",
+      "reasoning": "Props enable scalable, data-driven UI architecture - core for final Lesson 10 target.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. In Practical editor, add lessons 6-10 to array from your dashboard. 2. Create a new prop summary and show it in LessonCard. 3. Try breaking props - what happens if you pass wrong case?"
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next: Lesson 4 - State and User Interaction. We will make your dashboard interactive: When user clicks Start, status changes from locked to current, progress bar updates from 20% to 30% automatically. That's state + props working together! See you there."
+    }
+  ]
+}
