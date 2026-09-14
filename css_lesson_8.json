@@ -1,0 +1,1553 @@
+{
+  "course": "css",
+  "lessonNumber": 8,
+  "lessonId": "css-lesson-8",
+  "title": "Responsive Web Design",
+  "subtitle": "Make Your Interfaces Work Everywhere",
+  "description": "Learn how to build CSS interfaces that adapt to phones, tablets and desktop screens. Master responsive units, media queries, mobile-first design, flexible widths, max-width, overflow, positioning, z-index, CSS variables, calc(), clamp(), pseudo-classes, pseudo-elements, focus states and practical CSS debugging before moving into animations and the final complete website project.",
+  "level": "Intermediate",
+  "xpReward": 280,
+  "coinsReward": 70,
+  "estimatedMinutes": 125,
+  "blocks": [
+
+    {
+      "id": "c8-p1-h1",
+      "type": "heading",
+      "text": "Welcome to Responsive Web Design"
+    },
+    {
+      "id": "c8-p1-s1",
+      "type": "sentence",
+      "text": "Open your editor."
+    },
+    {
+      "id": "c8-p1-s2",
+      "type": "sentence",
+      "text": "Create a file called index.html."
+    },
+    {
+      "id": "c8-p1-s3",
+      "type": "sentence",
+      "text": "Look at the device you are using right now."
+    },
+    {
+      "id": "c8-p1-s4",
+      "type": "sentence",
+      "text": "Your screen has a limited width."
+    },
+    {
+      "id": "c8-p1-s5",
+      "type": "sentence",
+      "text": "Now imagine opening the same website on a tablet."
+    },
+    {
+      "id": "c8-p1-s6",
+      "type": "sentence",
+      "text": "Then imagine opening it on a large desktop monitor."
+    },
+    {
+      "id": "c8-p1-s7",
+      "type": "sentence",
+      "text": "The website should remain usable in all three situations."
+    },
+    {
+      "id": "c8-p1-s8",
+      "type": "sentence",
+      "text": "That is the problem responsive web design solves."
+    },
+    {
+      "id": "c8-p1-s9",
+      "type": "sentence",
+      "text": "Responsive design does not mean creating three completely different websites."
+    },
+    {
+      "id": "c8-p1-s10",
+      "type": "sentence",
+      "text": "It means creating a flexible interface that responds to the available space."
+    },
+    {
+      "id": "c8-p1-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Responsive Starting Page",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Responsive App</title>\n</head>\n<body>\n  <main class=\"app\">\n    <h1>My Learning Dashboard</h1>\n    <p>Continue learning and build real projects.</p>\n    <button>Continue Learning</button>\n  </main>\n</body>\n</html>",
+      "output": "My Learning Dashboard\nContinue learning and build real projects.\n[Continue Learning]"
+    },
+    {
+      "id": "c8-p1-s11",
+      "type": "sentence",
+      "text": "The viewport meta tag tells mobile browsers to use the device width as the page viewport."
+    },
+    {
+      "id": "c8-p1-s12",
+      "type": "sentence",
+      "text": "Keep this tag in the head of responsive websites."
+    },
+
+    {
+      "id": "c8-p2-h1",
+      "type": "heading",
+      "text": "1. Fixed Units Versus Flexible Units"
+    },
+    {
+      "id": "c8-p2-s1",
+      "type": "sentence",
+      "text": "Before we make layouts responsive, you need to understand CSS units."
+    },
+    {
+      "id": "c8-p2-s2",
+      "type": "sentence",
+      "text": "Pixels are useful because they give you a predictable measurement."
+    },
+    {
+      "id": "c8-p2-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Pixel Width",
+      "code": ".card {\n  width: 400px;\n}",
+      "output": "The card has a fixed declared width of 400px."
+    },
+    {
+      "id": "c8-p2-s3",
+      "type": "sentence",
+      "text": "The problem is that a 400px element may not fit comfortably inside a small screen."
+    },
+    {
+      "id": "c8-p2-s4",
+      "type": "sentence",
+      "text": "Percentage widths are more flexible."
+    },
+    {
+      "id": "c8-p2-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Percentage Width",
+      "code": ".card {\n  width: 100%;\n}",
+      "output": "The card attempts to use the full width available from its containing block."
+    },
+    {
+      "id": "c8-p2-s5",
+      "type": "sentence",
+      "text": "Now the element can adapt when its parent becomes narrower."
+    },
+    {
+      "id": "c8-p2-s6",
+      "type": "sentence",
+      "text": "Other useful responsive units include rem, em, vw and vh."
+    },
+    {
+      "id": "c8-p2-code3",
+      "type": "code",
+      "language": "css",
+      "title": "Useful Responsive Units",
+      "code": ".title {\n  font-size: 2rem;\n}\n\n.hero {\n  min-height: 70vh;\n}\n\n.container {\n  width: 90vw;\n}",
+      "output": "rem relates to the root font size, vh relates to viewport height, and vw relates to viewport width."
+    },
+    {
+      "id": "c8-p2-s7",
+      "type": "sentence",
+      "text": "Do not try to use one unit for everything."
+    },
+    {
+      "id": "c8-p2-s8",
+      "type": "sentence",
+      "text": "Choose units based on what you are trying to control."
+    },
+
+    {
+      "id": "c8-p3-h1",
+      "type": "heading",
+      "text": "2. max-width: Your Responsive Safety Net"
+    },
+    {
+      "id": "c8-p3-s1",
+      "type": "sentence",
+      "text": "A common mistake is allowing content to stretch across the entire desktop screen."
+    },
+    {
+      "id": "c8-p3-s2",
+      "type": "sentence",
+      "text": "Long lines of text can become uncomfortable to read."
+    },
+    {
+      "id": "c8-p3-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Responsive Container",
+      "code": ".container {\n  width: 90%;\n  max-width: 1100px;\n  margin: 0 auto;\n}",
+      "output": "The container uses most of the available width on smaller screens but stops growing beyond 1100px."
+    },
+    {
+      "id": "c8-p3-s3",
+      "type": "sentence",
+      "text": "The width gives the container flexibility."
+    },
+    {
+      "id": "c8-p3-s4",
+      "type": "sentence",
+      "text": "The max-width prevents it from becoming excessively wide."
+    },
+    {
+      "id": "c8-p3-s5",
+      "type": "sentence",
+      "text": "The auto margins center it when there is extra horizontal space."
+    },
+    {
+      "id": "c8-p3-s6",
+      "type": "sentence",
+      "text": "This pattern is extremely useful for websites, dashboards and application pages."
+    },
+
+    {
+      "id": "c8-p4-h1",
+      "type": "heading",
+      "text": "3. Media Queries"
+    },
+    {
+      "id": "c8-p4-s1",
+      "type": "sentence",
+      "text": "Sometimes a flexible width is not enough."
+    },
+    {
+      "id": "c8-p4-s2",
+      "type": "sentence",
+      "text": "You may need the actual layout structure to change."
+    },
+    {
+      "id": "c8-p4-s3",
+      "type": "sentence",
+      "text": "Media queries allow CSS to apply different rules under different conditions."
+    },
+    {
+      "id": "c8-p4-code1",
+      "type": "code",
+      "language": "css",
+      "title": "A Simple Media Query",
+      "code": ".courses {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n}\n\n@media (max-width: 800px) {\n  .courses {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n\n@media (max-width: 500px) {\n  .courses {\n    grid-template-columns: 1fr;\n  }\n}",
+      "output": "Three columns on large screens, two columns on medium screens, and one column on small screens."
+    },
+    {
+      "id": "c8-p4-s4",
+      "type": "sentence",
+      "text": "The max-width condition means the rule applies when the viewport is at or below that width."
+    },
+    {
+      "id": "c8-p4-s5",
+      "type": "sentence",
+      "text": "Notice that we are not changing the HTML."
+    },
+    {
+      "id": "c8-p4-s6",
+      "type": "sentence",
+      "text": "We are changing how the same structure is presented."
+    },
+
+    {
+      "id": "c8-p5-h1",
+      "type": "heading",
+      "text": "4. Mobile-First Thinking"
+    },
+    {
+      "id": "c8-p5-s1",
+      "type": "sentence",
+      "text": "There are two common ways developers approach responsive CSS."
+    },
+    {
+      "id": "c8-p5-s2",
+      "type": "sentence",
+      "text": "One approach starts with a large desktop design and then reduces it."
+    },
+    {
+      "id": "c8-p5-s3",
+      "type": "sentence",
+      "text": "Another approach starts with the smallest practical layout and progressively adds space for larger screens."
+    },
+    {
+      "id": "c8-p5-s4",
+      "type": "sentence",
+      "text": "The second approach is commonly called mobile-first design."
+    },
+    {
+      "id": "c8-p5-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Mobile-First Layout",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 1fr;\n}\n\n@media (min-width: 700px) {\n  .dashboard {\n    grid-template-columns: 220px 1fr;\n  }\n}",
+      "output": "The base layout uses one column. Larger screens add a sidebar column."
+    },
+    {
+      "id": "c8-p5-s5",
+      "type": "sentence",
+      "text": "Notice the difference between max-width and min-width."
+    },
+    {
+      "id": "c8-p5-s6",
+      "type": "sentence",
+      "text": "max-width is commonly used when moving from a larger layout toward smaller conditions."
+    },
+    {
+      "id": "c8-p5-s7",
+      "type": "sentence",
+      "text": "min-width is commonly used when starting with a small layout and adding features as more space becomes available."
+    },
+    {
+      "id": "c8-p5-s8",
+      "type": "sentence",
+      "text": "Choose a strategy and keep your responsive rules organized."
+    },
+
+    {
+      "id": "c8-p6-h1",
+      "type": "heading",
+      "text": "5. Flexbox and Grid Together"
+    },
+    {
+      "id": "c8-p6-s1",
+      "type": "sentence",
+      "text": "Do not think of Flexbox and Grid as competitors."
+    },
+    {
+      "id": "c8-p6-s2",
+      "type": "sentence",
+      "text": "They can work together inside the same application."
+    },
+    {
+      "id": "c8-p6-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Grid Outside, Flexbox Inside",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n}\n\n.card-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n}",
+      "output": "Grid controls the major dashboard structure while Flexbox aligns items inside the card header."
+    },
+    {
+      "id": "c8-p6-s3",
+      "type": "sentence",
+      "text": "Use Grid when you are thinking about rows and columns."
+    },
+    {
+      "id": "c8-p6-s4",
+      "type": "sentence",
+      "text": "Use Flexbox when you are mainly aligning items along one direction."
+    },
+    {
+      "id": "c8-p6-s5",
+      "type": "sentence",
+      "text": "Knowing when to combine them is an important developer skill."
+    },
+
+    {
+      "id": "c8-p7-h1",
+      "type": "heading",
+      "text": "6. Preventing Horizontal Overflow"
+    },
+    {
+      "id": "c8-p7-s1",
+      "type": "sentence",
+      "text": "Responsive layouts sometimes break because an element becomes wider than the screen."
+    },
+    {
+      "id": "c8-p7-s2",
+      "type": "sentence",
+      "text": "This can create unwanted horizontal scrolling."
+    },
+    {
+      "id": "c8-p7-code1",
+      "type": "code",
+      "language": "css",
+      "title": "A Safer Image Rule",
+      "code": "img {\n  max-width: 100%;\n  height: auto;\n}",
+      "output": "Images can shrink within their containing space instead of exceeding it."
+    },
+    {
+      "id": "c8-p7-s3",
+      "type": "sentence",
+      "text": "Be careful with blindly hiding overflow on the entire page."
+    },
+    {
+      "id": "c8-p7-s4",
+      "type": "sentence",
+      "text": "It can hide a real layout problem instead of fixing it."
+    },
+    {
+      "id": "c8-p7-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Controlled Page Overflow",
+      "code": "html,\nbody {\n  max-width: 100%;\n  overflow-x: hidden;\n}",
+      "output": "Horizontal overflow is prevented at the page level, but developers should still investigate the element causing the overflow."
+    },
+
+    {
+      "id": "c8-p8-h1",
+      "type": "heading",
+      "text": "7. Responsive Navigation"
+    },
+    {
+      "id": "c8-p8-s1",
+      "type": "sentence",
+      "text": "Navigation is one of the first things that exposes a responsive design problem."
+    },
+    {
+      "id": "c8-p8-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Navigation Structure",
+      "code": "<header class=\"header\">\n  <a class=\"logo\" href=\"#\">Code Academy</a>\n\n  <nav class=\"nav\">\n    <a href=\"#\">Courses</a>\n    <a href=\"#\">Projects</a>\n    <a href=\"#\">Community</a>\n    <a href=\"#\">Profile</a>\n  </nav>\n</header>",
+      "output": "A header containing a logo and navigation links."
+    },
+    {
+      "id": "c8-p8-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Desktop Navigation",
+      "code": ".header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  gap: 20px;\n}\n\n.nav {\n  display: flex;\n  gap: 16px;\n}",
+      "output": "The logo and navigation are arranged across the header."
+    },
+    {
+      "id": "c8-p8-code3",
+      "type": "code",
+      "language": "css",
+      "title": "Small Screen Navigation",
+      "code": "@media (max-width: 650px) {\n  .header {\n    flex-direction: column;\n    align-items: stretch;\n  }\n\n  .nav {\n    flex-direction: column;\n  }\n}",
+      "output": "The navigation changes from a horizontal arrangement to a vertical arrangement on narrow screens."
+    },
+    {
+      "id": "c8-p8-s2",
+      "type": "sentence",
+      "text": "Notice that we did not destroy the navigation on mobile."
+    },
+    {
+      "id": "c8-p8-s3",
+      "type": "sentence",
+      "text": "We changed its arrangement so that the same information remains accessible."
+    },
+
+    {
+      "id": "c8-p9-h1",
+      "type": "heading",
+      "text": "8. Responsive Typography With clamp()"
+    },
+    {
+      "id": "c8-p9-s1",
+      "type": "sentence",
+      "text": "Responsive design also affects typography."
+    },
+    {
+      "id": "c8-p9-s2",
+      "type": "sentence",
+      "text": "Instead of manually creating many breakpoints for a heading, CSS provides the clamp function."
+    },
+    {
+      "id": "c8-p9-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Flexible Heading Size",
+      "code": "h1 {\n  font-size: clamp(2rem, 5vw, 4rem);\n}",
+      "output": "The heading can grow with the viewport while remaining between the specified minimum and maximum sizes."
+    },
+    {
+      "id": "c8-p9-s3",
+      "type": "sentence",
+      "text": "The first value is the minimum."
+    },
+    {
+      "id": "c8-p9-s4",
+      "type": "sentence",
+      "text": "The middle value is the preferred flexible size."
+    },
+    {
+      "id": "c8-p9-s5",
+      "type": "sentence",
+      "text": "The last value is the maximum."
+    },
+    {
+      "id": "c8-p9-s6",
+      "type": "sentence",
+      "text": "This can produce smoother responsive typography."
+    },
+
+    {
+      "id": "c8-p10-h1",
+      "type": "heading",
+      "text": "9. calc() for Flexible Layouts"
+    },
+    {
+      "id": "c8-p10-s1",
+      "type": "sentence",
+      "text": "Sometimes you need CSS to calculate a value from other values."
+    },
+    {
+      "id": "c8-p10-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Using calc",
+      "code": ".content {\n  width: calc(100% - 240px);\n}",
+      "output": "The content width is calculated as the available width minus 240px."
+    },
+    {
+      "id": "c8-p10-s2",
+      "type": "sentence",
+      "text": "calc can combine compatible CSS units in useful expressions."
+    },
+    {
+      "id": "c8-p10-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Responsive Section Height",
+      "code": ".main {\n  min-height: calc(100vh - 72px);\n}",
+      "output": "The minimum height accounts for a 72px header while using the viewport height."
+    },
+    {
+      "id": "c8-p10-s3",
+      "type": "sentence",
+      "text": "Do not use calc simply because you can."
+    },
+    {
+      "id": "c8-p10-s4",
+      "type": "sentence",
+      "text": "Use it when a relationship between measurements makes the layout clearer."
+    },
+
+    {
+      "id": "c8-p11-h1",
+      "type": "heading",
+      "text": "10. CSS Positioning"
+    },
+    {
+      "id": "c8-p11-s1",
+      "type": "sentence",
+      "text": "There is another important CSS concept you should understand before building complete applications."
+    },
+    {
+      "id": "c8-p11-s2",
+      "type": "sentence",
+      "text": "That concept is positioning."
+    },
+    {
+      "id": "c8-p11-s3",
+      "type": "sentence",
+      "text": "The position property controls how an element participates in positioning."
+    },
+    {
+      "id": "c8-p11-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Relative Positioning",
+      "code": ".card {\n  position: relative;\n}",
+      "output": "The card remains in normal document flow and establishes a positioning context for certain positioned descendants."
+    },
+    {
+      "id": "c8-p11-s4",
+      "type": "sentence",
+      "text": "Relative positioning is especially useful when a child element needs to be positioned relative to a component."
+    },
+    {
+      "id": "c8-p11-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Absolute Badge",
+      "code": ".card {\n  position: relative;\n}\n\n.badge {\n  position: absolute;\n  top: 12px;\n  right: 12px;\n}",
+      "output": "The badge is positioned near the top-right of the card."
+    },
+    {
+      "id": "c8-p11-s5",
+      "type": "sentence",
+      "text": "The nearest suitable positioned ancestor becomes important when using absolute positioning."
+    },
+    {
+      "id": "c8-p11-s6",
+      "type": "sentence",
+      "text": "This pattern is common for notification badges, icons, labels and overlays."
+    },
+
+    {
+      "id": "c8-p12-h1",
+      "type": "heading",
+      "text": "11. Fixed and Sticky Elements"
+    },
+    {
+      "id": "c8-p12-s1",
+      "type": "sentence",
+      "text": "Some interfaces need an element to remain visible while the user moves through a page."
+    },
+    {
+      "id": "c8-p12-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Fixed Header",
+      "code": ".header {\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n}",
+      "output": "The header is positioned relative to the viewport and remains fixed while scrolling."
+    },
+    {
+      "id": "c8-p12-s2",
+      "type": "sentence",
+      "text": "Fixed positioning removes the element from normal document flow."
+    },
+    {
+      "id": "c8-p12-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Sticky Navigation",
+      "code": ".sidebar {\n  position: sticky;\n  top: 20px;\n}",
+      "output": "The sidebar can remain in its normal flow while sticking to the specified offset when scrolling within its scrolling context."
+    },
+    {
+      "id": "c8-p12-s3",
+      "type": "sentence",
+      "text": "Use fixed and sticky positioning intentionally."
+    },
+    {
+      "id": "c8-p12-s4",
+      "type": "sentence",
+      "text": "A fixed element should not cover important content."
+    },
+
+    {
+      "id": "c8-p13-h1",
+      "type": "heading",
+      "text": "12. z-index and Layering"
+    },
+    {
+      "id": "c8-p13-s1",
+      "type": "sentence",
+      "text": "When elements overlap, you may need to control which one appears in front."
+    },
+    {
+      "id": "c8-p13-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Controlling Layers",
+      "code": ".header {\n  position: relative;\n  z-index: 10;\n}\n\n.modal {\n  position: fixed;\n  z-index: 100;\n}",
+      "output": "The modal is assigned a higher stacking level than the header."
+    },
+    {
+      "id": "c8-p13-s2",
+      "type": "sentence",
+      "text": "A common mistake is adding huge z-index values without understanding the stacking context."
+    },
+    {
+      "id": "c8-p13-s3",
+      "type": "sentence",
+      "text": "First understand which elements overlap and which stacking context they belong to."
+    },
+
+    {
+      "id": "c8-p14-h1",
+      "type": "heading",
+      "text": "13. CSS Variables"
+    },
+    {
+      "id": "c8-p14-s1",
+      "type": "sentence",
+      "text": "Large applications repeat values such as colors, spacing and border radii."
+    },
+    {
+      "id": "c8-p14-s2",
+      "type": "sentence",
+      "text": "CSS custom properties let you store reusable values."
+    },
+    {
+      "id": "c8-p14-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Creating Design Variables",
+      "code": ":root {\n  --primary: #38BDF8;\n  --background: #0A0F1E;\n  --surface: #121A2B;\n  --radius: 14px;\n  --space: 16px;\n}",
+      "output": "Reusable design values are stored as CSS custom properties."
+    },
+    {
+      "id": "c8-p14-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Using Variables",
+      "code": ".card {\n  background: var(--surface);\n  border-radius: var(--radius);\n  padding: var(--space);\n}\n\nbutton {\n  background: var(--primary);\n}",
+      "output": "The components use the shared design values."
+    },
+    {
+      "id": "c8-p14-s3",
+      "type": "sentence",
+      "text": "Now imagine changing the primary color."
+    },
+    {
+      "id": "c8-p14-s4",
+      "type": "sentence",
+      "text": "You can change the variable instead of searching through many separate rules."
+    },
+    {
+      "id": "c8-p14-s5",
+      "type": "sentence",
+      "text": "This becomes very valuable as your applications become larger."
+    },
+
+    {
+      "id": "c8-p15-h1",
+      "type": "heading",
+      "text": "14. Pseudo-Classes and User Interaction"
+    },
+    {
+      "id": "c8-p15-s1",
+      "type": "sentence",
+      "text": "A real interface changes appearance when users interact with it."
+    },
+    {
+      "id": "c8-p15-s2",
+      "type": "sentence",
+      "text": "CSS pseudo-classes let you target certain states."
+    },
+    {
+      "id": "c8-p15-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Hover State",
+      "code": "button:hover {\n  filter: brightness(1.1);\n}",
+      "output": "The button becomes visually different when the pointer is over it."
+    },
+    {
+      "id": "c8-p15-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Focus State",
+      "code": "input:focus {\n  outline: 2px solid #38BDF8;\n  outline-offset: 2px;\n}",
+      "output": "The input receives a visible focus indicator when it is focused."
+    },
+    {
+      "id": "c8-p15-code3",
+      "type": "code",
+      "language": "css",
+      "title": "Disabled State",
+      "code": "button:disabled {\n  opacity: 0.5;\n  cursor: not-allowed;\n}",
+      "output": "Disabled buttons appear visually unavailable."
+    },
+    {
+      "id": "c8-p15-s3",
+      "type": "sentence",
+      "text": "Do not remove focus indicators without replacing them with another clear indicator."
+    },
+    {
+      "id": "c8-p15-s4",
+      "type": "sentence",
+      "text": "Keyboard users need to know which interactive element currently has focus."
+    },
+
+    {
+      "id": "c8-p16-h1",
+      "type": "heading",
+      "text": "15. Pseudo-Elements"
+    },
+    {
+      "id": "c8-p16-s1",
+      "type": "sentence",
+      "text": "CSS can also create decorative content through pseudo-elements."
+    },
+    {
+      "id": "c8-p16-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Decorative Element",
+      "code": ".title::after {\n  content: \"\";\n  display: block;\n  width: 50px;\n  height: 3px;\n  margin-top: 8px;\n  background: var(--primary);\n}",
+      "output": "A decorative line appears after the title."
+    },
+    {
+      "id": "c8-p16-s2",
+      "type": "sentence",
+      "text": "The double colon identifies a pseudo-element such as ::before or ::after."
+    },
+    {
+      "id": "c8-p16-s3",
+      "type": "sentence",
+      "text": "Pseudo-elements are useful for decoration and visual details."
+    },
+    {
+      "id": "c8-p16-s4",
+      "type": "sentence",
+      "text": "Do not use decorative pseudo-elements as the only way to communicate essential information."
+    },
+
+    {
+      "id": "c8-p17-h1",
+      "type": "heading",
+      "text": "16. Responsive Forms"
+    },
+    {
+      "id": "c8-p17-s1",
+      "type": "sentence",
+      "text": "Forms are another important responsive application."
+    },
+    {
+      "id": "c8-p17-code1",
+      "type": "html",
+      "title": "Responsive Form",
+      "code": "<form class=\"form\">\n  <label for=\"name\">Full Name</label>\n  <input id=\"name\" type=\"text\" placeholder=\"Enter your name\">\n\n  <label for=\"email\">Email</label>\n  <input id=\"email\" type=\"email\" placeholder=\"Enter your email\">\n\n  <button type=\"submit\">Create Account</button>\n</form>",
+      "output": "A form containing labels, inputs and a submit button."
+    },
+    {
+      "id": "c8-p17-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Safe Form Sizing",
+      "code": ".form {\n  width: min(90%, 500px);\n  margin: 0 auto;\n}\n\n.form input,\n.form button {\n  width: 100%;\n  box-sizing: border-box;\n}",
+      "output": "The form stays within a comfortable maximum width while controls fill its available width."
+    },
+    {
+      "id": "c8-p17-s2",
+      "type": "sentence",
+      "text": "The min function chooses the smaller value between its arguments."
+    },
+    {
+      "id": "c8-p17-s3",
+      "type": "sentence",
+      "text": "This lets us create a form that is wide enough on large screens but does not exceed 90 percent of a smaller screen."
+    },
+    {
+      "id": "c8-p17-s4",
+      "type": "sentence",
+      "text": "Notice that we are also using box-sizing from the Box Model lesson."
+    },
+    {
+      "id": "c8-p17-s5",
+      "type": "sentence",
+      "text": "This is an example of how CSS concepts combine instead of existing separately."
+    },
+
+    {
+      "id": "c8-p18-h1",
+      "type": "heading",
+      "text": "17. Build a Responsive Application Shell"
+    },
+    {
+      "id": "c8-p18-s1",
+      "type": "sentence",
+      "text": "Now we will combine Grid, Flexbox, typography, the Box Model and responsive rules."
+    },
+    {
+      "id": "c8-p18-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Application Shell",
+      "code": "<div class=\"app-shell\">\n  <aside class=\"sidebar\">\n    <h2>Code Academy</h2>\n    <nav>\n      <a href=\"#\">Dashboard</a>\n      <a href=\"#\">Courses</a>\n      <a href=\"#\">Projects</a>\n      <a href=\"#\">Profile</a>\n    </nav>\n  </aside>\n\n  <div class=\"page\">\n    <header class=\"topbar\">\n      <h1>My Learning</h1>\n      <button>Profile</button>\n    </header>\n\n    <main class=\"content\">\n      <section class=\"stats\">\n        <article class=\"card\">1,250 XP</article>\n        <article class=\"card\">28 Lessons</article>\n        <article class=\"card\">4 Courses</article>\n      </section>\n\n      <section class=\"courses\">\n        <article class=\"course-card\">\n          <h2>HTML Development</h2>\n          <p>Build strong web structure.</p>\n          <button>Continue</button>\n        </article>\n        <article class=\"course-card\">\n          <h2>CSS Development</h2>\n          <p>Create professional interfaces.</p>\n          <button>Continue</button>\n        </article>\n        <article class=\"course-card\">\n          <h2>JavaScript Development</h2>\n          <p>Add application behavior.</p>\n          <button>Continue</button>\n        </article>\n      </section>\n    </main>\n  </div>\n</div>",
+      "output": "A responsive application shell with navigation, header, statistics and course cards."
+    },
+    {
+      "id": "c8-p18-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Responsive Application CSS",
+      "code": ":root {\n  --background: #0A0F1E;\n  --surface: #121A2B;\n  --text: #E5E7EB;\n  --muted: #94A3B8;\n  --primary: #38BDF8;\n  --radius: 14px;\n  --space: 16px;\n}\n\n* {\n  box-sizing: border-box;\n}\n\nbody {\n  margin: 0;\n  background: var(--background);\n  color: var(--text);\n  font-family: Arial, sans-serif;\n}\n\n.app-shell {\n  min-height: 100vh;\n  display: grid;\n  grid-template-columns: 230px 1fr;\n}\n\n.sidebar {\n  padding: 20px;\n  background: var(--surface);\n}\n\n.sidebar nav {\n  display: flex;\n  flex-direction: column;\n  gap: 12px;\n}\n\n.page {\n  min-width: 0;\n}\n\n.topbar {\n  min-height: 72px;\n  padding: 16px 24px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  gap: 16px;\n}\n\n.content {\n  width: 92%;\n  max-width: 1200px;\n  margin: 0 auto;\n  padding: 24px 0;\n}\n\n.stats {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}\n\n.card,\n.course-card {\n  padding: 20px;\n  background: var(--surface);\n  border-radius: var(--radius);\n}\n\n.courses {\n  margin-top: 24px;\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 20px;\n}\n\n.course-card h2 {\n  font-size: clamp(1.2rem, 2vw, 1.6rem);\n}\n\n.course-card p {\n  color: var(--muted);\n  line-height: 1.6;\n}\n\nbutton {\n  padding: 12px 16px;\n  border: 0;\n  border-radius: 10px;\n  font-weight: 700;\n}\n\nbutton:focus-visible {\n  outline: 2px solid var(--primary);\n  outline-offset: 3px;\n}\n\n@media (max-width: 800px) {\n  .app-shell {\n    grid-template-columns: 1fr;\n  }\n\n  .sidebar {\n    display: none;\n  }\n\n  .stats {\n    grid-template-columns: 1fr;\n  }\n\n  .content {\n    width: 94%;\n  }\n}\n\n@media (min-width: 801px) {\n  .sidebar {\n    position: sticky;\n    top: 0;\n    min-height: 100vh;\n  }\n}",
+      "output": "A responsive learning application shell that changes its layout as the available screen width changes."
+    },
+    {
+      "id": "c8-p18-s2",
+      "type": "sentence",
+      "text": "This example brings together almost everything you have learned so far."
+    },
+    {
+      "id": "c8-p18-s3",
+      "type": "sentence",
+      "text": "Do not just copy it."
+    },
+    {
+      "id": "c8-p18-s4",
+      "type": "sentence",
+      "text": "Read each section and identify the CSS concept being used."
+    },
+    {
+      "id": "c8-p18-s5",
+      "type": "sentence",
+      "text": "Now resize the browser if you have access to a browser with developer tools."
+    },
+    {
+      "id": "c8-p18-s6",
+      "type": "sentence",
+      "text": "If you are testing on your phone, change the values in your code and observe how the layout responds."
+    },
+
+    {
+      "id": "c8-p19-h1",
+      "type": "heading",
+      "text": "18. A Professional CSS Debugging Process"
+    },
+    {
+      "id": "c8-p19-s1",
+      "type": "sentence",
+      "text": "Before we leave the CSS foundations, you need a reliable way to debug."
+    },
+    {
+      "id": "c8-p19-s2",
+      "type": "sentence",
+      "text": "When something looks wrong, first identify exactly what looks wrong."
+    },
+    {
+      "id": "c8-p19-s3",
+      "type": "sentence",
+      "text": "Is the element too wide?"
+    },
+    {
+      "id": "c8-p19-s4",
+      "type": "sentence",
+      "text": "Is it too narrow?"
+    },
+    {
+      "id": "c8-p19-s5",
+      "type": "sentence",
+      "text": "Is it in the wrong position?"
+    },
+    {
+      "id": "c8-p19-s6",
+      "type": "sentence",
+      "text": "Is there too much internal space?"
+    },
+    {
+      "id": "c8-p19-s7",
+      "type": "sentence",
+      "text": "Is there too much space between elements?"
+    },
+    {
+      "id": "c8-p19-s8",
+      "type": "sentence",
+      "text": "Does the problem happen only at a particular screen width?"
+    },
+    {
+      "id": "c8-p19-s9",
+      "type": "sentence",
+      "text": "Then inspect the CSS property responsible for that behavior."
+    },
+    {
+      "id": "c8-p19-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Debugging Checklist",
+      "code": "/* 1. Structure */\ndisplay\nposition\ngrid-template-columns\nflex-direction\n\n/* 2. Size */\nwidth\nmax-width\nmin-width\nheight\n\n/* 3. Space */\npadding\nmargin\ngap\n\n/* 4. Typography */\nfont-size\nfont-weight\nline-height\n\n/* 5. Responsive behavior */\n@media\nmin-width\nmax-width\n\n/* 6. Layering */\nz-index\nposition",
+      "output": "A practical order for investigating common CSS layout problems."
+    },
+    {
+      "id": "c8-p19-s10",
+      "type": "sentence",
+      "text": "Change one meaningful thing at a time."
+    },
+    {
+      "id": "c8-p19-s11",
+      "type": "sentence",
+      "text": "Then test again."
+    },
+    {
+      "id": "c8-p19-s12",
+      "type": "sentence",
+      "text": "This prevents random CSS changes from creating new problems."
+    },
+
+    {
+      "id": "c8-p20-h1",
+      "type": "heading",
+      "text": "19. CSS Knowledge Check Before the Final Project"
+    },
+    {
+      "id": "c8-p20-s1",
+      "type": "sentence",
+      "text": "Pause here."
+    },
+    {
+      "id": "c8-p20-s2",
+      "type": "sentence",
+      "text": "Before you move into animations and the final website project, make sure you can answer these questions."
+    },
+    {
+      "id": "c8-p20-s3",
+      "type": "sentence",
+      "text": "Can you explain why a container needs max-width?"
+    },
+    {
+      "id": "c8-p20-s4",
+      "type": "sentence",
+      "text": "Can you choose between Grid and Flexbox?"
+    },
+    {
+      "id": "c8-p20-s5",
+      "type": "sentence",
+      "text": "Can you make a layout change at a breakpoint?"
+    },
+    {
+      "id": "c8-p20-s6",
+      "type": "sentence",
+      "text": "Can you prevent an image from overflowing its container?"
+    },
+    {
+      "id": "c8-p20-s7",
+      "type": "sentence",
+      "text": "Can you position a badge inside a card?"
+    },
+    {
+      "id": "c8-p20-s8",
+      "type": "sentence",
+      "text": "Can you control which overlapping element appears in front?"
+    },
+    {
+      "id": "c8-p20-s9",
+      "type": "sentence",
+      "text": "Can you create reusable design values with CSS variables?"
+    },
+    {
+      "id": "c8-p20-s10",
+      "type": "sentence",
+      "text": "Can you create useful hover and focus states?"
+    },
+    {
+      "id": "c8-p20-s11",
+      "type": "sentence",
+      "text": "Can you inspect a broken layout and identify the likely CSS property causing the problem?"
+    },
+    {
+      "id": "c8-p20-s12",
+      "type": "sentence",
+      "text": "If your answer to these questions is yes, you are ready to start combining the pieces."
+    },
+
+    {
+      "id": "c8-q1",
+      "type": "quiz",
+      "question": "A content container should occupy most of the screen on a phone but stop growing beyond 1100px on desktop. Which combination best solves the requirement?",
+      "options": [
+        "width: 1100px; height: 100%;",
+        "width: 90%; max-width: 1100px;",
+        "width: 1100%; max-width: 90px;",
+        "min-width: 1100px; width: 90%;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. The percentage keeps it flexible while max-width prevents excessive growth.",
+      "incorrectFeedback": "You need a flexible width and a maximum limit.",
+      "reasoning": "width: 90% responds to available space, while max-width: 1100px limits the maximum size.",
+      "hint": "Think flexible first, maximum second."
+    },
+
+    {
+      "id": "c8-q2",
+      "type": "quiz",
+      "question": "A three-column course grid becomes cramped on a phone. What is the best responsive solution?",
+      "options": [
+        "Keep three columns and reduce every card's font size",
+        "Change the grid to fewer columns at a suitable breakpoint",
+        "Increase the column gap",
+        "Give every card a fixed width of 500px"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. The layout should adapt its number of columns when the available width becomes limited.",
+      "incorrectFeedback": "The problem is the number of columns relative to the available width.",
+      "reasoning": "Responsive Grid should adapt its structure rather than forcing a desktop layout into a narrow viewport.",
+      "hint": "Too many columns are competing for too little space."
+    },
+
+    {
+      "id": "c8-q3",
+      "type": "quiz",
+      "question": "You start with one-column mobile CSS and want to add a sidebar when the screen becomes wider. Which media-query condition best matches this approach?",
+      "options": [
+        "@media (max-width: 700px)",
+        "@media (min-width: 700px)",
+        "@media (height: 700px)",
+        "@media (orientation: 700px)"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. min-width is appropriate when progressively adding layout features at larger widths.",
+      "incorrectFeedback": "The base layout is mobile and the new layout should appear when the screen gets wider.",
+      "reasoning": "A min-width media query activates styles at that width and above.",
+      "hint": "You are moving upward from mobile."
+    },
+
+    {
+      "id": "c8-q4",
+      "type": "quiz",
+      "question": "An image causes horizontal scrolling because it is wider than its container. Which rule is the most direct fix?",
+      "options": [
+        "img { max-width: 100%; height: auto; }",
+        "img { width: 1000px; }",
+        "img { min-width: 100%; }",
+        "img { font-size: 100%; }"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. max-width: 100% allows the image to shrink to the available container width.",
+      "incorrectFeedback": "The image needs permission to become smaller than its intrinsic width.",
+      "reasoning": "max-width: 100% prevents an image from exceeding the width of its containing block in the usual case.",
+      "hint": "The image needs a maximum width, not a larger fixed width."
+    },
+
+    {
+      "id": "c8-q5",
+      "type": "quiz",
+      "question": "A badge must sit at the top-right corner of a card. Which combination is most appropriate?",
+      "options": [
+        "card: position: absolute; badge: position: relative;",
+        "card: position: relative; badge: position: absolute;",
+        "card: display: flex; badge: position: static;",
+        "card: position: fixed; badge: position: sticky;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. The card establishes the positioning context and the badge can be positioned inside it.",
+      "incorrectFeedback": "The child needs to be positioned relative to the card.",
+      "reasoning": "A relatively positioned card can establish the containing block for an absolutely positioned badge.",
+      "hint": "Parent establishes the context; child gets positioned."
+    },
+
+    {
+      "id": "c8-q6",
+      "type": "quiz",
+      "question": "A modal appears behind the page header even though it has position: fixed. What should you investigate?",
+      "options": [
+        "font-weight",
+        "z-index and stacking contexts",
+        "line-height",
+        "text-transform"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Overlapping elements require investigation of stacking order and stacking contexts.",
+      "incorrectFeedback": "The issue is which element is visually above another.",
+      "reasoning": "z-index affects stacking order, but stacking contexts can also influence the result.",
+      "hint": "The problem is layering."
+    },
+
+    {
+      "id": "c8-q7",
+      "type": "quiz",
+      "question": "Your application repeats the same primary color in 30 CSS rules. You want to make future theme changes easier. What should you use?",
+      "options": [
+        "30 different IDs",
+        "CSS custom properties",
+        "more media queries",
+        "position: fixed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. CSS custom properties allow reusable values to be defined and changed centrally.",
+      "incorrectFeedback": "Think about creating one reusable source for a design value.",
+      "reasoning": "Custom properties such as --primary can be reused with var(--primary).",
+      "hint": "You need a reusable design value."
+    },
+
+    {
+      "id": "c8-q8",
+      "type": "quiz",
+      "question": "A heading should grow smoothly with screen width but never become smaller than 2rem or larger than 4rem. Which function is designed for this?",
+      "options": [
+        "calc(2rem, 4rem)",
+        "clamp(2rem, 5vw, 4rem)",
+        "repeat(2rem, 4rem)",
+        "minmax(2rem, 4rem) on font-size"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. clamp() accepts a minimum, preferred flexible value and maximum.",
+      "incorrectFeedback": "Look for the CSS function specifically designed to constrain a flexible value.",
+      "reasoning": "clamp(min, preferred, max) is ideal for fluid values such as responsive typography.",
+      "hint": "You need minimum + flexible value + maximum."
+    },
+
+    {
+      "id": "c8-q9",
+      "type": "quiz",
+      "question": "A button should look different when the user points at it. Which selector should you investigate?",
+      "options": [
+        "button::after",
+        "button:hover",
+        "button:first",
+        "button:root"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. :hover targets the pointer-hover state.",
+      "incorrectFeedback": "You need a pseudo-class representing pointer interaction.",
+      "reasoning": ":hover is a pseudo-class that matches when a pointing device is over the element.",
+      "hint": "The question describes a user interaction state."
+    },
+
+    {
+      "id": "c8-q10",
+      "type": "quiz",
+      "question": "A keyboard user moves to an input, but the developer removed the browser's focus outline and added no replacement. What is the better solution?",
+      "options": [
+        "Keep the input with no visible focus state",
+        "Provide a clear :focus or :focus-visible indicator",
+        "Make every input permanently outlined",
+        "Hide the input when it receives focus"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Interactive elements need a visible focus indication.",
+      "incorrectFeedback": "Think about how a keyboard user knows which control is currently active.",
+      "reasoning": "Visible focus indicators improve keyboard navigation and accessibility.",
+      "hint": "The user needs to see where keyboard focus is."
+    },
+
+    {
+      "id": "c8-q11",
+      "type": "quiz",
+      "question": "You want a desktop dashboard to use a sidebar and main content, but mobile should use one column. Which CSS system is most appropriate for the major structure?",
+      "options": [
+        "Grid with responsive columns",
+        "letter-spacing",
+        "text-decoration",
+        "font-weight"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. Grid is well suited to major rows-and-columns application structure.",
+      "incorrectFeedback": "Think about the CSS layout system designed for two-dimensional structure.",
+      "reasoning": "Grid can define desktop columns and change them at responsive breakpoints.",
+      "hint": "The problem is two-dimensional page structure."
+    },
+
+    {
+      "id": "c8-q12",
+      "type": "quiz",
+      "question": "A dashboard has Grid controlling the page layout and a card header needs the title on the left and an action on the right. Which combination is most sensible?",
+      "options": [
+        "Grid for the page and Flexbox for the card header",
+        "Typography for the page and Grid for the title only",
+        "Position fixed for everything",
+        "Margin alone for the entire layout"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. Grid can manage the major layout while Flexbox handles one-dimensional alignment inside a component.",
+      "incorrectFeedback": "Think about using each layout system where it is strongest.",
+      "reasoning": "Combining Grid and Flexbox is a common approach in real interfaces.",
+      "hint": "Outer structure and internal alignment can use different layout systems."
+    },
+
+    {
+      "id": "c8-q13",
+      "type": "quiz",
+      "question": "A form should be comfortable on large screens but never wider than 500px and should still fit small screens. Which rule is closest?",
+      "options": [
+        "width: 500px;",
+        "width: min(90%, 500px);",
+        "width: 500%;",
+        "min-width: 500px;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. min(90%, 500px) keeps the form within both limits.",
+      "incorrectFeedback": "You need the smaller of a percentage-based width and a 500px maximum.",
+      "reasoning": "The min() function chooses the smaller value, making the form flexible while limiting its maximum width.",
+      "hint": "The requirement says 'never more than 500px' and 'still fit small screens.'"
+    },
+
+    {
+      "id": "c8-q14",
+      "type": "quiz",
+      "question": "Your mobile page has unwanted horizontal scrolling. Which debugging approach is strongest?",
+      "options": [
+        "Immediately add overflow-x: hidden and ignore the cause",
+        "Find the element exceeding the viewport, then fix its width or layout",
+        "Increase every element's width",
+        "Increase the page font size"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Fixing the source of the overflow is better than simply hiding the symptom.",
+      "incorrectFeedback": "Hiding overflow may conceal the actual layout problem.",
+      "reasoning": "A robust responsive workflow identifies which element exceeds the available width and corrects its sizing or positioning.",
+      "hint": "Debug the cause before hiding the symptom."
+    },
+
+    {
+      "id": "c8-q15",
+      "type": "quiz",
+      "question": "A developer uses a fixed 400px card width everywhere. It works on desktop but breaks on a 320px-wide phone. What is the underlying design mistake?",
+      "options": [
+        "The card uses a rigid dimension without considering available space",
+        "The card uses too much line-height",
+        "The card needs more letter-spacing",
+        "The card should always be 800px wide"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. Responsive components must account for the space available to them.",
+      "incorrectFeedback": "The problem is the rigid width compared with the viewport.",
+      "reasoning": "A fixed width larger than the available viewport can cause overflow or cramped layouts.",
+      "hint": "Compare 400px with a 320px viewport."
+    },
+
+    {
+      "id": "c8-q16",
+      "type": "quiz",
+      "question": "You are building the final Code Academy website. Which workflow demonstrates the strongest CSS development process?",
+      "options": [
+        "Write random styles until the page looks acceptable",
+        "Plan structure, build layout, control spacing and typography, add responsive behavior, then test and debug",
+        "Start with animations before creating the layout",
+        "Use fixed pixel sizes for every element"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. A structured workflow makes complex interfaces easier to build and debug.",
+      "incorrectFeedback": "Think about building the foundation before decoration.",
+      "reasoning": "Professional CSS development usually starts with structure and layout, then styling, responsive behavior, interaction states and refinement.",
+      "hint": "Build the foundation first."
+    },
+
+    {
+      "id": "c8-q17",
+      "type": "quiz",
+      "question": "A learner knows Grid, Flexbox, the Box Model and typography, but their website still breaks on phones. Which CSS topic should they investigate first?",
+      "options": [
+        "Responsive sizing and media queries",
+        "More font-weight values",
+        "More border styles",
+        "Text decoration"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. Phone-specific layout failures require responsive sizing and responsive rules.",
+      "incorrectFeedback": "The problem is specifically related to screen size.",
+      "reasoning": "Responsive sizing, flexible layouts and media queries are the main tools for adapting interfaces to different viewports.",
+      "hint": "The failure depends on screen size."
+    },
+
+    {
+      "id": "c8-q18",
+      "type": "quiz",
+      "question": "You need a decorative line beneath a heading without adding another HTML element. Which CSS feature is appropriate?",
+      "options": [
+        "::after",
+        ":hover",
+        "grid-area",
+        "box-sizing"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. ::after can generate a decorative pseudo-element.",
+      "incorrectFeedback": "You need a pseudo-element rather than a user interaction state.",
+      "reasoning": "Pseudo-elements such as ::before and ::after can create presentational decorations without extra markup.",
+      "hint": "The requirement says decorative content without another HTML element."
+    },
+
+    {
+      "id": "c8-final-h1",
+      "type": "heading",
+      "text": "Final CSS Foundation Challenge"
+    },
+    {
+      "id": "c8-final-s1",
+      "type": "sentence",
+      "text": "You have reached an important point in the CSS course."
+    },
+    {
+      "id": "c8-final-s2",
+      "type": "sentence",
+      "text": "You started by learning how CSS changes HTML."
+    },
+    {
+      "id": "c8-final-s3",
+      "type": "sentence",
+      "text": "You learned selectors."
+    },
+    {
+      "id": "c8-final-s4",
+      "type": "sentence",
+      "text": "You learned colors, backgrounds and borders."
+    },
+    {
+      "id": "c8-final-s5",
+      "type": "sentence",
+      "text": "You learned the Box Model."
+    },
+    {
+      "id": "c8-final-s6",
+      "type": "sentence",
+      "text": "You learned typography."
+    },
+    {
+      "id": "c8-final-s7",
+      "type": "sentence",
+      "text": "You learned Flexbox."
+    },
+    {
+      "id": "c8-final-s8",
+      "type": "sentence",
+      "text": "You learned Grid."
+    },
+    {
+      "id": "c8-final-s9",
+      "type": "sentence",
+      "text": "Now you have learned how to make those layouts respond to different screens."
+    },
+    {
+      "id": "c8-final-s10",
+      "type": "sentence",
+      "text": "You also learned several CSS tools that become important when building real applications."
+    },
+    {
+      "id": "c8-final-s11",
+      "type": "sentence",
+      "text": "You can work with responsive units."
+    },
+    {
+      "id": "c8-final-s12",
+      "type": "sentence",
+      "text": "You can use media queries."
+    },
+    {
+      "id": "c8-final-s13",
+      "type": "sentence",
+      "text": "You can use max-width, min-width, min(), max(), calc() and clamp()."
+    },
+    {
+      "id": "c8-final-s14",
+      "type": "sentence",
+      "text": "You can control overflow."
+    },
+    {
+      "id": "c8-final-s15",
+      "type": "sentence",
+      "text": "You can position elements and manage layers."
+    },
+    {
+      "id": "c8-final-s16",
+      "type": "sentence",
+      "text": "You can create reusable CSS variables."
+    },
+    {
+      "id": "c8-final-s17",
+      "type": "sentence",
+      "text": "You can design hover, focus and disabled states."
+    },
+    {
+      "id": "c8-final-s18",
+      "type": "sentence",
+      "text": "You can use pseudo-elements for visual details."
+    },
+    {
+      "id": "c8-final-s19",
+      "type": "sentence",
+      "text": "You can debug CSS by identifying the actual problem instead of randomly changing values."
+    },
+    {
+      "id": "c8-final-s20",
+      "type": "sentence",
+      "text": "This is the foundation you need before building a serious interface."
+    },
+
+    {
+      "id": "c8-final-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Your CSS Developer Mental Model",
+      "code": "/* STRUCTURE */\nHTML\n\n/* TARGETING */\nSelectors\n\n/* SPACE */\nBox Model\n\n/* TEXT */\nTypography\n\n/* ONE-DIRECTION LAYOUT */\nFlexbox\n\n/* TWO-DIRECTION LAYOUT */\nGrid\n\n/* DIFFERENT SCREENS */\nResponsive Design\n\n/* POSITIONING */\nrelative / absolute / fixed / sticky\n\n/* LAYERS */\nz-index\n\n/* REUSABLE DESIGN */\nCSS Variables\n\n/* USER STATES */\n:hover / :focus / :disabled\n\n/* VISUAL DETAILS */\n::before / ::after",
+      "output": "A practical mental map of the major CSS concepts learned before the final project."
+    },
+
+    {
+      "id": "c8-final-s21",
+      "type": "sentence",
+      "text": "Do not think of these as isolated topics."
+    },
+    {
+      "id": "c8-final-s22",
+      "type": "sentence",
+      "text": "Think of them as tools in your developer toolbox."
+    },
+    {
+      "id": "c8-final-s23",
+      "type": "sentence",
+      "text": "When a real interface gives you a problem, you choose the tool that solves that problem."
+    },
+    {
+      "id": "c8-final-s24",
+      "type": "sentence",
+      "text": "That is the skill we are building."
+    },
+
+    {
+      "id": "c8-project-h1",
+      "type": "heading",
+      "text": "Prepare for the Final CSS Project"
+    },
+    {
+      "id": "c8-project-s1",
+      "type": "sentence",
+      "text": "In the next major stage of this course, you will stop treating each CSS concept as a separate exercise."
+    },
+    {
+      "id": "c8-project-s2",
+      "type": "sentence",
+      "text": "You will combine them."
+    },
+    {
+      "id": "c8-project-s3",
+      "type": "sentence",
+      "text": "You will create a complete website interface."
+    },
+    {
+      "id": "c8-project-s4",
+      "type": "sentence",
+      "text": "You will have to make decisions about structure, spacing, typography, layout, responsiveness, states and visual hierarchy."
+    },
+    {
+      "id": "c8-project-s5",
+      "type": "sentence",
+      "text": "You will also have to debug your own work."
+    },
+    {
+      "id": "c8-project-s6",
+      "type": "sentence",
+      "text": "That is where everything you have learned so far becomes useful."
+    },
+    {
+      "id": "c8-project-s7",
+      "type": "sentence",
+      "text": "After that, CSS will not be finished."
+    },
+    {
+      "id": "c8-project-s8",
+      "type": "sentence",
+      "text": "You will continue improving it while building increasingly advanced interfaces."
+    },
+    {
+      "id": "c8-project-s9",
+      "type": "sentence",
+      "text": "But you now have the foundation required to understand what you are doing."
+    },
+
+    {
+      "id": "c8-summary-h1",
+      "type": "heading",
+      "text": "Lesson 8 Complete"
+    },
+    {
+      "id": "c8-summary-s1",
+      "type": "sentence",
+      "text": "You learned responsive web design and how interfaces adapt to different screen sizes."
+    },
+    {
+      "id": "c8-summary-s2",
+      "type": "sentence",
+      "text": "You learned responsive units, max-width, media queries and mobile-first thinking."
+    },
+    {
+      "id": "c8-summary-s3",
+      "type": "sentence",
+      "text": "You learned how Grid and Flexbox can work together."
+    },
+    {
+      "id": "c8-summary-s4",
+      "type": "sentence",
+      "text": "You learned how to prevent and debug overflow."
+    },
+    {
+      "id": "c8-summary-s5",
+      "type": "sentence",
+      "text": "You learned positioning, fixed and sticky elements, and z-index."
+    },
+    {
+      "id": "c8-summary-s6",
+      "type": "sentence",
+      "text": "You learned CSS variables, calc(), clamp(), min() and interactive pseudo-classes."
+    },
+    {
+      "id": "c8-summary-s7",
+      "type": "sentence",
+      "text": "You learned pseudo-elements and the importance of visible focus states."
+    },
+    {
+      "id": "c8-summary-s8",
+      "type": "sentence",
+      "text": "Most importantly, you learned to think about CSS as a system for solving interface problems."
+    },
+    {
+      "id": "c8-summary-s9",
+      "type": "sentence",
+      "text": "Next comes Lesson 9: Animations and Transitions."
+    },
+    {
+      "id": "c8-summary-s10",
+      "type": "sentence",
+      "text": "After that, Lesson 10 will bring the CSS course toward its major practical goal: building a complete website interface from the skills you have developed."
+    }
+  ]
+}

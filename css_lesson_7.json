@@ -1,0 +1,1253 @@
+{
+  "course": "css",
+  "lessonNumber": 7,
+  "lessonId": "css-lesson-7",
+  "title": "CSS Grid",
+  "subtitle": "Build Powerful Two-Dimensional Layouts",
+  "description": "Master CSS Grid for creating structured rows and columns. Learn grid containers, columns, rows, gaps, tracks, fractions, spanning, template areas, responsive grids and real application layouts. Build dashboard, course, card and application interfaces while developing professional layout thinking.",
+  "level": "Intermediate",
+  "xpReward": 240,
+  "coinsReward": 60,
+  "estimatedMinutes": 110,
+  "blocks": [
+
+    {
+      "id": "c7-p1-h1",
+      "type": "heading",
+      "text": "Welcome to CSS Grid"
+    },
+    {
+      "id": "c7-p1-s1",
+      "type": "sentence",
+      "text": "Open your editor."
+    },
+    {
+      "id": "c7-p1-s2",
+      "type": "sentence",
+      "text": "Create a file called index.html."
+    },
+    {
+      "id": "c7-p1-s3",
+      "type": "sentence",
+      "text": "Today you are going to learn one of the most powerful CSS layout systems."
+    },
+    {
+      "id": "c7-p1-s4",
+      "type": "sentence",
+      "text": "That system is CSS Grid."
+    },
+    {
+      "id": "c7-p1-s5",
+      "type": "sentence",
+      "text": "Flexbox is excellent when you mainly need to arrange items along one direction."
+    },
+    {
+      "id": "c7-p1-s6",
+      "type": "sentence",
+      "text": "Grid is especially powerful when your design needs rows and columns working together."
+    },
+    {
+      "id": "c7-p1-s7",
+      "type": "sentence",
+      "text": "Think about a dashboard."
+    },
+    {
+      "id": "c7-p1-s8",
+      "type": "sentence",
+      "text": "A dashboard can contain a sidebar, header, statistics cards, charts, activity panels and other sections."
+    },
+    {
+      "id": "c7-p1-s9",
+      "type": "sentence",
+      "text": "Grid gives you a system for arranging those areas."
+    },
+    {
+      "id": "c7-p1-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Our Grid Starting Point",
+      "code": "<!DOCTYPE html>\n<html>\n<head>\n  <title>Grid Dashboard</title>\n</head>\n<body>\n  <main class=\"dashboard\">\n    <div class=\"box\">Sidebar</div>\n    <div class=\"box\">Header</div>\n    <div class=\"box\">Statistics</div>\n    <div class=\"box\">Courses</div>\n    <div class=\"box\">Activity</div>\n  </main>\n</body>\n</html>",
+      "output": "Sidebar\nHeader\nStatistics\nCourses\nActivity"
+    },
+    {
+      "id": "c7-p1-s10",
+      "type": "sentence",
+      "text": "Right now these elements simply follow normal document flow."
+    },
+    {
+      "id": "c7-p1-s11",
+      "type": "sentence",
+      "text": "Our job is to create a deliberate layout."
+    },
+
+    {
+      "id": "c7-p2-h1",
+      "type": "heading",
+      "text": "1. Creating a Grid Container"
+    },
+    {
+      "id": "c7-p2-s1",
+      "type": "sentence",
+      "text": "The first rule of Grid is simple."
+    },
+    {
+      "id": "c7-p2-s2",
+      "type": "sentence",
+      "text": "The parent element becomes a grid container."
+    },
+    {
+      "id": "c7-p2-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Turn an Element Into a Grid",
+      "code": ".dashboard {\n  display: grid;\n}",
+      "output": "The dashboard becomes a CSS Grid container."
+    },
+    {
+      "id": "c7-p2-s3",
+      "type": "sentence",
+      "text": "The children inside that container become grid items."
+    },
+    {
+      "id": "c7-p2-s4",
+      "type": "sentence",
+      "text": "Remember this relationship."
+    },
+    {
+      "id": "c7-p2-s5",
+      "type": "sentence",
+      "text": "The parent controls the grid."
+    },
+    {
+      "id": "c7-p2-s6",
+      "type": "sentence",
+      "text": "The children occupy positions inside that grid."
+    },
+    {
+      "id": "c7-p2-s7",
+      "type": "sentence",
+      "text": "Without display grid, grid-specific layout properties will not behave as expected."
+    },
+
+    {
+      "id": "c7-p3-h1",
+      "type": "heading",
+      "text": "2. Creating Columns"
+    },
+    {
+      "id": "c7-p3-s1",
+      "type": "sentence",
+      "text": "Now we need to tell Grid how many columns we want."
+    },
+    {
+      "id": "c7-p3-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Three Equal Columns",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 1fr 1fr 1fr;\n}",
+      "output": "The grid creates three equal columns."
+    },
+    {
+      "id": "c7-p3-s2",
+      "type": "sentence",
+      "text": "The grid-template-columns property defines the columns."
+    },
+    {
+      "id": "c7-p3-s3",
+      "type": "sentence",
+      "text": "The value 1fr means one fraction of the available space."
+    },
+    {
+      "id": "c7-p3-s4",
+      "type": "sentence",
+      "text": "Three 1fr values therefore create three equal portions."
+    },
+    {
+      "id": "c7-p3-s5",
+      "type": "sentence",
+      "text": "Change the code to two columns."
+    },
+    {
+      "id": "c7-p3-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Two Equal Columns",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n}",
+      "output": "The available width is divided into two equal columns."
+    },
+    {
+      "id": "c7-p3-s6",
+      "type": "sentence",
+      "text": "Run the page again."
+    },
+    {
+      "id": "c7-p3-s7",
+      "type": "sentence",
+      "text": "Look at how the children move into the new grid structure."
+    },
+
+    {
+      "id": "c7-p4-h1",
+      "type": "heading",
+      "text": "3. The fr Unit"
+    },
+    {
+      "id": "c7-p4-s1",
+      "type": "sentence",
+      "text": "The fr unit is one of the most useful ideas in Grid."
+    },
+    {
+      "id": "c7-p4-s2",
+      "type": "sentence",
+      "text": "It represents a fraction of the available space."
+    },
+    {
+      "id": "c7-p4-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Unequal Columns",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 1fr 2fr;\n}",
+      "output": "The second column receives twice as many fractions of the available space as the first."
+    },
+    {
+      "id": "c7-p4-s3",
+      "type": "sentence",
+      "text": "The total number of fractions is three."
+    },
+    {
+      "id": "c7-p4-s4",
+      "type": "sentence",
+      "text": "The first column receives one fraction."
+    },
+    {
+      "id": "c7-p4-s5",
+      "type": "sentence",
+      "text": "The second column receives two fractions."
+    },
+    {
+      "id": "c7-p4-s6",
+      "type": "sentence",
+      "text": "This is useful when one part of an application needs more space than another."
+    },
+    {
+      "id": "c7-p4-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Dashboard Sidebar Layout",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n}",
+      "output": "A fixed-width sidebar is created alongside a flexible main area."
+    },
+    {
+      "id": "c7-p4-s7",
+      "type": "sentence",
+      "text": "This pattern appears frequently in dashboards."
+    },
+
+    {
+      "id": "c7-p5-h1",
+      "type": "heading",
+      "text": "4. Creating Rows"
+    },
+    {
+      "id": "c7-p5-s1",
+      "type": "sentence",
+      "text": "Columns control the horizontal structure."
+    },
+    {
+      "id": "c7-p5-s2",
+      "type": "sentence",
+      "text": "Rows control the vertical structure."
+    },
+    {
+      "id": "c7-p5-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Defining Rows",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  grid-template-rows: 100px 200px;\n}",
+      "output": "The grid has two columns and two explicitly defined rows."
+    },
+    {
+      "id": "c7-p5-s3",
+      "type": "sentence",
+      "text": "The first row is 100 pixels tall."
+    },
+    {
+      "id": "c7-p5-s4",
+      "type": "sentence",
+      "text": "The second row is 200 pixels tall."
+    },
+    {
+      "id": "c7-p5-s5",
+      "type": "sentence",
+      "text": "You do not always need to define rows manually."
+    },
+    {
+      "id": "c7-p5-s6",
+      "type": "sentence",
+      "text": "Grid can create implicit rows when additional items require them."
+    },
+
+    {
+      "id": "c7-p6-h1",
+      "type": "heading",
+      "text": "5. Adding Space With Gap"
+    },
+    {
+      "id": "c7-p6-s1",
+      "type": "sentence",
+      "text": "Our boxes are touching each other."
+    },
+    {
+      "id": "c7-p6-s2",
+      "type": "sentence",
+      "text": "We need controlled space between grid items."
+    },
+    {
+      "id": "c7-p6-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Adding Grid Gap",
+      "code": ".dashboard {\n  display: grid;\n  grid-template-columns: 1fr 1fr;\n  gap: 20px;\n}",
+      "output": "A 20px gap is created between grid items."
+    },
+    {
+      "id": "c7-p6-s3",
+      "type": "sentence",
+      "text": "The gap property controls spacing between grid rows and columns."
+    },
+    {
+      "id": "c7-p6-s4",
+      "type": "sentence",
+      "text": "This is different from adding margin to every card."
+    },
+    {
+      "id": "c7-p6-s5",
+      "type": "sentence",
+      "text": "Grid gap describes the relationship between grid items."
+    },
+    {
+      "id": "c7-p6-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Different Row and Column Gaps",
+      "code": ".dashboard {\n  display: grid;\n  row-gap: 24px;\n  column-gap: 16px;\n}",
+      "output": "Rows have 24px spacing while columns have 16px spacing."
+    },
+
+    {
+      "id": "c7-p7-h1",
+      "type": "heading",
+      "text": "6. Building a Course Card Grid"
+    },
+    {
+      "id": "c7-p7-s1",
+      "type": "sentence",
+      "text": "Now let's build something that belongs inside a real learning application."
+    },
+    {
+      "id": "c7-p7-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Course Cards",
+      "code": "<section class=\"courses\">\n  <article class=\"course-card\">\n    <h2>HTML</h2>\n    <p>Build web page structure.</p>\n  </article>\n\n  <article class=\"course-card\">\n    <h2>CSS</h2>\n    <p>Design professional interfaces.</p>\n  </article>\n\n  <article class=\"course-card\">\n    <h2>JavaScript</h2>\n    <p>Add behavior and interaction.</p>\n  </article>\n\n  <article class=\"course-card\">\n    <h2>Python</h2>\n    <p>Build powerful applications.</p>\n  </article>\n</section>",
+      "output": "Four course cards."
+    },
+    {
+      "id": "c7-p7-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Course Grid",
+      "code": ".courses {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 20px;\n}",
+      "output": "The four cards are arranged in two equal columns."
+    },
+    {
+      "id": "c7-p7-s2",
+      "type": "sentence",
+      "text": "The repeat function saves us from writing the same value repeatedly."
+    },
+    {
+      "id": "c7-p7-s3",
+      "type": "sentence",
+      "text": "repeat(2, 1fr) means create two columns, each using one fraction."
+    },
+    {
+      "id": "c7-p7-s4",
+      "type": "sentence",
+      "text": "This is a pattern you will use frequently."
+    },
+
+    {
+      "id": "c7-p8-h1",
+      "type": "heading",
+      "text": "7. Responsive Card Columns"
+    },
+    {
+      "id": "c7-p8-s1",
+      "type": "sentence",
+      "text": "A two-column layout may look good on a large screen."
+    },
+    {
+      "id": "c7-p8-s2",
+      "type": "sentence",
+      "text": "But what happens when the screen becomes narrow?"
+    },
+    {
+      "id": "c7-p8-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Responsive Course Grid",
+      "code": ".courses {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 20px;\n}\n\n@media (max-width: 600px) {\n  .courses {\n    grid-template-columns: 1fr;\n  }\n}",
+      "output": "Large screens use two columns. Small screens use one column."
+    },
+    {
+      "id": "c7-p8-s3",
+      "type": "sentence",
+      "text": "This is a simple example of responsive Grid."
+    },
+    {
+      "id": "c7-p8-s4",
+      "type": "sentence",
+      "text": "Later in the course we will explore responsive design much more deeply."
+    },
+    {
+      "id": "c7-p8-s5",
+      "type": "sentence",
+      "text": "For now, understand the principle."
+    },
+    {
+      "id": "c7-p8-s6",
+      "type": "sentence",
+      "text": "The layout should adapt to the available space."
+    },
+
+    {
+      "id": "c7-p9-h1",
+      "type": "heading",
+      "text": "8. Spanning Multiple Columns"
+    },
+    {
+      "id": "c7-p9-s1",
+      "type": "sentence",
+      "text": "Sometimes one item needs to occupy more than one column."
+    },
+    {
+      "id": "c7-p9-s2",
+      "type": "sentence",
+      "text": "Imagine a dashboard where a large activity panel should stretch across two card columns."
+    },
+    {
+      "id": "c7-p9-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Span Two Columns",
+      "code": ".activity {\n  grid-column: span 2;\n}",
+      "output": "The activity item occupies two grid columns."
+    },
+    {
+      "id": "c7-p9-s3",
+      "type": "sentence",
+      "text": "The grid-column property can control where an item starts and ends."
+    },
+    {
+      "id": "c7-p9-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Explicit Column Range",
+      "code": ".activity {\n  grid-column: 1 / 3;\n}",
+      "output": "The activity item starts at grid line 1 and ends at grid line 3."
+    },
+    {
+      "id": "c7-p9-s4",
+      "type": "sentence",
+      "text": "Because there are two columns between those lines, the item spans both columns."
+    },
+    {
+      "id": "c7-p9-s5",
+      "type": "sentence",
+      "text": "Grid lines are invisible structural boundaries that help you position items."
+    },
+
+    {
+      "id": "c7-p10-h1",
+      "type": "heading",
+      "text": "9. Spanning Rows"
+    },
+    {
+      "id": "c7-p10-s1",
+      "type": "sentence",
+      "text": "Grid items can also span multiple rows."
+    },
+    {
+      "id": "c7-p10-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Span Multiple Rows",
+      "code": ".sidebar {\n  grid-row: span 3;\n}",
+      "output": "The sidebar occupies three grid rows."
+    },
+    {
+      "id": "c7-p10-s2",
+      "type": "sentence",
+      "text": "This is useful when a section should visually stretch alongside several other sections."
+    },
+    {
+      "id": "c7-p10-s3",
+      "type": "sentence",
+      "text": "For example, a dashboard navigation area can occupy the full height of several content rows."
+    },
+
+    {
+      "id": "c7-p11-h1",
+      "type": "heading",
+      "text": "10. Building a Dashboard Grid"
+    },
+    {
+      "id": "c7-p11-s1",
+      "type": "sentence",
+      "text": "Now we are moving into a realistic application layout."
+    },
+    {
+      "id": "c7-p11-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Dashboard Structure",
+      "code": "<div class=\"app\">\n  <aside class=\"sidebar\">Sidebar</aside>\n  <header class=\"header\">Code Academy</header>\n  <main class=\"main\">\n    <section class=\"stats\">\n      <div>XP 1250</div>\n      <div>Courses 4</div>\n      <div>Lessons 28</div>\n    </section>\n\n    <section class=\"content-grid\">\n      <div class=\"courses-panel\">Courses</div>\n      <div class=\"activity-panel\">Recent Activity</div>\n    </section>\n  </main>\n</div>",
+      "output": "A dashboard containing sidebar, header, statistics, courses and activity sections."
+    },
+    {
+      "id": "c7-p11-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Dashboard Grid Structure",
+      "code": ".app {\n  min-height: 100vh;\n  display: grid;\n  grid-template-columns: 240px 1fr;\n  grid-template-rows: 70px 1fr;\n}\n\n.sidebar {\n  grid-row: 1 / 3;\n}\n\n.header {\n  grid-column: 2;\n}\n\n.main {\n  grid-column: 2;\n}",
+      "output": "The sidebar occupies the full left side, while the header and main content occupy the right side."
+    },
+    {
+      "id": "c7-p11-s2",
+      "type": "sentence",
+      "text": "Pause and inspect this layout carefully."
+    },
+    {
+      "id": "c7-p11-s3",
+      "type": "sentence",
+      "text": "The sidebar spans both rows."
+    },
+    {
+      "id": "c7-p11-s4",
+      "type": "sentence",
+      "text": "The header occupies the top-right area."
+    },
+    {
+      "id": "c7-p11-s5",
+      "type": "sentence",
+      "text": "The main content occupies the bottom-right area."
+    },
+    {
+      "id": "c7-p11-s6",
+      "type": "sentence",
+      "text": "This is no longer just a CSS exercise."
+    },
+    {
+      "id": "c7-p11-s7",
+      "type": "sentence",
+      "text": "You are designing the structural layout of an application."
+    },
+
+    {
+      "id": "c7-p12-h1",
+      "type": "heading",
+      "text": "11. Nested Grids"
+    },
+    {
+      "id": "c7-p12-s1",
+      "type": "sentence",
+      "text": "A powerful feature of Grid is that a grid item can become another grid container."
+    },
+    {
+      "id": "c7-p12-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Nested Statistics Grid",
+      "code": ".stats {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}",
+      "output": "The statistics section creates its own three-column grid inside the larger dashboard grid."
+    },
+    {
+      "id": "c7-p12-s2",
+      "type": "sentence",
+      "text": "This means one application can contain several grid systems working inside each other."
+    },
+    {
+      "id": "c7-p12-s3",
+      "type": "sentence",
+      "text": "A page can have a main grid."
+    },
+    {
+      "id": "c7-p12-s4",
+      "type": "sentence",
+      "text": "A dashboard section can have another grid."
+    },
+    {
+      "id": "c7-p12-s5",
+      "type": "sentence",
+      "text": "A card collection can have another grid."
+    },
+    {
+      "id": "c7-p12-s6",
+      "type": "sentence",
+      "text": "This is how complex interfaces remain organized."
+    },
+
+    {
+      "id": "c7-p13-h1",
+      "type": "heading",
+      "text": "12. Minimum and Maximum Sizes"
+    },
+    {
+      "id": "c7-p13-s1",
+      "type": "sentence",
+      "text": "Real applications need layouts that can respond to different amounts of content."
+    },
+    {
+      "id": "c7-p13-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Using minmax",
+      "code": ".courses {\n  display: grid;\n  grid-template-columns: repeat(3, minmax(180px, 1fr));\n  gap: 20px;\n}",
+      "output": "Each column can shrink down to 180px but can grow to use available space."
+    },
+    {
+      "id": "c7-p13-s2",
+      "type": "sentence",
+      "text": "The minmax function defines a minimum and maximum size."
+    },
+    {
+      "id": "c7-p13-s3",
+      "type": "sentence",
+      "text": "This helps prevent cards from becoming unreasonably narrow."
+    },
+    {
+      "id": "c7-p13-s4",
+      "type": "sentence",
+      "text": "It is especially useful when you are building collections of cards."
+    },
+
+    {
+      "id": "c7-p14-h1",
+      "type": "heading",
+      "text": "13. Automatic Responsive Cards"
+    },
+    {
+      "id": "c7-p14-s1",
+      "type": "sentence",
+      "text": "We can take the previous idea further."
+    },
+    {
+      "id": "c7-p14-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Auto-Fitting Cards",
+      "code": ".courses {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 20px;\n}",
+      "output": "The browser creates as many columns as can comfortably fit, while keeping each card at least 220px wide."
+    },
+    {
+      "id": "c7-p14-s2",
+      "type": "sentence",
+      "text": "auto-fit tells the browser to fit as many tracks as the available space allows."
+    },
+    {
+      "id": "c7-p14-s3",
+      "type": "sentence",
+      "text": "minmax protects the minimum card width."
+    },
+    {
+      "id": "c7-p14-s4",
+      "type": "sentence",
+      "text": "Together they create a flexible card system."
+    },
+    {
+      "id": "c7-p14-s5",
+      "type": "sentence",
+      "text": "This pattern can be extremely useful for course libraries, product collections, image galleries and dashboard cards."
+    },
+
+    {
+      "id": "c7-p15-h1",
+      "type": "heading",
+      "text": "14. Grid Template Areas"
+    },
+    {
+      "id": "c7-p15-s1",
+      "type": "sentence",
+      "text": "Grid can also describe a layout using named areas."
+    },
+    {
+      "id": "c7-p15-code1",
+      "type": "code",
+      "language": "css",
+      "title": "Naming Dashboard Areas",
+      "code": ".app {\n  display: grid;\n  grid-template-columns: 240px 1fr;\n  grid-template-rows: 70px 1fr;\n  grid-template-areas:\n    \"sidebar header\"\n    \"sidebar main\";\n}\n\n.sidebar {\n  grid-area: sidebar;\n}\n\n.header {\n  grid-area: header;\n}\n\n.main {\n  grid-area: main;\n}",
+      "output": "The dashboard is organized into named sidebar, header and main areas."
+    },
+    {
+      "id": "c7-p15-s2",
+      "type": "sentence",
+      "text": "Read the template from left to right."
+    },
+    {
+      "id": "c7-p15-s3",
+      "type": "sentence",
+      "text": "The first row contains sidebar and header."
+    },
+    {
+      "id": "c7-p15-s4",
+      "type": "sentence",
+      "text": "The second row contains sidebar and main."
+    },
+    {
+      "id": "c7-p15-s5",
+      "type": "sentence",
+      "text": "The repeated word sidebar means that the sidebar occupies both rows."
+    },
+    {
+      "id": "c7-p15-s6",
+      "type": "sentence",
+      "text": "Named areas can make complex layouts easier to understand."
+    },
+
+    {
+      "id": "c7-p16-h1",
+      "type": "heading",
+      "text": "15. Real Application: Learning Dashboard"
+    },
+    {
+      "id": "c7-p16-s1",
+      "type": "sentence",
+      "text": "Now we will combine the ideas into a realistic learning dashboard."
+    },
+    {
+      "id": "c7-p16-code1",
+      "type": "code",
+      "language": "html",
+      "title": "Learning Dashboard",
+      "code": "<div class=\"learning-app\">\n  <aside class=\"sidebar\">\n    <h2>Code Academy</h2>\n    <nav>\n      <a href=\"#\">Dashboard</a>\n      <a href=\"#\">Courses</a>\n      <a href=\"#\">Projects</a>\n      <a href=\"#\">Certificates</a>\n    </nav>\n  </aside>\n\n  <header class=\"topbar\">\n    <h1>My Learning</h1>\n  </header>\n\n  <main class=\"dashboard-main\">\n    <section class=\"stats-grid\">\n      <article>1,250 XP</article>\n      <article>28 Lessons</article>\n      <article>4 Courses</article>\n    </section>\n\n    <section class=\"course-grid\">\n      <article>HTML Development</article>\n      <article>CSS Development</article>\n      <article>JavaScript Development</article>\n      <article>Python Development</article>\n    </section>\n  </main>\n</div>",
+      "output": "A learning application layout with navigation, topbar, statistics and course cards."
+    },
+    {
+      "id": "c7-p16-code2",
+      "type": "code",
+      "language": "css",
+      "title": "Learning App Grid",
+      "code": ".learning-app {\n  min-height: 100vh;\n  display: grid;\n  grid-template-columns: 230px 1fr;\n  grid-template-rows: 72px 1fr;\n  grid-template-areas:\n    \"sidebar topbar\"\n    \"sidebar main\";\n}\n\n.sidebar {\n  grid-area: sidebar;\n}\n\n.topbar {\n  grid-area: topbar;\n}\n\n.dashboard-main {\n  grid-area: main;\n  padding: 24px;\n}\n\n.stats-grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  gap: 16px;\n}\n\n.course-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));\n  gap: 20px;\n  margin-top: 24px;\n}",
+      "output": "A structured learning dashboard with a fixed sidebar, topbar, responsive statistics and flexible course cards."
+    },
+    {
+      "id": "c7-p16-s2",
+      "type": "sentence",
+      "text": "Notice that we are using more than one Grid."
+    },
+    {
+      "id": "c7-p16-s3",
+      "type": "sentence",
+      "text": "The outer Grid controls the application structure."
+    },
+    {
+      "id": "c7-p16-s4",
+      "type": "sentence",
+      "text": "The statistics Grid controls the statistics cards."
+    },
+    {
+      "id": "c7-p16-s5",
+      "type": "sentence",
+      "text": "The course Grid controls the course collection."
+    },
+    {
+      "id": "c7-p16-s6",
+      "type": "sentence",
+      "text": "This is an important professional CSS pattern."
+    },
+    {
+      "id": "c7-p16-s7",
+      "type": "sentence",
+      "text": "You do not need one giant layout rule for the entire application."
+    },
+    {
+      "id": "c7-p16-s8",
+      "type": "sentence",
+      "text": "Break the interface into meaningful layout systems."
+    },
+
+    {
+      "id": "c7-p17-h1",
+      "type": "heading",
+      "text": "16. Grid Debugging"
+    },
+    {
+      "id": "c7-p17-s1",
+      "type": "sentence",
+      "text": "When a Grid layout does not look right, do not immediately rewrite everything."
+    },
+    {
+      "id": "c7-p17-s2",
+      "type": "sentence",
+      "text": "First check whether the parent has display grid."
+    },
+    {
+      "id": "c7-p17-s3",
+      "type": "sentence",
+      "text": "Then inspect grid-template-columns."
+    },
+    {
+      "id": "c7-p17-s4",
+      "type": "sentence",
+      "text": "Then inspect grid-template-rows if the vertical structure is wrong."
+    },
+    {
+      "id": "c7-p17-s5",
+      "type": "sentence",
+      "text": "Then inspect gap."
+    },
+    {
+      "id": "c7-p17-s6",
+      "type": "sentence",
+      "text": "If one item is in the wrong area, inspect grid-column, grid-row or grid-area."
+    },
+    {
+      "id": "c7-p17-s7",
+      "type": "sentence",
+      "text": "Finally inspect the width of the container and the minimum sizes of its children."
+    },
+
+    {
+      "id": "c7-p18-h1",
+      "type": "heading",
+      "text": "17. Grid Thinking"
+    },
+    {
+      "id": "c7-p18-s1",
+      "type": "sentence",
+      "text": "Before writing Grid code, look at the interface first."
+    },
+    {
+      "id": "c7-p18-s2",
+      "type": "sentence",
+      "text": "Ask how many major columns exist."
+    },
+    {
+      "id": "c7-p18-s3",
+      "type": "sentence",
+      "text": "Ask how many major rows exist."
+    },
+    {
+      "id": "c7-p18-s4",
+      "type": "sentence",
+      "text": "Ask which sections need more space."
+    },
+    {
+      "id": "c7-p18-s5",
+      "type": "sentence",
+      "text": "Ask whether any item needs to span multiple columns or rows."
+    },
+    {
+      "id": "c7-p18-s6",
+      "type": "sentence",
+      "text": "Ask how the layout should change when the screen becomes smaller."
+    },
+    {
+      "id": "c7-p18-s7",
+      "type": "sentence",
+      "text": "Then choose the Grid rules that solve those requirements."
+    },
+    {
+      "id": "c7-p18-s8",
+      "type": "sentence",
+      "text": "That is the difference between memorizing CSS and thinking like a developer."
+    },
+
+    {
+      "id": "c7-q1",
+      "type": "quiz",
+      "question": "You have six course cards and want three equal columns on a large screen. Which rule directly creates that structure?",
+      "options": [
+        "grid-template-columns: 1fr 1fr 1fr;",
+        "grid-template-columns: 3fr;",
+        "grid-template-rows: 1fr 1fr 1fr;",
+        "column-gap: 1fr;"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. Three 1fr tracks create three equal columns.",
+      "incorrectFeedback": "Focus on the property that defines columns.",
+      "reasoning": "grid-template-columns defines the horizontal tracks. Three equal 1fr values divide the available space equally.",
+      "hint": "You need three horizontal tracks."
+    },
+
+    {
+      "id": "c7-q2",
+      "type": "quiz",
+      "question": "A dashboard needs a 240px sidebar and the remaining space should automatically belong to the main content. Which layout is most appropriate?",
+      "options": [
+        "grid-template-columns: 1fr 240px;",
+        "grid-template-columns: 240px 1fr;",
+        "grid-template-rows: 240px 1fr;",
+        "grid-template-columns: 240px 240px;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. The first column stays 240px while the second 1fr column takes the remaining space.",
+      "incorrectFeedback": "Think about which column should be fixed and which should be flexible.",
+      "reasoning": "A fixed 240px first column creates the sidebar, while 1fr lets the main area consume remaining space.",
+      "hint": "Sidebar first, flexible content second."
+    },
+
+    {
+      "id": "c7-q3",
+      "type": "quiz",
+      "question": "Four cards should have equal widths with consistent space between them. Which solution is most directly designed for this?",
+      "options": [
+        "display: flex; margin: 20px;",
+        "display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;",
+        "display: grid; grid-template-rows: repeat(4, 1fr);",
+        "display: block; padding: 20px;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Grid creates four equal columns and gap controls the space between them.",
+      "incorrectFeedback": "Look for the option that controls both columns and grid spacing.",
+      "reasoning": "repeat(4, 1fr) creates four equal tracks, while gap creates consistent spacing between grid items.",
+      "hint": "You need four columns plus controlled spacing."
+    },
+
+    {
+      "id": "c7-q4",
+      "type": "quiz",
+      "question": "A large activity panel should occupy the width of two card columns. Which rule is the closest solution?",
+      "options": [
+        "grid-row: span 2;",
+        "grid-column: span 2;",
+        "column-gap: 2fr;",
+        "grid-template-columns: span 2;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. grid-column: span 2 makes the item occupy two columns.",
+      "incorrectFeedback": "The panel needs to become wider horizontally, not taller vertically.",
+      "reasoning": "Columns represent horizontal tracks, so grid-column controls horizontal spanning.",
+      "hint": "The panel needs more horizontal space."
+    },
+
+    {
+      "id": "c7-q5",
+      "type": "quiz",
+      "question": "A sidebar should stretch vertically across three grid rows. Which property should you investigate?",
+      "options": [
+        "grid-column",
+        "grid-row",
+        "column-gap",
+        "letter-spacing"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. grid-row controls an item's placement and spanning across rows.",
+      "incorrectFeedback": "The requirement is vertical spanning.",
+      "reasoning": "Rows describe the vertical grid structure, so grid-row is the appropriate property.",
+      "hint": "Think vertically."
+    },
+
+    {
+      "id": "c7-q6",
+      "type": "quiz",
+      "question": "You want 20px of consistent space between every grid item without adding margin to each card. What should you use?",
+      "options": [
+        "padding: 20px;",
+        "margin: 20px;",
+        "gap: 20px;",
+        "line-height: 20px;"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Correct. gap is designed to control spacing between grid items.",
+      "incorrectFeedback": "The question asks for space between grid items, not inside them.",
+      "reasoning": "Padding creates internal space, margin belongs to individual elements, while gap directly controls spacing between grid tracks/items.",
+      "hint": "Think about the relationship between neighboring grid items."
+    },
+
+    {
+      "id": "c7-q7",
+      "type": "quiz",
+      "question": "A course library should automatically fit as many cards as possible while preventing cards from becoming narrower than 220px. Which pattern best matches the requirement?",
+      "options": [
+        "repeat(3, 1fr)",
+        "repeat(auto-fit, minmax(220px, 1fr))",
+        "repeat(auto-fit, 220px)",
+        "repeat(1, minmax(220px, 3fr))"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. auto-fit responds to available space while minmax protects the minimum card width.",
+      "incorrectFeedback": "Look for the option that combines automatic fitting with a minimum width.",
+      "reasoning": "auto-fit determines how many tracks can fit, while minmax(220px, 1fr) keeps each track at least 220px wide.",
+      "hint": "You need both automatic fitting and a minimum size."
+    },
+
+    {
+      "id": "c7-q8",
+      "type": "quiz",
+      "question": "You need three statistics cards to occupy equal portions of the available width. Which value is most appropriate?",
+      "options": [
+        "grid-template-columns: 1fr 2fr 1fr;",
+        "grid-template-columns: 1fr 1fr 1fr;",
+        "grid-template-columns: 100px 1fr 300px;",
+        "grid-template-rows: 1fr 1fr 1fr;"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Three equal 1fr tracks divide the available width equally.",
+      "incorrectFeedback": "The three cards need equal horizontal tracks.",
+      "reasoning": "Each 1fr represents one equal share of the available grid space.",
+      "hint": "Equal cards require equal fractions."
+    },
+
+    {
+      "id": "c7-q9",
+      "type": "quiz",
+      "question": "Your dashboard has a sidebar, header and main area. You want the sidebar to occupy both rows while the header and main remain on the right. Which technique can make that structure especially readable?",
+      "options": [
+        "grid-template-areas",
+        "letter-spacing",
+        "text-transform",
+        "font-weight"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. Named grid areas can clearly describe the major regions of an application layout.",
+      "incorrectFeedback": "Think about a CSS feature designed specifically for naming layout regions.",
+      "reasoning": "grid-template-areas allows developers to describe a layout using meaningful area names.",
+      "hint": "The requirement is about naming layout regions."
+    },
+
+    {
+      "id": "c7-q10",
+      "type": "quiz",
+      "question": "A developer's Grid cards are touching each other, but the card contents themselves have enough internal space. What should they inspect first?",
+      "options": [
+        "padding",
+        "gap",
+        "font-weight",
+        "line-height"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. gap controls the space between neighboring Grid items.",
+      "incorrectFeedback": "The problem is between cards, not inside cards.",
+      "reasoning": "Padding affects the inside of a card, while gap affects the space between grid items.",
+      "hint": "Ask where the unwanted closeness exists."
+    },
+
+    {
+      "id": "c7-q11",
+      "type": "quiz",
+      "question": "A grid layout suddenly creates unexpected columns and the design becomes too narrow. Which part should you inspect first?",
+      "options": [
+        "grid-template-columns",
+        "font-family",
+        "text-decoration",
+        "border-radius"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. grid-template-columns determines the number and sizing of explicit columns.",
+      "incorrectFeedback": "The problem is the horizontal structure.",
+      "reasoning": "Unexpected column behavior usually requires checking the column definition and available container width.",
+      "hint": "Which property controls horizontal tracks?"
+    },
+
+    {
+      "id": "c7-q12",
+      "type": "quiz",
+      "question": "You are designing a dashboard for phones. Three statistic cards fit comfortably on desktop but become cramped on a narrow screen. What is the most sensible next step?",
+      "options": [
+        "Force the three columns to remain at all costs",
+        "Allow the grid to change its column structure at smaller widths",
+        "Increase the font size of every card",
+        "Remove the grid gap completely"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Responsive layouts should adapt the number or size of columns when space becomes limited.",
+      "incorrectFeedback": "Think about what should happen when the available width decreases.",
+      "reasoning": "A responsive Grid should adapt rather than forcing desktop dimensions onto a narrow screen.",
+      "hint": "The screen became narrower, so the layout needs to respond."
+    },
+
+    {
+      "id": "c7-q13",
+      "type": "quiz",
+      "question": "A developer wants one card to become twice as wide as a normal card in a two-column Grid. Which approach is closest?",
+      "options": [
+        "grid-column: span 2;",
+        "grid-row: span 2;",
+        "gap: 2px;",
+        "grid-template-rows: 2fr;"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Correct. grid-column: span 2 makes the card occupy two columns.",
+      "incorrectFeedback": "The card needs more horizontal width.",
+      "reasoning": "Horizontal expansion across grid tracks is controlled with grid-column.",
+      "hint": "Two columns means horizontal spanning."
+    },
+
+    {
+      "id": "c7-q14",
+      "type": "quiz",
+      "question": "You are building a real course platform and need the outer layout to contain a sidebar and a flexible main area, while the main area contains separate card grids. Which approach demonstrates better CSS architecture?",
+      "options": [
+        "Put every element into one enormous Grid definition",
+        "Use a main Grid for the page structure and smaller nested Grids for individual sections",
+        "Avoid Grid and position every element manually",
+        "Use margin values to simulate every row and column"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Nested layout systems keep complex interfaces organized and easier to maintain.",
+      "incorrectFeedback": "Think about how large applications can be broken into smaller layout responsibilities.",
+      "reasoning": "A page-level Grid can control the major structure while nested Grids manage cards, statistics and other collections.",
+      "hint": "Separate the responsibilities of different sections."
+    },
+
+    {
+      "id": "c7-q15",
+      "type": "quiz",
+      "question": "A developer sees a Grid layout behaving strangely. Before changing many rules, which debugging order is most sensible?",
+      "options": [
+        "Change colors, fonts and borders first",
+        "Check display:grid, columns, rows, gap and item placement",
+        "Delete the HTML and start again",
+        "Increase every width until the layout fills the screen"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Correct. Debug the Grid structure systematically before changing unrelated styling.",
+      "incorrectFeedback": "Start with the layout engine itself rather than unrelated visual properties.",
+      "reasoning": "Systematic debugging reduces accidental changes and helps identify the actual layout problem.",
+      "hint": "Inspect the properties that actually control Grid."
+    },
+
+    {
+      "id": "c7-final-h1",
+      "type": "heading",
+      "text": "Final Challenge: Design the Layout Before Writing the CSS"
+    },
+    {
+      "id": "c7-final-s1",
+      "type": "sentence",
+      "text": "Imagine that you have been asked to build the main dashboard of a large learning application."
+    },
+    {
+      "id": "c7-final-s2",
+      "type": "sentence",
+      "text": "The interface needs a navigation sidebar."
+    },
+    {
+      "id": "c7-final-s3",
+      "type": "sentence",
+      "text": "It needs a top header."
+    },
+    {
+      "id": "c7-final-s4",
+      "type": "sentence",
+      "text": "It needs statistics cards."
+    },
+    {
+      "id": "c7-final-s5",
+      "type": "sentence",
+      "text": "It needs a course library."
+    },
+    {
+      "id": "c7-final-s6",
+      "type": "sentence",
+      "text": "It needs recent activity."
+    },
+    {
+      "id": "c7-final-s7",
+      "type": "sentence",
+      "text": "Do not start by writing random CSS."
+    },
+    {
+      "id": "c7-final-s8",
+      "type": "sentence",
+      "text": "First divide the interface into major regions."
+    },
+    {
+      "id": "c7-final-s9",
+      "type": "sentence",
+      "text": "Then decide which regions belong in rows and columns."
+    },
+    {
+      "id": "c7-final-s10",
+      "type": "sentence",
+      "text": "Then decide which sections need their own nested layouts."
+    },
+    {
+      "id": "c7-final-s11",
+      "type": "sentence",
+      "text": "Then decide what should happen when the screen becomes smaller."
+    },
+    {
+      "id": "c7-final-s12",
+      "type": "sentence",
+      "text": "Only after that should you write the Grid rules."
+    },
+    {
+      "id": "c7-final-s13",
+      "type": "sentence",
+      "text": "That process is the foundation of professional interface development."
+    },
+    {
+      "id": "c7-final-s14",
+      "type": "sentence",
+      "text": "You are not learning Grid so that you can memorize grid-template-columns."
+    },
+    {
+      "id": "c7-final-s15",
+      "type": "sentence",
+      "text": "You are learning Grid so that you can look at a complex interface and know how to turn its visual structure into a working layout."
+    },
+    {
+      "id": "c7-final-s16",
+      "type": "sentence",
+      "text": "That skill will become extremely important when we combine CSS with JavaScript and React to build complete applications."
+    },
+
+    {
+      "id": "c7-summary-h1",
+      "type": "heading",
+      "text": "Lesson 7 Complete"
+    },
+    {
+      "id": "c7-summary-s1",
+      "type": "sentence",
+      "text": "You have learned how to create Grid containers."
+    },
+    {
+      "id": "c7-summary-s2",
+      "type": "sentence",
+      "text": "You learned columns, rows, fractions, gaps and repeated tracks."
+    },
+    {
+      "id": "c7-summary-s3",
+      "type": "sentence",
+      "text": "You learned how to make items span columns and rows."
+    },
+    {
+      "id": "c7-summary-s4",
+      "type": "sentence",
+      "text": "You learned nested Grids and named Grid areas."
+    },
+    {
+      "id": "c7-summary-s5",
+      "type": "sentence",
+      "text": "You also learned how minmax and auto-fit can help create flexible card layouts."
+    },
+    {
+      "id": "c7-summary-s6",
+      "type": "sentence",
+      "text": "Most importantly, you applied Grid to a realistic learning dashboard."
+    },
+    {
+      "id": "c7-summary-s7",
+      "type": "sentence",
+      "text": "Next comes Lesson 8: Responsive Web Design."
+    },
+    {
+      "id": "c7-summary-s8",
+      "type": "sentence",
+      "text": "There we will take the layouts you have built and teach them how to adapt across phones, tablets and larger screens."
+    }
+  ]
+}
