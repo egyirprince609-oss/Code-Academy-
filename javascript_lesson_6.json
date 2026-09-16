@@ -1,0 +1,409 @@
+{
+  "course": "javascript",
+  "lessonNumber": 6,
+  "lessonId": "javascript-lesson-6",
+  "title": "Functions",
+  "subtitle": "Reusable Blocks Like createLessonCard, updateProgress, loadUserData in Your Dashboard",
+  "description": "Master function declarations, expressions, arrow functions, parameters, arguments, return, scope, callbacks - and how your dashboard's 5 functions make 300 lines manageable instead of repeating code.",
+  "level": "Beginner",
+  "xpReward": 170,
+  "coinsReward": 40,
+  "estimatedMinutes": 70,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: What is a Function? Your Dashboard's Reusable Machines"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Look at your dashboard HTML - it has functions: createLessonCard(lesson, completed) creates card element, updateStats(data) updates XP and coins display, updateProgress(completed) updates progress bar, renderLessons(completed) renders all cards, loadUserData(user) fetches from Firebase, getLocalProgress() gets from localStorage."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Function = reusable block of code that does one task. You define it once, then call it many times with different data. Without functions, your dashboard would have same card creation code copied 10 times - 10 lessons, 10 copies! With function createLessonCard, you write card logic once, call it 10 times inside forEach loop - DRY Don't Repeat Yourself."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Example: createLessonCard takes lesson object and completed number as input (parameters), does logic to decide status COMPLETED/CURRENT/LOCKED, badge, button text, creates article element with innerHTML, adds click event, returns card element. Then renderLessons calls createLessonCard 10 times with different lessons - same machine, different raw materials, different products!"
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Functions make code organized, readable, reusable, testable. Your dashboard's 5 functions each have one job: createLessonCard = create one card, updateStats = update XP/coins, updateProgress = update progress bar, renderLessons = loop and render all, loadUserData = fetch from Firebase. Each function 20-50 lines, together 300 lines, but manageable because separated by job."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Without functions, your 300 lines would be one big block inside onAuthStateChanged - impossible to read, debug, or reuse. With functions, you can test createLessonCard alone, reuse updateProgress in many places, understand each part separately. Functions are building blocks of all apps."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Without Function vs With Function - Your Dashboard Cards",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', learn: 'Understand JS'},\n {id: 2, title: 'Variables', learn: 'Store info'},\n {id: 3, title: 'Operators', learn: 'Math and logic'}\n];\nlet completed = 2;\n\n// ❌ WITHOUT FUNCTION - Repetition - BAD!\nconsole.log('Without function - repeating card logic 3 times:');\n// Lesson 1 card\n// let isCompleted1 = 1 <= completed;\n// let status1 = isCompleted1? 'completed' : 'current';\n// let card1 = {id: 1, title: 'Intro', status};\n// console.log(card1);\n// Lesson 2 card - copy paste same logic\n// let isCompleted2 = 2 <= completed;\n// let status2 = isCompleted2? 'completed' : 'current';\n// let card2 = {id: 2, title: 'Variables', status};\n// If design changes, change 3 places! 10 lessons 10 places!\n\n// ✅ WITH FUNCTION - DRY - GOOD! Like your dashboard\nconsole.log('\\nWith function - reusable machine:');\nfunction createLessonCard(lesson, completed) {\n let isCompleted = lesson.id <= completed;\n let isCurrent = lesson.id === completed + 1;\n let status = isCompleted? 'completed' : isCurrent? 'current' : 'locked';\n let button = status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n return { id: lesson.id, title: lesson.title, status, button };\n}\n\n// Call function 3 times with different data - same logic, different input\nlet card1 = createLessonCard(lessons[0], completed);\nlet card2 = createLessonCard(lessons[1], completed);\nlet card3 = createLessonCard(lessons[2], completed);\n\nconsole.log(card1); // {id:1, completed, Review}\nconsole.log(card2); // {id:2, completed, Review}\nconsole.log(card3); // {id:3, current, Start Lesson}\n\n// With loop - even better - like your dashboard\nconsole.log('\\nWith loop + function - your dashboard way:');\nlessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n console.log(`Card: ${card.title} - ${card.status} - [${card.button}]`);\n});\nconsole.log('\\nWith function: Change design once in function, all 10 cards update!');",
+      "output": "Without function - repeating card logic 3 times: (would be 3 copies)\n\nWith function - reusable machine:\n{id: 1, title: Intro, status: completed, button: Review}\n{id: 2, title: Variables, status: completed, button: Review}\n{id: 3, title: Operators, status: current, button: Start Lesson}\n\nWith loop + function - your dashboard way:\nCard: Intro - completed - [Review]\nCard: Variables - completed - [Review]\nCard: Operators - current - [Start Lesson]\n\nWith function: Change design once, all cards update!"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Function Declaration, Parameters, Arguments, Return"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Function declaration: function functionName(parameters) { code; return value; }. function keyword, name like createLessonCard, parameters in () like (lesson, completed) - inputs to function, code inside {} - logic, return - output of function, what it gives back."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Parameters are placeholders when defining function: function createLessonCard(lesson, completed) - lesson and completed are parameters, they don't have values yet, just names. Arguments are actual values when calling function: createLessonCard({id:1, title:'Intro'}, 2) - {id:1, title:'Intro'} and 2 are arguments, actual data passed to parameters."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Return: function can return value that caller can use. createLessonCard returns card element, then caller does grid.appendChild(card) - uses returned card. If no return, function returns undefined. Your dashboard's createLessonCard returns card, updateStats returns nothing (undefined) but updates DOM directly, updateProgress returns nothing but updates progress bar width."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Your dashboard functions: createLessonCard(lesson, completed) - 2 params, returns card element. updateStats(data) - 1 param data object with xp, coins, returns nothing but updates textContent. updateProgress(completed) - 1 param, returns nothing but updates width and text. renderLessons(completed) - 1 param, returns nothing but clears container and appends grid. loadUserData(user) - 1 param user, returns Promise with {xp, coins, completed}."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: Parameters, Arguments, Return - Your Dashboard Functions",
+      "code": "// Function declaration - like your dashboard functions\nfunction createLessonCard(lesson, completed) { // lesson, completed are parameters (placeholders)\n let isCompleted = lesson.id <= completed;\n let status = isCompleted? 'completed' : lesson.id === completed + 1? 'current' : 'locked';\n let card = { id: lesson.id, title: lesson.title, status };\n return card; // Return card object\n}\n\n// Calling with arguments - actual values\nlet lesson1 = {id: 1, title: 'Intro'};\nlet completed = 2;\nlet card1 = createLessonCard(lesson1, completed); // lesson1 and completed are arguments (actual data)\nconsole.log('Returned card:', card1); // Use returned value\n\n// Function with no return - like updateStats\nfunction updateStats(data) {\n let xpText = `${data.xp} XP`;\n let coinsText = `${data.coins}`;\n console.log(`Updating stats: ${xpText}, ${coinsText} coins`);\n // No return - returns undefined, but updates DOM in real dashboard\n}\n\nlet result = updateStats({xp: 120, coins: 30});\nconsole.log('updateStats returned:', result); // undefined - no return\n\n// Function with return - like calculateProgress\nfunction calculateProgress(completed, total) {\n let percent = Math.round((completed / total) * 100);\n return percent; // Return percent number\n}\n\nlet percent = calculateProgress(2, 10); // Use returned value\nconsole.log(`Progress: ${percent}%`); // 20%\n\n// Function with multiple returns - like getStatus\nfunction getStatus(lessonId, completed) {\n if (lessonId <= completed) {\n return \"completed\"; // Return and exit function\n }\n if (lessonId === completed + 1) {\n return \"current\"; // Return and exit\n }\n return \"locked\"; // Return and exit\n}\n\nconsole.log('Status lesson 1:', getStatus(1, 2)); // completed\nconsole.log('Status lesson 3:', getStatus(3, 2)); // current",
+      "output": "Returned card: {id: 1, title: Intro, status: completed}\nUpdating stats: 120 XP, 30 coins\nupdateStats returned: undefined\nProgress: 20%\nStatus lesson 1: completed\nStatus lesson 3: current"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Default Parameters and Your Dashboard's Safety"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Default parameters give fallback value if argument not passed or undefined. Your dashboard could use defaults: function updateProgress(completed = 0, total = 10) {... } - if completed not passed, defaults to 0, total defaults to 10. Prevents NaN errors when data missing."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Your dashboard's loadUserData has fallback: if snapshot doesn't exist, return {xp:0, coins:0, completed:0} - default values. With default params, you could write function getSafeCompleted(completed = 0) { return Math.min(10, Math.max(0, Number(completed) || 0)); } - if completed undefined, defaults to 0, safe."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "Default params also useful for optional config: function createCard(lesson, completed, options = {showXP: true}) - options optional, defaults to show XP. If caller doesn't pass options, uses default."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: Default Parameters - Safety Like Your Dashboard",
+      "code": "// Default parameters - fallback if not passed\nfunction calculateProgress(completed = 0, total = 10) {\n // If completed undefined, defaults to 0, total defaults to 10\n let percent = Math.round((completed / total) * 100);\n return percent;\n}\n\nconsole.log(calculateProgress(2, 10)); // 20% - both passed\nconsole.log(calculateProgress(2)); // 20% - total defaults to 10\nconsole.log(calculateProgress()); // 0% - completed defaults 0, total 10 => 0/10*100=0%\nconsole.log(calculateProgress(undefined, 10)); // 0% - undefined triggers default 0\n\n// Your dashboard safety with defaults\nfunction getSafeCompleted(completed = 0) {\n // Your dashboard: Math.min(TOTAL, Math.max(0, Number(completed) || 0))\n return Math.min(10, Math.max(0, Number(completed) || 0));\n}\n\nconsole.log('Safe completed 2:', getSafeCompleted(2)); // 2\nconsole.log('Safe completed undefined:', getSafeCompleted(undefined)); // 0 - default + safety\nconsole.log('Safe completed null:', getSafeCompleted(null)); // 0 - Number(null)=0 ||0=0\nconsole.log('Safe completed 15:', getSafeCompleted(15)); // 10 - capped to max 10\n\n// Default for object param - like options\nfunction createLessonCard(lesson, completed, options = { showXP: true, showCoins: false }) {\n let status = lesson.id <= completed? 'completed' : lesson.id === completed + 1? 'current' : 'locked';\n let card = { id: lesson.id, title: lesson.title, status };\n if (options.showXP) {\n card.xp = 100;\n }\n if (options.showCoins) {\n card.coins = 10;\n }\n return card;\n}\n\nconsole.log(createLessonCard({id: 1, title: 'Intro'}, 2)); // Uses default options {showXP:true, showCoins:false} => has xp no coins\nconsole.log(createLessonCard({id: 1, title: 'Intro'}, 2, {showXP: false, showCoins: true})); // Custom options => no xp has coins",
+      "output": "20%\n20%\n0%\n0%\nSafe completed 2: 2\nSafe completed undefined: 0\nSafe completed null: 0\nSafe completed 15: 10\n{id:1, title:Intro, status:completed, xp:100}\n{id:1, title:Intro, status:completed, coins:10}"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Arrow Functions - Modern Short Functions"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Arrow function is shorter way to write function: const functionName = (params) => { code; return value; } or const functionName = (params) => expression. Your dashboard uses arrow functions inside forEach: lessons.forEach(lesson => { grid.appendChild(...) }) - lesson => {...} is arrow function."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Difference: Regular function function createCard() {...} and arrow const createCard = () => {...} both work, but arrow is shorter for callbacks. For example: lessons.forEach(function(lesson) { return card; }) vs lessons.forEach(lesson => card) - arrow shorter."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Arrow function with one param can omit (): lesson => {...} instead of (lesson) => {...}. With no params or multiple params need (): () => {...} or (lesson, completed) => {...}. If only one expression, can omit {} and return: const getStatus = (id, completed) => id <= completed? 'completed' : 'current' - returns expression result automatically."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Your dashboard: lessons.forEach(lesson => { grid.appendChild(createLessonCard(lesson, completed)) }) - arrow function with one param lesson, body with {}. Could also write lessons.forEach(lesson => grid.appendChild(createLessonCard(lesson, completed))) without {} for one expression."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: Arrow Functions - Your Dashboard forEach",
+      "code": "// Regular function\nfunction getStatusRegular(lessonId, completed) {\n if (lessonId <= completed) {\n return \"completed\";\n }\n return \"current\";\n}\n\n// Arrow function - longer version with {}\nconst getStatusArrow = (lessonId, completed) => {\n if (lessonId <= completed) {\n return \"completed\";\n }\n return \"current\";\n};\n\n// Arrow function - short version with ternary, implicit return (no {} no return keyword)\nconst getStatusShort = (lessonId, completed) => lessonId <= completed? \"completed\" : \"current\";\n\nconsole.log('Regular:', getStatusRegular(1, 2)); // completed\nconsole.log('Arrow with {}:', getStatusArrow(1, 2)); // completed\nconsole.log('Arrow short:', getStatusShort(1, 2)); // completed\nconsole.log('Arrow short current:', getStatusShort(3, 2)); // current\n\n// Your dashboard forEach with arrow\nlet lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}];\n\n// Regular function in forEach\nconsole.log('\\nforEach with regular function:');\nlessons.forEach(function(lesson) {\n console.log(`Regular: ${lesson.title}`);\n});\n\n// Arrow function in forEach - your dashboard way\nconsole.log('\\nforEach with arrow - your dashboard way:');\nlessons.forEach(lesson => {\n console.log(`Arrow: ${lesson.title}`);\n});\n\n// Arrow with one expression - even shorter, no {}\nconsole.log('\\nforEach arrow one expression - no {}:');\nlessons.forEach(lesson => console.log(`Arrow short: ${lesson.title}`));\n\n// Arrow with map - like your dashboard could use\nlet titles = lessons.map(lesson => lesson.title); // Arrow returns lesson.title\nconsole.log('\\nTitles with map arrow:', titles); // ['Intro', 'Variables']",
+      "output": "Regular: completed\nArrow with {}: completed\nArrow short: completed\nArrow short current: current\n\nforEach with regular function:\nRegular: Intro\nRegular: Variables\n\nforEach with arrow - your dashboard way:\nArrow: Intro\nArrow: Variables\n\nforEach arrow one expression - no {}:\nArrow short: Intro\nArrow short: Variables\n\nTitles with map arrow: [Intro, Variables]"
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Scope - Where Variables Live"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Scope = where variable exists and can be accessed. Global scope: variable defined outside any function, accessible everywhere. Function scope: variable defined inside function, only accessible inside function. Block scope: variable defined inside {} with let/const, only inside {}."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Your dashboard: const COURSE_ID = 'javascript' and const TOTAL_LESSONS = 10 are global scope - defined outside functions, accessible in all functions like createLessonCard, updateProgress. let completed inside loadUserData is function scope - only inside loadUserData, not accessible outside."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "Example: function createCard() { let status = 'completed'; console.log(status); } console.log(status) outside function fails - status not defined outside function scope. Status only exists inside createCard function."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Block scope with let/const: if (true) { let xp = 120; } console.log(xp) outside if fails - xp only inside if block. With var, var leaks outside block - var xp inside if accessible outside if - bug! That's why your dashboard uses let/const not var - block scoped safe."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: Scope - Global, Function, Block",
+      "code": "// Global scope - accessible everywhere\nconst COURSE_ID = \"javascript\";\nconst TOTAL_LESSONS = 10;\nlet globalXP = 120;\n\nfunction createLessonCard(lesson, completed) {\n // Function scope - only inside function\n let isCompleted = lesson.id <= completed;\n let status = isCompleted? 'completed' : 'current';\n // COURSE_ID and TOTAL_LESSONS accessible here - global scope\n console.log(`Global COURSE_ID inside function: ${COURSE_ID}`);\n return { id: lesson.id, status };\n}\n\nconsole.log('Global COURSE_ID outside:', COURSE_ID); // Works - global\nlet card = createLessonCard({id: 1, title: 'Intro'}, 2);\nconsole.log('Card:', card);\n// console.log(isCompleted); // ❌ Error - isCompleted function scope, not accessible outside\n\n// Block scope with let/const\nif (true) {\n let blockXP = 150;\n const blockCourse = \"js\";\n console.log('Inside block:', blockXP, blockCourse); // Works inside block\n}\n// console.log(blockXP); // ❌ Error - block scope, not accessible outside block\n// console.log(blockCourse); // ❌ Error - block scope\n\n// Block scope with var - leaks! Bug!\nif (true) {\n var varXP = 200; // var leaks outside block\n console.log('Inside block var:', varXP);\n}\nconsole.log('Outside block var:', varXP); // Works! 200 - var leaks outside block - bug! - your dashboard avoids var\n\n// Function scope - var also function scoped not block scoped\nfunction testVar() {\n if (true) {\n var insideVar = 300;\n }\n console.log('Inside function, outside block, var accessible:', insideVar); // Works - var function scoped\n}\ntestVar();\n// console.log(insideVar); // ❌ Error - var function scoped, not global\n\n// Your dashboard - all const/let block scoped safe, no var",
+      "output": "Global COURSE_ID outside: javascript\nGlobal COURSE_ID inside function: javascript\nCard: {id: 1, status: completed}\nInside block: 150 js\nOutside block var: 200\nInside function, outside block, var accessible: 300"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have function createCard() { let status = 'completed'; } console.log(status) outside function. What happens and why scope matters for your dashboard's functions?",
+      "options": [
+        "Logs completed - status accessible everywhere",
+        "Error: status not defined - status is function scoped, only inside createCard, not outside. Your dashboard's functions each have their own scoped variables like isCompleted, status inside createLessonCard not accessible outside, prevents naming conflicts - global scope for COURSE_ID shared, function scope for temporary variables private",
+        "Logs undefined",
+        "No error but empty"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Function scope - variables inside function private, not accessible outside. Prevents conflicts, keeps global clean. Your dashboard's COURSE_ID global shared, isCompleted inside createLessonCard private function scoped.",
+      "incorrectFeedback": "status defined inside createCard function, function scope, only accessible inside function, not outside. Outside console.log(status) throws ReferenceError status not defined. Global scope accessible everywhere, function scope only inside function.",
+      "reasoning": "Function scope - variables inside function private, not accessible outside - prevents conflicts, your dashboard uses function scope for temporary variables.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Your Dashboard's 5 Functions Explained"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Your dashboard has 5 main functions: 1. getLocalProgress() - tries localStorage.getItem, JSON.parse, returns completed number or 0. No params, returns number. 2. loadUserData(user) - async, takes user param, doc and getDoc from Firebase, returns {xp, coins, completed} object with fallbacks."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "3. updateStats(data) - takes data object with xp, coins, updates xpValue.textContent and coinsValue.textContent with toLocaleString. No return, side effect updates DOM. 4. updateProgress(completed) - takes completed number, calculates percent Math.round((completed/TOTAL)*100), updates progressText and progressFill.style.width and lessonCount. No return, side effect."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "5. createLessonCard(lesson, completed) - takes lesson object and completed number, decides isCompleted, isCurrent, isLocked booleans, creates statusHTML and buttonHTML based on status, creates article element, sets innerHTML, adds button event listener to navigate to lesson.html, returns card element. 6. renderLessons(completed) - takes completed, clears container, creates grid div, forEach lessons to create cards and append to grid, appends grid to container."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Your Dashboard's 5 Functions - Simplified",
+      "code": "// Simulate your dashboard's 5 functions - simplified versions\nconst TOTAL_LESSONS = 10;\nlet lessons = [\n {id: 1, title: 'Intro', learn: 'Understand JS', summary: 'Learn syntax'},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const'}\n];\n\n// Function 1: getLocalProgress - no params, returns number\nfunction getLocalProgress() {\n try {\n // Simulate localStorage.getItem\n let raw = '{\"completed\": 2}'; // JSON string from localStorage\n if (!raw) return 0;\n let data = JSON.parse(raw);\n if (typeof data.completed === 'number') {\n return Math.min(TOTAL_LESSONS, Math.max(0, data.completed));\n }\n } catch (error) {\n console.warn('Local progress error:', error);\n }\n return 0;\n}\n\nconsole.log('Local progress:', getLocalProgress()); // 2\n\n// Function 2: loadUserData - async, takes user, returns object (simulated)\nasync function loadUserData(user) {\n // Simulate Firebase getDoc\n await new Promise(r => setTimeout(r, 100)); // Network delay\n if (!user) return { xp: 0, coins: 0, completed: 0 };\n return { xp: 120, coins: 30, completed: 2 };\n}\n\n// Function 3: updateStats - takes data, no return, updates DOM (simulated with console)\nfunction updateStats(data) {\n let xpText = `${Number(data.xp || 0).toLocaleString()} XP`;\n let coinsText = Number(data.coins || 0).toLocaleString();\n console.log(`updateStats: ${xpText}, ${coinsText} coins`);\n}\n\n// Function 4: updateProgress - takes completed, no return, updates DOM\nfunction updateProgress(completed) {\n completed = Math.min(TOTAL_LESSONS, Math.max(0, Number(completed) || 0));\n let percent = Math.round((completed / TOTAL_LESSONS) * 100);\n let countText = `${completed} / ${TOTAL_LESSONS} completed`;\n console.log(`updateProgress: ${countText} - ${percent}%`);\n}\n\n// Function 5: createLessonCard - takes lesson and completed, returns card\nfunction createLessonCard(lesson, completed) {\n let isCompleted = lesson.id <= completed;\n let isCurrent = lesson.id === completed + 1;\n let status = isCompleted? 'completed' : isCurrent? 'current' : 'locked';\n let button = status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n let card = { id: lesson.id, title: lesson.title, status, button };\n return card;\n}\n\n// Function 6: renderLessons - takes completed, no return, renders\nfunction renderLessons(completed) {\n console.log(`\\nrenderLessons with completed=${completed}:`);\n let grid = [];\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n grid.push(card);\n console.log(` - Card ${lesson.id}: ${card.title} - ${card.status} - [${card.button}]`);\n });\n console.log(`Rendered ${grid.length} cards`);\n}\n\n// Simulate onAuthStateChanged flow\nasync function init() {\n let user = { uid: 'user123' };\n let data = await loadUserData(user);\n updateStats(data);\n updateProgress(data.completed);\n renderLessons(data.completed);\n}\n\ninit();",
+      "output": "Local progress: 2\nupdateStats: 120 XP, 30 coins\nupdateProgress: 2 / 10 completed - 20%\n\nrenderLessons with completed=2:\n - Card 1: Intro - completed - [Review]\n - Card 2: Variables - completed - [Review]\nRendered 2 cards"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: Your dashboard's createLessonCard returns card element, but updateStats returns nothing (undefined) yet updates DOM. What's difference between function that returns value vs function with side effect? When to use each?",
+      "options": [
+        "Both same - no difference",
+        "Return value function like createLessonCard returns card element that caller uses grid.appendChild(card) - caller needs returned value. Side effect function like updateStats doesn't return, but does action directly xpValue.textContent =... - caller doesn't need return, just calls it for its side effect of updating DOM. Use return when caller needs result, side effect when function does action directly",
+        "Return functions are bad",
+        "Side effect functions are bad"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Return value = caller uses returned data. Side effect = function does action itself (updates DOM, logs, fetches). Your dashboard uses both: createLessonCard returns card for caller to append, updateStats side effect updates DOM directly.",
+      "incorrectFeedback": "createLessonCard returns card element, caller does grid.appendChild(card) uses returned card. updateStats returns undefined but does xpValue.textContent =... side effect updates DOM itself, caller just calls updateStats(data) for its side effect. Return when caller needs data, side effect when function does action directly.",
+      "reasoning": "Return value vs side effect - createLessonCard returns for caller use, updateStats side effect updates DOM directly.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Callbacks - Functions Passed to Other Functions"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Callback = function passed as argument to another function, then called inside that function. Your dashboard uses callbacks everywhere: lessons.forEach(lesson => {...}) - arrow function is callback passed to forEach, forEach calls it for each lesson. button.addEventListener('click', () => {...}) - arrow function callback passed to addEventListener, called when button clicked."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "onAuthStateChanged(auth, async (user) => {...}) - async arrow function callback passed to onAuthStateChanged, called when auth state changes (user logs in/out). Callbacks allow async and event-driven code - you tell function what to do when event happens or data ready."
+    },
+    {
+      "id": "p7-3",
+      "type": "sentence",
+      "text": "Without callbacks, you would need to wait for auth, then manually check, then load data. With callback, you say onAuthStateChanged, when user changes, call this function to handle it. Event-driven - button click, auth change, forEach iteration all use callbacks."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Callbacks - Your Dashboard forEach and Event Listeners",
+      "code": "let lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}];\n\n// Callback in forEach - your dashboard way\nconsole.log('forEach callback:');\nlessons.forEach((lesson) => {\n // This arrow function is callback - passed to forEach, forEach calls it for each lesson\n console.log(`Callback called for ${lesson.title}`);\n});\n\n// Callback in map\nlet titles = lessons.map(lesson => lesson.title); // Arrow callback returns title\nconsole.log('\\nmap callback returns titles:', titles);\n\n// Callback in addEventListener - your dashboard button\nconsole.log('\\naddEventListener callback simulation:');\nfunction simulateButton() {\n let button = {\n addEventListener: function(event, callback) {\n console.log(`Event listener added for ${event}`);\n // Simulate click after 100ms\n setTimeout(() => {\n console.log(`Event ${event} happened, calling callback`);\n callback(); // Call the callback function passed\n }, 100);\n }\n };\n \n // Your dashboard: button.addEventListener('click', () => { window.location.href =... })\n button.addEventListener('click', () => {\n console.log('Callback: Navigating to lesson.html');\n });\n}\n\nsimulateButton();\n\n// Callback in onAuthStateChanged - your dashboard auth\nconsole.log('\\nonAuthStateChanged callback simulation:');\nfunction onAuthStateChanged(auth, callback) {\n console.log('Listening for auth changes...');\n setTimeout(() => {\n let user = { uid: 'user123' };\n console.log('Auth changed, user logged in, calling callback with user');\n callback(user); // Call callback with user data\n }, 200);\n}\n\n// Your dashboard: onAuthStateChanged(auth, async (user) => { if (!user) redirect else load data })\nonAuthStateChanged({}, (user) => {\n if (!user) {\n console.log('Callback: No user - redirect to login');\n } else {\n console.log(`Callback: User ${user.uid} - load data and render`);\n }\n});\n\n// Custom function with callback\nfunction processLessons(lessons, callback) {\n for (let lesson of lessons) {\n callback(lesson); // Call callback for each lesson\n }\n}\n\nconsole.log('\\nCustom function with callback:');\nprocessLessons(lessons, (lesson) => {\n console.log(`Processing ${lesson.title} via callback`);\n});",
+      "output": "forEach callback:\nCallback called for Intro\nCallback called for Variables\n\nmap callback returns titles: [Intro, Variables]\n\naddEventListener callback simulation:\nEvent listener added for click\nEvent click happened, calling callback\nCallback: Navigating to lesson.html\n\nonAuthStateChanged callback simulation:\nListening for auth changes...\nAuth changed, user logged in, calling callback with user\nCallback: User user123 - load data and render\n\nCustom function with callback:\nProcessing Intro via callback\nProcessing Variables via callback"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: lessons.forEach(lesson => { createCard(lesson) }) - lesson => {...} is callback. Who calls it and when? And button.addEventListener('click', () => { navigate }) - when is callback called?",
+      "options": [
+        "You call callback manually",
+        "forEach calls callback for each lesson in array - 10 lessons, callback called 10 times, each time with different lesson argument. addEventListener callback called when click event happens - user clicks button, browser calls callback. Callbacks are functions passed to other functions to be called later when event/data ready - event-driven programming your dashboard uses for forEach, click, auth change",
+        "Callback called immediately",
+        "Callback never called"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! forEach calls callback for each element, addEventListener calls callback on click, onAuthStateChanged calls callback on auth change. Callback = function passed to be called later by other function when event happens.",
+      "incorrectFeedback": "forEach receives callback function, then forEach internally loops and calls callback(lesson) for each lesson - 10 calls. addEventListener receives callback, stores it, when user clicks button, browser calls callback(). onAuthStateChanged receives callback, when auth changes, calls callback(user). Callback = pass function to be called later when event/data ready.",
+      "reasoning": "Callbacks - functions passed to be called later by other function - forEach, event listeners, auth state changes all use callbacks.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical - Build All Dashboard Functions"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Build Your Dashboard Functions From Scratch",
+      "code": "const TOTAL_LESSONS = 10;\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', xp: 100},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const', xp: 100},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', xp: 100}\n];\n\n// Function 1: Calculate progress - pure function, returns value\nfunction calculateProgress(completed = 0, total = TOTAL_LESSONS) {\n completed = Math.min(total, Math.max(0, Number(completed) || 0));\n let percent = Math.round((completed / total) * 100);\n return { completed, total, percent, text: `${completed} / ${total} completed` };\n}\n\n// Function 2: Get status - pure, returns string\nfunction getStatus(lessonId, completed) {\n if (lessonId <= completed) return \"completed\";\n if (lessonId === completed + 1) return \"current\";\n return \"locked\";\n}\n\n// Function 3: Create card - returns object (simulates DOM element)\nfunction createLessonCard(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n let badge = status === 'completed'? {text: 'Completed', color: '#4ade80'} : \n status === 'current'? {text: 'Current', color: '#f7df1e'} : \n {text: 'Locked', color: '#94a3b8'};\n let button = status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n \n return {\n id: lesson.id,\n title: lesson.title,\n status,\n badge,\n button,\n xp: lesson.xp,\n // Simulate click handler - callback\n onClick: () => {\n if (status!== 'locked') {\n console.log(`Navigating to lesson.html?lesson=${lesson.id}`);\n }\n }\n };\n}\n\n// Function 4: Render lessons - side effect, no return, uses forEach callback\nfunction renderLessons(completed) {\n console.log(`\\nRendering ${lessons.length} lessons with completed=${completed}:`);\n let grid = [];\n // forEach with arrow callback - your dashboard way\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n grid.push(card);\n console.log(` ${card.id}. ${card.title} - ${card.status.toUpperCase()} - [${card.button}]`);\n });\n return grid; // Return for testing, real dashboard appends to DOM\n}\n\n// Function 5: Update stats - side effect\nfunction updateStats(data) {\n let xp = Number(data.xp || 0);\n let coins = Number(data.coins || 0);\n console.log(`Stats: ${xp.toLocaleString()} XP, ${coins.toLocaleString()} coins`);\n}\n\n// Test all functions\nconsole.log('=== Testing Functions ===');\nlet progress = calculateProgress(2, 10);\nconsole.log(`Progress: ${progress.text} - ${progress.percent}%`);\n\nconsole.log(`\\nStatus lesson 1: ${getStatus(1, 2)}`); // completed\nconsole.log(`Status lesson 3: ${getStatus(3, 2)}`); // current\n\nlet card = createLessonCard(lessons[0], 2);\nconsole.log(`\\nCard:`, card);\ncard.onClick(); // Simulate click callback\n\nlet grid = renderLessons(2);\nupdateStats({xp: 120, coins: 30});\n\n// Function with callback param - higher order function\nfunction processLessonsWithCallback(lessons, completed, callback) {\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n callback(card); // Call callback with card\n });\n}\n\nconsole.log('\\n=== With Callback Param ===');\nprocessLessonsWithCallback(lessons, 2, (card) => {\n console.log(`Callback: ${card.title} is ${card.status}`);\n});",
+      "output": "=== Testing Functions ===\nProgress: 2 / 10 completed - 20%\n\nStatus lesson 1: completed\nStatus lesson 3: current\n\nCard: {id:1, title:Intro, status:completed, button:Review}\nNavigating to lesson.html?lesson=1\n\nRendering 3 lessons with completed=2:\n 1. Introduction to JavaScript - COMPLETED - [Review]\n 2. Variables - COMPLETED - [Review]\n 3. Operators - CURRENT - [Start Lesson]\nStats: 120 XP, 30 coins\n\n=== With Callback Param ===\nCallback: Introduction to JavaScript is completed\nCallback: Variables is completed\nCallback: Operators is current"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Dashboard Functions System"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all function concepts - declaration, params, args, return, default params, arrow, scope, callbacks, pure vs side effect - into complete dashboard functions system exactly like your HTML dashboard but with extra features like search and XP calculation."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete Functions Dashboard (All Concepts)",
+      "code": "/* =========================================================\n COMPLETE FUNCTIONS DASHBOARD - Lesson 6 Capstone\n Uses: Declaration, Params, Return, Default, Arrow, Scope, Callbacks\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nconst XP_PER_LESSON = 50;\nconst COURSE_ID = \"javascript\"; // Global scope\n\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', xp: 100},\n {id: 2, title: 'Variables and Data Types', learn: 'Store info', summary: 'Learn let, const', xp: 100},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', xp: 100},\n {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', xp: 100},\n {id: 5, title: 'Loops', learn: 'Repetition', summary: 'Learn for, while', xp: 100}\n];\n\n// Function 1: Pure function with default params - calculates progress\nfunction calculateProgress(completed = 0, total = TOTAL_LESSONS) {\n // Block scope inside function\n let safeCompleted = Math.min(total, Math.max(0, Number(completed) || 0));\n let percent = Math.round((safeCompleted / total) * 100);\n let text = `${safeCompleted} / ${total} completed`;\n return { completed: safeCompleted, total, percent, text }; // Return object\n}\n\n// Function 2: Pure function - gets status\nfunction getStatus(lessonId, completed) {\n if (lessonId <= completed) return \"completed\";\n if (lessonId === completed + 1) return \"current\";\n return \"locked\";\n}\n\n// Function 3: Arrow function short - gets badge (pure)\nconst getBadge = (status) => {\n switch (status) {\n case \"completed\": return { text: \"Completed\", color: \"#4ade80\", icon: \"✅\" };\n case \"current\": return { text: \"Current\", color: \"#f7df1e\", icon: \"▶\" };\n default: return { text: \"Locked\", color: \"#94a3b8\", icon: \"🔒\" };\n }\n};\n\n// Function 4: Creates card - returns object with callback\nfunction createLessonCard(lesson, completed) {\n let status = getStatus(lesson.id, completed); // Call other function\n let badge = getBadge(status); // Call arrow function\n let buttonText = status === \"locked\"? \"Locked\" : status === \"completed\"? \"Review\" : \"Start Lesson\";\n \n // Return card with onClick callback - closure over lesson and status\n return {\n id: lesson.id,\n title: lesson.title,\n status,\n badge,\n buttonText,\n xp: lesson.xp,\n onClick: () => { // Arrow callback - closure\n if (status!== \"locked\") {\n console.log(`→ Navigating to lesson.html?course=${COURSE_ID}&lesson=${lesson.id}`);\n return true;\n } else {\n console.log(`🔒 Lesson ${lesson.id} locked - need ${completed + 1} first`);\n return false;\n }\n }\n };\n}\n\n// Function 5: Side effect - updates stats (no return)\nfunction updateStats(data) {\n // Function scope\n let xp = Number(data.xp || 0);\n let coins = Number(data.coins || 0);\n let xpText = `${xp.toLocaleString()} XP`;\n let coinsText = coins.toLocaleString();\n console.log(`📊 Stats: ${xpText}, ${coinsText} coins`);\n // No return - side effect (would update DOM in real dashboard)\n}\n\n// Function 6: Side effect with loop and callback param - renders lessons\nfunction renderLessons(completed, onCardClick = null) { // Default param for callback\n console.log(`\\n📚 Rendering ${lessons.length} lessons (completed=${completed}):`);\n let grid = [];\n \n // forEach with arrow callback - your dashboard way\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n grid.push(card);\n let icon = card.badge.icon;\n console.log(` ${icon} ${card.id}. ${card.title} - ${card.status.toUpperCase()} - [${card.buttonText}]`);\n \n // If onCardClick callback provided, simulate click for current lesson\n if (onCardClick && card.status === \"current\") {\n // Don't auto-click, just show that callback exists\n }\n });\n \n console.log(`✅ Rendered ${grid.length} cards`);\n return grid;\n}\n\n// Function 7: Higher order function - takes callback\nfunction processLessons(lessons, completed, callback) {\n // Callback called for each lesson\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n callback(card); // Call passed callback\n });\n}\n\n// Function 8: Async function - simulates Firebase load\nasync function loadUserData(user = null) { // Default param\n await new Promise(r => setTimeout(r, 100)); // Simulate network\n if (!user) {\n return { xp: 0, coins: 0, completed: 0 };\n }\n return { xp: 120, coins: 30, completed: 2 };\n}\n\n// === SIMULATE DASHBOARD FLOW ===\nconsole.log(\"=== CODE ACADEMY FUNCTIONS DASHBOARD ===\");\nconsole.log(`Course: ${COURSE_ID}, Total: ${TOTAL_LESSONS}`);\n\n// Load data (async)\nloadUserData({uid: 'user123'}).then(data => {\n console.log(`\\n👤 User data loaded: XP=${data.xp}, Coins=${data.coins}, Completed=${data.completed}`);\n \n let progress = calculateProgress(data.completed, TOTAL_LESSONS);\n console.log(`📈 Progress: ${progress.text} - ${progress.percent}%`);\n \n updateStats(data);\n \n let grid = renderLessons(data.completed);\n \n console.log(\"\\n--- Testing Card Click Callbacks ---\");\n grid[0].onClick(); // Review lesson 1\n grid[2].onClick(); // Start lesson 3 (current)\n grid[4].onClick(); // Locked lesson 5\n \n console.log(\"\\n--- Processing with Custom Callback ---\");\n processLessons(lessons, data.completed, (card) => {\n if (card.status === 'completed') {\n console.log(`✓ ${card.title} - ${card.xp} XP earned`);\n }\n });\n \n console.log(\"\\n--- Calculating Total XP with Loop and Function ---\");\n let totalXP = 0;\n for (let lesson of lessons) {\n if (getStatus(lesson.id, data.completed) === 'completed') {\n totalXP += lesson.xp;\n }\n }\n console.log(`Total XP earned: ${totalXP}`);\n \n console.log(\"\\n=== FINAL STATE ===\");\n console.log(`XP: ${data.xp}, Coins: ${data.coins}, Completed: ${data.completed}/${TOTAL_LESSONS}`);\n console.log(`Functions used: calculateProgress (pure return), getStatus (pure), getBadge (arrow), createLessonCard (return with callback), updateStats (side effect), renderLessons (loop + forEach callback), processLessons (higher order), loadUserData (async)`);\n});",
+      "output": "=== CODE ACADEMY FUNCTIONS DASHBOARD ===\nCourse: javascript, Total: 10\n\n👤 User data loaded: XP=120, Coins=30, Completed=2\n📈 Progress: 2 / 10 completed - 20%\n📊 Stats: 120 XP, 30 coins\n\n📚 Rendering 5 lessons (completed=2):\n ✅ 1. Introduction to JavaScript - COMPLETED - [Review]\n ✅ 2. Variables and Data Types - COMPLETED - [Review]\n ▶ 3. Operators - CURRENT - [Start Lesson]\n 🔒 4. Conditions - LOCKED - [Locked]\n 🔒 5. Loops - LOCKED - [Locked]\n✅ Rendered 5 cards\n\n--- Testing Card Click Callbacks ---\n→ Navigating to lesson.html?course=javascript&lesson=1\n→ Navigating to lesson.html?course=javascript&lesson=3\n🔒 Lesson 5 locked - need 3 first\n\n--- Processing with Custom Callback ---\n✓ Introduction to JavaScript - 100 XP earned\n✓ Variables and Data Types - 100 XP earned\n\n--- Calculating Total XP with Loop and Function ---\nTotal XP earned: 200\n\n=== FINAL STATE ===\nXP: 120, Coins: 30, Completed: 2/10\nFunctions used: calculateProgress (pure return), getStatus (pure), getBadge (arrow), createLessonCard (return with callback), updateStats (side effect), renderLessons (loop + forEach callback), processLessons (higher order), loadUserData (async)"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Tricky Final Questions"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered functions: Declaration function name(params) { return value }, params placeholders, args actual values, return gives value to caller, no return undefined. Default params completed=0 fallback if not passed, prevents NaN. Arrow functions (params) => { } shorter, (params) => expression implicit return, used in forEach like your dashboard. Scope: global accessible everywhere COURSE_ID, function scoped inside function private isCompleted, block scoped inside {} with let/const, var leaks bug."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You have function createCard(lesson, completed) { let status = lesson.id <= completed? 'completed' : 'current'; return {status}; } let status = 'locked'; outside. Inside function status is completed/current, outside status locked. What are they and why scope matters?",
+      "options": [
+        "Same status variable",
+        "Different variables - inside function status is function scoped, only inside createCard, shadows outer status but different variable. Outside status is global scoped locked. Function scope prevents naming conflicts - you can use status name inside many functions without conflict, each function has its own status private. Your dashboard's isCompleted inside createLessonCard not conflict with outside",
+        "Error - duplicate variable",
+        "Inside overwrites outside"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Function scope - inside status private, outside status global different variables, same name but different scope, no conflict. Your dashboard uses isCompleted, status inside createLessonCard private, not global.",
+      "incorrectFeedback": "Inside status function scoped, only inside createCard, outside status global scoped locked, different variables same name but different scope, no conflict. Function scope keeps variables private, prevents global pollution. Your dashboard's temporary variables inside functions private.",
+      "reasoning": "Function scope and shadowing - same name different scope different variables - prevents conflicts.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have function updateStats(data) { xpValue.textContent = data.xp + ' XP' } no return, and function calculateProgress(completed, total) { return Math.round((completed/total)*100) } with return. First returns undefined but updates DOM side effect, second returns percent number. When to use return vs side effect?",
+      "options": [
+        "Always return",
+        "Always side effect",
+        "Return when caller needs value: let percent = calculateProgress(2,10) - caller uses returned percent for display. Side effect when function does action directly: updateStats(data) updates DOM itself, caller just calls it, doesn't need return value. Your dashboard: createLessonCard returns card element caller appends, updateStats side effect updates textContent directly",
+        "Both wrong"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Perfect! Return when caller needs result, side effect when function does action directly. Your dashboard uses both: createLessonCard returns card for grid.appendChild, updateStats side effect updates xpValue.textContent.",
+      "incorrectFeedback": "calculateProgress returns percent number, caller let percent = calculateProgress() uses returned value. updateStats returns undefined but does xpValue.textContent =... side effect updates DOM itself, caller just calls updateStats(data) for side effect. Use return when caller needs data, side effect when function does action directly.",
+      "reasoning": "Return vs side effect - pure return vs side effect update DOM - both used in your dashboard.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: lessons.forEach(lesson => { createCard(lesson) }) - lesson => {...} is arrow callback. Who calls it and when? And button.addEventListener('click', () => { navigate }) when called? Tricky callback understanding!",
+      "options": [
+        "You call it manually",
+        "forEach calls callback for each lesson - 10 lessons 10 calls, each with different lesson arg. addEventListener callback called when click event happens - user clicks, browser calls callback. Callbacks passed to other functions to be called later when event/data ready - event-driven your dashboard uses for forEach, click, auth change",
+        "Immediately called",
+        "Never called"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! forEach calls callback per element, addEventListener calls on click, onAuthStateChanged calls on auth change. Callback = function passed to be called later.",
+      "incorrectFeedback": "forEach receives callback, loops and calls callback(lesson) per lesson - 10 calls. addEventListener receives callback, when click happens calls callback(). onAuthStateChanged receives callback, when auth changes calls callback(user). Callback = pass function to be called later.",
+      "reasoning": "Callbacks - passed to be called later when event/data ready - forEach, click, auth all use callbacks.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have const getStatus = (id, completed) => id <= completed? 'completed' : 'current'; vs function getStatus(id, completed) { return id <= completed? 'completed' : 'current'; }. Both work, but arrow one-liner (id, completed) => id <= completed?... has implicit return no {} no return keyword. What happens if you write (id, completed) => { id <= completed? 'completed' : 'current' } with {} but no return?",
+      "options": [
+        "Returns completed/current correctly",
+        "Returns undefined! Because {} is block, not implicit return, need return keyword inside {}: { return id <= completed?... }. Without return, function returns undefined. Arrow with expression no {} implicit return, arrow with {} block needs explicit return - common bug! Your dashboard's forEach with arrow and {} needs careful return",
+        "Error",
+        "Returns null"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Arrow with {} needs return, without {} implicit return. (id) => id <= completed? 'completed' : 'current' returns, (id) => { id <=... } returns undefined without return keyword - bug!",
+      "incorrectFeedback": "Arrow => expression implicit return: (id) => id <= completed? 'completed' : 'current' returns value. Arrow => {... } block needs explicit return: (id) => { return id <= completed? 'completed' : 'current'; }. Without return, returns undefined. Common arrow bug!",
+      "reasoning": "Arrow function implicit return vs block with explicit return - {} needs return keyword, no {} implicit return.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard has 5 functions: getLocalProgress (no params returns number), loadUserData (user param returns Promise object), updateStats (data param no return side effect), createLessonCard (lesson, completed params returns card element), renderLessons (completed param no return but loops with forEach callback). Which are pure return vs side effect and why separation matters?",
+      "options": [
+        "All same",
+        "Pure return: getLocalProgress returns number, loadUserData returns object, createLessonCard returns card, calculateProgress returns percent - caller uses returned value, testable, reusable. Side effect: updateStats updates DOM textContent, renderLessons clears container and appends grid, updateProgress updates width - do action directly, caller doesn't need return. Separation: Pure functions easy to test and reuse, side effects handle DOM - your dashboard's separation makes 300 lines manageable, each function one job, DRY",
+        "All side effect",
+        "All pure"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! Pure return vs side effect separation - pure testable reusable, side effect does DOM action. Your dashboard's 5 functions each one job, separation makes code manageable, DRY, not one big block!",
+      "incorrectFeedback": "Pure return: getLocalProgress, loadUserData, createLessonCard, calculateProgress return values caller uses. Side effect: updateStats, updateProgress, renderLessons update DOM directly no return needed. Separation by job makes 300 lines manageable, each function one task, reusable, testable - not one big block.",
+      "reasoning": "Pure vs side effect and separation of concerns - your dashboard's 5 functions each one job - DRY and manageable.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, list all 5 functions, write for each: params, return or side effect, scope of variables inside, pure or side effect. 2. Create bug: Arrow (id) => { id <= completed? 'completed' : 'current' } without return, see undefined, fix with return or remove {}. 3. Build your own functions: calculateProgress, getStatus, createCard, renderLessons from scratch without looking, test with lessons array. Next: Lesson 7 - Arrays and Objects, where you master list of lessons and user object with methods like map, filter, reduce that your dashboard could use for XP total and completed count."
+    }
+  ]
+}

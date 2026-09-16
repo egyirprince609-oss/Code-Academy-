@@ -1,0 +1,414 @@
+{
+  "course": "javascript",
+  "lessonNumber": 7,
+  "lessonId": "javascript-lesson-7",
+  "title": "Arrays and Objects",
+  "subtitle": "How Your Dashboard Stores 10 Lessons and User Data with XP, Coins, Progress",
+  "description": "Master arrays, objects, nested data, methods map, filter, reduce, find, destructuring, spread - and how your dashboard's lessons array and user object power the entire course page.",
+  "level": "Beginner",
+  "xpReward": 180,
+  "coinsReward": 40,
+  "estimatedMinutes": 75,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Arrays and Objects - Your Dashboard's Data Structures"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Your dashboard has two main data structures: lessons array with 10 lesson objects [{id:1, title:'Intro', learn:'Understand JS', summary:'Learn syntax'}, {id:2, title:'Variables',...},...] and user object {xp:120, coins:30, completed:2, progress:{javascript:2}}."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Array = ordered list, holds many values, accessed by index 0,1,2. Your lessons array holds 10 lessons, lessons[0] first lesson, lessons[1] second, lessons.length 10. Array is for collections of similar items - lessons, users, XP history."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Object = collection of key-value pairs, holds related data, accessed by key. Your user object holds xp key with 120 value, coins key with 30 value, completed key with 2 value. Object is for one thing with many properties - user has XP, coins, completed, name, progress."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Array of objects = your lessons array is array holding objects - each object is one lesson with id, title, learn, summary, status. This is most common structure in all apps: array of user objects, array of product objects, array of lesson objects like your dashboard."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Without arrays and objects, you would have 10 separate variables lesson1, lesson2, lesson3... and userXP, userCoins, userCompleted separate variables - messy, hard to loop, hard to pass to functions. With array and object, one variable holds all lessons, one variable holds all user data, easy to loop with forEach and pass to functions like createLessonCard(lesson, completed) and updateStats(data)."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Your Dashboard's Lessons Array and User Object",
+      "code": "// Your dashboard's lessons array - array of 10 objects\nlet lessons = [\n {\n id: 1,\n title: \"Introduction to JavaScript\",\n learn: \"Understand JavaScript, how it works in browser\",\n summary: \"Learn syntax, statements, comments, console\",\n status: \"completed\",\n xp: 100\n },\n {\n id: 2,\n title: \"Variables and Data Types\",\n learn: \"Store and work with information\",\n summary: \"Learn let, const, strings, numbers\",\n status: \"completed\",\n xp: 100\n },\n {\n id: 3,\n title: \"Operators and Expressions\",\n learn: \"Perform calculations\",\n summary: \"Master operators\",\n status: \"current\",\n xp: 0\n }\n];\n\nconsole.log('Lessons array length:', lessons.length); // 3\nconsole.log('First lesson:', lessons[0].title); // Intro\nconsole.log('Second lesson id:', lessons[1].id); // 2\nconsole.log('All lessons titles:', lessons.map(l => l.title).join(', '));\n\n// Your dashboard's user object - object with many properties\nlet user = {\n xp: 120,\n coins: 30,\n completed: 2,\n name: \"Prince\",\n progress: {\n javascript: 2,\n react: 5\n },\n isLoggedIn: true\n};\n\nconsole.log('\\nUser object:');\nconsole.log('XP:', user.xp); // 120 - dot notation\nconsole.log('Coins:', user['coins']); // 30 - bracket notation\nconsole.log('Completed:', user.completed); // 2\nconsole.log('JS progress:', user.progress.javascript); // 2 - nested object\nconsole.log('Name:', user.name); // Prince\n\n// Array of objects + object combined - your dashboard flow\nconsole.log('\\n--- Dashboard Flow ---');\nlet completed = user.completed; // 2 from user object\nlessons.forEach(lesson => {\n let status = lesson.id <= completed? 'completed' : lesson.id === completed + 1? 'current' : 'locked';\n console.log(`Lesson ${lesson.id}: ${lesson.title} - ${status}`);\n});",
+      "output": "Lessons array length: 3\nFirst lesson: Introduction to JavaScript\nSecond lesson id: 2\nAll lessons titles: Introduction to JavaScript, Variables and Data Types, Operators\n\nUser object:\nXP: 120\nCoins: 30\nCompleted: 2\nJS progress: 2\nName: Prince\n\n--- Dashboard Flow ---\nLesson 1: Introduction to JavaScript - completed\nLesson 2: Variables and Data Types - completed\nLesson 3: Operators - current"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Arrays - Create, Access, Modify, Length"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Create array: let lessons = [] empty array, or let lessons = [{id:1}, {id:2}] with values, or let ids = [1,2,3,4,5] numbers. Your dashboard creates lessons array with 10 objects directly in code - static data."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Access: lessons[0] first element, lessons[1] second, lessons[lessons.length-1] last. Index starts 0. lessons[10] for 10 lessons is undefined because indexes 0-9, length 10, last index 9. Your dashboard uses lessons[0] first lesson in some logic."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Modify: lessons[0].title = 'New Title' changes first lesson title, lessons.push({id:4, title:'Conditions'}) adds new lesson at end, lessons.pop() removes last, lessons.unshift() adds at start, lessons.shift() removes from start. Your dashboard doesn't modify lessons array directly, it reads it and creates cards."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Length: lessons.length gives number of elements. Your dashboard uses lessons.length for progress calculation? Actually uses TOTAL_LESSONS constant 10, but could use lessons.length. Length is dynamic - after push, length increases."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: Array Basics - Your Lessons Array Operations",
+      "code": "let lessons = [\n {id: 1, title: 'Intro'},\n {id: 2, title: 'Variables'}\n];\n\nconsole.log('Initial length:', lessons.length); // 2\nconsole.log('First:', lessons[0].title); // Intro\nconsole.log('Last:', lessons[lessons.length - 1].title); // Variables\n\n// Push - add at end - like adding new lesson\nlessons.push({id: 3, title: 'Operators'});\nconsole.log('\\nAfter push length:', lessons.length); // 3\nconsole.log('Last after push:', lessons[lessons.length - 1].title); // Operators\n\n// Modify element\nlessons[0].title = \"Introduction to JavaScript - Updated\";\nconsole.log('\\nAfter modify first:', lessons[0].title);\n\n// Access out of bounds\nconsole.log('\\nOut of bounds:');\nconsole.log('lessons[10]:', lessons[10]); // undefined - no element at index 10\nconsole.log('lessons[10]?.title:', lessons[10]?.title); // undefined with optional chaining - safe, no error\n// console.log(lessons[10].title); // ❌ TypeError: Cannot read property title of undefined - without?.\n\n// Loop through array\nconsole.log('\\nLoop through array:');\nfor (let i = 0; i < lessons.length; i++) {\n console.log(`Index ${i}: Lesson ${lessons[i].id} - ${lessons[i].title}`);\n}\n\n// forEach - your dashboard way\nconsole.log('\\nforEach - your dashboard way:');\nlessons.forEach(lesson => {\n console.log(`Lesson ${lesson.id}: ${lesson.title}`);\n});\n\n// Check if array\nconsole.log('\\nIs array?', Array.isArray(lessons)); // true\nconsole.log('Is array?', Array.isArray({})); // false - object not array\nconsole.log('Typeof array:', typeof lessons); // object - array typeof is object, use Array.isArray to check",
+      "output": "Initial length: 2\nFirst: Intro\nLast: Variables\n\nAfter push length: 3\nLast after push: Operators\n\nAfter modify first: Introduction to JavaScript - Updated\n\nOut of bounds:\nlessons[10]: undefined\nlessons[10]?.title: undefined\n\nLoop through array:\nIndex 0: Lesson 1 - Introduction to JavaScript - Updated\nIndex 1: Lesson 2 - Variables\nIndex 2: Lesson 3 - Operators\n\nforEach - your dashboard way:\nLesson 1: Introduction to JavaScript - Updated\nLesson 2: Variables\nLesson 3: Operators\n\nIs array? true\nIs array? false\nTypeof array: object"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Objects - Create, Access, Modify, Nested"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Create object: let user = {} empty object, or let user = {xp:120, coins:30} with properties, or let user = {xp:120, progress:{javascript:2}} nested object. Your dashboard's user data from Firebase is object with xp, coins, completed, progress nested."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Access: user.xp dot notation, or user['xp'] bracket notation. Dot is shorter, bracket useful when key has space or variable: user['xp'] same as user.xp, but let key = 'xp'; user[key] dynamic access. Your dashboard uses user.xp dot and data['xp']? Actually uses data.xp dot."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "Modify: user.xp = 170 changes XP, user.coins += 10 adds coins, user.name = 'Prince' adds new property if doesn't exist. Your dashboard's user object from Firebase, you update xp after completing lesson."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Nested: user.progress.javascript accesses nested object - progress is object inside user object, javascript is key inside progress object. Your dashboard: data.progress?.[COURSE_ID] - progress object with course id key javascript, value 2 completed. Optional chaining?. safe if progress doesn't exist."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: Objects - Your User Object Operations",
+      "code": "// Create object - like your Firebase user data\nlet user = {\n xp: 120,\n coins: 30,\n completed: 2,\n name: \"Prince\",\n progress: {\n javascript: 2,\n react: 5\n },\n isLoggedIn: true\n};\n\n// Access - dot vs bracket\nconsole.log('Dot notation:');\nconsole.log('XP:', user.xp); // 120 - dot\nconsole.log('Coins:', user.coins); // 30\n\nconsole.log('\\nBracket notation:');\nconsole.log('XP:', user['xp']); // 120 - bracket same\nconsole.log('Coins:', user['coins']); // 30\n\n// Dynamic key with bracket\nlet key = 'completed';\nconsole.log(`\\nDynamic key '${key}':`, user[key]); // 2 - user['completed'] dynamic\n\n// Modify\nuser.xp = 170; // Change XP\nuser.coins += 10; // Add 10 coins => 40\nuser.lastLesson = 3; // Add new property\nconsole.log('\\nAfter modify:');\nconsole.log(`XP: ${user.xp}, Coins: ${user.coins}, Last: ${user.lastLesson}`);\n\n// Nested access\nconsole.log('\\nNested:');\nconsole.log('JS progress:', user.progress.javascript); // 2 - nested\nconsole.log('React progress:', user.progress['react']); // 5 - nested with bracket\nconsole.log('Progress object:', user.progress); // {javascript:2, react:5}\n\n// Optional chaining - safe access like your dashboard\nlet user2 = {}; // No progress\nconsole.log('\\nOptional chaining - safe:');\nconsole.log('user2.progress?.javascript:', user2.progress?.javascript); // undefined - no error, safe\n// console.log(user2.progress.javascript); // ❌ TypeError without?.\n\nlet user3 = { progress: null };\nconsole.log('user3.progress?.javascript:', user3.progress?.javascript); // undefined - safe even though progress null\n\n// Your dashboard pattern: data.progress?.[COURSE_ID]\nlet COURSE_ID = \"javascript\";\nlet data = { progress: { javascript: 2 } };\nconsole.log(`\\nYour dashboard: data.progress?.[COURSE_ID] where COURSE_ID=${COURSE_ID}:`, data.progress?.[COURSE_ID]); // 2\nconsole.log('With variable key and optional chaining: data.progress?.[COURSE_ID]');\n\n// Add nested property\nuser.progress.vue = 1;\nconsole.log('\\nAfter adding vue progress:', user.progress); // {javascript:2, react:5, vue:1}",
+      "output": "Dot notation:\nXP: 120\nCoins: 30\n\nBracket notation:\nXP: 120\nCoins: 30\n\nDynamic key 'completed': 2\n\nAfter modify:\nXP: 170, Coins: 40, Last: 3\n\nNested:\nJS progress: 2\nReact progress: 5\nProgress object: {javascript:2, react:5}\n\nOptional chaining - safe:\nuser2.progress?.javascript: undefined\nuser3.progress?.javascript: undefined\n\nYour dashboard: data.progress?.[COURSE_ID] where COURSE_ID=javascript: 2\nWith variable key and optional chaining: data.progress?.[COURSE_ID]\n\nAfter adding vue progress: {javascript:2, react:5, vue:1}"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Array Methods - map, filter, find - Your Dashboard Could Use"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "map transforms each element and returns new array. Your dashboard could use map to get titles: lessons.map(lesson => lesson.title) returns ['Intro', 'Variables', 'Operators'] array of titles. map does not change original array, returns new array."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "filter keeps elements that pass condition and returns new array. Your dashboard could use filter to get completed lessons: lessons.filter(lesson => lesson.id <= completed) returns array of completed lessons only. filter returns new array with only matching elements."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "find returns first element that matches condition, or undefined if none. Your dashboard could use find to get lesson by id: lessons.find(lesson => lesson.id === 3) returns lesson with id 3 object, or undefined if not found. find returns single object not array."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Your dashboard uses forEach for rendering, but could also use map to create cards array, filter to count completed, find to search lesson. These methods are modern, clean, used in all React and JS apps."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: map, filter, find - Modern Array Methods",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', status: 'current', xp: 0},\n {id: 4, title: 'Conditions', status: 'locked', xp: 0}\n];\nlet completed = 2;\n\n// map - transform each element to new array\nlet titles = lessons.map(lesson => lesson.title);\nconsole.log('map - titles:', titles); // ['Intro', 'Variables', 'Operators', 'Conditions']\n\nlet cards = lessons.map(lesson => {\n return { id: lesson.id, title: lesson.title, status: lesson.id <= completed? 'completed' : 'current' };\n});\nconsole.log('\\nmap - cards:', cards);\n\n// filter - keep matching elements\nlet completedLessons = lessons.filter(lesson => lesson.status === 'completed');\nconsole.log('\\nfilter - completed lessons:', completedLessons.map(l => l.title)); // ['Intro', 'Variables']\n\nlet completedById = lessons.filter(lesson => lesson.id <= completed);\nconsole.log('filter - by id <= completed:', completedById.map(l => l.title)); // ['Intro', 'Variables']\n\n// find - first matching element\nlet lesson3 = lessons.find(lesson => lesson.id === 3);\nconsole.log('\\nfind - lesson id 3:', lesson3.title); // Operators\n\nlet currentLesson = lessons.find(lesson => lesson.status === 'current');\nconsole.log('find - current lesson:', currentLesson.title); // Operators\n\nlet notFound = lessons.find(lesson => lesson.id === 10);\nconsole.log('find - not found id 10:', notFound); // undefined\n\n// Your dashboard could use filter to count completed\nlet completedCount = lessons.filter(l => l.status === 'completed').length;\nconsole.log(`\\nCompleted count with filter: ${completedCount}`); // 2\n\n// map + filter + forEach chain - your dashboard could do\nconsole.log('\\nChain - map titles of completed lessons:');\nlet completedTitles = lessons.filter(l => l.status === 'completed').map(l => l.title);\nconsole.log(completedTitles); // ['Intro', 'Variables']",
+      "output": "map - titles: [Intro, Variables, Operators, Conditions]\n\nmap - cards: [{id:1, title:Intro, status:completed},...]\n\nfilter - completed lessons: [Intro, Variables]\nfilter - by id <= completed: [Intro, Variables]\n\nfind - lesson id 3: Operators\nfind - current lesson: Operators\nfind - not found id 10: undefined\n\nCompleted count with filter: 2\n\nChain - map titles of completed lessons:\n[Intro, Variables]"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have lessons array 5 lessons, completed=2. You want array of completed lessons only. You write lessons.filter(lesson => lesson.id <= completed). What does it return? And lessons.map(lesson => lesson.title) returns what? Tricky difference!",
+      "options": [
+        "filter returns single lesson, map returns single title",
+        "filter returns new array with only lessons where id <=2 true - 2 lessons [lesson1, lesson2] - keeps matching. map returns new array with titles of ALL lessons transformed - 5 titles ['Intro', 'Variables',...] - transforms each. filter keeps subset, map transforms all to new form",
+        "Both return single value",
+        "Both return same"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! filter keeps matching elements subset, map transforms each element to new form all elements. Your dashboard could use filter to count completed and map to get titles!",
+      "incorrectFeedback": "filter: Keeps elements where condition true - id <=2 true for 2 lessons, returns array of 2 lessons. map: Transforms each element - lesson => lesson.title, returns array of 5 titles, one per lesson. filter subset, map transform all.",
+      "reasoning": "filter vs map - filter keeps matching subset, map transforms all to new form - both return new arrays.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Reduce, Some, Every - Advanced Array Methods"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "reduce accumulates array to single value - sum, total XP, etc. Your dashboard could use reduce to calculate total XP earned: lessons.reduce((total, lesson) => total + lesson.xp, 0) - total starts 0, for each lesson adds xp, returns total XP sum."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "some checks if at least one element passes condition - returns true/false. lessons.some(lesson => lesson.status === 'locked') - true if at least one locked lesson exists. Your dashboard could check if any lesson locked to show warning."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "every checks if all elements pass condition - returns true/false. lessons.every(lesson => lesson.id <= completed) - true if all lessons completed, false if at least one not completed. Your dashboard could check if course completed - every lesson completed?"
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Your dashboard currently uses for loop to count completed, but reduce, some, every are modern alternatives. For total XP, reduce is perfect - one line instead of loop with total+=."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: reduce, some, every - Total XP and Checks",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', xp: 100, status: 'completed'},\n {id: 2, title: 'Variables', xp: 100, status: 'completed'},\n {id: 3, title: 'Operators', xp: 0, status: 'current'},\n {id: 4, title: 'Conditions', xp: 0, status: 'locked'}\n];\n\n// reduce - accumulate to single value - total XP\nlet totalXP = lessons.reduce((total, lesson) => {\n return total + lesson.xp;\n}, 0); // 0 initial total\nconsole.log('Total XP with reduce:', totalXP); // 200\n\n// Short version\nlet totalXPShort = lessons.reduce((total, lesson) => total + lesson.xp, 0);\nconsole.log('Total XP short:', totalXPShort); // 200\n\n// reduce to count completed\nlet completedCount = lessons.reduce((count, lesson) => {\n return lesson.status === 'completed'? count + 1 : count;\n}, 0);\nconsole.log('Completed count with reduce:', completedCount); // 2\n\n// some - at least one passes\nlet hasLocked = lessons.some(lesson => lesson.status === 'locked');\nconsole.log('\\nSome locked?', hasLocked); // true - at least one locked\n\nlet hasCurrent = lessons.some(lesson => lesson.status === 'current');\nconsole.log('Some current?', hasCurrent); // true\n\nlet hasAllCompleted = lessons.some(lesson => lesson.status === 'completed' && lesson.id === 10);\nconsole.log('Some completed id 10?', hasAllCompleted); // false\n\n// every - all pass\nlet allCompleted = lessons.every(lesson => lesson.status === 'completed');\nconsole.log('\\nEvery completed?', allCompleted); // false - not all completed\n\nlet allHaveId = lessons.every(lesson => lesson.id > 0);\nconsole.log('Every has id >0?', allHaveId); // true - all have id >0\n\n// Your dashboard - check if course completed\nlet completed = 2;\nlet allDone = lessons.every(lesson => lesson.id <= completed);\nconsole.log(`\\nCourse completed with completed=${completed}?`, allDone); // false - not all <=2\n\nlet completedAll = 4;\nlet allDone2 = lessons.every(lesson => lesson.id <= completedAll);\nconsole.log(`Course completed with completed=${completedAll}?`, allDone2); // true - all 4 <=4\n\n// Chain - total XP of completed lessons only\nlet completedXP = lessons.filter(l => l.status === 'completed').reduce((total, l) => total + l.xp, 0);\nconsole.log(`\\nCompleted XP with filter+reduce: ${completedXP}`); // 200",
+      "output": "Total XP with reduce: 200\nTotal XP short: 200\nCompleted count with reduce: 2\n\nSome locked? true\nSome current? true\nSome completed id 10? false\n\nEvery completed? false\nEvery has id >0? true\n\nCourse completed with completed=2? false\nCourse completed with completed=4? true\n\nCompleted XP with filter+reduce: 200"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: You have lessons with xp 100, 100, 0, 0. You want total XP 200. You write lessons.reduce((total, lesson) => total + lesson.xp, 0). What does reduce do step by step? Tricky!",
+      "options": [
+        "Returns array of XP",
+        "Reduce accumulates: total starts 0, first lesson total=0+100=100, second total=100+100=200, third total=200+0=200, fourth total=200+0=200, returns 200 single value. Initial 0 is starting total, each iteration total is previous total + current xp. Your dashboard could use reduce for total XP instead of loop with total+= - one line!",
+        "Returns first lesson",
+        "Returns undefined"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Reduce accumulates to single value - total starts 0, adds each xp, returns final total. Your dashboard could use reduce for total XP!",
+      "incorrectFeedback": "Reduce: (total, lesson) => total + lesson.xp, 0 initial. Iteration1 total 0+100=100, iteration2 100+100=200, iteration3 200+0=200, iteration4 200+0=200, returns 200. Accumulates array to single value - sum, count, etc.",
+      "reasoning": "Reduce accumulates array to single value - total starts initial, adds each element, returns final accumulated value.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Destructuring and Spread - Modern Syntax"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Destructuring extracts values from array or object into variables. Your dashboard could use destructuring: let {xp, coins, completed} = user - extracts xp, coins, completed from user object into variables xp, coins, completed in one line, instead of let xp = user.xp; let coins = user.coins; let completed = user.completed; 3 lines."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "Array destructuring: let [firstLesson, secondLesson] = lessons - firstLesson = lessons[0], secondLesson = lessons[1]. Useful to get first and second quickly."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "Spread... expands array or object. Your dashboard could use spread to copy array: let newLessons = [...lessons] copies all lessons, or add new lesson: let allLessons = [...lessons, {id:4, title:'Conditions'}] - lessons plus new lesson. For object: let newUser = {...user, xp:170} copies user and overwrites xp to 170."
+    },
+    {
+      "id": "p6-4",
+      "type": "sentence",
+      "text": "Spread useful for immutable updates - instead of modifying original array/object, create new one with changes. Your dashboard's React version would use spread for state updates: setLessons([...lessons, newLesson])."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Destructuring and Spread - Your Dashboard User and Lessons",
+      "code": "let user = { xp: 120, coins: 30, completed: 2, name: \"Prince\" };\nlet lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}, {id: 3, title: 'Operators'}];\n\n// Destructuring object - extract properties\nconsole.log('Without destructuring - 3 lines:');\nlet xp1 = user.xp;\nlet coins1 = user.coins;\nlet completed1 = user.completed;\nconsole.log(xp1, coins1, completed1);\n\nconsole.log('\\nWith destructuring - 1 line:');\nlet { xp, coins, completed } = user; // Extract xp, coins, completed from user\nconsole.log(xp, coins, completed); // 120 30 2\n\n// Destructuring with rename\nlet { xp: userXP, name: userName } = user;\nconsole.log(`\\nRenamed: userXP=${userXP}, userName=${userName}`); // 120 Prince\n\n// Destructuring array\nlet [first, second, third] = lessons;\nconsole.log('\\nArray destructuring:');\nconsole.log('First:', first.title); // Intro\nconsole.log('Second:', second.title); // Variables\nconsole.log('Third:', third.title); // Operators\n\n// Destructuring with rest\nlet [firstLesson,...restLessons] = lessons;\nconsole.log('\\nFirst:', firstLesson.title); // Intro\nconsole.log('Rest:', restLessons.map(l => l.title)); // [Variables, Operators]\n\n// Spread - copy array\nlet lessonsCopy = [...lessons]; // Copy all lessons\nconsole.log('\\nSpread copy:', lessonsCopy.map(l => l.title)); // Same as lessons\n\n// Spread - add new lesson\nlet newLessons = [...lessons, {id: 4, title: 'Conditions'}];\nconsole.log('Spread add:', newLessons.map(l => l.title)); // Intro, Variables, Operators, Conditions\nconsole.log('Original still:', lessons.map(l => l.title)); // Original unchanged - immutable\n\n// Spread - copy object and overwrite\nlet updatedUser = {...user, xp: 170, coins: 40 }; // Copy user, overwrite xp and coins\nconsole.log('\\nSpread object update:');\nconsole.log('Original:', user.xp, user.coins); // 120 30 - unchanged\nconsole.log('Updated:', updatedUser.xp, updatedUser.coins); // 170 40 - new object\nconsole.log('Updated user:', updatedUser);\n\n// Your dashboard pattern - immutable update\nlet completedNew = 3;\nlet userUpdated = {...user, completed: completedNew, xp: user.xp + 50 };\nconsole.log(`\\nAfter completing lesson 3: XP ${userUpdated.xp}, Completed ${userUpdated.completed}`);",
+      "output": "Without destructuring - 3 lines:\n120 30 2\n\nWith destructuring - 1 line:\n120 30 2\n\nRenamed: userXP=120, userName=Prince\n\nArray destructuring:\nFirst: Intro\nSecond: Variables\nThird: Operators\n\nFirst: Intro\nRest: [Variables, Operators]\n\nSpread copy: [Intro, Variables, Operators]\nSpread add: [Intro, Variables, Operators, Conditions]\nOriginal still: [Intro, Variables, Operators]\n\nSpread object update:\nOriginal: 120 30\nUpdated: 170 40\nUpdated user: {xp:170, coins:40, completed:2, name:Prince}\n\nAfter completing lesson 3: XP 170, Completed 3"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Your Dashboard's Data Flow with Arrays and Objects"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Your dashboard data flow: Firebase returns user object {xp, coins, completed, progress:{javascript:2}}, you destructure or access with data.xp, data.coins, data.completed. lessons array is static 10 objects. renderLessons loops lessons array with forEach, for each lesson object calls createLessonCard(lesson, completed) which accesses lesson.id, lesson.title, lesson.learn, lesson.summary."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "updateStats takes data object {xp, coins} and updates DOM. updateProgress takes completed number and calculates percent. All functions take objects/arrays as params and return or side effect. Array of objects is core - each lesson object has same shape id, title, learn, summary, status."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Your Dashboard Data Flow - Array of Objects + User Object",
+      "code": "// Your dashboard data\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', xp: 100},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const', xp: 100},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', xp: 100}\n];\n\nlet firebaseData = {\n xp: 120,\n coins: 30,\n completed: 2,\n progress: { javascript: 2, react: 5 }\n};\n\n// Destructure user data - like your dashboard could\nlet { xp, coins, completed, progress } = firebaseData;\nconsole.log(`Destructured: XP=${xp}, Coins=${coins}, Completed=${completed}, JS Progress=${progress.javascript}`);\n\n// Function that takes object param - like updateStats\nfunction updateStats(data) {\n // Destructure inside function\n let { xp, coins } = data;\n console.log(`updateStats: ${xp} XP, ${coins} coins`);\n}\n\nupdateStats(firebaseData); // Pass object\n\n// Function that takes array and number - like renderLessons\nfunction renderLessons(lessons, completed) {\n console.log(`\\nRendering ${lessons.length} lessons, completed=${completed}:`);\n // forEach with object access\n lessons.forEach(lesson => {\n let status = lesson.id <= completed? 'completed' : lesson.id === completed + 1? 'current' : 'locked';\n console.log(` ${lesson.id}. ${lesson.title} - ${status} - ${lesson.xp} XP`);\n });\n}\n\nrenderLessons(lessons, completed);\n\n// Calculate total XP with reduce - array of objects\nlet totalXP = lessons.reduce((total, lesson) => total + lesson.xp, 0);\nconsole.log(`\\nTotal XP of all lessons: ${totalXP}`);\n\n// Filter completed lessons - array methods\nlet completedLessons = lessons.filter(lesson => lesson.id <= completed);\nconsole.log(`Completed lessons: ${completedLessons.map(l => l.title).join(', ')}`);\n\n// Find current lesson\nlet currentLesson = lessons.find(lesson => lesson.id === completed + 1);\nconsole.log(`Current lesson: ${currentLesson.title}`);\n\n// Spread to add new lesson - immutable\nlet newLessons = [...lessons, {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', xp: 100}];\nconsole.log(`\\nAfter adding lesson 4, total: ${newLessons.length} lessons`);\nconsole.log(`Original still: ${lessons.length} lessons - immutable`);\n\n// Your dashboard pattern: progress with COURSE_ID variable key\nlet COURSE_ID = \"javascript\";\nlet jsProgress = firebaseData.progress?.[COURSE_ID]?? 0; // Optional chaining + variable key + nullish\nconsole.log(`\\nJS progress via variable key [COURSE_ID]: ${jsProgress}`);",
+      "output": "Destructured: XP=120, Coins=30, Completed=2, JS Progress=2\nupdateStats: 120 XP, 30 coins\n\nRendering 3 lessons, completed=2:\n 1. Introduction to JavaScript - completed - 100 XP\n 2. Variables - completed - 100 XP\n 3. Operators - current - 100 XP\n\nTotal XP of all lessons: 300\nCompleted lessons: Introduction to JavaScript, Variables\nCurrent lesson: Operators\n\nAfter adding lesson 4, total: 4 lessons\nOriginal still: 3 lessons - immutable\n\nJS progress via variable key [COURSE_ID]: 2"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: You have user = {xp:120, coins:30}. You do let {xp, coins} = user; and let xp = user.xp; let coins = user.coins;. Both get xp and coins, but destructuring does it in 1 line vs 2 lines. And [...lessons, newLesson] vs lessons.push(newLesson) - what difference for original array?",
+      "options": [
+        "Both same - no difference",
+        "Destructuring 1 line vs 2 lines same result but destructuring cleaner. [...lessons, newLesson] creates new array with new lesson, original lessons unchanged immutable - good for React state. lessons.push(newLesson) modifies original array directly mutable - original changed. Your dashboard could use push for static array, but React version should use spread for immutable state updates",
+        "Destructuring is slower",
+        "Push is better always"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Destructuring cleaner 1 line. Spread creates new array immutable original unchanged, push mutates original. For React state, spread immutable better, for simple static array push fine.",
+      "incorrectFeedback": "let {xp, coins} = user 1 line extracts both, let xp=user.xp; let coins=user.coins 2 lines same but longer. [...lessons, newLesson] new array original unchanged immutable, lessons.push(newLesson) modifies original mutable. Spread immutable better for React state updates, push mutates original.",
+      "reasoning": "Destructuring vs manual and spread immutable vs push mutable - important for React state management.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical - Build Dashboard with Array Methods"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Dashboard with map, filter, reduce, find",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', status: 'current', xp: 0},\n {id: 4, title: 'Conditions', status: 'locked', xp: 0},\n {id: 5, title: 'Loops', status: 'locked', xp: 0}\n];\n\n// map - get all titles\nlet titles = lessons.map(l => l.title);\nconsole.log('All titles:', titles);\n\n// filter - completed only\nlet completedLessons = lessons.filter(l => l.status === 'completed');\nconsole.log('\\nCompleted:', completedLessons.map(l => l.title)); // Intro, Variables\n\n// filter + map chain - titles of completed\nlet completedTitles = lessons.filter(l => l.status === 'completed').map(l => l.title);\nconsole.log('Completed titles chain:', completedTitles);\n\n// find - current lesson\nlet current = lessons.find(l => l.status === 'current');\nconsole.log('\\nCurrent lesson:', current.title); // Operators\n\n// reduce - total XP\nlet totalXP = lessons.reduce((total, l) => total + l.xp, 0);\nconsole.log('\\nTotal XP earned:', totalXP); // 200\n\n// reduce - count by status\nlet countByStatus = lessons.reduce((counts, lesson) => {\n counts[lesson.status] = (counts[lesson.status] || 0) + 1;\n return counts;\n}, {});\nconsole.log('\\nCount by status:', countByStatus); // {completed:2, current:1, locked:2}\n\n// some - any locked?\nlet hasLocked = lessons.some(l => l.status === 'locked');\nconsole.log('\\nHas locked?', hasLocked); // true\n\n// every - all completed?\nlet allCompleted = lessons.every(l => l.status === 'completed');\nconsole.log('All completed?', allCompleted); // false\n\n// Your dashboard - progress with filter\nlet completed = 2;\nlet completedCount = lessons.filter(l => l.id <= completed).length;\nlet percent = Math.round((completedCount / lessons.length) * 100);\nconsole.log(`\\nProgress via filter: ${completedCount}/${lessons.length} = ${percent}%`);\n\n// Search with find\nlet searchId = 3;\nlet found = lessons.find(l => l.id === searchId);\nconsole.log(`\\nFound id ${searchId}:`, found? found.title : 'Not found');\n\n// Update with map and spread - immutable update\nlet updatedLessons = lessons.map(lesson => {\n if (lesson.id === 3) {\n return {...lesson, status: 'completed', xp: 100 }; // Spread + overwrite\n }\n return lesson;\n});\nconsole.log('\\nAfter completing lesson 3:');\nconsole.log('Original lesson 3 status:', lessons[2].status); // current - unchanged\nconsole.log('Updated lesson 3 status:', updatedLessons[2].status); // completed - new array\nconsole.log('Updated XP total:', updatedLessons.reduce((t, l) => t + l.xp, 0)); // 300",
+      "output": "All titles: [Intro, Variables, Operators, Conditions, Loops]\n\nCompleted: [Intro, Variables]\nCompleted titles chain: [Intro, Variables]\n\nCurrent lesson: Operators\n\nTotal XP earned: 200\n\nCount by status: {completed:2, current:1, locked:2}\n\nHas locked? true\nAll completed? false\n\nProgress via filter: 2/5 = 40%\n\nFound id 3: Operators\n\nAfter completing lesson 3:\nOriginal lesson 3 status: current\nUpdated lesson 3 status: completed\nUpdated XP total: 300"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Dashboard with Arrays and Objects"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all array and object concepts - create, access, modify, nested, map, filter, find, reduce, some, every, destructuring, spread, optional chaining - into complete dashboard that manages lessons array and user object exactly like your HTML dashboard but with modern methods."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete Arrays and Objects Dashboard (All Concepts)",
+      "code": "/* =========================================================\n COMPLETE ARRAYS AND OBJECTS DASHBOARD - Lesson 7 Capstone\n Uses: Array, Object, map, filter, find, reduce, destructuring, spread,?.,??\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', status: 'completed', xp: 100, coins: 10},\n {id: 2, title: 'Variables and Data Types', learn: 'Store info', summary: 'Learn let, const', status: 'completed', xp: 100, coins: 10},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', status: 'current', xp: 0, coins: 0},\n {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', status: 'locked', xp: 0, coins: 0},\n {id: 5, title: 'Loops', learn: 'Repetition', summary: 'Learn for, while', status: 'locked', xp: 0, coins: 0},\n {id: 6, title: 'Functions', learn: 'Reusable blocks', summary: 'Learn functions', status: 'locked', xp: 0, coins: 0},\n {id: 7, title: 'Arrays and Objects', learn: 'Collections', summary: 'Learn arrays, objects', status: 'locked', xp: 0, coins: 0},\n {id: 8, title: 'DOM Manipulation', learn: 'Control HTML', summary: 'Learn DOM', status: 'locked', xp: 0, coins: 0},\n {id: 9, title: 'Events and Modern JS', learn: 'Interactivity', summary: 'Learn events', status: 'locked', xp: 0, coins: 0},\n {id: 10, title: 'Build Website', learn: 'Combine skills', summary: 'Build project', status: 'locked', xp: 0, coins: 0}\n];\n\nlet firebaseData = {\n xp: 120,\n coins: 30,\n completed: 2,\n progress: { javascript: 2 },\n profile: { name: \"Prince\", level: \"Intermediate\" }\n};\n\n// Destructure user data\nlet { xp, coins, completed, progress, profile } = firebaseData;\nconsole.log(`=== CODE ACADEMY DASHBOARD ===`);\nconsole.log(`User: ${profile.name} - ${profile.level} - XP: ${xp}, Coins: ${coins}, Completed: ${completed}`);\nconsole.log(`JS Progress: ${progress?.javascript?? 0} / ${TOTAL_LESSONS}`);\n\n// Function to get status - uses object property\nfunction getStatus(lessonId, completed) {\n if (lessonId <= completed) return \"completed\";\n if (lessonId === completed + 1) return \"current\";\n return \"locked\";\n}\n\n// Render with forEach and object access\nconsole.log(\"\\n--- Rendering Lessons (forEach + object access) ---\");\nlessons.forEach(lesson => {\n let status = getStatus(lesson.id, completed);\n let icon = status === 'completed'? '✅' : status === 'current'? '▶' : '🔒';\n console.log(`${icon} ${lesson.id}. ${lesson.title} - ${status.toUpperCase()} - ${lesson.xp} XP`);\n});\n\n// Array methods\nconsole.log(\"\\n--- Array Methods ---\");\nlet titles = lessons.map(l => l.title);\nconsole.log(`All titles (map): ${titles.slice(0, 3).join(', ')}... (${titles.length} total)`);\n\nlet completedLessons = lessons.filter(l => l.status === 'completed');\nconsole.log(`Completed (filter): ${completedLessons.map(l => l.title).join(', ')}`);\n\nlet currentLesson = lessons.find(l => l.status === 'current');\nconsole.log(`Current (find): ${currentLesson.title}`);\n\nlet totalXP = lessons.reduce((total, l) => total + l.xp, 0);\nconsole.log(`Total XP earned (reduce): ${totalXP}`);\n\nlet hasLocked = lessons.some(l => l.status === 'locked');\nconsole.log(`Has locked? (some): ${hasLocked}`);\n\nlet allHaveXP = lessons.every(l => typeof l.xp === 'number');\nconsole.log(`All have XP number? (every): ${allHaveXP}`);\n\n// Count by status with reduce\nlet countByStatus = lessons.reduce((counts, lesson) => {\n let status = getStatus(lesson.id, completed);\n counts[status] = (counts[status] || 0) + 1;\n return counts;\n}, {});\nconsole.log(`Count by status (reduce):`, countByStatus); // {completed:2, current:1, locked:7}\n\n// Progress with filter\nlet completedCount = lessons.filter(l => l.id <= completed).length;\nlet percent = Math.round((completedCount / TOTAL_LESSONS) * 100);\nconsole.log(`\\nProgress (filter): ${completedCount}/${TOTAL_LESSONS} = ${percent}%`);\n\n// Spread and destructuring\nconsole.log(\"\\n--- Spread and Destructuring ---\");\nlet [firstLesson, secondLesson,...rest] = lessons;\nconsole.log(`First: ${firstLesson.title}, Second: ${secondLesson.title}, Rest: ${rest.length} lessons`);\n\nlet updatedLessons = lessons.map(lesson => {\n if (lesson.id === 3) {\n return {...lesson, status: 'completed', xp: 100 }; // Spread + overwrite\n }\n return lesson;\n});\nconsole.log(`After completing lesson 3:`);\nconsole.log(` Original status: ${lessons[2].status}, XP: ${lessons[2].xp} - unchanged`);\nconsole.log(` Updated status: ${updatedLessons[2].status}, XP: ${updatedLessons[2].xp} - new array`);\nconsole.log(` New total XP: ${updatedLessons.reduce((t, l) => t + l.xp, 0)}`);\n\n// Optional chaining and nullish\nconsole.log(\"\\n--- Optional Chaining and Nullish ---\");\nlet COURSE_ID = \"javascript\";\nlet jsProgress = firebaseData.progress?.[COURSE_ID]?? 0;\nconsole.log(`JS progress via progress?.[COURSE_ID]?? 0: ${jsProgress}`);\n\nlet user2 = {};\nconsole.log(`No progress: ${user2.progress?.javascript?? 0} (fallback 0)`);\n\n// Complete lesson with spread immutable update\nfunction completeLesson(lessonId) {\n console.log(`\\n--- Completing Lesson ${lessonId} ---`);\n let status = getStatus(lessonId, completed);\n if (status === 'locked') {\n console.log(`🔒 Locked! Need ${completed + 1} first`);\n return lessons;\n }\n if (status === 'completed') {\n console.log(`✅ Already completed`);\n return lessons;\n }\n \n // Update lessons array immutably with map + spread\n let newLessons = lessons.map(l => {\n if (l.id === lessonId) {\n return {...l, status: 'completed', xp: 100, coins: 10 };\n }\n if (l.id === lessonId + 1) {\n return {...l, status: 'current' };\n }\n return l;\n });\n \n // Update user object immutably with spread\n let newUser = {...firebaseData, xp: firebaseData.xp + 100, coins: firebaseData.coins + 10, completed: firebaseData.completed + 1 };\n \n console.log(`🎉 Completed! New XP: ${newUser.xp}, Coins: ${newUser.coins}, Completed: ${newUser.completed}`);\n return { lessons: newLessons, user: newUser };\n}\n\nlet result = completeLesson(3);\nif (result.lessons) {\n lessons = result.lessons;\n firebaseData = result.user;\n ({ xp, coins, completed } = firebaseData); // Destructure updated\n console.log(`\\nUpdated state: XP=${xp}, Completed=${completed}`);\n let newPercent = Math.round((completed / TOTAL_LESSONS) * 100);\n console.log(`New progress: ${completed}/${TOTAL_LESSONS} = ${newPercent}%`);\n}\n\nconsole.log(\"\\n=== FINAL ===\");\nconsole.log(`Lessons: ${lessons.length}, XP: ${xp}, Coins: ${coins}, Completed: ${completed}`);\nconsole.log(`Methods used: map (titles), filter (completed), find (current), reduce (total XP, count), some (has locked), every (all have XP), destructuring, spread (immutable),?. optional chaining,?? nullish`);",
+      "output": "=== CODE ACADEMY DASHBOARD ===\nUser: Prince - Intermediate - XP: 120, Coins: 30, Completed: 2\nJS Progress: 2 / 10\n\n--- Rendering Lessons (forEach + object access) ---\n✅ 1. Introduction to JavaScript - COMPLETED - 100 XP\n✅ 2. Variables and Data Types - COMPLETED - 100 XP\n▶ 3. Operators - CURRENT - 0 XP\n🔒 4. Conditions - LOCKED - 0 XP\n...\n\n--- Array Methods ---\nAll titles (map): Introduction to JavaScript, Variables and Data Types, Operators... (10 total)\nCompleted (filter): Introduction to JavaScript, Variables and Data Types\nCurrent (find): Operators\nTotal XP earned (reduce): 200\nHas locked? (some): true\nAll have XP number? (every): true\nCount by status (reduce): {completed:2, current:1, locked:7}\n\nProgress (filter): 2/10 = 20%\n\n--- Spread and Destructuring ---\nFirst: Introduction to JavaScript, Second: Variables and Data Types, Rest: 8 lessons\nAfter completing lesson 3:\n Original status: current, XP: 0 - unchanged\n Updated status: completed, XP: 100 - new array\n New total XP: 300\n\n--- Optional Chaining and Nullish ---\nJS progress via progress?.[COURSE_ID]?? 0: 2\nNo progress: 0 (fallback 0)\n\n--- Completing Lesson 3 ---\n🎉 Completed! New XP: 220, Coins: 40, Completed: 3\n\nUpdated state: XP=220, Completed=3\nNew progress: 3/10 = 30%\n\n=== FINAL ===\nLessons: 10, XP: 220, Coins: 40, Completed: 3\nMethods used: map, filter, find, reduce, some, every, destructuring, spread,?.,??"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Tricky Final Questions"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered arrays and objects: Array ordered list accessed by index 0, length, push adds, [0] first, [length-1] last. Object key-value pairs accessed by dot user.xp or bracket user['xp'] dynamic, nested user.progress.javascript, optional chaining?. safe. Array methods: map transforms all to new array, filter keeps matching subset, find first matching single object, reduce accumulates to single value total XP, some at least one true, every all true. Destructuring let {xp, coins} = user 1 line, spread [...lessons, newLesson] new array immutable original unchanged, {...user, xp:170} new object with overwrite."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: lessons array length 5, you do lessons[5] what happens and lessons[5]?.title vs lessons[5].title? And Array.isArray(lessons) vs typeof lessons?",
+      "options": [
+        "Both same - returns lesson 5",
+        "lessons[5] undefined - indexes 0-4 for length 5, index 5 out of bounds undefined. lessons[5]?.title undefined safe with optional chaining no error, lessons[5].title throws TypeError Cannot read property title of undefined without?. Array.isArray returns true for array, typeof array returns object (bug in JS) - use Array.isArray to check array not typeof",
+        "lessons[5] returns lesson 5",
+        "Both throw error"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Out of bounds undefined,?. safe undefined,.title without?. throws error. Array.isArray true for array, typeof array object - use Array.isArray.",
+      "incorrectFeedback": "Length 5 indexes 0-4, index 5 out of bounds undefined. lessons[5]?.title undefined safe optional chaining, lessons[5].title TypeError without?. Array.isArray(lessons) true array, typeof lessons object - array typeof is object, use Array.isArray to check array.",
+      "reasoning": "Out of bounds undefined, optional chaining safe vs error, Array.isArray vs typeof for array check.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have user = {xp:120}. You do let {xp, coins} = user; coins is undefined because user has no coins property. And let [first, second] = lessons; first is lessons[0]. What is destructuring and what happens if property/index doesn't exist?",
+      "options": [
+        "Error thrown",
+        "Destructuring extracts properties/elements into variables - {xp, coins} = user extracts xp=120 coins=undefined because coins property doesn't exist, returns undefined not error. [first, second] = lessons first=lessons[0] second=lessons[1]. If index doesn't exist, undefined. Destructuring convenient 1 line vs multiple lines manual assignment",
+        "Both same as manual",
+        "Destructuring slower"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Destructuring extracts, missing property/element undefined not error. Convenient 1 line vs many lines manual.",
+      "incorrectFeedback": "let {xp, coins} = user - xp=120, coins=undefined because user has no coins property, undefined not error. let [first, second] = lessons - first=lessons[0], second=lessons[1]. Missing property/element undefined. Destructuring 1 line vs manual 2-3 lines.",
+      "reasoning": "Destructuring extracts properties/elements, missing gives undefined not error - convenient.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have lessons array and do lessons.push(newLesson) vs [...lessons, newLesson]. First modifies original array mutable, second creates new array immutable original unchanged. Which better for React state and why? Tricky!",
+      "options": [
+        "Push better always",
+        "Push mutates original array - original changed, same reference. Spread creates new array new reference original unchanged immutable. React state needs new reference to detect change and re-render - if you push to state array same reference, React may not re-render because reference same. Spread new array new reference triggers re-render. For static lessons array push fine, for React state use spread immutable",
+        "Both same",
+        "Spread mutates"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Push mutates original same reference, React may not detect change. Spread new array new reference triggers re-render. Immutable pattern important for React!",
+      "incorrectFeedback": "push modifies original array mutable same reference. [...lessons, newLesson] new array immutable original unchanged new reference. React compares reference to detect change - same reference no re-render, new reference re-renders. So React state use spread immutable, static array push okay.",
+      "reasoning": "Mutable push vs immutable spread - React state needs new reference to trigger re-render - spread immutable better for React.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have lessons.filter(l => l.id <= completed).map(l => l.title) - filter then map chain. What happens step by step and what does it return? And lessons.find(l => l.id === 3) returns what?",
+      "options": [
+        "Both return single lesson",
+        "filter returns array of lessons where id <= completed true - subset array, then map transforms that subset array to titles array - array of titles of completed lessons. Chain: filter subset then map transform. find returns first single object where id===3 true, single object not array, or undefined if not found",
+        "Both return array",
+        "Both return undefined"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! filter subset array, map transforms to titles array, chain filter then map. find single object not array. Your dashboard could use filter+map for completed titles and find for current lesson!",
+      "incorrectFeedback": "filter(l=>l.id<=2) returns [lesson1, lesson2] array subset. map(l=>l.title) on that returns ['Intro', 'Variables'] titles array. Chain filter then map. find(l=>l.id===3) returns single lesson object {id:3, title:'Operators'} not array, or undefined if not found.",
+      "reasoning": "filter+map chain and find - filter subset, map transform, find single object.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard has lessons array of 10 objects and firebaseData object with xp, coins, completed, progress:{javascript:2}. You need to get JS progress, render all lessons, count completed, find current, total XP. Which methods you use?",
+      "options": [
+        "Only for loop",
+        "progress?.[COURSE_ID]?? 0 optional chaining + variable key + nullish for safe JS progress, forEach to render all lessons, filter to count completed lessons where id <= completed, find to get current lesson where id === completed+1, reduce to sum total XP, map to get titles, destructuring let {xp, coins} = data to extract, spread [...lessons, newLesson] for immutable add - all array/object methods combined like your dashboard could use modern methods",
+        "Only if/else",
+        "No methods needed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You understand full array/object ecosystem:?. + [] variable key +?? safe access, forEach render all, filter count completed, find current, reduce total XP, map titles, destructuring extract, spread immutable add - all combined for dashboard!",
+      "incorrectFeedback": "Your dashboard data: progress?.[COURSE_ID]?? 0 safe JS progress with optional chaining variable key nullish, forEach render all, filter count completed, find current, reduce total XP, map titles, {xp, coins}=data destructuring, [...lessons, newLesson] spread immutable add - all methods combined!",
+      "reasoning": "Complete array/object methods for dashboard -?.[]?? safe access, forEach, filter, find, reduce, map, destructuring, spread all used.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, find lessons array and firebaseData object - list all keys and values, access with dot and bracket and optional chaining. 2. Use map to get all titles, filter to get completed lessons, find to get lesson id 3, reduce to sum XP of completed lessons, countByStatus with reduce. 3. Test spread vs push - original array unchanged vs changed. 4. Build function completeLesson that uses map + spread to immutably update lessons array and user object - like final practical. Next: Lesson 8 - DOM Manipulation, where you master document.getElementById, createElement, innerHTML, appendChild, style that your dashboard uses to create cards and update XP display."
+    }
+  ]
+}

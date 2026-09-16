@@ -1,0 +1,436 @@
+{
+  "course": "javascript",
+  "lessonNumber": 2,
+  "lessonId": "javascript-lesson-2",
+  "title": "Variables and Data Types",
+  "subtitle": "How Your Dashboard Stores XP, Coins, Lessons and User Progress",
+  "description": "Master let, const, var, strings, numbers, booleans, null, undefined, type conversion - exactly how your dashboard stores and uses XP, coins, completed lessons, and why Number() is used in your HTML.",
+  "level": "Beginner",
+  "xpReward": 130,
+  "coinsReward": 30,
+  "estimatedMinutes": 55,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: What is a Variable? Your Dashboard's Storage Boxes"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Imagine your dashboard is a school bag. Inside the bag you have different boxes: one box for XP with 120 written on it, one box for coins with 30, one box for completed lessons with 2, one box for course name with 'javascript' written."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "In JavaScript, those boxes are called variables. Variable = container that stores data. You give it a name and a value. Your dashboard code does: let xp = 120; - this creates a box named xp with value 120 inside."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Why variables? Because data changes! XP increases when you complete a lesson from 120 to 170. If you hardcode 120 everywhere, you need to change 10 places. With variable, change one box, everywhere that uses xp gets new value automatically."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Look at your HTML: const COURSE_ID = \"javascript\"; const TOTAL_LESSONS = 10; - these are boxes that NEVER change. Course id is always javascript for this page. Total lessons always 10. So we use const - constant box, locked."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "But let xp = ...; let coins = ...; let completed = ...; - these CHANGE when you complete lessons. So we use let - box that can be updated. This is the core difference you must master today."
+    },
+    {
+      "id": "p1-6",
+      "type": "sentence",
+      "text": "Think: const = locked box, can't change value. let = open box, can change value. Your dashboard uses both correctly - fixed config with const, changing state with let. That's professional code style."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Variables Like Your Dashboard - const vs let",
+      "code": "// Fixed config - NEVER changes, so const (like your dashboard)\nconst COURSE_ID = \"javascript\";\nconst TOTAL_LESSONS = 10;\nconst XP_PER_LESSON = 50;\n\n// Changing state - WILL change, so let (like your dashboard)\nlet xp = 120;\nlet coins = 30;\nlet completed = 2;\n\nconsole.log(`Course: ${COURSE_ID}, Total: ${TOTAL_LESSONS}`);\nconsole.log(`Before: ${completed} lessons, ${xp} XP`);\n\n// User completes a lesson\ncompleted = completed + 1; // 2 -> 3\nxp = xp + XP_PER_LESSON; // 120 -> 170\ncoins = coins + 10; // 30 -> 40\n\nconsole.log(`After: ${completed} lessons, ${xp} XP, ${coins} coins`);\n\n// Try to change const - ERROR!\n// COURSE_ID = \"react\"; // ❌ TypeError: Assignment to constant variable\n// This error protects you from accidentally changing fixed config",
+      "output": "Course: javascript, Total: 10\nBefore: 2 lessons, 120 XP\nAfter: 3 lessons, 170 XP, 40 coins"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: let vs const vs var - The Tricky Interview Question"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "There are 3 ways to create variables: let, const, and old var. Your dashboard uses ONLY let and const - no var. Why? var is old, buggy, from 1995. It has scope problems that cause bugs."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "let: Can change value, block-scoped - means it only exists inside { } where created. Safe, modern, use for changing values like xp, completed."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "const: Cannot reassign, block-scoped, but if it's object or array, you CAN change inside properties. const user = {xp: 120}; user.xp = 170 works! But user = {} fails. Your dashboard uses const for objects too: const lessons = [...] - array itself not reassigned, but content changes."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "var: Can change, function-scoped not block-scoped, causes hoisting bugs. Example: if (true) { var x = 10; } console.log(x) works with var (10) but should not - x leaks outside if block! With let, it correctly fails - x not defined outside block. That's why pros never use var now."
+    },
+    {
+      "id": "p2-5",
+      "type": "sentence",
+      "text": "Rule for your final project: Use const by default for everything. Only use let when you KNOW value will change like xp, completed. Never use var. This is what your dashboard does - check your HTML, you will see const COURSE_ID, const lessons, let xp? Actually your dashboard uses const for lessons array and let for completed inside functions."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: let vs const vs var - The Scope Trap",
+      "code": "// let - block scoped - SAFE\nif (true) {\n  let xpLet = 120;\n  console.log('Inside block with let:', xpLet);\n}\n// console.log(xpLet); // ❌ Error: xpLet not defined outside block - GOOD! Block scoped\n\n// var - function scoped - BUGGY, leaks outside block\nif (true) {\n  var xpVar = 120;\n  console.log('Inside block with var:', xpVar);\n}\nconsole.log('Outside block with var:', xpVar); // Works! 120 - BAD! Leaked outside if block\n\n// const with object - can change properties!\nconst user = { xp: 120, coins: 30 };\nuser.xp = 170; // ✅ Works! Changing property inside object allowed\nuser.coins = 40; // ✅ Works!\nconsole.log('User after update:', user);\n\n// user = { xp: 0 }; // ❌ Error - cannot reassign const itself\n\n// Your dashboard: const lessons = [...] - array not reassigned, but you push new lessons? Actually you create new grid\nconst lessons = [{id: 1, title: 'Intro'}];\n// lessons = []; // ❌ Would fail\nlessons.push({id: 2, title: 'Variables'}); // ✅ Works - modifying inside array",
+      "output": "Inside block with let: 120\nInside block with var: 120\nOutside block with var: 120 (leaked - bug!)\nUser after update: {xp: 170, coins: 40}"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have const user = {xp: 120}; You do user.xp = 170; Then user = {xp: 0}; First line works, second fails. Why? This is tricky but your dashboard uses const for objects!",
+      "options": [
+        "Both should fail because const cannot change at all",
+        "Both should work because const allows everything",
+        "First works because const only prevents reassigning the variable itself (user = ...), but allows changing properties inside the object (user.xp = ...). The box is locked but you can change things inside the box. Second fails because you try to replace entire box with new object",
+        "JavaScript bug"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Perfect! const = cannot reassign variable itself, but object properties are mutable. Your dashboard: const lessons = [...] then lessons.forEach - array not reassigned, but you create new elements inside. Same concept!",
+      "incorrectFeedback": "const user = {xp:120} - user variable holds reference to object. user.xp = 170 changes property inside object, reference same - allowed. user = {xp:0} tries to change reference to new object - not allowed for const.",
+      "reasoning": "const with objects - reference locked, properties mutable - crucial to understand for your dashboard's const lessons array.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Data Types - The 7 Types of Data in Your Dashboard"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "In your dashboard, you store different kinds of data: Course title 'Master JavaScript' is text, XP 120 is number, isCompleted true/false is boolean, lessons array is list, user object is collection, null when no user, undefined when variable declared but not assigned."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "7 data types: String = text in quotes 'javascript' or \"javascript\" or `javascript` (backticks for template literals). Number = 120, 30, 3.14, 10. Boolean = true/false for isLocked, isCompleted. Array = list of lessons [{id:1}, {id:2}]. Object = collection {xp:120, coins:30}. Null = intentionally empty - no user. Undefined = declared but not given value."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "Your dashboard checks: if (!user) redirect to login.html - user is null when not logged in, !null = true, so redirects. And typeof data.completed === 'number' - checks if completed is number type before using it. Type checking prevents bugs!"
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Most important for you: String vs Number confusion causes bugs! localStorage stores everything as string '120', but you need number 120 for math. Your dashboard does Number(data.xp ?? 0) to convert string to number. If you do '120' + 50 you get '12050' not 170!"
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: All 7 Data Types Like Your Dashboard Uses",
+      "code": "// String - text (your dashboard titles)\nlet courseTitle = \"Master JavaScript\";\nlet courseId = 'javascript';\nlet welcome = `Welcome to ${courseTitle}`; // Template literal - your dashboard uses this\n\n// Number - xp, coins, progress\nlet xp = 120;\nlet coins = 30;\nlet percent = 20.5; // Can be decimal\n\n// Boolean - true/false (your isCompleted, isLocked logic)\nlet isCompleted = false;\nlet isCurrent = true;\nlet isLocked = false;\n\n// Array - list of lessons (your lessons array)\nlet lessonIds = [1, 2, 3, 4, 5];\nlet lessons = [\n  {id: 1, title: 'Intro', status: 'completed'},\n  {id: 2, title: 'Variables', status: 'current'}\n];\n\n// Object - user data (your user profile)\nlet user = {\n  xp: 120,\n  coins: 30,\n  completed: 2,\n  name: 'Prince'\n};\n\n// Null - intentionally empty (no user logged in)\nlet currentUser = null;\nif (!currentUser) {\n  console.log('No user - redirect to login.html - like your dashboard does');\n}\n\n// Undefined - declared but not assigned\nlet futureXP;\nconsole.log(futureXP); // undefined\nconsole.log(typeof futureXP); // undefined\n\nconsole.log(typeof courseTitle, typeof xp, typeof isCompleted); // string number boolean",
+      "output": "No user - redirect to login.html\nundefined\nundefined\nstring number boolean"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: typeof and Type Checking Like Your Dashboard",
+      "code": "// Your dashboard does type checking before using data:\n// typeof data.completed === \"number\"\n\nlet completed = 2;\nlet title = \"Intro\";\nlet isLocked = true;\nlet lessons = [{id: 1}];\nlet user = {xp: 120};\nlet nothing = null;\n\nconsole.log(typeof completed); // number\nconsole.log(typeof title); // string\nconsole.log(typeof isLocked); // boolean\nconsole.log(typeof lessons); // object (array is object type)\nconsole.log(typeof user); // object\nconsole.log(typeof nothing); // object (bug in JS history - null is object)\nconsole.log(Array.isArray(lessons)); // true - correct way to check array\n\n// Your dashboard safety check:\nfunction updateProgress(completed) {\n  completed = Math.min(10, Math.max(0, Number(completed) || 0)); // Ensure number\n  if (typeof completed !== 'number') {\n    console.error('Completed must be number');\n    completed = 0;\n  }\n  return completed;\n}\n\nconsole.log(updateProgress(2)); // 2\nconsole.log(updateProgress(\"2\")); // 2 - converts string to number\nconsole.log(updateProgress(null)); // 0 - fallback",
+      "output": "number\nstring\nboolean\nobject\nobject\nobject\ntrue\n2\n2\n0"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Strings Deep Dive - Your Dashboard Titles and Template Literals"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "String is text. Your dashboard has many strings: 'Master JavaScript', 'JavaScript Course', 'Loading your course...', 'Learn • Build • Master'. You can create strings with single quotes 'js', double quotes \"js\", or backticks `js`."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Backticks are special - template literals - they allow ${variable} inside string. Your dashboard uses this everywhere: `${completed} / ${TOTAL_LESSONS} completed` and `${Number(data.xp || 0).toLocaleString()} XP` and `lesson.html?course=${COURSE_ID}&lesson=${lessonNumber}`."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Without template literals, you would do ugly concatenation: completed + ' / ' + TOTAL_LESSONS + ' completed' - hard to read. With backticks: `${completed} / ${TOTAL_LESSONS} completed` - clean, readable, pro way your dashboard uses."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "String methods: .length gives length, .toUpperCase(), .toLowerCase(), .includes() checks if string contains another string - your dashboard uses document.referrer.includes(location.origin) - includes checks if referrer contains origin string."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: Strings and Template Literals Like Your Dashboard",
+      "code": "let course = \"javascript\";\nlet completed = 2;\nlet total = 10;\n\n// Old way - concatenation (messy)\nlet oldWay = completed + \" / \" + total + \" completed\";\nconsole.log(oldWay); // 2 / 10 completed\n\n// New way - template literal (clean, your dashboard uses this)\nlet newWay = `${completed} / ${total} completed`;\nconsole.log(newWay); // 2 / 10 completed\n\n// Your dashboard exact examples:\nlet xp = 120;\nlet xpText = `${Number(xp || 0).toLocaleString()} XP`; // 120 XP\nconsole.log(xpText);\n\nlet lessonId = 3;\nlet url = `lesson.html?course=${course}&lesson=${lessonId}`;\nconsole.log(url); // lesson.html?course=javascript&lesson=3\n\n// String methods - your dashboard uses includes\nlet referrer = \"https://code-academy.com/react\";\nlet origin = \"https://code-academy.com\";\nconsole.log(referrer.includes(origin)); // true - referrer contains origin\n\nlet title = \"Introduction to JavaScript\";\nconsole.log(title.length); // 26\nconsole.log(title.toUpperCase()); // INTRODUCTION TO JAVASCRIPT\nconsole.log(title.includes(\"JavaScript\")); // true",
+      "output": "2 / 10 completed\n2 / 10 completed\n120 XP\nlesson.html?course=javascript&lesson=3\ntrue\n26\nINTRODUCTION TO JAVASCRIPT\ntrue"
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Numbers and The Tricky String + Number Bug"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Number is for math: XP 120, coins 30, completed 2, percent 20, total 10. Your dashboard does Math.round((completed / TOTAL_LESSONS) * 100) - all number operations."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Tricky bug: localStorage stores everything as string! When you do localStorage.getItem('xp'), you get '120' string not 120 number. If you do '120' + 50, JavaScript does concatenation not addition: '120' + 50 = '12050' string! Not 170!"
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "Your dashboard prevents this bug with Number(): Number(data.xp ?? 0) converts to number, Number('120') = 120 number, then 120 + 50 = 170 correct. Also Number(null) = 0, Number(undefined) = 0 with || 0 fallback."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Also toLocaleString() formats number with commas: 1200.toLocaleString() = '1,200' - your dashboard uses this for XP display: Number(data.xp || 0).toLocaleString() + ' XP' shows '1,200 XP' nicely formatted."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Number Bug and Fix Like Your Dashboard",
+      "code": "// Simulate localStorage returns string\nlet xpFromStorage = \"120\"; // String! localStorage always string\nlet xpNumber = Number(xpFromStorage); // Convert to number - your dashboard does this\n\nconsole.log(typeof xpFromStorage, xpFromStorage); // string 120\nconsole.log(typeof xpNumber, xpNumber); // number 120\n\n// Buggy - string + number = concatenation\nlet buggy = xpFromStorage + 50;\nconsole.log('Buggy:', buggy, typeof buggy); // 12050 string - WRONG!\n\n// Fixed - number + number = addition\nlet fixed = xpNumber + 50;\nconsole.log('Fixed:', fixed, typeof fixed); // 170 number - CORRECT!\n\n// Your dashboard exact code:\n// xpValue.textContent = `${Number(data.xp || 0).toLocaleString()} XP`;\n// Number() converts, toLocaleString() adds commas, + ' XP' adds text\n\nlet xp = 1200;\nconsole.log(xp.toLocaleString()); // 1,200 - formatted with comma\nconsole.log(`${Number(xp || 0).toLocaleString()} XP`); // 1,200 XP - your dashboard style\n\n// Math operations - your progress calculation\nlet completed = 3;\nlet total = 10;\nlet percent = Math.round((completed / total) * 100); // 30\nconsole.log(`${percent}%`); // 30% - your progressFill width",
+      "output": "string 120\nnumber 120\nBuggy: 12050 string\nFixed: 170 number\n1,200\n1,200 XP\n30%"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: localStorage.getItem('xp') returns '120' string. You do let newXP = localStorage.getItem('xp') + 50; What is newXP and why your dashboard uses Number()?",
+      "options": [
+        "newXP = 170 number - string + number works as math",
+        "newXP = '12050' string - because '120' is string, + does concatenation not addition, so '120' + 50 = '12050'. Your dashboard uses Number('120') = 120 number, then 120+50=170 correct. That's why Number(data.xp ?? 0) is used",
+        "newXP = 0",
+        "Error thrown"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! String + number = concatenation bug. Number() converts string to number first. Your dashboard's Number(data.xp ?? 0) prevents this bug - pro safety!",
+      "incorrectFeedback": "localStorage returns string. '120' + 50 = '12050' not 170. Must Number('120') = 120, then +50 = 170. Your dashboard does Number() conversion for xp, coins, completed - all from Firebase/localStorage could be strings.",
+      "reasoning": "Type coercion - string + number concatenates - common bug when reading from localStorage/Firebase.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Booleans, Null, Undefined - Your Dashboard's Auth Logic"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Boolean is true/false. Your dashboard uses booleans for status: isCompleted = lesson.id <= completed - true if completed, false otherwise. isCurrent = lesson.id === completed + 1 - true if next lesson. isLocked = lesson.id > completed + 1 - true if locked."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "Null = intentionally empty. Your dashboard: let currentUser = null initially, then if (!user) redirect to login.html - if user is null (no one logged in), !null = true, so redirect. Null means we intentionally set empty to indicate no user."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "Undefined = not assigned yet. let futureXP; console.log(futureXP) = undefined - declared but no value given. Your dashboard checks typeof data.completed === 'number' - if completed is undefined (not in Firebase), it falls back to local progress or 0."
+    },
+    {
+      "id": "p6-4",
+      "type": "sentence",
+      "text": "Difference: null you set intentionally to empty, undefined means JavaScript didn't find value. Your loadUserData returns {xp:0, coins:0, completed:0} when snapshot doesn't exist - intentionally returning 0 not undefined, so UI shows 0 not undefined."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Booleans and Null/Undefined Like Your Dashboard Auth",
+      "code": "// Booleans - your dashboard status logic\nlet completed = 2;\nlet lessonId = 3;\n\nlet isCompleted = lessonId <= completed; // 3 <= 2? false\nlet isCurrent = lessonId === completed + 1; // 3 === 3? true\nlet isLocked = lessonId > completed + 1; // 3 > 3? false\n\nconsole.log(`Lesson ${lessonId}: Completed=${isCompleted}, Current=${isCurrent}, Locked=${isLocked}`);\n// Lesson 3: Completed=false, Current=true, Locked=false - so show Start button\n\n// Null - no user (your dashboard auth check)\nlet user = null; // No user logged in\nif (!user) {\n  console.log('No user - would redirect to login.html like your dashboard');\n}\n\nuser = { uid: 'user123', xp: 120 }; // User logged in\nif (user) {\n  console.log('User found:', user.uid, 'XP:', user.xp);\n}\n\n// Undefined vs Null\nlet xp;\nconsole.log('xp declared but not assigned:', xp); // undefined\n\nlet coins = null;\nconsole.log('coins intentionally empty:', coins); // null\n\n// Your dashboard: data.xp ?? data.profile?.xp ?? 0\n// ?? is nullish coalescing - returns right side if left is null/undefined\nlet data = { profile: { xp: 120 } };\nlet finalXP = data.xp ?? data.profile?.xp ?? 0;\nconsole.log('Final XP with ?? fallback:', finalXP); // 120 - data.xp undefined, so use profile.xp",
+      "output": "Lesson 3: Completed=false, Current=true, Locked=false\nNo user - would redirect to login.html\nUser found: user123 XP: 120\nxp declared but not assigned: undefined\ncoins intentionally empty: null\nFinal XP with ?? fallback: 120"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Type Conversion - Your Dashboard's Number() and ?? Safety"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Type conversion = changing one type to another. Your dashboard does this a lot: Number(data.xp) converts to number, String(xp) would convert to string, Boolean(0) converts to boolean."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "Why? Because data from Firebase or localStorage could be string, null, undefined, number - you need to ensure it's number before doing math. Your dashboard: Number(data.xp ?? data.profile?.xp ?? 0) - this handles all cases: if xp is '120' string, Number converts to 120, if null, ?? gives next fallback, if undefined, || 0 gives 0."
+    },
+    {
+      "id": "p7-3",
+      "type": "sentence",
+      "text": "?? is nullish coalescing operator - returns right side only if left is null or undefined, not for 0 or false. || is OR operator - returns right side if left is falsy (0, '', false, null, undefined). Your dashboard uses both: ?? for xp fallback, || 0 for completed fallback."
+    },
+    {
+      "id": "p7-4",
+      "type": "sentence",
+      "text": "Example: 0 ?? 10 = 0 (0 is not null/undefined, so keep 0), but 0 || 10 = 10 (0 is falsy, so use 10). For XP, if XP is 0, you want to keep 0 not fallback to 10, so ?? is better. For completed, Number(completed) || 0 - if completed is 0, || 0 still 0, but if NaN, fallback to 0."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Type Conversion Safety Like Your Dashboard",
+      "code": "// Your dashboard's safety pattern: Number(data.xp ?? data.profile?.xp ?? 0)\nfunction getXP(data) {\n  // Try data.xp, if null/undefined try data.profile?.xp, if still null/undefined use 0, then convert to Number\n  return Number(data.xp ?? data.profile?.xp ?? 0);\n}\n\nconsole.log(getXP({ xp: 120 })); // 120 - direct xp\nconsole.log(getXP({ xp: \"120\" })); // 120 - string converted to number\nconsole.log(getXP({ profile: { xp: 150 } })); // 150 - from profile\nconsole.log(getXP({})); // 0 - fallback\nconsole.log(getXP({ xp: null })); // 0 - null fallback to 0\nconsole.log(getXP({ xp: 0 })); // 0 - keeps 0, not fallback (?? keeps 0)\n\n// Difference between ?? and ||\nconsole.log('0 ?? 10 =', 0 ?? 10); // 0 - 0 is not null/undefined, keep it\nconsole.log('0 || 10 =', 0 || 10); // 10 - 0 is falsy, use fallback\nconsole.log('null ?? 10 =', null ?? 10); // 10 - null is nullish, use fallback\nconsole.log('null || 10 =', null || 10); // 10 - null is falsy, use fallback\n\n// Your dashboard progress safety: Math.min(TOTAL_LESSONS, Math.max(0, Number(completed) || 0))\n// Ensures completed is between 0 and 10, and is number, fallback 0 if NaN\nfunction safeCompleted(value) {\n  return Math.min(10, Math.max(0, Number(value) || 0));\n}\nconsole.log(safeCompleted(5)); // 5\nconsole.log(safeCompleted(15)); // 10 - capped to max 10\nconsole.log(safeCompleted(-2)); // 0 - capped to min 0\nconsole.log(safeCompleted(\"3\")); // 3 - string converted\nconsole.log(safeCompleted(null)); // 0 - fallback",
+      "output": "120\n120\n150\n0\n0\n0\n0 ?? 10 = 0\n0 || 10 = 10\nnull ?? 10 = 10\nnull || 10 = 10\n5\n10\n0\n3\n0"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: You have let xp = 0; (user has 0 XP). You do let displayXP = xp || 10; and let safeXP = xp ?? 10; What are displayXP and safeXP? Tricky difference between || and ?? that your dashboard uses!",
+      "options": [
+        "Both 0 - because xp is 0",
+        "displayXP = 10, safeXP = 0 - because || treats 0 as falsy so fallback to 10, but ?? only falls back for null/undefined, 0 is valid so keeps 0. Your dashboard uses ?? for XP to keep 0 XP, not fallback to 10",
+        "Both 10 - because 0 is falsy",
+        "Error"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! || is OR - falsy values (0, '', false, null, undefined) fallback. ?? is nullish - only null/undefined fallback, keeps 0 and false. For XP, 0 is valid XP, should keep 0 not 10, so ?? is correct - your dashboard uses ?? for xp!",
+      "incorrectFeedback": "0 || 10 = 10 because 0 is falsy. 0 ?? 10 = 0 because 0 is not null/undefined. Your dashboard: data.xp ?? ... ?? 0 keeps 0 XP if user has 0 XP, not fallback to default. || would incorrectly fallback for 0.",
+      "reasoning": "|| vs ?? difference - critical for handling 0 and false values correctly - your dashboard uses ?? for XP for this reason.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Variables in Action - Your Dashboard's Real Code"
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 9: Real Dashboard Variables - From Your HTML File",
+      "code": "// Exact variables from your HTML dashboard:\nconst COURSE_ID = \"javascript\";\nconst TOTAL_LESSONS = 10;\n\nconst lessons = [\n  { id: 1, title: \"Introduction to JavaScript\", learn: \"Understand JavaScript...\", summary: \"Learn syntax...\" },\n  { id: 2, title: \"Variables and Data Types\", learn: \"Store and work...\", summary: \"Learn let, const...\" },\n];\n\n// Elements - const because element references don't change\nconst lessonContainer = { id: \"lessonContainer\" }; // Simulated element\nconst xpValue = { id: \"xpValue\" };\n\n// State - let because changes\nlet xp = 0;\nlet coins = 0;\nlet completed = 0;\n\n// Function to update stats - like your updateStats()\nfunction updateStats(data) {\n  // Your code: xpValue.textContent = `${Number(data.xp || 0).toLocaleString()} XP`;\n  let xpText = `${Number(data.xp || 0).toLocaleString()} XP`;\n  let coinsText = Number(data.coins || 0).toLocaleString();\n  console.log(`Updating stats: ${xpText}, ${coinsText} coins`);\n}\n\n// Function to update progress - like your updateProgress()\nfunction updateProgress(completed) {\n  completed = Math.min(TOTAL_LESSONS, Math.max(0, Number(completed) || 0)); // Safety like your code\n  let percent = Math.round((completed / TOTAL_LESSONS) * 100);\n  let countText = `${completed} / ${TOTAL_LESSONS} completed`;\n  console.log(`Progress: ${countText} - ${percent}%`);\n  return { percent, countText };\n}\n\n// Simulate loading user data - like your loadUserData()\nlet userData = { xp: 120, coins: 30, completed: 2 };\nupdateStats(userData);\nupdateProgress(userData.completed);\n\nconsole.log(`Lessons array has ${lessons.length} lessons`);\nconsole.log(`First lesson: ${lessons[0].title}`);",
+      "output": "Updating stats: 120 XP, 30 coins\nProgress: 2 / 10 completed - 20%\nLessons array has 2 lessons\nFirst lesson: Introduction to JavaScript"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: In your dashboard, you have const lessons = [...]; lessons.push({id: 3, title: 'Operators'}); Works or fails? And const COURSE_ID = 'javascript'; COURSE_ID = 'react'; Works or fails? Why both const but different behavior?",
+      "options": [
+        "Both fail - const cannot change at all",
+        "Both work - const allows change",
+        "First works (push modifies inside array, reference same), second fails (reassigning variable itself) - const prevents reassignment of variable, not mutation of inside properties/array. lessons array reference same, but inside content changed. COURSE_ID = 'react' tries to change reference itself - fails",
+        "First fails, second works"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Perfect! const array/object - you can push, modify properties, but cannot reassign variable itself. Your dashboard uses const lessons and modifies via forEach/render, not reassigning lessons variable.",
+      "incorrectFeedback": "const lessons = [] - lessons holds reference. push() changes inside array, reference same - allowed. COURSE_ID = 'react' changes reference itself - not allowed. const = reference locked, content mutable for objects/arrays.",
+      "reasoning": "const with reference types - reference locked, content mutable - used in your dashboard for lessons array.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You declare let xp; (no value) and let coins = null; (intentionally empty). console.log(xp) and console.log(coins). What shows and what's difference in your dashboard's check if (!user)?",
+      "options": [
+        "Both undefined - same",
+        "Both null - same",
+        "xp is undefined (declared but not assigned, JS didn't find value), coins is null (intentionally set to empty by you). if (!user) where user is null or undefined both are falsy so !null = true and !undefined = true, both trigger redirect to login - but null means you intentionally set no user, undefined means variable not assigned yet",
+        "Both 0"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Yes! undefined = not assigned yet, null = intentionally empty. Both falsy, so if (!user) works for both - redirects to login if no user. Your dashboard: user = null initially means no user.",
+      "incorrectFeedback": "let xp; => undefined (no value assigned). let coins = null; => null (intentionally empty). Both falsy, so if (!user) true for both, redirects to login. Difference: null intentional empty, undefined accidental not assigned.",
+      "reasoning": "Null vs undefined - null intentional, undefined not assigned - both falsy but different meaning.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Build User Progress Tracker"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine everything: let/const, 7 data types, template literals, type conversion with Number() and ??, booleans for status, null for no user. This is mini version of your dashboard's core variable logic."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - User Progress Tracker (All Lesson 2 Concepts)",
+      "code": "/* =========================================================\n   USER PROGRESS TRACKER - Lesson 2 Capstone\n   Uses: let/const, all data types, template literals, Number(), ??\n========================================================= */\n\n// Config - const, never changes\nconst COURSE_ID = \"javascript\";\nconst TOTAL_LESSONS = 10;\nconst XP_PER_LESSON = 50;\nconst COINS_PER_LESSON = 10;\n\n// User data - object type, const reference but properties change\nconst user = {\n  name: \"Prince\",\n  xp: 120,\n  coins: 30,\n  completed: 2,\n  isLoggedIn: true, // Boolean\n  lastLesson: null // Null - no last lesson yet\n};\n\n// Lessons - array type, const reference but content managed\nconst lessons = [\n  { id: 1, title: \"Introduction to JavaScript\", status: \"completed\", xp: 100 },\n  { id: 2, title: \"Variables and Data Types\", status: \"completed\", xp: 100 },\n  { id: 3, title: \"Operators and Expressions\", status: \"current\", xp: 0 },\n  { id: 4, title: \"Conditions\", status: \"locked\", xp: 0 },\n];\n\n// Function with type safety like your dashboard\nfunction getSafeXP(data) {\n  // Your dashboard pattern: Number(data.xp ?? data.profile?.xp ?? 0)\n  return Number(data.xp ?? data.profile?.xp ?? 0);\n}\n\nfunction calculateProgress(completed, total) {\n  // Your dashboard safety: Math.min, Math.max, Number() || 0\n  completed = Math.min(total, Math.max(0, Number(completed) || 0));\n  let percent = Math.round((completed / total) * 100);\n  let text = `${completed} / ${total} completed`; // Template literal\n  return { completed, percent, text };\n}\n\nfunction getLessonStatus(lessonId, completed) {\n  // Boolean logic like your dashboard\n  let isCompleted = lessonId <= completed;\n  let isCurrent = lessonId === completed + 1;\n  let isLocked = lessonId > completed + 1;\n  \n  if (isCompleted) return \"completed\";\n  if (isCurrent) return \"current\";\n  return \"locked\";\n}\n\n// Simulate completing lesson\nfunction completeLesson(lessonId) {\n  console.log(`\\n--- Attempting Lesson ${lessonId} ---`);\n  \n  let status = getLessonStatus(lessonId, user.completed);\n  console.log(`Status: ${status} (Completed: ${user.completed})`);\n  \n  if (status === \"locked\") {\n    console.warn(`🔒 Locked! Complete lesson ${user.completed + 1} first.`);\n    return;\n  }\n  \n  if (status === \"completed\") {\n    console.log(`✅ Already completed - reviewing ${lessons[lessonId-1].title}`);\n    return;\n  }\n  \n  // Complete current lesson\n  user.completed += 1;\n  user.xp += XP_PER_LESSON;\n  user.coins += COINS_PER_LESSON;\n  user.lastLesson = lessonId;\n  \n  // Update lesson status in array\n  lessons[lessonId-1].status = \"completed\";\n  lessons[lessonId-1].xp = XP_PER_LESSON;\n  if (lessons[lessonId]) {\n    lessons[lessonId].status = \"current\";\n  }\n  \n  let progress = calculateProgress(user.completed, TOTAL_LESSONS);\n  let safeXP = getSafeXP(user);\n  \n  console.log(`🎉 Completed!`);\n  console.log(`💰 XP: ${safeXP} (+${XP_PER_LESSON}), Coins: ${user.coins}`);\n  console.log(`📊 ${progress.text} - ${progress.percent}%`);\n  console.log(`📚 Last lesson: ${user.lastLesson}`);\n}\n\n// Initial state\nconsole.log(\"=== CODE ACADEMY TRACKER ===\");\nconsole.log(`Course: ${COURSE_ID}, User: ${user.name}, Logged in: ${user.isLoggedIn}`);\nlet progress = calculateProgress(user.completed, TOTAL_LESSONS);\nconsole.log(`Start: ${progress.text} - ${progress.percent}% - XP: ${getSafeXP(user)}`);\nconsole.log(`Lessons: ${lessons.map(l => `${l.id}:${l.status}`).join(\", \")}`);\n\n// Test type conversion bug fix\nconsole.log(\"\\n--- Testing Type Conversion Safety ---\");\nlet xpFromStorage = \"120\"; // String from localStorage\nconsole.log(`Buggy: \"${xpFromStorage}\" + 50 = \"${xpFromStorage + 50}\" (string concat)`);\nconsole.log(`Fixed: Number(\"${xpFromStorage}\") + 50 = ${Number(xpFromStorage) + 50} (correct math)`);\n\n// Simulate user journey\ncompleteLesson(3);\ncompleteLesson(5); // Locked - should warn\ncompleteLesson(4);\n\nconsole.log(\"\\n=== FINAL STATE ===\");\nprogress = calculateProgress(user.completed, TOTAL_LESSONS);\nconsole.log(`User: ${user.name}, XP: ${user.xp}, Coins: ${user.coins}, Completed: ${progress.text}`);\nconsole.log(`Lessons status: ${lessons.map(l => `${l.id}:${l.status}`).join(\", \")}`);\nconsole.log(`Type checks: xp is ${typeof user.xp}, completed is ${typeof user.completed}, isLoggedIn is ${typeof user.isLoggedIn}`);",
+      "output": "=== CODE ACADEMY TRACKER ===\nCourse: javascript, User: Prince, Logged in: true\nStart: 2 / 10 completed - 20% - XP: 120\nLessons: 1:completed, 2:completed, 3:current, 4:locked\n--- Testing Type Conversion Safety ---\nBuggy: \"120\" + 50 = \"12050\" (string concat)\nFixed: Number(\"120\") + 50 = 170 (correct math)\n--- Attempting Lesson 3 ---\nStatus: current (Completed: 2)\n🎉 Completed!\n💰 XP: 170 (+50), Coins: 40\n📊 3 / 10 completed - 30%\n--- Attempting Lesson 5 ---\n🔒 Locked! Complete lesson 4 first.\n--- Attempting Lesson 4 ---\n🎉 Completed!\n=== FINAL STATE ===\nUser: Prince, XP: 220, Coins: 50, Completed: 4 / 10 completed\nType checks: xp is number, completed is number, isLoggedIn is boolean"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & What's Next"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered variables: const for fixed config like COURSE_ID and TOTAL_LESSONS and lessons array reference, let for changing state like xp, coins, completed. Never use var - it leaks outside blocks and causes bugs."
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "You mastered 7 data types: String for titles with template literals `${completed} / ${total}`, Number for XP with toLocaleString() and Number() conversion to fix string concatenation bug, Boolean for isCompleted/isLocked status, Array for lessons list with map/filter, Object for user {xp, coins}, Null for intentionally empty no user, Undefined for not assigned."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "You mastered type safety: Number() converts string '120' to number 120, ?? keeps 0 but falls back for null/undefined, || falls back for falsy including 0, Math.min/Math.max caps values between 0 and 10 like your dashboard does. Your dashboard's Number(data.xp ?? data.profile?.xp ?? 0) and Math.min(TOTAL_LESSONS, Math.max(0, Number(completed) || 0)) are now clear!"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "FINAL Q6: Your dashboard has let completed = localStorage.getItem('completed'); // Returns '2' string. Then if (completed === 2) { show current lesson } else { show locked }. completed is '2' string, 2 is number, === checks type too, so '2' === 2 is false! What happens and how to fix like your dashboard?",
+      "options": [
+        "Works fine, '2' === 2 is true - string equals number with ===",
+        "Fails - '2' === 2 is false because === checks value AND type, string '2' type string, number 2 type number, different types so false, so condition fails, shows locked even though should be current. Fix: Use Number(completed) === 2 or == instead of ===, but Number() is safer like your dashboard does Number(completed) || 0",
+        "completed is 0",
+        "No issue"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! === strict equality checks type, '2' !== 2. Use Number() to convert string to number first, or use == loose equality but Number() is pro way your dashboard uses!",
+      "incorrectFeedback": "'2' === 2 false - strict equality checks type. '2' == 2 true - loose equality converts types. Best fix: Number('2') = 2 number, then 2 === 2 true. Your dashboard: Number(completed) || 0 ensures number type before comparison.",
+      "reasoning": "=== vs == and type conversion - '2' string vs 2 number - common bug from localStorage string values.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have const user = {xp: 0, name: ''}; You check if (user.xp) { show XP } else { show 0 XP } and if (user.name) { show name } else { show Anonymous }. User has 0 XP and empty name. What shows? Tricky falsy values!",
+      "options": [
+        "Shows 0 XP and '' name - because 0 and '' are truthy",
+        "Shows 0 XP fallback and Anonymous - because 0 and '' are falsy! if (0) false, if ('') false, so else triggers. For XP 0 is valid but treated as falsy, need ?? not ||. For name empty string is falsy, so Anonymous fallback makes sense. Your dashboard uses Number(xp || 0) || keeps 0? Actually Number(0) = 0, 0 || 0 = 0, but 0 is falsy so || 0 would still 0, but for XP display you want 0 XP not fallback",
+        "Shows error",
+        "Shows XP and name correctly"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! 0 and '' are falsy - if (0) false, if ('') false. For XP, 0 is valid value should show 0 XP, not fallback. Use ?? to keep 0. For name, empty string fallback to Anonymous makes sense. Falsy values: 0, '', false, null, undefined, NaN.",
+      "incorrectFeedback": "Falsy values: 0, '', false, null, undefined, NaN are false in if(). So if (0) => false, shows else. For XP 0 valid, need explicit check: if (xp !== null && xp !== undefined) or use ?? operator. Your dashboard: Number(data.xp || 0) - if xp 0, 0||0=0 keeps 0, but Number(0)=0 truthy? Actually 0||0=0 still 0, but if you did xp || 10 with xp 0, would give 10 not 0 - bug! So ?? better for XP.",
+      "reasoning": "Falsy values trap - 0 and '' are falsy but valid data - need careful handling with ?? vs ||.",
+      "xpReward": 25
+    },
+    {
+      "id": "final-4",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, find all const and let declarations - list which are fixed and which change. 2. In console, try Number('120') + 50 vs '120' + 50 - see bug and fix. 3. Create user object with xp, coins, completed, isLoggedIn, lastLesson null - then update it like final practical. Next: Lesson 3 - Operators and Expressions, where you master +, -, *, /, %, ===, &&, ||, ?? and your progress calculation Math.round((completed/TOTAL)*100)."
+    }
+  ]
+}

@@ -1,0 +1,397 @@
+{
+  "course": "javascript",
+  "lessonNumber": 1,
+  "lessonId": "javascript-lesson-1",
+  "title": "Introduction to JavaScript",
+  "subtitle": "What JavaScript Really Is and Why Your Dashboard Can't Work Without It",
+  "description": "Understand JavaScript from zero - how it connects to HTML/CSS, console, statements, comments, where it runs, and build your first interactive dashboard button. Foundation for all 10 lessons.",
+  "level": "Beginner",
+  "xpReward": 120,
+  "coinsReward": 25,
+  "estimatedMinutes": 50,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: What is JavaScript? The Brain of Your Dashboard"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Think of a website like a human body. HTML is the bones - it gives structure: navbar, hero, lesson cards, buttons. CSS is the clothes and skin - it gives color, yellow JavaScript theme, glassmorphism, rounded corners, shadows."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "JavaScript is the brain and muscles - it makes things work. Without JavaScript, your Code Academy dashboard would be just a pretty picture. No clicking Start Lesson, no XP increasing, no loading spinner, no back button working, no Firebase fetching your progress."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "In your HTML file you gave me, look at the bottom: <script type=\"module\">... onAuthStateChanged, getDoc, renderLessons ...</script> - that's all JavaScript! It loads your XP, calculates progress percentage, creates lesson cards with createElement, handles button clicks."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "JavaScript was created in 1995 in 10 days by Brendan Eich. Now it powers every website, mobile apps, servers, even robots. Your dashboard uses JavaScript in the browser to make it interactive. Every time you see dynamic content - that's JS."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Three layers you must never forget: HTML for structure, CSS for style, JavaScript for behavior. We are now in the behavior layer. Open your browser DevTools with F12, go to Console tab - that's where JavaScript talks to you."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Your First JavaScript - Like Your Dashboard Logs",
+      "code": "// This is JavaScript - runs in browser console\nconsole.log('Hello Code Academy!');\nconsole.log('Course:', 'JavaScript');\nconsole.log('XP:', 120);\nconsole.log('Coins:', 30);\n\n// Your dashboard does this:\n// console.log('Firebase profile error:', error);\n// console.warn('Local progress error:', error);\n// Open DevTools > Console to see these logs",
+      "output": "Hello Code Academy!\nCourse: JavaScript\nXP: 120\nCoins: 30"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Where Does JavaScript Run? Browser, Server, and Your Dashboard"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "JavaScript originally ran only in the browser - Chrome, Firefox, Safari all have a JavaScript engine. Your dashboard HTML runs JS in the browser: it fetches user data from Firebase, renders lesson cards, updates XP in navbar."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Now JavaScript also runs on servers with Node.js - that's how Firebase backend works. But for this course, we focus on browser JavaScript - making webpages interactive like your dashboard does."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "When you open your javascript course HTML file, browser reads HTML first, then CSS for styling, then executes JavaScript at the bottom. That's why script tag is at bottom before </body> - so HTML is loaded before JS tries to find elements like document.getElementById('xpValue')."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "If JS runs before HTML loads, document.getElementById returns null and your dashboard breaks. That's why your HTML has script at end, or uses type=module which waits. Important detail for your final project."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: Where JS Runs - Browser Console Test",
+      "code": "// Test in browser console (F12 > Console)\n// This works because browser has JS engine\nlet browser = 'Chrome';\nlet engine = 'V8';\nconsole.log(`You are using ${browser} with ${engine} engine`);\n\n// This would fail if you try in HTML before elements exist\n// document.getElementById('xpValue') - null if script in head\n// Your dashboard avoids this by putting script at bottom\n\n// Check if element exists\nif (document.getElementById('xpValue')) {\n  console.log('Dashboard XP element found');\n} else {\n  console.log('Element not found - script ran too early or not in browser');\n}",
+      "output": "You are using Chrome with V8 engine\nElement not found - script ran too early or not in browser (if run outside your dashboard HTML)"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: Your dashboard HTML has navbar, hero, lesson grid styled with CSS. But Start Lesson buttons do nothing when clicked. Which layer is missing/broken?",
+      "options": [
+        "HTML is missing - bones not there",
+        "CSS is missing - clothes not there, buttons invisible",
+        "JavaScript is missing/broken - brain/muscles not there, so click behavior doesn't work, navigation to lesson.html doesn't happen, even though buttons look perfect",
+        "Internet is missing"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Exactly! HTML = structure shows button, CSS = style makes it yellow pretty, JS = behavior makes it navigate to lesson.html when clicked. No JS = pretty but dead button.",
+      "incorrectFeedback": "Button visible = HTML+CSS working. Button not working on click = JS behavior missing. Your dashboard's button.addEventListener('click', ()=> window.location.href = ...) is JS.",
+      "reasoning": "HTML structure, CSS style, JS behavior - three separate layers, each can break independently.",
+      "xpReward": 15
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: How to Connect JavaScript to HTML - 3 Ways (Your Dashboard Uses Pro Way)"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Way 1: Inline - <button onclick=\"alert('hi')\"> - JS directly in HTML attribute. Quick but messy, hard to maintain, your dashboard does NOT use this for main logic."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Way 2: Internal - <script> console.log('hi') </script> inside HTML file. Works for small code, but your dashboard has 300 lines of JS - would make HTML huge and messy."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "Way 3: External - <script src=\"authentication.js\"></script> and <script type=\"module\"> import {auth} from './authentication.js' </script> - your dashboard uses this pro way. JS in separate file, clean HTML, reusable, cacheable, can use import/export."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Your dashboard has TWO external scripts: authentication.js (Firebase auth) and Firestore SDK from CDN https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js. Then a module script that imports from them and runs your course logic."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "html",
+      "title": "Example 3: 3 Ways to Connect JS - Your Dashboard's Pro Way",
+      "code": "<!-- WAY 1: Inline - simple but messy (avoid for big apps) -->\n<button onclick=\"alert('Starting Lesson 1')\">Start Lesson (Inline)</button>\n\n<!-- WAY 2: Internal - okay for small demos -->\n<script>\n  console.log('Internal script loaded');\n  let xp = 120;\n</script>\n\n<!-- WAY 3: External + Module - YOUR DASHBOARD'S PRO WAY -->\n<script type=\"module\">\n  import { auth, db, onAuthStateChanged } from \"./authentication.js\";\n  import { doc, getDoc } from \"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js\";\n  \n  console.log('Pro module way - like your dashboard');\n  console.log('Auth:', auth);\n  // This is exactly how your HTML loads Firebase and runs course logic\n</script>",
+      "output": "Three ways, but Way 3 module is professional - used by your dashboard"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: Script Position Matters - Why Your Dashboard Script is at Bottom",
+      "code": "// If script is in <head>, HTML not loaded yet\n// document.getElementById('xpValue') returns null - ERROR!\n\n// Your dashboard puts script at bottom before </body>\n// So this works:\n// const xpValue = document.getElementById('xpValue');\n// xpValue.textContent = '120 XP';\n\n// Modern way: type=\"module\" or defer attribute also waits\n// <script type=\"module\"> waits for HTML\n// <script defer> waits for HTML\n\n// Test: When does JS run?\nconsole.log('HTML loaded?', document.readyState);\n// readyState: loading, interactive, complete\n\n// Safe way - wait for DOM\n// document.addEventListener('DOMContentLoaded', () => {\n//   console.log('Now HTML is ready, safe to find elements');\n//   const xpValue = document.getElementById('xpValue');\n// });",
+      "output": "HTML loaded? interactive or complete\nBest practice: Script at bottom or DOMContentLoaded"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Statements, Semicolons, and Comments - Your Dashboard Code Style"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "JavaScript program is list of statements - instructions to computer. Each statement does something: let xp = 120; is a statement, console.log(xp); is a statement, xpValue.textContent = '120 XP'; is a statement."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Semicolon ; at end of statement is optional in JavaScript, but pro developers use it to avoid bugs. Your dashboard uses semicolons consistently - look at your HTML: const COURSE_ID = \"javascript\"; with semicolon, lessonContainer.innerHTML = \"\"; with semicolon."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Comments are notes for humans, not for computer. Computer ignores comments. Your dashboard has beautiful comments: /* ========================================================= FIREBASE ========================================================= */ - section headers. Use // for single line, /* */ for multi-line."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Why comments matter? When you come back to your code after 2 months, you forget what loadUserData does. Comment explains: // Fetches user XP, coins, completed lessons from Firebase Firestore. Your dashboard has that clarity."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: Statements and Comments Like Your Dashboard",
+      "code": "/* =========================================================\n   USER STATS - Like your dashboard sections\n========================================================= */\n\nlet xp = 120; // Current XP - can change, so let\nconst COURSE_ID = \"javascript\"; // Fixed - const, never changes\n\n// Update XP display - statement\n// This is how your updateStats() works\nlet xpValue = xp + \" XP\"; // Expression + statement\nconsole.log(xpValue); // 120 XP\n\n/* Multi-line comment:\n   This function calculates progress percentage\n   Formula: (completed / total) * 100\n   Your dashboard uses Math.round((completed / TOTAL_LESSONS) * 100)\n*/\nfunction calculateProgress(completed, total) {\n  return Math.round((completed / total) * 100); // Return statement\n}\n\nconsole.log(calculateProgress(3, 10)); // 30%",
+      "output": "120 XP\n30%"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: You see code: const COURSE_ID = 'javascript'; COURSE_ID = 'react'; What happens and why your dashboard uses const for COURSE_ID?",
+      "options": [
+        "Works fine, COURSE_ID becomes 'react' - const allows change",
+        "Error: Assignment to constant variable - const cannot be reassigned, that's why your dashboard uses const for fixed values like COURSE_ID and TOTAL_LESSONS that should never change accidentally",
+        "COURSE_ID becomes undefined",
+        "No error but value doesn't change"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! const = cannot reassign. Protects fixed config from accidental change. Your dashboard: COURSE_ID and TOTAL_LESSONS are const for safety.",
+      "incorrectFeedback": "const = constant, cannot change. If you try COURSE_ID = 'react', JS throws error. Use const for values that should never change - like course id, total lessons.",
+      "reasoning": "const prevents accidental reassignment of fixed configuration - safety feature.",
+      "xpReward": 15
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Console - Your Debugging Superpower (Your Dashboard Uses It)"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Console is where JavaScript prints messages for developers. Your dashboard uses console.warn and console.error for Firebase errors: console.warn('Local JavaScript progress error:', error) and console.error('Firebase profile error:', error). When your course doesn't load, open DevTools > Console to see error."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Four console methods: console.log for general info - your XP, coins, progress. console.warn for warnings - localStorage failed but app still works. console.error for errors - Firebase failed. console.table for arrays - shows lessons in table format. Pro developers live in console."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "In your final project, you will use console.log heavily to debug: Why lesson cards not showing? console.log(lessons) to see if array has data. Why progress 0%? console.log(completed, TOTAL_LESSONS) to see values."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Console Methods Like Your Dashboard",
+      "code": "let xp = 120;\nlet coins = 30;\nlet lessons = [\n  {id: 1, title: 'Intro', status: 'completed'},\n  {id: 2, title: 'Variables', status: 'current'}\n];\n\nconsole.log('User XP:', xp, 'Coins:', coins); // General info\nconsole.warn('Low coins warning - like your local progress error'); // Warning - yellow\nconsole.error('Firebase error simulation - like your dashboard Firebase catch'); // Error - red\nconsole.table(lessons); // Table view - pro debugging\n\n// Your dashboard does:\n// console.warn('Local JavaScript progress error:', error);\n// console.error('Firebase profile error:', error);\n// console.log('Lesson data:', lessons);\n\n// Debug progress calculation\nlet completed = 3;\nlet total = 10;\nlet percent = Math.round((completed / total) * 100);\nconsole.log(`Debug: ${completed}/${total} = ${percent}%`); // Debug like pro",
+      "output": "User XP: 120 Coins: 30\nLow coins warning\nFirebase error simulation\nTable with 2 lessons\nDebug: 3/10 = 30%"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: Your JavaScript course page shows Loading your course... forever, spinner never stops. How do you debug using console like your dashboard code does?",
+      "options": [
+        "Guess randomly and change code without checking",
+        "Open DevTools > Console, look for console.error or console.warn - your dashboard logs 'Firebase profile error' or 'Local progress error' there, check if getDoc failed, if auth user is null, if lessons array empty",
+        "Console is useless for debugging",
+        "You need to reinstall browser"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Console is first place to check errors. Your dashboard already has console.error for Firebase and console.warn for localStorage - open console to see what's failing!",
+      "incorrectFeedback": "Console shows errors: Firebase profile error, local progress error, auth errors. Your dashboard logs them. Check console to see why loading stuck - is Firebase failing? Auth null? Lessons array empty?",
+      "reasoning": "Console debugging is essential - your dashboard already implements error logging pattern.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Your First Interactive Code - Make XP Increase"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Let's write code like your dashboard's XP system. When you complete a lesson, XP should increase by 50, coins by 10, progress percentage recalculate, and display update. This is your first interactive logic."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: XP System Like Your Dashboard",
+      "code": "let xp = 120;\nlet coins = 30;\nlet completed = 2;\nconst TOTAL_LESSONS = 10;\n\nfunction completeLesson(lessonId) {\n  console.log(`Completing lesson ${lessonId}...`);\n  \n  completed = completed + 1; // Increase completed count\n  xp = xp + 50; // Add 50 XP - like your dashboard\n  coins = coins + 10; // Add 10 coins\n  \n  let percent = Math.round((completed / TOTAL_LESSONS) * 100);\n  let progressText = `${completed} / ${TOTAL_LESSONS} completed`;\n  \n  console.log(`New XP: ${xp}, Coins: ${coins}`);\n  console.log(`Progress: ${progressText} - ${percent}%`);\n  console.log(`Lesson ${lessonId} marked as completed!`);\n}\n\ncompleteLesson(3);\ncompleteLesson(4);\n\nconsole.log(`Final: ${completed} lessons, ${xp} XP, ${coins} coins`);",
+      "output": "Completing lesson 3...\nNew XP: 170, Coins: 40\nProgress: 3 / 10 completed - 30%\nCompleting lesson 4...\nNew XP: 220, Coins: 50\nProgress: 4 / 10 completed - 40%\nFinal: 4 lessons, 220 XP, 50 coins"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Your Dashboard's Back Button Logic",
+      "code": "// Your dashboard backBtn logic - copy from your HTML\nfunction handleBackButton() {\n  // Check if user came from your site\n  if (document.referrer && document.referrer.includes(location.origin)) {\n    console.log('Going back to previous page');\n    // history.back(); // Would go back\n  } else {\n    console.log('No referrer, going to menu.html');\n    // window.location.href = 'menu.html'; // Would navigate to menu\n  }\n}\n\n// Simulate\nlet referrer = 'https://code-academy.com/react';\nlet origin = 'https://code-academy.com';\n\nif (referrer && referrer.includes(origin)) {\n  console.log('Back button: history.back() - user came from our site');\n} else {\n  console.log('Back button: Go to menu.html - direct access');\n}\n\n// This is exactly your backBtn.addEventListener logic", 
+      "output": "Back button: history.back() - user came from our site"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Critical Thinking - Common Beginner Mistakes"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You put <script> const xpValue = document.getElementById('xpValue'); xpValue.textContent = '120 XP'; </script> in <head> section. Page shows error: Cannot set properties of null. Why? Your dashboard puts script at bottom - why?",
+      "options": [
+        "Because xpValue element doesn't exist yet when script in head runs - HTML not loaded, getElementById returns null, then null.textContent fails. Your dashboard puts script at bottom before </body> so HTML is loaded first, elements exist, getElementById finds them",
+        "Because JavaScript doesn't work in head",
+        "Because xpValue is wrong id",
+        "Because you need to use let not const"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Perfect! Script position matters. Head = too early, body bottom = HTML ready. Your dashboard's script at bottom is correct pattern. Alternative: use DOMContentLoaded event or type=module or defer.",
+      "incorrectFeedback": "Head runs before body HTML loaded, so xpValue div not yet created, getElementById returns null. Your dashboard avoids this by script at bottom - after navbar and container HTML exist.",
+      "reasoning": "Script execution timing vs HTML parsing - critical to understand why dashboard script is at bottom.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You write: console.log('XP:' + 120 + 50); vs console.log('XP:', 120 + 50); First shows XP:12050, second shows XP: 170. Why different? Tricky!",
+      "options": [
+        "Both same, should show 170",
+        "First uses + as string concatenation - 'XP:' + 120 becomes 'XP:120' string, then + 50 concatenates to 'XP:12050' - string + number = string concatenation. Second uses comma, or 120+50 calculated first due to parentheses and operator precedence - 120+50=170 then logged",
+        "JavaScript bug",
+        "First is correct, second is wrong"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! + with string = concatenation, not math. 'XP:' + 120 + 50 = 'XP:120' + 50 = 'XP:12050'. Use comma or parentheses: 'XP:' + (120+50) = 'XP:170' or template literal `XP: ${120+50}`.",
+      "incorrectFeedback": "String + number = concatenation. 'XP:' + 120 = 'XP:120' string, then + 50 = 'XP:12050'. To add numbers, use (120+50) with parentheses or template literal `${120+50}` or separate with comma.",
+      "reasoning": "Operator overloading: + does addition for numbers, concatenation for strings - tricky bug source!",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Hands-On - Simulate Your Dashboard Loading"
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 9: Simulate Your Dashboard Firebase Loading Flow",
+      "code": "// Simulate your dashboard's onAuthStateChanged + loadUserData + renderLessons flow\nconsole.log('Step 1: Checking auth...');\nlet user = { uid: 'user123' }; // Simulate logged in user\n\nif (!user) {\n  console.log('No user - redirect to login.html');\n  // window.location.href = 'login.html';\n} else {\n  console.log('User found:', user.uid);\n  console.log('Step 2: Loading from Firebase...');\n  \n  // Simulate Firebase getDoc\n  async function loadUserData() {\n    await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay\n    return { xp: 120, coins: 30, completed: 2 };\n  }\n  \n  loadUserData().then(data => {\n    console.log('Step 3: Data loaded:', data);\n    \n    let percent = Math.round((data.completed / 10) * 100);\n    console.log(`Step 4: Update UI - ${data.xp} XP, ${percent}% progress`);\n    console.log(`Step 5: Render ${10} lesson cards with status based on ${data.completed} completed`);\n    console.log('Loading complete - hide spinner, show grid');\n  });\n}\n\nconsole.log('This logs before data loaded because loadUserData is async - your dashboard handles this with async/await');",
+      "output": "Step 1: Checking auth...\nUser found: user123\nStep 2: Loading from Firebase...\nThis logs before data loaded...\n(After 1 sec) Step 3: Data loaded...\nStep 4: Update UI...\nStep 5: Render cards"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: Your dashboard shows loading spinner forever. You check console and see 'Firebase profile error: permission denied'. What does this mean and what part of your dashboard code handles it?",
+      "options": [
+        "Means HTML is broken",
+        "Means Firestore security rules block reading users collection - your loadUserData function has try/catch that catches error, console.error logs it, and returns fallback with getLocalProgress() - so app doesn't crash, shows local progress instead. Check Firebase rules or authentication",
+        "Means XP is 0",
+        "Means you need to reinstall Firebase"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Your dashboard has error handling: try { getDoc } catch(error) { console.error + return fallback with local progress }. So spinner should hide and show local data, not forever. If spinner forever, maybe missing catch or async bug.",
+      "incorrectFeedback": "Permission denied = Firebase rules block read. Your dashboard's try/catch catches it, logs console.error, returns {xp:0, coins:0, completed: getLocalProgress()} fallback - graceful degradation, not white screen.",
+      "reasoning": "Error handling with try/catch and fallback - pattern your dashboard already uses for robustness.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Build Mini Dashboard Logic"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine everything from Lesson 1: console, variables, statements, comments, script position, XP system, loading flow. This is mini version of your dashboard's core logic - paste in Practical > JavaScript editor or browser console."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Mini Dashboard Core (All Lesson 1 Concepts)",
+      "code": "/* =========================================================\n   MINI DASHBOARD CORE - Lesson 1 Capstone\n   Combines: variables, console, statements, comments, logic\n========================================================= */\n\n// Config - const because fixed (like your dashboard)\nconst COURSE_ID = \"javascript\";\nconst TOTAL_LESSONS = 10;\nconst XP_PER_LESSON = 50;\n\n// State - let because changes (like your dashboard)\nlet xp = 120;\nlet coins = 30;\nlet completed = 2;\n\n// Function to calculate progress - like your updateProgress()\nfunction calculateProgress(completed, total) {\n  let percent = Math.round((completed / total) * 100);\n  let text = `${completed} / ${total} completed`;\n  return { percent, text };\n}\n\n// Function to get lesson status - like your createLessonCard logic\nfunction getLessonStatus(lessonId, completed) {\n  if (lessonId <= completed) return \"completed\";\n  if (lessonId === completed + 1) return \"current\";\n  return \"locked\";\n}\n\n// Simulate completing a lesson - like Start button click\nfunction completeLesson(lessonId) {\n  console.log(`\\n--- Starting Lesson ${lessonId} ---`);\n  \n  let status = getLessonStatus(lessonId, completed);\n  \n  if (status === \"locked\") {\n    console.warn(`Lesson ${lessonId} is locked! Complete lesson ${completed + 1} first.`);\n    return;\n  }\n  \n  if (status === \"completed\") {\n    console.log(`Lesson ${lessonId} already completed - reviewing...`);\n    return;\n  }\n  \n  // Current lesson - complete it\n  completed += 1;\n  xp += XP_PER_LESSON;\n  coins += 10;\n  \n  let progress = calculateProgress(completed, TOTAL_LESSONS);\n  \n  console.log(`✅ Lesson ${lessonId} completed!`);\n  console.log(`💰 XP: ${xp} (+${XP_PER_LESSON}), Coins: ${coins} (+10)`);\n  console.log(`📊 Progress: ${progress.text} - ${progress.percent}%`);\n}\n\n// Initial state\nconsole.log(\"=== CODE ACADEMY DASHBOARD SIMULATION ===\");\nconsole.log(`Course: ${COURSE_ID}, Total Lessons: ${TOTAL_LESSONS}`);\nlet initialProgress = calculateProgress(completed, TOTAL_LESSONS);\nconsole.log(`Initial: ${initialProgress.text} - ${initialProgress.percent}% - XP: ${xp}`);\n\n// Simulate user flow\ncompleteLesson(3); // Should work - current lesson\ncompleteLesson(5); // Should warn - locked\ncompleteLesson(3); // Should say already completed\ncompleteLesson(4); // Should work\n\nconsole.log(\"\\n=== FINAL STATE ===\");\nlet finalProgress = calculateProgress(completed, TOTAL_LESSONS);\nconsole.log(`Completed: ${finalProgress.text}`);\nconsole.log(`Progress: ${finalProgress.percent}%`);\nconsole.log(`XP: ${xp}, Coins: ${coins}`);\nconsole.log(\"\\nThis logic is exactly how your HTML dashboard works!\");",
+      "output": "=== CODE ACADEMY DASHBOARD SIMULATION ===\nCourse: javascript, Total Lessons: 10\nInitial: 2 / 10 completed - 20% - XP: 120\n--- Starting Lesson 3 ---\n✅ Lesson 3 completed!\n💰 XP: 170 (+50), Coins: 40 (+10)\n📊 Progress: 3 / 10 completed - 30%\n--- Starting Lesson 5 ---\n⚠️ Lesson 5 is locked! Complete lesson 4 first.\n--- Starting Lesson 3 ---\nLesson 3 already completed - reviewing...\n--- Starting Lesson 4 ---\n✅ Lesson 4 completed!\nFinal: 4 / 10 completed - 40% - XP: 220, Coins: 50"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & What's Next - You Are Ready for Variables"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered Lesson 1: JavaScript is brain/muscles - behavior layer, makes dashboard interactive. It runs in browser engine V8, your dashboard script at bottom so HTML loads first. Three ways to connect - your dashboard uses pro external module way with import. Statements are instructions ending with semicolon, comments // and /* */ explain code like your dashboard section headers."
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Console is debugging superpower - log, warn, error, table - your dashboard uses console.warn for local progress error and console.error for Firebase error. You built XP system, progress calculation, lesson status logic, back button logic - all core of your dashboard. You also learned tricky bugs: script position null error, string concatenation vs addition, and async loading flow."
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "FINAL Q7: You want to add console.log to debug why lesson 3 shows locked even though you completed 2 lessons. Lesson 3 should be current when completed=2 (because 3 == 2+1). You write: if (lessonId > completed + 1) locked else if (lessonId == completed) completed else current. Why lesson 3 shows locked with this buggy logic? Close options!",
+      "options": [
+        "Because logic is if (3 > 2+1) => 3 > 3 => false, so not locked, then else if (3 == 2) => false, so else current - should be current, not locked, so maybe other bug",
+        "Because you used > instead of >= and == instead of <= - correct logic should be: if (lessonId <= completed) completed else if (lessonId == completed+1) current else locked. Your buggy logic checks > completed+1 for locked first, but then checks == completed for completed, missing current case properly - lesson 3 with completed 2: 3 > 3 false, 3 == 2 false, else current - actually would be current, but if you had completed 1, lesson 3: 3 > 2 true => locked incorrectly should be locked but logic confusing",
+        "Because JavaScript is broken",
+        "Because completed is string not number"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Tricky! Correct status logic order matters: Check completed first (<= completed), then current (== completed+1), else locked. Your buggy order or wrong operators cause wrong status. Your dashboard has correct order: isCompleted = lesson.id <= completed, isCurrent = lesson.id == completed+1, isLocked = lesson.id > completed+1 - in that order!",
+      "incorrectFeedback": "Status logic must be in order: <= completed = completed, == completed+1 = current, else locked. Wrong order or operators > vs >=, == vs <= cause bugs. Your dashboard code does: isCompleted = id <= completed, isCurrent = id === completed+1, isLocked = id > completed+1 - correct!",
+      "reasoning": "Conditional order and operators critical for dashboard status badges - this is exactly your createLessonCard logic and common interview tricky question.",
+      "xpReward": 30
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: You have let xp = '120'; // String from localStorage, xp += 50; What happens? Your dashboard does Number(data.xp ?? 0) - why?",
+      "options": [
+        "xp becomes 170 - string + number works as math",
+        "xp becomes '12050' - string concatenation! Because localStorage stores strings, '120' + 50 = '12050' string, not 170. Your dashboard does Number() to convert string to number first - Number('120') + 50 = 170 correct math. That's why your loadUserData does Number(data.xp ?? 0)",
+        "xp becomes 0",
+        "Error thrown"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "YES! localStorage returns strings! '120' + 50 = '12050' bug. Always Number() or parseInt() to convert. Your dashboard does Number() for xp and coins - pro safety!",
+      "incorrectFeedback": "localStorage stores everything as string. '120' + 50 = '12050' concatenation, not 170. Must Number('120') = 120 number, then +50 = 170. Your dashboard: Number(data.xp ?? 0) converts to number safely.",
+      "reasoning": "Type coercion bug - string from storage + number = concatenation - your dashboard prevents with Number() conversion.",
+      "xpReward": 25
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, open DevTools Console, type console.log(document.getElementById('xpValue')) - see element. 2. Change your dashboard's COURSE_ID const to let and try reassigning - see error. 3. Add console.log in your dashboard's loadUserData to see xp, coins, completed values. Next: Lesson 2 - Variables and Data Types deep dive, where you master let, const, var, and data types like your dashboard uses for user data."
+    }
+  ]
+}

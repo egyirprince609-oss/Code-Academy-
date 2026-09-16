@@ -1,0 +1,419 @@
+{
+  "course": "javascript",
+  "lessonNumber": 8,
+  "lessonId": "javascript-lesson-8",
+  "title": "DOM Manipulation",
+  "subtitle": "How Your Dashboard Creates Cards, Updates XP, Progress Bar and Makes It Interactive",
+  "description": "Master DOM - getElementById, querySelector, createElement, innerHTML vs textContent (XSS security), appendChild, style, classList, attributes, events, reflow performance, accessibility - everything pro must know, based on your dashboard's exact DOM code.",
+  "level": "Intermediate",
+  "xpReward": 200,
+  "coinsReward": 45,
+  "estimatedMinutes": 80,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: What is DOM? Your Dashboard's HTML as Tree Your JS Controls"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! DOM = Document Object Model - browser turns your HTML into tree of objects that JavaScript can control. Your HTML <nav class='navbar'>...<div id='xpValue'>0 XP</div>...</nav> becomes tree: document -> html -> body -> nav.navbar -> div.nav-right -> div.stat-pill -> span#xpValue. JavaScript can find, create, modify, delete nodes in this tree."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Your dashboard's JavaScript does: document.getElementById('xpValue') finds span with id xpValue, document.getElementById('lessonContainer') finds div for lessons, document.createElement('article') creates new card element, card.innerHTML = `...` sets HTML inside card, grid.appendChild(card) adds card to grid, lessonContainer.appendChild(grid) adds grid to container, xpValue.textContent = '120 XP' updates text, progressFill.style.width = '20%' updates style."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Without DOM manipulation, your dashboard would be static HTML - no dynamic XP, no progress bar moving, no lesson cards from Firebase, no loading spinner. DOM manipulation makes HTML alive - JavaScript reads and writes HTML tree."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Good programmer must know: DOM is slow - each appendChild, style change can cause reflow (browser recalculates layout) - 10 appends = 10 reflows slow. Your dashboard builds grid in memory then appends once = 1 reflow fast. Also security: innerHTML with user data can cause XSS attack - if lesson title is '<script>alert('hacked')</script>' and you do innerHTML = title, script executes! Use textContent for user data, not innerHTML."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Also accessibility: button with disabled attribute and aria-label, keyboard navigation, semantic article tag for lesson card not just div. Your dashboard uses article for lesson card - semantic HTML good for screen readers. Pro programmers care about performance, security, accessibility, not just working."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: DOM Tree - Your Dashboard Elements",
+      "code": "// Your dashboard HTML becomes DOM tree:\n// document\n// └─ html\n// └─ body\n// ├─ nav.navbar\n// │ ├─ div.nav-left\n// │ │ ├─ button#backBtn\n// │ │ └─ div.brand\n// │ └─ div.nav-right\n// │ ├─ div.stat-pill.xp > span#xpValue\n// │ └─ div.stat-pill.coins > span#coinsValue\n// └─ main.container\n// ├─ section.hero\n// │ └─ div.progress-bar > div#progressFill\n// └─ section > div#lessonContainer > div.lesson-grid > article.lesson-card (x10)\n\n// Finding elements - like your dashboard\n// const lessonContainer = document.getElementById('lessonContainer');\n// const xpValue = document.getElementById('xpValue');\n// const coinsValue = document.getElementById('coinsValue');\n// const progressFill = document.getElementById('progressFill');\n// const progressText = document.getElementById('progressText');\n// const backBtn = document.getElementById('backBtn');\n\nconsole.log('Your dashboard finds 6 elements by id:');\nconsole.log('- lessonContainer, xpValue, coinsValue, progressFill, progressText, backBtn');\nconsole.log('Then manipulates them: textContent, style.width, innerHTML, appendChild');\n\n// Simulate DOM elements\nlet dom = {\n getElementById: (id) => ({ id, textContent: '', innerHTML: '', style: {}, className: '', appendChild: (child) => console.log(`Appended ${child} to ${id}`) }),\n createElement: (tag) => ({ tag, innerHTML: '', textContent: '', className: '', style: {} })\n};\n\nlet xpValue = dom.getElementById('xpValue');\nxpValue.textContent = '120 XP'; // Like your updateStats\nconsole.log(`xpValue.textContent = '${xpValue.textContent}'`);\n\nlet progressFill = dom.getElementById('progressFill');\nprogressFill.style.width = '20%'; // Like your updateProgress\nconsole.log(`progressFill.style.width = '${progressFill.style.width}'`);",
+      "output": "Your dashboard finds 6 elements by id:\n- lessonContainer, xpValue, coinsValue, progressFill, progressText, backBtn\nThen manipulates them: textContent, style.width, innerHTML, appendChild\nxpValue.textContent = '120 XP'\nprogressFill.style.width = '20%'"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Finding Elements - getElementById, querySelector, querySelectorAll"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Finding elements: getElementById('xpValue') finds by id - fastest, returns one element or null. Your dashboard uses this for all 6 elements because they have ids. querySelector('.lesson-card') finds first element matching CSS selector - class, tag, attribute. querySelectorAll('.lesson-card') finds all matching - returns NodeList array-like."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Your dashboard: document.getElementById('lessonContainer') - by id, unique. Could also use document.querySelector('#lessonContainer') - # for id,. for class. querySelector('#xpValue') same as getElementById('xpValue') but slower. For class: document.querySelector('.lesson-card') first card, document.querySelectorAll('.lesson-card') all cards."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Good programmer: Use getElementById for id - fastest. Use querySelector for complex selectors: document.querySelector('.lesson-card:not(.locked).start-btn') - first start button in non-locked card. Use querySelectorAll for multiple elements then forEach to loop."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Null check important: If you do document.getElementById('xpValue') but element doesn't exist, returns null, then null.textContent throws TypeError: Cannot read property textContent of null. Your dashboard's script at bottom ensures HTML loaded before finding elements, so not null. Or check if (xpValue) { xpValue.textContent =... } safe."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: Finding Elements Like Your Dashboard",
+      "code": "// Simulate your dashboard HTML elements\nlet mockDOM = {\n elements: {\n 'xpValue': { id: 'xpValue', textContent: '0 XP' },\n 'coinsValue': { id: 'coinsValue', textContent: '0' },\n 'lessonContainer': { id: 'lessonContainer', innerHTML: '' },\n 'progressFill': { id: 'progressFill', style: { width: '0%' } },\n 'backBtn': { id: 'backBtn' }\n },\n getElementById: function(id) {\n return this.elements[id] || null; // Returns element or null like real DOM\n },\n querySelector: function(selector) {\n // Simplified - real querySelector parses CSS selector\n if (selector.startsWith('#')) {\n let id = selector.slice(1);\n return this.elements[id] || null;\n }\n if (selector === '.lesson-card') {\n return { className: 'lesson-card', id: 'card1' }; // First matching\n }\n return null;\n },\n querySelectorAll: function(selector) {\n if (selector === '.lesson-card') {\n return [{id: 'card1'}, {id: 'card2'}, {id: 'card3'}]; // All matching\n }\n return [];\n }\n};\n\n// getElementById - your dashboard uses this - fastest for id\nlet xpValue = mockDOM.getElementById('xpValue');\nconsole.log('getElementById xpValue:', xpValue? xpValue.textContent : 'null');\n\nlet notFound = mockDOM.getElementById('nonexistent');\nconsole.log('getElementById nonexistent:', notFound); // null\n\n// Null check - good programmer must check\nif (xpValue) {\n xpValue.textContent = '120 XP';\n console.log('Updated with null check:', xpValue.textContent);\n} else {\n console.log('Element not found - would throw error without check');\n}\n\n// querySelector - by CSS selector\nlet byId = mockDOM.querySelector('#xpValue');\nconsole.log('\\nquerySelector #xpValue:', byId? byId.id : 'null');\n\nlet firstCard = mockDOM.querySelector('.lesson-card');\nconsole.log('querySelector.lesson-card first:', firstCard? firstCard.id : 'null');\n\n// querySelectorAll - all matching\nlet allCards = mockDOM.querySelectorAll('.lesson-card');\nconsole.log(`\\nquerySelectorAll.lesson-card: ${allCards.length} cards found`);\nallCards.forEach((card, index) => {\n console.log(` Card ${index + 1}: ${card.id}`);\n});\n\n// Your dashboard exact finds\nconsole.log('\\nYour dashboard finds:');\nconsole.log('- getElementById lessonContainer, xpValue, coinsValue, progressFill, progressText, backBtn');\nconsole.log('- Uses ids because unique and fastest');",
+      "output": "getElementById xpValue: 0 XP\n getElementById nonexistent: null\n Updated with null check: 120 XP\n\n querySelector #xpValue: xpValue\n querySelector.lesson-card first: card1\n\n querySelectorAll.lesson-card: 3 cards found\n Card 1: card1\n Card 2: card2\n Card 3: card3\n\n Your dashboard finds:\n - getElementById lessonContainer, xpValue, coinsValue, progressFill, progressText, backBtn\n - Uses ids because unique and fastest"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Creating and Modifying Elements - Your createLessonCard"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Creating: document.createElement('article') creates new element, not yet in DOM, in memory. Your dashboard: const card = document.createElement('article'); card.className = `lesson-card ${isLocked? 'locked' : ''}`; sets class. Then card.innerHTML = `...` sets HTML inside card with template literal containing lesson title, learn, summary, badge, button."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Modifying: element.textContent = 'text' sets text, safe, no HTML parsing, prevents XSS. element.innerHTML = '<b>text</b>' sets HTML, parses HTML, can have XSS if user data contains <script>. Your dashboard uses innerHTML for card because it needs HTML structure with divs, spans, buttons, but lesson title from static array safe, not user input. For user input, use textContent not innerHTML."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "element.style.width = '20%' sets inline style, element.style.background = 'red'. Your dashboard: progressFill.style.width = `${percent}%` sets progress bar width. element.className = 'lesson-card locked' sets class, element.classList.add('locked') adds class, classList.remove('locked') removes, classList.toggle('locked') toggles."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Good programmer: Use textContent for user data to prevent XSS, use innerHTML only for trusted HTML templates like your card template with static structure. Use classList for classes not className overwriting. Use createElement + appendChild for dynamic elements."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: Creating Cards Like Your Dashboard createLessonCard",
+      "code": "// Simulate createElement and card creation\nfunction createElement(tag) {\n return {\n tag,\n className: '',\n innerHTML: '',\n textContent: '',\n style: {},\n children: [],\n appendChild: function(child) { this.children.push(child); },\n setAttribute: function(name, value) { this[name] = value; }\n };\n}\n\n// Your dashboard's createLessonCard simplified\nfunction createLessonCard(lesson, completed) {\n let isCompleted = lesson.id <= completed;\n let isCurrent = lesson.id === completed + 1;\n let isLocked = lesson.id > completed + 1;\n \n // Create article element - like your dashboard\n let card = createElement('article');\n card.className = `lesson-card ${isLocked? 'locked' : ''}`; // className\n \n // Status badge HTML - using innerHTML for trusted template\n let statusHTML = \"\";\n if (isCompleted) {\n statusHTML = `<span class=\"status completed\">Completed</span>`;\n } else if (isCurrent) {\n statusHTML = `<span class=\"status current\">Current</span>`;\n } else {\n statusHTML = `<span class=\"status locked\">Locked</span>`;\n }\n \n // Button HTML\n let buttonHTML = \"\";\n if (isLocked) {\n buttonHTML = `<button class=\"start-btn\" disabled>Locked</button>`;\n } else if (isCompleted) {\n buttonHTML = `<button class=\"start-btn\" data-lesson=\"${lesson.id}\">Review</button>`;\n } else {\n buttonHTML = `<button class=\"start-btn\" data-lesson=\"${lesson.id}\">Start Lesson</button>`;\n }\n \n // innerHTML for trusted template - lesson data from static array safe\n card.innerHTML = `\n <div class=\"lesson-number\">\n <span class=\"lesson-badge\">Lesson ${lesson.id}</span>\n ${statusHTML}\n </div>\n <h3>${lesson.title}</h3>\n <div class=\"label\">What you'll learn</div>\n <p>${lesson.learn}</p>\n <div class=\"lesson-summary\">\n <div class=\"label\">Summary</div>\n <p>${lesson.summary}</p>\n </div>\n <div class=\"lesson-footer\">\n <div class=\"lesson-meta\">Learn + Practice</div>\n ${buttonHTML}\n </div>\n `;\n \n // Simulate button event - like your dashboard\n let button = { dataset: { lesson: lesson.id }, addEventListener: (event, cb) => console.log(`Added ${event} listener for lesson ${lesson.id}`) };\n if (!isLocked) {\n // button.addEventListener('click', () => window.location.href = `lesson.html?course=javascript&lesson=${lesson.id}`)\n console.log(`Card ${lesson.id}: Added click listener to navigate to lesson ${lesson.id}`);\n }\n \n return card;\n}\n\nlet lesson = {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax'};\nlet card = createLessonCard(lesson, 2);\nconsole.log('Created card:');\nconsole.log(` Tag: ${card.tag}, Class: ${card.className}`);\nconsole.log(` InnerHTML length: ${card.innerHTML.length} chars`);\nconsole.log(` Contains title? ${card.innerHTML.includes('Introduction to JavaScript')}`);\n\n// textContent vs innerHTML security\nconsole.log('\\n--- textContent vs innerHTML Security ---');\nlet userInput = \"<script>alert('XSS hacked!')</script>\";\nlet div1 = createElement('div');\ndiv1.textContent = userInput; // Safe - textContent escapes <script> as text, not executed\nconsole.log('textContent with script tag:', div1.textContent); // Shows as text, not executed - safe\n\nlet div2 = createElement('div');\ndiv2.innerHTML = userInput; // Dangerous - innerHTML parses script and executes! XSS vulnerability\nconsole.log('innerHTML with script tag: Would execute script! Dangerous for user input - XSS!');\nconsole.log('Rule: Use textContent for user data, innerHTML only for trusted templates like your card structure');",
+      "output": "Card 1: Added click listener to navigate to lesson 1\nCreated card:\n Tag: article, Class: lesson-card\n InnerHTML length: 450 chars\n Contains title? true\n\n--- textContent vs innerHTML Security ---\ntextContent with script tag: <script>alert('XSS hacked!')</script>\ninnerHTML with script tag: Would execute script! Dangerous for user input - XSS!\nRule: Use textContent for user data, innerHTML only for trusted templates"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: innerHTML vs textContent - XSS Security Every Pro Must Know"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "innerHTML sets HTML and parses it - browser creates elements from HTML string. textContent sets text only - no HTML parsing, escapes < > as text. Security: If user input is '<script>alert(document.cookie)</script>' and you do element.innerHTML = userInput, browser executes script, steals cookies, XSS attack! If you do element.textContent = userInput, browser shows '<script>alert...</script>' as text, not executed, safe."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Your dashboard: lesson titles from static array ['Introduction to JavaScript', 'Variables',...] trusted, not user input, so innerHTML safe for card template. But if you had user comments or lesson titles from Firebase user input, you must use textContent for title, not innerHTML, or sanitize input."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Good programmer: Use textContent for any user-generated data: usernames, comments, titles from database, search input. Use innerHTML only for trusted HTML templates you control, like your card structure with divs, spans, classes - not for data inside. Or use createElement + textContent for each part: const h3 = createElement('h3'); h3.textContent = lesson.title; card.appendChild(h3); - safest, no innerHTML, no XSS, but more code."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Your dashboard uses innerHTML for card because it has complex HTML with many divs, badges, buttons - creating each with createElement would be 20 lines vs 1 template literal with innerHTML. For static trusted data, innerHTML okay and faster to code. For user data, textContent safer."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: XSS Security - innerHTML Danger vs textContent Safe",
+      "code": "// Simulate XSS attack\nlet maliciousTitle = \"<img src=x onerror=alert('XSS! Cookie stolen: '+document.cookie)>\";\nlet normalTitle = \"Introduction to JavaScript\";\n\nconsole.log('Normal title:', normalTitle);\nconsole.log('Malicious title:', maliciousTitle);\n\n// Dangerous - innerHTML with user input - XSS vulnerability\nfunction createCardDangerous(title) {\n let card = { innerHTML: '' };\n card.innerHTML = `<h3>${title}</h3>`; // If title contains <img onerror=alert>, script executes!\n console.log(`\\nDangerous innerHTML with malicious title: ${card.innerHTML}`);\n console.log('Browser would execute onerror=alert! XSS attack! Cookie stolen!');\n return card;\n}\n\n// Safe - textContent for user data\nfunction createCardSafe(title) {\n let card = { \n h3: { textContent: '' },\n innerHTML: ''\n };\n // Safe way: createElement + textContent\n card.h3.textContent = title; // textContent escapes < > as text, not executed\n card.innerHTML = `<div class=\"card\"><h3></h3></div>`; // Template trusted, title via textContent safe\n console.log(`\\nSafe textContent with malicious title: h3.textContent = \"${card.h3.textContent}\"`);\n console.log('Browser shows <img...> as text, not executed - safe!');\n return card;\n}\n\nconsole.log('--- Dangerous ---');\ncreateCardDangerous(maliciousTitle);\n\nconsole.log('\\n--- Safe ---');\ncreateCardSafe(maliciousTitle);\n\nconsole.log('\\n--- Your Dashboard ---');\nconsole.log('Your lessons array is static trusted data from code, not user input, so innerHTML safe for card template');\nconsole.log('If lessons from Firebase user input, must use textContent for title or sanitize');\nconsole.log('Rule: textContent for user data, innerHTML for trusted templates');\n\n// Safe innerHTML with trusted template + textContent for data\nfunction createCardBestPractice(lesson) {\n // Create elements\n let card = { tag: 'article', children: [] };\n let h3 = { tag: 'h3', textContent: lesson.title }; // textContent for data - safe\n let p = { tag: 'p', textContent: lesson.summary }; // textContent safe\n \n // Or innerHTML for trusted structure but textContent for data via DOM methods\n // In real DOM:\n // const h3 = document.createElement('h3');\n // h3.textContent = lesson.title; // Safe\n // card.appendChild(h3);\n \n console.log(`\\nBest practice: createElement + textContent for data`);\n console.log(`h3.textContent = \"${h3.textContent}\" - safe even if malicious`);\n return card;\n}\n\ncreateCardBestPractice({title: maliciousTitle, summary: 'Learn JS'});",
+      "output": "Normal title: Introduction to JavaScript\nMalicious title: <img src=x onerror=alert('XSS! Cookie stolen: '+document.cookie)>\n\n--- Dangerous ---\nDangerous innerHTML with malicious title: <h3><img src=x onerror=alert('XSS! Cookie stolen: '+document.cookie)></h3>\nBrowser would execute onerror=alert! XSS attack! Cookie stolen!\n\n--- Safe ---\nSafe textContent with malicious title: h3.textContent = \"<img src=x onerror=alert('XSS! Cookie stolen: '+document.cookie)>\"\nBrowser shows <img...> as text, not executed - safe!\n\n--- Your Dashboard ---\nYour lessons array is static trusted data from code, not user input, so innerHTML safe for card template\nIf lessons from Firebase user input, must use textContent for title or sanitize\nRule: textContent for user data, innerHTML for trusted templates\n\nBest practice: createElement + textContent for data\n h3.textContent = \"<img src=x onerror=...\" - safe even if malicious"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have user comment from Firebase: '<img src=x onerror=alert(document.cookie)>'. You do div.innerHTML = comment; vs div.textContent = comment; What happens? Critical security!",
+      "options": [
+        "Both safe - show as text",
+        "innerHTML parses HTML, executes onerror=alert, steals cookie - XSS attack dangerous! textContent sets as text, shows '<img src=x...>' as text, not executed, safe. Your dashboard lessons from static array trusted safe for innerHTML template, but user input must use textContent to prevent XSS",
+        "Both execute script",
+        "innerHTML safe, textContent dangerous"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! innerHTML with user input XSS vulnerability, textContent safe escapes HTML as text. Your static lessons trusted safe for innerHTML, user data must use textContent!",
+      "incorrectFeedback": "innerHTML = '<img onerror=alert>' parses HTML, img fails to load x, onerror triggers alert with cookie - XSS! textContent = same string shows as text '<img...>' not executed safe. Rule: textContent for user data, innerHTML for trusted templates only.",
+      "reasoning": "XSS security - innerHTML parses and executes, textContent escapes as text - critical for user data.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Appending and Performance - Your Dashboard's Efficient Grid"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Appending: parent.appendChild(child) adds child to parent in DOM, visible on page. Your dashboard: grid.appendChild(card) adds card to grid div, lessonContainer.appendChild(grid) adds grid to container. Append is expensive - causes reflow (browser recalculates layout, positions, sizes)."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Performance: If you do forEach lesson => container.appendChild(card) directly inside loop, 10 lessons = 10 appends = 10 reflows, browser recalculates layout 10 times, slow. Your dashboard does: create grid div, forEach append cards to grid (grid not yet in DOM, in memory, no reflow), then container.appendChild(grid) once = 1 reflow, 10x faster! Build in memory then append once is pro pattern."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "Also innerHTML = '' clears container: lessonContainer.innerHTML = '' removes all children quickly. Your dashboard does this before rendering to clear old cards and loading spinner."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Good programmer: Minimize DOM operations, batch appends, build in memory then append once, cache elements (const xpValue = getElementById, reuse, not getElementById every time), use DocumentFragment for many appends: fragment = createDocumentFragment(), forEach card => fragment.appendChild(card), container.appendChild(fragment) - 1 reflow."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: Performance - Your Dashboard Efficient Append",
+      "code": "let lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}, {id: 3, title: 'Operators'}];\n\n// ❌ Inefficient - direct append in loop - many reflows\nconsole.log('Inefficient - direct append in loop (many reflows):');\nlet container1 = { children: [], appendChild: function(child) { \n console.log(` Reflow ${this.children.length + 1}: Appended ${child.title} directly to container`);\n this.children.push(child);\n}};\n\nlessons.forEach(lesson => {\n let card = { title: lesson.title };\n container1.appendChild(card); // Each append triggers reflow - slow for 10 lessons 10 reflows\n});\n\n// ✅ Efficient - build in memory then append once - 1 reflow - your dashboard way\nconsole.log('\\nEfficient - build grid in memory then append once (1 reflow) - your dashboard way:');\nlet container2 = { children: [], appendChild: function(child) {\n console.log(` Reflow 1: Appended grid with ${child.cards.length} cards to container`);\n this.children.push(child);\n}};\n\nlet grid = { cards: [], appendChild: function(card) { \n // Grid not in DOM yet, in memory, no reflow when appending to grid\n this.cards.push(card);\n}};\n\nlessons.forEach(lesson => {\n let card = { title: lesson.title };\n grid.appendChild(card); // No reflow - grid in memory not in DOM\n console.log(` Built card for ${lesson.title} in memory grid - no reflow`);\n});\n\ncontainer2.appendChild(grid); // One append, one reflow - fast!\n\nconsole.log(`\\nEfficient: 1 reflow vs inefficient ${lessons.length} reflows - ${lessons.length}x faster!`);\nconsole.log('Your dashboard uses efficient grid method');\n\n// DocumentFragment - even better for many elements\nconsole.log('\\n--- DocumentFragment - pro for many appends ---');\nlet fragment = { cards: [], appendChild: function(card) { this.cards.push(card); } };\nlessons.forEach(lesson => {\n let card = { title: lesson.title };\n fragment.appendChild(card); // No reflow - fragment in memory\n});\nconsole.log(`Fragment built with ${fragment.cards.length} cards in memory - no reflow`);\nconsole.log('Then container.appendChild(fragment) - 1 reflow - even more efficient for many elements');\n\n// Clear container\nconsole.log('\\n--- Clear container ---');\nlet container3 = { innerHTML: '<div>old cards</div><div>loading</div>', children: ['card1', 'card2'] };\nconsole.log('Before clear:', container3.innerHTML);\ncontainer3.innerHTML = ''; // Clears all children quickly - your dashboard does lessonContainer.innerHTML = ''\nconsole.log('After innerHTML = \"\":', container3.innerHTML, '- cleared');",
+      "output": "Inefficient - direct append in loop (many reflows):\n Reflow 1: Appended Intro directly to container\n Reflow 2: Appended Variables directly to container\n Reflow 3: Appended Operators directly to container\n\nEfficient - build grid in memory then append once (1 reflow) - your dashboard way:\n Built card for Intro in memory grid - no reflow\n Built card for Variables in memory grid - no reflow\n Built card for Operators in memory grid - no reflow\n Reflow 1: Appended grid with 3 cards to container\n\nEfficient: 1 reflow vs inefficient 3 reflows - 3x faster!\nYour dashboard uses efficient grid method\n\n--- DocumentFragment - pro for many appends ---\nFragment built with 3 cards in memory - no reflow\nThen container.appendChild(fragment) - 1 reflow - even more efficient for many elements\n\n--- Clear container ---\nBefore clear: <div>old cards</div><div>loading</div>\nAfter innerHTML = \"\": - cleared"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: You have 10 lessons, you do container.appendChild(card) directly inside forEach loop vs grid method: create grid, forEach grid.appendChild(card), container.appendChild(grid). First causes 10 reflows, second 1 reflow. Why and which your dashboard uses? Performance critical!",
+      "options": [
+        "Both 1 reflow same",
+        "Direct append in loop triggers browser reflow (layout recalc) for each append - 10 cards 10 reflows slow. Grid method builds cards in memory grid not in DOM, no reflow, then appends grid once 1 reflow fast, 10x faster! Your dashboard uses grid method - createElement grid, append cards to grid in memory, append grid to container once - efficient pro pattern",
+        "Direct faster",
+        "Grid method slower"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! 1 reflow vs 10 reflows - 10x faster! Build in memory then append once efficient. Your dashboard's grid method is pro performance pattern!",
+      "incorrectFeedback": "Direct append in loop: Each appendChild triggers reflow - browser recalculates layout, 10 times slow. Grid method: Append to grid in memory not in DOM no reflow, then append grid to container once 1 reflow fast. Your dashboard: grid = createElement('div'), forEach grid.appendChild(card), container.appendChild(grid) - 1 reflow efficient.",
+      "reasoning": "Reflow performance - building in memory then single append 1 reflow vs direct append many reflows.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Style, ClassList, Attributes - Your Dashboard's Progress Bar and Badges"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Style: element.style.width = '20%' sets inline style, element.style.background = 'linear-gradient(...)' sets background. Your dashboard: progressFill.style.width = `${percent}%` sets progress bar width dynamically, card.style.background for glassmorphism, badge.style.color for status colors."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "ClassList: element.classList.add('locked') adds class, remove('locked') removes, toggle('locked') adds if not exists removes if exists, contains('locked') checks if has class. Your dashboard: card.className = `lesson-card ${isLocked? 'locked' : ''}` sets class, could use classList.add('locked') if locked."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "Attributes: element.setAttribute('data-lesson', lesson.id) sets attribute, getAttribute('data-lesson') gets, element.dataset.lesson = lesson.id sets data attribute. Your dashboard: button data-lesson attribute to store lesson id, then button.dataset.lesson to get id in click handler."
+    },
+    {
+      "id": "p6-4",
+      "type": "sentence",
+      "text": "Good programmer: Use classList for classes not className overwriting, use dataset for data attributes, use style for dynamic styles like width, but prefer CSS classes for static styles. Your dashboard uses className for card, style.width for progress dynamic."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Style, ClassList, Attributes - Your Dashboard Badges and Progress",
+      "code": "let card = { className: 'lesson-card', classList: { add: (c) => console.log(`Added class ${c}`), remove: (c) => console.log(`Removed class ${c}`), contains: (c) => false }, style: {}, dataset: {}, setAttribute: (n, v) => console.log(`Set attribute ${n}=${v}`) };\n\n// Style - your dashboard progress bar\nlet percent = 20;\ncard.style.width = `${percent}%`; // Like progressFill.style.width\ncard.style.background = 'linear-gradient(145deg, rgba(15,31,51,.88), rgba(8,20,35,.94))';\ncard.style.border = '1px solid rgba(250,204,21,.15)';\nconsole.log('Style width:', card.style.width);\nconsole.log('Style background:', card.style.background.slice(0, 30) + '...');\n\n// ClassName vs ClassList\nconsole.log('\\n--- ClassName vs ClassList ---');\ncard.className = 'lesson-card'; // Set class\nconsole.log('className:', card.className);\n\ncard.className = `lesson-card ${true? 'locked' : ''}`; // Your dashboard way - template literal\nconsole.log('className with locked:', card.className); // lesson-card locked\n\n// ClassList - better for adding/removing without overwriting\ncard.classList.add('locked'); // Adds locked class\ncard.classList.remove('locked'); // Removes locked\ncard.classList.add('completed');\nconsole.log('classList.add/remove better than className overwriting');\n\n// Attributes and dataset - your dashboard button data-lesson\nlet button = { dataset: {}, setAttribute: (n, v) => { console.log(`Set ${n}=${v}`); } };\nbutton.setAttribute('data-lesson', 3); // Set data attribute\nbutton.dataset.lesson = 3; // Same via dataset\nconsole.log('\\nButton data-lesson via dataset:', button.dataset.lesson);\n\n// Your dashboard: button.dataset.lesson to get id in click handler\n// button.addEventListener('click', () => {\n// const lessonNumber = button.dataset.lesson;\n// window.location.href = `lesson.html?course=javascript&lesson=${lessonNumber}`;\n// });\n\nconsole.log('\\nYour dashboard:');\nconsole.log('- progressFill.style.width = `${percent}%` - dynamic width');\nconsole.log('- card.className = `lesson-card ${isLocked? \"locked\" : \"\"}` - status class');\nconsole.log('- button data-lesson attribute stores lesson id for click handler');\nconsole.log('- badge color via inline style or class status.completed/current/locked');",
+      "output": "Style width: 20%\nStyle background: linear-gradient(145deg, rgba(15...\n\n--- ClassName vs ClassList ---\nclassName: lesson-card\nclassName with locked: lesson-card locked\nAdded class locked\nRemoved class locked\nAdded class completed\nclassList.add/remove better than className overwriting\nSet data-lesson=3\n\nButton data-lesson via dataset: 3\n\nYour dashboard:\n- progressFill.style.width = `${percent}%` - dynamic width\n- card.className = `lesson-card ${isLocked? \"locked\" : \"\"}` - status class\n- button data-lesson attribute stores lesson id for click handler\n- badge color via inline style or class status.completed/current/locked"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Events - Your Dashboard's Click Handlers"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Events: User actions like click, mouseover, keydown, load. addEventListener('click', callback) listens for click event and calls callback when clicked. Your dashboard: backBtn.addEventListener('click', () => { if (referrer && includes) history.back() else menu.html }) - when back button clicked, callback navigates. button.addEventListener('click', () => { window.location.href = lesson.html }) - when Start Lesson clicked, navigate to lesson."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "Event object: callback receives event object with details: event.target is element clicked, event.preventDefault() prevents default behavior like form submit reload. Your dashboard's back button doesn't need preventDefault because button not in form, but form submit would need preventDefault."
+    },
+    {
+      "id": "p7-3",
+      "type": "sentence",
+      "text": "Good programmer: Use addEventListener not onclick attribute - addEventListener allows multiple listeners, onclick overwrites. Use event delegation for many buttons: Instead of adding listener to each of 10 Start buttons, add one listener to grid parent and check event.target if button - more efficient, works for dynamically added cards."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Events - Your Dashboard Back and Start Buttons",
+      "code": "// Simulate your dashboard event listeners\nfunction createButton(id, text) {\n return {\n id,\n textContent: text,\n dataset: { lesson: id },\n addEventListener: function(event, callback) {\n console.log(`Added ${event} listener to button ${id} - ${text}`);\n this.callback = callback;\n },\n click: function() {\n console.log(`\\nButton ${this.id} clicked!`);\n if (this.callback) this.callback({ target: this, preventDefault: () => console.log('preventDefault called') });\n }\n };\n}\n\n// Your dashboard back button\nlet backBtn = createButton('backBtn', 'Back');\nbackBtn.addEventListener('click', () => {\n let referrer = 'https://code-academy.com/react';\n let origin = 'https://code-academy.com';\n if (referrer && referrer.includes(origin)) {\n console.log('Back button: history.back() - referrer valid');\n } else {\n console.log('Back button: Go to menu.html - no referrer');\n }\n});\n\nbackBtn.click(); // Simulate click\n\n// Your dashboard Start Lesson buttons\nconsole.log('\\n--- Start Lesson Buttons ---');\nlet lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}];\nlessons.forEach(lesson => {\n let button = createButton(lesson.id, `Start Lesson ${lesson.id}`);\n button.addEventListener('click', () => {\n console.log(`Start button ${lesson.id} clicked - navigating to lesson.html?course=javascript&lesson=${lesson.id}`);\n // window.location.href = `lesson.html?course=javascript&lesson=${lesson.id}`;\n });\n // Simulate click on lesson 1\n if (lesson.id === 1) {\n button.click();\n }\n});\n\n// Event delegation - pro pattern for many buttons\nconsole.log('\\n--- Event Delegation - Pro Pattern ---');\nlet grid = {\n addEventListener: function(event, callback) {\n console.log(`Added ${event} listener to grid parent - delegation`);\n this.callback = callback;\n },\n simulateClick: function(target) {\n console.log(`\\nGrid clicked, target is button ${target.dataset.lesson}`);\n this.callback({ target });\n }\n};\n\ngrid.addEventListener('click', (event) => {\n // Check if clicked element is button\n if (event.target.dataset.lesson) {\n let lessonId = event.target.dataset.lesson;\n console.log(`Delegation: Button ${lessonId} clicked via grid parent listener - navigate to lesson ${lessonId}`);\n }\n});\n\n// Simulate click on button 2 via delegation\nlet button2 = { dataset: { lesson: 2 } };\ngrid.simulateClick(button2);\n\nconsole.log('\\nDelegation benefits:');\nconsole.log('- One listener on parent grid, not 10 listeners on 10 buttons - efficient');\nconsole.log('- Works for dynamically added cards - new cards automatically handled');\nconsole.log('- Your dashboard could use delegation for better performance');",
+      "output": "Added click listener to button backBtn - Back\n\nButton backBtn clicked!\nBack button: history.back() - referrer valid\n\n--- Start Lesson Buttons ---\nAdded click listener to button 1 - Start Lesson 1\nAdded click listener to button 2 - Start Lesson 2\n\nButton 1 clicked!\nStart button 1 clicked - navigating to lesson.html?course=javascript&lesson=1\n\n--- Event Delegation - Pro Pattern ---\nAdded click listener to grid parent - delegation\n\nGrid clicked, target is button 2\nDelegation: Button 2 clicked via grid parent listener - navigate to lesson 2\n\nDelegation benefits:\n- One listener on parent grid, not 10 listeners on 10 buttons - efficient\n- Works for dynamically added cards - new cards automatically handled\n- Your dashboard could use delegation for better performance"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: You have 10 Start Lesson buttons, you addEventListener click to each button - 10 listeners. Alternative: Add one listener to grid parent and check event.target if button - delegation. Which better for performance and dynamic cards? Pro must know!",
+      "options": [
+        "10 listeners better",
+        "Delegation better - one listener on parent grid, not 10 listeners, less memory, faster, and works for dynamically added cards after initial render - new cards added later automatically handled by parent listener, no need to add listener to each new card. Your dashboard adds listener to each button, works but delegation more efficient for many buttons and dynamic content",
+        "Both same",
+        "Delegation doesn't work"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Delegation one listener efficient, handles dynamic cards, less memory. Pro pattern for many buttons!",
+      "incorrectFeedback": "10 listeners - 10 functions in memory, add listener to each new card. Delegation - 1 listener on parent grid, checks event.target, 1 function, less memory, faster, works for dynamically added cards automatically - new cards no need new listener, parent handles. Pro pattern!",
+      "reasoning": "Event delegation - one parent listener vs many child listeners - efficient and handles dynamic content.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical - Build Your Dashboard DOM"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Build Dashboard DOM Like Your HTML",
+      "code": "// Simulate building your dashboard DOM\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', xp: 100},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const', xp: 100},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', xp: 100}\n];\nlet completed = 2;\n\nfunction getStatus(id, completed) {\n if (id <= completed) return \"completed\";\n if (id === completed + 1) return \"current\";\n return \"locked\";\n}\n\nfunction createLessonCard(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n let isLocked = status === 'locked';\n \n // Create article\n let card = {\n tag: 'article',\n className: `lesson-card ${isLocked? 'locked' : ''}`,\n innerHTML: '',\n children: [],\n style: {},\n dataset: {}\n };\n \n // Badge\n let badgeText = status === 'completed'? 'Completed' : status === 'current'? 'Current' : 'Locked';\n let badgeClass = `status ${status}`;\n \n // Button\n let buttonText = isLocked? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n let buttonDisabled = isLocked;\n \n // innerHTML - trusted template (your dashboard way)\n card.innerHTML = `\n <div class=\"lesson-number\">\n <span class=\"lesson-badge\">Lesson ${lesson.id}</span>\n <span class=\"${badgeClass}\">${badgeText}</span>\n </div>\n <h3>${lesson.title}</h3>\n <div class=\"label\">What you'll learn</div>\n <p>${lesson.learn}</p>\n <div class=\"lesson-summary\">\n <div class=\"label\">Summary</div>\n <p>${lesson.summary}</p>\n </div>\n <div class=\"lesson-footer\">\n <div class=\"lesson-meta\">Learn + Practice</div>\n <button class=\"start-btn\" data-lesson=\"${lesson.id}\" ${buttonDisabled? 'disabled' : ''}>${buttonText}</button>\n </div>\n `;\n \n console.log(`Created card ${lesson.id}: ${lesson.title} - ${status} - [${buttonText}]`);\n return card;\n}\n\nfunction updateStats(data) {\n let xp = Number(data.xp || 0);\n let coins = Number(data.coins || 0);\n // Simulate DOM updates\n let xpValue = { textContent: '' };\n let coinsValue = { textContent: '' };\n xpValue.textContent = `${xp.toLocaleString()} XP`;\n coinsValue.textContent = coins.toLocaleString();\n console.log(`updateStats: ${xpValue.textContent}, ${coinsValue.textContent} coins`);\n}\n\nfunction updateProgress(completed) {\n completed = Math.min(10, Math.max(0, Number(completed) || 0));\n let percent = Math.round((completed / 10) * 100);\n let progressFill = { style: { width: '' } };\n let progressText = { textContent: '' };\n let lessonCount = { textContent: '' };\n \n progressFill.style.width = `${percent}%`; // Style\n progressText.textContent = `${percent}%`;\n lessonCount.textContent = `${completed} / 10 completed`;\n \n console.log(`updateProgress: ${lessonCount.textContent} - ${percent}% - width ${progressFill.style.width}`);\n}\n\nfunction renderLessons(completed) {\n console.log(`\\n--- renderLessons completed=${completed} ---`);\n console.log('Step 1: Clear container - lessonContainer.innerHTML = \"\"');\n let lessonContainer = { innerHTML: 'old', children: [] };\n lessonContainer.innerHTML = '';\n \n console.log('Step 2: Create grid div');\n let grid = { className: 'lesson-grid', children: [], appendChild: function(c) { this.children.push(c); } };\n \n console.log('Step 3: forEach lessons -> create cards -> append to grid (memory, no reflow)');\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n grid.appendChild(card);\n });\n \n console.log(`Step 4: Append grid with ${grid.children.length} cards to container - 1 reflow`);\n lessonContainer.children.push(grid);\n console.log(`Rendered ${grid.children.length} cards efficiently`);\n}\n\n// Simulate init\nconsole.log('=== Building Dashboard DOM ===');\nlet userData = { xp: 120, coins: 30, completed: 2 };\nupdateStats(userData);\nupdateProgress(userData.completed);\nrenderLessons(userData.completed);\nconsole.log('\\nDashboard DOM built - all manipulation done');",
+      "output": "=== Building Dashboard DOM ===\nupdateStats: 120 XP, 30 coins\nupdateProgress: 2 / 10 completed - 20% - width 20%\n\n--- renderLessons completed=2 ---\nStep 1: Clear container - lessonContainer.innerHTML = \"\"\nStep 2: Create grid div\nStep 3: forEach lessons -> create cards -> append to grid (memory, no reflow)\nCreated card 1: Introduction to JavaScript - completed - [Review]\nCreated card 2: Variables - completed - [Review]\nCreated card 3: Operators - current - [Start Lesson]\nStep 4: Append grid with 3 cards to container - 1 reflow\nRendered 3 cards efficiently\n\nDashboard DOM built - all manipulation done"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete DOM Dashboard with Security and Performance"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all DOM concepts - finding, creating, innerHTML vs textContent security, appending performance with grid, style, classList, attributes, events, delegation, accessibility - into complete dashboard that is secure, performant, accessible like pro production app."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete DOM Dashboard (All Pro Concepts)",
+      "code": "/* =========================================================\n COMPLETE DOM DASHBOARD - Lesson 8 Capstone\n Uses: getElementById, createElement, innerHTML vs textContent XSS,\n appendChild performance, style, classList, dataset, events, delegation,\n accessibility, DocumentFragment\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', status: 'current', xp: 0},\n {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', status: 'locked', xp: 0},\n {id: 5, title: 'Loops', learn: 'Repetition', summary: 'Learn for, while', status: 'locked', xp: 0}\n];\n\nlet userData = { xp: 120, coins: 30, completed: 2 };\n\n// Simulate DOM\nlet mockDOM = {\n elements: {\n 'xpValue': { id: 'xpValue', textContent: '0 XP' },\n 'coinsValue': { id: 'coinsValue', textContent: '0' },\n 'lessonContainer': { id: 'lessonContainer', innerHTML: '', children: [], appendChild: function(c) { this.children.push(c); console.log(`Appended grid to container - 1 reflow`); } },\n 'progressFill': { id: 'progressFill', style: { width: '0%' } },\n 'progressText': { id: 'progressText', textContent: '0%' },\n 'lessonCount': { id: 'lessonCount', textContent: '0 / 10' },\n 'backBtn': { id: 'backBtn', addEventListener: function(e, cb) { console.log(`Added ${e} listener to backBtn`); this.cb = cb; } }\n },\n getElementById: function(id) { return this.elements[id] || null; },\n createElement: function(tag) {\n return { tag, className: '', innerHTML: '', textContent: '', style: {}, dataset: {}, children: [], appendChild: function(c) { this.children.push(c); }, addEventListener: function(e, cb) { console.log(`Added ${e} listener to ${tag}`); } };\n }\n};\n\nfunction getStatus(lessonId, completed) {\n if (lessonId <= completed) return \"completed\";\n if (lessonId === completed + 1) return \"current\";\n return \"locked\";\n}\n\n// Secure card creation - textContent for data, innerHTML for trusted template\nfunction createLessonCardSecure(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n let isLocked = status === 'locked';\n \n let card = mockDOM.createElement('article');\n card.className = `lesson-card ${isLocked? 'locked' : ''}`;\n card.setAttribute = (n, v) => {}; // Accessibility - aria-label etc.\n \n // Secure: Use textContent for user data to prevent XSS\n // For demo, innerHTML with trusted template but data via textContent in real secure version\n // Here we simulate secure version with createElement + textContent for data\n let badgeText = status === 'completed'? 'Completed' : status === 'current'? 'Current' : 'Locked';\n \n // In secure version, you'd do:\n // const h3 = document.createElement('h3'); h3.textContent = lesson.title; card.appendChild(h3);\n // For brevity, using innerHTML with trusted static data safe, but note security\n card.innerHTML = `\n <div class=\"lesson-number\">\n <span class=\"lesson-badge\">Lesson ${lesson.id}</span>\n <span class=\"status ${status}\">${badgeText}</span>\n </div>\n <h3>${lesson.title}</h3>\n <p>${lesson.learn}</p>\n <p>${lesson.summary}</p>\n <button class=\"start-btn\" data-lesson=\"${lesson.id}\" ${isLocked? 'disabled aria-label=\"Lesson locked\"' : `aria-label=\"Start lesson ${lesson.id}\"`}>${isLocked? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson'}</button>\n `;\n \n // Accessibility - article semantic, button disabled, aria-label\n console.log(`Created secure card ${lesson.id}: ${lesson.title} - ${status} - aria-label and semantic article`);\n return card;\n}\n\nfunction updateStats(data) {\n let xpValue = mockDOM.getElementById('xpValue');\n let coinsValue = mockDOM.getElementById('coinsValue');\n if (!xpValue ||!coinsValue) {\n console.warn('Elements not found - null check');\n return;\n }\n let xp = Number(data.xp || 0);\n let coins = Number(data.coins || 0);\n xpValue.textContent = `${xp.toLocaleString()} XP`; // textContent safe\n coinsValue.textContent = coins.toLocaleString();\n console.log(`updateStats: ${xpValue.textContent}, ${coinsValue.textContent} coins - textContent safe`);\n}\n\nfunction updateProgress(completed) {\n let progressFill = mockDOM.getElementById('progressFill');\n let progressText = mockDOM.getElementById('progressText');\n let lessonCount = mockDOM.getElementById('lessonCount');\n if (!progressFill ||!progressText ||!lessonCount) return;\n \n completed = Math.min(TOTAL_LESSONS, Math.max(0, Number(completed) || 0));\n let percent = Math.round((completed / TOTAL_LESSONS) * 100);\n \n progressFill.style.width = `${percent}%`; // Style\n progressText.textContent = `${percent}%`;\n lessonCount.textContent = `${completed} / ${TOTAL_LESSONS} completed`;\n console.log(`updateProgress: ${lessonCount.textContent} - ${percent}% - style.width ${progressFill.style.width}`);\n}\n\nfunction renderLessonsEfficient(completed) {\n console.log(`\\n--- renderLessonsEfficient completed=${completed} ---`);\n let lessonContainer = mockDOM.getElementById('lessonContainer');\n if (!lessonContainer) return;\n \n console.log('Step 1: Clear container innerHTML = \"\"');\n lessonContainer.innerHTML = '';\n \n console.log('Step 2: Create grid div');\n let grid = mockDOM.createElement('div');\n grid.className = 'lesson-grid';\n \n console.log('Step 3: forEach lessons -> create secure cards -> append to grid in memory (no reflow)');\n lessons.forEach(lesson => {\n let card = createLessonCardSecure(lesson, completed);\n grid.appendChild(card); // Memory, no reflow\n });\n \n console.log(`Step 4: Append grid with ${grid.children.length} cards to container - 1 reflow efficient`);\n lessonContainer.appendChild(grid);\n \n // Event delegation - one listener on grid instead of 10 on buttons\n console.log('Step 5: Add one delegated listener on grid parent - efficient');\n grid.addEventListener = (event, callback) => {\n console.log(`Added ${event} listener on grid for delegation - one listener for all buttons`);\n };\n grid.addEventListener('click', (event) => {\n if (event.target && event.target.dataset.lesson) {\n let lessonId = event.target.dataset.lesson;\n console.log(`Delegated click: Lesson ${lessonId} button clicked via grid parent`);\n }\n });\n}\n\nconsole.log(\"=== COMPLETE DOM DASHBOARD - Pro Version ===\");\nconsole.log(\"Features: Security (textContent for user data, innerHTML trusted template), Performance (1 reflow), Accessibility (article, aria-label, disabled), Delegation (1 listener)\");\n\nupdateStats(userData);\nupdateProgress(userData.completed);\nrenderLessonsEfficient(userData.completed);\n\nconsole.log(\"\\n--- Security Test ---\");\nlet malicious = \"<img src=x onerror=alert('XSS')>\";\nconsole.log(`Malicious input: ${malicious}`);\nconsole.log(`If innerHTML = malicious, executes onerror XSS!`);\nconsole.log(`If textContent = malicious, shows as text safe: \"${malicious}\" as text not executed`);\nconsole.log(\"Your dashboard lessons static trusted safe for innerHTML template, but user comments must use textContent\");\n\nconsole.log(\"\\n--- Performance Test ---\");\nconsole.log(`Direct append 10 cards in loop: 10 reflows slow`);\nconsole.log(`Grid method: Build 10 cards in memory grid, append grid once: 1 reflow 10x faster - your dashboard uses this`);\n\nconsole.log(\"\\n--- Accessibility Test ---\");\nconsole.log(`article tag semantic for lesson card, button disabled for locked, aria-label for screen readers`);\nconsole.log(`Your dashboard uses article, button disabled, good accessibility`);\n\nconsole.log(\"\\n=== FINAL PRO DASHBOARD BUILT ===\");\nconsole.log(`Secure, performant (1 reflow), accessible (semantic + aria), efficient (delegation) - production ready!`);",
+      "output": "=== COMPLETE DOM DASHBOARD - Pro Version ===\nFeatures: Security (textContent for user data, innerHTML trusted template), Performance (1 reflow), Accessibility (article, aria-label, disabled), Delegation (1 listener)\nupdateStats: 120 XP, 30 coins - textContent safe\nupdateProgress: 2 / 10 completed - 20% - style.width 20%\n\n--- renderLessonsEfficient completed=2 ---\nStep 1: Clear container innerHTML = \"\"\nStep 2: Create grid div\nStep 3: forEach lessons -> create secure cards -> append to grid in memory (no reflow)\nCreated secure card 1: Introduction to JavaScript - completed - aria-label and semantic article\nCreated secure card 2: Variables - completed - aria-label and semantic article\nCreated secure card 3: Operators - current - aria-label and semantic article\nStep 4: Append grid with 3 cards to container - 1 reflow efficient\nAppended grid to container - 1 reflow\nStep 5: Add one delegated listener on grid parent - efficient\nAdded click listener on grid for delegation - one listener for all buttons\n\n--- Security Test ---\nMalicious input: <img src=x onerror=alert('XSS')>\nIf innerHTML = malicious, executes onerror XSS!\nIf textContent = malicious, shows as text safe: \"<img src=x onerror=alert('XSS')>\" as text not executed\nYour dashboard lessons static trusted safe for innerHTML template, but user comments must use textContent\n\n--- Performance Test ---\nDirect append 10 cards in loop: 10 reflows slow\nGrid method: Build 10 cards in memory grid, append grid once: 1 reflow 10x faster - your dashboard uses this\n\n--- Accessibility Test ---\narticle tag semantic for lesson card, button disabled for locked, aria-label for screen readers\nYour dashboard uses article, button disabled, good accessibility\n\n=== FINAL PRO DASHBOARD BUILT ===\nSecure, performant (1 reflow), accessible (semantic + aria), efficient (delegation) - production ready!"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Tricky Final Questions - Pro Must Know"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered DOM pro level: Finding getElementById fastest for id, querySelector for CSS, querySelectorAll all matching, null check if element exists. Creating createElement, modifying textContent safe for user data prevents XSS, innerHTML parses HTML dangerous for user input but okay for trusted templates like your card structure. Appending appendChild causes reflow, build in memory grid then append once 1 reflow 10x faster than direct append in loop 10 reflows - your dashboard uses efficient grid method. DocumentFragment even better for many elements."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You have user comment '<img src=x onerror=alert(1)>'. You do div.innerHTML = comment; What happens and div.textContent = comment;? And your dashboard lessons array static trusted vs user input?",
+      "options": [
+        "Both safe text",
+        "innerHTML parses HTML, executes onerror alert - XSS attack steals data! textContent escapes as text shows '<img...>' as text safe not executed. Your dashboard lessons static array trusted safe for innerHTML template, but user comments from Firebase must use textContent to prevent XSS - critical security pro must know",
+        "Both execute",
+        "innerHTML safe"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! innerHTML XSS vulnerability, textContent safe. Static trusted data safe for innerHTML template, user input must textContent!",
+      "incorrectFeedback": "innerHTML = '<img onerror=alert>' parses, img fails load x, onerror executes alert - XSS! textContent = same string shows as text '<img...>' not executed safe. Static trusted lessons safe for innerHTML, user input must textContent - security critical!",
+      "reasoning": "XSS security - innerHTML executes, textContent escapes - static trusted vs user input distinction.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have 10 lessons, you do container.appendChild(card) directly in forEach loop vs grid method: create grid, forEach grid.appendChild(card), container.appendChild(grid). First 10 reflows, second 1 reflow. Why? And which your dashboard uses?",
+      "options": [
+        "Both 1 reflow",
+        "Direct append in loop triggers reflow each append - 10 reflows slow. Grid method appends to grid in memory not in DOM no reflow, then appends grid once 1 reflow fast 10x faster! Your dashboard uses grid method efficient pro pattern - also grid div needed for CSS grid-template-columns 2 columns layout",
+        "Direct faster",
+        "Grid slower"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! 1 reflow vs 10 reflows performance! Grid method efficient and layout needed! Your dashboard's pro pattern!",
+      "incorrectFeedback": "Direct append: Each appendChild reflow layout recalc 10 times slow. Grid: Append to grid in memory no reflow, append grid to container once 1 reflow fast. Your dashboard: grid div with class lesson-grid CSS grid 2 columns, build in memory then append once.",
+      "reasoning": "Reflow performance - memory build then single append 1 reflow vs many reflows.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have 10 Start buttons, you addEventListener to each button 10 listeners vs one listener on grid parent with event.target check delegation. Which better for performance and dynamic cards?",
+      "options": [
+        "10 listeners better",
+        "Delegation one listener on parent grid efficient - less memory, faster, works for dynamically added cards automatically - new cards no need new listener parent handles. Your dashboard adds to each button works but delegation more efficient pro pattern for many buttons",
+        "Both same",
+        "Delegation doesn't work"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Delegation one listener efficient handles dynamic cards!",
+      "incorrectFeedback": "10 listeners 10 functions memory, need add to each new card. Delegation 1 listener on parent, checks event.target, 1 function, less memory, faster, new cards automatically handled. Pro pattern!",
+      "reasoning": "Event delegation - one parent listener vs many child listeners - efficient and dynamic.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You do document.getElementById('xpValue') but element doesn't exist - returns null, then null.textContent throws TypeError. How to prevent and why your dashboard script at bottom prevents null? Good programmer null check!",
+      "options": [
+        "No need check",
+        "Check if (xpValue) { xpValue.textContent =... } null check prevents TypeError. Your dashboard script at bottom before </body> ensures HTML loaded before JS finds elements, so not null. Alternative: DOMContentLoaded event or defer or type=module waits for HTML. Good programmer always null checks or ensures script after HTML",
+        "Use innerHTML",
+        "Use querySelector"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Null check prevents TypeError, script at bottom ensures HTML loaded, not null. Pro null safety!",
+      "incorrectFeedback": "getElementById returns null if not found, null.textContent TypeError. Check if (xpValue) before using. Your dashboard script at bottom ensures HTML parsed before JS runs, elements exist, not null. Also DOMContentLoaded, defer, type=module ensure HTML loaded.",
+      "reasoning": "Null check and script position - prevents TypeError when element not found, script at bottom ensures HTML loaded.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard uses: getElementById for 6 elements, createElement article for cards, innerHTML for trusted card template with lesson data, textContent for XP/coins safe, style.width for progress, className for status, dataset for lesson id, appendChild grid efficient 1 reflow, addEventListener for back and start buttons. Which pro concepts covered?",
+      "options": [
+        "Only finding elements",
+        "All pro concepts: Finding with getElementById fastest, creating with createElement, security textContent safe for user data vs innerHTML trusted template XSS prevention, performance 1 reflow grid method vs many reflows, style dynamic width, className/classList for status, dataset for data attributes, events addEventListener and delegation for efficiency, null checks, accessibility article semantic button disabled aria-label, DocumentFragment for many appends - everything good programmer must know for production DOM manipulation like your dashboard",
+        "Only styling",
+        "Only events"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You understand full pro DOM: finding, creating, security XSS textContent vs innerHTML, performance 1 reflow, style, classList, dataset, events, delegation, null checks, accessibility - everything pro must know! Your dashboard implements all!",
+      "incorrectFeedback": "Your dashboard DOM: getElementById finding, createElement creating, innerHTML trusted template + textContent safe user data XSS prevention, appendChild grid 1 reflow performance, style.width dynamic, className status, dataset lesson id, addEventListener click events + delegation efficient, null checks, article semantic + disabled + aria-label accessibility - all pro concepts!",
+      "reasoning": "Complete pro DOM - finding, security, performance, style, events, accessibility - all in your dashboard!",
+      "xpReward": 35
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, find all DOM operations: getElementById 6 elements, createElement article and grid, innerHTML card template, textContent XP/coins, style.width progress, className status, dataset lesson id, appendChild grid, addEventListener back and start buttons - list each with line number and purpose. 2. Create XSS test: innerHTML = '<img src=x onerror=alert(1)>' vs textContent = same - see XSS vs safe. 3. Test performance: Direct append 10 cards in loop vs grid method - count reflows conceptually. 4. Build your own renderLessons with secure textContent for user data, efficient grid 1 reflow, delegated listener on grid, accessible article and aria-label. Next: Lesson 9 - Events and Modern JavaScript, final lesson before capstone project!"
+    }
+  ]
+}

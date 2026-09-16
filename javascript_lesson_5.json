@@ -1,0 +1,414 @@
+{
+  "course": "javascript",
+  "lessonNumber": 5,
+  "lessonId": "javascript-lesson-5",
+  "title": "Loops and Repetition",
+  "subtitle": "How Your Dashboard Renders 10 Lesson Cards Without Writing 10 Times",
+  "description": "Master for, while, do...while, forEach, for...of, break, continue - and how your dashboard uses lessons.forEach to create 10 cards, and why loops prevent code repetition.",
+  "level": "Beginner",
+  "xpReward": 160,
+  "coinsReward": 35,
+  "estimatedMinutes": 65,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Why Loops? Your Dashboard Has 10 Lessons - Don't Repeat Code!"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Imagine you have 10 lessons. Without loops, you would write createLessonCard for lesson 1, then copy paste for lesson 2, then for lesson 3... 10 times same code! If you need to change card design, you change 10 places - nightmare!"
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Your dashboard does NOT repeat. It has lessons array with 10 objects [{id:1, title:'Intro'}, {id:2, title:'Variables'},...] and then lessons.forEach(lesson => { grid.appendChild(createLessonCard(lesson, completed)) }) - ONE loop renders all 10 cards! Change card design once in createLessonCard, all 10 cards update automatically."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Loop = repeat same code many times with different data. Your dashboard loop: For each lesson in lessons array, create card and append to grid. 10 lessons = loop runs 10 times, each time lesson variable is different lesson object."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Without loops, your dashboard HTML would have 3000 lines instead of 300! Loops are DRY - Don't Repeat Yourself - most important principle. Today you master 5 loop types and see your dashboard's exact forEach loop."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Real life loops: For each user in users, send email. For each lesson, check if completed. While loading, show spinner. For each XP, add to total. Loops everywhere in your dashboard and all apps."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Without Loop vs With Loop - Your Dashboard Rendering",
+      "code": "let lessons = [\n {id: 1, title: 'Introduction to JavaScript'},\n {id: 2, title: 'Variables and Data Types'},\n {id: 3, title: 'Operators and Expressions'},\n {id: 4, title: 'Conditions'},\n {id: 5, title: 'Loops'}\n];\n\n// ❌ WITHOUT LOOP - Repetition - BAD! 5 times same code\nconsole.log('Without loop - repeating:');\n// console.log(`Rendering card for ${lessons[0].title}`);\n// console.log(`Rendering card for ${lessons[1].title}`);\n// console.log(`Rendering card for ${lessons[2].title}`);\n// console.log(`Rendering card for ${lessons[3].title}`);\n// console.log(`Rendering card for ${lessons[4].title}`);\n// If 10 lessons, 10 lines! If design changes, change 10 places!\n\n// ✅ WITH LOOP - DRY - GOOD! Like your dashboard\nconsole.log('\\nWith for loop - DRY:');\nfor (let i = 0; i < lessons.length; i++) {\n console.log(`Rendering card for ${lessons[i].title} (index ${i})`);\n}\n\n// ✅ WITH forEach - Your dashboard's actual way\nconsole.log('\\nWith forEach - your dashboard way:');\nlessons.forEach(lesson => {\n console.log(`Rendering card for ${lesson.title} (id ${lesson.id})`);\n // Your dashboard: grid.appendChild(createLessonCard(lesson, completed))\n});\n\nconsole.log('\\nWith loop: 1 place to change design, all cards update!');",
+      "output": "Without loop - repeating: (would be 5 lines)\n\nWith for loop - DRY:\nRendering card for Introduction to JavaScript (index 0)\nRendering card for Variables and Data Types (index 1)\n...\n\nWith forEach - your dashboard way:\nRendering card for Introduction to JavaScript (id 1)\nRendering card for Variables and Data Types (id 2)\n...\nWith loop: 1 place to change design, all cards update!"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: for Loop - The Classic Counter"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "for loop has 3 parts: for (initialization; condition; increment) { code }. Initialization runs once at start: let i = 0. Condition checked each iteration: i < lessons.length - if true, run code, if false, stop loop. Increment after each iteration: i++ means i = i + 1."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Example from your dashboard: for (let i = 0; i < lessons.length; i++) { create card for lessons[i] }. i starts 0, condition 0 < 5 true, create card for lessons[0], i++ => i=1, condition 1 <5 true, create card for lessons[1]... until i=5, 5<5 false, stop. Loop runs 5 times for 5 lessons."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "i is index - position in array. Array indexes start 0: lessons[0] is first lesson, lessons[1] second, lessons[4] fifth. lessons.length is 5, but last index 4 because start 0. So condition i < length not i <= length, otherwise i=5 lessons[5] undefined!"
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Your dashboard could use for loop but uses forEach which is cleaner - no need to manage i index manually. But for loop important to understand, and useful when you need index or need to skip or break."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: for Loop Deep Dive - Index and Lessons",
+      "code": "let lessons = [\n {id: 1, title: 'Intro'},\n {id: 2, title: 'Variables'},\n {id: 3, title: 'Operators'},\n {id: 4, title: 'Conditions'},\n {id: 5, title: 'Loops'}\n];\n\nconsole.log('Array length:', lessons.length); // 5\nconsole.log('Indexes: 0 to', lessons.length - 1); // 0 to 4\nconsole.log('First lesson:', lessons[0].title); // Intro - index 0\nconsole.log('Last lesson:', lessons[lessons.length - 1].title); // Loops - index 4\n\n// for loop - step by step\nconsole.log('\\nfor loop execution:');\nfor (let i = 0; i < lessons.length; i++) {\n console.log(`Iteration ${i}: i=${i}, condition ${i} < ${lessons.length} = ${i < lessons.length}, lesson = ${lessons[i].title}`);\n}\n\n// for loop with break and continue\nconsole.log('\\nfor loop with break - stop at lesson 3:');\nfor (let i = 0; i < lessons.length; i++) {\n if (lessons[i].id === 3) {\n console.log(`Found lesson 3 at index ${i}, breaking loop`);\n break; // Stop loop entirely\n }\n console.log(`Checking ${lessons[i].title}`);\n}\n\nconsole.log('\\nfor loop with continue - skip lesson 3:');\nfor (let i = 0; i < lessons.length; i++) {\n if (lessons[i].id === 3) {\n console.log(`Skipping lesson 3`);\n continue; // Skip this iteration, go to next i++\n }\n console.log(`Rendering ${lessons[i].title}`);\n}\n\n// Your dashboard progress - count completed\nlet completed = 2;\nlet completedCount = 0;\nfor (let i = 0; i < lessons.length; i++) {\n if (lessons[i].id <= completed) {\n completedCount++;\n }\n}\nconsole.log(`\\nCompleted count: ${completedCount} out of ${lessons.length}`);",
+      "output": "Array length: 5\nIndexes: 0 to 4\nFirst lesson: Intro\nLast lesson: Loops\n\nfor loop execution:\nIteration 0: i=0, condition 0 < 5 = true, lesson = Intro\nIteration 1: i=1, condition 1 < 5 = true, lesson = Variables\n...\nIteration 4: i=4, condition 4 < 5 = true, lesson = Loops\nIteration 5: i=5, condition 5 < 5 = false, stop\n\nfor loop with break - stop at lesson 3:\nChecking Intro\nChecking Variables\nFound lesson 3 at index 2, breaking loop\n\nfor loop with continue - skip lesson 3:\nRendering Intro\nRendering Variables\nSkipping lesson 3\nRendering Conditions\nRendering Loops\n\nCompleted count: 2 out of 5"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: forEach - Your Dashboard's Favorite Loop"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "forEach is array method that loops through each element and calls function for each. Your dashboard uses it: lessons.forEach(lesson => { grid.appendChild(createLessonCard(lesson, completed)) }) - for each lesson in array, create card and append."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "forEach is cleaner than for loop - no need to manage i index, no risk of off-by-one error (i <= length vs i < length). It automatically gives you lesson element, not index. For rendering, forEach is perfect."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "forEach takes callback function: lessons.forEach(function(lesson) {... }) or arrow: lessons.forEach(lesson => {... }). Callback receives element, index, array: forEach((lesson, index, array) => { console.log(index, lesson.title) }). Your dashboard uses only lesson param, not index."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Limitation: forEach cannot break or continue easily - it always loops all elements. For loop can break to stop early or continue to skip. Your dashboard renders all lessons, so forEach fine. If you need to stop when found lesson, for loop with break better."
+    },
+    {
+      "id": "p3-5",
+      "type": "sentence",
+      "text": "Your exact dashboard code: lessons.forEach(lesson => { grid.appendChild(createLessonCard(lesson, completed)) }) - lessons is array of 10, forEach runs 10 times, each time lesson is different object {id:1, title:'Intro'}, createLessonCard creates article element, appendChild adds to grid div, grid added to lessonContainer."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: forEach - Your Dashboard's Exact Rendering",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', status: 'completed'},\n {id: 2, title: 'Variables', status: 'completed'},\n {id: 3, title: 'Operators', status: 'current'},\n {id: 4, title: 'Conditions', status: 'locked'}\n];\nlet completed = 2;\n\n// Your dashboard's exact forEach\nconsole.log('Your dashboard forEach:');\nlet grid = []; // Simulate grid div\nlessons.forEach(lesson => {\n // Simulate createLessonCard\n let card = {\n id: lesson.id,\n title: lesson.title,\n status: lesson.id <= completed? 'completed' : lesson.id === completed + 1? 'current' : 'locked'\n };\n grid.push(card);\n console.log(`Created card for ${lesson.title} - status ${card.status}`);\n});\n\nconsole.log(`\\nGrid has ${grid.length} cards:`, grid.map(c => c.title).join(', '));\n\n// forEach with index\nconsole.log('\\nforEach with index param:');\nlessons.forEach((lesson, index) => {\n console.log(`Index ${index}: Lesson ${lesson.id} - ${lesson.title}`);\n});\n\n// forEach vs for loop\nconsole.log('\\nfor loop equivalent:');\nfor (let i = 0; i < lessons.length; i++) {\n console.log(`Index ${i}: Lesson ${lessons[i].id} - ${lessons[i].title}`);\n}\n\n// Cannot break in forEach easily - workaround with return (only exits callback, not loop)\nconsole.log('\\nforEach cannot break - workaround:');\nlessons.forEach(lesson => {\n if (lesson.id === 3) {\n return; // Only exits this callback iteration, not entire loop - still loops all\n }\n console.log(`Rendering ${lesson.title}`);\n});\nconsole.log('forEach still looped all, return only skips one callback, not break entire loop');\n\n// For loop can break\nconsole.log('\\nfor loop can break:');\nfor (let i = 0; i < lessons.length; i++) {\n if (lessons[i].id === 3) {\n console.log('Found lesson 3, breaking');\n break; // Breaks entire loop\n }\n console.log(`Checking ${lessons[i].title}`);\n}",
+      "output": "Your dashboard forEach:\nCreated card for Intro - status completed\nCreated card for Variables - status completed\nCreated card for Operators - status current\nCreated card for Conditions - status locked\n\nGrid has 4 cards: Intro, Variables, Operators, Conditions\n\nforEach with index param:\nIndex 0: Lesson 1 - Intro\n...\n\nfor loop equivalent:\nIndex 0: Lesson 1 - Intro\n...\n\nforEach cannot break - workaround:\nRendering Intro\nRendering Variables\nRendering Conditions (lesson 3 skipped via return but loop continues)\nforEach still looped all\n\nfor loop can break:\nChecking Intro\nChecking Variables\nFound lesson 3, breaking"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: while and do...while - Loops with Condition at Start or End"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "while loop checks condition first, then runs code if true, repeats while condition true. Example: while (loading) { show spinner } - while loading true, show spinner, when loading false, stop. Your dashboard could use while for retry logic: while (retries < 3 &&!data) { try fetch }."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "do...while checks condition after running code once - guarantees code runs at least once even if condition false initially. Example: do { ask for password } while (password incorrect) - asks at least once, then repeats while incorrect."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Your dashboard uses forEach for rendering because you know array length and want to render all. while useful when you don't know how many iterations - like while user has not completed course, keep showing next lesson. do...while useful for user input validation."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Infinite loop danger: while (true) {... } never stops, crashes browser! Always ensure condition becomes false eventually, or have break inside. Your dashboard's while would need increment or condition change inside loop."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: while and do...while - Loading and Retry Logic",
+      "code": "// while loop - condition first, may run 0 times\nlet loading = true;\nlet attempts = 0;\n\nconsole.log('while loop - loading spinner:');\nwhile (loading && attempts < 3) {\n console.log(`Attempt ${attempts + 1}: Loading...`);\n attempts++;\n if (attempts === 2) {\n loading = false; // Simulate load success after 2 attempts\n console.log('Load success!');\n }\n}\nconsole.log(`Finished after ${attempts} attempts, loading=${loading}`);\n\n// do...while - runs at least once\nconsole.log('\\ndo...while - runs at least once:');\nlet password = \"wrong\";\nlet tries = 0;\ndo {\n tries++;\n console.log(`Try ${tries}: Checking password \"${password}\"`);\n if (password === \"wrong\") {\n password = \"correct\"; // Simulate user enters correct on second try\n console.log('Password wrong, ask again');\n }\n} while (password!== \"correct\" && tries < 3);\nconsole.log(`Password correct after ${tries} tries`);\n\n// Your dashboard - while for counting completed\nlet lessons = [\n {id: 1, status: 'completed'},\n {id: 2, status: 'completed'},\n {id: 3, status: 'current'},\n {id: 4, status: 'locked'}\n];\nlet i = 0;\nlet completedCount = 0;\nwhile (i < lessons.length) {\n if (lessons[i].status === 'completed') {\n completedCount++;\n }\n i++;\n}\nconsole.log(`\\nCompleted count with while: ${completedCount}`);\n\n// Infinite loop danger - commented out\n// while (true) {\n// console.log('Infinite! Crashes browser!');\n// }\n// Always have condition that becomes false or break\nlet count = 0;\nwhile (true) {\n count++;\n if (count === 3) {\n console.log('Breaking infinite loop after 3 counts');\n break; // Break prevents infinite\n }\n}",
+      "output": "while loop - loading spinner:\nAttempt 1: Loading...\nAttempt 2: Loading...\nLoad success!\nFinished after 2 attempts, loading=false\n\ndo...while - runs at least once:\nTry 1: Checking password \"wrong\"\nPassword wrong, ask again\nTry 2: Checking password \"correct\"\nPassword correct after 2 tries\n\nCompleted count with while: 2\nBreaking infinite loop after 3 counts"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have lessons array with 5 lessons. You write for (let i = 0; i <= lessons.length; i++) { console.log(lessons[i].title) }. What happens on last iteration? Tricky off-by-one!",
+      "options": [
+        "Works fine, logs all 5 lessons",
+        "Logs 5 lessons plus undefined error on last iteration - because indexes 0-4 for 5 lessons, length is 5, i <= length means i goes 0,1,2,3,4,5 - when i=5, lessons[5] undefined, lessons[5].title throws TypeError: Cannot read property title of undefined. Should be i < length not i <= length. Your dashboard uses forEach which avoids this off-by-one bug automatically",
+        "Logs only 4 lessons",
+        "Infinite loop"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Off-by-one bug - <= length goes one beyond last index. < length correct. forEach avoids index management, no off-by-one risk - your dashboard's forEach is safer!",
+      "incorrectFeedback": "Array length 5, indexes 0-4. i <= 5 means i=5 last iteration, lessons[5] undefined (no element at index 5),.title throws error. Should be i < length (0-4) or i <= length-1. forEach avoids this by giving element directly, no index to mess up.",
+      "reasoning": "Off-by-one error - <= vs < with length - common bug, forEach prevents it.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: for...of and for...in - Modern Loops"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "for...of loops through values of iterable like array: for (let lesson of lessons) { console.log(lesson.title) } - lesson is value directly, not index. Cleaner than for loop when you need value not index. Your dashboard could use for...of instead of forEach: for (let lesson of lessons) { grid.appendChild(createLessonCard(lesson)) }."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "for...in loops through keys/properties of object: for (let key in user) { console.log(key, user[key]) } - key is property name like xp, coins. Use for objects, not arrays! For arrays, for...in gives indexes as strings, not values, and includes inherited properties - buggy. Use for...of or forEach for arrays."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "Your dashboard: lessons array, use for...of or forEach for values. user object {xp:120, coins:30}, use for...in to loop keys if you need to display all user stats dynamically."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: for...of vs for...in - Your Dashboard Lessons and User",
+      "code": "let lessons = [\n {id: 1, title: 'Intro'},\n {id: 2, title: 'Variables'},\n {id: 3, title: 'Operators'}\n];\n\n// for...of - values of array - GOOD for arrays\nconsole.log('for...of - values (good for arrays):');\nfor (let lesson of lessons) {\n console.log(`Lesson ${lesson.id}: ${lesson.title}`);\n}\n\n// for...in - keys of object - GOOD for objects, BAD for arrays\nlet user = { xp: 120, coins: 30, completed: 2 };\nconsole.log('\\nfor...in - keys of object (good for objects):');\nfor (let key in user) {\n console.log(`${key}: ${user[key]}`);\n}\n\n// for...in with array - BAD - gives indexes as strings\nconsole.log('\\nfor...in with array - BAD - indexes as strings:');\nfor (let index in lessons) {\n console.log(`Index ${index} type ${typeof index}: ${lessons[index].title}`);\n // index is \"0\", \"1\", \"2\" string not number!\n}\n\n// Your dashboard - for...of alternative to forEach\nconsole.log('\\nYour dashboard with for...of:');\nlet grid = [];\nfor (let lesson of lessons) {\n grid.push(`Card for ${lesson.title}`);\n}\nconsole.log(grid);\n\n// for...of with entries to get index and value\nconsole.log('\\nfor...of with entries - index and value:');\nfor (let [index, lesson] of lessons.entries()) {\n console.log(`Index ${index}: ${lesson.title}`);\n}",
+      "output": "for...of - values (good for arrays):\nLesson 1: Intro\nLesson 2: Variables\nLesson 3: Operators\n\nfor...in - keys of object (good for objects):\nxp: 120\ncoins: 30\ncompleted: 2\n\nfor...in with array - BAD - indexes as strings:\nIndex 0 type string: Intro\nIndex 1 type string: Variables\nIndex 2 type string: Operators\n\nYour dashboard with for...of:\n[Card for Intro, Card for Variables, Card for Operators]\n\nfor...of with entries - index and value:\nIndex 0: Intro\nIndex 1: Variables\nIndex 2: Operators"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: You have lessons array. You use for...in to loop: for (let i in lessons) { console.log(lessons[i].title) }. It works but i is string '0' not number 0. What bug can this cause? And what should you use for arrays?",
+      "options": [
+        "No bug, works fine",
+        "for...in gives index as string '0', not number 0, so i + 1 = '01' string concatenation not 1 math! And for...in includes inherited properties, not just array elements, can include unexpected keys. Should use for...of for values or for loop with number index or forEach - your dashboard uses forEach which gives value directly, no string index bug",
+        "for...in is only for objects",
+        "for...in is faster"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! for...in index is string, '0'+1='01' bug! And includes inherited props. Use for...of or forEach for arrays - gives value directly, no index type bug. Your dashboard's forEach avoids this!",
+      "incorrectFeedback": "for...in with array: i is '0' string, '0'+1='01' concatenation not 1! Also for...in loops inherited properties from prototype, not just array elements. Use for...of (values), for loop (number index), or forEach (value) for arrays. for...in is for objects.",
+      "reasoning": "for...in with arrays gives string index and inherited props - bug source, use for...of/forEach for arrays.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Break and Continue - Control Loop Flow"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "break stops loop entirely - exits loop, no more iterations. Your dashboard could use break to stop searching when found lesson: for (let i=0; i<lessons.length; i++) { if (lessons[i].id === searchId) { found = lessons[i]; break; } } - once found, break, no need to check rest."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "continue skips current iteration and goes to next. Example: for each lesson, if lesson locked, skip rendering, continue to next lesson. Your dashboard could skip locked lessons: lessons.forEach? forEach cannot continue easily, but for loop: if (status==='locked') continue; render only non-locked."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "forEach cannot break or continue with keywords - return in forEach only exits callback, not entire loop. To break/continue in forEach, need to use for loop or for...of which support break/continue. Your dashboard renders all lessons, so no need break, but if you search for specific lesson, for loop with break more efficient."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Break and Continue - Search and Skip",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', status: 'completed'},\n {id: 2, title: 'Variables', status: 'completed'},\n {id: 3, title: 'Operators', status: 'current'},\n {id: 4, title: 'Conditions', status: 'locked'},\n {id: 5, title: 'Loops', status: 'locked'}\n];\n\n// Break - stop when found\nconsole.log('Break - find lesson 3 and stop:');\nfor (let i = 0; i < lessons.length; i++) {\n console.log(`Checking lesson ${lessons[i].id}`);\n if (lessons[i].id === 3) {\n console.log(`Found lesson 3: ${lessons[i].title} - breaking`);\n break; // Stop loop\n }\n}\n\n// Continue - skip locked lessons\nconsole.log('\\nContinue - skip locked, render only unlocked:');\nfor (let i = 0; i < lessons.length; i++) {\n if (lessons[i].status === 'locked') {\n console.log(`Skipping locked lesson ${lessons[i].id}`);\n continue; // Skip this iteration, go to next i\n }\n console.log(`Rendering ${lessons[i].title} - ${lessons[i].status}`);\n}\n\n// Your dashboard - count completed with continue\nlet completedCount = 0;\nfor (let lesson of lessons) {\n if (lesson.status!== 'completed') {\n continue; // Skip non-completed\n }\n completedCount++;\n}\nconsole.log(`\\nCompleted count with continue: ${completedCount}`);\n\n// forEach cannot break - but can skip with return (only callback, not loop)\nconsole.log('\\nforEach cannot break, return only skips callback:');\nlessons.forEach(lesson => {\n if (lesson.id === 3) {\n console.log('Found lesson 3 in forEach - return only exits callback, not loop');\n return; // Only exits this callback, loop continues\n }\n console.log(`forEach checking ${lesson.title}`);\n});\nconsole.log('forEach looped all despite return - to break, use for loop');",
+      "output": "Break - find lesson 3 and stop:\nChecking lesson 1\nChecking lesson 2\nChecking lesson 3\nFound lesson 3: Operators - breaking\n\nContinue - skip locked, render only unlocked:\nRendering Intro - completed\nRendering Variables - completed\nRendering Operators - current\nSkipping locked lesson 4\nSkipping locked lesson 5\n\nCompleted count with continue: 2\n\nforEach cannot break, return only skips callback:\nforEach checking Intro\nforEach checking Variables\nFound lesson 3 in forEach - return only exits callback, not loop\nforEach checking Conditions\nforEach checking Loops\nforEach looped all despite return - to break, use for loop"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: You have 100 lessons, you search for lesson id 5. You use forEach to loop all 100, vs for loop with break when found id 5 at index 4. Which is more efficient and why?",
+      "options": [
+        "forEach more efficient - always",
+        "for loop with break more efficient - forEach always loops all 100 lessons even after finding id 5 at index 4, 95 extra iterations wasted. for loop with break stops at index 4 after finding, 5 iterations only, 95% faster for search. Your dashboard renders all lessons so forEach fine, but for search, for loop with break better",
+        "Both same efficiency",
+        "forEach can break"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! forEach cannot break, always loops all. for loop with break stops early - efficient for search. Your dashboard renders all so forEach fine, but search should use for loop with break or find() method!",
+      "incorrectFeedback": "forEach loops all 100 even after finding at index 4, 95 wasted iterations. for loop break stops at 5, only 5 iterations, much faster for search. Use for loop with break or Array.find() for search, forEach for rendering all.",
+      "reasoning": "forEach vs for loop with break efficiency - forEach cannot break, always loops all, inefficient for search.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Your Dashboard's Rendering Loop Deep Dive"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Your dashboard's renderLessons function: lessonContainer.innerHTML = ''; create grid div with className lesson-grid, then lessons.forEach(lesson => { grid.appendChild(createLessonCard(lesson, completed)) }), then lessonContainer.appendChild(grid). This is 3 steps: clear container, loop to create cards and append to grid, append grid to container."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "Why create grid first then append cards to grid, then grid to container, not directly append cards to container? Because grid is CSS grid with grid-template-columns: repeat(2, minmax(0, 1fr)) - 2 columns on desktop, 1 on mobile. If you append cards directly to container without grid div, no grid layout, cards stack vertically not in grid."
+    },
+    {
+      "id": "p7-3",
+      "type": "sentence",
+      "text": "Performance: Appending to grid then grid to container is 1 reflow (browser recalculates layout once when grid appended), vs appending each card directly to container in loop would cause 10 reflows (one per append) - slower. Your dashboard's method is efficient - build in memory then append once."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Your Dashboard's renderLessons Loop Explained",
+      "code": "let lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax'},\n {id: 2, title: 'Variables and Data Types', learn: 'Store info', summary: 'Learn let, const'},\n {id: 3, title: 'Operators', learn: 'Perform calculations', summary: 'Master operators'}\n];\nlet completed = 2;\n\n// Simulate your dashboard's renderLessons\nfunction createLessonCard(lesson, completed) {\n let isCompleted = lesson.id <= completed;\n let isCurrent = lesson.id === completed + 1;\n let isLocked = lesson.id > completed + 1;\n \n let status = isCompleted? 'completed' : isCurrent? 'current' : 'locked';\n let button = isLocked? 'Locked' : isCompleted? 'Review' : 'Start Lesson';\n \n return {\n id: lesson.id,\n title: lesson.title,\n status,\n button,\n element: `Article card for ${lesson.title} with ${status} badge and ${button} button`\n };\n}\n\nfunction renderLessons(completed) {\n console.log('Step 1: Clear container - lessonContainer.innerHTML = \"\"');\n let lessonContainer = { innerHTML: 'old content', children: [] };\n lessonContainer.innerHTML = \"\"; // Clear\n \n console.log('Step 2: Create grid div with class lesson-grid');\n let grid = { className: 'lesson-grid', cards: [] };\n \n console.log('Step 3: Loop through lessons with forEach and create cards');\n lessons.forEach(lesson => {\n let card = createLessonCard(lesson, completed);\n grid.cards.push(card);\n console.log(` - Created card: Lesson ${lesson.id} ${lesson.title} - ${card.status} - ${card.button}`);\n });\n \n console.log(`Step 4: Append grid with ${grid.cards.length} cards to container - 1 reflow, efficient`);\n lessonContainer.children.push(grid);\n \n console.log(`\\nRendered ${grid.cards.length} cards in grid`);\n return lessonContainer;\n}\n\nlet container = renderLessons(completed);\nconsole.log('\\nContainer:', JSON.stringify(container, null, 2));\n\n// Inefficient way - direct append in loop causes many reflows\nconsole.log('\\n--- Inefficient way (many reflows) ---');\nlet container2 = { children: [] };\nfor (let i = 0; i < lessons.length; i++) {\n let card = createLessonCard(lessons[i], completed);\n container2.children.push(card); // Each push would cause reflow if real DOM\n console.log(`Appended card ${i+1} directly - reflow ${i+1}`);\n}\nconsole.log('Inefficient: 3 reflows vs efficient 1 reflow - your dashboard uses efficient grid method');",
+      "output": "Step 1: Clear container - lessonContainer.innerHTML = \"\"\nStep 2: Create grid div with class lesson-grid\nStep 3: Loop through lessons with forEach and create cards\n - Created card: Lesson 1 Introduction to JavaScript - completed - Review\n - Created card: Lesson 2 Variables and Data Types - completed - Review\n - Created card: Lesson 3 Operators - current - Start Lesson\nStep 4: Append grid with 3 cards to container - 1 reflow, efficient\n\nRendered 3 cards in grid\n\n--- Inefficient way (many reflows) ---\nAppended card 1 directly - reflow 1\nAppended card 2 directly - reflow 2\nAppended card 3 directly - reflow 3\nInefficient: 3 reflows vs efficient 1 reflow"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: Your dashboard does: grid = createElement('div'), lessons.forEach(lesson => grid.appendChild(createCard)), container.appendChild(grid). Why not container.appendChild(createCard) directly inside forEach loop? Performance trick!",
+      "options": [
+        "Both same performance",
+        "Direct append in loop causes reflow for each card - 10 cards = 10 reflows (browser recalculates layout 10 times) slow. Grid method builds all cards in memory grid div, then appends grid once = 1 reflow, 10x faster! Also grid div has CSS grid-template-columns for 2-column layout, without grid div no grid layout. Your dashboard's method is efficient and correct layout",
+        "Grid method slower",
+        "No reason"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! 1 reflow vs 10 reflows performance! And grid div needed for CSS grid layout. Your dashboard's build in memory then append once is pro efficient pattern!",
+      "incorrectFeedback": "Appending each card directly to container in loop triggers browser reflow (layout recalc) each time - 10 cards 10 reflows slow. Building grid in memory then appending grid once = 1 reflow fast. Also grid div has class lesson-grid with grid-template-columns CSS for 2 columns, needed for layout.",
+      "reasoning": "DOM reflow performance - building in memory then single append is efficient - your dashboard's grid pattern.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical Loops - Progress, Search, XP Total"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Practical Loops - Count, Search, Sum Like Dashboard",
+      "code": "let lessons = [\n {id: 1, title: 'Introduction to JavaScript', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', status: 'current', xp: 0},\n {id: 4, title: 'Conditions', status: 'locked', xp: 0},\n {id: 5, title: 'Loops', status: 'locked', xp: 0}\n];\n\n// Count completed - loop with condition\nlet completedCount = 0;\nfor (let lesson of lessons) {\n if (lesson.status === 'completed') {\n completedCount++;\n }\n}\nconsole.log(`Completed: ${completedCount} / ${lessons.length}`);\n\n// Calculate total XP earned - sum with loop\nlet totalXP = 0;\nlessons.forEach(lesson => {\n totalXP += lesson.xp; // Assignment +=\n});\nconsole.log(`Total XP earned: ${totalXP}`);\n\n// Search for lesson by id - loop with break\nlet searchId = 3;\nlet found = null;\nfor (let i = 0; i < lessons.length; i++) {\n if (lessons[i].id === searchId) {\n found = lessons[i];\n console.log(`Found lesson ${searchId}: ${found.title} at index ${i}`);\n break; // Stop after found\n }\n}\n\n// Filter current lessons - loop with condition\nlet currentLessons = [];\nfor (let lesson of lessons) {\n if (lesson.status === 'current') {\n currentLessons.push(lesson);\n }\n}\nconsole.log(`Current lessons: ${currentLessons.map(l => l.title).join(', ')}`);\n\n// Your dashboard progress with loop\nlet completed = 2;\nlet percent = Math.round((completed / lessons.length) * 100);\nconsole.log(`Progress: ${completed}/${lessons.length} = ${percent}%`);\n\n// Nested loop - for each lesson, check each character? (example)\nconsole.log('\\nNested loop - lessons and characters:');\nfor (let lesson of lessons.slice(0, 2)) { // First 2 lessons\n console.log(`Lesson ${lesson.id}: ${lesson.title}`);\n // Inner loop - count words\n let words = lesson.title.split(' ');\n console.log(` Words: ${words.length} - ${words.join(', ')}`);\n}",
+      "output": "Completed: 2 / 5\nTotal XP earned: 200\nFound lesson 3: Operators at index 2\nCurrent lessons: Operators\nProgress: 2/5 = 40%\n\nNested loop - lessons and characters:\nLesson 1: Introduction to JavaScript\n Words: 3 - Introduction, to, JavaScript\nLesson 2: Variables\n Words: 1 - Variables"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Dashboard with Loops"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all loops - for, while, forEach, for...of, break, continue - into complete dashboard that renders cards, counts completed, searches lessons, calculates XP, handles progress, exactly like your HTML dashboard but with extra features."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete Dashboard Loops (All Concepts)",
+      "code": "/* =========================================================\n COMPLETE DASHBOARD LOOPS - Lesson 5 Capstone\n Uses: for, while, forEach, for...of, break, continue, nested loops\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', status: 'completed', xp: 100, coins: 10},\n {id: 2, title: 'Variables and Data Types', status: 'completed', xp: 100, coins: 10},\n {id: 3, title: 'Operators and Expressions', status: 'current', xp: 0, coins: 0},\n {id: 4, title: 'Conditions', status: 'locked', xp: 0, coins: 0},\n {id: 5, title: 'Loops', status: 'locked', xp: 0, coins: 0},\n {id: 6, title: 'Functions', status: 'locked', xp: 0, coins: 0},\n {id: 7, title: 'Arrays and Objects', status: 'locked', xp: 0, coins: 0},\n {id: 8, title: 'DOM Manipulation', status: 'locked', xp: 0, coins: 0},\n {id: 9, title: 'Events and Modern JS', status: 'locked', xp: 0, coins: 0},\n {id: 10, title: 'Build Website', status: 'locked', xp: 0, coins: 0}\n];\n\nlet completed = 2;\nlet xp = 200;\nlet coins = 20;\n\n// Function to get status - like your dashboard\nfunction getStatus(lessonId) {\n if (lessonId <= completed) return \"completed\";\n if (lessonId === completed + 1) return \"current\";\n return \"locked\";\n}\n\n// Function to create card - like your createLessonCard\nfunction createLessonCard(lesson) {\n let status = getStatus(lesson.id);\n let button = status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n return { id: lesson.id, title: lesson.title, status, button, xp: lesson.xp };\n}\n\n// Render all lessons - forEach like your dashboard\nconsole.log(\"=== RENDERING ALL LESSONS (forEach) ===\");\nlet grid = [];\nlessons.forEach(lesson => {\n let card = createLessonCard(lesson);\n grid.push(card);\n console.log(`${card.id}. ${card.title} - ${card.status.toUpperCase()} - [${card.button}]`);\n});\n\n// Count with for...of and continue\nconsole.log(\"\\n=== COUNTING WITH for...of + continue ===\");\nlet completedCount = 0;\nlet currentCount = 0;\nlet lockedCount = 0;\nfor (let lesson of lessons) {\n let status = getStatus(lesson.id);\n if (status === 'completed') {\n completedCount++;\n continue; // Skip rest, go to next\n }\n if (status === 'current') {\n currentCount++;\n continue;\n }\n lockedCount++;\n}\nconsole.log(`Completed: ${completedCount}, Current: ${currentCount}, Locked: ${lockedCount}`);\n\n// Search with for loop + break\nconsole.log(\"\\n=== SEARCHING WITH for + break ===\");\nfunction findLesson(id) {\n for (let i = 0; i < lessons.length; i++) {\n if (lessons[i].id === id) {\n console.log(`Found lesson ${id} at index ${i}: ${lessons[i].title}`);\n return lessons[i]; // Or break and return after loop\n }\n }\n console.log(`Lesson ${id} not found`);\n return null;\n}\nfindLesson(3);\nfindLesson(10);\nfindLesson(15);\n\n// Calculate total XP with for loop\nconsole.log(\"\\n=== TOTAL XP WITH for LOOP ===\");\nlet totalXPEarned = 0;\nfor (let i = 0; i < lessons.length; i++) {\n totalXPEarned += lessons[i].xp; // += assignment\n}\nconsole.log(`Total XP earned: ${totalXPEarned}`);\n\n// While loop - simulate loading with retries\nconsole.log(\"\\n=== WHILE LOOP - LOADING WITH RETRIES ===\");\nlet loading = true;\nlet retries = 0;\nwhile (loading && retries < 3) {\n retries++;\n console.log(`Loading attempt ${retries}...`);\n if (retries === 2) {\n loading = false;\n console.log('Loaded successfully!');\n }\n}\nconsole.log(`Finished after ${retries} retries`);\n\n// Progress with arithmetic and loop\nconsole.log(\"\\n=== PROGRESS CALCULATION ===\");\nlet percent = Math.round((completed / TOTAL_LESSONS) * 100);\nconsole.log(`Progress: ${completed}/${TOTAL_LESSONS} = ${percent}%`);\nlet progressBar = \"\";\nfor (let i = 0; i < 10; i++) { // 10 blocks for progress bar\n progressBar += i < percent / 10? \"█\" : \"░\";\n}\nconsole.log(`Progress bar: [${progressBar}] ${percent}%`);\n\n// Nested loop - lessons and badges\nconsole.log(\"\\n=== NESTED LOOP - LESSONS AND STATS ===\");\nlet stats = ['xp', 'coins', 'status'];\nfor (let lesson of lessons.slice(0, 3)) { // First 3 lessons\n console.log(`Lesson ${lesson.id}: ${lesson.title}`);\n for (let stat of stats) { // Inner loop\n if (stat === 'xp') console.log(` ${stat}: ${lesson.xp}`);\n if (stat === 'coins') console.log(` ${stat}: ${lesson.coins}`);\n if (stat === 'status') console.log(` ${stat}: ${getStatus(lesson.id)}`);\n }\n}\n\nconsole.log(\"\\n=== FINAL DASHBOARD STATE ===\");\nconsole.log(`XP: ${xp}, Coins: ${coins}, Completed: ${completed}/${TOTAL_LESSONS} (${percent}%)`);\nconsole.log(`Grid has ${grid.length} cards rendered with forEach - like your dashboard`);",
+      "output": "=== RENDERING ALL LESSONS (forEach) ===\n1. Introduction to JavaScript - COMPLETED - [Review]\n2. Variables and Data Types - COMPLETED - [Review]\n3. Operators and Expressions - CURRENT - [Start Lesson]\n4. Conditions - LOCKED - [Locked]\n5. Loops - LOCKED - [Locked]\n...\n\n=== COUNTING WITH for...of + continue ===\nCompleted: 2, Current: 1, Locked: 7\n\n=== SEARCHING WITH for + break ===\nFound lesson 3 at index 2: Operators and Expressions\nFound lesson 10 at index 9: Build Website\nLesson 15 not found\n\n=== TOTAL XP WITH for LOOP ===\nTotal XP earned: 200\n\n=== WHILE LOOP - LOADING WITH RETRIES ===\nLoading attempt 1...\nLoading attempt 2...\nLoaded successfully!\nFinished after 2 retries\n\n=== PROGRESS CALCULATION ===\nProgress: 2/10 = 20%\nProgress bar: [██░░░░░░░░] 20%\n\n=== NESTED LOOP - LESSONS AND STATS ===\nLesson 1: Introduction to JavaScript\n xp: 100\n coins: 10\n status: completed\n...\n\n=== FINAL DASHBOARD STATE ===\nXP: 200, Coins: 20, Completed: 2/10 (20%)\nGrid has 10 cards rendered with forEach"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Tricky Final Questions"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered loops: for loop with initialization, condition, increment, index 0 to length-1, off-by-one bug <= vs <, break stops loop, continue skips iteration. forEach loops values, no index management, no off-by-one, but cannot break/continue - your dashboard uses forEach for rendering all 10 cards. while checks condition first may run 0 times, do...while runs at least once, both for unknown iterations like loading retries."
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have lessons array length 5, indexes 0-4. You write for (let i = 0; i <= lessons.length; i++) { console.log(lessons[i].title) }. What happens at i=5? Tricky off-by-one!",
+      "options": [
+        "Logs all 5 correctly",
+        "At i=5, lessons[5] undefined, lessons[5].title throws TypeError: Cannot read property title of undefined - because last index 4, length 5, <= length goes to 5 one beyond. Should be i < length not i <= length. Your dashboard's forEach avoids this by giving element directly, no index, no off-by-one",
+        "Logs 6 lessons",
+        "Infinite loop"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Off-by-one - <= length goes beyond last index. < length correct. forEach avoids index, no off-by-one bug - your dashboard's forEach safer!",
+      "incorrectFeedback": "Length 5, indexes 0-4. i <= 5 means i=5 last iteration, lessons[5] undefined,.title error. Should be i < 5 (0-4) or i <= 4. forEach gives lesson element directly, no index to mess up, avoids off-by-one.",
+      "reasoning": "Off-by-one bug with <= vs < - common, forEach prevents it.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have 100 lessons, search for id 5 at index 4. forEach loops all 100, for loop with break stops at 5 after finding. Which efficient? And can forEach break?",
+      "options": [
+        "forEach efficient and can break",
+        "forEach cannot break with break keyword - return only exits callback not entire loop, still loops all 100, 95 wasted iterations. for loop with break stops at index 4 after finding, 5 iterations only, 95% faster for search. For rendering all, forEach fine, for search use for loop with break or find() - your dashboard renders all so forEach fine",
+        "Both same",
+        "for loop cannot break"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! forEach cannot break, always loops all. for loop break stops early efficient for search. Your dashboard renders all so forEach fine!",
+      "incorrectFeedback": "forEach loops all 100 even after finding at index 4, 95 wasted. for loop break stops at 5, 5 iterations only, faster for search. forEach return only exits callback, not entire loop. Use for loop with break or Array.find() for search.",
+      "reasoning": "forEach vs for loop break efficiency - forEach cannot break, inefficient for search.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have for (let i in lessons) { console.log(lessons[i].title) } - for...in gives index as string '0' not number. What bug can this cause with i + 1? And what should use for arrays?",
+      "options": [
+        "No bug",
+        "for...in index is string '0', '0' + 1 = '01' concatenation not 1 math! Bug if you do i+1 for next lesson. Also for...in includes inherited properties. Should use for...of for values or for loop with number index or forEach - your dashboard uses forEach which gives value directly no string index bug",
+        "for...in only for objects",
+        "for...in faster"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! String index bug '0'+1='01'! And inherited props. Use for...of/forEach for arrays - your dashboard's forEach avoids string index bug!",
+      "incorrectFeedback": "for...in with array: i is '0' string, '0'+1='01' concatenation not 1! Also loops inherited prototype properties. Use for...of (values), for loop (number index), forEach (value) for arrays. for...in for objects.",
+      "reasoning": "for...in with arrays string index bug and inherited props - use for...of/forEach for arrays.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard does: let grid = createElement('div'), lessons.forEach(lesson => grid.appendChild(createCard(lesson, completed))), container.appendChild(grid). Why not container.appendChild(createCard) directly in forEach loop? Performance and layout reason!",
+      "options": [
+        "Both same",
+        "Direct append in loop causes reflow for each card - 10 cards 10 reflows slow. Grid method builds in memory then appends once 1 reflow 10x faster! Also grid div has CSS grid-template-columns for 2 columns, without grid no grid layout. Your dashboard's build in memory then single append is efficient and correct layout",
+        "Grid slower",
+        "No reason"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! 1 reflow vs 10 reflows performance and grid layout needed! Your dashboard's efficient pattern - build in memory then append once!",
+      "incorrectFeedback": "Direct append in loop triggers reflow each time - 10 cards 10 reflows slow. Grid method 1 reflow fast. Also grid div class lesson-grid has grid-template-columns CSS for 2 columns layout needed.",
+      "reasoning": "DOM reflow performance and CSS grid layout - your dashboard's grid method efficient and correct.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, find lessons.forEach line - understand how it renders 10 cards without repetition. 2. Create bug: for (let i=0; i<=lessons.length; i++) with <= and see undefined error at last index, fix with <. 3. Test forEach vs for loop with break for searching lesson id 5 in 100 lessons - see efficiency difference. 4. Build progress bar with loop: for (let i=0; i<10; i++) bar += i < percent/10? '█' : '░' - like final practical. Next: Lesson 6 - Functions, where you master reusable blocks like createLessonCard, updateProgress, loadUserData from your dashboard."
+    }
+  ]
+}

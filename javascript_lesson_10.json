@@ -1,0 +1,281 @@
+{
+  "course": "javascript",
+  "lessonNumber": 10,
+  "lessonId": "javascript-lesson-10",
+  "title": "Capstone: Build Complete JavaScript Website",
+  "subtitle": "Combine All 9 Lessons into Production Website Like Your Dashboard",
+  "description": "Final project - build complete interactive course website from scratch with variables, operators, conditions, loops, functions, arrays/objects, DOM, events, modern JS - practical tasks with tricky close-option questions.",
+  "level": "Advanced",
+  "xpReward": 300,
+  "coinsReward": 75,
+  "estimatedMinutes": 90,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Capstone Overview - Build Your Dashboard From Scratch"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Final project! You build complete course website like your dashboard but from scratch, using all 9 lessons. No long theory, just practical tasks. You create lessons array, user object, functions to calculate progress, get status, create cards, render with efficient DOM, handle clicks with delegation, secure with textContent, modern JS with?.,??, template literals, spread."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Tasks: Task 1 - Data: Create lessons array 10 objects and user object. Task 2 - Functions: Build getStatus, calculateProgress, createCard. Task 3 - DOM: Render with grid 1 reflow. Task 4 - Events: Delegation one listener. Task 5 - Complete flow: Click to complete lesson, update XP, progress. All practical code you run and test."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 1: Data - Lessons Array and User Object",
+      "code": "// Task 1: Create data - like your dashboard\nconst TOTAL_LESSONS = 10;\nconst COURSE_ID = \"javascript\";\n\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', xp: 100, coins: 10},\n {id: 2, title: 'Variables and Data Types', learn: 'Store info', summary: 'Learn let, const', xp: 100, coins: 10},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', xp: 100, coins: 10},\n {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', xp: 100, coins: 10},\n {id: 5, title: 'Loops', learn: 'Repetition', summary: 'Learn for, while', xp: 100, coins: 10},\n {id: 6, title: 'Functions', learn: 'Reusable blocks', summary: 'Learn functions', xp: 100, coins: 10},\n {id: 7, title: 'Arrays and Objects', learn: 'Collections', summary: 'Learn arrays', xp: 100, coins: 10},\n {id: 8, title: 'DOM Manipulation', learn: 'Control HTML', summary: 'Learn DOM', xp: 100, coins: 10},\n {id: 9, title: 'Events and Modern JS', learn: 'Interactivity', summary: 'Learn events', xp: 100, coins: 10},\n {id: 10, title: 'Build Website', learn: 'Combine skills', summary: 'Final project', xp: 200, coins: 20}\n];\n\nlet user = {\n xp: 120,\n coins: 30,\n completed: 2,\n progress: { javascript: 2 },\n profile: { name: \"Prince\", level: \"Intermediate\" }\n};\n\n// Modern extraction\nlet { xp, coins, completed, progress, profile } = user;\nconsole.log(`User: ${profile.name} - XP: ${xp}, Coins: ${coins}, Completed: ${completed}/${TOTAL_LESSONS}`);\nconsole.log(`Lessons: ${lessons.length} - ${lessons.map(l => l.title).slice(0, 2).join(', ')}...`);\nconsole.log('Task 1 complete - data created');",
+      "output": "User: Prince - XP: 120, Coins: 30, Completed: 2/10\nLessons: 10 - Introduction to JavaScript, Variables and Data Types...\nTask 1 complete - data created"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: You have lessons array 10 objects, each with id, title, xp. You want total XP if completed 2 lessons (id <=2). You write lessons.filter(l => l.id <= completed).reduce((t, l) => t + l.xp, 0) vs lessons.forEach(l => { if (l.id <= completed) total += l.xp }). Which returns total XP and difference?",
+      "options": [
+        "Both same but filter+reduce returns new array not total, forEach returns total",
+        "filter+reduce: filter returns array of 2 completed lessons, reduce accumulates xp 100+100=200 returns 200 total XP number. forEach: loop, if id <= completed add xp to total variable, total 200 but needs external variable. filter+reduce functional returns total directly, forEach imperative needs external total. Both 200 but filter+reduce one line returns total, forEach needs total variable outside",
+        "forEach better always",
+        "filter+reduce wrong - returns array"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Both 200 but filter+reduce returns total directly functional, forEach needs external variable imperative!",
+      "incorrectFeedback": "filter(l=>l.id<=2) returns [lesson1, lesson2] array 2 lessons, reduce((t,l)=>t+l.xp,0) total 0+100=100, 100+100=200 returns 200. forEach if id<=2 total+=xp needs total variable outside, total 200 but not return. Both 200 but filter+reduce returns total, forEach needs external total.",
+      "reasoning": "filter+reduce vs forEach for total XP - functional returns directly vs imperative needs external variable.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Task 2 - Functions: getStatus, Progress, Create Card"
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 2: Build Core Functions",
+      "code": "const TOTAL_LESSONS = 10;\nlet completed = 2;\n\n// Function 1: getStatus - pure, returns string\nconst getStatus = (lessonId, completed) => {\n if (lessonId <= completed) return \"completed\";\n if (lessonId === completed + 1) return \"current\";\n return \"locked\";\n};\n\n// Function 2: calculateProgress - pure, returns object\nfunction calculateProgress(completed, total = TOTAL_LESSONS) {\n completed = Math.min(total, Math.max(0, Number(completed) || 0));\n let percent = Math.round((completed / total) * 100);\n return { completed, total, percent, text: `${completed} / ${total} completed` };\n}\n\n// Function 3: createCard - returns card object with secure data handling\nfunction createCard(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n let isLocked = status === 'locked';\n let badge = status === 'completed'? 'Completed' : status === 'current'? 'Current' : 'Locked';\n let button = isLocked? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n \n return {\n id: lesson.id,\n title: lesson.title, // In real DOM would be textContent safe\n status,\n badge,\n button,\n xp: lesson.xp,\n locked: isLocked,\n // Callback for click - closure over id and status\n onClick: () => {\n if (isLocked) {\n console.log(`🔒 Lesson ${lesson.id} locked - need ${completed + 1} first`);\n return false;\n }\n console.log(`→ Navigate to lesson.html?lesson=${lesson.id}`);\n return true;\n }\n };\n}\n\n// Test functions\nconsole.log('getStatus tests:');\nconsole.log(`Lesson 1 with completed 2: ${getStatus(1, 2)}`); // completed\nconsole.log(`Lesson 3 with completed 2: ${getStatus(3, 2)}`); // current\nconsole.log(`Lesson 5 with completed 2: ${getStatus(5, 2)}`); // locked\n\nconsole.log('\\ncalculateProgress tests:');\nconsole.log(calculateProgress(2, 10)); // {completed:2, total:10, percent:20, text:2/10 completed}\nconsole.log(calculateProgress(5)); // 50% with default total 10\n\nconsole.log('\\ncreateCard tests:');\nlet lesson = {id: 1, title: 'Intro', xp: 100};\nlet card = createCard(lesson, 2);\nconsole.log(`Card: ${card.id} ${card.title} ${card.status} [${card.button}]`);\ncard.onClick();\n\nlet lockedCard = createCard({id: 5, title: 'Loops', xp: 100}, 2);\nconsole.log(`Locked card: ${lockedCard.id} ${lockedCard.status} [${lockedCard.button}]`);\nlockedCard.onClick();\n\nconsole.log('\\nTask 2 complete - functions built');",
+      "output": "getStatus tests:\nLesson 1 with completed 2: completed\nLesson 3 with completed 2: current\nLesson 5 with completed 2: locked\n\ncalculateProgress tests:\n{completed:2, total:10, percent:20, text:2 / 10 completed}\n{completed:5, total:10, percent:50, text:5 / 10 completed}\n\ncreateCard tests:\nCard: 1 Intro completed [Review]\n→ Navigate to lesson.html?lesson=1\nLocked card: 5 locked [Locked]\n🔒 Lesson 5 locked - need 3 first\n\nTask 2 complete - functions built"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: You have getStatus = (id, completed) => id <= completed? 'completed' : id === completed+1? 'current' : 'locked'. For completed=2, id=3 returns current, id=4 locked. What about id=2? And id=3 with completed=2 vs id=3 with completed=5?",
+      "options": [
+        "id=2 completed, id=3 with completed=2 current, id=3 with completed=5 completed - because id <= completed true for 2<=2 completed, 3<=2 false, 3===3 true current, 4>3 locked. For id=3 with completed=5, 3<=5 true completed (already done), not current. Status depends on completed value",
+        "id=2 locked",
+        "id=3 always current",
+        "id=3 with completed=5 locked"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! Status depends on completed value - id=3 current when completed=2 (next lesson), completed when completed=5 (already done)!",
+      "incorrectFeedback": "getStatus: id <= completed? completed : id === completed+1? current : locked. id=2, completed=2: 2<=2 true completed. id=3, completed=2: 3<=2 false, 3===3 true current. id=3, completed=5: 3<=5 true completed (already completed, not current). Status changes with completed value.",
+      "reasoning": "getStatus depends on completed - same id different status based on completed value.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Task 3 - Efficient DOM Rendering (1 Reflow)"
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 3: Render with Grid - Efficient",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', xp: 100},\n {id: 2, title: 'Variables', xp: 100},\n {id: 3, title: 'Operators', xp: 100},\n {id: 4, title: 'Conditions', xp: 100}\n];\nlet completed = 2;\n\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\n\nfunction createCard(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n return { id: lesson.id, title: lesson.title, status, button: status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson' };\n}\n\nfunction renderLessonsEfficient(lessons, completed) {\n console.log(`Rendering ${lessons.length} lessons with completed=${completed}:`);\n \n // Step 1: Clear container\n console.log('Step 1: lessonContainer.innerHTML = \"\" - clear old');\n let lessonContainer = { innerHTML: 'old cards', children: [] };\n lessonContainer.innerHTML = '';\n \n // Step 2: Create grid div in memory - not in DOM yet\n console.log('Step 2: Create grid div - in memory, no reflow');\n let grid = { className: 'lesson-grid', children: [], appendChild: function(card) { this.children.push(card); } };\n \n // Step 3: Loop and append cards to grid in memory - no reflow\n console.log('Step 3: forEach lessons -> create cards -> append to grid (memory, no reflow)');\n lessons.forEach(lesson => {\n let card = createCard(lesson, completed);\n grid.appendChild(card);\n let icon = card.status === 'completed'? '✅' : card.status === 'current'? '▶' : '🔒';\n console.log(` ${icon} ${card.id}. ${card.title} - ${card.status.toUpperCase()} - [${card.button}]`);\n });\n \n // Step 4: Append grid to container once - 1 reflow\n console.log(`Step 4: container.appendChild(grid) with ${grid.children.length} cards - 1 reflow efficient`);\n lessonContainer.children.push(grid);\n \n console.log(`Rendered ${grid.children.length} cards with 1 reflow`);\n return lessonContainer;\n}\n\nlet container = renderLessonsEfficient(lessons, completed);\n\n// Inefficient for comparison\nconsole.log('\\n--- Inefficient (many reflows) for comparison ---');\nlet containerBad = { children: [] };\nlessons.forEach(lesson => {\n let card = createCard(lesson, completed);\n containerBad.children.push(card);\n console.log(`Direct append card ${lesson.id} - reflow ${containerBad.children.length}`);\n});\nconsole.log(`Inefficient: ${lessons.length} reflows vs efficient 1 reflow - ${lessons.length}x slower`);\n\nconsole.log('\\nTask 3 complete - efficient rendering');",
+      "output": "Rendering 4 lessons with completed=2:\nStep 1: lessonContainer.innerHTML = \"\" - clear old\nStep 2: Create grid div - in memory, no reflow\nStep 3: forEach lessons -> create cards -> append to grid (memory, no reflow)\n ✅ 1. Intro - COMPLETED - [Review]\n ✅ 2. Variables - COMPLETED - [Review]\n ▶ 3. Operators - CURRENT - [Start Lesson]\n 🔒 4. Conditions - LOCKED - [Locked]\nStep 4: container.appendChild(grid) with 4 cards - 1 reflow efficient\nRendered 4 cards with 1 reflow\n\n--- Inefficient (many reflows) for comparison ---\nDirect append card 1 - reflow 1\nDirect append card 2 - reflow 2\nDirect append card 3 - reflow 3\nDirect append card 4 - reflow 4\nInefficient: 4 reflows vs efficient 1 reflow - 4x slower\n\nTask 3 complete - efficient rendering"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: You render 10 lessons. Direct append in loop: container.appendChild(card) each iteration 10 reflows. Grid method: grid in memory, forEach grid.appendChild(card) no reflow, container.appendChild(grid) 1 reflow. Which faster and why grid div also needed for CSS?",
+      "options": [
+        "Direct faster - less code",
+        "Grid 1 reflow 10x faster than 10 reflows - build in memory no reflow then append once. Also grid div has CSS grid-template-columns: repeat(2, 1fr) for 2-column layout, without grid div no grid layout cards stack vertical. Your dashboard uses grid method efficient and correct layout",
+        "Both same performance",
+        "Grid slower - extra div"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! 1 reflow 10x faster and grid div needed for CSS grid 2 columns!",
+      "incorrectFeedback": "Direct append: Each appendChild reflow layout recalc 10 times slow. Grid: Append to grid in memory not in DOM no reflow, append grid once 1 reflow fast. Grid div class lesson-grid CSS grid-template-columns 2 columns needed for layout.",
+      "reasoning": "Reflow performance and CSS grid layout - grid method efficient and layout correct.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Task 4 - Events Delegation (1 Listener)"
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 4: Event Delegation - One Listener",
+      "code": "let lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}, {id: 3, title: 'Operators'}];\nlet completed = 2;\n\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\n\n// Without delegation - 3 listeners\nconsole.log('Without delegation - 3 listeners:');\nlessons.forEach(lesson => {\n console.log(` Added listener to button ${lesson.id}`);\n});\n\n// With delegation - 1 listener\nconsole.log('\\nWith delegation - 1 listener on grid parent:');\nlet grid = {\n addEventListener: function(event, callback) {\n console.log(` Added ${event} listener to grid parent - one for all buttons`);\n this.callback = callback;\n },\n trigger: function(lessonId) {\n let event = {\n target: { dataset: { lesson: lessonId }, classList: { contains: (c) => c === 'start-btn' } },\n currentTarget: this\n };\n console.log(`\\nButton ${lessonId} clicked, bubbled to grid parent`);\n this.callback(event);\n }\n};\n\ngrid.addEventListener('click', (event) => {\n // Optional chaining safe\n let lessonId = event.target?.dataset?.lesson;\n if (lessonId && event.target.classList.contains('start-btn')) {\n let status = getStatus(Number(lessonId), completed);\n if (status === 'locked') {\n console.log(`🔒 Lesson ${lessonId} locked - need ${completed + 1} first`);\n } else {\n console.log(`→ Lesson ${lessonId} ${status} - navigating to lesson.html?lesson=${lessonId}`);\n }\n }\n});\n\n// Simulate clicks\ngrid.trigger(1); // Completed - review\ngrid.trigger(3); // Current - start\ngrid.trigger(5); // Locked - blocked\n\nconsole.log('\\nDelegation benefits:');\nconsole.log('- One listener vs 3 - less memory');\nconsole.log('- New cards added later automatically handled - no new listener needed');\nconsole.log('- Your dashboard could use delegation');\n\nconsole.log('\\nTask 4 complete - delegation');",
+      "output": "Without delegation - 3 listeners:\n Added listener to button 1\n Added listener to button 2\n Added listener to button 3\n\nWith delegation - 1 listener on grid parent:\n Added click listener to grid parent - one for all buttons\n\nButton 1 clicked, bubbled to grid parent\n→ Lesson 1 completed - navigating to lesson.html?lesson=1\n\nButton 3 clicked, bubbled to grid parent\n→ Lesson 3 current - navigating to lesson.html?lesson=3\n\nButton 5 clicked, bubbled to grid parent\n🔒 Lesson 5 locked - need 3 first\n\nDelegation benefits:\n- One listener vs 3 - less memory\n- New cards added later automatically handled - no new listener needed\n- Your dashboard could use delegation\n\nTask 4 complete - delegation"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You have grid parent with one click listener delegation, and 3 Start buttons inside. You click button 2. Event bubbles button -> grid. What are event.target and event.currentTarget and how delegation gets lesson id?",
+      "options": [
+        "Both grid - can't get lesson id",
+        "target is button 2 clicked, currentTarget is grid where listener attached. Delegation uses event.target.dataset.lesson to get lesson id 2 from button clicked. event.target is element clicked, currentTarget is element listener attached to",
+        "target is grid, currentTarget is button",
+        "Both button - currentTarget wrong"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! target button clicked, currentTarget grid listener attached, target.dataset.lesson gets id!",
+      "incorrectFeedback": "Click button 2 inside grid: target is button 2 element clicked, currentTarget is grid element listener attached. Delegation checks event.target.dataset.lesson gets 2 from button data attribute.",
+      "reasoning": "target vs currentTarget in delegation - target clicked, currentTarget listener parent.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Task 5 - Complete Flow: Click to Complete"
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 5: Complete Lesson Flow - Practical",
+      "code": "let lessons = [\n {id: 1, title: 'Intro', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', status: 'current', xp: 0},\n {id: 4, title: 'Conditions', status: 'locked', xp: 0}\n];\nlet user = { xp: 200, coins: 20, completed: 2 };\n\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\nconst calculateProgress = (completed, total = 10) => Math.round((completed / total) * 100);\n\nfunction completeLesson(lessonId) {\n console.log(`\\n--- Completing Lesson ${lessonId} ---`);\n let status = getStatus(lessonId, user.completed);\n \n if (status === 'locked') {\n console.log(`🔒 Locked! Need ${user.completed + 1} first - cannot complete`);\n return { success: false, reason: 'locked' };\n }\n if (status === 'completed') {\n console.log(`✅ Already completed - reviewing`);\n return { success: true, action: 'review' };\n }\n \n // Complete - immutable updates with spread\n let newLessons = lessons.map(l => {\n if (l.id === lessonId) return {...l, status: 'completed', xp: 100}; // Spread + overwrite\n if (l.id === lessonId + 1) return {...l, status: 'current'};\n return l;\n });\n \n let newUser = {...user, xp: user.xp + 100, coins: user.coins + 10, completed: user.completed + 1}; // Spread\n \n console.log(`🎉 Completed lesson ${lessonId}!`);\n console.log(` XP: ${user.xp} -> ${newUser.xp} (+100)`);\n console.log(` Coins: ${user.coins} -> ${newUser.coins} (+10)`);\n console.log(` Completed: ${user.completed} -> ${newUser.completed}`);\n console.log(` Progress: ${calculateProgress(newUser.completed)}%`);\n \n // Update global\n lessons = newLessons;\n user = newUser;\n \n return { success: true, lessons: newLessons, user: newUser };\n}\n\nconsole.log('Initial:');\nconsole.log(`XP: ${user.xp}, Completed: ${user.completed}, Progress: ${calculateProgress(user.completed)}%`);\nlessons.forEach(l => console.log(` ${l.id}. ${l.title} - ${l.status} - ${l.xp} XP`));\n\n// Complete current lesson 3\nlet result1 = completeLesson(3);\nconsole.log('\\nAfter completing 3:');\nlessons.forEach(l => console.log(` ${l.id}. ${l.title} - ${l.status} - ${l.xp} XP`));\n\n// Try locked lesson 5\nlet result2 = completeLesson(5);\n\n// Try completed lesson 1\nlet result3 = completeLesson(1);\n\nconsole.log('\\nTask 5 complete - complete flow');",
+      "output": "Initial:\nXP: 200, Completed: 2, Progress: 20%\n 1. Intro - completed - 100 XP\n 2. Variables - completed - 100 XP\n 3. Operators - current - 0 XP\n 4. Conditions - locked - 0 XP\n\n--- Completing Lesson 3 ---\n🎉 Completed lesson 3!\n XP: 200 -> 300 (+100)\n Coins: 20 -> 30 (+10)\n Completed: 2 -> 3\n Progress: 30%\n\nAfter completing 3:\n 1. Intro - completed - 100 XP\n 2. Variables - completed - 100 XP\n 3. Operators - completed - 100 XP\n 4. Conditions - current - 0 XP\n\n--- Completing Lesson 5 ---\n🔒 Locked! Need 4 first - cannot complete\n\n--- Completing Lesson 1 ---\n✅ Already completed - reviewing\n\nTask 5 complete - complete flow"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have user.completed=2, you try completeLesson(5) id=5. getStatus(5,2) returns locked because 5 > 3 (completed+1). What should happen and what about completeLesson(3) current? Tricky flow!",
+      "options": [
+        "Both complete successfully",
+        "Lesson 5 locked - 5 > completed+1 (3), need 3 first, cannot complete, return locked. Lesson 3 current - 3 === completed+1 (3), can complete, update XP +100, completed 2->3, lesson 3 completed, lesson 4 current. Locked check prevents skipping lessons, current allows completing next lesson",
+        "Lesson 5 completes, lesson 3 locked",
+        "Both locked"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Locked prevents skipping, current allows next lesson - your dashboard logic!",
+      "incorrectFeedback": "getStatus(5,2): 5<=2 false, 5===3 false, else locked - need 3 first cannot complete 5. getStatus(3,2): 3<=2 false, 3===3 true current can complete, XP +100, completed 2->3, 3 completed, 4 current. Locked prevents skipping.",
+      "reasoning": "Locked vs current logic - locked cannot complete, current can complete next lesson.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Security and Modern JS -?.,??, textContent"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 6: Security XSS and Modern?.,??",
+      "code": "// Security - innerHTML vs textContent\nlet malicious = \"<img src=x onerror=alert('XSS')>\";\nlet normal = \"Introduction to JavaScript\";\n\nconsole.log('Security test:');\nconsole.log('Malicious:', malicious);\nconsole.log('Normal:', normal);\n\n// Dangerous innerHTML\nlet divDangerous = { innerHTML: '' };\ndivDangerous.innerHTML = `<h3>${malicious}</h3>`; // Executes onerror XSS!\nconsole.log('\\nDangerous innerHTML:', divDangerous.innerHTML);\nconsole.log('Would execute onerror - XSS! Cookie stolen!');\n\n// Safe textContent\nlet divSafe = { textContent: '' };\ndivSafe.textContent = malicious; // Safe as text\nconsole.log('\\nSafe textContent:', divSafe.textContent);\nconsole.log('Shows as text not executed - safe');\n\n// Your dashboard - static trusted safe for innerHTML template, user input must textContent\nconsole.log('\\nYour dashboard lessons static trusted safe for innerHTML card template');\nconsole.log('User comments must textContent to prevent XSS');\n\n// Modern?.,??\nconsole.log('\\n--- Modern?.,?? ---');\nlet user1 = { progress: { javascript: 2 } };\nlet user2 = {};\nlet COURSE_ID = \"javascript\";\n\nconsole.log('user1.progress?.javascript:', user1.progress?.javascript); // 2\nconsole.log('user2.progress?.javascript:', user2.progress?.javascript); // undefined safe\nconsole.log(`progress?.[COURSE_ID]:`, user1.progress?.[COURSE_ID]); // 2 with variable key\n\nlet xp1 = 0;\nlet xp2 = null;\nconsole.log('\\n0?? 10 =', xp1?? 10); // 0 keeps 0 valid\nconsole.log('0 || 10 =', xp1|| 10); // 10 loses 0 bug!\nconsole.log('null?? 10 =', xp2?? 10); // 10 fallback\n\nfunction getXP(data) {\n return Number(data.xp?? data.profile?.xp?? 0); //?? keeps 0,?. safe\n}\n\nconsole.log('\\ngetXP:');\nconsole.log(getXP({xp: 0})); // 0 keeps 0 -??\nconsole.log(getXP({xp: null})); // 0 fallback\nconsole.log(getXP({profile: {xp: 150}})); // 150 via?.\nconsole.log(getXP({})); // 0 fallback\n\nconsole.log('\\nTask 6 complete - security and modern');",
+      "output": "Security test:\nMalicious: <img src=x onerror=alert('XSS')>\nNormal: Introduction to JavaScript\n\nDangerous innerHTML: <h3><img src=x onerror=alert('XSS')></h3>\nWould execute onerror - XSS! Cookie stolen!\n\nSafe textContent: <img src=x onerror=alert('XSS')>\nShows as text not executed - safe\n\nYour dashboard lessons static trusted safe for innerHTML card template\nUser comments must textContent to prevent XSS\n\n--- Modern?.,?? ---\nuser1.progress?.javascript: 2\nuser2.progress?.javascript: undefined\nprogress?.[COURSE_ID]: 2\n\n0?? 10 = 0\n0 || 10 = 10\nnull?? 10 = 10\n\ngetXP:\n0\n0\n150\n0\n\nTask 6 complete - security and modern"
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have user input '<script>alert(1)</script>' and static lesson title 'Intro'. You do div.innerHTML = userInput vs div.innerHTML = '<h3>'+staticTitle+'</h3>'? And textContent vs innerHTML for user data? Security close options!",
+      "options": [
+        "Both safe - innerHTML always safe",
+        "userInput with innerHTML dangerous executes script XSS, staticTitle with innerHTML safe because static trusted from code not user input. For user data must use textContent safe shows as text not executed. Your dashboard static lessons array trusted safe for innerHTML template, but if Firebase user input must textContent or sanitize",
+        "Both dangerous",
+        "textContent dangerous"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! User input innerHTML XSS dangerous, static trusted safe, user data must textContent!",
+      "incorrectFeedback": "User input '<script>alert' innerHTML parses and executes XSS. Static title 'Intro' from code trusted safe for innerHTML template. User data must textContent escapes as text safe. Your dashboard static lessons trusted safe for innerHTML card template, user comments must textContent.",
+      "reasoning": "XSS - user input innerHTML dangerous, static trusted safe, user data textContent safe.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Task 7 - Complete Capstone Project"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Task 7: Full Capstone - All Lessons Combined",
+      "code": "// Full Capstone - All 9 lessons combined into production website\nconst TOTAL_LESSONS = 10;\nconst COURSE_ID = \"javascript\";\n\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', xp: 100},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const', xp: 100},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', xp: 100},\n {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', xp: 100},\n {id: 5, title: 'Loops', learn: 'Repetition', summary: 'Learn for, while', xp: 100}\n];\n\nlet user = { xp: 200, coins: 20, completed: 2, progress: { javascript: 2 }, profile: { name: \"Prince\" } };\n\n// All functions from lessons 1-9 combined\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\nconst calculateProgress = (completed, total = TOTAL_LESSONS) => {\n let safe = Math.min(total, Math.max(0, Number(completed) || 0));\n return { completed: safe, total, percent: Math.round((safe / total) * 100), text: `${safe} / ${total} completed` };\n};\n\nfunction createCard(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n let badge = status === 'completed'? 'Completed' : status === 'current'? 'Current' : 'Locked';\n let button = status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n return { id: lesson.id, title: lesson.title, status, badge, button, xp: lesson.xp, dataset: { lesson: lesson.id } };\n}\n\nfunction renderEfficient(lessons, completed) {\n let grid = { children: [] };\n lessons.forEach(lesson => {\n let card = createCard(lesson, completed);\n let icon = card.status === 'completed'? '✅' : card.status === 'current'? '▶' : '🔒';\n console.log(`${icon} ${card.id}. ${card.title} - ${card.status.toUpperCase()} - [${card.button}] - ${card.xp} XP`);\n grid.children.push(card);\n });\n console.log(`Rendered ${grid.children.length} cards - 1 reflow efficient`);\n return grid;\n}\n\nfunction setupDelegation(grid) {\n grid.addEventListener = (e, cb) => { grid.cb = cb; };\n grid.addEventListener('click', (event) => {\n let id = event.target?.dataset?.lesson;\n if (id) {\n let numId = Number(id);\n let status = getStatus(numId, user.completed);\n if (status === 'locked') {\n console.log(`🔒 Lesson ${numId} locked`);\n } else {\n console.log(`→ Lesson ${numId} ${status} - navigate`);\n if (status === 'current') {\n // Complete\n let newLessons = lessons.map(l => {\n if (l.id === numId) return {...l, xp: 100};\n return l;\n });\n let newUser = {...user, xp: user.xp + 100, completed: user.completed + 1};\n user = newUser;\n lessons = newLessons;\n let prog = calculateProgress(user.completed);\n console.log(`🎉 Completed! XP: ${user.xp}, ${prog.text} - ${prog.percent}%`);\n renderEfficient(lessons, user.completed);\n }\n }\n }\n });\n}\n\n// Modern extraction with?.,??, destructuring\nlet { xp, coins, completed, progress, profile } = user;\nlet jsProgress = progress?.[COURSE_ID]?? 0;\nconsole.log(`=== CAPSTONE PROJECT ===`);\nconsole.log(`User: ${profile?.name?? 'Anonymous'} - XP: ${xp}, Completed: ${completed}/${TOTAL_LESSONS} - ${jsProgress} JS progress`);\nconsole.log(`Modern: Destructuring,?.,??, template literals, spread, arrow, map/filter`);\n\nlet prog = calculateProgress(completed);\nconsole.log(`Progress: ${prog.text} - ${prog.percent}% - ${xp} XP`);\n\nlet grid = renderEfficient(lessons, completed);\nsetupDelegation(grid);\n\nconsole.log('\\n--- Simulate Click Current Lesson 3 ---');\ngrid.cb({ target: { dataset: { lesson: 3 } } });\n\nconsole.log('\\n--- Array Methods ---');\nconsole.log(`Titles (map): ${lessons.map(l => l.title).join(', ')}`);\nconsole.log(`Completed (filter): ${lessons.filter(l => l.id <= user.completed).map(l => l.title).join(', ')}`);\nconsole.log(`Total XP (reduce): ${lessons.reduce((t, l) => t + l.xp, 0)}`);\nconsole.log(`Has locked? (some): ${lessons.some(l => getStatus(l.id, user.completed) === 'locked')}`);\n\nconsole.log('\\nTask 7 complete - full capstone');",
+      "output": "=== CAPSTONE PROJECT ===\nUser: Prince - XP: 200, Completed: 2/10 - 2 JS progress\nModern: Destructuring,?.,??, template literals, spread, arrow, map/filter\nProgress: 2 / 10 completed - 20% - 200 XP\n✅ 1. Introduction to JavaScript - COMPLETED - [Review] - 100 XP\n✅ 2. Variables - COMPLETED - [Review] - 100 XP\n▶ 3. Operators - CURRENT - [Start Lesson] - 100 XP\n🔒 4. Conditions - LOCKED - [Locked] - 100 XP\n🔒 5. Loops - LOCKED - [Locked] - 100 XP\nRendered 5 cards - 1 reflow efficient\n\n--- Simulate Click Current Lesson 3 ---\n→ Lesson 3 current - navigate\n🎉 Completed! XP: 300, 3 / 10 completed - 30%\n✅ 1. Introduction to JavaScript - COMPLETED - [Review] - 100 XP\n✅ 2. Variables - COMPLETED - [Review] - 100 XP\n✅ 3. Operators - COMPLETED - [Review] - 100 XP\n▶ 4. Conditions - CURRENT - [Start Lesson] - 100 XP\n🔒 5. Loops - LOCKED - [Locked] - 100 XP\n\n--- Array Methods ---\nTitles (map): Introduction to JavaScript, Variables, Operators, Conditions, Loops\nCompleted (filter): Introduction to JavaScript, Variables, Operators\nTotal XP (reduce): 300\nHas locked? (some): true\n\nTask 7 complete - full capstone"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Final Practical Tasks - Build Your Own"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Final Tasks - Your Turn to Build",
+      "code": "// Final tasks - you build from scratch without looking\n// Task: Build complete website like your dashboard\n\n// 1. Data - you create\nconst TOTAL = 10;\nlet myLessons = [\n {id: 1, title: 'Intro', xp: 100},\n {id: 2, title: 'Variables', xp: 100},\n {id: 3, title: 'Operators', xp: 100}\n];\nlet myUser = { xp: 0, completed: 0 };\n\n// 2. Functions - you build\nconst myGetStatus = (id, completed) => {\n // Your code: id <= completed? completed : id === completed+1? current : locked\n if (id <= completed) return \"completed\";\n if (id === completed + 1) return \"current\";\n return \"locked\";\n};\n\nfunction myCalculateProgress(completed, total = TOTAL) {\n // Your code: Math.min, Math.max, Math.round, template literal\n completed = Math.min(total, Math.max(0, Number(completed) || 0));\n let percent = Math.round((completed / total) * 100);\n return { completed, total, percent, text: `${completed} / ${total} completed` };\n}\n\nfunction myCreateCard(lesson, completed) {\n // Your code: getStatus, badge, button, return card\n let status = myGetStatus(lesson.id, completed);\n return { id: lesson.id, title: lesson.title, status, button: status === 'locked'? 'Locked' : 'Start' };\n}\n\n// 3. Render - you build efficient\nfunction myRender(lessons, completed) {\n // Your code: grid in memory, forEach, append once 1 reflow\n let grid = [];\n lessons.forEach(l => {\n let card = myCreateCard(l, completed);\n grid.push(card);\n console.log(`${card.id}. ${card.title} - ${card.status}`);\n });\n return grid;\n}\n\n// 4. Complete - you build with spread immutable\nfunction myCompleteLesson(id) {\n // Your code: check locked, map with spread, update user with spread\n let status = myGetStatus(id, myUser.completed);\n if (status === 'locked') {\n console.log(`Locked! Need ${myUser.completed + 1}`);\n return;\n }\n let newLessons = myLessons.map(l => l.id === id? {...l, xp: 100} : l);\n let newUser = {...myUser, xp: myUser.xp + 100, completed: myUser.completed + 1};\n myLessons = newLessons;\n myUser = newUser;\n console.log(`Completed! XP: ${myUser.xp}, Completed: ${myUser.completed}`);\n}\n\n// Test your build\nconsole.log('=== My Build ===');\nmyRender(myLessons, myUser.completed);\nconsole.log(`Progress: ${myCalculateProgress(myUser.completed).text}`);\nmyCompleteLesson(1);\nmyRender(myLessons, myUser.completed);\nconsole.log('Build complete - you did it!');\n\nconsole.log('\\nAll lessons combined:');\nconsole.log('Lesson 1 variables, Lesson 2 data types, Lesson 3 operators, Lesson 4 conditions, Lesson 5 loops, Lesson 6 functions, Lesson 7 arrays/objects, Lesson 8 DOM, Lesson 9 events/modern - all in this capstone!');",
+      "output": "=== My Build ===\n1. Intro - current\n2. Variables - locked\n3. Operators - locked\nProgress: 0 / 10 completed\nCompleted! XP: 100, Completed: 1\n1. Intro - completed\n2. Variables - current\n3. Operators - locked\nBuild complete - you did it!\n\nAll lessons combined:\nLesson 1 variables, Lesson 2 data types, Lesson 3 operators, Lesson 4 conditions, Lesson 5 loops, Lesson 6 functions, Lesson 7 arrays/objects, Lesson 8 DOM, Lesson 9 events/modern - all in this capstone!"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: Final Exam - Tricky Close Options"
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have lessons array, completed=2. You want count completed. Option A: lessons.filter(l => l.id <= completed).length Option B: let count=0; for (let i=0; i<=lessons.length; i++) { if (lessons[i].id <= completed) count++ } Option C: lessons.reduce((c, l) => l.id <= completed? c+1 : c, 0) Which correct and which has bug?",
+      "options": [
+        "All correct same result",
+        "A correct filter returns array length 2, C correct reduce counts 2, B buggy off-by-one i<=lessons.length goes to index 5 out of bounds lessons[5] undefined error, should i < lessons.length not i <= length. A and C functional correct, B imperative buggy off-by-one",
+        "B correct",
+        "A wrong - filter returns not count"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! A filter+length correct, C reduce correct, B off-by-one bug i<=length goes out of bounds!",
+      "incorrectFeedback": "A: filter(l=>l.id<=2) returns [lesson1, lesson2] length 2 correct. C: reduce counts c+1 if id<=2 else c, returns 2 correct. B: for i=0; i<=lessons.length; i++ goes to index 5 when length 5, lessons[5] undefined, lessons[5].id TypeError. Should i < length. A and C correct, B buggy.",
+      "reasoning": "Filter+length vs reduce vs for loop off-by-one bug - A and C correct functional, B buggy <= vs <.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL CAPSTONE - You build complete dashboard. You need: getStatus with correct order <= completed first then === +1 current else locked (not > first which swallows current bug), render efficient with grid 1 reflow not direct 10 reflows, delegation 1 listener on grid not 10 listeners, security textContent for user data not innerHTML XSS, modern?.,?? keeps 0 XP not loses 0 with ||, spread immutable new array for React, Number() conversion for Firebase string xp. Which all pro must know combined?",
+      "options": [
+        "Only getStatus matters",
+        "All combined pro must know: getStatus order <= first then ===+1 else locked prevents > swallowing current bug, grid 1 reflow 10x faster than direct 10 reflows and CSS grid layout, delegation 1 listener efficient handles dynamic vs 10 listeners, textContent safe for user data vs innerHTML XSS only trusted template safe,?.,?? safe and keeps 0 XP valid vs || loses 0, spread immutable new reference for React vs push mutable same reference, Number() for Firebase string to number conversion - all combined makes production dashboard like your HTML - everything good programmer must know from lessons 1-9 in capstone!",
+        "Only performance matters",
+        "Only security matters"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You mastered all 9 lessons combined in capstone - getStatus order, 1 reflow efficient, delegation 1 listener, XSS security textContent vs innerHTML,?.,?? keeps 0, spread immutable, Number() conversion - all pro must know! You ready to build production websites!",
+      "incorrectFeedback": "Capstone combines all: getStatus order <= then ===+1 else locked not > first swallowing current, grid 1 reflow not 10, delegation 1 listener not 10, textContent safe user data not innerHTML XSS,?.,?? safe keeps 0 vs || loses 0, spread immutable new array vs push mutable, Number() string conversion - all pro concepts from lessons 1-9!",
+      "reasoning": "Complete capstone all lessons combined - order, performance, delegation, security, modern, immutable, conversion - everything pro must know.",
+      "xpReward": 50
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: You Did It! Final Summary and Next Steps"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "Congratulations! You built complete JavaScript website from scratch combining all 9 lessons: Lesson 1 variables let/const, Lesson 2 data types and operators, Lesson 3 conditions if/else with correct order, Lesson 4 loops for/forEach, Lesson 5 functions with params/return/scope, Lesson 6 arrays/objects with map/filter/reduce, Lesson 7 DOM with getElementById/createElement/innerHTML vs textContent security/appendChild performance 1 reflow, Lesson 8 events with addEventListener/delegation/ bubbling, Lesson 9 modern JS template literals/destructuring/spread/arrow/?.,??/modules/async-await."
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "You now know what good programmer must know: DRY Don't Repeat Yourself with functions and loops, security XSS prevention textContent for user data, performance 1 reflow grid method, accessibility semantic article and aria-label, modern ES6+ with?. and?? and spread immutable, delegation efficient 1 listener, null checks and Number() conversion for Firebase, correct condition order to prevent bugs, off-by-one < length not <=, 0?? keeps 0 valid vs || loses 0, and more."
+    },
+    {
+      "id": "final-3",
+      "type": "sentence",
+      "text": "Next steps: Build your own course website with 10 lessons from scratch without looking at this capstone, deploy to Firebase, add authentication, real DOM with document.getElementById, innerHTML for trusted templates, textContent for user data, grid efficient rendering, delegation events, complete flow with spread immutable updates. You are now ready for real production JavaScript development! All 10 lessons complete - 1500 XP earned!"
+    }
+  ]
+}

@@ -1,0 +1,404 @@
+{
+  "course": "javascript",
+  "lessonNumber": 9,
+  "lessonId": "javascript-lesson-9",
+  "title": "Events and Modern JavaScript",
+  "subtitle": "Interactive Dashboard with Clicks, Modern ES6+ Features Your Dashboard Uses",
+  "description": "Master events, event object, bubbling, delegation, preventDefault, plus modern JS - template literals, destructuring, spread, arrow functions, optional chaining?., nullish??, modules, async/await - all used in your dashboard's Firebase and event handling.",
+  "level": "Intermediate",
+  "xpReward": 220,
+  "coinsReward": 50,
+  "estimatedMinutes": 85,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: What are Events? Your Dashboard Clicks and Auth Changes"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Event = something happens: user clicks button, mouse moves, key pressed, page loads, Firebase auth changes, data fetched. Your dashboard listens for events: backBtn.addEventListener('click',...) listens for click on back button, button.addEventListener('click',...) listens for Start Lesson click, onAuthStateChanged(auth,...) listens for auth state change event (user logs in/out)."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Without events, your dashboard would be static - no clicks work, no auth check, no navigation. Events make app interactive and reactive - when user clicks, do something; when auth changes, load data or redirect; when data fetched, render lessons."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "addEventListener(eventName, callback) attaches listener: eventName like 'click', 'mouseover', 'keydown', 'DOMContentLoaded', callback function called when event happens. Your dashboard: backBtn.addEventListener('click', () => { if (referrer && includes) history.back() else menu.html }) - when back button clicked, callback checks referrer and navigates."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Event object passed to callback: event.target is element that triggered event, event.preventDefault() prevents default behavior like form submit reload, event.stopPropagation() stops bubbling. Your dashboard's click callbacks could use event.target.dataset.lesson to get lesson id from button data attribute."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Modern JavaScript ES6+ features your dashboard uses: Template literals `lesson ${id}` for URLs, destructuring let {xp, coins} = data to extract, spread [...lessons, newLesson] for immutable updates, arrow functions lesson => {...} for callbacks, optional chaining data.progress?.javascript for safe access, nullish coalescing data.xp?? 0 for fallback keeping 0, modules import {auth} from './authentication.js', async/await for Firebase loading."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Events - Your Dashboard Click and Auth",
+      "code": "// Simulate your dashboard events\nlet mockEvents = {\n listeners: {},\n addEventListener: function(element, event, callback) {\n console.log(`Added ${event} listener to ${element}`);\n this.listeners[`${element}_${event}`] = callback;\n },\n trigger: function(element, event, data) {\n let key = `${element}_${event}`;\n if (this.listeners[key]) {\n console.log(`\\nEvent ${event} triggered on ${element}`);\n this.listeners[key](data);\n }\n }\n};\n\n// Your dashboard back button event\nmockEvents.addEventListener('backBtn', 'click', (event) => {\n let referrer = 'https://code-academy.com/react';\n let origin = 'https://code-academy.com';\n console.log(`Back button click event - referrer: ${referrer}`);\n if (referrer && referrer.includes(origin)) {\n console.log('→ history.back() - valid referrer');\n } else {\n console.log('→ Go to menu.html - no referrer');\n }\n});\n\nmockEvents.trigger('backBtn', 'click', {});\n\n// Your dashboard Start Lesson buttons events\nlet lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}];\nlessons.forEach(lesson => {\n mockEvents.addEventListener(`startBtn_${lesson.id}`, 'click', (event) => {\n console.log(`\\nStart button ${lesson.id} clicked`);\n console.log(`→ Navigating to lesson.html?course=javascript&lesson=${lesson.id}`);\n console.log(`Event target dataset.lesson: ${lesson.id}`);\n });\n});\n\nmockEvents.trigger('startBtn_1', 'click', { target: { dataset: { lesson: 1 } } });\n\n// Your dashboard auth state change event\nconsole.log('\\n--- Auth State Change Event (your onAuthStateChanged) ---');\nfunction onAuthStateChanged(auth, callback) {\n console.log('Listening for auth state changes...');\n // Simulate auth change after 100ms\n setTimeout(() => {\n let user = { uid: 'user123' };\n console.log('Auth state changed - user logged in');\n callback(user); // Call callback with user\n }, 100);\n}\n\nonAuthStateChanged({}, (user) => {\n if (!user) {\n console.log('Event: No user - redirect to login.html');\n } else {\n console.log(`Event: User ${user.uid} logged in - load data and render`);\n }\n});\n\n// Modern JS template literal your dashboard uses\nlet COURSE_ID = \"javascript\";\nlet lessonId = 3;\nlet url = `lesson.html?course=${COURSE_ID}&lesson=${lessonId}`; // Template literal\nconsole.log(`\\nModern JS template literal: ${url}`);",
+      "output": "Added click listener to backBtn\n\nEvent click triggered on backBtn\nBack button click event - referrer: https://code-academy.com/react\n→ history.back() - valid referrer\nAdded click listener to startBtn_1\nAdded click listener to startBtn_2\n\nEvent click triggered on startBtn_1\nStart button 1 clicked\n→ Navigating to lesson.html?course=javascript&lesson=1\nEvent target dataset.lesson: 1\n\n--- Auth State Change Event (your onAuthStateChanged) ---\nListening for auth state changes...\nAuth state changed - user logged in\nEvent: User user123 logged in - load data and render\n\nModern JS template literal: lesson.html?course=javascript&lesson=3"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Event Object, preventDefault, stopPropagation"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Event object passed to callback has details: event.target is element clicked, event.currentTarget is element listener attached to (for delegation, target is button clicked, currentTarget is grid parent), event.type is 'click', event.preventDefault() prevents default browser behavior like form submit reload or link navigation, event.stopPropagation() stops bubbling up to parent elements."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Your dashboard: backBtn click doesn't need preventDefault because button not in form. But if you had form with submit button, form submit default reloads page, you need event.preventDefault() to prevent reload and handle with JavaScript. Your dashboard's lesson navigation uses window.location.href which is intentional navigation, not prevented."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Bubbling: When you click button inside grid inside container, click event bubbles up: button -> grid -> container -> body -> document. If grid has click listener (delegation) and button has click listener, both fire - button first, then grid. event.stopPropagation() stops bubbling, grid listener not fired. Your dashboard could use stopPropagation if needed."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Good programmer: Use event.target.dataset to get data attributes like lesson id, use preventDefault for forms to prevent reload, use stopPropagation when needed to prevent parent handlers, use event delegation with currentTarget vs target distinction."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: Event Object - target, preventDefault, Bubbling",
+      "code": "// Simulate event object\nfunction simulateClick() {\n let button = { id: 'startBtn_3', dataset: { lesson: 3 }, tag: 'button' };\n let grid = { id: 'lessonGrid', tag: 'div' };\n \n let event = {\n type: 'click',\n target: button, // Element clicked - button\n currentTarget: grid, // Element listener attached to - grid for delegation\n preventDefault: () => console.log('preventDefault called - prevents default behavior like form reload'),\n stopPropagation: () => console.log('stopPropagation called - stops bubbling to parent')\n };\n \n console.log('Event object:');\n console.log(` type: ${event.type}`);\n console.log(` target: ${event.target.tag} id=${event.target.id} dataset.lesson=${event.target.dataset.lesson} - element clicked`);\n console.log(` currentTarget: ${event.currentTarget.tag} id=${event.currentTarget.id} - element listener attached to`);\n \n // Your dashboard Start button with dataset\n console.log('\\nYour dashboard Start button:');\n console.log(`Button data-lesson: ${event.target.dataset.lesson}`);\n console.log(`Navigate to: lesson.html?lesson=${event.target.dataset.lesson}`);\n \n // preventDefault example - form submit\n console.log('\\n--- preventDefault - form submit ---');\n let formEvent = {\n type: 'submit',\n target: { tag: 'form' },\n preventDefault: () => console.log('Form submit default reload prevented - handle with JS instead')\n };\n console.log('Form submit event - default behavior is page reload');\n formEvent.preventDefault();\n console.log('With preventDefault, no reload, JS handles submit');\n \n // Bubbling example\n console.log('\\n--- Bubbling ---');\n console.log('Click button inside grid inside container:');\n console.log('Event bubbles: button -> grid -> container -> body');\n console.log('If button has listener and grid has delegation listener, both fire');\n console.log('button listener first, then grid listener (bubbling up)');\n console.log('event.stopPropagation() stops bubbling, grid listener not fired');\n}\n\nsimulateClick();\n\n// Your dashboard back button doesn't need preventDefault\nconsole.log('\\n--- Your Dashboard Back Button ---');\nconsole.log('backBtn is button not in form, no default to prevent, no need preventDefault');\nconsole.log('If it were <a href=\"...\"> link, click default navigates, need preventDefault to handle with history.back()');\nconsole.log('Your dashboard button uses window.location.href intentional navigation, not prevented');",
+      "output": "Event object:\n type: click\n target: button id=startBtn_3 dataset.lesson=3 - element clicked\n currentTarget: div id=lessonGrid - element listener attached to\n\nYour dashboard Start button:\nButton data-lesson: 3\nNavigate to: lesson.html?lesson=3\n\n--- preventDefault - form submit ---\nForm submit event - default behavior is page reload\nForm submit default reload prevented - handle with JS instead\n\n--- Bubbling ---\nClick button inside grid inside container:\nEvent bubbles: button -> grid -> container -> body\nIf button has listener and grid has delegation listener, both fire\nbutton listener first, then grid listener (bubbling up)\nevent.stopPropagation() stops bubbling, grid listener not fired\n\n--- Your Dashboard Back Button ---\nbackBtn is button not in form, no default to prevent, no need preventDefault\nIf it were <a href=\"...\"> link, click default navigates, need preventDefault to handle with history.back()\nYour dashboard button uses window.location.href intentional navigation, not prevented"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Event Delegation - One Listener for 10 Buttons (Pro Performance)"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Event delegation: Attach one listener to parent element, not to each child. When child clicked, event bubbles to parent, parent listener checks event.target if it's child button, then handles. Your dashboard has 10 Start buttons - adding 10 listeners uses 10 functions memory. Delegation: Add one listener to grid parent, when any Start button clicked, event bubbles to grid, grid listener checks if event.target is button with data-lesson, then navigates - one listener, efficient, handles dynamically added cards automatically."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Benefits: Performance - one listener vs 10 listeners, less memory, faster. Dynamic - new cards added after initial render automatically handled by parent listener, no need to add listener to each new card. Your dashboard could use delegation for better performance and dynamic handling."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "How to implement: grid.addEventListener('click', (event) => { if (event.target.classList.contains('start-btn')) { let lessonId = event.target.dataset.lesson; navigate to lessonId } }) - check if clicked target is start button, then get lesson id from dataset and navigate."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: Event Delegation - Your Dashboard Grid",
+      "code": "// Without delegation - 10 listeners - your dashboard current way\nconsole.log('Without delegation - 10 listeners (your dashboard current):');\nlet lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}, {id: 3, title: 'Operators'}];\nlessons.forEach(lesson => {\n console.log(` Added click listener to Start button ${lesson.id} - ${lesson.title}`);\n});\nconsole.log(`Total: ${lessons.length} listeners - ${lessons.length} functions in memory`);\n\n// With delegation - 1 listener on parent grid - pro way\nconsole.log('\\nWith delegation - 1 listener on grid parent (pro way):');\nlet grid = {\n id: 'lessonGrid',\n addEventListener: function(event, callback) {\n console.log(` Added ${event} listener to grid parent ${this.id} - one listener for all buttons`);\n this.callback = callback;\n },\n simulateClick: function(target) {\n console.log(`\\nGrid parent received bubbled click event from button ${target.dataset.lesson}`);\n let event = { target, currentTarget: this };\n this.callback(event);\n }\n};\n\ngrid.addEventListener('click', (event) => {\n // Check if clicked element is Start button\n if (event.target.classList && event.target.classList.contains('start-btn')) {\n let lessonId = event.target.dataset.lesson;\n console.log(`Delegation: Start button ${lessonId} clicked via grid parent listener`);\n console.log(`→ Navigate to lesson.html?lesson=${lessonId}`);\n } else {\n console.log('Clicked not on Start button - ignore');\n }\n});\n\n// Simulate clicks on buttons via delegation\nlet button1 = { dataset: { lesson: 1 }, classList: { contains: (c) => c === 'start-btn' } };\nlet button2 = { dataset: { lesson: 2 }, classList: { contains: (c) => c === 'start-btn' } };\nlet div = { dataset: {}, classList: { contains: () => false } }; // Clicked on div not button\n\ngrid.simulateClick(button1); // Should navigate\nconsole.log('\\n--- Click on button 2 ---');\ngrid.simulateClick(button2); // Should navigate\n\nconsole.log('\\n--- Click on div not button ---');\ngrid.simulateClick(div); // Should ignore\n\nconsole.log('\\nDelegation benefits:');\nconsole.log('- One listener vs 10 listeners - less memory, faster');\nconsole.log('- Works for dynamically added cards - new cards automatically handled, no need new listener');\nconsole.log('- Your dashboard could use delegation for better performance');\n\n// Dynamic cards - new lesson added after initial render\nconsole.log('\\n--- Dynamic Cards ---');\nlet newLesson = {id: 4, title: 'Conditions'};\nconsole.log(`New lesson ${newLesson.id} added after initial render`);\nconsole.log('Without delegation: Need to add new listener to new button');\nconsole.log('With delegation: No need new listener, grid parent already handles all buttons including new');\nlet button4 = { dataset: { lesson: 4 }, classList: { contains: (c) => c === 'start-btn' } };\ngrid.simulateClick(button4); // Works even though added after listener - delegation handles dynamic",
+      "output": "Without delegation - 10 listeners (your dashboard current):\n Added click listener to Start button 1 - Intro\n Added click listener to Start button 2 - Variables\n Added click listener to Start button 3 - Operators\nTotal: 3 listeners - 3 functions in memory\n\nWith delegation - 1 listener on grid parent (pro way):\n Added click listener to grid parent lessonGrid - one listener for all buttons\n\nGrid parent received bubbled click event from button 1\nDelegation: Start button 1 clicked via grid parent listener\n→ Navigate to lesson.html?lesson=1\n\n--- Click on button 2 ---\n\nGrid parent received bubbled click event from button 2\nDelegation: Start button 2 clicked via grid parent listener\n→ Navigate to lesson.html?lesson=2\n\n--- Click on div not button ---\nGrid parent received bubbled click event from button undefined\nClicked not on Start button - ignore\n\nDelegation benefits:\n- One listener vs 10 listeners - less memory, faster\n- Works for dynamically added cards - new cards automatically handled, no need new listener\n- Your dashboard could use delegation for better performance\n\n--- Dynamic Cards ---\nNew lesson 4 added after initial render\nWithout delegation: Need to add new listener to new button\nWith delegation: No need new listener, grid parent already handles all buttons including new\n\nGrid parent received bubbled click event from button 4\nDelegation: Start button 4 clicked via grid parent listener\n→ Navigate to lesson.html?lesson=4"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Modern JavaScript - Template Literals, Destructuring, Spread"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Template literals: Backticks ` with ${variable} for interpolation. Your dashboard uses: `lesson.html?course=${COURSE_ID}&lesson=${lessonNumber}` and `${completed} / ${TOTAL_LESSONS} completed` and `${Number(xp).toLocaleString()} XP`. Cleaner than concatenation +."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Destructuring: Extract properties from object/array into variables in one line. let {xp, coins, completed} = data - extracts xp, coins, completed from data object. let [first, second] = lessons - first = lessons[0], second = lessons[1]. Your dashboard could use destructuring: let {xp, coins, completed} = await loadUserData(user) - one line instead of 3."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Spread...: Expand array/object. [...lessons, newLesson] new array with all lessons plus newLesson, original unchanged immutable. {...user, xp:170} new object with user properties plus xp overwritten to 170, original unchanged. Your dashboard's React version would use spread for state updates: setLessons([...lessons, newLesson])."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Arrow functions: const getStatus = (id, completed) => id <= completed? 'completed' : 'current' - short, implicit return if no {}. Your dashboard uses arrow in forEach: lessons.forEach(lesson => { grid.appendChild(...) }) - arrow callback."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: Modern JS - Template Literals, Destructuring, Spread, Arrow",
+      "code": "// Template literals - your dashboard uses everywhere\nlet COURSE_ID = \"javascript\";\nlet lessonId = 3;\nlet completed = 2;\nlet total = 10;\nlet xp = 120;\n\nlet url = `lesson.html?course=${COURSE_ID}&lesson=${lessonId}`;\nlet progressText = `${completed} / ${total} completed`;\nlet xpText = `${xp.toLocaleString()} XP`;\nlet percent = Math.round((completed / total) * 100);\nlet width = `${percent}%`;\n\nconsole.log('Template literals:');\nconsole.log('URL:', url); // lesson.html?course=javascript&lesson=3\nconsole.log('Progress:', progressText); // 2 / 10 completed\nconsole.log('XP:', xpText); // 120 XP\nconsole.log('Width:', width); // 20%\n\n// Destructuring - extract in one line\nlet user = { xp: 120, coins: 30, completed: 2, name: \"Prince\" };\nlet lessons = [{id: 1, title: 'Intro'}, {id: 2, title: 'Variables'}];\n\nlet { xp: userXP, coins, completed: userCompleted } = user; // Extract with rename\nconsole.log('\\nDestructuring object:');\nconsole.log(`XP: ${userXP}, Coins: ${coins}, Completed: ${userCompleted}`); // 120 30 2\n\nlet [first, second] = lessons;\nconsole.log('\\nDestructuring array:');\nconsole.log(`First: ${first.title}, Second: ${second.title}`); // Intro Variables\n\n// Spread - immutable copy and add\nlet newLessons = [...lessons, {id: 3, title: 'Operators'}];\nconsole.log('\\nSpread array - add:');\nconsole.log(`Original: ${lessons.length} lessons`); // 2\nconsole.log(`New: ${newLessons.length} lessons`); // 3\nconsole.log(`Original unchanged: ${lessons.length} - immutable`);\n\nlet updatedUser = {...user, xp: 170, coins: 40}; // Copy and overwrite\nconsole.log('\\nSpread object - update:');\nconsole.log(`Original XP: ${user.xp}, Coins: ${user.coins}`); // 120 30 unchanged\nconsole.log(`Updated XP: ${updatedUser.xp}, Coins: ${updatedUser.coins}`); // 170 40 new object\n\n// Arrow functions - short\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\nconst calculateProgress = (completed, total) => Math.round((completed / total) * 100);\nconst getTitles = lessons => lessons.map(l => l.title); // Arrow with map\n\nconsole.log('\\nArrow functions:');\nconsole.log(`Status lesson 1: ${getStatus(1, 2)}`); // completed\nconsole.log(`Status lesson 3: ${getStatus(3, 2)}`); // current\nconsole.log(`Progress: ${calculateProgress(2, 10)}%`); // 20%\nconsole.log(`Titles: ${getTitles(lessons).join(', ')}`); // Intro, Variables\n\n// Combined modern - your dashboard could use\nfunction exampleModern(userData) {\n let { xp, coins, completed } = userData; // Destructuring\n let percent = Math.round((completed / 10) * 100);\n let text = `${completed} / 10 completed - ${percent}% - ${xp} XP`; // Template literal\n let updated = {...userData, xp: xp + 50}; // Spread\n return { text, updated };\n}\n\nlet result = exampleModern({xp: 120, coins: 30, completed: 2});\nconsole.log('\\nCombined modern:');\nconsole.log(result.text); // 2 / 10 completed - 20% - 120 XP\nconsole.log(`Updated XP: ${result.updated.xp}`); // 170",
+      "output": "Template literals:\nURL: lesson.html?course=javascript&lesson=3\nProgress: 2 / 10 completed\nXP: 120 XP\nWidth: 20%\n\nDestructuring object:\nXP: 120, Coins: 30, Completed: 2\n\nDestructuring array:\nFirst: Intro, Second: Variables\n\nSpread array - add:\nOriginal: 2 lessons\nNew: 3 lessons\nOriginal unchanged: 2 - immutable\n\nSpread object - update:\nOriginal XP: 120, Coins: 30\nUpdated XP: 170, Coins: 40\n\nArrow functions:\nStatus lesson 1: completed\nStatus lesson 3: current\nProgress: 20%\nTitles: Intro, Variables\n\nCombined modern:\n2 / 10 completed - 20% - 120 XP\nUpdated XP: 170"
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Optional Chaining?., Nullish Coalescing??, Logical Assignment"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Optional chaining?. safe access: data.progress?.javascript - if progress exists, get javascript, if progress null/undefined, return undefined not error. Your dashboard: data.progress?.[COURSE_ID] - if progress exists, get course id property, else undefined safe. data.profile?.xp - if profile exists, get xp, else undefined."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Nullish coalescing?? fallback only for null/undefined, keeps 0, '', false. data.xp?? 0 - if xp null/undefined, use 0, if xp 0, keep 0 not fallback. Your dashboard: data.xp?? data.profile?.xp?? 0 - tries xp, if null/undefined tries profile?.xp, if null/undefined uses 0. Keeps 0 XP valid!"
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "Difference || vs??: || falls back for any falsy 0, '', false, null, undefined,?? only for null/undefined keeps 0, '', false. For XP 0 valid,?? better than ||. Your dashboard uses?? for XP to keep 0 XP, not fallback to 10."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Logical assignment: xp??= 0 means xp = xp?? 0 - assign 0 only if xp null/undefined, keeps 0. xp ||= 10 means xp = xp || 10 - assign 10 if xp falsy including 0, loses 0 XP. Your dashboard could use??= for defaults."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5:?. and?? - Your Dashboard Safety",
+      "code": "// Optional chaining?. - safe access\nlet user1 = { progress: { javascript: 2 } };\nconsole.log('user1.progress?.javascript:', user1.progress?.javascript); // 2 - exists\n\nlet user2 = {}; // No progress\nconsole.log('user2.progress?.javascript:', user2.progress?.javascript); // undefined - safe no error\n// console.log(user2.progress.javascript); // ❌ TypeError without?.\n\nlet user3 = { progress: null };\nconsole.log('user3.progress?.javascript:', user3.progress?.javascript); // undefined - safe even though null\n\n// Your dashboard: data.progress?.[COURSE_ID] with variable key\nlet COURSE_ID = \"javascript\";\nlet data = { progress: { javascript: 2, react: 5 } };\nconsole.log(`\\ndata.progress?.[COURSE_ID] where COURSE_ID=${COURSE_ID}:`, data.progress?.[COURSE_ID]); // 2\nconsole.log('With variable key and optional chaining safe');\n\n// Nullish coalescing?? - fallback only null/undefined\nlet xp1 = 0;\nconsole.log('\\n0?? 10 =', xp1?? 10); // 0 - keeps 0 not null/undefined\nconsole.log('0 || 10 =', xp1|| 10); // 10 - 0 falsy fallback - bug for XP!\n\nlet xp2 = null;\nconsole.log('\\nnull?? 10 =', xp2?? 10); // 10 - null fallback\nconsole.log('null || 10 =', xp2|| 10); // 10 - null falsy fallback\n\nlet xp3 = undefined;\nconsole.log('\\nundefined?? 10 =', xp3?? 10); // 10 - undefined fallback\n\n// Your dashboard exact: data.xp?? data.profile?.xp?? 0\nfunction getXP(data) {\n return Number(data.xp?? data.profile?.xp?? 0);\n}\n\nconsole.log('\\nYour dashboard getXP:');\nconsole.log(getXP({xp: 120})); // 120 direct\nconsole.log(getXP({xp: \"120\"})); // 120 string converted\nconsole.log(getXP({profile: {xp: 150}})); // 150 from profile via?.\nconsole.log(getXP({})); // 0 fallback\nconsole.log(getXP({xp: 0})); // 0 keeps 0 valid!?? keeps 0\n\n// Logical assignment??= and ||=\nlet a = null;\na??= 10; // a = a?? 10 => null?? 10 => 10\nconsole.log('\\nnull??= 10 =>', a); // 10\n\nlet b = 0;\nb??= 10; // 0?? 10 => 0 keeps 0\nconsole.log('0??= 10 =>', b); // 0 - keeps 0\n\nlet c = 0;\nc||= 10; // 0|| 10 => 10 - 0 falsy fallback\nconsole.log('0 ||= 10 =>', c); // 10 - loses 0 - bug for XP!\n\nconsole.log('\\nRule: Use?? for XP where 0 valid, || loses 0');",
+      "output": "user1.progress?.javascript: 2\nuser2.progress?.javascript: undefined\nuser3.progress?.javascript: undefined\n\ndata.progress?.[COURSE_ID] where COURSE_ID=javascript: 2\nWith variable key and optional chaining safe\n\n0?? 10 = 0\n0 || 10 = 10\n\nnull?? 10 = 10\nnull || 10 = 10\n\nundefined?? 10 = 10\n\nYour dashboard getXP:\n120\n120\n150\n0\n0\n\nnull??= 10 => 10\n0??= 10 => 0\n0 ||= 10 => 10\n\nRule: Use?? for XP where 0 valid, || loses 0"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: xp = 0 (new user). You have xp || 10 vs xp?? 10. What are results and why your dashboard uses?? for XP? Tricky close options!",
+      "options": [
+        "Both 0 - keep 0 XP",
+        "xp || 10 = 10 because 0 falsy fallback to 10 loses valid 0 XP shows 10 XP incorrectly. xp?? 10 = 0 because 0 not null/undefined keeps 0 valid XP. Your dashboard uses?? to keep 0 XP for new users not incorrectly show 10 XP - critical for XP where 0 valid",
+        "Both 10",
+        "xp || 10 = 0, xp?? 10 = 10"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! || loses 0 XP bug,?? keeps 0 XP correct! Your dashboard's?? keeps 0 XP valid!",
+      "incorrectFeedback": "0 || 10 = 10 because 0 falsy. 0?? 10 = 0 because 0 not null/undefined. For XP 0 valid should keep 0 not 10, so?? correct. Your dashboard data.xp??...?? 0 keeps 0 XP.",
+      "reasoning": "|| vs?? with 0 - || falsy fallback loses 0,?? nullish keeps 0 - critical for XP where 0 valid.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Modules and Async/Await - Your Dashboard Firebase"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Modules: import {auth, db} from './authentication.js' imports from other file, export const auth =... exports from file. Your dashboard uses type=\"module\" and imports auth, db, onAuthStateChanged from authentication.js and doc, getDoc from Firebase CDN. Modules keep code organized in files, not one big file."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "Async/await: Handles asynchronous operations like Firebase fetching that takes time. Your dashboard: async function loadUserData(user) { const userRef = doc(db, 'users', user.uid); const snapshot = await getDoc(userRef); if (!snapshot.exists()) return default;... } - await waits for getDoc to finish without blocking, then continues. Without await, snapshot would be Promise not data."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "Your dashboard flow: onAuthStateChanged listens for auth, when user logged in, async callback calls await loadUserData(user) which awaits Firebase, then updateStats, updateProgress, renderLessons. All async/await and modules like pro app."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Modules and Async/Await - Your Dashboard Firebase",
+      "code": "// Modules - your dashboard imports\nconsole.log('Your dashboard modules:');\nconsole.log('import { auth, db, onAuthStateChanged } from \"./authentication.js\";');\nconsole.log('import { doc, getDoc } from \"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js\";');\nconsole.log('type=\"module\" in script tag enables import/export');\nconsole.log('Modules organize code in files, not one big file');\n\n// Async/await - your dashboard loadUserData\nconsole.log('\\n--- Async/Await ---');\n\n// Simulate Firebase getDoc that takes time\nfunction getDocMock(ref) {\n return new Promise(resolve => {\n setTimeout(() => {\n resolve({ exists: () => true, data: () => ({ xp: 120, coins: 30, completed: 2 }) });\n }, 100); // Simulate 100ms network delay\n });\n}\n\n// Without async/await - callback hell\nconsole.log('\\nWithout async/await - callbacks:');\nfunction loadUserDataCallback(user, callback) {\n let userRef = { uid: user.uid };\n getDocMock(userRef).then(snapshot => {\n if (!snapshot.exists()) {\n callback({ xp: 0, coins: 0, completed: 0 });\n } else {\n let data = snapshot.data();\n callback(data);\n }\n });\n}\n\nloadUserDataCallback({uid: 'user123'}, (data) => {\n console.log('Callback data:', data);\n});\n\n// With async/await - clean like your dashboard\nconsole.log('\\nWith async/await - clean like your dashboard:');\nasync function loadUserDataAsync(user) {\n try {\n let userRef = { uid: user.uid };\n console.log('Fetching from Firebase...');\n let snapshot = await getDocMock(userRef); // Await waits for Promise\n console.log('Fetched snapshot');\n \n if (!snapshot.exists()) {\n console.log('No snapshot - return default');\n return { xp: 0, coins: 0, completed: 0 };\n }\n \n let data = snapshot.data();\n console.log('Data exists:', data);\n return data;\n } catch (error) {\n console.error('Firebase error:', error);\n return { xp: 0, coins: 0, completed: 0 };\n }\n}\n\nloadUserDataAsync({uid: 'user123'}).then(data => {\n console.log('Async/await data:', data);\n});\n\n// Your dashboard onAuthStateChanged with async callback\nconsole.log('\\n--- Your Dashboard onAuthStateChanged with async ---');\nfunction onAuthStateChangedMock(auth, callback) {\n setTimeout(() => {\n let user = { uid: 'user123' };\n callback(user);\n }, 50);\n}\n\nonAuthStateChangedMock({}, async (user) => {\n if (!user) {\n console.log('No user - redirect to login');\n return;\n }\n console.log('User found, loading data with await...');\n let data = await loadUserDataAsync(user); // Await inside async callback\n console.log(`Data loaded: XP=${data.xp}, Completed=${data.completed}`);\n console.log('Then updateStats, updateProgress, renderLessons');\n});\n\nconsole.log('\\nAsync/await makes async code look synchronous clean, not callback hell');",
+      "output": "Your dashboard modules:\nimport { auth, db, onAuthStateChanged } from \"./authentication.js\";\nimport { doc, getDoc } from \"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js\";\ntype=\"module\" in script tag enables import/export\nModules organize code in files, not one big file\n\n--- Async/Await ---\n\nWithout async/await - callbacks:\n\nWith async/await - clean like your dashboard:\nFetching from Firebase...\nCallback data: {xp:120, coins:30, completed:2}\nFetched snapshot\nData exists: {xp:120, coins:30, completed:2}\nAsync/await data: {xp:120, coins:30, completed:2}\n\n--- Your Dashboard onAuthStateChanged with async ---\nUser found, loading data with await...\nFetching from Firebase...\nFetched snapshot\nData exists: {xp:120, coins:30, completed:2}\nData loaded: XP=120, Completed=2\nThen updateStats, updateProgress, renderLessons\n\nAsync/await makes async code look synchronous clean, not callback hell"
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Your Dashboard's Complete Modern Stack"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Your dashboard uses all modern JS: Template literals for URLs and display text, destructuring for extracting xp, coins, completed from data, spread for immutable updates, arrow functions for forEach and event callbacks, optional chaining data.progress?.[COURSE_ID] safe, nullish coalescing data.xp?? 0 fallback keeping 0, modules import/export for Firebase, async/await for loading, logical AND && for referrer check and auth check, ternary for status badge, forEach for rendering."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "This is production modern JavaScript - not old var, not string concatenation, not manual null checks with if (data && data.progress && data.progress.javascript), but modern concise safe code with?. and?? and template literals and destructuring. You must know all these to be good programmer in 2026."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Your Dashboard Complete Modern Code",
+      "code": "// Your dashboard complete modern stack - all features in one flow\nconst COURSE_ID = \"javascript\";\nconst TOTAL_LESSONS = 10;\n\n// Simulate Firebase data\nlet firebaseData = {\n xp: \"120\", // String!\n coins: null,\n completed: \"2\", // String!\n progress: { javascript: 2 },\n profile: { name: \"Prince\" }\n};\n\n// Modern: Destructuring + optional chaining + nullish + Number conversion\nlet { xp: rawXP, coins: rawCoins, completed: rawCompleted, progress } = firebaseData;\nlet xp = Number(rawXP?? 0); // String \"120\" -> number 120, null/undefined -> 0\nlet coins = Number(rawCoins?? firebaseData.profile?.coins?? 0); // Null -> fallback profile?.coins -> 0\nlet completed = Math.min(TOTAL_LESSONS, Math.max(0, Number(rawCompleted?? progress?.[COURSE_ID]?? 0) || 0)); // String \"2\" -> 2 with safety\nlet jsProgress = progress?.[COURSE_ID]?? 0; // Optional chaining + variable key + nullish\n\nconsole.log(`Modern extraction:`);\nconsole.log(`XP: ${xp} (${typeof xp}), Coins: ${coins}, Completed: ${completed}, JS Progress: ${jsProgress}`);\n\n// Modern: Template literals for display\nlet xpText = `${xp.toLocaleString()} XP`; // Template literal + toLocaleString\nlet progressText = `${completed} / ${TOTAL_LESSONS} completed`; // Template literal\nlet percent = Math.round((completed / TOTAL_LESSONS) * 100);\nlet width = `${percent}%`; // Template literal for style\nlet url = `lesson.html?course=${COURSE_ID}&lesson=${completed + 1}`; // Template literal for URL\n\nconsole.log(`\\nTemplate literals:`);\nconsole.log(`XP text: ${xpText}`);\nconsole.log(`Progress text: ${progressText} - ${percent}%`);\nconsole.log(`Width: ${width}`);\nconsole.log(`URL: ${url}`);\n\n// Modern: Arrow functions + map/filter/reduce\nlet lessons = [\n {id: 1, title: 'Intro', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', status: 'current', xp: 0}\n];\n\nlet getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked'; // Arrow + ternary\nlet titles = lessons.map(l => l.title); // Arrow in map\nlet completedLessons = lessons.filter(l => l.id <= completed); // Arrow in filter\nlet totalXP = lessons.reduce((total, l) => total + l.xp, 0); // Arrow in reduce\n\nconsole.log(`\\nArrow + map/filter/reduce:`);\nconsole.log(`Titles: ${titles.join(', ')}`);\nconsole.log(`Completed: ${completedLessons.map(l => l.title).join(', ')}`);\nconsole.log(`Total XP: ${totalXP}`);\n\n// Modern: Spread for immutable updates\nlet updatedLessons = lessons.map(lesson => \n lesson.id === 3? {...lesson, status: 'completed', xp: 100} : lesson // Spread + overwrite immutable\n);\nconsole.log(`\\nSpread immutable update:`);\nconsole.log(`Original lesson 3 status: ${lessons[2].status}, XP: ${lessons[2].xp} - unchanged`);\nconsole.log(`Updated lesson 3 status: ${updatedLessons[2].status}, XP: ${updatedLessons[2].xp} - new array`);\n\n// Modern: Logical && for safe checks\nlet referrer = \"https://code-academy.com/react\";\nlet origin = \"https://code-academy.com\";\nif (referrer && referrer.includes(origin)) { // && short-circuit safe\n console.log(`\\nLogical && safe: referrer exists and includes origin - history.back()`);\n}\n\n// Modern: Async/await simulation\nasync function loadData() {\n console.log('\\nAsync/await: Fetching data...');\n await new Promise(r => setTimeout(r, 50));\n console.log('Data fetched');\n return { xp, coins, completed };\n}\n\nloadData().then(data => {\n console.log(`Data loaded: XP=${data.xp}, Completed=${data.completed}`);\n});\n\nconsole.log('\\nAll modern JS features your dashboard uses - production ready 2026 code!');",
+      "output": "Modern extraction:\nXP: 120 (number), Coins: 0, Completed: 2, JS Progress: 2\n\nTemplate literals:\nXP text: 120 XP\nProgress text: 2 / 10 completed - 20%\nWidth: 20%\nURL: lesson.html?course=javascript&lesson=3\n\nArrow + map/filter/reduce:\nTitles: Intro, Variables, Operators\nCompleted: Intro, Variables\nTotal XP: 200\n\nSpread immutable update:\nOriginal lesson 3 status: current, XP: 0 - unchanged\nUpdated lesson 3 status: completed, XP: 100 - new array\n\nLogical && safe: referrer exists and includes origin - history.back()\n\nAsync/await: Fetching data...\nData fetched\nData loaded: XP=120, Completed=2\n\nAll modern JS features your dashboard uses - production ready 2026 code!"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical - Build Interactive Dashboard with Events and Modern JS"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Interactive Dashboard - Events + Modern JS",
+      "code": "let lessons = [\n {id: 1, title: 'Introduction to JavaScript', status: 'completed', xp: 100},\n {id: 2, title: 'Variables', status: 'completed', xp: 100},\n {id: 3, title: 'Operators', status: 'current', xp: 0},\n {id: 4, title: 'Conditions', status: 'locked', xp: 0}\n];\nlet user = { xp: 200, coins: 20, completed: 2 };\n\n// Modern functions with arrow, destructuring, template literals\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\nconst calculateProgress = (completed, total = 10) => Math.round((completed / total) * 100);\n\n// Render with forEach and template literals\nfunction renderLessons(lessons, completed) {\n console.log(`\\nRendering ${lessons.length} lessons:`);\n lessons.forEach(lesson => {\n let status = getStatus(lesson.id, completed);\n let icon = status === 'completed'? '✅' : status === 'current'? '▶' : '🔒';\n let button = status === 'locked'? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n console.log(`${icon} ${lesson.id}. ${lesson.title} - ${status.toUpperCase()} - [${button}]`);\n });\n}\n\n// Event handling with delegation - modern\nfunction setupEventDelegation() {\n console.log('\\n--- Setting up event delegation ---');\n let grid = {\n addEventListener: function(event, callback) {\n console.log(`Added ${event} listener to grid parent - delegation - one listener for all buttons`);\n this.callback = callback;\n },\n triggerClick: function(lessonId) {\n let event = { target: { dataset: { lesson: lessonId }, classList: { contains: (c) => c === 'start-btn' } } };\n this.callback(event);\n }\n };\n \n grid.addEventListener('click', (event) => {\n // Modern: optional chaining and dataset\n let lessonId = event.target?.dataset?.lesson; // Optional chaining safe\n if (lessonId && event.target.classList.contains('start-btn')) {\n console.log(`Delegated click: Lesson ${lessonId} button`);\n handleLessonClick(Number(lessonId)); // Number conversion\n }\n });\n \n return grid;\n}\n\nfunction handleLessonClick(lessonId) {\n let status = getStatus(lessonId, user.completed);\n if (status === 'locked') {\n console.log(`🔒 Lesson ${lessonId} locked - need ${user.completed + 1} first`);\n return;\n }\n \n // Modern: spread for immutable update\n let newLessons = lessons.map(l => {\n if (l.id === lessonId) return {...l, status: 'completed', xp: 100};\n if (l.id === lessonId + 1) return {...l, status: 'current'};\n return l;\n });\n \n let newUser = {...user, xp: user.xp + 100, coins: user.coins + 10, completed: user.completed + 1}; // Spread\n \n let progress = calculateProgress(newUser.completed, 10);\n console.log(`🎉 Completed lesson ${lessonId}! New XP: ${newUser.xp}, Progress: ${progress}%`);\n \n // Update global\n lessons = newLessons;\n user = newUser;\n \n renderLessons(lessons, user.completed);\n}\n\n// Initial render\nrenderLessons(lessons, user.completed);\nlet grid = setupEventDelegation();\n\n// Simulate clicks via delegation\nconsole.log('\\n--- Simulating Clicks via Delegation ---');\ngrid.triggerClick(3); // Current lesson - should complete\nconsole.log('\\n--- Click locked lesson ---');\ngrid.triggerClick(5); // Locked - should warn\n\n// Modern: Destructuring and template literals in final state\nlet { xp, coins, completed } = user;\nlet percent = calculateProgress(completed, 10);\nconsole.log(`\\n=== Final State with Modern JS ===`);\nconsole.log(`XP: ${xp}, Coins: ${coins}, Completed: ${completed}/10 - ${percent}%`);\nconsole.log(`Titles: ${lessons.map(l => l.title).slice(0, 3).join(', ')}...`);\nconsole.log(`Total XP: ${lessons.reduce((t, l) => t + l.xp, 0)}`);\nconsole.log(`Has locked? ${lessons.some(l => l.status === 'locked')}`);",
+      "output": "Rendering 4 lessons:\n✅ 1. Introduction to JavaScript - COMPLETED - [Review]\n✅ 2. Variables - COMPLETED - [Review]\n▶ 3. Operators - CURRENT - [Start Lesson]\n🔒 4. Conditions - LOCKED - [Locked]\n\n--- Setting up event delegation ---\nAdded click listener to grid parent - delegation - one listener for all buttons\n\n--- Simulating Clicks via Delegation ---\nDelegated click: Lesson 3 button\n🎉 Completed lesson 3! New XP: 300, Progress: 30%\n\nRendering 4 lessons:\n✅ 1. Introduction to JavaScript - COMPLETED - [Review]\n✅ 2. Variables - COMPLETED - [Review]\n✅ 3. Operators - COMPLETED - [Review]\n▶ 4. Conditions - CURRENT - [Start Lesson]\n\n--- Click locked lesson ---\nDelegated click: Lesson 5 button\n🔒 Lesson 5 locked - need 4 first\n\n=== Final State with Modern JS ===\nXP: 300, Coins: 30, Completed: 3/10 - 30%\nTitles: Introduction to JavaScript, Variables, Operators...\nTotal XP: 300\nHas locked? true"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Interactive Dashboard with All Modern Features"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all - events, delegation, preventDefault, bubbling, template literals, destructuring, spread, arrow, optional chaining, nullish, modules, async/await - into complete interactive dashboard that is production ready, secure, performant, modern ES6+ like your HTML dashboard and ready for final capstone Lesson 10 project."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete Modern Interactive Dashboard (All Concepts)",
+      "code": "/* =========================================================\n COMPLETE MODERN INTERACTIVE DASHBOARD - Lesson 9 Capstone\n Uses: Events, Delegation, Template Literals, Destructuring, Spread,\n Arrow,?.,??, Modules, Async/Await, map/filter/reduce, Security, Performance\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nconst COURSE_ID = \"javascript\";\nlet lessons = [\n {id: 1, title: 'Introduction to JavaScript', learn: 'Understand JS', summary: 'Learn syntax', status: 'completed', xp: 100, coins: 10},\n {id: 2, title: 'Variables', learn: 'Store info', summary: 'Learn let, const', status: 'completed', xp: 100, coins: 10},\n {id: 3, title: 'Operators', learn: 'Math and logic', summary: 'Master operators', status: 'current', xp: 0, coins: 0},\n {id: 4, title: 'Conditions', learn: 'Decisions', summary: 'Learn if/else', status: 'locked', xp: 0, coins: 0},\n {id: 5, title: 'Loops', learn: 'Repetition', summary: 'Learn for, while', status: 'locked', xp: 0, coins: 0}\n];\n\nlet firebaseData = {\n xp: \"120\", // String from Firebase!\n coins: null,\n completed: \"2\", // String from localStorage!\n progress: { javascript: 2 },\n profile: { name: \"Prince\" }\n};\n\n// Modern extraction with destructuring,?.,??, Number\nlet { xp: rawXP, coins: rawCoins, completed: rawCompleted, progress, profile } = firebaseData;\nlet xp = Number(rawXP?? profile?.xp?? 0);\nlet coins = Number(rawCoins?? 0);\nlet completed = Math.min(TOTAL_LESSONS, Math.max(0, Number(rawCompleted?? progress?.[COURSE_ID]?? 0) || 0));\n\nconsole.log(\"=== MODERN INTERACTIVE DASHBOARD ===\");\nconsole.log(`User: ${profile?.name?? 'Anonymous'} - XP: ${xp}, Coins: ${coins}, Completed: ${completed}`);\nconsole.log(`Progress: ${progress?.[COURSE_ID]?? 0} / ${TOTAL_LESSONS}`);\n\n// Arrow functions\nconst getStatus = (id, completed) => id <= completed? 'completed' : id === completed + 1? 'current' : 'locked';\nconst calculateProgress = (completed, total = TOTAL_LESSONS) => Math.round((completed / total) * 100);\n\n// Secure card creation with textContent for data, template for structure\nfunction createCardSecure(lesson, completed) {\n let status = getStatus(lesson.id, completed);\n let isLocked = status === 'locked';\n let badge = status === 'completed'? 'Completed' : status === 'current'? 'Current' : 'Locked';\n let button = isLocked? 'Locked' : status === 'completed'? 'Review' : 'Start Lesson';\n \n // Secure: textContent for data prevents XSS, innerHTML for trusted structure\n // Simulated with object\n let card = {\n id: lesson.id,\n title: lesson.title, // Would be textContent in real DOM\n status,\n badge,\n button,\n dataset: { lesson: lesson.id },\n classList: { contains: (c) => c === 'start-btn' },\n onClick: () => {\n if (!isLocked) {\n console.log(`→ Navigating to lesson.html?course=${COURSE_ID}&lesson=${lesson.id}`);\n }\n }\n };\n return card;\n}\n\n// Efficient render with grid 1 reflow\nfunction renderLessons(lessons, completed) {\n console.log(`\\n--- Rendering ${lessons.length} lessons (efficient 1 reflow) ---`);\n let grid = { children: [], appendChild: function(c) { this.children.push(c); } };\n lessons.forEach(lesson => {\n let card = createCardSecure(lesson, completed);\n let icon = card.status === 'completed'? '✅' : card.status === 'current'? '▶' : '🔒';\n console.log(`${icon} ${lesson.id}. ${lesson.title} - ${card.status.toUpperCase()} - [${card.button}]`);\n grid.appendChild(card); // Memory no reflow\n });\n console.log(`Appended grid with ${grid.children.length} cards to container - 1 reflow efficient`);\n return grid;\n}\n\n// Event delegation - one listener\nfunction setupDelegation(grid) {\n console.log('\\n--- Event Delegation - One Listener for All Buttons ---');\n grid.addEventListener = (event, callback) => {\n console.log(`Added ${event} listener to grid parent - delegation`);\n grid.callback = callback;\n };\n \n grid.addEventListener('click', (event) => {\n // Modern: optional chaining and dataset\n let lessonId = event.target?.dataset?.lesson;\n if (lessonId && event.target.classList.contains('start-btn')) {\n console.log(`\\nDelegated click: Lesson ${lessonId}`);\n handleLessonClick(Number(lessonId));\n }\n });\n}\n\nfunction handleLessonClick(lessonId) {\n let status = getStatus(lessonId, completed);\n if (status === 'locked') {\n console.log(`🔒 Locked! Need ${completed + 1} first`);\n return;\n }\n if (status === 'completed') {\n console.log(`✅ Reviewing lesson ${lessonId}`);\n return;\n }\n \n // Modern: Spread immutable updates\n let newLessons = lessons.map(l => {\n if (l.id === lessonId) return {...l, status: 'completed', xp: 100, coins: 10};\n if (l.id === lessonId + 1) return {...l, status: 'current'};\n return l;\n });\n \n let newUser = {...firebaseData, xp: xp + 100, coins: coins + 10, completed: completed + 1};\n xp = newUser.xp;\n coins = newUser.coins;\n completed = newUser.completed;\n lessons = newLessons;\n \n let percent = calculateProgress(completed, TOTAL_LESSONS);\n console.log(`🎉 Completed! XP: ${xp}, Coins: ${coins}, Progress: ${percent}%`);\n renderLessons(lessons, completed);\n}\n\n// Async load simulation\nasync function loadData() {\n console.log('\\n--- Async/Await Loading ---');\n await new Promise(r => setTimeout(r, 50));\n console.log('Data loaded from Firebase');\n return { xp, coins, completed };\n}\n\n// Main flow\nloadData().then(data => {\n console.log(`\\nLoaded: XP=${data.xp}, Completed=${data.completed}`);\n let grid = renderLessons(lessons, completed);\n setupDelegation(grid);\n \n console.log('\\n--- Simulating Clicks ---');\n // Simulate click via delegation\n grid.callback({ target: { dataset: { lesson: 3 }, classList: { contains: (c) => c === 'start-btn' } } });\n \n console.log('\\n--- Modern Methods ---');\n let titles = lessons.map(l => l.title);\n console.log(`Titles (map): ${titles.slice(0, 3).join(', ')}...`);\n console.log(`Completed (filter): ${lessons.filter(l => l.status === 'completed').map(l => l.title).join(', ')}`);\n console.log(`Current (find): ${lessons.find(l => l.status === 'current')?.title?? 'None'}`);\n console.log(`Total XP (reduce): ${lessons.reduce((t, l) => t + l.xp, 0)}`);\n console.log(`Has locked? (some): ${lessons.some(l => l.status === 'locked')}`);\n \n // Destructuring final state\n let { xp: finalXP, coins: finalCoins, completed: finalCompleted } = { xp, coins, completed };\n console.log(`\\n=== FINAL with Modern JS ===`);\n console.log(`XP: ${finalXP}, Coins: ${finalCoins}, Completed: ${finalCompleted}/${TOTAL_LESSONS} - ${calculateProgress(finalCompleted)}%`);\n console.log(`All modern: Template literals, Destructuring, Spread, Arrow,?.,??, Async/Await, Delegation, map/filter/find/reduce`);\n});",
+      "output": "=== MODERN INTERACTIVE DASHBOARD ===\nUser: Prince - XP: 120, Coins: 30, Completed: 2\nProgress: 2 / 10\n\n--- Rendering 5 lessons (efficient 1 reflow) ---\n✅ 1. Introduction to JavaScript - COMPLETED - [Review]\n✅ 2. Variables - COMPLETED - [Review]\n▶ 3. Operators - CURRENT - [Start Lesson]\n🔒 4. Conditions - LOCKED - [Locked]\n🔒 5. Loops - LOCKED - [Locked]\nAppended grid with 5 cards to container - 1 reflow efficient\n\n--- Event Delegation - One Listener for All Buttons ---\nAdded click listener to grid parent - delegation\n\n--- Async/Await Loading ---\nData loaded from Firebase\n\nLoaded: XP=120, Completed=2\n\n--- Simulating Clicks ---\nDelegated click: Lesson 3\n🎉 Completed! XP: 220, Coins: 40, Progress: 30%\n--- Rendering 5 lessons (efficient 1 reflow) ---\n✅ 1. Introduction to JavaScript - COMPLETED - [Review]\n✅ 2. Variables - COMPLETED - [Review]\n✅ 3. Operators - COMPLETED - [Review]\n▶ 4. Conditions - CURRENT - [Start Lesson]\n🔒 5. Loops - LOCKED - [Locked]\n\n--- Modern Methods ---\nTitles (map): Introduction to JavaScript, Variables, Operators...\nCompleted (filter): Introduction to JavaScript, Variables, Operators\nCurrent (find): Conditions\nTotal XP (reduce): 300\nHas locked? (some): true\n\n=== FINAL with Modern JS ===\nXP: 220, Coins: 40, Completed: 3/10 - 30%\nAll modern: Template literals, Destructuring, Spread, Arrow,?.,??, Async/Await, Delegation, map/filter/find/reduce"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Final Tricky Questions - Pro Must Know Everything"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered events and modern JS: Events click, auth state change, addEventListener attaches listener, callback called when event happens. Event object target element clicked, currentTarget listener attached, preventDefault prevents default like form reload, stopPropagation stops bubbling. Bubbling event bubbles from child to parent, delegation one listener on parent handles all child clicks efficient and dynamic - your dashboard could use delegation for 10 buttons. Modern JS: Template literals `text ${var}` for URLs and display, destructuring let {xp, coins} = data one line extract, spread [...lessons, newLesson] new array immutable, {...user, xp:170} new object overwrite, arrow (params) => expression short callback, optional chaining data.progress?.javascript safe no error if null, nullish coalescing data.xp?? 0 fallback only null/undefined keeps 0, modules import/export organize code, async/await waits for Firebase without callback hell."
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: You have 10 Start buttons, you add listener to each vs delegation one listener on grid parent. Which better for performance and dynamic? Pro must know!",
+      "options": [
+        "10 listeners better - more explicit",
+        "Delegation one listener on grid parent better - one function memory vs 10, faster, handles dynamically added cards automatically - new cards no need new listener parent already handles. Your dashboard adds to each button works but delegation more efficient pro pattern",
+        "Both same performance",
+        "Delegation doesn't work for buttons"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Delegation efficient one listener handles all and dynamic! Pro pattern!",
+      "incorrectFeedback": "10 listeners 10 functions memory, need add to each new card. Delegation 1 listener on parent, checks event.target, 1 function less memory faster, new cards automatically handled. Pro pattern!",
+      "reasoning": "Event delegation - one parent listener vs many child listeners - efficient and dynamic.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: You have event.target and event.currentTarget in delegation. You click Start button inside grid. What are target and currentTarget? Tricky!",
+      "options": [
+        "Both button",
+        "Both grid",
+        "target is button clicked, currentTarget is grid where listener attached - delegation uses target to know which button clicked, currentTarget is parent grid. event.target.dataset.lesson gets lesson id from button clicked, event.currentTarget is grid parent",
+        "target is grid, currentTarget is button"
+      ],
+      "correctIndex": 2,
+      "correctFeedback": "Exactly! target = element clicked button, currentTarget = element listener attached grid. Delegation uses target.dataset to get lesson id!",
+      "incorrectFeedback": "Click button inside grid: target is button element that was clicked, currentTarget is grid element where listener attached (for delegation). target.dataset.lesson gets id from button clicked, currentTarget is grid parent.",
+      "reasoning": "target vs currentTarget in delegation - target clicked element, currentTarget listener element.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You have form with submit button, default behavior reloads page. You want handle with JS not reload. What to do with event? And your back button need preventDefault?",
+      "options": [
+        "No need preventDefault ever",
+        "Form submit needs event.preventDefault() to prevent reload default, then handle with JS. Your back button is button not in form no default to prevent, no need preventDefault. If it were <a> link default navigates, need preventDefault to handle with history.back(). Your dashboard button uses window.location.href intentional navigation not prevented",
+        "Back button needs preventDefault",
+        "Both need preventDefault"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Form submit needs preventDefault to prevent reload, back button no form no need preventDefault!",
+      "incorrectFeedback": "Form submit default reloads page, need event.preventDefault() to prevent reload and handle with JS. Back button button not in form no default, no need preventDefault. Link <a> default navigates, need preventDefault if handling with history.back().",
+      "reasoning": "preventDefault prevents default behavior like form reload - needed for forms not for regular buttons.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have let {xp, coins} = user; vs let xp = user.xp; let coins = user.coins;. Both same result but first 1 line second 2 lines. And [...lessons, newLesson] vs lessons.push(newLesson) difference for original? Modern must know!",
+      "options": [
+        "Both same no difference",
+        "Destructuring 1 line cleaner extracts multiple props at once. Spread [...lessons, newLesson] creates new array new reference original unchanged immutable good for React state new reference triggers re-render. Push mutates original same reference original changed, React may not detect same reference no re-render. For static array push fine, React state use spread immutable",
+        "Destructuring slower",
+        "Push better always"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Destructuring cleaner, spread immutable new reference for React state triggers re-render, push mutable same reference!",
+      "incorrectFeedback": "let {xp, coins}=user 1 line extracts both, 2 lines manual same result but longer. [...lessons, newLesson] new array immutable original unchanged new reference, push mutates original same reference. React needs new reference to detect change re-render, same reference no re-render, so spread better for React state.",
+      "reasoning": "Destructuring cleaner, spread immutable new reference vs push mutable same reference - React state needs new reference.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have data.progress?.[COURSE_ID] where COURSE_ID='javascript' variable. What does?. and [] do and why your dashboard uses this? Modern pro must know!",
+      "options": [
+        "?. checks if progress exists, if null/undefined returns undefined not error safe, [] with variable COURSE_ID accesses property with variable key javascript, so progress?.[COURSE_ID] safe access with variable key - if progress exists get javascript property, else undefined safe. Your dashboard data.progress?.[COURSE_ID] safe with variable course id",
+        "Both same as dot",
+        "?. not needed",
+        "[] not needed"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes!?. safe access no error if null, [] variable key dynamic access, combined safe variable key access - your dashboard pattern!",
+      "incorrectFeedback": "progress?.[COURSE_ID]:?. optional chaining safe - if progress null/undefined returns undefined not TypeError, [] bracket notation with variable COURSE_ID accesses property with variable key 'javascript' dynamic. Combined safe variable key access. Your dashboard data.progress?.[COURSE_ID] safe.",
+      "reasoning": "?. safe access + [] variable key dynamic - combined safe variable key access - your dashboard pattern.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: You have async function loadUserData(user) { let ref = doc(db, 'users', user.uid); let snap = await getDoc(ref); return snap.data(); }. What does async/await do and what without it? Your dashboard uses async/await for Firebase!",
+      "options": [
+        "Without async/await same - no difference",
+        "Async marks function returns Promise, await waits for getDoc Promise to resolve to snapshot without blocking, then continues, returns data. Without await, getDoc returns Promise not snapshot, snapshot.data() would fail Promise has no data(). Async/await makes async code look synchronous clean, not callback hell with.then(). Your dashboard loadUserData async/await clean",
+        "Async/await slower",
+        "Async/await not needed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! async/await waits for Promise without blocking, clean synchronous look, without await Promise not data! Your dashboard uses async/await for Firebase!",
+      "incorrectFeedback": "async function returns Promise, await waits for getDoc Promise to finish and gives snapshot, then snapshot.data() works. Without await, getDoc returns Promise, snapshot is Promise not data,.data() fails. Async/await clean vs.then() callback hell. Your dashboard loadUserData uses async/await.",
+      "reasoning": "async/await waits for Promise to resolve without blocking, clean vs callback hell.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard uses: addEventListener click for back and start buttons, onAuthStateChanged auth event, template literals `lesson.html?course=${COURSE_ID}&lesson=${id}`, destructuring let {xp, coins} = data, spread [...lessons, newLesson] and {...user, xp:170}, arrow lesson => {...} in forEach, optional chaining progress?.[COURSE_ID], nullish xp?? 0 keeping 0, modules import {auth} from './auth', async/await for Firebase, map/filter/reduce. Which modern features?",
+      "options": [
+        "Only events",
+        "All modern: Events click and auth state change with addEventListener and onAuthStateChanged, template literals for URLs and display, destructuring for extracting xp coins completed, spread for immutable updates new array/object, arrow functions for callbacks, optional chaining?. safe access, nullish?? fallback keeping 0, modules import/export, async/await for Firebase loading, map/filter/reduce for array methods, delegation for efficiency - all modern ES6+ features your dashboard uses - production 2026 code!",
+        "Only template literals",
+        "No modern features"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You understand all modern features your dashboard uses - events, template literals, destructuring, spread, arrow,?.,??, modules, async/await, map/filter/reduce, delegation - all ES6+ production code!",
+      "incorrectFeedback": "Your dashboard modern stack: addEventListener click events, onAuthStateChanged auth event, template literals `lesson.html?course=${COURSE_ID}&lesson=${id}`, destructuring {xp, coins}=data, spread [...lessons, newLesson] and {...user, xp:170}, arrow lesson=>{}, optional chaining progress?.[COURSE_ID], nullish xp?? 0, modules import {auth}, async/await getDoc, map/filter/reduce array methods, delegation one listener - all modern ES6+ 2026 production!",
+      "reasoning": "Complete modern JS stack - all ES6+ features combined in your dashboard - events, template literals, destructuring, spread, arrow,?.,??, modules, async/await, array methods, delegation.",
+      "xpReward": 35
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "You completed Lesson 9! You now know everything pro must know: Events click, auth, addEventListener, event object target/currentTarget, preventDefault for forms, bubbling, delegation one listener efficient for many buttons and dynamic cards. Modern JS: Template literals `text ${var}`, destructuring {xp, coins}=data, spread [...arr, new] and {...obj, xp:170} immutable, arrow (p)=>expr short, optional chaining?. safe, nullish?? keeps 0, modules import/export, async/await for Firebase, map/filter/reduce/find/some/every, security textContent vs innerHTML XSS, performance 1 reflow grid method, accessibility article aria-label. Next: Lesson 10 Capstone - Build Complete JavaScript Website combining all 9 lessons into final project like your dashboard but from scratch!"
+    }
+  ]
+}

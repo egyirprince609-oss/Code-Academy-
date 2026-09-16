@@ -1,0 +1,429 @@
+{
+  "course": "javascript",
+  "lessonNumber": 3,
+  "lessonId": "javascript-lesson-3",
+  "title": "Operators and Expressions",
+  "subtitle": "The Math and Logic Behind Your Dashboard Progress, XP and Status",
+  "description": "Master all operators - arithmetic, assignment, comparison, logical, nullish, ternary - and how your dashboard calculates 20% progress, checks locked status, and handles fallbacks with ?? and ||.",
+  "level": "Beginner",
+  "xpReward": 140,
+  "coinsReward": 30,
+  "estimatedMinutes": 60,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: What is an Operator and Expression? Your Dashboard's Math"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Remember variables from Lesson 2? You have xp = 120 box, completed = 2 box. Operator is a symbol that does something to those boxes. Expression is a combination that produces a value."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Example from your dashboard: (completed / TOTAL_LESSONS) * 100 - here / and * are arithmetic operators, completed and TOTAL_LESSONS are variables, whole thing (completed / TOTAL_LESSONS) * 100 is an expression that produces a value like 20."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Another example: lesson.id <= completed - here <= is comparison operator, checks if lesson id is less than or equal to completed, produces true/false boolean. Your dashboard uses this to decide if lesson shows COMPLETED badge."
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "Your dashboard is full of operators! Look at your HTML: Math.round((completed / TOTAL_LESSONS) * 100) uses /, *, Math.round. lesson.id <= completed uses <=. data.xp ?? data.profile?.xp ?? 0 uses ?? nullish coalescing. completed + 1 uses +."
+    },
+    {
+      "id": "p1-5",
+      "type": "sentence",
+      "text": "Without operators, you cannot calculate progress, cannot check if lesson is locked, cannot add XP, cannot handle fallbacks. Operators are the verbs of JavaScript - they do actions on nouns (variables). Today you master all 6 types."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Expressions - Your Dashboard Progress Formula Explained",
+      "code": "// Your dashboard's core formula - break down step by step\nlet completed = 2;\nconst TOTAL_LESSONS = 10;\n\n// Expression 1: completed / TOTAL_LESSONS\nlet division = completed / TOTAL_LESSONS; // 2 / 10 = 0.2\nconsole.log('Division:', division); // 0.2\n\n// Expression 2: (division) * 100\nlet percentRaw = division * 100; // 0.2 * 100 = 20\nconsole.log('Percent raw:', percentRaw); // 20\n\n// Expression 3: Math.round(percentRaw)\nlet percent = Math.round(percentRaw); // 20\nconsole.log('Percent rounded:', percent); // 20\n\n// Combined expression - like your dashboard\nlet finalPercent = Math.round((completed / TOTAL_LESSONS) * 100);\nconsole.log('Final:', finalPercent + '%'); // 20%\n\n// More expressions from your dashboard\nlet isCompleted = 1 <= completed; // 1 <= 2 = true - comparison expression\nlet nextLesson = completed + 1; // 2 + 1 = 3 - arithmetic expression\nlet xpText = `${120} XP`; // Template literal expression\n\nconsole.log('Is lesson 1 completed?', isCompleted); // true\nconsole.log('Next lesson:', nextLesson); // 3\nconsole.log('XP text:', xpText); // 120 XP",
+      "output": "Division: 0.2\nPercent raw: 20\nPercent rounded: 20\nFinal: 20%\nIs lesson 1 completed? true\nNext lesson: 3\nXP text: 120 XP"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: Arithmetic Operators - Your XP and Progress Math"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "Arithmetic operators do math: + addition, - subtraction, * multiplication, / division, % modulo (remainder), ** exponentiation, ++ increment, -- decrement. Your dashboard uses + to add XP, / and * to calculate percent, + to get next lesson id."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Example: xp = 120, you complete lesson, xp = xp + 50 => 170. That's + operator. completed = 2, next lesson = completed + 1 => 3. That's + again. percent = (completed / total) * 100 => (2/10)*100 = 20. That's / and *."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Modulo % is tricky but useful: 10 % 3 = 1 remainder. Use case: Check if lesson id is even or odd: if (id % 2 === 0) even else odd. Or cycle through colors: colors[index % colors.length] - ensures index never goes out of bounds, wraps around."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Increment ++ adds 1: completed++ means completed = completed + 1. Decrement -- subtracts 1. Your dashboard could use completed++ when lesson completed, but uses completed = completed + 1 for clarity."
+    },
+    {
+      "id": "p2-5",
+      "type": "sentence",
+      "text": "Operator precedence: * and / before + and -. So 2 + 3 * 4 = 2 + 12 = 14, not 20. Your dashboard uses parentheses to control order: (completed / TOTAL_LESSONS) * 100 - parentheses first, then * . Always use parentheses to be clear."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: Arithmetic - XP, Coins, Progress Like Your Dashboard",
+      "code": "let xp = 120;\nlet coins = 30;\nlet completed = 2;\nconst TOTAL_LESSONS = 10;\nconst XP_PER_LESSON = 50;\n\n// Addition - XP increase\nlet newXP = xp + XP_PER_LESSON; // 120 + 50 = 170\nconsole.log('New XP:', newXP);\n\n// Subtraction - coins spent?\nlet remainingCoins = coins - 5; // 30 - 5 = 25\nconsole.log('Remaining coins:', remainingCoins);\n\n// Multiplication and Division - progress percent (your dashboard formula)\nlet percent = (completed / TOTAL_LESSONS) * 100; // (2/10)*100 = 20\nconsole.log('Progress:', percent + '%');\n\n// Modulo - remainder, useful for even/odd check\nlet lessonId = 3;\nconsole.log(`${lessonId} % 2 =`, lessonId % 2); // 1 - odd\nconsole.log(`${4} % 2 =`, 4 % 2); // 0 - even\n// Use: if (lessonId % 2 === 0) console.log('Even lesson');\n\n// Increment - increase completed\ncompleted++; // completed = completed + 1, now 3\nconsole.log('After completed++:', completed); // 3\n\n// Exponentiation - power\nlet squared = 3 ** 2; // 3*3 = 9\nconsole.log('3 squared:', squared);\n\n// Precedence - parentheses matter\nlet result1 = 2 + 3 * 4; // 2 + 12 = 14\nlet result2 = (2 + 3) * 4; // 5 * 4 = 20\nconsole.log('2 + 3 * 4 =', result1, 'vs (2+3)*4 =', result2);\n\n// Your dashboard: Math.round((completed / TOTAL_LESSONS) * 100)\n// Parentheses ensure division first, then multiplication, then round",
+      "output": "New XP: 170\nRemaining coins: 25\nProgress: 20%\n3 % 2 = 1\n4 % 2 = 0\nAfter completed++: 3\n3 squared: 9\n2 + 3 * 4 = 14 vs (2+3)*4 = 20"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: completed = 2, TOTAL_LESSONS = 10. You write let percent = completed / TOTAL_LESSONS * 100; What is percent and why parentheses (completed / TOTAL_LESSONS) * 100 vs completed / (TOTAL_LESSONS * 100) give different results? Tricky precedence!",
+      "options": [
+        "Both give 20% - same",
+        "First: 2/10*100 = 0.2*100 = 20% correct. Second: 2/(10*100)=2/1000=0.002=0.2% wrong! Because / and * same precedence left-to-right, so 2/10*100 = (2/10)*100 = 20, but 2/(10*100) forces 10*100 first. Your dashboard uses (completed / TOTAL_LESSONS) * 100 with parentheses to be explicit and safe",
+        "First gives 0.2%, second 20%",
+        "Both give 0.2%"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Precedence left-to-right for / and *. 2/10*100 = (2/10)*100 = 20. But 2/(10*100)=2/1000=0.002. Parentheses in your dashboard (completed / TOTAL_LESSONS) * 100 makes intent clear and safe!",
+      "incorrectFeedback": "/ and * same precedence, evaluated left-to-right. completed / TOTAL_LESSONS * 100 = (completed/TOTAL)*100 = 20%. completed / (TOTAL*100) = completed/1000 = 0.2% - wrong! Parentheses control order, your dashboard uses (completed / TOTAL) * 100 for clarity.",
+      "reasoning": "Operator precedence and parentheses - your dashboard's progress formula relies on correct order.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Assignment Operators - Shortcuts for XP Updates"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Assignment = assigns value: xp = 120. But there are shortcuts: +=, -=, *=, /=, %=. These combine assignment with arithmetic. Your dashboard could use them to make code shorter."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Instead of xp = xp + 50, you can write xp += 50 - same meaning, shorter. Instead of coins = coins + 10, coins += 10. Instead of completed = completed + 1, completed += 1 or completed++."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "Your dashboard HTML uses long form: completed = completed + 1, xp = xp + 50 for clarity for beginners. But pro code uses shortcuts: xp += 50, coins += 10, completed++. Both work, shortcuts are faster to type."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Important: Difference between = and == and ===. = is assignment: xp = 120 assigns. == is loose equality check: 2 == '2' true (converts types). === is strict equality: 2 === '2' false (checks type too). Your dashboard uses === for status checks: lesson.id === completed + 1 - strict check, safer."
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: Assignment Shortcuts - Your Dashboard XP Logic Shorter",
+      "code": "let xp = 120;\nlet coins = 30;\nlet completed = 2;\n\n// Long way (your dashboard uses this for clarity)\n// xp = xp + 50;\n// coins = coins + 10;\n// completed = completed + 1;\n\n// Short way - assignment operators (pro shortcut)\nxp += 50; // Same as xp = xp + 50, now 170\ncoins += 10; // Same as coins = coins + 10, now 40\ncompleted += 1; // Same as completed = completed + 1, now 3\n// Or completed++ for +1\n\nconsole.log(`After shortcuts: ${completed} lessons, ${xp} XP, ${coins} coins`);\n\n// Other shortcuts\nlet percent = 20;\npercent *= 2; // percent = percent * 2, now 40\nconsole.log('Percent doubled:', percent + '%');\n\nlet total = 10;\ntotal -= 2; // total = total - 2, now 8\nconsole.log('Total after -= 2:', total);\n\n// = vs == vs ===\nlet a = 2; // Assignment\nconsole.log('2 == \"2\"?', 2 == \"2\"); // true - loose, converts string to number\nconsole.log('2 === \"2\"?', 2 === \"2\"); // false - strict, checks type too\nconsole.log('2 === 2?', 2 === 2); // true - same value and type\n\n// Your dashboard: lesson.id === completed + 1 uses === strict, safer than ==\nlet lessonId = 3;\nlet completedCheck = 2;\nconsole.log('lessonId === completed+1?', lessonId === completedCheck + 1); // 3 === 3 true",
+      "output": "After shortcuts: 3 lessons, 170 XP, 40 coins\nPercent doubled: 40%\nTotal after -= 2: 8\n2 == \"2\"? true\n2 === \"2\"? false\n2 === 2? true\nlessonId === completed+1? true"
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Comparison Operators - Your Dashboard's Locked/Completed Logic"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "Comparison operators compare two values and return true/false boolean. Your dashboard uses them heavily to decide status: lesson.id <= completed means completed, lesson.id === completed + 1 means current, lesson.id > completed + 1 means locked."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Operators: == loose equality (2 == '2' true, converts types), === strict equality (2 === '2' false, checks type too - safer, your dashboard uses ===), != loose not equal, !== strict not equal, > greater than, < less than, >= greater or equal, <= less or equal."
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Example: completed = 2, lesson 1: 1 <= 2 true => completed, lesson 2: 2 <= 2 true => completed, lesson 3: 3 <= 2 false, check 3 === 2+1 => 3===3 true => current, lesson 4: 4 <=2 false, 4===3 false, so else locked. That's exactly your createLessonCard logic!"
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Why === not ==? Because == does type coercion: '2' == 2 true, but '2' === 2 false. If completed is string '2' from localStorage and lessonId is number 3, '2' + 1 = '21' string concatenation not 3! Then 3 === '21' false. Using Number() and === prevents bugs. Your dashboard uses Number() conversion plus === for safety."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: Comparison - Your Dashboard Status Logic Deep Dive",
+      "code": "let completed = 2;\n\nfunction getStatus(lessonId) {\n  // Your dashboard exact logic from createLessonCard\n  let isCompleted = lessonId <= completed; // <= less or equal\n  let isCurrent = lessonId === completed + 1; // === strict equality\n  let isLocked = lessonId > completed + 1; // > greater than\n  \n  if (isCompleted) return \"completed\";\n  if (isCurrent) return \"current\";\n  return \"locked\";\n}\n\nconsole.log('Lesson 1:', getStatus(1)); // completed - 1 <= 2 true\nconsole.log('Lesson 2:', getStatus(2)); // completed - 2 <= 2 true\nconsole.log('Lesson 3:', getStatus(3)); // current - 3 === 3 true\nconsole.log('Lesson 4:', getStatus(4)); // locked - 4 > 3 true\nconsole.log('Lesson 10:', getStatus(10)); // locked\n\n// == vs === tricky\nconsole.log('2 == \"2\"?', 2 == \"2\"); // true - loose, converts '2' string to 2 number\nconsole.log('2 === \"2\"?', 2 === \"2\"); // false - strict, string vs number different types\nconsole.log('0 == false?', 0 == false); // true - both falsy, loose converts\nconsole.log('0 === false?', 0 === false); // false - number vs boolean different types\n\n// Your dashboard bug prevention:\nlet completedFromStorage = \"2\"; // String from localStorage!\nconsole.log('Buggy: \"2\" + 1 =', completedFromStorage + 1); // \"21\" string concatenation!\nconsole.log('Fixed: Number(\"2\") + 1 =', Number(completedFromStorage) + 1); // 3 number correct\nconsole.log('Status with buggy string:', 3 === \"2\" + 1); // 3 === \"21\" false - wrong!\nconsole.log('Status with fixed number:', 3 === Number(\"2\") + 1); // 3 === 3 true - correct!",
+      "output": "Lesson 1: completed\nLesson 2: completed\nLesson 3: current\nLesson 4: locked\nLesson 10: locked\n2 == \"2\"? true\n2 === \"2\"? false\n0 == false? true\n0 === false? false\nBuggy: \"2\" + 1 = 21\nFixed: Number(\"2\") + 1 = 3\nStatus with buggy string: false\nStatus with fixed number: true"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: completed = 2 (number), lessonId = 3 (number). Check: lessonId === completed + 1? 3 === 3 true => current correct. But completed is '2' string from localStorage, lessonId = 3 number. Check: 3 === '2' + 1? '2' + 1 = '21' string, 3 === '21' false! So lesson 3 shows locked not current! How to fix like your dashboard?",
+      "options": [
+        "Use == instead of === so 3 == '21' true - fixes but unsafe",
+        "Convert completed to number first: Number('2') + 1 = 3, then 3 === 3 true correct. Your dashboard does Number(completed) || 0 and Math.min/Math.max to ensure number type before comparison - prevents string concatenation bug",
+        "Change lessonId to string",
+        "No fix needed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! String + number = concatenation bug '2'+1='21'. Number('2')+1=3 correct. Your dashboard's Number(completed) || 0 and Math.min/Math.max ensures number type - pro safety!",
+      "incorrectFeedback": "'2' + 1 = '21' string concatenation, not 3. 3 === '21' false, so locked incorrectly. Number('2') = 2, 2+1=3, 3===3 true current correct. Your dashboard uses Number() conversion for xp, coins, completed for this exact bug prevention.",
+      "reasoning": "String from storage + number = concatenation bug - critical bug that breaks status logic - your dashboard fixes with Number().",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Logical Operators - &&, ||, ! - Your Dashboard's Auth and Fallbacks"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Logical operators work with booleans: && AND, || OR, ! NOT. Your dashboard uses them everywhere: if (document.referrer && document.referrer.includes(location.origin)) - && means both conditions must be true. if (!user) - ! means NOT, if NOT user then redirect to login."
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "&& AND: true && true = true, true && false = false, false && anything = false. Use case: Check multiple conditions: if (isLoggedIn && completed >= 2) - both must be true to start lesson 3. Your back button: referrer exists AND referrer includes origin - both true to do history.back()."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "|| OR: true || false = true, false || false = false, true || anything = true. Use case: Fallbacks: Number(data.xp || 0) - if data.xp exists use it, else 0. Your dashboard: data.xp ?? data.profile?.xp ?? 0 - tries first, if null/undefined tries second, else 0. || similar but ?? better for 0."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "! NOT: !true = false, !false = true, !null = true, !0 = true, !'hello' = false. Your dashboard: if (!user) redirect - if user is null, !null = true, so redirect. If user exists, !user = false, don't redirect. ! flips boolean."
+    },
+    {
+      "id": "p5-5",
+      "type": "sentence",
+      "text": "Short-circuit: && and || don't evaluate second part if first decides result. true || anything = true without checking second, false && anything = false without checking second. Your dashboard: document.referrer && document.referrer.includes(...) - if referrer is empty string '', '' && ... short-circuits false, doesn't call includes on empty, prevents error. Safe pattern!"
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: Logical Operators - Your Dashboard Auth and Back Button",
+      "code": "// && AND - both must be true (your back button logic)\nlet referrer = \"https://code-academy.com/react\";\nlet origin = \"https://code-academy.com\";\n\nif (referrer && referrer.includes(origin)) {\n  console.log('Both true: referrer exists AND includes origin - do history.back()');\n}\n\n// Short-circuit safety - prevents error\nlet emptyReferrer = \"\";\nif (emptyReferrer && emptyReferrer.includes(origin)) {\n  console.log('This will not log - emptyReferrer is falsy, short-circuits, includes not called');\n} else {\n  console.log('Short-circuit prevented error - empty string falsy, so false && anything = false');\n}\n\n// || OR - fallback (your dashboard xp fallback)\nlet xpFromFirebase = null;\nlet xpFromProfile = 120;\nlet finalXP = xpFromFirebase || xpFromProfile || 0; // null || 120 || 0 = 120\nconsole.log('Final XP with ||:', finalXP); // 120 - first truthy value\n\n// ! NOT - your auth check\nlet user = null;\nif (!user) {\n  console.log('No user (!null = true) - redirect to login.html like your dashboard');\n}\n\nuser = { uid: 'user123' };\nif (!user) {\n  console.log('This will not log');\n} else {\n  console.log('User exists (!object = false) - stay on course page');\n}\n\n// Combined: if (isLoggedIn && completed >= 2 && !isLocked)\nlet isLoggedIn = true;\nlet completed = 2;\nlet isLocked = false;\nif (isLoggedIn && completed >= 2 && !isLocked) {\n  console.log('All conditions true: logged in AND completed >=2 AND NOT locked - can start lesson 3');\n}",
+      "output": "Both true: referrer exists AND includes origin - do history.back()\nShort-circuit prevented error - empty string falsy\nFinal XP with ||: 120\nNo user (!null = true) - redirect to login.html\nUser exists (!object = false) - stay on course page\nAll conditions true: logged in AND completed >=2 AND NOT locked - can start lesson 3"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: Your dashboard back button code: if (document.referrer && document.referrer.includes(location.origin)) { history.back() } else { go to menu.html }. referrer = '' empty string. What happens with && short-circuit and why is && used not just includes?",
+      "options": [
+        "Calls includes on empty string and errors",
+        "Short-circuit: '' is falsy, so '' && anything = false without evaluating second part, so includes not called, prevents error calling includes on empty/null. If you did only referrer.includes without checking referrer exists first, and referrer is null, null.includes would throw TypeError: Cannot read property includes of null",
+        "Both same, && not needed",
+        "|| should be used"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! && short-circuit prevents error. If referrer is null/empty, first part falsy, second part not evaluated, no error. Without && check, null.includes would crash. Your dashboard's && pattern is safe pro pattern!",
+      "incorrectFeedback": "'' && includes short-circuits false, includes not called. null && includes also short-circuits. Without &&, if referrer null, null.includes() throws TypeError. && ensures referrer exists before calling includes - safe!",
+      "reasoning": "Short-circuit with && prevents errors when first value might be null/empty - your dashboard's back button safety pattern.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Nullish Coalescing ?? and Optional Chaining ?. - Your Dashboard's Modern Safety"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "?? is nullish coalescing: returns right side only if left is null or undefined, keeps 0 and '' and false. Your dashboard: data.xp ?? data.profile?.xp ?? 0 - if data.xp is null/undefined, try data.profile?.xp, if that null/undefined, use 0. If data.xp is 0, keeps 0 not fallback - important because 0 XP is valid!"
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "?. is optional chaining: data.profile?.xp means if data.profile exists, get xp, if data.profile is null/undefined, return undefined instead of error. Your dashboard: data.profile?.xp - if profile doesn't exist, don't throw error, return undefined, then ?? tries next fallback. Without ?., data.profile.xp would throw TypeError if profile null."
+    },
+    {
+      "id": "p6-3",
+      "type": "sentence",
+      "text": "Difference || vs ??: || falls back for any falsy (0, '', false, null, undefined), ?? falls back only for null/undefined, keeps 0, '', false. For XP, 0 is valid XP, should keep 0 not fallback to 10, so ?? better. Your dashboard uses ?? for xp and ?. for safe property access."
+    },
+    {
+      "id": "p6-4",
+      "type": "sentence",
+      "text": "Your exact dashboard code: const xp = Number(data.xp ?? data.profile?.xp ?? 0); - tries data.xp, if null/undefined tries data.profile?.xp (safe access), if that null/undefined uses 0, then Number() converts to number. This handles all cases: Firebase has xp directly, or in profile sub-object, or no xp at all."
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: ?? and ?. - Your Dashboard's Exact Safety Code",
+      "code": "// Your dashboard exact pattern\nfunction getXP(data) {\n  return Number(data.xp ?? data.profile?.xp ?? 0);\n}\n\nconsole.log(getXP({ xp: 120 })); // 120 - direct xp\nconsole.log(getXP({ xp: \"120\" })); // 120 - string converted\nconsole.log(getXP({ profile: { xp: 150 } })); // 150 - from profile via ?.\nconsole.log(getXP({})); // 0 - fallback\nconsole.log(getXP({ xp: null })); // 0 - null fallback\nconsole.log(getXP({ xp: 0 })); // 0 - keeps 0, not fallback! ?? keeps 0\n\n// || vs ?? difference - critical!\nlet xp1 = 0;\nconsole.log('0 || 10 =', xp1 || 10); // 10 - 0 falsy, fallback to 10 - WRONG for XP 0 valid!\nconsole.log('0 ?? 10 =', xp1 ?? 10); // 0 - 0 not null/undefined, keep 0 - CORRECT for XP!\n\n// ?. optional chaining prevents error\nlet user1 = { profile: { xp: 120 } };\nconsole.log(user1.profile?.xp); // 120 - profile exists, get xp\n\nlet user2 = { }; // No profile\nconsole.log(user2.profile?.xp); // undefined - no error, safe, returns undefined\n// console.log(user2.profile.xp); // ❌ TypeError: Cannot read property xp of undefined - without ?.\n\nlet user3 = null;\nconsole.log(user3?.profile?.xp); // undefined - safe, no error even though user3 null\n// console.log(user3.profile.xp); // ❌ TypeError - without ?.\n\n// Combined - your dashboard's full safety\nlet data = { profile: null };\nlet finalXP = Number(data.xp ?? data.profile?.xp ?? 0); // 0 - safe, no error\nconsole.log('Safe XP with ?? and ?.:', finalXP);",
+      "output": "120\n120\n150\n0\n0\n0\n0 || 10 = 10\n0 ?? 10 = 0\n120\nundefined\nundefined\nSafe XP with ?? and ?.: 0"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: User has 0 XP (new user). You have let xp = data.xp || 10; and let xp2 = data.xp ?? 10; data.xp = 0. What are xp and xp2? Why your dashboard uses ?? for XP not ||? Very tricky close options!",
+      "options": [
+        "Both 0 - both keep 0 XP",
+        "xp = 10, xp2 = 0 - because || treats 0 as falsy so fallback to 10, losing valid 0 XP, shows 10 XP incorrectly. ?? only falls back for null/undefined, keeps 0 as valid XP. Your dashboard uses ?? to keep 0 XP for new users, not incorrectly show 10 XP",
+        "Both 10 - both fallback",
+        "xp = 0, xp2 = 10"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! 0 XP is valid for new user, should show 0 not 10. || would incorrectly show 10, ?? correctly keeps 0. Your dashboard's ?? is correct for XP, coins, completed where 0 is valid!",
+      "incorrectFeedback": "0 || 10 = 10 because 0 falsy, fallback. 0 ?? 10 = 0 because 0 not null/undefined, keep. For XP, 0 valid, should keep 0 not 10, so ?? correct. Your dashboard: data.xp ?? ... ?? 0 keeps 0 XP correctly.",
+      "reasoning": "|| vs ?? with 0 - critical for XP where 0 is valid value - your dashboard uses ?? correctly to preserve 0.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Ternary Operator - Your Dashboard's Short if/else"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Ternary operator is short if/else: condition ? valueIfTrue : valueIfFalse. Your dashboard could use it for status badge text: status === 'completed' ? 'Completed' : status === 'current' ? 'Current' : 'Locked' - nested ternary for 3 conditions."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "Example: let badge = isCompleted ? 'Completed' : 'Locked' - if isCompleted true, badge = 'Completed', else 'Locked'. Shorter than if/else. Your dashboard uses if/else for statusHTML for clarity, but ternary is shorter for simple cases."
+    },
+    {
+      "id": "p7-3",
+      "type": "sentence",
+      "text": "Precedence: Ternary has lower precedence than || and &&, so use parentheses. Example: let xp = data.xp ?? 0; let text = xp > 0 ? `${xp} XP` : 'No XP' - if xp >0 show XP, else No XP."
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Ternary - Short Status Logic Like Your Dashboard",
+      "code": "let completed = 2;\n\nfunction getStatusTernary(lessonId) {\n  // Ternary version of your if/else status logic\n  return lessonId <= completed ? \"completed\" : \n         lessonId === completed + 1 ? \"current\" : \n         \"locked\";\n}\n\nconsole.log('Lesson 1:', getStatusTernary(1)); // completed\nconsole.log('Lesson 3:', getStatusTernary(3)); // current\nconsole.log('Lesson 5:', getStatusTernary(5)); // locked\n\n// Simple ternary - badge text\nlet isCompleted = true;\nlet badgeText = isCompleted ? \"Completed\" : \"Locked\";\nconsole.log('Badge:', badgeText); // Completed\n\n// Ternary for button text - like your dashboard\nlet status = \"current\";\nlet buttonText = status === \"completed\" ? \"Review\" : \n                 status === \"current\" ? \"Start Lesson\" : \n                 \"Locked\";\nconsole.log('Button:', buttonText); // Start Lesson\n\n// Combined with template literal and ||\nlet xp = 0;\nlet xpDisplay = xp ? `${xp} XP` : \"No XP yet\"; // 0 falsy, so No XP yet - bug for 0 XP!\nconsole.log('XP display with || logic:', xpDisplay); // No XP yet - wrong for 0 XP!\n\n// Fixed with ?? and explicit check\nlet xpDisplayFixed = xp !== null && xp !== undefined ? `${xp} XP` : \"No XP\";\n// Or better: xp ?? 0 with ternary\nlet xpDisplayBetter = (xp ?? 0) === 0 ? \"No XP yet\" : `${xp} XP`;\n// Actually for 0 XP should show 0 XP not No XP, so:\nlet xpDisplayCorrect = `${xp ?? 0} XP`; // Always show XP, even 0 XP\nconsole.log('XP display correct:', xpDisplayCorrect); // 0 XP - correct!",
+      "output": "Lesson 1: completed\nLesson 3: current\nLesson 5: locked\nBadge: Completed\nButton: Start Lesson\nXP display with || logic: No XP yet\nXP display correct: 0 XP"
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical - Build Progress and Status System"
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Real Dashboard Operators - Progress, Status, XP",
+      "code": "// All operators combined - your dashboard logic\nconst TOTAL_LESSONS = 10;\nlet completed = 2;\nlet xp = 120;\nlet coins = 30;\n\n// Arithmetic: progress calculation\nlet percent = Math.round((completed / TOTAL_LESSONS) * 100); // / * Math.round\nlet nextLesson = completed + 1; // + arithmetic\nlet remaining = TOTAL_LESSONS - completed; // - arithmetic\n\nconsole.log(`Progress: ${percent}% - Next: Lesson ${nextLesson} - Remaining: ${remaining}`);\n\n// Comparison: status\nfunction getStatus(id) {\n  if (id <= completed) return \"completed\"; // <= comparison\n  if (id === nextLesson) return \"current\"; // === strict equality\n  return \"locked\"; // > implied locked\n}\n\nconsole.log(`Lesson 1: ${getStatus(1)}, Lesson 3: ${getStatus(3)}, Lesson 5: ${getStatus(5)}`);\n\n// Logical: auth and back button\nlet user = { uid: \"user123\" };\nlet referrer = \"https://code-academy.com/react\";\nlet origin = \"https://code-academy.com\";\n\nif (user && completed >= 0) { // && AND - user exists AND completed valid\n  console.log('User authenticated and progress valid - show course');\n}\n\nif (referrer && referrer.includes(origin)) { // && short-circuit safety\n  console.log('Referrer exists and includes origin - can go back');\n}\n\nif (!user) { // ! NOT\n  console.log('No user - redirect');\n} else {\n  console.log('User exists - stay');\n}\n\n// Nullish and optional chaining - your Firebase safety\nlet data = { xp: null, profile: { coins: 30 } };\nlet safeXP = Number(data.xp ?? data.profile?.xp ?? 0); // ?? and ?. \nlet safeCoins = Number(data.coins ?? data.profile?.coins ?? 0);\nconsole.log(`Safe XP: ${safeXP}, Safe Coins: ${safeCoins}`);\n\n// Assignment shortcuts\nxp += 50; // xp = xp + 50\ncoins += 10;\ncompleted += 1;\nconsole.log(`After completion: ${completed} lessons, ${xp} XP, ${coins} coins`);\n\n// Ternary for badge\nlet status = getStatus(1);\nlet badge = status === \"completed\" ? \"✅ Completed\" : status === \"current\" ? \"▶ Current\" : \"🔒 Locked\";\nconsole.log(`Badge for lesson 1: ${badge}`);",
+      "output": "Progress: 20% - Next: Lesson 3 - Remaining: 8\nLesson 1: completed, Lesson 3: current, Lesson 5: locked\nUser authenticated and progress valid - show course\nReferrer exists and includes origin - can go back\nUser exists - stay\nSafe XP: 0, Safe Coins: 30\nAfter completion: 3 lessons, 170 XP, 40 coins\nBadge for lesson 1: ✅ Completed"
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: You have if (user && user.xp && user.xp >= 100) { show premium }. user = {xp: 0}. What happens? 0 is falsy, so user.xp is falsy, condition false, premium not shown even though user exists with 0 XP. How to fix for XP where 0 valid? Tricky!",
+      "options": [
+        "Keep user.xp check - 0 XP means no premium correct",
+        "Use user && user.xp !== null && user.xp !== undefined && user.xp >= 100 - check null/undefined explicitly, not falsy, so 0 XP still checked for >=100 (0>=100 false, so no premium, but for different reason). Or use user?.xp ?? 0 >=100 with optional chaining and nullish. The bug is using truthy check for XP where 0 valid but falsy",
+        "Use || instead of &&",
+        "No fix needed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! user.xp as condition fails for 0 XP because 0 falsy. Need explicit null/undefined check: user.xp !== null && user.xp !== undefined, or user?.xp ?? 0, then >=100. 0 XP should be checked for >=100, not treated as missing!",
+      "incorrectFeedback": "user.xp where xp=0 is falsy, so user.xp && ... short-circuits false, premium not shown. But reason wrong - should check xp exists (not null/undefined) not truthy. Fix: user?.xp !== null && user?.xp !== undefined && user.xp >=100 or (user?.xp ?? 0) >=100. 0 valid value should be checked.",
+      "reasoning": "Falsy 0 bug with && - user.xp 0 is valid but falsy, breaks condition - need explicit null check not truthy check.",
+      "xpReward": 25
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Operators Dashboard"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all operators - arithmetic, assignment, comparison, logical, nullish, ternary, optional chaining - into one mini dashboard that handles progress, status, XP, auth, fallbacks exactly like your HTML dashboard."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete Operators Dashboard (All Concepts)",
+      "code": "/* =========================================================\n   COMPLETE OPERATORS DASHBOARD - Lesson 3 Capstone\n   Uses: Arithmetic, Assignment, Comparison, Logical, ??, ?., Ternary\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nconst XP_PER_LESSON = 50;\n\n// Simulated Firebase data - could be null, string, number, missing\nlet firebaseData = {\n  xp: \"120\", // String from Firestore!\n  coins: null, // Null - missing\n  progress: { javascript: 2 }, // Nested\n  profile: { coins: 30 } // Fallback\n};\n\nlet localData = {\n  completed: \"2\" // String from localStorage!\n};\n\n// Safe getters with Number(), ??, ?., || - your dashboard pattern\nfunction getSafeXP(data) {\n  return Number(data.xp ?? data.profile?.xp ?? 0); // ?? and ?. and Number()\n}\n\nfunction getSafeCoins(data) {\n  return Number(data.coins ?? data.profile?.coins ?? 0);\n}\n\nfunction getSafeCompleted(firebase, local) {\n  let completed = firebase.progress?.javascript ?? local.completed ?? 0; // Optional chaining and nullish\n  return Math.min(TOTAL_LESSONS, Math.max(0, Number(completed) || 0)); // Math.min, Math.max, Number, ||\n}\n\nlet xp = getSafeXP(firebaseData); // 120 number (string converted)\nlet coins = getSafeCoins(firebaseData); // 30 from profile fallback\nlet completed = getSafeCompleted(firebaseData, localData); // 2 number (string converted)\n\nconsole.log(`Initial: XP=${xp} (${typeof xp}), Coins=${coins}, Completed=${completed} (${typeof completed})`);\n\n// Progress calculation - arithmetic operators\nlet percent = Math.round((completed / TOTAL_LESSONS) * 100); // / * Math.round\nlet nextLesson = completed + 1; // +\nlet remaining = TOTAL_LESSONS - completed; // -\nconsole.log(`Progress: ${completed}/${TOTAL_LESSONS} = ${percent}% - Next: ${nextLesson}, Remaining: ${remaining}`);\n\n// Status with comparison operators\nfunction getStatus(lessonId) {\n  if (lessonId <= completed) return \"completed\"; // <=\n  if (lessonId === nextLesson) return \"current\"; // ===\n  return \"locked\"; // > implied\n}\n\n// Check all lessons status\nfor (let i = 1; i <= 5; i++) {\n  let status = getStatus(i);\n  let badge = status === \"completed\" ? \"✅\" : status === \"current\" ? \"▶\" : \"🔒\"; // Ternary\n  console.log(`Lesson ${i}: ${status} ${badge}`);\n}\n\n// Auth and back button with logical operators\nlet user = { uid: \"user123\", xp: 120 };\nlet referrer = \"https://code-academy.com/menu.html\";\nlet origin = \"https://code-academy.com\";\n\nif (user && user.uid) { // && AND\n  console.log(`✅ Authenticated: ${user.uid}`);\n}\n\nif (!user) { // ! NOT\n  console.log(\"❌ No user - redirect to login\");\n} else {\n  console.log(\"✅ User exists - show course\");\n}\n\nif (referrer && referrer.includes(origin)) { // && short-circuit\n  console.log(\"✅ Referrer valid - can history.back()\");\n}\n\n// Complete lesson with assignment operators\nfunction completeLesson(lessonId) {\n  console.log(`\\n--- Completing Lesson ${lessonId} ---`);\n  let status = getStatus(lessonId);\n  \n  if (status === \"locked\") {\n    console.warn(`🔒 Locked! Need ${nextLesson} first`);\n    return;\n  }\n  \n  if (status === \"completed\") {\n    console.log(`✅ Already completed`);\n    return;\n  }\n  \n  // Assignment shortcuts - +=\n  completed += 1;\n  xp += XP_PER_LESSON;\n  coins += 10;\n  \n  // Recalculate with arithmetic\n  percent = Math.round((completed / TOTAL_LESSONS) * 100);\n  nextLesson = completed + 1;\n  \n  console.log(`🎉 Completed! XP: ${xp}, Coins: ${coins}, Progress: ${percent}%`);\n}\n\ncompleteLesson(3);\ncompleteLesson(5); // Locked\ncompleteLesson(4);\n\nconsole.log(\"\\n=== FINAL ===\");\nconsole.log(`XP: ${xp}, Coins: ${coins}, Completed: ${completed}/${TOTAL_LESSONS} (${percent}%)`);\nconsole.log(`Next lesson: ${nextLesson}`);\n\n// Edge case: 0 XP handling with ?? vs ||\nlet zeroXPData = { xp: 0 };\nlet buggyXP = zeroXPData.xp || 10; // 0 || 10 = 10 - bug! Loses 0 XP\nlet fixedXP = zeroXPData.xp ?? 10; // 0 ?? 10 = 0 - correct! Keeps 0 XP\nconsole.log(`\\n0 XP handling: || gives ${buggyXP} (bug), ?? gives ${fixedXP} (correct)`);\nconsole.log(\"Your dashboard uses ?? for XP to keep 0 XP valid!\");",
+      "output": "Initial: XP=120 (number), Coins=30, Completed=2 (number)\nProgress: 2/10 = 20% - Next: 3, Remaining: 8\nLesson 1: completed ✅\nLesson 2: completed ✅\nLesson 3: current ▶\nLesson 4: locked 🔒\nLesson 5: locked 🔒\n✅ Authenticated: user123\n✅ User exists - show course\n✅ Referrer valid - can history.back()\n--- Completing Lesson 3 ---\n🎉 Completed! XP: 170, Coins: 40, Progress: 30%\n--- Completing Lesson 5 ---\n🔒 Locked! Need 4 first\n--- Completing Lesson 4 ---\n🎉 Completed! XP: 220, Coins: 50, Progress: 40%\n=== FINAL ===\nXP: 220, Coins: 50, Completed: 4/10 (40%)\nNext lesson: 5\n0 XP handling: || gives 10 (bug), ?? gives 0 (correct)\nYour dashboard uses ?? for XP to keep 0 XP valid!"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Tricky Final Questions"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered all operators: Arithmetic + - * / % ** ++ -- for XP and progress math, Assignment = += -= *= /= for shortcuts, Comparison == === != !== > < >= <= for status logic with === strict safer than ==, Logical && || ! for auth and fallbacks with short-circuit safety, Nullish ?? keeps 0 but falls back for null/undefined, Optional chaining ?. prevents errors, Ternary ? : short if/else."
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have let a = 0; let b = ''; let c = null; let d = undefined; Which are falsy and which nullish? And what does if (a || b || c || d || 10) give? Tricky!",
+      "options": [
+        "All falsy, all nullish, gives 10",
+        "a=0 falsy not nullish, b='' falsy not nullish, c=null falsy and nullish, d=undefined falsy and nullish. a||b||c||d||10 = 10 because all falsy, so fallback 10. a??b??c??d??10 = 0 because a=0 not nullish, so keeps 0. Difference: || checks falsy, ?? checks null/undefined only",
+        "All truthy",
+        "Only null and undefined falsy"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! Falsy: 0, '', false, null, undefined, NaN. Nullish: only null, undefined. 0 and '' are falsy but not nullish - important difference! Your dashboard uses ?? to keep 0 and '' valid.",
+      "incorrectFeedback": "Falsy = 0, '', false, null, undefined, NaN are false in if(). Nullish = only null, undefined. So 0 and '' are falsy but NOT nullish. || falls back for falsy, ?? only for nullish. For XP 0 valid, need ?? not ||.",
+      "reasoning": "Falsy vs nullish distinction - 0 and '' are falsy but not nullish - critical for || vs ?? choice.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: completed = 2, you write if (completed = 3) { console.log('Completed 3') } vs if (completed === 3). First uses = assignment, second === comparison. What happens? Common bug!",
+      "options": [
+        "Both check if completed is 3",
+        "First: completed = 3 assigns 3 to completed, expression value is 3 which is truthy, so if (3) true, logs, AND completed now 3 - bug! Assignment in if changes variable accidentally. Second: completed === 3 checks if completed equals 3, 2===3 false, doesn't log, completed stays 2 - correct check. Never use = in if condition, use === for comparison",
+        "First is correct, second wrong",
+        "Both assign"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! = in if is assignment bug, changes variable! === is comparison. Your dashboard uses === for status checks, not = . Common typo bug - if (completed = 3) instead of if (completed === 3) accidentally changes completed to 3!",
+      "incorrectFeedback": "if (completed = 3) assigns 3 to completed, evaluates to 3 truthy, logs, and completed becomes 3 - bug! if (completed === 3) compares, 2===3 false, doesn't log, completed stays 2. = assignment, === comparison - never mix in if!",
+      "reasoning": "= vs === in if condition - assignment bug changes variable - your dashboard uses === correctly for status checks.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard has: let percent = Math.round((completed / TOTAL_LESSONS) * 100); let status = lessonId <= completed ? 'completed' : lessonId === completed+1 ? 'current' : 'locked'; let xp = Number(data.xp ?? data.profile?.xp ?? 0); Which operators used and why each needed? Master question!",
+      "options": [
+        "Only arithmetic",
+        "Arithmetic / * for percent math, Comparison <= === for status logic, Ternary ? : for short if/else status, Nullish ?? for fallback keeping 0, Optional chaining ?. for safe nested access, Number() for type conversion from string to number - all operators combined for robust dashboard that handles strings from storage, null from Firebase, and calculates progress correctly",
+        "Only comparison",
+        "No operators needed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You understand entire operator ecosystem: Arithmetic for math, Comparison for logic, Ternary for short decisions, ?? ?. for safe fallbacks, Number() for conversion - all combined in one dashboard line! You are now operator master!",
+      "incorrectFeedback": "Your dashboard line uses: / * arithmetic for percent, <= === comparison for status, ? : ternary for status text, ?? nullish for fallback keeping 0, ?. optional chaining safe access, Number() conversion string to number - all 6 operator types in 3 lines! That's why operators matter.",
+      "reasoning": "Combining all operators - your dashboard's real code uses all operator types together for robust logic.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, find all operators: /, *, +, <=, ===, >, &&, ||, ??, ?. - list each with line number. 2. Create bug: let completed = '2' string, then check lesson 3 status with === without Number() - see bug, then fix with Number(). 3. Test 0 || 10 vs 0 ?? 10 in console - see difference for XP handling. Next: Lesson 4 - Conditions and Decision Making, where you deep dive into if/else, switch, and your dashboard's status badge logic with locked/current/completed."
+    }
+  ]
+}

@@ -1,0 +1,417 @@
+{
+  "course": "javascript",
+  "lessonNumber": 4,
+  "lessonId": "javascript-lesson-4",
+  "title": "Conditions and Decision Making",
+  "subtitle": "How Your Dashboard Decides COMPLETED, CURRENT, LOCKED and Which Button to Show",
+  "description": "Master if, else if, else, switch, nested conditions, truthy/falsy, and how your dashboard's createLessonCard decides status badge and Start/Review/Locked button.",
+  "level": "Beginner",
+  "xpReward": 150,
+  "coinsReward": 35,
+  "estimatedMinutes": 60,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1: Why Conditions? Your Dashboard Makes Decisions"
+    },
+    {
+      "id": "p1-1",
+      "type": "sentence",
+      "text": "Hey friend! Your dashboard is full of decisions. If lesson id is less than or equal to completed, show COMPLETED badge with green. Else if lesson id equals completed + 1, show CURRENT badge with yellow and Start Lesson button. Else show LOCKED badge with gray and Locked button."
+    },
+    {
+      "id": "p1-2",
+      "type": "sentence",
+      "text": "Without conditions, all lessons would look same - no way to know which is completed, which is current, which is locked. Conditions make your app intelligent - it responds differently based on data. completed = 2, lesson 1 decision = completed, lesson 3 decision = current, lesson 5 decision = locked."
+    },
+    {
+      "id": "p1-3",
+      "type": "sentence",
+      "text": "Real life: If you have 120 XP, you can buy item. If coins less than 10, show warning. If user not logged in, redirect to login.html. If referrer exists and includes origin, do history.back() else go to menu.html. All if conditions - your dashboard HTML has them!"
+    },
+    {
+      "id": "p1-4",
+      "type": "sentence",
+      "text": "JavaScript has 3 ways to make decisions: if/else if/else for range checks and complex logic, switch for many exact values, ternary? : for short one-line decisions. Today you master all and see your dashboard's exact decision code."
+    },
+    {
+      "id": "code-1",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 1: Your Dashboard's Core Decision Logic",
+      "code": "let completed = 2;\n\nfunction getStatus(lessonId) {\n // Your dashboard's exact logic from createLessonCard\n if (lessonId <= completed) {\n return \"completed\"; // If lesson id <= completed, it's done\n } else if (lessonId === completed + 1) {\n return \"current\"; // Else if it's next lesson, it's current\n } else {\n return \"locked\"; // Else it's locked\n }\n}\n\nconsole.log('Lesson 1:', getStatus(1)); // completed - 1 <= 2\nconsole.log('Lesson 2:', getStatus(2)); // completed - 2 <= 2\nconsole.log('Lesson 3:', getStatus(3)); // current - 3 === 3\nconsole.log('Lesson 4:', getStatus(4)); // locked - 4 > 3\nconsole.log('Lesson 10:', getStatus(10)); // locked - 10 > 3\n\n// Another decision - button text\nfunction getButtonText(status) {\n if (status === \"locked\") {\n return \"Locked\";\n } else if (status === \"completed\") {\n return \"Review\";\n } else {\n return \"Start Lesson\";\n }\n}\n\nconsole.log('Button for completed:', getButtonText('completed')); // Review\nconsole.log('Button for current:', getButtonText('current')); // Start Lesson\nconsole.log('Button for locked:', getButtonText('locked')); // Locked",
+      "output": "Lesson 1: completed\nLesson 2: completed\nLesson 3: current\nLesson 4: locked\nLesson 10: locked\nButton for completed: Review\nButton for current: Start Lesson\nButton for locked: Locked"
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2: if, else if, else - The Order Matters!"
+    },
+    {
+      "id": "p2-1",
+      "type": "sentence",
+      "text": "if checks condition, if true runs code inside { }. else if checks another condition only if previous if was false. else runs when all previous if/else if false. Order is critical - check most specific or most important first."
+    },
+    {
+      "id": "p2-2",
+      "type": "sentence",
+      "text": "Your dashboard checks isCompleted first: if (lesson.id <= completed) - because completed is most common after user progresses. Then isCurrent: else if (lesson.id === completed + 1). Then else locked. If you check locked first with if (lesson.id > completed + 1), then lesson 1 with completed 2: 1 > 3 false, so not locked, then check completed - works but less intuitive. Order should be from most likely to least, or from specific to general."
+    },
+    {
+      "id": "p2-3",
+      "type": "sentence",
+      "text": "Common bug: Checking conditions in wrong order causes wrong status. Example: if (lessonId > completed) locked else if (lessonId === completed) completed else current - lesson 3 with completed 2: 3 > 2 true => locked, but should be current! Because > check catches current too. Correct order: <= completed first, then === completed+1, then >."
+    },
+    {
+      "id": "p2-4",
+      "type": "sentence",
+      "text": "Always use === strict equality in conditions, not == loose, to avoid type coercion bugs. Your dashboard uses === for status checks: lesson.id === completed + 1 - strict, safe."
+    },
+    {
+      "id": "code-2",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 2: if/else if/else Order - Correct vs Buggy",
+      "code": "let completed = 2;\n\n// ✅ CORRECT ORDER - like your dashboard\nfunction correctStatus(lessonId) {\n if (lessonId <= completed) {\n return \"completed\"; // Check completed first - most specific\n } else if (lessonId === completed + 1) {\n return \"current\"; // Then current - next lesson\n } else {\n return \"locked\"; // Else locked\n }\n}\n\n// ❌ BUGGY ORDER - wrong check first\nfunction buggyStatus(lessonId) {\n if (lessonId > completed) {\n return \"locked\"; // Bug! lesson 3: 3 > 2 true => locked, but should be current!\n } else if (lessonId === completed) {\n return \"completed\";\n } else {\n return \"current\";\n }\n}\n\nconsole.log('CORRECT:');\nconsole.log('Lesson 2:', correctStatus(2)); // completed correct\nconsole.log('Lesson 3:', correctStatus(3)); // current correct\nconsole.log('Lesson 4:', correctStatus(4)); // locked correct\n\nconsole.log('\\nBUGGY:');\nconsole.log('Lesson 2:', buggyStatus(2)); // completed? 2 > 2 false, 2 === 2 true => completed correct by luck\nconsole.log('Lesson 3:', buggyStatus(3)); // locked? 3 > 2 true => locked WRONG! Should be current\nconsole.log('Lesson 4:', buggyStatus(4)); // locked correct but for wrong reason\n\n// Your dashboard's correct order prevents this bug!\n// Order: completed (<=), current (=== +1), locked (else >)",
+      "output": "CORRECT:\nLesson 2: completed\nLesson 3: current\nLesson 4: locked\n\nBUGGY:\nLesson 2: completed\nLesson 3: locked (WRONG!)\nLesson 4: locked"
+    },
+    {
+      "id": "code-3",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 3: Your Dashboard's Badge and Button Decision",
+      "code": "function createLessonCardLogic(lessonId, completed) {\n let isCompleted = lessonId <= completed;\n let isCurrent = lessonId === completed + 1;\n let isLocked = lessonId > completed + 1;\n \n let status, badgeClass, buttonText, buttonDisabled;\n \n if (isCompleted) {\n status = \"completed\";\n badgeClass = \"status completed\";\n buttonText = \"Review\";\n buttonDisabled = false;\n } else if (isCurrent) {\n status = \"current\";\n badgeClass = \"status current\";\n buttonText = \"Start Lesson\";\n buttonDisabled = false;\n } else {\n status = \"locked\";\n badgeClass = \"status locked\";\n buttonText = \"Locked\";\n buttonDisabled = true;\n }\n \n return { status, badgeClass, buttonText, buttonDisabled };\n}\n\nconsole.log(createLessonCardLogic(1, 2)); // completed, Review, not disabled\nconsole.log(createLessonCardLogic(3, 2)); // current, Start Lesson, not disabled\nconsole.log(createLessonCardLogic(5, 2)); // locked, Locked, disabled\n\n// Another decision - XP level\nfunction getXPLevel(xp) {\n if (xp >= 1000) {\n return \"Master\";\n } else if (xp >= 500) {\n return \"Advanced\";\n } else if (xp >= 100) {\n return \"Intermediate\";\n } else {\n return \"Beginner\";\n }\n}\n\nconsole.log('120 XP level:', getXPLevel(120)); // Intermediate\nconsole.log('50 XP level:', getXPLevel(50)); // Beginner\nconsole.log('600 XP level:', getXPLevel(600)); // Advanced",
+      "output": "Lesson 1: completed, Review, not disabled\nLesson 3: current, Start Lesson, not disabled\nLesson 5: locked, Locked, disabled\n120 XP level: Intermediate\n50 XP level: Beginner\n600 XP level: Advanced"
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3: Nested Conditions and Multiple Checks"
+    },
+    {
+      "id": "p3-1",
+      "type": "sentence",
+      "text": "Sometimes you need to check condition inside another condition - nested if. Example: If user is logged in, then check if completed >= 2 to allow lesson 3, else if not logged in, redirect to login regardless of completed."
+    },
+    {
+      "id": "p3-2",
+      "type": "sentence",
+      "text": "Your dashboard has nested logic: onAuthStateChanged checks if user exists, if not redirect to login.html, if exists then loadUserData, then inside loadUserData checks if snapshot.exists(), if not return default, if exists check progress data."
+    },
+    {
+      "id": "p3-3",
+      "type": "sentence",
+      "text": "You can also combine conditions with && and || inside if: if (isLoggedIn && completed >= 2 &&!isLocked) - all must be true. If (xp >= 100 || coins >= 50) - at least one true. Your back button: if (referrer && referrer.includes(origin)) - referrer exists AND includes origin."
+    },
+    {
+      "id": "p3-4",
+      "type": "sentence",
+      "text": "Avoid too many nested ifs - becomes pyramid of doom. Use early return pattern like your dashboard: if (!user) { redirect; return; } - check negative first and return, so rest of code not nested. Cleaner than if (user) {... all logic inside... } else { redirect }."
+    },
+    {
+      "id": "code-4",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 4: Nested Conditions and Early Return - Your Dashboard Pattern",
+      "code": "// Nested if - check user then progress\nfunction canStartLesson(lessonId, completed, user) {\n if (user) { // If user exists\n if (lessonId <= completed + 1) { // And lesson not locked\n return true; // Can start\n } else {\n return false; // Locked\n }\n } else {\n return false; // No user - cannot start\n }\n}\n\nconsole.log('User exists, lesson 3, completed 2:', canStartLesson(3, 2, {uid: '123'})); // true\nconsole.log('No user, lesson 3:', canStartLesson(3, 2, null)); // false\nconsole.log('User exists, lesson 5, completed 2:', canStartLesson(5, 2, {uid: '123'})); // false locked\n\n// Early return pattern - cleaner, like your dashboard onAuthStateChanged\nfunction canStartLessonEarlyReturn(lessonId, completed, user) {\n if (!user) {\n console.log('No user - redirect to login');\n return false; // Early return - no need for else\n }\n \n if (lessonId > completed + 1) {\n console.log(`Lesson ${lessonId} locked - need ${completed + 1} first`);\n return false; // Early return\n }\n \n // If we reach here, user exists and not locked\n console.log(`Can start lesson ${lessonId}`);\n return true;\n}\n\nconsole.log('\\nEarly return pattern:');\ncanStartLessonEarlyReturn(3, 2, null); // No user\ncanStartLessonEarlyReturn(5, 2, {uid: '123'}); // Locked\ncanStartLessonEarlyReturn(3, 2, {uid: '123'}); // Can start\n\n// Combined conditions with &&\nlet isLoggedIn = true;\nlet xp = 120;\nlet coins = 30;\nif (isLoggedIn && xp >= 100 && coins >= 10) {\n console.log('Can buy premium - logged in AND enough XP AND enough coins');\n}",
+      "output": "User exists, lesson 3, completed 2: true\nNo user, lesson 3: false\nUser exists, lesson 5, completed 2: false\n\nEarly return pattern:\nNo user - redirect to login\nLesson 5 locked - need 3 first\nCan start lesson 3\nCan buy premium - logged in AND enough XP AND enough coins"
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "Q1: completed=2, lessonId=3. You write if (lessonId > completed) { locked } else if (lessonId === completed) { completed } else { current }. What happens for lesson 3 and why order matters? Tricky!",
+      "options": [
+        "Lesson 3 current - correct",
+        "Lesson 3 locked - because 3 > 2 true, so first if true returns locked, never checks current. Should check <= completed first, then === completed+1 for current, then > for locked. Order from most specific to least, or your current check gets swallowed by > check. Your dashboard checks completed first (<=), then current (=== +1), then locked (else >)",
+        "Lesson 3 completed",
+        "Error"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! Wrong order bug - > check catches current too. Correct order: <= completed = completed, === completed+1 = current, else locked. Your dashboard has correct order!",
+      "incorrectFeedback": "If you check > first, lesson 3: 3 > 2 true => locked, but should be current! Because > includes current. Correct order: Check completed (<=) first, then current (=== +1), then locked (else). Your dashboard: isCompleted = id <= completed, isCurrent = id === completed+1, isLocked = id > completed+1 - in that order!",
+      "reasoning": "Condition order matters - checking > before === swallows current case - your dashboard's order prevents this bug.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-4-heading",
+      "type": "heading",
+      "text": "PAGE 4: Truthy and Falsy - Your Dashboard's if (!user) Logic"
+    },
+    {
+      "id": "p4-1",
+      "type": "sentence",
+      "text": "In JavaScript, if condition doesn't need to be true/false boolean, it can be any value. JavaScript converts value to boolean - truthy means converts to true, falsy means converts to false. Your dashboard uses if (!user) - user is null when no user, null is falsy,!null = true, so condition true and redirects to login."
+    },
+    {
+      "id": "p4-2",
+      "type": "sentence",
+      "text": "Falsy values - only 6 values are falsy: false, 0, '', null, undefined, NaN. Everything else is truthy, even '0' string, 'false' string, [] empty array, {} empty object, 1, -1, 'hello' all truthy!"
+    },
+    {
+      "id": "p4-3",
+      "type": "sentence",
+      "text": "Your dashboard: if (document.referrer && document.referrer.includes(origin)) - referrer could be '' empty string, '' is falsy, so '' &&... short-circuits false, includes not called, prevents error. If referrer is 'https://...', truthy, then checks includes."
+    },
+    {
+      "id": "p4-4",
+      "type": "sentence",
+      "text": "Common bug: if (xp) { show XP } where xp = 0 - 0 is falsy, so condition false, XP not shown even though 0 is valid XP! Should check if (xp!== null && xp!== undefined) or xp?? 0, not if (xp) truthy check. Your dashboard uses Number() and?? to handle 0 correctly."
+    },
+    {
+      "id": "code-5",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 5: Truthy/Falsy - Your Dashboard Auth and Referrer Checks",
+      "code": "// Falsy values - 6 only\nconsole.log('Falsy values:');\nconsole.log('false:', Boolean(false)); // false\nconsole.log('0:', Boolean(0)); // false\nconsole.log('\"\":', Boolean('')); // false empty string\nconsole.log('null:', Boolean(null)); // false\nconsole.log('undefined:', Boolean(undefined)); // false\nconsole.log('NaN:', Boolean(NaN)); // false\n\nconsole.log('\\nTruthy values - everything else:');\nconsole.log('\"0\":', Boolean(\"0\")); // true - string \"0\" truthy!\nconsole.log('\"false\":', Boolean(\"false\")); // true - string \"false\" truthy!\nconsole.log('[]:', Boolean([])); // true - empty array truthy!\nconsole.log('{}:', Boolean({})); // true - empty object truthy!\nconsole.log('1:', Boolean(1)); // true\n\n// Your dashboard: if (!user) redirect\nlet user = null;\nif (!user) {\n console.log('No user (!null = true) - redirect to login.html');\n}\n\nuser = { uid: '123' };\nif (!user) {\n console.log('This will not log');\n} else {\n console.log('User exists (!object = false) - show course');\n}\n\n// Your dashboard: referrer && referrer.includes\nlet referrer = \"\";\nif (referrer && referrer.includes(\"code-academy\")) {\n console.log('This will not log - \"\" falsy short-circuits');\n} else {\n console.log('Empty referrer - go to menu.html (short-circuit prevented error)');\n}\n\nreferrer = \"https://code-academy.com/react\";\nif (referrer && referrer.includes(\"code-academy\")) {\n console.log('Referrer exists and includes origin - history.back()');\n}\n\n// Bug: 0 XP falsy\nlet xp = 0;\nif (xp) {\n console.log(`XP: ${xp}`); // Will not log - 0 falsy!\n} else {\n console.log('No XP - but 0 XP is valid! Bug - should show 0 XP');\n}\n\n// Fixed: check null/undefined not truthy\nif (xp!== null && xp!== undefined) {\n console.log(`Fixed - XP: ${xp} XP (0 valid, shown)`);\n}\n// Or using??\nlet displayXP = xp?? 0;\nconsole.log(`Display XP with??: ${displayXP} XP`); // 0 XP correct",
+      "output": "Falsy values:\nfalse: false\n0: false\n\"\": false\nnull: false\nundefined: false\nNaN: false\n\nTruthy values:\n\"0\": true\n\"false\": true\n[]: true\n{}: true\n1: true\nNo user (!null = true) - redirect to login.html\nUser exists (!object = false) - show course\nEmpty referrer - go to menu.html\nReferrer exists and includes origin - history.back()\nNo XP - but 0 XP is valid! Bug\nFixed - XP: 0 XP (0 valid, shown)\nDisplay XP with??: 0 XP"
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "Q2: xp = 0 (new user has 0 XP). You write if (xp) { console.log(`${xp} XP`) } else { console.log('No XP') }. What logs and why? Your dashboard shows 0 XP not No XP - how?",
+      "options": [
+        "Logs 0 XP - because 0 is truthy",
+        "Logs No XP - because 0 is falsy! if (0) false, so else runs, shows No XP even though 0 XP valid. Bug! Fix: if (xp!== null && xp!== undefined) or use xp?? 0, not truthy check. Your dashboard uses Number(xp || 0).toLocaleString() + ' XP' which shows 0 XP because Number(0)=0 and 0.toLocaleString()='0' + ' XP' = '0 XP' - works, but if you did xp || 'No XP' with xp 0, would show No XP bug",
+        "Logs error",
+        "Logs undefined"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! 0 falsy bug - if (0) false. For XP 0 valid, need explicit null check or??, not truthy check. Your dashboard's Number() + toLocaleString handles 0 correctly!",
+      "incorrectFeedback": "0 is falsy! if (0) false, else No XP - bug for 0 XP valid. Fix: Check null/undefined explicitly, or use?? operator, or always show XP with template literal `${xp?? 0} XP` which shows 0 XP not No XP. Your dashboard: `${Number(xp||0).toLocaleString()} XP` shows 0 XP correctly.",
+      "reasoning": "0 falsy bug - common with XP where 0 valid but falsy - need explicit check not truthy check.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-5-heading",
+      "type": "heading",
+      "text": "PAGE 5: Switch Statement - Alternative to Many else if"
+    },
+    {
+      "id": "p5-1",
+      "type": "sentence",
+      "text": "Switch is alternative to many else if when checking same variable against many exact values. Your dashboard could use switch for status: switch(status) { case 'completed': badge green, break; case 'current': badge yellow, break; case 'locked': badge gray, break; }"
+    },
+    {
+      "id": "p5-2",
+      "type": "sentence",
+      "text": "Switch checks === strict equality for each case. break; is important - without break, execution falls through to next case. Your dashboard uses if/else for status because it checks <= and === +1 range, not exact values, so if/else better than switch for range checks."
+    },
+    {
+      "id": "p5-3",
+      "type": "sentence",
+      "text": "When to use switch vs if/else? Use switch when checking same variable against many exact values like status === 'completed', status === 'current', status === 'locked'. Use if/else when checking ranges like id <= completed, id === completed+1, or different variables like user && completed."
+    },
+    {
+      "id": "p5-4",
+      "type": "sentence",
+      "text": "Your dashboard's status logic uses if/else because it checks ranges (<=, ===, >) not just exact status string. But badge color could use switch: switch(status) { case 'completed': color = '#4ade80'; break; case 'current': color = '#f7df1e'; break; default: color = '#94a3b8'; }"
+    },
+    {
+      "id": "code-6",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 6: Switch vs if/else - Badge Color Logic",
+      "code": "// if/else version - your dashboard uses this for status\nfunction getBadgeWithIf(status) {\n if (status === \"completed\") {\n return { color: \"#4ade80\", bg: \"rgba(34,197,94,.1)\", text: \"Completed\" };\n } else if (status === \"current\") {\n return { color: \"#f7df1e\", bg: \"rgba(247,223,30,.1)\", text: \"Current\" };\n } else {\n return { color: \"#94a3b8\", bg: \"rgba(148,163,184,.08)\", text: \"Locked\" };\n }\n}\n\n// Switch version - alternative for exact values\nfunction getBadgeWithSwitch(status) {\n switch (status) {\n case \"completed\":\n return { color: \"#4ade80\", bg: \"rgba(34,197,94,.1)\", text: \"Completed\" };\n case \"current\":\n return { color: \"#f7df1e\", bg: \"rgba(247,223,30,.1)\", text: \"Current\" };\n case \"locked\":\n return { color: \"#94a3b8\", bg: \"rgba(148,163,184,.08)\", text: \"Locked\" };\n default:\n return { color: \"#94a3b8\", bg: \"rgba(148,163,184,.08)\", text: \"Unknown\" };\n }\n}\n\nconsole.log('if/else:', getBadgeWithIf(\"completed\"));\nconsole.log('switch:', getBadgeWithSwitch(\"completed\"));\nconsole.log('switch locked:', getBadgeWithSwitch(\"locked\"));\n\n// Switch with fall-through - without break, falls to next case\nfunction getButtonType(status) {\n switch (status) {\n case \"completed\":\n case \"current\":\n // Both completed and current can start - fall through intentional\n return \"Start/Review\";\n case \"locked\":\n return \"Locked\";\n default:\n return \"Unknown\";\n }\n}\n\nconsole.log('Button for completed:', getButtonType(\"completed\")); // Start/Review - falls through from completed to current case\nconsole.log('Button for locked:', getButtonType(\"locked\")); // Locked\n\n// Your dashboard range check - if/else better than switch for ranges\n// Switch can't do <= or > easily, only === exact values\n// So if (id <= completed) completed - if/else better for range\n// switch(id) { case <= completed: } - invalid syntax, switch only exact values",
+      "output": "if/else: {color: #4ade80, text: Completed}\nswitch: {color: #4ade80, text: Completed}\nswitch locked: {color: #94a3b8, text: Locked}\nButton for completed: Start/Review\nButton for locked: Locked"
+    },
+    {
+      "id": "page-6-heading",
+      "type": "heading",
+      "text": "PAGE 6: Your Dashboard's Full Decision Tree"
+    },
+    {
+      "id": "p6-1",
+      "type": "sentence",
+      "text": "Let's map your dashboard's complete decision tree: First decision - is user logged in? If!user, redirect to login.html. Else load user data. Second - does snapshot exist? If!snapshot.exists(), return default {xp:0, coins:0, completed:0}. Else parse data. Third - for each lesson, isCompleted? <= completed => green COMPLETED badge, Review button. Else isCurrent? === completed+1 => yellow CURRENT badge, Start Lesson button. Else locked => gray LOCKED badge, Locked button disabled."
+    },
+    {
+      "id": "p6-2",
+      "type": "sentence",
+      "text": "Fourth decision - back button: if referrer && referrer.includes(origin) => history.back() else menu.html. Fifth - progress: Math.min, Math.max ensures completed between 0 and 10. Sixth - local fallback: if Firebase fails, catch error and return getLocalProgress(). All decisions using if/else!"
+    },
+    {
+      "id": "code-7",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 7: Your Dashboard's Complete Decision Tree",
+      "code": "// Simulate your dashboard's full decision flow\nfunction simulateDashboard(user, firebaseData, referrer, origin) {\n // Decision 1: Auth - like onAuthStateChanged\n if (!user) {\n console.log('Decision 1: No user - redirect to login.html');\n return;\n }\n console.log('Decision 1: User exists - continue');\n \n // Decision 2: Firebase snapshot exists?\n let data;\n if (!firebaseData) {\n console.log('Decision 2: No snapshot - return default {xp:0, coins:0, completed:0}');\n data = { xp: 0, coins: 0, completed: 0 };\n } else {\n console.log('Decision 2: Snapshot exists - parse data');\n data = {\n xp: Number(firebaseData.xp?? 0),\n coins: Number(firebaseData.coins?? 0),\n completed: Number(firebaseData.completed?? 0)\n };\n }\n \n // Decision 3: For each lesson, status?\n console.log(`\\nDecision 3: Rendering lessons with completed=${data.completed}`);\n for (let lessonId = 1; lessonId <= 5; lessonId++) {\n let status, button;\n if (lessonId <= data.completed) {\n status = \"COMPLETED\";\n button = \"Review\";\n } else if (lessonId === data.completed + 1) {\n status = \"CURRENT\";\n button = \"Start Lesson\";\n } else {\n status = \"LOCKED\";\n button = \"Locked\";\n }\n console.log(`Lesson ${lessonId}: ${status} - [${button}]`);\n }\n \n // Decision 4: Back button\n console.log('\\nDecision 4: Back button');\n if (referrer && referrer.includes(origin)) {\n console.log('Referrer exists and includes origin - history.back()');\n } else {\n console.log('No referrer or not from origin - go to menu.html');\n }\n \n // Decision 5: Progress safety\n let safeCompleted = Math.min(10, Math.max(0, data.completed));\n let percent = Math.round((safeCompleted / 10) * 100);\n console.log(`\\nDecision 5: Progress safety - completed ${data.completed} capped to ${safeCompleted}, percent ${percent}%`);\n}\n\n// Test with user, data, referrer\nsimulateDashboard({uid: '123'}, {xp: 120, completed: 2}, 'https://code-academy.com/react', 'https://code-academy.com');\nconsole.log('\\n--- No user ---');\nsimulateDashboard(null, null, '', 'https://code-academy.com');",
+      "output": "Decision 1: User exists - continue\nDecision 2: Snapshot exists - parse data\n\nDecision 3: Rendering lessons with completed=2\nLesson 1: COMPLETED - [Review]\nLesson 2: COMPLETED - [Review]\nLesson 3: CURRENT - [Start Lesson]\nLesson 4: LOCKED - [Locked]\nLesson 5: LOCKED - [Locked]\n\nDecision 4: Back button\nReferrer exists and includes origin - history.back()\n\nDecision 5: Progress safety - completed 2 capped to 2, percent 20%\n\n--- No user ---\nDecision 1: No user - redirect to login.html"
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "Q3: completed=2, you have lessons 1-5. You want to count how many completed, current, locked. You write if (id <= completed) completedCount++ else if (id === completed+1) currentCount++ else lockedCount++. For 5 lessons, what are counts? Tricky logic!",
+      "options": [
+        "completed 2, current 1, locked 2 - because 1<=2 true completed, 2<=2 true completed (2 completed), 3===3 true current (1 current), 4>3 locked, 5>3 locked (2 locked)",
+        "completed 3, current 1, locked 1",
+        "completed 1, current 1, locked 3",
+        "completed 5, current 0, locked 0"
+      ],
+      "correctIndex": 0,
+      "correctFeedback": "Yes! 1<=2 completed, 2<=2 completed = 2 completed, 3===3 current =1 current, 4>3 locked, 5>3 locked =2 locked. Your dashboard's 0/10 completed shows 2 completed logic!",
+      "incorrectFeedback": "Check each: Lesson1 1<=2 true completed, Lesson2 2<=2 true completed (2 completed), Lesson3 3<=2 false, 3===3 true current (1 current), Lesson4 4<=2 false, 4===3 false else locked, Lesson5 same locked (2 locked). Total 2+1+2=5 lessons.",
+      "reasoning": "Counting with if/else if/else - your dashboard's lesson counts and progress rely on this logic.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-7-heading",
+      "type": "heading",
+      "text": "PAGE 7: Common Bugs - Assignment in Condition and Missing Break"
+    },
+    {
+      "id": "p7-1",
+      "type": "sentence",
+      "text": "Bug 1: Using = assignment instead of === comparison in if condition. if (completed = 3) assigns 3 to completed and condition is 3 truthy, so always true, and completed becomes 3 accidentally! Should be if (completed === 3) comparison. Your dashboard uses === correctly."
+    },
+    {
+      "id": "p7-2",
+      "type": "sentence",
+      "text": "Bug 2: Missing break in switch causes fall-through. switch(status) { case 'completed': badge green; case 'current': badge yellow; } - if status completed, without break, it runs green then falls through to yellow, final yellow not green! Need break after each case unless intentional fall-through for shared logic."
+    },
+    {
+      "id": "p7-3",
+      "type": "sentence",
+      "text": "Bug 3: Wrong order of conditions as we saw - checking > before === swallows current case. Always check most specific first: <= completed, then === completed+1, then else >."
+    },
+    {
+      "id": "p7-4",
+      "type": "sentence",
+      "text": "Bug 4: Using truthy check for 0 XP: if (xp) - 0 falsy, so no XP shown. Should check if (xp!== null && xp!== undefined) or use?? for 0 handling. Your dashboard's Number(xp || 0) handles 0 as 0 XP, not fallback."
+    },
+    {
+      "id": "code-8",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 8: Common Bugs and Fixes",
+      "code": "// Bug 1: = vs === in if\nlet completed = 2;\nif (completed = 3) { // ❌ Bug! Assignment not comparison\n console.log('Buggy: completed = 3 assigns 3, condition 3 truthy, always true, completed now', completed);\n}\nconsole.log('After buggy if, completed is now', completed, '- changed accidentally!');\n\ncompleted = 2; // Reset\nif (completed === 3) { // ✅ Correct - comparison\n console.log('This will not log - 2===3 false');\n} else {\n console.log('Correct: 2===3 false, completed still', completed, '- not changed');\n}\n\n// Bug 2: Missing break in switch\nlet status = \"completed\";\nswitch (status) {\n case \"completed\":\n console.log('Completed badge green');\n // Missing break! Falls through to current\n case \"current\":\n console.log('Current badge yellow - also runs for completed due to missing break! Bug!');\n break;\n case \"locked\":\n console.log('Locked badge gray');\n break;\n}\n\n// Fixed with break\nconsole.log('\\nFixed with break:');\nstatus = \"completed\";\nswitch (status) {\n case \"completed\":\n console.log('Completed badge green');\n break; // ✅ Break prevents fall-through\n case \"current\":\n console.log('Current badge yellow');\n break;\n case \"locked\":\n console.log('Locked badge gray');\n break;\n}\n\n// Bug 3: Wrong order\ncompleted = 2;\nlet lessonId = 3;\nif (lessonId > completed) {\n console.log('Buggy order: 3>2 true => locked WRONG, should be current');\n} else if (lessonId === completed + 1) {\n console.log('This never reached for lesson 3 because > check first');\n}\n\n// Fixed order\nif (lessonId <= completed) {\n console.log('Completed');\n} else if (lessonId === completed + 1) {\n console.log('Fixed order: 3===3 true => current CORRECT');\n} else {\n console.log('Locked');\n}",
+      "output": "Buggy: completed = 3 assigns 3, condition 3 truthy, always true, completed now 3\nAfter buggy if, completed is now 3 - changed accidentally!\nCorrect: 2===3 false, completed still 2 - not changed\nCompleted badge green\nCurrent badge yellow - also runs for completed due to missing break! Bug!\n\nFixed with break:\nCompleted badge green\nBuggy order: 3>2 true => locked WRONG, should be current\nFixed order: 3===3 true => current CORRECT"
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "Q4: You write if (completed = 3) { console.log('Completed 3') } with single = not ===. completed was 2 before. What happens? This is most common typo bug!",
+      "options": [
+        "Checks if completed equals 3, logs if true, completed stays 2",
+        "Assigns 3 to completed, completed becomes 3, condition is 3 truthy so logs 'Completed 3', and completed is now 3 changed accidentally - bug! Should be === comparison not = assignment. Your dashboard uses === for status checks to avoid this",
+        "Error thrown",
+        "Nothing happens"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! = in if is assignment bug, changes variable! === is comparison. Linter warns about this. Your dashboard's === prevents accidental assignment bug!",
+      "incorrectFeedback": "if (completed = 3) assigns 3 to completed, value 3 truthy, so if (3) true logs, and completed now 3 not 2 - bug! if (completed === 3) compares, 2===3 false, doesn't log, completed stays 2. = assignment, === comparison - never use = in if condition!",
+      "reasoning": "= vs === in if - assignment bug changes variable - your dashboard uses === to avoid this.",
+      "xpReward": 20
+    },
+    {
+      "id": "page-8-heading",
+      "type": "heading",
+      "text": "PAGE 8: Practical - Build Status Checker"
+    },
+    {
+      "id": "code-9",
+      "type": "code",
+      "language": "javascript",
+      "title": "Example 9: Status Checker with All Condition Types",
+      "code": "let completed = 2;\nlet user = { xp: 120, isLoggedIn: true };\nlet xp = 120;\n\n// Function with if/else if/else and nested conditions\nfunction canAccessLesson(lessonId) {\n // Early return pattern - like your dashboard\n if (!user ||!user.isLoggedIn) {\n return { canAccess: false, reason: \"Not logged in - redirect to login.html\" };\n }\n \n if (lessonId <= completed) {\n return { canAccess: true, reason: \"Already completed - can review\", status: \"completed\" };\n } else if (lessonId === completed + 1) {\n if (xp >= 0) { // Nested - check XP even for current\n return { canAccess: true, reason: \"Current lesson - can start\", status: \"current\" };\n } else {\n return { canAccess: false, reason: \"Not enough XP\" };\n }\n } else {\n return { canAccess: false, reason: `Locked - complete lesson ${completed + 1} first`, status: \"locked\" };\n }\n}\n\nconsole.log(canAccessLesson(1)); // completed, can access\nconsole.log(canAccessLesson(3)); // current, can access\nconsole.log(canAccessLesson(5)); // locked, cannot\nconsole.log(canAccessLesson(3, { isLoggedIn: false })); // Actually user global, but logic shows\n\n// Switch for XP levels\nfunction getXPLevel(xp) {\n switch (true) { // Switch with true allows range checks\n case xp >= 1000:\n return \"Master\";\n case xp >= 500:\n return \"Advanced\";\n case xp >= 100:\n return \"Intermediate\";\n default:\n return \"Beginner\";\n }\n}\n\nconsole.log('120 XP level:', getXPLevel(120)); // Intermediate\nconsole.log('600 XP level:', getXPLevel(600)); // Advanced\n\n// Ternary for badge\nfunction getBadge(status) {\n return status === \"completed\"? \"✅ Completed\" : \n status === \"current\"? \"▶ Current\" : \n \"🔒 Locked\";\n}\n\nconsole.log('Badge completed:', getBadge(\"completed\"));\nconsole.log('Badge current:', getBadge(\"current\"));\nconsole.log('Badge locked:', getBadge(\"locked\"));",
+      "output": "{canAccess: true, reason: Already completed, status: completed}\n{canAccess: true, reason: Current lesson, status: current}\n{canAccess: false, reason: Locked - complete lesson 3 first, status: locked}\n120 XP level: Intermediate\n600 XP level: Advanced\nBadge completed: ✅ Completed\nBadge current: ▶ Current\nBadge locked: 🔒 Locked"
+    },
+    {
+      "id": "page-9-heading",
+      "type": "heading",
+      "text": "PAGE 9: FINAL PRACTICAL - Complete Decision System"
+    },
+    {
+      "id": "p9-1",
+      "type": "sentence",
+      "text": "Now combine all condition concepts - if/else if/else order, nested, truthy/falsy, switch, ternary, early return, logical operators - into complete decision system exactly like your dashboard's createLessonCard and auth flow."
+    },
+    {
+      "id": "practice-code-main",
+      "type": "code",
+      "language": "javascript",
+      "title": "FINAL PRACTICAL TASK - Complete Decision System (All Concepts)",
+      "code": "/* =========================================================\n COMPLETE DECISION SYSTEM - Lesson 4 Capstone\n Uses: if/else, switch, ternary, truthy/falsy, &&, ||, early return\n========================================================= */\n\nconst TOTAL_LESSONS = 10;\nlet completed = 2;\nlet xp = 120;\nlet coins = 30;\nlet user = { uid: \"user123\", isLoggedIn: true };\nlet referrer = \"https://code-academy.com/menu.html\";\nlet origin = \"https://code-academy.com\";\n\n// Decision 1: Auth with early return - like onAuthStateChanged\nfunction checkAuth() {\n if (!user) { // Falsy check - null, undefined, false\n console.log(\"❌ Decision 1: No user - redirect to login.html\");\n return false;\n }\n if (!user.isLoggedIn) {\n console.log(\"❌ Decision 1: User not logged in\");\n return false;\n }\n console.log(\"✅ Decision 1: User authenticated\");\n return true;\n}\n\n// Decision 2: Status with correct order - like createLessonCard\nfunction getStatus(lessonId) {\n if (lessonId <= completed) { // Check completed first\n return \"completed\";\n } else if (lessonId === completed + 1) { // Then current\n return \"current\";\n } else { // Else locked\n return \"locked\";\n }\n}\n\n// Decision 3: Badge with switch\nfunction getBadge(status) {\n switch (status) {\n case \"completed\":\n return { text: \"Completed\", color: \"#4ade80\", icon: \"✅\" };\n case \"current\":\n return { text: \"Current\", color: \"#f7df1e\", icon: \"▶\" };\n case \"locked\":\n return { text: \"Locked\", color: \"#94a3b8\", icon: \"🔒\" };\n default:\n return { text: \"Unknown\", color: \"#94a3b8\", icon: \"❓\" };\n }\n}\n\n// Decision 4: Button with if/else\nfunction getButton(status) {\n if (status === \"locked\") {\n return { text: \"Locked\", disabled: true, action: null };\n } else if (status === \"completed\") {\n return { text: \"Review\", disabled: false, action: \"review\" };\n } else {\n return { text: \"Start Lesson\", disabled: false, action: \"start\" };\n }\n}\n\n// Decision 5: XP level with if/else if ladder\nfunction getXPLevel(xp) {\n if (xp >= 1000) {\n return \"Master\";\n } else if (xp >= 500) {\n return \"Advanced\";\n } else if (xp >= 100) {\n return \"Intermediate\";\n } else if (xp >= 0) {\n return \"Beginner\";\n } else {\n return \"Invalid XP\";\n }\n}\n\n// Decision 6: Back button with && short-circuit\nfunction handleBack() {\n if (referrer && referrer.includes(origin)) {\n console.log(`Decision 6: Referrer ${referrer} includes ${origin} - history.back()`);\n return \"back\";\n } else {\n console.log(\"Decision 6: No valid referrer - go to menu.html\");\n return \"menu\";\n }\n}\n\n// Decision 7: Can start with nested and &&\nfunction canStart(lessonId) {\n if (!user ||!user.isLoggedIn) {\n return false;\n }\n if (lessonId > completed + 1) {\n return false;\n }\n // Using && for multiple checks\n if (user.isLoggedIn && xp >= 0 && coins >= 0) {\n return true;\n }\n return false;\n}\n\n// Run full simulation\nconsole.log(\"=== CODE ACADEMY DECISION SYSTEM ===\");\ncheckAuth();\nconsole.log(`\\nCompleted: ${completed}, XP: ${xp}, Level: ${getXPLevel(xp)}`);\n\nfor (let i = 1; i <= 5; i++) {\n let status = getStatus(i);\n let badge = getBadge(status);\n let button = getButton(status);\n let accessible = canStart(i)? \"✅\" : \"❌\";\n \n // Ternary for display\n let display = status === \"completed\"? `${badge.icon} ${i}: ${badge.text} - ${button.text}` :\n status === \"current\"? `${badge.icon} ${i}: ${badge.text} - ${button.text} ${accessible}` :\n `${badge.icon} ${i}: ${badge.text} - ${button.text} ${accessible}`;\n \n console.log(display);\n}\n\nconsole.log(\"\\n--- Back Button ---\");\nhandleBack();\n\nconsole.log(\"\\n--- Testing Edge Cases ---\");\nconsole.log(\"Lesson 3 with completed 2:\", getStatus(3), canStart(3)? \"can start\" : \"cannot\");\nconsole.log(\"Lesson 5 with completed 2:\", getStatus(5), canStart(5)? \"can start\" : \"cannot\");\nconsole.log(\"XP 0 level:\", getXPLevel(0)); // Beginner - 0 valid\nconsole.log(\"XP 120 level:\", getXPLevel(120)); // Intermediate\n\n// Truthy/falsy test for XP 0\nlet zeroXP = 0;\nif (zeroXP) {\n console.log(\"Bug: if (0) false - 0 XP not shown\");\n} else {\n console.log(\"Bug: 0 XP falsy - would show No XP, but 0 XP valid! Use explicit check\");\n}\nif (zeroXP!== null && zeroXP!== undefined) {\n console.log(`Fixed: 0 XP is valid - show ${zeroXP} XP`);\n}",
+      "output": "=== CODE ACADEMY DECISION SYSTEM ===\n✅ Decision 1: User authenticated\n\nCompleted: 2, XP: 120, Level: Intermediate\n✅ 1: Completed - Review\n✅ 2: Completed - Review\n▶ 3: Current - Start Lesson ✅\n🔒 4: Locked - Locked ❌\n🔒 5: Locked - Locked ❌\n\n--- Back Button ---\nDecision 6: Referrer https://code-academy.com/menu.html includes https://code-academy.com - history.back()\n\n--- Testing Edge Cases ---\nLesson 3 with completed 2: current can start\nLesson 5 with completed 2: locked cannot\nXP 0 level: Beginner\nXP 120 level: Intermediate\nBug: 0 XP falsy - would show No XP, but 0 XP valid! Use explicit check\nFixed: 0 XP is valid - show 0 XP"
+    },
+    {
+      "id": "page-10-heading",
+      "type": "heading",
+      "text": "PAGE 10: Summary & Tricky Final Questions"
+    },
+    {
+      "id": "final-1",
+      "type": "sentence",
+      "text": "You mastered conditions: if/else if/else for range checks like <= completed, === completed+1, else locked. Order matters - check completed first, then current, then locked, otherwise > swallows current bug. Nested if for auth then progress, early return pattern cleaner than nested pyramid."
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "Q5: completed=2, lessonId=3. Correct order: if (id <= completed) completed else if (id === completed+1) current else locked => current correct. Buggy order: if (id > completed) locked else if (id === completed) completed else current => 3>2 true locked WRONG! Why order matters?",
+      "options": [
+        "Order doesn't matter",
+        "Because > check includes current case - 3>2 true, so locked, never reaches current check. Correct order checks <= completed first (most specific for completed), then === +1 for current, then else > for locked. Your dashboard checks isCompleted <=, isCurrent === +1, isLocked > - in that order to prevent swallowing bug",
+        "Because === is wrong",
+        "Because completed is wrong"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Exactly! > swallows current - 3>2 true includes current. Correct order: <=, ===+1, else >. Your dashboard has correct order!",
+      "incorrectFeedback": "If you check > first, lesson 3 with completed 2: 3>2 true => locked, but should be current! Because > includes current. Correct: Check <= completed first, then === completed+1 current, else locked. Your dashboard: isCompleted = id <= completed, isCurrent = id === completed+1, isLocked = id > completed+1 - correct order!",
+      "reasoning": "Condition order - > before === swallows current - your dashboard's order prevents this.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-6",
+      "type": "quiz",
+      "question": "Q6: You have switch(status) { case 'completed': badge green; case 'current': badge yellow; break; case 'locked': badge gray; break; } status='completed'. What badge shows and why missing break bug?",
+      "options": [
+        "Green - correct",
+        "Yellow - because missing break after completed case causes fall-through to current case, so green then yellow, final yellow not green! Bug - need break after each case unless intentional fall-through. Your dashboard uses if/else not switch for status to avoid break bug, but if using switch need break",
+        "Gray",
+        "Error"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Yes! Missing break fall-through bug - completed case runs, no break, falls to current case, overwrites green with yellow! Need break after each case.",
+      "incorrectFeedback": "Switch without break falls through: case completed: green, no break, continues to current: yellow, so final yellow not green! Bug. Need break; after each case to stop. Your dashboard uses if/else to avoid this, but switch needs break.",
+      "reasoning": "Missing break in switch causes fall-through - common bug - need break after each case.",
+      "xpReward": 20
+    },
+    {
+      "id": "quiz-7",
+      "type": "quiz",
+      "question": "Q7: xp=0, you have if (xp) { show XP } else { show No XP }. What shows? And if (xp!== null && xp!== undefined) { show XP }? Tricky falsy 0!",
+      "options": [
+        "Both show 0 XP - 0 truthy",
+        "First shows No XP because 0 falsy, if (0) false, else No XP - bug for 0 XP valid! Second shows 0 XP because 0!== null and 0!== undefined true, so shows XP - correct for 0 valid. Your dashboard needs to show 0 XP for new users, not No XP, so explicit null/undefined check not truthy check",
+        "Both show No XP",
+        "First shows 0 XP, second No XP"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "Perfect! 0 falsy bug - if (0) false. Need explicit null/undefined check for 0 valid. Your dashboard's Number() and?? handles 0 correctly!",
+      "incorrectFeedback": "0 is falsy! if (0) false, else No XP - bug, 0 XP valid should show 0 XP not No XP. Fix: if (xp!== null && xp!== undefined) true for 0, shows 0 XP. Or xp?? 0 keeps 0. Your dashboard: Number(xp||0) with xp 0 gives 0, toLocaleString 0 XP correct, but xp || 'No XP' with xp 0 would give No XP bug.",
+      "reasoning": "0 falsy bug - 0 valid XP but falsy - need explicit null check not truthy check.",
+      "xpReward": 25
+    },
+    {
+      "id": "quiz-8",
+      "type": "quiz",
+      "question": "Q8: FINAL - Your dashboard has: if (!user) redirect to login, else if (snapshot doesn't exist) return default, else if (lesson.id <= completed) completed badge, else if (id === completed+1) current, else locked, and if (referrer && referrer.includes(origin)) back else menu. Which condition types used and why?",
+      "options": [
+        "Only if",
+        "All: if (!user) falsy check for null, if (!snapshot.exists()) method check, if (id <= completed) comparison range, else if (id === completed+1) strict equality, else locked fallback, if (referrer && includes) logical AND with short-circuit safety - combined decisions make dashboard intelligent and safe, handling auth, data existence, status, navigation",
+        "Only switch",
+        "No conditions needed"
+      ],
+      "correctIndex": 1,
+      "correctFeedback": "PERFECT! You understand full decision tree: falsy check for auth, method check for snapshot, comparison <= and === for status, && short-circuit for referrer safety, else fallback for locked. All conditions combined make your dashboard work!",
+      "incorrectFeedback": "Your dashboard decisions:!user falsy for auth,!snapshot.exists() for data existence, <= and === comparison for status, && short-circuit for referrer includes safety, else fallback for locked and menu. All condition types together!",
+      "reasoning": "Complete decision tree - your dashboard's full logic uses all condition types together - auth, data, status, navigation.",
+      "xpReward": 30
+    },
+    {
+      "id": "final-2",
+      "type": "sentence",
+      "text": "Homework: 1. Open your dashboard HTML, find all if/else conditions - list each decision and its purpose. 2. Create bug: Change order to if (id > completed) locked first, test lesson 3 with completed 2 - see bug locked not current, then fix order. 3. Test if (0) vs if (0!== null) - see falsy 0 bug and fix. Next: Lesson 5 - Loops and Repetition, where you master for, while, forEach and how your dashboard renders 10 lesson cards from array with lessons.forEach."
+    }
+  ]
+}
