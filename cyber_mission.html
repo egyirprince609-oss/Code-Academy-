@@ -1,0 +1,950 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050816">
+<meta name="description" content="Cyber Mission — coding missions by Code Academy.">
+<title>Cyber Mission | Code Academy</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+:root{
+ --bg:#050816;--panel:#0d1428;--panel2:#111d36;--text:#f1f5ff;
+ --muted:#9aa9c4;--cyan:#38bdf8;--violet:#a78bfa;--green:#34d399;
+ --red:#fb7185;--gold:#fbbf24;--line:rgba(148,163,184,.16);
+ --safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;min-height:100dvh}
+button{font:inherit;cursor:pointer}
+button:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.app{min-height:100dvh;overflow:hidden;position:relative;
+ background:radial-gradient(ellipse at 15% 0%,#17285b 0,transparent 36%),
+ radial-gradient(ellipse at 100% 40%,#29144a 0,transparent 34%),var(--bg)}
+.app:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;
+ background-image:linear-gradient(rgba(148,163,184,.18) 1px,transparent 1px),
+ linear-gradient(90deg,rgba(148,163,184,.18) 1px,transparent 1px);
+ background-size:38px 38px;mask-image:linear-gradient(to bottom,#000,transparent 80%)}
+header{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;
+ gap:10px;padding:12px clamp(12px,3vw,28px);border-bottom:1px solid var(--line);
+ background:rgba(5,8,22,.78);backdrop-filter:blur(18px)}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:43px;height:43px;border-radius:13px;object-fit:cover;background:#fff;
+ border:1px solid rgba(255,255,255,.25);flex-shrink:0}
+.brand-title{font-size:14px;font-weight:900;letter-spacing:-.4px}
+.brand-sub{font-size:9px;color:var(--muted);margin-top:3px}
+.header-actions{display:flex;align-items:center;gap:7px}
+.icon-btn{height:39px;min-width:39px;padding:0 10px;border-radius:12px;color:var(--text);
+ border:1px solid var(--line);background:#10182c}
+.icon-btn:active,.primary:active,.option:active{transform:scale(.98)}
+.stats{display:flex;gap:7px;flex-wrap:wrap;padding:12px clamp(12px,3vw,28px);position:relative;z-index:1}
+.stat{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:12px;
+ background:rgba(13,20,40,.85);border:1px solid var(--line);font-size:12px;font-weight:800}
+.stat i{color:var(--gold)}
+.stat .heart{color:var(--red)}.stat .xp{color:var(--cyan)}.stat .coin{color:var(--gold)}
+main{position:relative;z-index:1;width:min(1100px,100%);margin:auto;padding:0 14px 36px}
+.hero{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;
+ border:1px solid rgba(125,150,255,.24);
+ background:linear-gradient(120deg,rgba(15,28,61,.97),rgba(22,15,52,.92));
+ box-shadow:0 25px 80px #0005;margin:5px 0 18px}
+.hero-copy{position:relative;z-index:2;padding:25px 22px 18px;max-width:590px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;color:#a5e8ff;
+ font-size:10px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;
+ border:1px solid #38bdf844;background:#38bdf812;border-radius:99px;padding:7px 10px}
+.eyebrow i{color:var(--green)}
+h1{font-size:clamp(30px,7vw,56px);line-height:.99;letter-spacing:-2px;font-weight:900;margin:18px 0 12px}
+h1 span{background:linear-gradient(90deg,#67e8f9,#a78bfa 75%);color:transparent;background-clip:text}
+.hero p{font-size:13px;line-height:1.75;color:#c4cee5;max-width:420px}
+.hero-art{position:relative;min-height:180px;margin:0 8px 10px;display:flex;align-items:center;justify-content:center}
+.hero-art svg{width:min(100%,520px);height:auto;max-height:280px;overflow:visible;filter:drop-shadow(0 18px 35px #02061799)}
+.orbit{transform-origin:240px 120px;animation:orbit 20s linear infinite}
+.float{animation:float 4s ease-in-out infinite}
+.float2{animation:float 5s ease-in-out infinite reverse}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+@keyframes orbit{to{transform:rotate(360deg)}}
+@keyframes float{50%{transform:translateY(-9px)}}
+@keyframes pulse{50%{opacity:.45}}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:10px;margin:22px 2px 12px}
+.section-head h2{font-size:18px;letter-spacing:-.5px}
+.section-head p{font-size:11px;color:var(--muted);margin-top:5px}
+.small-tag{font-size:10px;color:#c4b5fd;background:#8b5cf620;border:1px solid #8b5cf644;
+ border-radius:9px;padding:7px 9px;font-weight:800;white-space:nowrap}
+.mission-grid{display:grid;grid-template-columns:1fr;gap:11px}
+.mission-card{position:relative;overflow:hidden;text-align:left;width:100%;color:var(--text);
+ border:1px solid var(--line);border-radius:18px;padding:15px;background:linear-gradient(135deg,#111d36,#0b1123);
+ transition:transform .2s,border-color .2s,background .2s}
+.mission-card.unlocked{border-color:#38bdf84a}
+.mission-card.active{border-color:#38bdf8;box-shadow:0 0 0 1px #38bdf81c,0 12px 36px #0284c722}
+.mission-card:hover{transform:translateY(-2px)}
+.mission-top{display:flex;align-items:center;gap:12px}
+.mission-icon{width:53px;height:53px;border-radius:16px;display:grid;place-items:center;
+ font-size:21px;flex-shrink:0;border:1px solid #ffffff18;background:linear-gradient(135deg,#164e63,#312e81)}
+.mission-card:nth-child(2) .mission-icon{background:linear-gradient(135deg,#7c2d12,#4c1d95)}
+.mission-card:nth-child(3) .mission-icon{background:linear-gradient(135deg,#064e3b,#1e3a8a)}
+.mission-card:nth-child(4) .mission-icon{background:linear-gradient(135deg,#581c87,#1e40af)}
+.mission-card:nth-child(5) .mission-icon{background:linear-gradient(135deg,#713f12,#9f1239)}
+.mission-name{font-size:14px;font-weight:900}
+.mission-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-top:5px}
+.mission-status{margin-left:auto;font-size:17px;color:var(--muted);align-self:flex-start}
+.mission-meta{display:flex;justify-content:space-between;gap:8px;margin-top:14px;font-size:10px;color:#c4cee5}
+.progress-track{height:5px;border-radius:99px;background:#26324b;overflow:hidden;margin-top:9px}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--violet));
+ border-radius:99px;transition:width .35s}
+.play-area{margin-top:20px;border:1px solid var(--line);border-radius:22px;
+ background:rgba(10,16,33,.93);overflow:hidden;box-shadow:0 20px 55px #0003}
+.play-head{padding:17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.play-head h2{font-size:16px;font-weight:900}
+.play-head p{font-size:10px;color:var(--muted);margin-top:5px}
+.round-label{padding:7px 9px;border-radius:9px;background:#38bdf814;border:1px solid #38bdf833;
+ color:#7dd3fc;font-size:10px;font-weight:900;white-space:nowrap}
+.objective{margin:15px 15px 0;padding:13px;border-radius:14px;background:#111d36;border:1px solid var(--line)}
+.objective-head{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;color:#c4b5fd}
+.objective p{font-size:12px;line-height:1.7;margin-top:7px;color:#dbe5f9}
+.question{padding:18px 15px 15px}
+.q-label{color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:1.3px;text-transform:uppercase}
+.question h3{font-size:clamp(17px,4vw,22px);line-height:1.45;margin:10px 0 15px;letter-spacing:-.4px}
+.code-box{background:#060b18;border:1px solid #283650;border-radius:13px;padding:14px;
+ font:12px/1.8 "JetBrains Mono",monospace;white-space:pre-wrap;overflow-wrap:anywhere;
+ color:#a5f3fc;margin:0 0 16px;overflow-x:auto}
+.code-box:empty{display:none}
+.options{display:grid;gap:9px}
+.option{width:100%;display:flex;align-items:center;gap:11px;text-align:left;padding:13px;
+ color:var(--text);background:#111a2d;border:1px solid #26324b;border-radius:13px;
+ font-size:12px;line-height:1.5;transition:.18s}
+.option-letter{width:28px;height:28px;flex-shrink:0;display:grid;place-items:center;border-radius:8px;
+ background:#202d47;color:#cbd5e1;font-weight:900;font-size:11px}
+.option.selected{border-color:var(--cyan);background:#0c2940}
+.option.correct{border-color:var(--green);background:#06392e}
+.option.wrong{border-color:var(--red);background:#3b1525}
+.option:disabled{opacity:1}
+.feedback{display:none;padding:13px;border-radius:13px;margin-top:13px;font-size:12px;line-height:1.65}
+.feedback.show{display:block}
+.feedback.good{background:#052e27;border:1px solid #34d39955;color:#a7f3d0}
+.feedback.bad{background:#351523;border:1px solid #fb718555;color:#fecdd3}
+.feedback.neutral{background:#18213a;border:1px solid var(--line);color:#dbeafe}
+.play-controls{display:flex;gap:9px;padding:0 15px 17px}
+.primary,.secondary{border:0;border-radius:12px;padding:13px 15px;font-size:12px;font-weight:900}
+.primary{flex:1;background:linear-gradient(100deg,#38bdf8,#818cf8);color:#061020;
+ box-shadow:0 8px 22px #38bdf822}
+.secondary{background:#182238;color:var(--text);border:1px solid var(--line)}
+.primary i,.secondary i{margin-right:6px}
+.bottom-note{font-size:10px;color:#8190aa;line-height:1.7;text-align:center;padding:17px 12px}
+.bottom-note strong{color:#dbeafe}
+.toast{position:fixed;z-index:20;bottom:calc(20px + var(--safe-bottom));left:50%;
+ transform:translate(-50%,20px);opacity:0;pointer-events:none;width:max-content;max-width:90%;
+ padding:12px 15px;background:#e2e8f0;color:#071020;border-radius:12px;font-size:12px;
+ font-weight:800;box-shadow:0 12px 35px #0007;transition:.25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.overlay{position:fixed;z-index:30;inset:0;display:none;place-items:center;padding:18px;
+ background:#020617c9;backdrop-filter:blur(9px)}
+.overlay.show{display:grid}
+.dialog{width:min(430px,100%);padding:23px;border:1px solid #64748b55;border-radius:22px;
+ background:linear-gradient(145deg,#111d36,#080d1d);text-align:center;box-shadow:0 25px 80px #0009}
+.dialog-icon{width:70px;height:70px;border-radius:22px;display:grid;place-items:center;margin:0 auto 15px;
+ font-size:28px;color:#a5f3fc;background:linear-gradient(135deg,#164e63,#312e81);border:1px solid #67e8f955}
+.dialog h2{font-size:22px;font-weight:900}
+.dialog p{font-size:12px;color:#b6c3dc;line-height:1.8;margin:10px 0 18px}
+.dialog .primary{width:100%}
+.loader{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:#050816;
+ transition:opacity .3s}
+.loader.hidden{opacity:0;pointer-events:none}
+.loader-inner{text-align:center;padding:25px}
+.loader-mark{width:72px;height:72px;object-fit:cover;border-radius:20px;background:white;
+ box-shadow:0 0 45px #38bdf833;animation:float 2.2s ease-in-out infinite}
+.loader-inner p{color:#9aa9c4;font-size:12px;margin-top:18px}
+.spinner{width:23px;height:23px;border:2px solid #334155;border-top-color:var(--cyan);
+ border-radius:50%;animation:spin .8s linear infinite;margin:14px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(min-width:650px){
+ .hero{display:grid;grid-template-columns:1.05fr .95fr;align-items:center;min-height:310px}
+ .hero-copy{padding:35px 10px 35px 32px}
+ .hero-art{margin:0;padding:10px}
+ .mission-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .mission-card:last-child{grid-column:1/-1}
+ .question{padding:22px}
+ .objective{margin:18px 22px 0}
+ .play-controls{padding:0 22px 22px}
+ .play-head{padding:20px 22px}
+}
+@media(min-width:950px){.mission-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .mission-card:last-child{grid-column:auto}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
+</head>
+
+<body>
+<div class="app">
+<header>
+ <div class="brand">
+  <img class="logo" src="logo.png" alt="Code Academy logo" onerror="this.style.display='none'">
+  <div><div class="brand-title">CODE ACADEMY</div>
+   <div class="brand-sub">WE LEARN · WE CODE · WE SUCCEED</div></div>
+ </div>
+ <div class="header-actions">
+  <button class="icon-btn" id="voiceBtn" aria-label="Toggle voice" title="Toggle voice"><i class="fa-solid fa-volume-high"></i></button>
+  <button class="icon-btn" id="historyBtn" aria-label="Game history" title="Game history"><i class="fa-solid fa-clock-rotate-left"></i></button>
+  <button class="icon-btn" id="exitBtn" aria-label="Return to dashboard" title="Dashboard"><i class="fa-solid fa-house"></i></button>
+ </div>
+</header>
+
+<div class="stats">
+ <div class="stat"><i class="fa-solid fa-bolt xp"></i><span id="xpStat">0 XP</span></div>
+ <div class="stat"><i class="fa-solid fa-coins coin"></i><span id="coinStat">0 Coins</span></div>
+ <div class="stat"><i class="fa-solid fa-heart heart"></i><span id="heartStat">5 Hearts</span></div>
+</div>
+
+<main>
+<section class="hero">
+ <div class="hero-copy">
+  <div class="eyebrow"><i class="fa-solid fa-circle-check"></i> SYSTEM ONLINE · TRAINING SIMULATION</div>
+  <h1>CYBER<br><span>MISSION</span></h1>
+  <p>Enter the coding operations zone. Solve objectives, crack programming challenges, restore system integrity, and prove your skills one mission at a time.</p>
+ </div>
+ <div class="hero-art" aria-label="Futuristic cyber mission illustration">
+  <svg viewBox="0 0 480 270" role="img" aria-labelledby="artTitle">
+   <title id="artTitle">A futuristic holographic cyber mission console</title>
+   <defs>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1">
+     <stop offset="0" stop-color="#67e8f9"/><stop offset=".5" stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+     <stop stop-color="#172c52" stop-opacity=".98"/><stop offset="1" stop-color="#0a1028" stop-opacity=".95"/>
+    </linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+   </defs>
+   <ellipse cx="240" cy="225" rx="170" ry="20" fill="#38bdf8" opacity=".1"/>
+   <g class="orbit" fill="none" stroke="#67e8f9" stroke-opacity=".3">
+    <ellipse cx="240" cy="125" rx="160" ry="54" transform="rotate(-22 240 125)" stroke-dasharray="4 8"/>
+    <ellipse cx="240" cy="125" rx="132" ry="76" transform="rotate(27 240 125)" stroke-dasharray="3 10"/>
+   </g>
+   <g class="float">
+    <path d="M240 31 L310 70 L310 151 L240 191 L170 151 L170 70 Z" fill="#0b1531" stroke="#647cf7" stroke-width="1.5"/>
+    <path d="M240 45 L297 77 L297 144 L240 176 L183 144 L183 77 Z" fill="url(#glass)" stroke="#38bdf8" stroke-opacity=".6"/>
+    <path d="M240 58 L284 83 L284 136 L240 161 L196 136 L196 83 Z" fill="#0a1630" stroke="url(#core)" stroke-width="2"/>
+    <g filter="url(#glow)" stroke="url(#core)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+     <path d="M225 92 L207 110 L225 128"/><path d="M255 92 L273 110 L255 128"/><path d="M248 86 L232 134"/>
+    </g>
+   </g>
+   <g class="float2">
+    <rect x="20" y="74" width="108" height="78" rx="12" fill="url(#glass)" stroke="#38bdf8" stroke-opacity=".55"/>
+    <circle cx="37" cy="91" r="3" fill="#34d399"/><circle cx="47" cy="91" r="3" fill="#fbbf24"/><circle cx="57" cy="91" r="3" fill="#fb7185"/>
+    <path d="M35 110 L44 119 L35 128 M52 128 L68 128 M79 110 L88 119 L79 128" stroke="#67e8f9" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="352" y="88" width="105" height="82" rx="12" fill="url(#glass)" stroke="#a78bfa" stroke-opacity=".65"/>
+    <path d="M368 110 L377 119 L368 128 M385 128 L401 128" stroke="#a78bfa" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="368" y="141" width="70" height="4" rx="2" fill="#334155"/>
+    <rect x="368" y="141" width="48" height="4" rx="2" fill="#38bdf8"/>
+    <rect x="368" y="151" width="70" height="4" rx="2" fill="#334155"/>
+    <rect x="368" y="151" width="59" height="4" rx="2" fill="#a78bfa"/>
+   </g>
+   <g class="pulse">
+    <circle cx="128" cy="49" r="4" fill="#67e8f9"/><circle cx="333" cy="53" r="5" fill="#c084fc"/>
+    <circle cx="329" cy="204" r="4" fill="#34d399"/><circle cx="145" cy="190" r="3" fill="#fbbf24"/>
+   </g>
+   <path d="M115 211 H365" stroke="#38bdf8" stroke-opacity=".3"/>
+   <path d="M150 211 H330" stroke="url(#core)" stroke-width="3" stroke-linecap="round"/>
+   <circle cx="240" cy="211" r="6" fill="#67e8f9" filter="url(#glow)"/>
+  </svg>
+ </div>
+</section>
+
+<section>
+ <div class="section-head">
+  <div><h2>Mission Operations</h2><p>Complete each operation to unlock the next.</p></div>
+  <span class="small-tag" id="missionCount">0 / 5 COMPLETE</span>
+ </div>
+ <div class="mission-grid" id="missionGrid"></div>
+</section>
+
+<section class="play-area" id="playArea">
+ <div class="play-head">
+  <div><h2 id="missionTitle">Connecting to mission control…</h2><p id="missionSubtitle">Preparing your training session</p></div>
+  <span class="round-label" id="roundLabel">INITIALIZING</span>
+ </div>
+ <div class="objective">
+  <div class="objective-head"><i class="fa-solid fa-crosshairs"></i> MISSION OBJECTIVE</div>
+  <p id="objectiveText">Loading your mission objective…</p>
+ </div>
+ <div class="question">
+  <div class="q-label" id="questionLabel">CHALLENGE 01</div>
+  <h3 id="questionText">Please wait while the mission engine loads.</h3>
+  <pre class="code-box" id="codeBox"></pre>
+  <div class="options" id="options"></div>
+  <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+ </div>
+ <div class="play-controls">
+  <button class="secondary" id="speakBtn"><i class="fa-solid fa-volume-high"></i> Read aloud</button>
+  <button class="primary" id="submitBtn" disabled><i class="fa-solid fa-check"></i> Submit answer</button>
+ </div>
+</section>
+<div class="bottom-note">Powered by <strong>Code Academy</strong><br>We Learn We Code We Succeed · Practice responsibly. Build brilliantly.</div>
+</main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="overlay" id="dialogOverlay" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+ <div class="dialog">
+  <div class="dialog-icon" id="dialogIcon"><i class="fa-solid fa-shield-halved"></i></div>
+  <h2 id="dialogTitle">Mission update</h2>
+  <p id="dialogText"></p>
+  <button class="primary" id="dialogButton">Continue</button>
+ </div>
+</div>
+
+<div class="loader" id="loader">
+ <div class="loader-inner">
+  <img src="logo.png" alt="Code Academy" class="loader-mark">
+  <div class="spinner"></div>
+  <p id="loaderText">Authenticating your player account…</p>
+ </div>
+</div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import {
+ doc, getDoc, runTransaction, collection, query, orderBy, limit,
+ getDocs, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* -------------------------------------------------------
+   CYBER MISSION ENGINE
+   Existing Firebase module: ./authentication.js
+   Wallet: users/{uid} -> xp, coins, hearts
+   Progress: users/{uid}/gameProgress/cyberMission
+   History: users/{uid}/gameHistory/{eventId}
+
+   Rewards follow the lesson convention:
+   Correct answer: +5 XP, +2.5 coins
+   Wrong answer: -1 heart
+   A correct answer can only award rewards once per mission.
+-------------------------------------------------------- */
+
+const $ = id => document.getElementById(id);
+const GAME_ID = "cyberMission";
+const DASHBOARD_DEFAULT = "menu.html";
+const HEART_MAX = 5;
+
+const missions = [
+ {
+  id:"m1",name:"Firewall Breach",icon:"fa-shield-halved",
+  description:"Break through the first firewall using variables and basic syntax.",
+  skill:"Syntax & variables",objective:"Identify the correct JavaScript declaration and pass the access checkpoint.",
+  questions:[
+   {id:"q1",type:"challenge",question:"Which keyword declares a variable that can be reassigned in JavaScript?",
+    code:"// Select the correct declaration",
+    options:["const","let","fixed","define"],answer:1,
+    explanation:"let declares a block-scoped variable whose value can be reassigned."},
+   {id:"q2",type:"challenge",question:"What does this JavaScript expression evaluate to?",
+    code:"console.log(4 + 3);",
+    options:["43","7","4 + 3","undefined"],answer:1,
+    explanation:"The + operator adds these two numbers, so the result is 7."},
+   {id:"q3",type:"final",question:"FINAL CHECKPOINT: Which HTML element creates a hyperlink?",
+    code:"Choose the element used to link to another page.",
+    options:["<link>","<href>","<a>","<url>"],answer:2,
+    explanation:"The anchor element <a> creates a hyperlink. Its href attribute contains the destination."}
+  ]
+ },
+ {
+  id:"m2",name:"Logic Lab",icon:"fa-brain",
+  description:"Decode conditions and make the system choose the right path.",
+  skill:"Conditions & logic",objective:"Use Boolean comparisons and conditional statements to make correct decisions.",
+  questions:[
+   {id:"q1",type:"challenge",question:"What is the result of this comparison?",
+    code:"5 > 2",
+    options:["false","true","5","undefined"],answer:1,
+    explanation:"Five is greater than two, so the comparison evaluates to true."},
+   {id:"q2",type:"challenge",question:"Which keyword runs a block when an if condition is false?",
+    code:"if (online) {\n  // connected\n} ___ {\n  // not connected\n}",
+    options:["otherwise","else","then","repeat"],answer:1,
+    explanation:"else provides the alternative branch when the if condition is false."},
+   {id:"q3",type:"final",question:"FINAL CHECKPOINT: What will this code print?",
+    code:"let score = 40;\nif (score >= 50) {\n  console.log('Pass');\n} else {\n  console.log('Retry');\n}",
+    options:["Pass","Retry","40","Nothing"],answer:1,
+    explanation:"40 is less than 50, so the else branch prints Retry."}
+  ]
+ },
+ {
+  id:"m3",name:"Loop Reactor",icon:"fa-arrows-rotate",
+  description:"Stabilize a repeating process without creating an endless loop.",
+  skill:"Loops & iteration",objective:"Recognize loop behavior, iteration counts, and safe stopping conditions.",
+  questions:[
+   {id:"q1",type:"challenge",question:"Which loop is commonly used when you know how many times to repeat?",
+    code:"// Choose a common counted loop",
+    options:["for","if","switch","try"],answer:0,
+    explanation:"A for loop is commonly used for counted repetition."},
+   {id:"q2",type:"challenge",question:"How many times does this loop print 'Hi'?",
+    code:"for (let i = 0; i < 3; i++) {\n  console.log('Hi');\n}",
+    options:["2","3","4","It never stops"],answer:1,
+    explanation:"The values 0, 1, and 2 meet the condition, so the loop runs three times."},
+   {id:"q3",type:"final",question:"FINAL CHECKPOINT: Which condition stops this loop after i reaches 5?",
+    code:"let i = 0;\nwhile (i < ___) {\n  i++;\n}",
+    options:["0","5","10","-1"],answer:1,
+    explanation:"The condition i < 5 becomes false when i reaches 5, ending the loop."}
+  ]
+ },
+ {
+  id:"m4",name:"Algorithm Vault",icon:"fa-diagram-project",
+  description:"Choose efficient steps to sort out a data-processing problem.",
+  skill:"Algorithms & problem-solving",objective:"Select logical procedures and understand the behavior of functions and arrays.",
+  questions:[
+   {id:"q1",type:"challenge",question:"What is an algorithm?",
+    code:"Choose the best definition.",
+    options:["A computer brand","A step-by-step procedure to solve a problem","Only a programming language","A type of screen"],answer:1,
+    explanation:"An algorithm is a defined sequence of steps for solving a problem or completing a task."},
+   {id:"q2",type:"challenge",question:"What is the first index of a JavaScript array?",
+    code:"const colors = ['red', 'blue', 'green'];",
+    options:["1","-1","0","3"],answer:2,
+    explanation:"JavaScript arrays are zero-indexed, so the first item is at index 0."},
+   {id:"q3",type:"final",question:"FINAL CHECKPOINT: What value does this function return?",
+    code:"function double(n) {\n  return n * 2;\n}\ndouble(6);",
+    options:["6","8","12","36"],answer:2,
+    explanation:"The function multiplies 6 by 2 and returns 12."}
+  ]
+ },
+ {
+  id:"m5",name:"Core Override",icon:"fa-bolt",
+  description:"Combine your skills and complete the final system-integrity challenge.",
+  skill:"Applied coding",objective:"Combine syntax, conditions, loops, and debugging to complete the final operation.",
+  questions:[
+   {id:"q1",type:"challenge",question:"Which HTML attribute specifies an image's source file?",
+    code:"<img ___=\"logo.png\" alt=\"Logo\">",
+    options:["href","src","link","file"],answer:1,
+    explanation:"The src attribute specifies the image resource to display."},
+   {id:"q2",type:"challenge",question:"What does this expression return?",
+    code:"[2, 4, 6].length",
+    options:["2","3","4","6"],answer:1,
+    explanation:"The array contains three elements, so its length is 3."},
+   {id:"q3",type:"final",question:"FINAL CHECKPOINT: What is the final value of total?",
+    code:"let total = 0;\nfor (let i = 1; i <= 3; i++) {\n  total += i;\n}\nconsole.log(total);",
+    options:["3","5","6","9"],answer:2,
+    explanation:"The loop adds 1, then 2, then 3. The final total is 6."}
+  ]
+ }
+];
+
+let currentUser = null;
+let userData = {};
+let gameData = {completedMissions:[],solved:{},attempts:{},activeMission:0};
+let selectedAnswer = null;
+let currentQuestion = null;
+let voiceOn = true;
+let busy = false;
+let gameReady = false;
+let toastTimer = null;
+let returnUrl = DASHBOARD_DEFAULT;
+
+const safeReturn = value => {
+ if(!value) return DASHBOARD_DEFAULT;
+ try {
+  const v = decodeURIComponent(value);
+  if(v.startsWith("/") && !v.startsWith("//")) return v;
+  if(/^[a-zA-Z0-9_-]+\.html(?:\?.*)?$/.test(v)) return v;
+ } catch {}
+ return DASHBOARD_DEFAULT;
+};
+
+const params = new URLSearchParams(location.search);
+returnUrl = safeReturn(params.get("from"));
+
+function toast(message){
+ const box=$("toast");
+ box.textContent=message;
+ box.classList.add("show");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>box.classList.remove("show"),2600);
+}
+
+function setLoader(show,message){
+ $("loaderText").textContent=message || "Loading…";
+ $("loader").classList.toggle("hidden",!show);
+}
+
+function speak(text){
+ if(!voiceOn || !("speechSynthesis" in window)) return;
+ try{
+  window.speechSynthesis.cancel();
+  const utterance=new SpeechSynthesisUtterance(String(text));
+  utterance.lang="en-US";
+  utterance.rate=.94;
+  utterance.pitch=1;
+  window.speechSynthesis.speak(utterance);
+ }catch(error){ console.warn("Speech synthesis unavailable",error); }
+}
+
+function showDialog({title,text,icon="fa-shield-halved",button="Continue",action=null}){
+ $("dialogTitle").textContent=title;
+ $("dialogText").textContent=text;
+ $("dialogIcon").innerHTML=`<i class="fa-solid ${icon}"></i>`;
+ $("dialogButton").textContent=button;
+ $("dialogOverlay").classList.add("show");
+ $("dialogButton").onclick=()=>{
+  $("dialogOverlay").classList.remove("show");
+  if(action) action();
+ };
+ speak(`${title}. ${text}`);
+}
+
+function hideDialog(){ $("dialogOverlay").classList.remove("show"); }
+
+function currentMissionIndex(){
+ const done=new Set(gameData.completedMissions || []);
+ let first=missions.findIndex(m=>!done.has(m.id));
+ return first===-1 ? missions.length-1 : first;
+}
+
+function missionSolvedCount(mission){
+ return mission.questions.filter(q=>gameData.solved?.[`${mission.id}_${q.id}`]).length;
+}
+
+function missionComplete(mission){
+ return missionSolvedCount(mission)===mission.questions.length;
+}
+
+function renderStats(){
+ const xp=Number(userData.xp)||0;
+ const coins=Number(userData.coins)||0;
+ const hearts=Math.max(0,Number(userData.hearts ?? HEART_MAX)||0);
+ $("xpStat").textContent=`${xp} XP`;
+ $("coinStat").textContent=`${coins} Coins`;
+ $("heartStat").textContent=`${hearts} Hearts`;
+ $("heartStat").parentElement.title=`${hearts} hearts remaining`;
+}
+
+function renderMissions(){
+ const grid=$("missionGrid");
+ const completed=new Set(gameData.completedMissions || []);
+ const active=currentMissionIndex();
+
+ grid.innerHTML="";
+ missions.forEach((m,index)=>{
+  const done=completed.has(m.id);
+  const unlocked=index<=active || done;
+  const solved=missionSolvedCount(m);
+  const percent=Math.round(solved/m.questions.length*100);
+  const card=document.createElement("button");
+  card.type="button";
+  card.className=`mission-card ${unlocked?"unlocked":""} ${index===active&&!done?"active":""}`;
+  card.disabled=!unlocked || busy;
+  card.innerHTML=`
+   <div class="mission-top">
+    <div class="mission-icon"><i class="fa-solid ${m.icon}"></i></div>
+    <div>
+     <div class="mission-name">${String(index+1).padStart(2,"0")} · ${m.name}</div>
+     <div class="mission-desc">${m.description}</div>
+    </div>
+    <div class="mission-status"><i class="fa-solid ${done?"fa-circle-check":unlocked?"fa-circle-play":"fa-lock"}"></i></div>
+   </div>
+   <div class="mission-meta"><span>${m.skill}</span><span>${solved}/${m.questions.length} objectives</span></div>
+   <div class="progress-track"><div class="progress-fill" style="width:${percent}%"></div></div>`;
+  card.addEventListener("click",()=>{
+   if(unlocked){ renderQuestion(index); $("playArea").scrollIntoView({behavior:"smooth",block:"start"}); }
+  });
+  grid.appendChild(card);
+ });
+ $("missionCount").textContent=`${completed.size} / ${missions.length} COMPLETE`;
+}
+
+function nextUnsolvedQuestion(mission){
+ return mission.questions.find(q=>!gameData.solved?.[`${mission.id}_${q.id}`]) || null;
+}
+
+function renderQuestion(preferredIndex=null){
+ if(!gameReady) return;
+ const done=new Set(gameData.completedMissions || []);
+ let index=preferredIndex===null?currentMissionIndex():preferredIndex;
+
+ if(index<0 || index>=missions.length) index=currentMissionIndex();
+ if(index>currentMissionIndex() && !done.has(missions[index].id)) index=currentMissionIndex();
+
+ const mission=missions[index];
+ const q=nextUnsolvedQuestion(mission);
+ selectedAnswer=null;
+ currentQuestion=q ? {...q,missionId:mission.id,missionIndex:index} : null;
+
+ $("missionTitle").textContent=mission.name;
+ $("missionSubtitle").textContent=`Operation ${index+1} of ${missions.length} · ${mission.skill}`;
+ $("objectiveText").textContent=mission.objective;
+
+ if(!q){
+  $("roundLabel").textContent="COMPLETE";
+  $("questionLabel").textContent="OBJECTIVES COMPLETE";
+  $("questionText").textContent="Mission cleared. All objectives have been completed.";
+  $("codeBox").textContent="";
+  $("options").innerHTML="";
+  $("feedback").className="feedback show good";
+  $("feedback").textContent="Your progress is saved to your account. Continue to the next unlocked operation.";
+  $("submitBtn").disabled=false;
+  $("submitBtn").innerHTML='<i class="fa-solid fa-arrow-right"></i> Continue mission';
+  $("submitBtn").onclick=()=>{
+   const next=currentMissionIndex();
+   if(next===index && !done.has(mission.id)){
+    finishMission(mission);
+   }else if(next<missions.length){
+    renderQuestion(next);
+   }else{
+    showDialog({title:"Cyber Mission complete!",text:"You have cleared every operation. Your earned rewards are recorded in your Code Academy account.",icon:"fa-trophy",button:"Return to dashboard",action:goDashboard});
+   }
+  };
+  return;
+ }
+
+ $("roundLabel").textContent=`MISSION ${index+1}/${missions.length}`;
+ $("questionLabel").textContent=q.type==="final"?"FINAL CHALLENGE":"CHALLENGE";
+ $("questionText").textContent=q.question;
+ $("codeBox").textContent=q.code||"";
+ $("feedback").className="feedback";
+ $("feedback").textContent="";
+ $("submitBtn").disabled=true;
+ $("submitBtn").innerHTML='<i class="fa-solid fa-check"></i> Submit answer';
+ $("submitBtn").onclick=submitAnswer;
+
+ const options=$("options");
+ options.innerHTML="";
+ q.options.forEach((option,i)=>{
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="option";
+  button.innerHTML=`<span class="option-letter">${String.fromCharCode(65+i)}</span><span></span>`;
+  button.querySelector("span:last-child").textContent=option;
+  button.addEventListener("click",()=>{
+   if(busy || !currentQuestion) return;
+   selectedAnswer=i;
+   options.querySelectorAll(".option").forEach(el=>el.classList.remove("selected"));
+   button.classList.add("selected");
+   $("submitBtn").disabled=false;
+  });
+  options.appendChild(button);
+ });
+ renderMissions();
+}
+
+async function loadPlayer(){
+ const ref=doc(db,"users",currentUser.uid);
+ const snap=await getDoc(ref);
+ if(!snap.exists()){
+  throw new Error("Your Code Academy user profile was not found. Please sign in through the main website first.");
+ }
+ userData=snap.data()||{};
+ const progressRef=doc(db,"users",currentUser.uid,"gameProgress",GAME_ID);
+ const progressSnap=await getDoc(progressRef);
+ if(progressSnap.exists()){
+  const saved=progressSnap.data()||{};
+  gameData={
+   completedMissions:Array.isArray(saved.completedMissions)?saved.completedMissions:[],
+   solved:saved.solved && typeof saved.solved==="object"?saved.solved:{},
+   attempts:saved.attempts && typeof saved.attempts==="object"?saved.attempts:{},
+   activeMission:Number.isInteger(saved.activeMission)?saved.activeMission:0
+  };
+ }else{
+  gameData={completedMissions:[],solved:{},attempts:{},activeMission:0};
+ }
+ renderStats();
+ gameReady=true;
+ renderMissions();
+ renderQuestion();
+}
+
+function setBusy(value){
+ busy=value;
+ $("submitBtn").disabled=value || selectedAnswer===null;
+ $("speakBtn").disabled=value;
+ $("historyBtn").disabled=value;
+ renderMissions();
+}
+
+function setFeedback(kind,message){
+ const el=$("feedback");
+ el.className=`feedback show ${kind}`;
+ el.textContent=message;
+}
+
+function eventId(){
+ return `evt_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
+}
+
+async function submitAnswer(){
+ if(busy || !currentQuestion || selectedAnswer===null) return;
+
+ const q=currentQuestion;
+ const mission=missions[q.missionIndex];
+ const chosen=selectedAnswer;
+ const correct=chosen===q.answer;
+ const solvedKey=`${mission.id}_${q.id}`;
+ const attemptId=eventId();
+ const progressRef=doc(db,"users",currentUser.uid,"gameProgress",GAME_ID);
+ const userRef=doc(db,"users",currentUser.uid);
+ const historyRef=doc(db,"users",currentUser.uid,"gameHistory",attemptId);
+ const xpEarn=correct?5:0;
+ const coinEarn=correct?2.5:0;
+
+ setBusy(true);
+ $("submitBtn").innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Saving result…';
+
+ try{
+  const result=await runTransaction(db,async tx=>{
+   const [userSnap,progressSnap]=await Promise.all([tx.get(userRef),tx.get(progressRef)]);
+   if(!userSnap.exists()) throw new Error("Your player account could not be found.");
+
+   const wallet=userSnap.data()||{};
+   const saved=progressSnap.exists()?progressSnap.data():{};
+   const solved={...(saved.solved||{})};
+   const completed=Array.isArray(saved.completedMissions)?[...saved.completedMissions]:[];
+   const attempts={...(saved.attempts||{})};
+
+   if(solved[solvedKey]){
+    return {alreadySolved:true,xp:Number(wallet.xp)||0,coins:Number(wallet.coins)||0,
+     hearts:Number(wallet.hearts??HEART_MAX),solved,completed,attempts};
+   }
+
+   const hearts=Math.max(0,Number(wallet.hearts??HEART_MAX));
+   if(!correct && hearts<=0) throw new Error("NO_HEARTS");
+
+   const xp=Number(wallet.xp)||0;
+   const coins=Number(wallet.coins)||0;
+   const nextHearts=correct?hearts:Math.max(0,hearts-1);
+   const nextXP=xp+xpEarn;
+   const nextCoins=coins+coinEarn;
+
+   attempts[solvedKey]=(Number(attempts[solvedKey])||0)+1;
+   if(correct) solved[solvedKey]=true;
+
+   const allSolved=mission.questions.every(item=>solved[`${mission.id}_${item.id}`]);
+   if(allSolved && !completed.includes(mission.id)) completed.push(mission.id);
+
+   tx.update(userRef,{
+    xp:nextXP,
+    coins:nextCoins,
+    hearts:nextHearts
+   });
+
+   tx.set(progressRef,{
+    gameId:GAME_ID,
+    gameTitle:"Cyber Mission",
+    completedMissions:completed,
+    solved,
+    attempts,
+    activeMission:Math.min(completed.length,missions.length-1),
+    updatedAt:serverTimestamp()
+   },{merge:true});
+
+   tx.set(historyRef,{
+    gameId:GAME_ID,
+    gameTitle:"Cyber Mission",
+    missionId:mission.id,
+    missionName:mission.name,
+    questionId:q.id,
+    question:q.question,
+    selectedAnswer:q.options[chosen],
+    correctAnswer:q.options[q.answer],
+    isCorrect:correct,
+    xpEarned:xpEarn,
+    coinsEarned:coinEarn,
+    heartsChange:correct?0:-1,
+    createdAt:serverTimestamp()
+   });
+
+   return {alreadySolved:false,xp:nextXP,coins:nextCoins,hearts:nextHearts,solved,completed,attempts,missionComplete:allSolved};
+  });
+
+  userData.xp=result.xp;
+  userData.coins=result.coins;
+  userData.hearts=result.hearts;
+  gameData.solved=result.solved||gameData.solved;
+  gameData.completedMissions=result.completed||gameData.completedMissions;
+  gameData.attempts=result.attempts||gameData.attempts;
+
+  renderStats();
+  renderMissions();
+
+  const buttons=[...$("options").querySelectorAll(".option")];
+  buttons.forEach((button,i)=>{
+   button.disabled=true;
+   if(i===q.answer) button.classList.add("correct");
+   else if(i===chosen && !correct) button.classList.add("wrong");
+  });
+
+  if(result.alreadySolved){
+   setFeedback("neutral","This objective was already completed and rewarded. No duplicate reward was added.");
+   $("submitBtn").innerHTML='<i class="fa-solid fa-arrow-right"></i> Continue';
+  }else if(correct){
+   setFeedback("good",`Correct! +${xpEarn} XP and +${coinEarn} coins. ${q.explanation}`);
+   $("submitBtn").innerHTML='<i class="fa-solid fa-arrow-right"></i> Next objective';
+   speak(`Correct. You earned ${xpEarn} experience points and ${coinEarn} coins. ${q.explanation}`);
+  }else{
+   setFeedback("bad",`Not quite. One heart was used. ${q.explanation}`);
+   $("submitBtn").innerHTML='<i class="fa-solid fa-arrow-right"></i> Try objective again';
+   speak(`Not quite. One heart was used. ${q.explanation}`);
+  }
+
+  selectedAnswer=null;
+  $("submitBtn").disabled=false;
+  $("submitBtn").onclick=()=>{
+   if(!correct && !result.alreadySolved){
+    renderQuestion(q.missionIndex);
+    return;
+   }
+   if(result.missionComplete){
+    finishMission(mission);
+   }else{
+    renderQuestion(q.missionIndex);
+   }
+  };
+
+ }catch(error){
+  console.error("Cyber Mission answer save failed:",error);
+  if(String(error.message)==="NO_HEARTS"){
+   showDialog({title:"No hearts remaining",text:"You have used all your hearts. Return to Code Academy and restore your hearts before continuing.",icon:"fa-heart-crack",button:"Return to dashboard",action:goDashboard});
+  }else{
+   toast(error.message||"Could not save your answer. Please try again.");
+   $("submitBtn").disabled=false;
+   $("submitBtn").innerHTML='<i class="fa-solid fa-rotate-right"></i> Try again';
+   $("submitBtn").onclick=submitAnswer;
+  }
+ }finally{
+  setBusy(false);
+  if(currentQuestion && $("feedback").classList.contains("show")){
+   $("submitBtn").disabled=false;
+  }
+ }
+}
+
+async function finishMission(mission){
+ const progressRef=doc(db,"users",currentUser.uid,"gameProgress",GAME_ID);
+ const userRef=doc(db,"users",currentUser.uid);
+ setBusy(true);
+ try{
+  const completed=await runTransaction(db,async tx=>{
+   const [progressSnap,userSnap]=await Promise.all([tx.get(progressRef),tx.get(userRef)]);
+   if(!userSnap.exists()) throw new Error("Player profile missing.");
+   const saved=progressSnap.exists()?progressSnap.data():{};
+   const done=Array.isArray(saved.completedMissions)?[...saved.completedMissions]:[];
+   const allSolved=saved.solved||{};
+   if(!mission.questions.every(q=>allSolved[`${mission.id}_${q.id}`])){
+    throw new Error("Complete every objective before finishing this mission.");
+   }
+   if(!done.includes(mission.id)) done.push(mission.id);
+   tx.set(progressRef,{
+    gameId:GAME_ID,gameTitle:"Cyber Mission",
+    completedMissions:done,updatedAt:serverTimestamp(),
+    activeMission:Math.min(done.length,missions.length-1)
+   },{merge:true});
+   return done;
+  });
+  gameData.completedMissions=completed;
+  renderMissions();
+  renderStats();
+
+  const next=missions.findIndex(m=>!completed.includes(m.id));
+  if(next>=0){
+   showDialog({
+    title:`${mission.name} cleared!`,
+    text:`Mission objectives complete. Your rewards have been saved. ${missions[next].name} is now available.`,
+    icon:"fa-trophy",button:"Start next mission",
+    action:()=>renderQuestion(next)
+   });
+  }else{
+   showDialog({
+    title:"Cyber Mission complete!",
+    text:"All five operations are complete. Your XP, coins, and mission history are linked to your Code Academy account.",
+    icon:"fa-trophy",button:"Return to dashboard",action:goDashboard
+   });
+  }
+ }catch(error){
+  console.error("Mission completion failed:",error);
+  toast(error.message||"Unable to complete mission.");
+ }finally{setBusy(false);}
+}
+
+async function showHistory(){
+ if(!currentUser){toast("Please sign in first.");return;}
+ const button=$("historyBtn");
+ button.disabled=true;
+ setLoader(true,"Loading your Cyber Mission history…");
+ try{
+  const histRef=collection(db,"users",currentUser.uid,"gameHistory");
+  const q=query(histRef,orderBy("createdAt","desc"),limit(50));
+  const snap=await getDocs(q);
+  const items=snap.docs.map(d=>d.data()).filter(item=>item.gameId===GAME_ID);
+  const total=items.length;
+  const correct=items.filter(item=>item.isCorrect).length;
+  const earnedXP=items.reduce((sum,item)=>sum+(Number(item.xpEarned)||0),0);
+  const earnedCoins=items.reduce((sum,item)=>sum+(Number(item.coinsEarned)||0),0);
+  const recent=items.slice(0,8).map(item=>{
+   const line=`${item.isCorrect?"✓":"✕"} ${item.missionName||"Mission"}: ${item.question||"Challenge"} — ${item.isCorrect?"+"+(item.xpEarned||0)+" XP":"Incorrect"}`;
+   return line;
+  });
+  const summary=`Attempts: ${total}\nCorrect: ${correct}\nXP earned in recorded attempts: ${earnedXP}\nCoins earned in recorded attempts: ${earnedCoins}\n\nRECENT ACTIVITY\n${recent.join("\n")||"No Cyber Mission activity recorded yet."}`;
+  showDialog({title:"Mission History",text:summary,icon:"fa-clock-rotate-left",button:"Close"});
+ }catch(error){
+  console.error("History load failed:",error);
+  toast("Could not load history. Check your connection and Firestore rules.");
+ }finally{
+  setLoader(false);
+  button.disabled=false;
+ }
+}
+
+function goDashboard(){
+ window.speechSynthesis?.cancel();
+ location.href=returnUrl;
+}
+
+$("voiceBtn").addEventListener("click",()=>{
+ voiceOn=!voiceOn;
+ $("voiceBtn").innerHTML=voiceOn
+  ?'<i class="fa-solid fa-volume-high"></i>'
+  :'<i class="fa-solid fa-volume-xmark"></i>';
+ $("voiceBtn").setAttribute("aria-label",voiceOn?"Mute voice":"Enable voice");
+ if(!voiceOn) window.speechSynthesis?.cancel();
+ else speak("Cyber Mission voice assistance enabled.");
+ toast(voiceOn?"Voice enabled":"Voice muted");
+});
+
+$("speakBtn").addEventListener("click",()=>{
+ if(!currentQuestion){
+  speak($("missionTitle").textContent+". "+$("objectiveText").textContent);
+  return;
+ }
+ const q=currentQuestion;
+ speak(`${q.type==="final"?"Final challenge. ":""}${q.question}. ${q.code||""}. Options: ${q.options.map((o,i)=>`${String.fromCharCode(65+i)}. ${o}`).join(". ")}`);
+});
+
+$("historyBtn").addEventListener("click",showHistory);
+$("exitBtn").addEventListener("click",()=>{
+ showDialog({title:"Return to Code Academy?",text:"Your saved progress stays in your account. You can return to Cyber Mission later.",icon:"fa-house",button:"Return to dashboard",action:goDashboard});
+});
+$("dialogOverlay").addEventListener("click",e=>{
+ if(e.target===$("dialogOverlay")) hideDialog();
+});
+
+onAuthStateChanged(auth,async user=>{
+ if(!user){
+  setLoader(true,"Redirecting to Code Academy sign-in…");
+  location.href="index.html";
+  return;
+ }
+ currentUser=user;
+ try{
+  setLoader(true,"Loading your player profile and missions…");
+  await loadPlayer();
+  setLoader(false);
+  speak("Welcome to Cyber Mission. Select an answer and submit it to complete each objective.");
+ }catch(error){
+  console.error("Cyber Mission initialization failed:",error);
+  setLoader(false);
+  showDialog({
+   title:"Unable to load your missions",
+   text:error.message||"Please return to Code Academy, sign in again, and retry.",
+   icon:"fa-triangle-exclamation",button:"Return to Code Academy",action:goDashboard
+  });
+ }
+});
+</script>
+</body>
+</html>
