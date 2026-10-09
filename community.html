@@ -1,0 +1,2436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050b14">
+<meta name="description"
+      content="Join the Code Academy community, share coding resources and grow together.">
+<meta name="color-scheme" content="dark">
+
+<link rel="manifest" href="manifest.json">
+
+<!-- Professional social and interface icons -->
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<title>Community | Code Academy</title>
+
+<style>
+/* =====================================================
+   01. DESIGN SYSTEM
+===================================================== */
+:root {
+    color-scheme: dark;
+
+    --bg: #050b14;
+    --surface: #0b1626;
+    --surface-2: #101e31;
+    --surface-3: #15243a;
+
+    --border: rgba(255,255,255,.085);
+    --text: #f5f7fb;
+    --muted: #93a2b8;
+
+    --blue: #5b8cff;
+    --violet: #825dff;
+    --cyan: #22d3ee;
+    --green: #22c55e;
+    --gold: #fbbf24;
+    --danger: #fb7185;
+
+    --radius: 20px;
+    --shadow: 0 18px 55px rgba(0,0,0,.22);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    min-height: 100%;
+    scroll-behavior: smooth;
+    scroll-padding-top: 85px;
+}
+
+body {
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(
+            circle at 0% 0%,
+            rgba(91,140,255,.12),
+            transparent 29rem
+        ),
+        radial-gradient(
+            circle at 100% 15%,
+            rgba(130,93,255,.10),
+            transparent 27rem
+        ),
+        var(--bg);
+
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system,
+                 BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea, select {
+    font: inherit;
+}
+
+button, a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button {
+    color: inherit;
+    cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* =====================================================
+   02. APPLICATION LAYOUT
+===================================================== */
+.app {
+    width: min(100%, 1180px);
+    min-height: 100vh;
+    margin: auto;
+    padding-bottom: max(35px, env(safe-area-inset-bottom));
+}
+
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    min-height: 72px;
+    padding: 12px 20px;
+
+    background: rgba(5,11,20,.88);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+}
+
+.back-btn {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 41px;
+    height: 41px;
+
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    background: var(--surface-2);
+    font-size: 17px;
+}
+
+.logo {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 43px;
+    height: 43px;
+
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--blue), var(--violet));
+    box-shadow: 0 5px 22px rgba(91,140,255,.2);
+
+    font-weight: 950;
+    letter-spacing: -1px;
+}
+
+.brand-text {
+    min-width: 0;
+}
+
+.brand-text strong {
+    display: block;
+    font-size: 15px;
+    line-height: 1.3;
+}
+
+.brand-text span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.nav-status {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    padding: 8px 11px;
+
+    border: 1px solid var(--border);
+    border-radius: 999px;
+
+    color: var(--muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 10px rgba(34,197,94,.45);
+}
+
+main {
+    width: 100%;
+}
+
+.section {
+    padding: 13px 20px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.section-heading h2 {
+    font-size: clamp(17px, 3vw, 21px);
+    font-weight: 800;
+    letter-spacing: -.4px;
+}
+
+.section-heading p,
+.section-heading > span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* =====================================================
+   03. HERO
+===================================================== */
+.hero {
+    padding: 26px 20px 19px;
+}
+
+.hero-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    padding: clamp(23px, 5vw, 43px);
+
+    border: 1px solid rgba(120,153,255,.18);
+    border-radius: 27px;
+
+    background:
+        radial-gradient(
+            circle at 95% 5%,
+            rgba(130,93,255,.17),
+            transparent 42%
+        ),
+        linear-gradient(
+            135deg,
+            rgba(91,140,255,.12),
+            transparent 68%
+        ),
+        var(--surface);
+
+    box-shadow: var(--shadow);
+}
+
+.hero-card::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+
+    width: 230px;
+    height: 230px;
+
+    right: -115px;
+    bottom: -140px;
+
+    border: 1px solid rgba(130,160,255,.15);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 25px rgba(91,140,255,.025),
+        0 0 0 55px rgba(91,140,255,.02);
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 7px 11px;
+
+    border: 1px solid rgba(34,211,238,.2);
+    border-radius: 999px;
+
+    background: rgba(34,211,238,.07);
+    color: var(--cyan);
+
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1px;
+}
+
+.hero h1 {
+    max-width: 650px;
+    margin-top: 19px;
+
+    font-size: clamp(34px, 7.5vw, 58px);
+    line-height: 1.02;
+    letter-spacing: -2px;
+}
+
+.gradient-text {
+    background: linear-gradient(90deg, #77a7ff, #ba9aff, #67e5ee);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+}
+
+.hero-description {
+    max-width: 660px;
+    margin-top: 15px;
+
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+/* =====================================================
+   04. BUTTON SYSTEM
+===================================================== */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    min-height: 45px;
+    padding: 11px 16px;
+
+    border: 1px solid transparent;
+    border-radius: 13px;
+
+    font-size: 12px;
+    font-weight: 800;
+    text-align: center;
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+}
+
+.btn:active {
+    transform: scale(.97);
+}
+
+.btn-primary {
+    background: linear-gradient(120deg, var(--blue), var(--violet));
+    box-shadow: 0 7px 23px rgba(91,140,255,.17);
+}
+
+.btn-secondary {
+    background: var(--surface-2);
+    border-color: var(--border);
+}
+
+.btn-subtle {
+    color: #c8d5e8;
+    background: rgba(255,255,255,.035);
+    border-color: var(--border);
+}
+
+.btn-full {
+    width: 100%;
+}
+
+/* =====================================================
+   05. STATISTICS
+===================================================== */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 11px;
+}
+
+.stat {
+    min-width: 0;
+    padding: 17px;
+
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(255,255,255,.025), transparent 80%),
+                var(--surface);
+}
+
+.stat-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.stat-icon {
+    display: grid;
+    place-items: center;
+
+    width: 39px;
+    height: 39px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface-2);
+
+    font-size: 16px;
+}
+
+.stat-value {
+    margin-top: 14px;
+    overflow-wrap: anywhere;
+
+    font-size: clamp(23px, 5vw, 30px);
+    font-weight: 900;
+    letter-spacing: -.8px;
+}
+
+.stat-label {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.stat-note {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+/* =====================================================
+   06. CARD SYSTEM
+===================================================== */
+.panel {
+    min-width: 0;
+    padding: clamp(17px, 4vw, 23px);
+
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.panel-title {
+    font-size: 17px;
+    font-weight: 850;
+    letter-spacing: -.35px;
+}
+
+.panel-description {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+.inline-link {
+    color: #8ab2ff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+/* =====================================================
+   07. REFERRAL LINK
+===================================================== */
+.referral-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.benefit-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 45px;
+    height: 45px;
+
+    border: 1px solid rgba(91,140,255,.2);
+    border-radius: 14px;
+
+    background: rgba(91,140,255,.1);
+    color: #9bbaff;
+}
+
+.benefit-copy {
+    flex: 1;
+    min-width: 0;
+}
+
+.benefit-copy h3 {
+    font-size: 16px;
+}
+
+.benefit-copy p {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.65;
+}
+
+.reward-inline {
+    color: var(--gold);
+    font-weight: 850;
+}
+
+.referral-box {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+
+    margin-top: 19px;
+    padding: 7px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: #050b14;
+}
+
+.referral-input {
+    flex: 1;
+    min-width: 0;
+
+    padding: 10px;
+
+    border: 0;
+    outline: 0;
+    background: transparent;
+
+    color: #dce8ff;
+    font-size: 12px;
+}
+
+.copy-btn {
+    flex-shrink: 0;
+    min-width: 83px;
+    min-height: 41px;
+    padding: 8px 13px;
+
+    border-radius: 11px;
+    background: var(--blue);
+
+    font-size: 11px;
+    font-weight: 850;
+}
+
+.referral-code-label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    margin-top: 11px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.copy-code-btn {
+    padding: 4px 0;
+    border: 0;
+    background: transparent;
+    color: #9bbaff;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+/* =====================================================
+   08. SOCIAL PLATFORMS
+===================================================== */
+.share-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.share-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+    min-height: 81px;
+    padding: 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface);
+
+    text-align: left;
+    transition: border-color .2s, transform .2s, background .2s;
+}
+
+.share-card:hover {
+    background: var(--surface-2);
+    border-color: rgba(120,160,255,.3);
+}
+
+.share-card:active {
+    transform: scale(.98);
+}
+
+.social-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 43px;
+    height: 43px;
+
+    border: 1px solid var(--border);
+    border-radius: 14px;
+
+    background: var(--surface-2);
+    font-size: 21px;
+}
+
+.social-icon.whatsapp { color: #25D366; }
+.social-icon.facebook { color: #1877F2; }
+.social-icon.x-twitter { color: #f5f7fb; }
+.social-icon.telegram { color: #2AABEE; }
+.social-icon.linkedin { color: #0A66C2; }
+
+.share-copy {
+    min-width: 0;
+    flex: 1;
+}
+
+.share-name {
+    font-size: 12px;
+    font-weight: 850;
+}
+
+.share-description {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.share-arrow {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* =====================================================
+   09. COMMUNITY CONTACT CARDS
+===================================================== */
+.community-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.community-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+    padding: 21px;
+
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: var(--surface);
+}
+
+.community-icon {
+    display: grid;
+    place-items: center;
+
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid var(--border);
+    border-radius: 15px;
+
+    background: var(--surface-2);
+    font-size: 22px;
+}
+
+.community-icon.whatsapp { color: #25D366; }
+.community-icon.email { color: #86aaff; }
+.community-icon.channel { color: #2AABEE; }
+
+.community-card h3 {
+    margin-top: 14px;
+    font-size: 16px;
+}
+
+.community-card p {
+    flex: 1;
+    margin-top: 7px;
+    margin-bottom: 17px;
+
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.75;
+}
+
+.community-card .btn {
+    align-self: stretch;
+}
+
+/* =====================================================
+   10. REFERRAL MILESTONES
+===================================================== */
+.milestones {
+    display: grid;
+    gap: 11px;
+}
+
+.milestone {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-width: 0;
+    padding: 15px;
+
+    border: 1px solid var(--border);
+    border-radius: 17px;
+    background: var(--surface);
+}
+
+.milestone-icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 43px;
+    height: 43px;
+
+    border: 1px solid rgba(251,191,36,.15);
+    border-radius: 13px;
+    background: rgba(251,191,36,.08);
+
+    color: var(--gold);
+    font-size: 18px;
+}
+
+.milestone-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.milestone-info strong {
+    display: block;
+    font-size: 12px;
+}
+
+.milestone-info span {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.progress {
+    height: 5px;
+    margin-top: 9px;
+    overflow: hidden;
+
+    border-radius: 999px;
+    background: #1a2940;
+}
+
+.progress-bar {
+    width: 0;
+    height: 100%;
+
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--blue), var(--cyan));
+    transition: width .4s ease;
+}
+
+.milestone-reward {
+    flex-shrink: 0;
+    color: var(--gold);
+    font-size: 11px;
+    font-weight: 850;
+}
+
+/* =====================================================
+   11. REFERRAL RULES
+===================================================== */
+.rules {
+    display: grid;
+    gap: 17px;
+}
+
+.rule {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+}
+
+.rule-number {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 29px;
+    height: 29px;
+
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-2);
+
+    color: #a9c3ff;
+    font-size: 11px;
+    font-weight: 850;
+}
+
+.rule-content {
+    flex: 1;
+    padding-top: 3px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.rule-content strong {
+    color: var(--text);
+}
+
+/* =====================================================
+   12. CONTACT MODAL
+===================================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+
+    background: rgba(0,0,0,.73);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+}
+
+.modal-card {
+    width: min(100%, 520px);
+    max-height: 92dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    padding: clamp(18px, 5vw, 25px);
+
+    border: 1px solid rgba(125,155,255,.2);
+    border-radius: 23px;
+
+    background:
+        radial-gradient(
+            circle at 100% 0,
+            rgba(91,140,255,.1),
+            transparent 45%
+        ),
+        #0b1626;
+
+    box-shadow: 0 25px 90px rgba(0,0,0,.48);
+}
+
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+.modal-header h2 {
+    font-size: 22px;
+    letter-spacing: -.5px;
+}
+
+.modal-header p {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.close-btn {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface-2);
+
+    color: var(--muted);
+}
+
+.form-group {
+    margin-top: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+
+    color: #dce6f5;
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.form-control {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 45px;
+
+    padding: 12px 13px;
+
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #07111f;
+
+    color: var(--text);
+    font-size: 13px;
+}
+
+textarea.form-control {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+.form-control::placeholder {
+    color: #65758d;
+}
+
+.form-note {
+    margin-top: 13px;
+    padding: 11px 12px;
+
+    border: 1px solid rgba(34,211,238,.12);
+    border-radius: 12px;
+    background: rgba(34,211,238,.045);
+
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.form-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 17px;
+}
+
+.form-actions button {
+    min-width: 0;
+}
+
+/* =====================================================
+   13. LOADING + TOAST
+===================================================== */
+.loading {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--bg);
+    transition: opacity .2s ease;
+}
+
+.loading-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+}
+
+.loader {
+    width: 40px;
+    height: 40px;
+
+    border: 3px solid #1b2a40;
+    border-top-color: var(--blue);
+    border-right-color: var(--violet);
+    border-radius: 50%;
+
+    animation: spin .75s linear infinite;
+}
+
+.loading-label {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.toast {
+    position: fixed;
+    z-index: 250;
+    left: 50%;
+    bottom: max(20px, env(safe-area-inset-bottom));
+
+    width: min(90%, 390px);
+    padding: 13px 16px;
+
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 13px;
+    background: #142239;
+
+    box-shadow: 0 15px 45px rgba(0,0,0,.45);
+
+    color: var(--text);
+    font-size: 12px;
+    text-align: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 12px);
+    transition: .22s ease;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+/* =====================================================
+   14. FOOTER
+===================================================== */
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 22px 20px 8px;
+
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.footer-brand {
+    color: #dce6f5;
+    font-weight: 800;
+}
+
+/* =====================================================
+   15. RESPONSIVE BREAKPOINTS
+===================================================== */
+@media (min-width: 520px) {
+    .stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .share-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .community-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 800px) {
+    .navbar {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+
+    .hero {
+        padding: 36px 30px 22px;
+    }
+
+    .section {
+        padding: 13px 30px;
+    }
+
+    .share-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .community-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .footer {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+}
+
+@media (max-width: 380px) {
+    .navbar {
+        padding: 10px 12px;
+    }
+
+    .brand {
+        gap: 8px;
+    }
+
+    .logo {
+        width: 38px;
+        height: 38px;
+    }
+
+    .brand-text strong {
+        font-size: 13px;
+    }
+
+    .nav-status {
+        padding: 7px 8px;
+        font-size: 10px;
+    }
+
+    .section,
+    .hero {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .share-card {
+        gap: 9px;
+        padding: 10px;
+    }
+
+    .social-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 17px;
+    }
+
+    .copy-btn {
+        min-width: 70px;
+        padding-right: 9px;
+        padding-left: 9px;
+    }
+
+    .milestone {
+        gap: 9px;
+        padding: 11px;
+    }
+
+    .milestone-reward {
+        font-size: 10px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading" id="loading" role="status">
+    <div class="loading-inner">
+        <div class="loader"></div>
+        <div class="loading-label">Loading your community...</div>
+    </div>
+</div>
+
+<div class="app">
+
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="brand">
+            <button class="back-btn" id="backBtn"
+                    type="button" aria-label="Go back">
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
+
+            <div class="logo" aria-label="Code Academy">CA</div>
+
+            <div class="brand-text">
+                <strong>Code Academy</strong>
+                <span>Community &amp; referrals</span>
+            </div>
+        </div>
+
+        <div class="nav-status">
+            <span class="status-dot"></span>
+            Learner community
+        </div>
+    </nav>
+
+    <main>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-card">
+                <span class="eyebrow">
+                    <i class="fa-solid fa-earth-africa"></i>
+                    CODE ACADEMY COMMUNITY
+                </span>
+
+                <h1>
+                    Learn. Build.<br>
+                    <span class="gradient-text">Grow together.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Connect with fellow learners, discover coding
+                    updates and invite friends to learn programming
+                    with Code Academy.
+                </p>
+
+                <div class="hero-actions">
+                    <button class="btn btn-primary"
+                            type="button" id="shareMainBtn">
+                        <i class="fa-solid fa-share-nodes"></i>
+                        Invite friends
+                    </button>
+
+                    <a class="btn btn-secondary"
+                       id="channelHeroBtn"
+                       href="https://whatsapp.com/channel/0029VbDiRqPCHDyjySHprD12"
+                       target="_blank" rel="noopener noreferrer">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        Join our channel
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMMUNITY STATISTICS -->
+        <section class="section">
+            <div class="section-heading">
+                <h2>Your community stats</h2>
+                <span>Referral overview</span>
+            </div>
+
+            <div class="stats">
+                <article class="stat">
+                    <div class="stat-top">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-user-group"
+                               style="color:#8bb3ff"></i>
+                        </div>
+                        <span class="stat-note">People</span>
+                    </div>
+                    <div class="stat-value" id="referralCount">0</div>
+                    <div class="stat-label">Friends referred</div>
+                </article>
+
+                <article class="stat">
+                    <div class="stat-top">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-star"
+                               style="color:#fbbf24"></i>
+                        </div>
+                        <span class="stat-note">Experience</span>
+                    </div>
+                    <div class="stat-value" id="xpEarned">0</div>
+                    <div class="stat-label">Referral XP</div>
+                </article>
+
+                <article class="stat">
+                    <div class="stat-top">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-coins"
+                               style="color:#fbbf24"></i>
+                        </div>
+                        <span class="stat-note">Rewards</span>
+                    </div>
+                    <div class="stat-value" id="coinsEarned">0</div>
+                    <div class="stat-label">Referral coins</div>
+                </article>
+
+                <article class="stat">
+                    <div class="stat-top">
+                        <div class="stat-icon">
+                            <i class="fa-solid fa-trophy"
+                               style="color:#c4a2ff"></i>
+                        </div>
+                        <span class="stat-note">Progress</span>
+                    </div>
+                    <div class="stat-value" id="referralLevel">1</div>
+                    <div class="stat-label">Referral level</div>
+                </article>
+            </div>
+        </section>
+
+        <!-- REFERRAL LINK -->
+        <section class="section">
+            <div class="section-heading">
+                <h2>Your referral link</h2>
+                <span>Invite &amp; earn</span>
+            </div>
+
+            <div class="panel">
+                <div class="referral-benefit">
+                    <div class="benefit-icon">
+                        <i class="fa-solid fa-gift"></i>
+                    </div>
+
+                    <div class="benefit-copy">
+                        <h3>Bring another learner on board</h3>
+                        <p>
+                            Share your personal link with new learners.
+                            Your displayed referral reward is
+                            <span class="reward-inline">100 XP and 10 coins</span>
+                            per recorded referral.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="referral-box">
+                    <input class="referral-input"
+                           id="referralInput"
+                           type="text"
+                           readonly
+                           aria-label="Your personal referral link"
+                           value="Generating your link...">
+
+                    <button class="copy-btn" id="copyReferralBtn"
+                            type="button">
+                        <i class="fa-regular fa-copy"></i>
+                        Copy link
+                    </button>
+                </div>
+
+                <div class="referral-code-label">
+                    <span id="referralCodeText">
+                        Preparing your personal code...
+                    </span>
+
+                    <button type="button" class="copy-code-btn"
+                            id="copyCodeBtn">
+                        Copy code
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SOCIAL SHARING -->
+        <section class="section">
+            <div class="section-heading">
+                <h2>Share Code Academy</h2>
+                <span>Choose a platform</span>
+            </div>
+
+            <div class="share-grid">
+                <button class="share-card" type="button"
+                        data-platform="whatsapp">
+                    <span class="social-icon whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </span>
+                    <span class="share-copy">
+                        <span class="share-name">WhatsApp</span>
+                        <span class="share-description">Share with friends</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-up-right-from-square share-arrow"></i>
+                </button>
+
+                <button class="share-card" type="button"
+                        data-platform="facebook">
+                    <span class="social-icon facebook">
+                        <i class="fa-brands fa-facebook-f"></i>
+                    </span>
+                    <span class="share-copy">
+                        <span class="share-name">Facebook</span>
+                        <span class="share-description">Share a post</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-up-right-from-square share-arrow"></i>
+                </button>
+
+                <button class="share-card" type="button"
+                        data-platform="x">
+                    <span class="social-icon x-twitter">
+                        <i class="fa-brands fa-x-twitter"></i>
+                    </span>
+                    <span class="share-copy">
+                        <span class="share-name">X</span>
+                        <span class="share-description">Share a post</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-up-right-from-square share-arrow"></i>
+                </button>
+
+                <button class="share-card" type="button"
+                        data-platform="telegram">
+                    <span class="social-icon telegram">
+                        <i class="fa-brands fa-telegram"></i>
+                    </span>
+                    <span class="share-copy">
+                        <span class="share-name">Telegram</span>
+                        <span class="share-description">Send to a chat</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-up-right-from-square share-arrow"></i>
+                </button>
+
+                <button class="share-card" type="button"
+                        data-platform="linkedin">
+                    <span class="social-icon linkedin">
+                        <i class="fa-brands fa-linkedin-in"></i>
+                    </span>
+                    <span class="share-copy">
+                        <span class="share-name">LinkedIn</span>
+                        <span class="share-description">Share professionally</span>
+                    </span>
+                    <i class="fa-solid fa-arrow-up-right-from-square share-arrow"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- COMMUNITY CONTACT -->
+        <section class="section">
+            <div class="section-heading">
+                <h2>Connect with us</h2>
+            </div>
+
+            <div class="community-grid">
+
+                <article class="community-card">
+                    <div class="community-icon whatsapp">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+
+                    <h3>Contact support</h3>
+                    <p>
+                        Send a question, report an issue or tell us
+                        about a problem using our guided contact form.
+                    </p>
+
+                    <button class="btn btn-primary btn-full"
+                            type="button" id="contactUsBtn">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Contact us
+                    </button>
+                </article>
+
+                <article class="community-card">
+                    <div class="community-icon channel">
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+
+                    <h3>WhatsApp Channel</h3>
+                    <p>
+                        Discover course announcements, learning
+                        updates and news from Code Academy.
+                    </p>
+
+                    <a class="btn btn-secondary btn-full"
+                       id="channelBtn"
+                       href="https://whatsapp.com/channel/0029VbDiRqPCHDyjySHprD12"
+                       target="_blank" rel="noopener noreferrer">
+                        <i class="fa-brands fa-whatsapp"></i>
+                        Join channel
+                    </a>
+                </article>
+
+                <article class="community-card">
+                    <div class="community-icon email">
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+
+                    <h3>Email support</h3>
+                    <p>
+                        Contact us by email for suggestions,
+                        feedback, questions or partnership enquiries.
+                    </p>
+
+                    <a class="btn btn-secondary btn-full"
+                       id="emailBtn"
+                       href="mailto:egyirprince609@gmail.com">
+                        <i class="fa-solid fa-envelope"></i>
+                        Send an email
+                    </a>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- REFERRAL MILESTONES -->
+        <section class="section">
+            <div class="section-heading">
+                <h2>Referral milestones</h2>
+                <span>Your progress</span>
+            </div>
+
+            <div class="milestones">
+
+                <article class="milestone">
+                    <div class="milestone-icon">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+
+                    <div class="milestone-info">
+                        <strong>First Friend</strong>
+                        <span id="progressText1">Invite 1 learner</span>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress1"></div>
+                        </div>
+                    </div>
+
+                    <div class="milestone-reward">+100 XP</div>
+                </article>
+
+                <article class="milestone">
+                    <div class="milestone-icon">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+
+                    <div class="milestone-info">
+                        <strong>Community Builder</strong>
+                        <span id="progressText5">Invite 5 learners</span>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress5"></div>
+                        </div>
+                    </div>
+
+                    <div class="milestone-reward">+500 XP</div>
+                </article>
+
+                <article class="milestone">
+                    <div class="milestone-icon">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+
+                    <div class="milestone-info">
+                        <strong>Academy Ambassador</strong>
+                        <span id="progressText10">Invite 10 learners</span>
+                        <div class="progress">
+                            <div class="progress-bar" id="progress10"></div>
+                        </div>
+                    </div>
+
+                    <div class="milestone-reward">+1,000 XP</div>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- REFERRAL GUIDE -->
+        <section class="section">
+            <div class="section-heading">
+                <h2>How referrals work</h2>
+            </div>
+
+            <div class="panel">
+                <div class="rules">
+
+                    <div class="rule">
+                        <div class="rule-number">01</div>
+                        <div class="rule-content">
+                            <strong>Copy your link.</strong>
+                            Your personal referral link is generated
+                            from your existing account ID.
+                        </div>
+                    </div>
+
+                    <div class="rule">
+                        <div class="rule-number">02</div>
+                        <div class="rule-content">
+                            <strong>Share with friends.</strong>
+                            Use WhatsApp, Facebook, X, Telegram,
+                            LinkedIn or the native share menu.
+                        </div>
+                    </div>
+
+                    <div class="rule">
+                        <div class="rule-number">03</div>
+                        <div class="rule-content">
+                            <strong>Your friend joins.</strong>
+                            The referral link includes your existing
+                            <code>?ref=</code> parameter. The signup
+                            process must record the referral correctly.
+                        </div>
+                    </div>
+
+                    <div class="rule">
+                        <div class="rule-number">04</div>
+                        <div class="rule-content">
+                            <strong>Referral rewards.</strong>
+                            This page retains your existing display
+                            calculation of 100 XP and 10 coins per
+                            recorded referral.
+                        </div>
+                    </div>
+
+                    <div class="rule">
+                        <div class="rule-number">05</div>
+                        <div class="rule-content">
+                            <strong>Reward protection.</strong>
+                            Your signup and Firebase referral rules
+                            remain responsible for validating referrals
+                            and preventing duplicate rewards.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <span class="footer-brand">Code Academy</span>
+        <span>We Learn. We Code. We Succeed.</span>
+    </footer>
+
+</div>
+
+<!-- CONTACT FORM MODAL -->
+<div class="modal" id="contactModal"
+     role="presentation" hidden>
+
+    <section class="modal-card"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="contactModalTitle"
+             aria-describedby="contactModalDescription">
+
+        <div class="modal-header">
+            <div>
+                <h2 id="contactModalTitle">Contact support</h2>
+                <p id="contactModalDescription">
+                    Tell us how we can help. Complete the form
+                    and continue to WhatsApp to send your message.
+                </p>
+            </div>
+
+            <button class="close-btn"
+                    type="button" id="closeContactBtn"
+                    aria-label="Close contact form">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="contactForm">
+
+            <div class="form-group">
+                <label for="contactName">Your name</label>
+                <input class="form-control"
+                       type="text"
+                       id="contactName"
+                       name="name"
+                       maxlength="80"
+                       autocomplete="name"
+                       placeholder="Enter your name"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="contactEmail">Your email</label>
+                <input class="form-control"
+                       type="email"
+                       id="contactEmail"
+                       name="email"
+                       maxlength="120"
+                       autocomplete="email"
+                       placeholder="you@example.com"
+                       required>
+            </div>
+
+            <div class="form-group">
+                <label for="contactTopic">What do you need help with?</label>
+                <select class="form-control"
+                        id="contactTopic"
+                        name="topic"
+                        required>
+                    <option value="" selected disabled>
+                        Select a topic
+                    </option>
+                    <option value="Account or login">Account or login</option>
+                    <option value="Courses or lessons">Courses or lessons</option>
+                    <option value="Referral rewards">Referral rewards</option>
+                    <option value="Technical problem">Technical problem</option>
+                    <option value="Suggestion or feedback">Suggestion or feedback</option>
+                    <option value="Other enquiry">Other enquiry</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="contactMessage">Your message</label>
+                <textarea class="form-control"
+                          id="contactMessage"
+                          name="message"
+                          maxlength="2500"
+                          rows="4"
+                          placeholder="Describe how we can help you..."
+                          required></textarea>
+            </div>
+
+            <div class="form-note">
+                <i class="fa-solid fa-shield-halved"></i>
+                Your form details are placed into a WhatsApp message.
+                Review the message and press Send in WhatsApp to
+                submit it. Do not include passwords or verification codes.
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-secondary"
+                        type="button" id="cancelContactBtn">
+                    Cancel
+                </button>
+
+                <button class="btn btn-primary"
+                        type="submit">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Send via WhatsApp
+                </button>
+            </div>
+
+        </form>
+    </section>
+</div>
+
+<!-- FEEDBACK TOAST -->
+<div class="toast"
+     id="toast"
+     role="status"
+     aria-live="polite"></div>
+
+<script type="module">
+
+/* =========================================================
+   01. EXISTING FIREBASE IMPORTS
+
+   Keep authentication.js and Firebase configuration.
+   This page does not initialize a second Firebase app.
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged,
+    getDoc,
+    doc
+} from "./authentication.js";
+
+import {
+    getDocs,
+    collection
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================================
+   02. CONFIGURATION
+
+   Updated support details.
+   Existing website and referral parameter retained.
+========================================================= */
+
+const APP_URL =
+    "https://egyirprince609-oss.github.io/Code-Academy-/";
+
+const WHATSAPP_CHANNEL =
+    "https://whatsapp.com/channel/0029VbDiRqPCHDyjySHprD12";
+
+const WHATSAPP_NUMBER =
+    "233555849621";
+
+const EMAIL =
+    "egyirprince609@gmail.com";
+
+
+/* =========================================================
+   03. DOM ELEMENTS
+========================================================= */
+
+const loading = document.getElementById("loading");
+const toast = document.getElementById("toast");
+
+const referralInput = document.getElementById("referralInput");
+const referralCodeText = document.getElementById("referralCodeText");
+
+const referralCount = document.getElementById("referralCount");
+const xpEarned = document.getElementById("xpEarned");
+const coinsEarned = document.getElementById("coinsEarned");
+const referralLevel = document.getElementById("referralLevel");
+
+const contactModal = document.getElementById("contactModal");
+const contactForm = document.getElementById("contactForm");
+const contactUsBtn = document.getElementById("contactUsBtn");
+
+let currentUser = null;
+let referralCode = "";
+let referralUrl = "";
+let toastTimer = null;
+let previousFocus = null;
+
+
+/* =========================================================
+   04. TOAST NOTIFICATIONS
+========================================================= */
+
+function showToast(message) {
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2800);
+}
+
+
+/* =========================================================
+   05. EXISTING REFERRAL CODE GENERATOR
+
+   Logic retained:
+   CA + final eight alphanumeric characters of UID.
+========================================================= */
+
+function createReferralCode(uid) {
+    const clean = String(uid)
+        .replace(/[^a-zA-Z0-9]/g, "")
+        .toUpperCase();
+
+    return "CA" + clean.slice(-8);
+}
+
+
+/* =========================================================
+   06. SHARE MESSAGE
+========================================================= */
+
+function createShareMessage() {
+    return [
+        "🚀 I'm learning with Code Academy!",
+        "",
+        "Learn programming, build projects and improve your coding skills.",
+        "",
+        "Join using my referral link and let's grow together!",
+        "",
+        "#CodeAcademy #LearnToCode #Programming"
+    ].join("\n");
+}
+
+
+/* =========================================================
+   07. REFERRAL URL HELPER
+========================================================= */
+
+function getReferralUrl() {
+    if (!referralUrl) {
+        showToast("Your referral link is still loading.");
+        return null;
+    }
+
+    return referralUrl;
+}
+
+
+/* =========================================================
+   08. PLATFORM SHARING
+
+   Each platform receives the existing personal referral URL.
+========================================================= */
+
+function shareToPlatform(platform) {
+    const link = getReferralUrl();
+
+    if (!link) return;
+
+    const message = createShareMessage() + "\n\n" + link;
+    const encodedMessage = encodeURIComponent(message);
+    const encodedUrl = encodeURIComponent(link);
+
+    const destinations = {
+        whatsapp:
+            `https://wa.me/?text=${encodedMessage}`,
+
+        facebook:
+            `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+
+        x:
+            `https://twitter.com/intent/tweet?text=${
+                encodeURIComponent(
+                    "🚀 Join me on Code Academy and learn programming!"
+                )
+            }&url=${encodedUrl}`,
+
+        telegram:
+            `https://t.me/share/url?url=${encodedUrl}&text=${
+                encodeURIComponent(
+                    "🚀 Join me on Code Academy and start learning programming!"
+                )
+            }`,
+
+        linkedin:
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`
+    };
+
+    const destination = destinations[platform];
+
+    if (!destination) {
+        showToast("This sharing option is unavailable.");
+        return;
+    }
+
+    const popup = window.open(
+        destination,
+        "_blank",
+        "noopener,noreferrer"
+    );
+
+    if (!popup) {
+        showToast("Your browser blocked the sharing window.");
+    }
+}
+
+
+/* =========================================================
+   09. NATIVE SHARE
+
+   Uses the operating system's share menu when available.
+========================================================= */
+
+async function nativeShare() {
+    const link = getReferralUrl();
+
+    if (!link) return;
+
+    const shareData = {
+        title: "Join Code Academy",
+        text: createShareMessage(),
+        url: link
+    };
+
+    if (typeof navigator.share === "function") {
+        try {
+            if (
+                typeof navigator.canShare === "function" &&
+                !navigator.canShare(shareData)
+            ) {
+                throw new Error("Share data is unsupported.");
+            }
+
+            await navigator.share(shareData);
+            return;
+
+        } catch (error) {
+            if (error?.name === "AbortError") {
+                return;
+            }
+
+            console.warn("Native sharing unavailable:", error);
+        }
+    }
+
+    const copied = await copyText(link);
+
+    if (copied) {
+        showToast("Sharing is unavailable. Referral link copied!");
+    } else {
+        showToast("Unable to share automatically. Copy your link below.");
+    }
+}
+
+
+/* =========================================================
+   10. COPY HELPER
+
+   Clipboard API with a legacy browser fallback.
+========================================================= */
+
+async function copyText(text) {
+    if (!text) return false;
+
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(text);
+            return true;
+        }
+    } catch (error) {
+        console.warn("Clipboard API unavailable:", error);
+    }
+
+    const textarea = document.createElement("textarea");
+
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    textarea.style.top = "0";
+
+    document.body.appendChild(textarea);
+
+    textarea.focus();
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+
+    let success = false;
+
+    try {
+        success = document.execCommand("copy");
+    } catch (error) {
+        console.warn("Fallback copy failed:", error);
+    }
+
+    textarea.remove();
+
+    return success;
+}
+
+
+/* =========================================================
+   11. COPY REFERRAL LINK
+========================================================= */
+
+async function copyReferralLink() {
+    const link = getReferralUrl();
+
+    if (!link) return;
+
+    const copied = await copyText(link);
+
+    showToast(
+        copied
+            ? "Referral link copied successfully!"
+            : "Copy failed. Select and copy the referral link manually."
+    );
+}
+
+
+/* =========================================================
+   12. COPY REFERRAL CODE
+========================================================= */
+
+async function copyReferralCode() {
+    if (!referralCode) {
+        showToast("Your referral code is still loading.");
+        return;
+    }
+
+    const copied = await copyText(referralCode);
+
+    showToast(
+        copied
+            ? "Referral code copied!"
+            : "Unable to copy the referral code."
+    );
+}
+
+
+/* =========================================================
+   13. EXISTING REFERRAL DATA ENGINE
+
+   Preserved collection:
+   users/{uid}/referrals
+
+   Preserved displayed reward calculations:
+   100 XP + 10 coins per referral record.
+
+   This function reads existing records. It does not create
+   referrals or independently issue rewards.
+========================================================= */
+
+async function loadReferralData(user) {
+    const code = createReferralCode(user.uid);
+
+    referralCode = code;
+
+    // Existing referral-link format retained.
+    referralUrl =
+        `${APP_URL}?ref=${encodeURIComponent(code)}`;
+
+    referralInput.value = referralUrl;
+
+    referralCodeText.textContent =
+        `Referral code: ${code}`;
+
+    try {
+        const snapshot = await getDocs(
+            collection(
+                db,
+                "users",
+                user.uid,
+                "referrals"
+            )
+        );
+
+        const count = snapshot.size;
+
+        const earnedXP = count * 100;
+        const earnedCoins = count * 10;
+
+        referralCount.textContent =
+            count.toLocaleString();
+
+        xpEarned.textContent =
+            earnedXP.toLocaleString();
+
+        coinsEarned.textContent =
+            earnedCoins.toLocaleString();
+
+        let level = 1;
+
+        if (count >= 10) {
+            level = 4;
+        } else if (count >= 5) {
+            level = 3;
+        } else if (count >= 1) {
+            level = 2;
+        }
+
+        referralLevel.textContent = level;
+
+        updateProgressBars(count);
+
+    } catch (error) {
+        console.error("Referral statistics error:", error);
+
+        referralCount.textContent = "0";
+        xpEarned.textContent = "0";
+        coinsEarned.textContent = "0";
+        referralLevel.textContent = "1";
+
+        updateProgressBars(0);
+
+        showToast(
+            "Referral statistics could not be loaded. Check your connection."
+        );
+    }
+}
+
+
+/* =========================================================
+   14. REFERRAL PROGRESS
+
+   Preserves the existing 1, 5 and 10 referral milestones.
+========================================================= */
+
+function updateProgressBars(count) {
+    const milestones = [
+        {
+            target: 1,
+            bar: "progress1",
+            label: "progressText1"
+        },
+        {
+            target: 5,
+            bar: "progress5",
+            label: "progressText5"
+        },
+        {
+            target: 10,
+            bar: "progress10",
+            label: "progressText10"
+        }
+    ];
+
+    milestones.forEach(item => {
+        const progress = Math.min(
+            (count / item.target) * 100,
+            100
+        );
+
+        document.getElementById(item.bar).style.width =
+            `${progress}%`;
+
+        document.getElementById(item.label).textContent =
+            count >= item.target
+                ? `${item.target} referral milestone reached`
+                : `${count} of ${item.target} referrals`;
+    });
+}
+
+
+/* =========================================================
+   15. EXISTING AUTHENTICATION FLOW
+
+   Signed-out users continue to login.html.
+   Existing auth object and authentication.js are retained.
+========================================================= */
+
+onAuthStateChanged(
+    auth,
+    async user => {
+        if (!user) {
+            window.location.replace("login.html");
+            return;
+        }
+
+        currentUser = user;
+
+        try {
+            await loadReferralData(user);
+        } finally {
+            loading.style.display = "none";
+        }
+    }
+);
+
+
+/* =========================================================
+   16. CONTACT MODAL
+========================================================= */
+
+function openContactModal() {
+    previousFocus = document.activeElement;
+
+    contactModal.hidden = false;
+    document.body.style.overflow = "hidden";
+
+    requestAnimationFrame(() => {
+        document.getElementById("contactName").focus();
+    });
+}
+
+function closeContactModal() {
+    contactModal.hidden = true;
+    document.body.style.overflow = "";
+
+    if (previousFocus && typeof previousFocus.focus === "function") {
+        previousFocus.focus();
+    }
+}
+
+contactUsBtn.addEventListener("click", openContactModal);
+
+document
+    .getElementById("closeContactBtn")
+    .addEventListener("click", closeContactModal);
+
+document
+    .getElementById("cancelContactBtn")
+    .addEventListener("click", closeContactModal);
+
+contactModal.addEventListener("click", event => {
+    if (event.target === contactModal) {
+        closeContactModal();
+    }
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && !contactModal.hidden) {
+        closeContactModal();
+    }
+});
+
+
+/* =========================================================
+   17. CONTACT FORM SUBMISSION
+
+   The phone number is not printed on the page.
+
+   GitHub Pages cannot conceal the number from inspection or
+   send a WhatsApp message directly in the background.
+   This creates a prefilled WhatsApp message. The user must
+   confirm and send it inside WhatsApp.
+========================================================= */
+
+contactForm.addEventListener("submit", event => {
+    event.preventDefault();
+
+    if (!contactForm.reportValidity()) {
+        return;
+    }
+
+    const formData = new FormData(contactForm);
+
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const topic = String(formData.get("topic") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+
+    if (!name || !email || !topic || !message) {
+        showToast("Please complete all fields.");
+        return;
+    }
+
+    if (
+        name.length > 80 ||
+        email.length > 120 ||
+        message.length > 2500
+    ) {
+        showToast("Please check the length of your information.");
+        return;
+    }
+
+    const contactMessage = [
+        "CODE ACADEMY — SUPPORT REQUEST",
+        "",
+        `Name: ${name}`,
+        `Email: ${email}`,
+        `Topic: ${topic}`,
+        "",
+        "Message:",
+        message
+    ].join("\n");
+
+    const whatsappUrl =
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${
+            encodeURIComponent(contactMessage)
+        }`;
+
+    /*
+       Open directly within the form's user interaction.
+       This improves compatibility with popup restrictions.
+    */
+    const popup = window.open(whatsappUrl, "_blank");
+
+    if (popup) {
+        popup.opener = null;
+        closeContactModal();
+        contactForm.reset();
+
+        showToast(
+            "Message prepared. Review it and tap Send in WhatsApp."
+        );
+    } else {
+        /*
+           If the browser blocks the popup, navigate to WhatsApp
+           in the current tab instead of pretending it was sent.
+        */
+        window.location.href = whatsappUrl;
+    }
+});
+
+
+/* =========================================================
+   18. COMMUNITY LINKS
+========================================================= */
+
+document.getElementById("channelBtn").href =
+    WHATSAPP_CHANNEL;
+
+document.getElementById("channelHeroBtn").href =
+    WHATSAPP_CHANNEL;
+
+document.getElementById("emailBtn").href =
+    `mailto:${EMAIL}`;
+
+
+/* =========================================================
+   19. EVENT LISTENERS
+========================================================= */
+
+document.getElementById("backBtn").addEventListener("click", () => {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        window.location.href = "menu.html";
+    }
+});
+
+document.getElementById("shareMainBtn").addEventListener("click", () => {
+    nativeShare();
+});
+
+document.getElementById("copyReferralBtn").addEventListener("click", () => {
+    copyReferralLink();
+});
+
+document.getElementById("copyCodeBtn").addEventListener("click", () => {
+    copyReferralCode();
+});
+
+document.querySelectorAll(".share-card").forEach(button => {
+    button.addEventListener("click", () => {
+        shareToPlatform(button.dataset.platform);
+    });
+});
+
+
+/* =========================================================
+   20. KEYBOARD SHORTCUT
+
+   Ctrl+K / Cmd+K opens the native sharing flow.
+========================================================= */
+
+document.addEventListener("keydown", event => {
+    const key = event.key.toLowerCase();
+
+    if (
+        (event.ctrlKey || event.metaKey) &&
+        key === "k" &&
+        contactModal.hidden
+    ) {
+        event.preventDefault();
+        nativeShare();
+    }
+});
+
+</script>
+
+</body>
+</html>
