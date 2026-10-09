@@ -1,0 +1,1540 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<meta name="description" content="Code Breaker — learn programming by solving interactive coding challenges.">
+<title>Code Breaker | Code Academy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #020617;
+  --panel: rgba(15, 23, 42, .84);
+  --panel2: #111c32;
+  --border: rgba(148, 163, 184, .16);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --cyan: #22d3ee;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --green: #4ade80;
+  --red: #fb7185;
+  --gold: #fbbf24;
+  --radius: 20px;
+  --page-width: 1100px;
+  font-family: Inter, system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(49,46,129,.26), transparent 38%),
+    radial-gradient(ellipse at 100% 25%, rgba(8,145,178,.13), transparent 34%),
+    var(--bg);
+  overflow-x: hidden;
+}
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+button:disabled { opacity: .48; cursor: not-allowed; }
+button, .clickable { touch-action: manipulation; }
+a { color: inherit; text-decoration: none; }
+button { color: inherit; }
+.shell {
+  width: min(100% - 32px, var(--page-width));
+  margin-inline: auto;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(2,6,23,.84);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top);
+}
+.topbar-inner {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand { display:flex; align-items:center; gap:10px; min-width:0; }
+.brand-mark {
+  width: 40px; height: 40px; flex: 0 0 auto;
+  display:grid; place-items:center;
+  border:1px solid rgba(34,211,238,.32);
+  border-radius:13px;
+  color:var(--cyan);
+  background:linear-gradient(145deg,rgba(34,211,238,.17),rgba(167,139,250,.13));
+  box-shadow:0 0 25px rgba(34,211,238,.08);
+}
+.brand-name { font-size:14px; font-weight:900; letter-spacing:-.35px; }
+.brand-sub { color:var(--muted); font-size:10px; margin-top:3px; }
+.top-actions { display:flex; gap:8px; align-items:center; }
+.icon-btn, .secondary-btn, .primary-btn, .hint-btn {
+  border:1px solid var(--border);
+  border-radius:12px;
+  min-height:42px;
+  padding:10px 13px;
+  background:rgba(15,23,42,.85);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.icon-btn { width:42px; padding:0; }
+.primary-btn {
+  background:linear-gradient(120deg,#0891b2,#4f46e5);
+  border-color:rgba(103,232,249,.28);
+  font-weight:800;
+  box-shadow:0 8px 24px rgba(8,145,178,.14);
+}
+.secondary-btn:hover, .icon-btn:hover { border-color:rgba(34,211,238,.5); }
+.primary-btn:hover { transform:translateY(-1px); }
+main { padding:25px 0 44px; }
+.screen { display:none; animation:screenIn .25s ease both; }
+.screen.active { display:block; }
+@keyframes screenIn {
+  from { opacity:0; transform:translateY(7px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.hero {
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(250px,.95fr);
+  align-items:center;
+  gap:25px;
+  padding:clamp(20px,4vw,42px);
+  border:1px solid var(--border);
+  border-radius:26px;
+  background:linear-gradient(135deg,rgba(15,23,42,.95),rgba(15,23,42,.55));
+  overflow:hidden;
+  position:relative;
+}
+.hero::before {
+  content:""; position:absolute; width:300px; height:300px;
+  right:-120px; top:-160px; border-radius:50%;
+  background:rgba(34,211,238,.10); filter:blur(35px); pointer-events:none;
+}
+.eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--cyan); font-size:11px; font-weight:800;
+  letter-spacing:1.4px; text-transform:uppercase;
+}
+h1 { margin:15px 0 12px; font-size:clamp(30px,5vw,53px); line-height:1.05; letter-spacing:-2px; }
+.gradient-text {
+  background:linear-gradient(90deg,#67e8f9,#a5b4fc,#c4b5fd);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.lead { color:#bac7d8; font-size:14px; line-height:1.8; max-width:540px; }
+.hero-buttons { display:flex; flex-wrap:wrap; gap:10px; margin-top:23px; }
+.hero-art { min-width:0; display:grid; place-items:center; perspective:800px; }
+.vault-scene {
+  width:min(100%,300px); aspect-ratio:1; position:relative;
+  display:grid; place-items:center;
+  transform-style:preserve-3d;
+}
+.vault-orbit {
+  position:absolute; inset:10%; border:1px solid rgba(34,211,238,.28);
+  border-radius:50%; transform:rotateX(65deg) rotateZ(-25deg);
+  box-shadow:0 0 30px rgba(34,211,238,.08);
+}
+.vault-orbit.two {
+  inset:18%; border-color:rgba(167,139,250,.35);
+  transform:rotateY(65deg) rotateZ(25deg);
+}
+.vault-core {
+  width:56%; aspect-ratio:1; border-radius:28%;
+  display:grid; place-items:center; position:relative;
+  background:linear-gradient(145deg,#182b49,#080e20);
+  border:1px solid rgba(103,232,249,.5);
+  box-shadow:inset 0 0 30px rgba(34,211,238,.09),0 20px 50px #0008,0 0 40px #0891b222;
+  transform:rotateX(8deg) rotateY(-12deg);
+}
+.vault-core::before {
+  content:""; position:absolute; inset:9%; border-radius:23%;
+  border:1px solid rgba(34,211,238,.22);
+}
+.vault-core i { font-size:clamp(42px,8vw,76px); color:var(--cyan); text-shadow:0 0 25px #22d3ee55; }
+.floating-chip {
+  position:absolute; padding:9px 12px; border:1px solid var(--border);
+  background:rgba(15,23,42,.93); border-radius:12px; font-size:11px;
+  box-shadow:0 12px 30px #0004; color:#cbd5e1;
+}
+.chip-one { top:16%; right:0; }
+.chip-two { bottom:16%; left:0; }
+.section-title { font-size:19px; letter-spacing:-.5px; margin:28px 0 13px; }
+.stats-grid {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px; margin-top:18px;
+}
+.stat-card, .panel, .instruction-card, .history-item {
+  border:1px solid var(--border);
+  background:var(--panel);
+  border-radius:var(--radius);
+  min-width:0;
+}
+.stat-card { padding:16px; }
+.stat-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.stat-icon {
+  width:35px;height:35px;border-radius:11px;display:grid;place-items:center;
+  background:rgba(34,211,238,.1);color:var(--cyan);
+}
+.stat-label { color:var(--muted);font-size:11px;margin-top:13px; }
+.stat-value { font-size:clamp(18px,2.5vw,25px);font-weight:900;margin-top:5px; overflow-wrap:anywhere; }
+.stat-note { color:var(--muted);font-size:10px;margin-top:4px; }
+.instructions {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+}
+.instruction-card { padding:17px; }
+.instruction-card i { color:var(--cyan);font-size:18px; }
+.instruction-card h3 { font-size:13px;margin:12px 0 7px; }
+.instruction-card p { color:var(--muted);font-size:12px;line-height:1.7;margin:0; }
+.note {
+  padding:13px 15px;border:1px solid rgba(251,191,36,.2);
+  border-radius:14px;background:rgba(120,80,10,.12);
+  color:#f5dca0;font-size:12px;line-height:1.7;margin-top:15px;
+}
+.game-layout { display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:15px;align-items:start; }
+.panel { padding:clamp(15px,3vw,25px); }
+.game-top {
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;
+}
+.kicker { color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase; }
+.game-title { margin:8px 0 0;font-size:clamp(22px,3.5vw,30px);letter-spacing:-1px; }
+.muted { color:var(--muted);font-size:12px;line-height:1.65; }
+.pill {
+  border:1px solid var(--border);border-radius:99px;padding:8px 10px;
+  font-size:11px;color:#cbd5e1;white-space:nowrap;
+}
+.progress-track { height:5px;border-radius:99px;background:#1e293b;overflow:hidden;margin:18px 0 22px; }
+.progress-fill { height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .3s; }
+.question-text { font-size:15px;line-height:1.8;margin:0 0 16px; }
+.code-box {
+  border:1px solid rgba(96,165,250,.19);border-radius:15px;overflow:hidden;
+  background:#050b18;margin:15px 0 19px;min-width:0;
+}
+.code-head {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:11px 13px;border-bottom:1px solid rgba(148,163,184,.12);
+  color:var(--muted);font-size:10px;
+}
+.code-dots { display:flex;gap:5px; }
+.code-dots span { width:7px;height:7px;border-radius:50%;background:#64748b; }
+.code-dots span:first-child { background:#fb7185; }
+.code-dots span:nth-child(2) { background:#fbbf24; }
+.code-dots span:nth-child(3) { background:#4ade80; }
+pre {
+  margin:0;padding:17px;white-space:pre-wrap;overflow-wrap:anywhere;
+  font:12px/1.9 "JetBrains Mono",monospace;color:#c4b5fd;
+  overflow-x:auto;max-width:100%;
+}
+.answers { display:grid;gap:9px; }
+.answer-option {
+  width:100%;text-align:left;display:flex;align-items:flex-start;gap:11px;
+  padding:13px;border:1px solid var(--border);border-radius:13px;
+  background:rgba(15,23,42,.68);cursor:pointer;
+  font-size:12px;line-height:1.65;overflow-wrap:anywhere;min-width:0;
+}
+.answer-option:hover:not(:disabled) { border-color:rgba(34,211,238,.55);background:rgba(8,145,178,.08); }
+.answer-letter {
+  flex:0 0 25px;width:25px;height:25px;display:grid;place-items:center;
+  border-radius:8px;background:#1e293b;color:#cbd5e1;font-weight:800;font-size:11px;
+}
+.answer-option.correct { border-color:rgba(74,222,128,.6);background:rgba(22,163,74,.10); }
+.answer-option.correct .answer-letter { background:#166534;color:white; }
+.answer-option.wrong { border-color:rgba(251,113,133,.55);background:rgba(190,24,93,.08); }
+.answer-option.wrong .answer-letter { background:#9f1239;color:white; }
+.feedback {
+  display:none;padding:13px;border-radius:12px;font-size:12px;line-height:1.7;margin-top:13px;
+}
+.feedback.show { display:block; }
+.feedback.good { color:#bbf7d0;border:1px solid #166534;background:#052e1a; }
+.feedback.bad { color:#fecdd3;border:1px solid #881337;background:#310b1a; }
+.game-controls { display:flex;gap:9px;flex-wrap:wrap;margin-top:16px; }
+.game-controls button { flex:1 1 140px; }
+.hint-btn { color:#fde68a;border-color:rgba(251,191,36,.24);background:rgba(120,80,10,.13); }
+.side-stack { display:grid;gap:12px; }
+.side-card { padding:16px;border:1px solid var(--border);background:rgba(15,23,42,.65);border-radius:17px;min-width:0; }
+.side-card h3 { font-size:12px;margin:0 0 12px; }
+.timer-value { font:700 25px "JetBrains Mono",monospace;letter-spacing:1px; }
+.mini-row { display:flex;justify-content:space-between;gap:10px;margin-top:11px;font-size:11px; }
+.mini-row span:first-child { color:var(--muted); }
+.mini-row span:last-child { text-align:right;overflow-wrap:anywhere; }
+.badge-list { display:grid;gap:9px; }
+.badge-row { display:flex;align-items:center;gap:10px;font-size:11px;color:#cbd5e1; }
+.badge-icon { width:32px;height:32px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;background:rgba(167,139,250,.12);color:var(--purple); }
+.empty { padding:25px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7; }
+.history-header { display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap; }
+.history-list { display:grid;gap:10px;margin-top:16px; }
+.history-item { padding:14px;display:flex;align-items:flex-start;gap:12px; }
+.history-symbol { width:36px;height:36px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;background:rgba(34,211,238,.1);color:var(--cyan); }
+.history-body { flex:1;min-width:0; }
+.history-body strong { display:block;font-size:12px;overflow-wrap:anywhere; }
+.history-body p { margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.65;overflow-wrap:anywhere; }
+.history-time { color:var(--muted);font-size:10px;margin-top:7px; }
+.change-line { display:flex;gap:10px;flex-wrap:wrap;font-size:11px;margin-top:8px; }
+.positive { color:var(--green); }
+.negative { color:#fda4af; }
+.toast {
+  position:fixed;z-index:50;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));
+  transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  width:max-content;max-width:calc(100% - 28px);
+  padding:12px 16px;border-radius:13px;background:#172033;border:1px solid #334155;
+  box-shadow:0 12px 35px #0007;font-size:12px;line-height:1.6;transition:.2s;
+}
+.toast.show { opacity:1;transform:translate(-50%,0); }
+.toast.error { border-color:#9f1239; }
+.toast.success { border-color:#166534; }
+.footer { text-align:center;color:#64748b;font-size:10px;padding:18px 0 0; }
+.hidden { display:none!important; }
+
+@media (max-width:760px) {
+  .shell { width:min(100% - 24px,var(--page-width)); }
+  main { padding-top:14px; }
+  .topbar-inner { min-height:58px; }
+  .brand-mark { width:36px;height:36px;border-radius:11px; }
+  .brand-name { font-size:12px; }
+  .brand-sub { font-size:9px; }
+  .top-actions .button-label { display:none; }
+  .hero { grid-template-columns:minmax(0,1fr);gap:10px;padding:22px 18px; }
+  .hero-art { max-height:235px; }
+  .vault-scene { width:min(72vw,235px); }
+  h1 { font-size:clamp(30px,9vw,44px);letter-spacing:-1.4px; }
+  .lead { font-size:13px; }
+  .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+  .stat-card { padding:13px; }
+  .instructions { grid-template-columns:minmax(0,1fr);gap:9px; }
+  .instruction-card { display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:9px;padding:13px; }
+  .instruction-card i { grid-row:span 2;margin-top:3px; }
+  .instruction-card h3 { margin:0 0 5px; }
+  .game-layout { grid-template-columns:minmax(0,1fr); }
+  .side-stack { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .side-card { padding:13px; }
+  .timer-value { font-size:20px; }
+  .panel { padding:15px; }
+  .question-text { font-size:13px; }
+  pre { font-size:11px;padding:13px; }
+  .answer-option { padding:11px;font-size:11px; }
+  .game-controls button { flex-basis:100%; }
+  .pill { font-size:10px; }
+}
+@media (max-width:380px) {
+  .shell { width:calc(100% - 18px); }
+  .topbar-inner { gap:6px; }
+  .brand { gap:7px; }
+  .brand-name { font-size:11px; }
+  .top-actions { gap:5px; }
+  .icon-btn { width:37px;min-height:37px; }
+  .hero { padding:17px 13px; }
+  .hero-buttons { display:grid;grid-template-columns:minmax(0,1fr); }
+  .hero-buttons button { width:100%; }
+  .stat-value { font-size:19px; }
+  .side-stack { grid-template-columns:minmax(0,1fr); }
+  .history-item { padding:11px;gap:9px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important; }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="games_dash.html" aria-label="Code Academy games dashboard">
+      <span class="brand-mark"><i class="fa-solid fa-code"></i></span>
+      <span>
+        <span class="brand-name">CODE ACADEMY</span>
+        <span class="brand-sub">CODE BREAKER</span>
+      </span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-btn" id="voiceTop" aria-label="Listen to game guide" title="Listen to guide"><i class="fa-solid fa-volume-high"></i></button>
+      <button class="secondary-btn" id="historyTop"><i class="fa-solid fa-clock-rotate-left"></i><span class="button-label">History</span></button>
+      <button class="icon-btn" id="dashboardTop" aria-label="Return to games dashboard" title="Dashboard"><i class="fa-solid fa-house"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <!-- INTRO / ORIENTATION -->
+  <section class="screen active" id="introScreen">
+    <div class="hero">
+      <div>
+        <div class="eyebrow"><i class="fa-solid fa-shield-halved"></i> THINK. DEBUG. BREAK THROUGH.</div>
+        <h1>Welcome to<br><span class="gradient-text">Code Breaker.</span></h1>
+        <p class="lead" id="welcomeText">Welcome, Coder. Solve real programming puzzles, learn how to debug, and build your coding confidence one challenge at a time.</p>
+        <div class="hero-buttons">
+          <button class="primary-btn" id="startGame"><i class="fa-solid fa-play"></i> Enter the Arena</button>
+          <button class="secondary-btn" id="listenIntro"><i class="fa-solid fa-headphones"></i> Listen to Guide</button>
+        </div>
+        <p class="muted" style="margin-top:13px">Your progress and rewards are linked to your Code Academy account.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="vault-scene">
+          <div class="vault-orbit"></div><div class="vault-orbit two"></div>
+          <div class="vault-core"><i class="fa-solid fa-lock"></i></div>
+          <div class="floating-chip chip-one"><i class="fa-solid fa-bolt"></i> Logic engine</div>
+          <div class="floating-chip chip-two"><i class="fa-solid fa-terminal"></i> Debug mode</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-puzzle-piece"></i></span><span class="pill">Starter bank</span></div>
+        <div class="stat-value" id="availableCount">50+</div><div class="stat-label">Questions available</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-star"></i></span><span class="pill">Per solve</span></div>
+        <div class="stat-value">+10 XP</div><div class="stat-label">Correctly complete a new question</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-coins"></i></span><span class="pill">Per solve</span></div>
+        <div class="stat-value">+5</div><div class="stat-label">Coins earned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-lightbulb"></i></span><span class="pill">Optional</span></div>
+        <div class="stat-value">−50 XP</div><div class="stat-label">Hint also costs 25 coins</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Know the rules before you play</h2>
+    <div class="instructions">
+      <article class="instruction-card">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h3>1. Find the problem</h3>
+        <p>Read the prompt and code carefully. Choose the best answer from the options. Challenges become harder as you progress.</p>
+      </article>
+      <article class="instruction-card">
+        <i class="fa-solid fa-lightbulb"></i>
+        <h3>2. Use hints wisely</h3>
+        <p>A hint costs 50 XP and 25 coins. Your balance is checked before a hint is revealed, and hint use is recorded in your history.</p>
+      </article>
+      <article class="instruction-card">
+        <i class="fa-solid fa-trophy"></i>
+        <h3>3. Earn rewards</h3>
+        <p>Complete a question you have not completed before to earn 10 XP and 5 coins. Re-answering an old question does not pay rewards twice.</p>
+      </article>
+    </div>
+    <div class="note"><i class="fa-solid fa-circle-info"></i> The game starts with 50 built-in questions and also attempts to load extra questions from <strong>codebreaker.json</strong>. If the JSON file is unavailable, the built-in questions still work. If you finish every available question, the game will tell you instead of silently repeating them.</div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="gameScreen">
+    <div class="game-layout">
+      <div class="panel">
+        <div class="game-top">
+          <div>
+            <div class="kicker">Live challenge</div>
+            <h2 class="game-title" id="questionHeading">Loading challenge…</h2>
+            <p class="muted" id="questionMeta">Preparing your question bank.</p>
+          </div>
+          <span class="pill" id="difficultyPill">STARTER</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+        <div id="questionArea">
+          <p class="question-text" id="questionPrompt"></p>
+          <div class="code-box">
+            <div class="code-head">
+              <span><span class="code-dots"><span></span><span></span><span></span></span> <span id="codeLanguage">JavaScript</span></span>
+              <span>READ CAREFULLY</span>
+            </div>
+            <pre id="codeSnippet"></pre>
+          </div>
+          <div class="answers" id="answers"></div>
+          <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+          <div class="game-controls">
+            <button class="hint-btn" id="hintButton"><i class="fa-regular fa-lightbulb"></i> Get Hint · −50 XP / −25 coins</button>
+            <button class="secondary-btn" id="nextButton" disabled><i class="fa-solid fa-arrow-right"></i> Next Question</button>
+          </div>
+        </div>
+
+        <div class="hidden" id="bankFinished">
+          <div class="empty">
+            <i class="fa-solid fa-trophy" style="font-size:35px;color:var(--gold)"></i>
+            <h3 style="color:var(--text)">You've reached the end of the available bank!</h3>
+            <p id="bankFinishedMessage">You have answered all currently available questions.</p>
+            <p>Add more unique questions to <strong>codebreaker.json</strong> and reopen the game to expand your challenges.</p>
+            <button class="primary-btn" id="reloadQuestions"><i class="fa-solid fa-rotate"></i> Check for new questions</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side-stack">
+        <div class="side-card">
+          <h3><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> Playing time</h3>
+          <div class="timer-value" id="sessionTimer">00:00</div>
+          <div class="muted">Current session</div>
+          <div class="mini-row"><span>Today</span><span id="todayTime">0m</span></div>
+          <div class="mini-row"><span>Game lifetime</span><span id="lifetimeTime">0m</span></div>
+        </div>
+        <div class="side-card">
+          <h3><i class="fa-solid fa-chart-simple" style="color:var(--purple)"></i> Your progress</h3>
+          <div class="mini-row"><span>Signed in as</span><span id="playerName">Coder</span></div>
+          <div class="mini-row"><span>Completed</span><span id="completedCount">0</span></div>
+          <div class="mini-row"><span>Questions left</span><span id="remainingCount">—</span></div>
+          <div class="mini-row"><span>Hints used</span><span id="hintCount">0</span></div>
+          <div class="mini-row"><span>XP balance</span><span id="xpBalance">0</span></div>
+          <div class="mini-row"><span>Coin balance</span><span id="coinBalance">0</span></div>
+        </div>
+        <div class="side-card">
+          <h3><i class="fa-solid fa-medal" style="color:var(--gold)"></i> Recent badges</h3>
+          <div class="badge-list" id="badgeList"><div class="muted">Your earned badges will appear here.</div></div>
+        </div>
+        <button class="secondary-btn" id="historyButton"><i class="fa-solid fa-clock-rotate-left"></i> View full history</button>
+        <button class="secondary-btn" id="exitGame"><i class="fa-solid fa-arrow-left"></i> Exit to introduction</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="historyScreen">
+    <div class="panel">
+      <div class="history-header">
+        <div>
+          <div class="kicker">Your learning record</div>
+          <h2 class="game-title">Code Breaker History</h2>
+          <p class="muted">Completed questions, hint usage, rewards, and playing-time totals.</p>
+        </div>
+        <button class="secondary-btn" id="historyBack"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Completed questions</div><div class="stat-value" id="historyCompleted">0</div></div>
+        <div class="stat-card"><div class="stat-label">Hints used</div><div class="stat-value" id="historyHints">0</div></div>
+        <div class="stat-card"><div class="stat-label">Time today</div><div class="stat-value" id="historyToday">0m</div></div>
+        <div class="stat-card"><div class="stat-label">Total game time</div><div class="stat-value" id="historyLifetime">0m</div></div>
+      </div>
+      <h3 class="section-title">Activity history</h3>
+      <div class="history-list" id="historyList"><div class="empty">Loading your activity…</div></div>
+      <h3 class="section-title">Earned badges</h3>
+      <div class="badge-list" id="historyBadges"><div class="empty">Loading badges…</div></div>
+    </div>
+  </section>
+
+  <div class="footer">Code Academy · We Learn, We Code, We Succeed</div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import {
+  doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs,
+  query, orderBy, limit, runTransaction, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/*
+ * BUILT-IN STARTER BANK: 50 questions.
+ * Question fields:
+ * id, topic, difficulty, prompt, code, options, answer, hint, explanation
+ * `answer` is the zero-based index of the correct option.
+ */
+const BUILTIN_QUESTIONS = [
+  {
+    id:"cb001",topic:"Syntax",difficulty:"Starter",
+    prompt:"This line is missing one important character. Which correction fixes the syntax?",
+    code:"let score = 10;\nconsole.log(score",
+    options:["Add a semicolon after let","Add a closing parenthesis )","Change let to const only","Put score inside quotation marks"],
+    answer:1,hint:"The function call opens with a parenthesis. Check whether it closes.",
+    explanation:"A function call that opens with `(` must close with `)`: console.log(score)."
+  },
+  {
+    id:"cb002",topic:"Conditionals",difficulty:"Starter",
+    prompt:"Find the syntax error in this condition.",
+    code:"let age = 16;\nif (age >= 18 {\n  console.log('Adult');\n}",
+    options:["Remove the if keyword","Add a closing parenthesis before {","Change age to a string","Replace console.log with return"],
+    answer:1,hint:"The condition begins with a parenthesis. What should appear before the opening brace?",
+    explanation:"Write `if (age >= 18) {`. The condition needs a closing parenthesis before the block starts."
+  },
+  {
+    id:"cb003",topic:"Variables",difficulty:"Starter",
+    prompt:"Why does this code fail when it tries to print the user's name?",
+    code:"const userName = 'Ama';\nconsole.log(username);",
+    options:["Strings cannot be stored in const","The variable name uses different capitalization","console.log cannot print text","A semicolon cannot follow a string"],
+    answer:1,hint:"JavaScript distinguishes uppercase and lowercase letters in variable names.",
+    explanation:"`userName` and `username` are different identifiers. Use the exact declared name."
+  },
+  {
+    id:"cb004",topic:"Strings",difficulty:"Starter",
+    prompt:"Which option correctly closes the string?",
+    code:"const city = 'Accra;\nconsole.log(city);",
+    options:["const city = Accra;","const city = 'Accra';","const city = 'Accra;","console.log('city);"],
+    answer:1,hint:"A string opened with a single quote must have a matching closing quote.",
+    explanation:"The corrected declaration is `const city = 'Accra';`."
+  },
+  {
+    id:"cb005",topic:"Comparison",difficulty:"Starter",
+    prompt:"The program should run the block only when the score is exactly 10 in both value and type. What should replace the operator?",
+    code:"let score = 10;\nif (score = 10) {\n  console.log('Perfect');\n}",
+    options:["=","===",">=","!="],
+    answer:1,hint:"One operator assigns a value. Another checks strict equality.",
+    explanation:"Use `===` to compare value and type without assigning a new value."
+  },
+  {
+    id:"cb006",topic:"Arrays",difficulty:"Starter",
+    prompt:"What should be changed to print the first item in this array?",
+    code:"const colors = ['red', 'blue', 'gold'];\nconsole.log(colors[1]);",
+    options:["Use colors[0]","Use colors[3]","Use colors.first","Change the array to an object"],
+    answer:0,hint:"JavaScript arrays start counting positions at zero.",
+    explanation:"The first array item is at index `0`, so use `colors[0]`."
+  },
+  {
+    id:"cb007",topic:"Arithmetic",difficulty:"Starter",
+    prompt:"The expected answer is 15. Which operator should replace `+`?",
+    code:"const price = 20;\nconst discount = 5;\nconsole.log(price + discount);",
+    options:["*","/","-","%"],
+    answer:2,hint:"The discount should be taken away from the original price.",
+    explanation:"Use subtraction: `20 - 5` produces `15`."
+  },
+  {
+    id:"cb008",topic:"Functions",difficulty:"Starter",
+    prompt:"Which change makes the function return the greeting instead of returning nothing?",
+    code:"function greet() {\n  'Hello, coder!';\n}\nconsole.log(greet());",
+    options:["Add return before the string","Rename function to console","Replace string with a number","Remove the function parentheses"],
+    answer:0,hint:"A function needs a keyword to send a value back to its caller.",
+    explanation:"`return 'Hello, coder!';` sends the greeting back from the function."
+  },
+  {
+    id:"cb009",topic:"Loops",difficulty:"Starter",
+    prompt:"This loop should print 0, 1, and 2. What condition is best?",
+    code:"for (let i = 0; i <= 3; i++) {\n  console.log(i);\n}",
+    options:["i < 0","i < 3","i === 3","i > 3"],
+    answer:1,hint:"The final printed value should be 2, not 3.",
+    explanation:"`i < 3` allows 0, 1, and 2, then stops."
+  },
+  {
+    id:"cb010",topic:"Booleans",difficulty:"Starter",
+    prompt:"Which value represents a true boolean rather than text?",
+    code:"const isReady = 'true';",
+    options:["const isReady = true;","const isReady = 'yes';","const isReady = 1;","const isReady = 'false';"],
+    answer:0,hint:"A boolean literal does not need quotation marks.",
+    explanation:"`true` without quotes is a boolean. `'true'` is a string."
+  },
+  {
+    id:"cb011",topic:"Objects",difficulty:"Starter",
+    prompt:"How should the code access the user's name property?",
+    code:"const user = { name: 'Kojo', level: 2 };\nconsole.log(user.username);",
+    options:["user[0]","user.name","user->name","name.user"],
+    answer:1,hint:"Look at the exact property key defined in the object.",
+    explanation:"The object has a `name` property, so `user.name` returns `Kojo`."
+  },
+  {
+    id:"cb012",topic:"Strings",difficulty:"Starter",
+    prompt:"Which expression joins the two words with a space between them?",
+    code:"const first = 'Code';\nconst second = 'Breaker';\nconsole.log(first + second);",
+    options:["first - second","first + ' ' + second","first / second","first === second"],
+    answer:1,hint:"Join the first word, a single-space string, and the second word.",
+    explanation:"`first + ' ' + second` produces `Code Breaker`."
+  },
+  {
+    id:"cb013",topic:"Conditionals",difficulty:"Starter",
+    prompt:"The message should appear only when `loggedIn` is true. Which condition is clearest?",
+    code:"const loggedIn = false;\nif (loggedIn = true) {\n  console.log('Welcome');\n}",
+    options:["if (loggedIn === true)","if loggedIn = true","if (loggedIn !== true)","if (true = loggedIn)"],
+    answer:0,hint:"Do not assign a new value in the condition. Compare the existing value.",
+    explanation:"`if (loggedIn === true)` checks whether the variable is true."
+  },
+  {
+    id:"cb014",topic:"Arrays",difficulty:"Starter",
+    prompt:"How can the program find the number of items in this array?",
+    code:"const tools = ['HTML', 'CSS', 'JavaScript'];\nconsole.log(tools.count);",
+    options:["tools.size()","tools.length","length.tools","tools.items"],
+    answer:1,hint:"JavaScript arrays have a built-in property for their item count.",
+    explanation:"Use `tools.length`, which returns `3`."
+  },
+  {
+    id:"cb015",topic:"Functions",difficulty:"Starter",
+    prompt:"Which call actually runs the function?",
+    code:"function celebrate() {\n  console.log('Great work!');\n}\n// The function is not called yet.",
+    options:["celebrate;","run celebrate","celebrate()","function celebrate"],
+    answer:2,hint:"A normal function call uses the function name followed by parentheses.",
+    explanation:"`celebrate()` invokes the function."
+  },
+  {
+    id:"cb016",topic:"Loops",difficulty:"Intermediate",
+    prompt:"The loop should count upward. Which update expression belongs here?",
+    code:"for (let i = 0; i < 4; ___) {\n  console.log(i);\n}",
+    options:["i--","i++","i = 0","i < 4"],
+    answer:1,hint:"Each iteration must move the counter toward the stopping condition.",
+    explanation:"`i++` increases the counter by one each time."
+  },
+  {
+    id:"cb017",topic:"Scope",difficulty:"Intermediate",
+    prompt:"Why is `message` unavailable outside this block?",
+    code:"if (true) {\n  let message = 'Hello';\n}\nconsole.log(message);",
+    options:["let is block-scoped","console.log only accepts numbers","Strings cannot be declared in blocks","if blocks cannot contain variables"],
+    answer:0,hint:"Think about where a variable declared with `let` can be accessed.",
+    explanation:"A `let` variable declared inside the block is not accessible outside it."
+  },
+  {
+    id:"cb018",topic:"Parameters",difficulty:"Intermediate",
+    prompt:"What should be added so the function can calculate the sum of its two inputs?",
+    code:"function add(a, b) {\n  return a ___ b;\n}",
+    options:["&&","==","+",":"],
+    answer:2,hint:"The function should perform arithmetic, not a comparison or logical test.",
+    explanation:"The `+` operator adds the two parameters."
+  },
+  {
+    id:"cb019",topic:"Return values",difficulty:"Intermediate",
+    prompt:"What is the problem with this function?",
+    code:"function double(n) {\n  return;\n  n * 2;\n}\nconsole.log(double(4));",
+    options:["The number 4 cannot be passed to a function","Code after return in this path is not executed","Functions cannot use multiplication","console.log must be inside the function"],
+    answer:1,hint:"When JavaScript reaches return, what happens to the function?",
+    explanation:"The bare `return` ends the function immediately. Use `return n * 2;`."
+  },
+  {
+    id:"cb020",topic:"Equality",difficulty:"Intermediate",
+    prompt:"Which condition checks that `count` is not equal to 0 in both value and type?",
+    code:"const count = 3;\nif (count ___ 0) {\n  console.log('Not zero');\n}",
+    options:["===","!==","=","<="],
+    answer:1,hint:"Choose the strict inequality operator.",
+    explanation:"`!==` checks that the values or types are not strictly equal."
+  },
+  {
+    id:"cb021",topic:"Objects",difficulty:"Intermediate",
+    prompt:"Which syntax correctly updates the object's level to 3?",
+    code:"const player = { level: 2 };\n___\nconsole.log(player.level);",
+    options:["player.level = 3;","player = level: 3;","player->level(3);","level.player == 3;"],
+    answer:0,hint:"Use dot notation to access the property, then assign the new value.",
+    explanation:"`player.level = 3;` updates the object's property."
+  },
+  {
+    id:"cb022",topic:"Array methods",difficulty:"Intermediate",
+    prompt:"Which method adds `'Python'` to the end of this array?",
+    code:"const languages = ['HTML', 'CSS'];\n// Add Python at the end",
+    options:["languages.push('Python')","languages.pop('Python')","languages.shift('Python')","languages.slice('Python')"],
+    answer:0,hint:"Choose the array method that appends an item.",
+    explanation:"`push()` adds an item to the end of an array."
+  },
+  {
+    id:"cb023",topic:"Logical operators",difficulty:"Intermediate",
+    prompt:"A user must be signed in AND have permission. Which operator is needed?",
+    code:"if (signedIn ___ hasPermission) {\n  openPage();\n}",
+    options:["||","&&","!","%"],
+    answer:1,hint:"Both conditions must be true.",
+    explanation:"`&&` requires both expressions to be truthy."
+  },
+  {
+    id:"cb024",topic:"Logical operators",difficulty:"Intermediate",
+    prompt:"The program should allow entry if the user is an admin OR an owner. Choose the operator.",
+    code:"if (isAdmin ___ isOwner) {\n  allowEntry();\n}",
+    options:["&&","||","===","**"],
+    answer:1,hint:"Either one of the two conditions can be enough.",
+    explanation:"`||` is logical OR; either condition can make the expression true."
+  },
+  {
+    id:"cb025",topic:"Loops",difficulty:"Intermediate",
+    prompt:"Which keyword skips the rest of the current iteration and moves to the next one?",
+    code:"for (let i = 0; i < 5; i++) {\n  if (i === 2) {\n    ___;\n  }\n  console.log(i);\n}",
+    options:["break","return","continue","stop"],
+    answer:2,hint:"The loop should continue running, but skip printing the value 2.",
+    explanation:"`continue` skips the remainder of the current iteration."
+  },
+  {
+    id:"cb026",topic:"Array indexing",difficulty:"Intermediate",
+    prompt:"What is the last valid index in an array with four items?",
+    code:"const nums = [10, 20, 30, 40];\nconsole.log(nums[___]);",
+    options:["4","-1","3","5"],
+    answer:2,hint:"The first item is index zero. Count four positions starting from zero.",
+    explanation:"The indices are 0, 1, 2, and 3. The last item is `nums[3]`."
+  },
+  {
+    id:"cb027",topic:"Template literals",difficulty:"Intermediate",
+    prompt:"Which string correctly includes the value of `name` using a template literal?",
+    code:"const name = 'Ama';\nconsole.log(___);",
+    options:["'Hello, ${name}'","`Hello, ${name}`","'Hello, name'","(Hello, ${name})"],
+    answer:1,hint:"Template literals use backticks, not ordinary single quotes.",
+    explanation:"Backticks allow `${name}` interpolation."
+  },
+  {
+    id:"cb028",topic:"DOM basics",difficulty:"Intermediate",
+    prompt:"Which line selects the HTML element whose ID is `status`?",
+    code:"<p id=\"status\">Ready</p>\n\n// JavaScript:",
+    options:["document.getElementById('status')","document.getClass('status')","window.selectId('status')","document.id.status()"],
+    answer:0,hint:"Use the document method designed to find an element by its ID.",
+    explanation:"`document.getElementById('status')` selects the element with that ID."
+  },
+  {
+    id:"cb029",topic:"DOM updates",difficulty:"Intermediate",
+    prompt:"How should the selected element's text be changed to `Completed`?",
+    code:"const status = document.getElementById('status');\nstatus.___ = 'Completed';",
+    options:["innerText","styleText","textColor","htmlFile"],
+    answer:0,hint:"The property should change the text displayed inside the element.",
+    explanation:"`innerText` sets the element's displayed text."
+  },
+  {
+    id:"cb030",topic:"Event handling",difficulty:"Intermediate",
+    prompt:"Which method registers a click handler on a button?",
+    code:"const button = document.querySelector('button');\nbutton.___('click', handleClick);",
+    options:["onClick","addEventListener","clickEvent","listen"],
+    answer:1,hint:"This method accepts an event name and a callback function.",
+    explanation:"`addEventListener('click', handleClick)` registers the click handler."
+  },
+  {
+    id:"cb031",topic:"Array iteration",difficulty:"Advanced",
+    prompt:"Which method creates a new array by transforming every item?",
+    code:"const numbers = [1, 2, 3];\nconst doubled = numbers.___(n => n * 2);",
+    options:["filter","find","map","some"],
+    answer:2,hint:"Choose the method that returns a transformed array of matching length.",
+    explanation:"`map()` transforms each array element and returns a new array."
+  },
+  {
+    id:"cb032",topic:"Array filtering",difficulty:"Advanced",
+    prompt:"Which method keeps only numbers greater than 10?",
+    code:"const numbers = [4, 12, 18, 7];\nconst result = numbers.___(n => n > 10);",
+    options:["map","filter","reduce","join"],
+    answer:1,hint:"The result should contain only elements that pass a condition.",
+    explanation:"`filter()` returns a new array containing elements that pass the test."
+  },
+  {
+    id:"cb033",topic:"Array search",difficulty:"Advanced",
+    prompt:"Which method returns the first number greater than 10, rather than an array?",
+    code:"const numbers = [4, 12, 18, 7];\nconst result = numbers.___(n => n > 10);",
+    options:["filter","map","find","forEach"],
+    answer:2,hint:"This method stops when it finds the first matching item.",
+    explanation:"`find()` returns the first element satisfying the callback condition."
+  },
+  {
+    id:"cb034",topic:"Error handling",difficulty:"Advanced",
+    prompt:"Which block catches an exception thrown inside the try block?",
+    code:"try {\n  riskyOperation();\n} ___ (error) {\n  console.log(error.message);\n}",
+    options:["if","catch","except","finally"],
+    answer:1,hint:"JavaScript uses a specific keyword for handling exceptions.",
+    explanation:"`catch (error)` receives an exception thrown by the try block."
+  },
+  {
+    id:"cb035",topic:"Promises",difficulty:"Advanced",
+    prompt:"Which method handles the successfully resolved value of a Promise?",
+    code:"fetchData()\n  .___(data => console.log(data))\n  .catch(error => console.error(error));",
+    options:["then","catch","throw","awaitOnly"],
+    answer:0,hint:"A Promise uses this method to register a success callback.",
+    explanation:"`.then()` handles a fulfilled Promise; `.catch()` handles rejection."
+  },
+  {
+    id:"cb036",topic:"Async JavaScript",difficulty:"Advanced",
+    prompt:"What keyword is missing to allow this function to use `await`?",
+    code:"function loadUser() {\n  const response = await fetch('/user');\n  return response.json();\n}",
+    options:["defer","async","promise","then"],
+    answer:1,hint:"The function declaration must explicitly support await.",
+    explanation:"Declare it as `async function loadUser()`. The network request still needs suitable error handling in production."
+  },
+  {
+    id:"cb037",topic:"JSON",difficulty:"Advanced",
+    prompt:"Which method converts a JSON string into a JavaScript value?",
+    code:"const raw = '{\"level\":3}';\nconst data = JSON.___(raw);",
+    options:["stringify","parse","decodeObject","convert"],
+    answer:1,hint:"One JSON method reads a string; another converts a value into a string.",
+    explanation:"`JSON.parse(raw)` converts valid JSON text into a JavaScript value."
+  },
+  {
+    id:"cb038",topic:"JSON",difficulty:"Advanced",
+    prompt:"Which method converts a JavaScript object into JSON text?",
+    code:"const player = { level: 3 };\nconst raw = JSON.___(player);",
+    options:["parse","stringify","toObject","read"],
+    answer:1,hint:"This method is the opposite direction of JSON.parse.",
+    explanation:"`JSON.stringify(player)` returns a JSON-formatted string."
+  },
+  {
+    id:"cb039",topic:"Destructuring",difficulty:"Advanced",
+    prompt:"Which line correctly extracts `name` from the object?",
+    code:"const user = { name: 'Kojo', level: 4 };\n___\nconsole.log(name);",
+    options:["const [name] = user;","const { name } = user;","const (name) = user;","const name = user[];"],
+    answer:1,hint:"Object destructuring uses curly braces.",
+    explanation:"`const { name } = user;` extracts the object's `name` property."
+  },
+  {
+    id:"cb040",topic:"Spread syntax",difficulty:"Advanced",
+    prompt:"Which expression makes a shallow copy of this array?",
+    code:"const original = [1, 2, 3];\nconst copy = ___;",
+    options:["original = copy","[...original]","original.copy()","{original}"],
+    answer:1,hint:"The spread syntax expands array elements into a new array literal.",
+    explanation:"`[...original]` creates a new array containing the original elements."
+  },
+  {
+    id:"cb041",topic:"Closures",difficulty:"Expert",
+    prompt:"Why does this function keep access to `count` after `makeCounter` has returned?",
+    code:"function makeCounter() {\n  let count = 0;\n  return function () {\n    count++;\n    return count;\n  };\n}\nconst next = makeCounter();",
+    options:["The returned function forms a closure","let variables are always global","JavaScript automatically resets count","return copies count into the browser"],
+    answer:0,hint:"A function can retain access to the lexical environment where it was created.",
+    explanation:"The inner function closes over `count`, preserving access to it between calls."
+  },
+  {
+    id:"cb042",topic:"Asynchronous code",difficulty:"Expert",
+    prompt:"What should be added so this function waits for the Promise result before returning it?",
+    code:"async function getProfile() {\n  const profile = ___ loadProfile();\n  return profile;\n}",
+    options:["wait","await","returning","thening"],
+    answer:1,hint:"Inside an async function, this keyword pauses until the Promise settles.",
+    explanation:"`await` waits for the Promise to settle before assigning its fulfilled value or throwing its rejection."
+  },
+  {
+    id:"cb043",topic:"Error handling",difficulty:"Expert",
+    prompt:"Where should this cleanup action go if it must run whether the operation succeeds or fails?",
+    code:"try {\n  saveData();\n} catch (error) {\n  report(error);\n} ___ {\n  closeConnection();\n}",
+    options:["else","finally","then","after"],
+    answer:1,hint:"There is a block designed for cleanup after try/catch.",
+    explanation:"The `finally` block runs after the try/catch flow, whether or not an exception was thrown."
+  },
+  {
+    id:"cb044",topic:"Array reduction",difficulty:"Expert",
+    prompt:"Which initial value makes this reduce expression calculate the sum safely from zero?",
+    code:"const prices = [2, 3, 5];\nconst total = prices.reduce((sum, price) => sum + price, ___);",
+    options:["null","0","[]","false"],
+    answer:1,hint:"The accumulator is adding numeric prices, so start it as a number.",
+    explanation:"An initial accumulator value of `0` makes the sum start from zero."
+  },
+  {
+    id:"cb045",topic:"Event loop",difficulty:"Expert",
+    prompt:"Which statement about this output order is correct?",
+    code:"console.log('A');\nsetTimeout(() => console.log('B'), 0);\nconsole.log('C');",
+    options:["A, B, C","B, A, C","A, C, B","C, A, B"],
+    answer:2,hint:"A zero-millisecond timeout still schedules a later callback.",
+    explanation:"The synchronous logs A and C run before the timer callback B."
+  },
+  {
+    id:"cb046",topic:"Immutability",difficulty:"Expert",
+    prompt:"Which update creates a new object while preserving the existing properties?",
+    code:"const user = { name: 'Ama', level: 1 };\nconst updated = ___;",
+    options:["user.level = 2","{ ...user, level: 2 }","user + level","[...user, level: 2]"],
+    answer:1,hint:"Spread the original object's properties into a new object, then override level.",
+    explanation:"`{ ...user, level: 2 }` creates a new object and sets its level to 2."
+  },
+  {
+    id:"cb047",topic:"Nullish coalescing",difficulty:"Expert",
+    prompt:"Which operator uses the fallback only when `name` is null or undefined?",
+    code:"const displayName = name ___ 'Guest';",
+    options:["||","??","&&","!="],
+    answer:1,hint:"Unlike OR, this operator does not replace other falsy values such as an empty string.",
+    explanation:"`??` uses the fallback only when the left value is null or undefined."
+  },
+  {
+    id:"cb048",topic:"Optional chaining",difficulty:"Expert",
+    prompt:"How can the program safely read `user.profile.name` when profile might be missing?",
+    code:"const name = user___profile___name;",
+    options:[".?.","?.","??.","!!"],
+    answer:1,hint:"The optional chaining operator is written as question mark followed by a dot.",
+    explanation:"Use `user?.profile?.name` to avoid an error if an intermediate value is null or undefined."
+  },
+  {
+    id:"cb049",topic:"Security",difficulty:"Expert",
+    prompt:"A username is untrusted user input. Which choice is safest for placing it into an element as plain text?",
+    code:"const element = document.querySelector('#greeting');\n// username comes from user input",
+    options:["element.innerHTML = username","element.textContent = username","document.write(username)","eval(username)"],
+    answer:1,hint:"Use a text-only DOM property rather than interpreting input as HTML.",
+    explanation:"`textContent` inserts the value as text instead of parsing it as markup. Avoid evaluating untrusted input."
+  },
+  {
+    id:"cb050",topic:"Debugging strategy",difficulty:"Expert",
+    prompt:"A function returns the wrong result. What is the best first debugging step?",
+    code:"function calculateTotal(price, tax) {\n  return price - tax;\n}\nconsole.log(calculateTotal(100, 15));\n// Expected: 115",
+    options:["Rewrite the entire app immediately","Check the expected formula and change subtraction to addition","Delete the function","Ignore the expected result"],
+    answer:1,hint:"Compare the operation in the function with the stated expected result.",
+    explanation:"If tax is added to the price, use `price + tax`. Test with known inputs after changing the logic."
+  }
+];
+
+const $ = id => document.getElementById(id);
+const DAY_KEY = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+};
+const fmtTime = seconds => {
+  seconds = Math.max(0, Math.floor(Number(seconds) || 0));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h) return `${h}h ${m}m`;
+  if (m) return `${m}m ${s}s`;
+  return `${s}s`;
+};
+const fmtClock = seconds => {
+  seconds = Math.max(0, Math.floor(Number(seconds) || 0));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return h ? [h,m,s].map(n=>String(n).padStart(2,"0")).join(":") : [m,s].map(n=>String(n).padStart(2,"0")).join(":");
+};
+const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[char]));
+const shuffle = input => {
+  const a = [...input];
+  for (let i=a.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+};
+
+let currentUser = null;
+let userRef = null;
+let gameRef = null;
+let profile = {};
+let gameData = {};
+let questionBank = [];
+let currentQuestion = null;
+let currentQuestionNumber = 0;
+let currentQuestionIds = [];
+let selectedAnswer = null;
+let answerLocked = false;
+let hintShown = false;
+let sessionStartedAt = 0;
+let sessionSavedSeconds = 0;
+let sessionDocRef = null;
+let timerInterval = null;
+let toastTimer = null;
+let activeScreen = "intro";
+let busy = false;
+let lastQuestionId = null;
+let unsubscribeProfile = null;
+let unsubscribeGame = null;
+
+function showToast(message, kind="") {
+  const el = $("toast");
+  el.textContent = message;
+  el.className = `toast show ${kind}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className="toast", 3200);
+}
+function showScreen(name) {
+  activeScreen = name;
+  document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+  const target = $(name + "Screen");
+  if (target) target.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function speakGuide() {
+  if (!("speechSynthesis" in window)) {
+    showToast("Voice guidance is not supported by this browser.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const name = profile.displayName || currentUser?.displayName ||
+    currentUser?.email?.split("@")[0] || "Coder";
+  const text = `Hello ${name}, welcome to Code Breaker, from Code Academy.
+  Read each programming question carefully, inspect the code, and choose the best answer.
+  The challenges become harder as you progress.
+  Every new question you complete successfully earns 10 experience points and 5 coins.
+  A hint costs 50 experience points and 25 coins, so use hints wisely.
+  Your progress, hints, rewards, badges, and playing time are recorded with your account.
+  The game begins with built in questions and also tries to load additional questions from the Code Breaker JSON file.
+  If all available questions have been completed, the game will let you know instead of endlessly repeating them.
+  Good luck, ${name}. Think carefully, debug patiently, and keep learning.`;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.94;
+  utterance.pitch = 1;
+  window.speechSynthesis.speak(utterance);
+}
+function updateProfileUI() {
+  const name = profile.displayName || currentUser?.displayName ||
+    currentUser?.email?.split("@")[0] || "Coder";
+  $("playerName").textContent = name;
+  $("welcomeText").textContent =
+    `Welcome, ${name}. Solve programming puzzles, learn how to debug, and build your coding confidence one challenge at a time.`;
+  $("xpBalance").textContent = Number(profile.xp || 0).toLocaleString();
+  $("coinBalance").textContent = Number(profile.coins || 0).toLocaleString();
+  $("completedCount").textContent = (gameData.completedQuestionIds || []).length;
+  $("hintCount").textContent = Number(gameData.hintsUsed || 0);
+  $("todayTime").textContent = fmtTime((gameData.dailySeconds || {})[DAY_KEY()] || 0);
+  $("lifetimeTime").textContent = fmtTime(gameData.totalSeconds || 0);
+  renderBadges();
+}
+function renderBadges() {
+  const badges = [...(gameData.badges || [])].slice(-4).reverse();
+  const html = badges.map(b => `
+    <div class="badge-row">
+      <span class="badge-icon"><i class="fa-solid fa-medal"></i></span>
+      <span>${escapeHTML(b.name || `Code Breaker ${b.level || ""}`)}</span>
+    </div>`).join("");
+  $("badgeList").innerHTML = html || '<div class="muted">Complete a new question to start earning badges.</div>';
+  $("historyBadges").innerHTML = (gameData.badges || []).length
+    ? [...gameData.badges].reverse().map(b => `
+      <div class="history-item">
+        <div class="history-symbol"><i class="fa-solid fa-medal"></i></div>
+        <div class="history-body"><strong>${escapeHTML(b.name || "Code Breaker Badge")}</strong>
+        <p>Unlocked after completing question ${escapeHTML(b.level ?? "")}.</p>
+        <div class="history-time">${escapeHTML(b.earnedAt || "")}</div></div>
+      </div>`).join("")
+    : '<div class="empty">No badges earned yet. Complete a new question to unlock your first badge.</div>';
+}
+function normalizeQuestion(q, index, source="json") {
+  if (!q || typeof q !== "object") return null;
+  const id = String(q.id || `${source}_${index+1}`).trim();
+  const options = Array.isArray(q.options) ? q.options.map(v=>String(v)) : [];
+  const answer = Number(q.answer);
+  if (!id || !q.prompt || !Array.isArray(q.options) || options.length < 2 ||
+      !Number.isInteger(answer) || answer < 0 || answer >= options.length) return null;
+  return {
+    id, topic:String(q.topic || "Programming"),
+    difficulty:String(q.difficulty || "Intermediate"),
+    prompt:String(q.prompt), code:String(q.code || ""),
+    options, answer, hint:String(q.hint || "Read the question and check each option carefully."),
+    explanation:String(q.explanation || "Review the code and test the logic step by step."),
+    source
+  };
+}
+async function loadQuestionBank() {
+  const unique = new Map();
+  BUILTIN_QUESTIONS.forEach((q,i) => {
+    const normalized = normalizeQuestion(q,i,"built-in");
+    if (normalized) unique.set(normalized.id, normalized);
+  });
+  let externalCount = 0;
+  try {
+    const response = await fetch("./codebreaker.json", {cache:"no-store"});
+    if (!response.ok) throw new Error(`JSON request returned ${response.status}`);
+    const data = await response.json();
+    const external = Array.isArray(data) ? data : data.questions;
+    if (!Array.isArray(external)) throw new Error("JSON must contain a questions array.");
+    external.forEach((q,i) => {
+      const normalized = normalizeQuestion(q,i,"json");
+      if (!normalized) return;
+      // Built-in IDs take precedence; JSON questions should have unique IDs.
+      if (!unique.has(normalized.id)) {
+        unique.set(normalized.id, normalized);
+        externalCount++;
+      }
+    });
+    console.info(`Code Breaker loaded ${externalCount} extra questions from codebreaker.json.`);
+  } catch (error) {
+    console.info("Code Breaker is using its built-in questions. Extra JSON bank not loaded:", error.message);
+  }
+  questionBank = [...unique.values()];
+  $("availableCount").textContent = questionBank.length;
+  return {total:questionBank.length,externalCount};
+}
+function completedSet() {
+  return new Set(Array.isArray(gameData.completedQuestionIds) ? gameData.completedQuestionIds : []);
+}
+function availableQuestions() {
+  const completed = completedSet();
+  return questionBank.filter(q => !completed.has(q.id));
+}
+function chooseNextQuestion() {
+  const pool = availableQuestions();
+  $("remainingCount").textContent = pool.length;
+  if (!pool.length) {
+    currentQuestion = null;
+    $("questionArea").classList.add("hidden");
+    $("bankFinished").classList.remove("hidden");
+    $("questionHeading").textContent = "Question bank completed";
+    $("questionMeta").textContent = `${questionBank.length} unique questions loaded`;
+    $("progressFill").style.width = "100%";
+    $("bankFinishedMessage").textContent =
+      `You've completed all ${questionBank.length} unique questions currently loaded for this game.`;
+    return;
+  }
+  $("bankFinished").classList.add("hidden");
+  $("questionArea").classList.remove("hidden");
+  const chosen = shuffle(pool.filter(q=>q.id!==lastQuestionId));
+  currentQuestion = (chosen.length ? chosen : pool)[0];
+  lastQuestionId = currentQuestion.id;
+  currentQuestionNumber++;
+  selectedAnswer = null;
+  answerLocked = false;
+  hintShown = false;
+  renderQuestion();
+}
+function renderQuestion() {
+  const q = currentQuestion;
+  if (!q) return;
+  $("questionHeading").textContent = `Challenge ${currentQuestionNumber}`;
+  $("questionMeta").textContent = `${q.topic} · ${q.difficulty} · ID ${q.id}`;
+  $("difficultyPill").textContent = q.difficulty.toUpperCase();
+  $("questionPrompt").textContent = q.prompt;
+  $("codeSnippet").textContent = q.code;
+  $("codeLanguage").textContent = "JavaScript";
+  const done = (gameData.completedQuestionIds || []).length;
+  const total = questionBank.length;
+  $("progressFill").style.width = `${total ? Math.min(100,done/total*100) : 0}%`;
+  $("feedback").className = "feedback";
+  $("feedback").textContent = "";
+  $("nextButton").disabled = true;
+  $("hintButton").disabled = false;
+  $("answers").innerHTML = "";
+  q.options.forEach((option,index) => {
+    const button = document.createElement("button");
+    button.className = "answer-option";
+    button.type = "button";
+    button.innerHTML = `<span class="answer-letter">${String.fromCharCode(65+index)}</span><span>${escapeHTML(option)}</span>`;
+    button.addEventListener("click",()=>submitAnswer(index));
+    $("answers").appendChild(button);
+  });
+}
+function setAnswersLocked() {
+  $("answers").querySelectorAll("button").forEach(button=>button.disabled=true);
+}
+async function submitAnswer(index) {
+  if (!currentQuestion || answerLocked || busy) return;
+  selectedAnswer = index;
+  answerLocked = true;
+  setAnswersLocked();
+  const buttons = [...$("answers").querySelectorAll("button")];
+  buttons.forEach((button,i)=>{
+    if (i === currentQuestion.answer) button.classList.add("correct");
+    else if (i === index) button.classList.add("wrong");
+  });
+  if (index !== currentQuestion.answer) {
+    $("feedback").className = "feedback show bad";
+    $("feedback").textContent = "Not quite. Review the code and explanation, then try another challenge. " + currentQuestion.explanation;
+    $("nextButton").disabled = false;
+    return;
+  }
+  busy = true;
+  $("nextButton").disabled = true;
+  $("hintButton").disabled = true;
+  try {
+    const result = await awardQuestion(currentQuestion);
+    if (result.awarded) {
+      $("feedback").className = "feedback show good";
+      $("feedback").textContent = `Correct! ${currentQuestion.explanation} +10 XP, +5 coins, and a new badge have been awarded.`;
+      showToast("Correct! +10 XP and +5 coins.", "success");
+    } else {
+      $("feedback").className = "feedback show good";
+      $("feedback").textContent = `Correct! ${currentQuestion.explanation} This question was already completed before, so rewards are not repeated.`;
+      showToast("Correct answer! This question was already rewarded.", "success");
+    }
+    $("nextButton").disabled = false;
+  } catch (error) {
+    console.error(error);
+    answerLocked = false;
+    $("answers").querySelectorAll("button").forEach(button=>button.disabled=false);
+    $("feedback").className = "feedback show bad";
+    $("feedback").textContent = "Your answer is correct, but the progress/reward could not be saved. Check your connection or Firebase permissions, then choose the correct answer again to retry.";
+    $("hintButton").disabled = false;
+    showToast("Could not save progress. Please try again.", "error");
+  } finally {
+    busy = false;
+  }
+}
+async function addActivity(entry) {
+  try {
+    await addDoc(collection(db,"users",currentUser.uid,"gameData","code_breaker","history"), {
+      ...entry, createdAt:serverTimestamp()
+    });
+  } catch (error) {
+    console.warn("Activity history write failed:",error);
+  }
+}
+async function addNotification(title,message,type="achievement") {
+  try {
+    await addDoc(collection(db,"users",currentUser.uid,"notifications"), {
+      title, message, type, read:false, createdAt:serverTimestamp()
+    });
+  } catch (error) {
+    console.warn("Notification write failed:",error);
+  }
+}
+async function awardQuestion(question) {
+  const result = await runTransaction(db,async tx=>{
+    const [userSnap,gameSnap] = await Promise.all([tx.get(userRef),tx.get(gameRef)]);
+    const userData = userSnap.exists() ? userSnap.data() : {};
+    const saved = gameSnap.exists() ? gameSnap.data() : {};
+    const completed = Array.isArray(saved.completedQuestionIds) ? saved.completedQuestionIds : [];
+    if (completed.includes(question.id)) {
+      return {awarded:false,userData,saved};
+    }
+    const nextCompleted = [...completed,question.id];
+    const earnedBadge = {
+      level:nextCompleted.length,
+      questionId:question.id,
+      name:`Code Breaker · ${question.difficulty}`,
+      earnedAt:new Date().toISOString()
+    };
+    const badges = Array.isArray(saved.badges) ? saved.badges : [];
+    tx.set(userRef,{
+      xp:Number(userData.xp || 0)+10,
+      coins:Number(userData.coins || 0)+5
+    },{merge:true});
+    tx.set(gameRef,{
+      completedQuestionIds:nextCompleted,
+      completedLevels:nextCompleted,
+      level:nextCompleted.length+1,
+      badges:[...badges,earnedBadge],
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    return {awarded:true,earnedBadge,completed:nextCompleted.length};
+  });
+  if (result.awarded) {
+    profile.xp = Number(profile.xp || 0)+10;
+    profile.coins = Number(profile.coins || 0)+5;
+    gameData.completedQuestionIds = [...new Set([...(gameData.completedQuestionIds || []),question.id])];
+    gameData.completedLevels = gameData.completedQuestionIds;
+    gameData.level = gameData.completedQuestionIds.length+1;
+    gameData.badges = [...(gameData.badges || []),result.earnedBadge];
+    updateProfileUI();
+    await addActivity({
+      type:"question_complete",title:"Question completed",
+      message:`Completed ${question.id}: ${question.topic}. Earned 10 XP and 5 coins.`,
+      questionId:question.id,level:result.completed,xp:10,coins:5
+    });
+    await addNotification(
+      "Code Breaker badge unlocked",
+      `Completed a new ${question.difficulty.toLowerCase()} question in Code Breaker. Earned 10 XP and 5 coins.`,
+      "achievement"
+    );
+    await addNotification("XP earned","You earned 10 XP in Code Breaker.","xp");
+    await addNotification("Coins earned","You earned 5 coins in Code Breaker.","coins");
+  }
+  return result;
+}
+async function requestHint() {
+  if (!currentQuestion || hintShown || busy || answerLocked) return;
+  busy = true;
+  $("hintButton").disabled = true;
+  try {
+    const result = await runTransaction(db,async tx=>{
+      const [userSnap,gameSnap] = await Promise.all([tx.get(userRef),tx.get(gameRef)]);
+      const userData = userSnap.exists() ? userSnap.data() : {};
+      const saved = gameSnap.exists() ? gameSnap.data() : {};
+      const xp = Number(userData.xp || 0);
+      const coins = Number(userData.coins || 0);
+      if (xp < 50 || coins < 25) return {ok:false,reason:"funds",xp,coins};
+      const dailyHints = Number(saved.hintsUsed || 0)+1;
+      tx.set(userRef,{xp:xp-50,coins:coins-25},{merge:true});
+      tx.set(gameRef,{hintsUsed:dailyHints,updatedAt:serverTimestamp()},{merge:true});
+      return {ok:true,xp:xp-50,coins:coins-25,hintsUsed:dailyHints};
+    });
+    if (!result.ok) {
+      showToast(`Not enough balance. You need 50 XP and 25 coins. Your balance: ${result.xp} XP, ${result.coins} coins.`, "error");
+      return;
+    }
+    profile.xp = result.xp;
+    profile.coins = result.coins;
+    gameData.hintsUsed = result.hintsUsed;
+    hintShown = true;
+    updateProfileUI();
+    $("feedback").className = "feedback show good";
+    $("feedback").textContent = `HINT for ${currentQuestion.id}: ${currentQuestion.hint}`;
+    showToast(`Hint unlocked for ${currentQuestion.id}: −50 XP, −25 coins.`, "success");
+    await addActivity({
+      type:"hint_used",title:"Hint used",
+      message:`Used a hint on ${currentQuestion.id} (${currentQuestion.topic}).`,
+      questionId:currentQuestion.id,level:gameData.level || 1,xp:-50,coins:-25
+    });
+    await addNotification(
+      "Code Breaker hint used",
+      `A hint was used on question ${currentQuestion.id}. Cost: 50 XP and 25 coins.`,
+      "xp"
+    );
+  } catch (error) {
+    console.error(error);
+    showToast("Could not charge for the hint. Please check your connection and try again.", "error");
+  } finally {
+    busy = false;
+    $("hintButton").disabled = hintShown || answerLocked || !currentQuestion;
+  }
+}
+async function startSession() {
+  if (!currentUser || sessionStartedAt) return;
+  sessionStartedAt = Date.now();
+  sessionSavedSeconds = 0;
+  try {
+    sessionDocRef = await addDoc(
+      collection(db,"users",currentUser.uid,"gameData","code_breaker","sessions"),
+      {startedAt:serverTimestamp(),activeSeconds:0,dayKey:DAY_KEY(),createdAt:serverTimestamp()}
+    );
+  } catch (error) {
+    sessionDocRef = null;
+    console.warn("Session record could not be created:",error);
+  }
+  timerInterval = setInterval(()=>{
+    $("sessionTimer").textContent = fmtClock(Math.floor((Date.now()-sessionStartedAt)/1000));
+    flushSession(false);
+  },1000);
+}
+async function flushSession(force=false) {
+  if (!sessionStartedAt || !gameRef) return;
+  const elapsed = Math.floor((Date.now()-sessionStartedAt)/1000);
+  const delta = elapsed-sessionSavedSeconds;
+  if (delta < 1 || (!force && delta < 15)) return;
+  const day = DAY_KEY();
+  try {
+    await runTransaction(db,async tx=>{
+      const snap = await tx.get(gameRef);
+      const saved = snap.exists() ? snap.data() : {};
+      const daily = {...(saved.dailySeconds || {})};
+      daily[day] = Number(daily[day] || 0)+delta;
+      tx.set(gameRef,{
+        totalSeconds:Number(saved.totalSeconds || 0)+delta,
+        dailySeconds:daily,
+        updatedAt:serverTimestamp()
+      },{merge:true});
+    });
+    if (sessionDocRef) {
+      await updateDoc(sessionDocRef,{activeSeconds:elapsed,updatedAt:serverTimestamp()});
+    }
+    sessionSavedSeconds = elapsed;
+    const snap = await getDoc(gameRef);
+    if (snap.exists()) gameData = {...gameData,...snap.data()};
+    updateProfileUI();
+    if (activeScreen === "history") renderHistory();
+  } catch (error) {
+    console.warn("Time update failed; will retry:",error);
+  }
+}
+async function stopSession() {
+  if (!sessionStartedAt) return;
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+  await flushSession(true);
+  const elapsed = Math.floor((Date.now()-sessionStartedAt)/1000);
+  await addActivity({
+    type:"session",title:"Game session",
+    message:`Played Code Breaker for ${fmtTime(elapsed)}.`,
+    seconds:elapsed,level:gameData.level || 1
+  });
+  sessionStartedAt = 0;
+  sessionSavedSeconds = 0;
+  sessionDocRef = null;
+}
+async function enterArena() {
+  showScreen("game");
+  if (!sessionStartedAt) await startSession();
+  if (!currentQuestion) chooseNextQuestion();
+}
+async function loadHistory() {
+  showScreen("history");
+  await renderHistory();
+}
+async function renderHistory() {
+  $("historyCompleted").textContent = (gameData.completedQuestionIds || []).length;
+  $("historyHints").textContent = Number(gameData.hintsUsed || 0);
+  $("historyToday").textContent = fmtTime((gameData.dailySeconds || {})[DAY_KEY()] || 0);
+  $("historyLifetime").textContent = fmtTime(gameData.totalSeconds || 0);
+  try {
+    const historyQuery = query(
+      collection(db,"users",currentUser.uid,"gameData","code_breaker","history"),
+      orderBy("createdAt","desc"),limit(50)
+    );
+    const snapshot = await getDocs(historyQuery);
+    if (snapshot.empty) {
+      $("historyList").innerHTML = '<div class="empty">No activity yet. Complete a question or use a hint to begin your history.</div>';
+    } else {
+      $("historyList").innerHTML = snapshot.docs.map(item=>{
+        const e = item.data();
+        const date = e.createdAt?.toDate ? e.createdAt.toDate().toLocaleString() : "Recently";
+        const icon = e.type==="hint_used" ? "fa-lightbulb" : e.type==="session" ? "fa-clock" : "fa-check";
+        const changes = [];
+        if (Number(e.xp || 0)) changes.push(`<span class="${e.xp>0?"positive":"negative"}">${e.xp>0?"+":""}${e.xp} XP</span>`);
+        if (Number(e.coins || 0)) changes.push(`<span class="${e.coins>0?"positive":"negative"}">${e.coins>0?"+":""}${e.coins} coins</span>`);
+        if (Number(e.seconds || 0)) changes.push(`<span>${fmtTime(e.seconds)}</span>`);
+        return `<article class="history-item">
+          <div class="history-symbol"><i class="fa-solid ${icon}"></i></div>
+          <div class="history-body"><strong>${escapeHTML(e.title || e.type || "Activity")}</strong>
+          <p>${escapeHTML(e.message || "")}</p>
+          <div class="history-time">${escapeHTML(date)}</div>
+          ${changes.length?`<div class="change-line">${changes.join("")}</div>`:""}</div>
+        </article>`;
+      }).join("");
+    }
+  } catch (error) {
+    console.error(error);
+    $("historyList").innerHTML = '<div class="empty">Activity history could not be loaded. Check Firestore permissions and your connection.</div>';
+  }
+  renderBadges();
+}
+async function refreshQuestionBank() {
+  const oldIds = new Set(questionBank.map(q=>q.id));
+  await loadQuestionBank();
+  const added = questionBank.filter(q=>!oldIds.has(q.id)).length;
+  $("remainingCount").textContent = availableQuestions().length;
+  if (added) showToast(`${added} new question${added===1?"":"s"} loaded.`, "success");
+  else showToast("No new unique questions found. Check codebreaker.json and try again.");
+  chooseNextQuestion();
+}
+
+$("startGame").addEventListener("click",enterArena);
+$("listenIntro").addEventListener("click",speakGuide);
+$("voiceTop").addEventListener("click",speakGuide);
+$("historyTop").addEventListener("click",loadHistory);
+$("historyButton").addEventListener("click",loadHistory);
+$("historyBack").addEventListener("click",()=>showScreen("game"));
+$("exitGame").addEventListener("click",async()=>{
+  await stopSession();
+  showScreen("intro");
+});
+$("dashboardTop").addEventListener("click",async()=>{
+  await stopSession();
+  location.href="games_dash.html";
+});
+$("hintButton").addEventListener("click",requestHint);
+$("nextButton").addEventListener("click",()=>{
+  if (busy) return;
+  chooseNextQuestion();
+});
+$("reloadQuestions").addEventListener("click",refreshQuestionBank);
+document.addEventListener("visibilitychange",()=>{
+  if (document.visibilityState==="hidden") flushSession(true);
+});
+window.addEventListener("pagehide",()=>{
+  // Best-effort flush. Browsers may stop asynchronous writes during page unload.
+  flushSession(true);
+});
+
+onAuthStateChanged(auth,async user=>{
+  if (!user) {
+    location.replace("login.html");
+    return;
+  }
+  currentUser=user;
+  userRef=doc(db,"users",user.uid);
+  gameRef=doc(db,"users",user.uid,"gameData","code_breaker");
+  try {
+    const [profileSnap,gameSnap] = await Promise.all([getDoc(userRef),getDoc(gameRef)]);
+    profile=profileSnap.exists()?profileSnap.data():{};
+    gameData=gameSnap.exists()?gameSnap.data():{
+      level:1,totalSeconds:0,dailySeconds:{},completedQuestionIds:[],
+      completedLevels:[],hintsUsed:0,badges:[]
+    };
+    if (!gameSnap.exists()) {
+      await setDoc(gameRef,{
+        level:1,totalSeconds:0,dailySeconds:{},completedQuestionIds:[],
+        completedLevels:[],hintsUsed:0,badges:[],
+        createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+      },{merge:true});
+    }
+    if (unsubscribeProfile) unsubscribeProfile();
+    if (unsubscribeGame) unsubscribeGame();
+    // Keep the displayed profile and game statistics in sync with other pages.
+    const {onSnapshot} = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+    unsubscribeProfile=onSnapshot(userRef,snap=>{
+      if (snap.exists()) profile=snap.data();
+      updateProfileUI();
+    });
+    unsubscribeGame=onSnapshot(gameRef,snap=>{
+      if (snap.exists()) gameData=snap.data();
+      updateProfileUI();
+      $("remainingCount").textContent=availableQuestions().length;
+      if (activeScreen==="history") renderHistory();
+    });
+    updateProfileUI();
+    await loadQuestionBank();
+    $("remainingCount").textContent=availableQuestions().length;
+    if (!questionBank.length) throw new Error("No valid questions are available.");
+  } catch (error) {
+    console.error("Code Breaker setup failed:",error);
+    showToast("Could not load your game data. Check your internet connection and Firebase rules.", "error");
+  }
+});
+</script>
+</body>
+</html>
