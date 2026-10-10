@@ -1,251 +1,140 @@
+
 {
   "course": "html",
   "lessonNumber": 6,
   "lessonId": "html-lesson-6",
-  "title": "HTML Forms",
-  "subtitle": "Make your webpage interactive and collect user data",
-  "description": "Learn how to build contact forms, login forms, and feedback forms that turn your static portfolio into an interactive webpage. Forms are the gateway to backend - this is how your final app will collect messages from clients.",
-  "level": "Intermediate",
-  "xpReward": 100,
-  "coinsReward": 25,
-  "estimatedMinutes": 42,
+  "title": "HTML Forms and User Input",
+  "subtitle": "Build accessible, reliable forms that collect information",
+  "description": "Learn form structure, input types, labels, validation, selection controls, submission, and professional accessibility practices.",
+  "level": "Beginner to Intermediate",
+  "estimatedMinutes": 35,
   "blocks": [
     {
-      "id": "welcome-6",
-      "type": "heading",
-      "text": "Your webpage looks good but can't talk back - let's fix that"
+      "id": "s1",
+      "type": "content",
+      "text": "## Page 1 — Understanding forms and how they work\n\nWelcome back! Think about a website where a user creates an account, searches for a course, sends a message, or registers for an event. How does the website collect the information the user enters? One of the main HTML tools for this job is a **form**.\n\nThe `<form>` element groups controls that collect information from a user. These controls may include text fields, email fields, password fields, checkboxes, radio buttons, dropdown lists, and buttons. The form provides a structure for collecting the values and, when configured, submitting them for processing.\n\nA form does not automatically create a complete registration system or save information to a database. HTML describes the form and provides browser features such as basic validation. JavaScript can add client-side behavior, while a server or another suitable backend is normally responsible for securely processing submitted information, checking permissions, and saving data.\n\nTwo important form attributes are `action` and `method`. The `action` attribute identifies the URL or endpoint where the browser should submit the form. The `method` attribute describes how the browser sends the form data. `get` places form values in the URL query string and is useful for searches or requests intended to be shareable. `post` sends the form data in the request body and is commonly used when submitting information that should not be placed in the URL. POST does not, by itself, encrypt or secure the information; use HTTPS and appropriate server-side protections.\n\nA form can contain labels, inputs, buttons, and other appropriate elements. Give each control a clear purpose, collect only the information you genuinely need, and explain what the user should enter. Professional forms are not simply collections of boxes: they help people understand what is required and complete the task correctly."
     },
     {
-      "id": "w6-1",
-      "type": "sentence",
-      "text": "So far your webpage from Lesson 1-5 is beautiful but static - people can see it but can't contact you, can't send you message, can't subscribe. Real webpages and apps need FORMS. Think of Jumia checkout, WhatsApp login, Google search bar - all forms. Today your portfolio becomes interactive and ready to collect client inquiries."
-    },
-    {
-      "id": "w6-2",
-      "type": "sentence",
-      "text": "Open Menu > Practical now. You will build a contact form that will be part of your final complete webpage in Lesson 10. This form is what clients will use to hire you."
-    },
-    {
-      "id": "form-deep",
-      "type": "heading",
-      "text": "The form element - more than just inputs"
-    },
-    {
-      "id": "f1",
-      "type": "sentence",
-      "text": "form is a container that wraps all inputs. It has two critical attributes: action = where to send data (backend URL), method = how to send (GET for search/filter, POST for creating/sending data like contact messages). For now we will use action=\"#\" meaning stay on same page, but in real app with Firebase or backend, action points to your server."
-    },
-    {
-      "id": "f2",
-      "type": "sentence",
-      "text": "Inside form you need label for each input. Never create input without label - it's mandatory for accessibility. Screen readers read label to tell blind user what to type. Use for attribute on label that matches id on input to connect them programmatically."
-    },
-    {
-      "id": "code-1",
+      "id": "c1",
       "type": "code",
       "language": "html",
-      "title": "Your first accessible form - structure",
-      "code": "<form action=\"#\" method=\"POST\">\n <label for=\"name\">Your Name:</label>\n <input type=\"text\" id=\"name\" name=\"name\" required>\n \n <label for=\"email\">Your Email:</label>\n <input type=\"email\" id=\"email\" name=\"email\" required>\n \n <button type=\"submit\">Send Message</button>\n</form>\n<!-- label for=\"name\" connects to input id=\"name\" -->\n<!-- required means browser won't submit empty -->",
-      "output": "Your Name: [text box]\nYour Email: [email box]\n[Send Message button]"
-    },
-    {
-      "id": "input-types",
-      "type": "heading",
-      "text": "Input types - not just text, there are 20+ types"
-    },
-    {
-      "id": "in1",
-      "type": "sentence",
-      "text": "Beginners only use type=\"text\" for everything. Professionals use correct type: email shows @ keyboard on mobile, tel shows number pad, number shows spinner, date shows calendar, password hides characters. Browser also validates automatically - email type checks if it contains @, url checks for https://."
-    },
-    {
-      "id": "code-2",
-      "type": "code",
-      "language": "html",
-      "title": "All input types your final webpage needs",
-      "code": "<form>\n <label for=\"email\">Email (mobile shows @ keyboard):</label>\n <input type=\"email\" id=\"email\" name=\"email\" placeholder=\"prince@example.com\" required>\n \n <label for=\"phone\">Phone (mobile shows number pad):</label>\n <input type=\"tel\" id=\"phone\" name=\"phone\" placeholder=\"0240000000\">\n \n <label for=\"website\">Your Website (validates URL):</label>\n <input type=\"url\" id=\"website\" name=\"website\" placeholder=\"https://yourname.com\">\n \n <label for=\"age\">Age (number with min/max):</label>\n <input type=\"number\" id=\"age\" name=\"age\" min=\"18\" max=\"100\">\n \n <label for=\"birthday\">Birthday (shows calendar):</label>\n <input type=\"date\" id=\"birthday\" name=\"birthday\">\n \n <label for=\"password\">Password (hides text):</label>\n <input type=\"password\" id=\"password\" name=\"password\" required>\n</form>",
-      "output": "Email [with validation]\nPhone [number pad on mobile]\nWebsite [URL validation]\nAge [number spinner]\nBirthday [calendar]\nPassword [hidden]"
-    },
-    {
-      "id": "code-3",
-      "type": "code",
-      "language": "html",
-      "title": "Radio, checkbox, select - choosing options",
-      "code": "<form>\n <p>What service do you need? (choose one - radio)</p>\n <input type=\"radio\" id=\"service1\" name=\"service\" value=\"portfolio\" checked>\n <label for=\"service1\">Portfolio Website</label><br>\n <input type=\"radio\" id=\"service2\" name=\"service\" value=\"business\">\n <label for=\"service2\">Business Website</label><br>\n <input type=\"radio\" id=\"service3\" name=\"service\" value=\"ecommerce\">\n <label for=\"service3\">E-commerce</label>\n \n <p>What features? (choose many - checkbox)</p>\n <input type=\"checkbox\" id=\"f1\" name=\"features\" value=\"responsive\">\n <label for=\"f1\">Mobile Responsive</label><br>\n <input type=\"checkbox\" id=\"f2\" name=\"features\" value=\"contact\">\n <label for=\"f2\">Contact Form</label><br>\n \n <label for=\"budget\">Budget Range:</label>\n <select id=\"budget\" name=\"budget\">\n <option value=\"\">-- Select Budget --</option>\n <option value=\"500\">GH₵500 - Starter</option>\n <option value=\"1500\">GH₵1500 - Business</option>\n <option value=\"3000\">GH₵3000 - Premium</option>\n </select>\n</form>",
-      "output": "What service? (radio - one choice)\n• Portfolio Website\n• Business Website\n• E-commerce\nWhat features? (checkbox - many)\nBudget dropdown"
-    },
-    {
-      "id": "textarea-fieldset",
-      "type": "heading",
-      "text": "Textarea, fieldset and legend - for professional forms"
-    },
-    {
-      "id": "tf1",
-      "type": "sentence",
-      "text": "For long messages, don't use input type=text - use textarea which allows multiple lines, rows and cols. For grouping related inputs like Personal Info and Project Details, use fieldset with legend - it's semantic grouping that helps accessibility and visually groups with border. Real complete webpages use fieldset for sections."
-    },
-    {
-      "id": "code-4",
-      "type": "code",
-      "language": "html",
-      "title": "Textarea and fieldset - professional form sections",
-      "code": "<form action=\"#\" method=\"POST\">\n <fieldset>\n <legend>Personal Information</legend>\n <label for=\"fullname\">Full Name:</label>\n <input type=\"text\" id=\"fullname\" name=\"fullname\" required>\n <br><br>\n <label for=\"useremail\">Email:</label>\n <input type=\"email\" id=\"useremail\" name=\"useremail\" required>\n </fieldset>\n \n <fieldset>\n <legend>Project Details</legend>\n <label for=\"message\">Tell me about your project:</label><br>\n <textarea id=\"message\" name=\"message\" rows=\"5\" cols=\"30\" placeholder=\"I need a website for my business...\" required></textarea>\n </fieldset>\n \n <button type=\"submit\">Send Inquiry</button>\n <button type=\"reset\">Clear Form</button>\n</form>",
-      "output": "Personal Information [fieldset with legend]\nFull Name [box]\nEmail [box]\nProject Details [fieldset]\nTell me about project [textarea 5 rows]\n[Send Inquiry] [Clear Form]"
-    },
-    {
-      "id": "validation",
-      "type": "heading",
-      "text": "Validation and attributes that make forms production-ready"
-    },
-    {
-      "id": "va1",
-      "type": "sentence",
-      "text": "Production forms need validation before sending to backend: required prevents empty submit, minlength/maxlength for text length, min/max for numbers, pattern for custom regex, placeholder gives hint but not label replacement. Also autocomplete helps users fill faster, and disabled vs readonly difference - disabled not sent to server, readonly sent but not editable."
-    },
-    {
-      "id": "code-5",
-      "type": "code",
-      "language": "html",
-      "title": "Validation attributes - no JavaScript needed",
-      "code": "<form>\n <label for=\"username\">Username (3-15 letters, required):</label>\n <input type=\"text\" id=\"username\" name=\"username\" \n required minlength=\"3\" maxlength=\"15\" \n placeholder=\"PrinceDev\" autocomplete=\"username\">\n \n <label for=\"userage\">Age (18-60 required):</label>\n <input type=\"number\" id=\"userage\" name=\"age\" min=\"18\" max=\"60\" required>\n \n <label for=\"ghphone\">Ghana Phone (pattern):</label>\n <input type=\"tel\" id=\"ghphone\" name=\"phone\" \n pattern=\"0[0-9]{9}\" \n placeholder=\"0240000000\" \n title=\"Enter 10 digits starting with 0\">\n \n <label for=\"readonly\">Account ID (readonly, sent to server):</label>\n <input type=\"text\" id=\"readonly\" value=\"USER123\" readonly>\n \n <label for=\"disabled\">Promo Code (disabled, not sent):</label>\n <input type=\"text\" id=\"disabled\" value=\"NEW2026\" disabled>\n</form>",
-      "output": "Username [3-15 chars required]\nAge [18-60 required]\nGhana Phone [pattern 0 + 9 digits]\nAccount ID [readonly]\nPromo [disabled]"
-    },
-    {
-      "id": "code-6",
-      "type": "code",
-      "language": "html",
-      "title": "Button types - submit, reset, button",
-      "code": "<form>\n <label for=\"search\">Search my projects:</label>\n <input type=\"search\" id=\"search\" name=\"search\" placeholder=\"Search...\">\n <button type=\"submit\">Search</button>\n \n <!-- Different button types -->\n <button type=\"submit\">Send (submits form)</button>\n <button type=\"reset\">Clear (resets all inputs)</button>\n <button type=\"button\">Click Me (does nothing without JS, for JS actions)</button>\n \n <!-- Input type button vs button element -->\n <input type=\"submit\" value=\"Submit via input\">\n <input type=\"button\" value=\"Button via input\">\n</form>\n<!-- Always use <button> element - more flexible, can have HTML inside -->",
-      "output": "Search [search box with clear X]\n[Send] [Clear] [Click Me]"
+      "title": "A simple contact form",
+      "code": "<form action=\"/contact\" method=\"post\">\n  <label for=\"full-name\">Full name</label>\n  <input id=\"full-name\" name=\"fullName\" type=\"text\" required>\n\n  <label for=\"email\">Email address</label>\n  <input id=\"email\" name=\"email\" type=\"email\" required>\n\n  <button type=\"submit\">Send message</button>\n</form>",
+      "output": "The form collects a name and email address. The labels identify the fields, required asks the browser to check that both fields have values, and submitting sends the form to the configured /contact endpoint. That endpoint must exist and handle the request for the submission to be processed."
     },
     {
       "id": "q1",
       "type": "quiz",
-      "question": "You build contact form without label, using only placeholder=\"Your Name\" inside input. It looks clean visually. Why will accessibility audit fail it critically?",
+      "question": "A course website has a search form. The developer wants the search term to appear in the URL so a user can bookmark or share the search results. Which method is generally the best fit?",
       "options": [
-        "It will pass because placeholder is modern replacement for label and screen readers read placeholder as label",
-        "It fails because placeholder disappears when user types, has low contrast, and many screen readers don't reliably announce placeholder as label; label with for/id association is mandatory for accessibility, placeholder is only hint not label",
-        "It fails because placeholder attribute is deprecated in HTML5 and must use title attribute instead of placeholder",
-        "It fails because placeholder only works for type=text not for email/tel, so email field needs label"
+        "post, because all forms should hide their values in the request body",
+        "get, because search terms can be represented in the URL query string",
+        "put, because it is the standard HTML form method for searches",
+        "delete, because a search removes unrelated results"
       ],
       "correctIndex": 1,
-      "correctFeedback": "Exactly! Placeholder ≠ label. This is WCAG failure - placeholder is hint, label is identity.",
-      "incorrectFeedback": "What happens to placeholder when user starts typing? Can screen reader user know what field it is after typing?",
-      "reasoning": "Placeholder disappears on input, low contrast, not reliably announced. Label is persistent, programmatically associated via for/id, required for accessibility.",
-      "xpReward": 30
+      "explanation": "GET is suitable for searches whose results can be represented by a URL. This makes a search easier to bookmark or share. POST does not make data automatically secure, and standard HTML forms do not support PUT or DELETE as their direct method values in the same way as GET and POST.",
+      "hint": "Consider which method naturally allows the search criteria to become part of a shareable URL."
+    },
+    {
+      "id": "s2",
+      "type": "content",
+      "text": "## Page 2 — Input types, names, and labels\n\nThe `<input>` element creates many different kinds of controls. Its `type` attribute tells the browser what kind of value the control is intended to collect. For example, `type=\"text\"` is suitable for ordinary text, `type=\"email\"` provides email-oriented input and basic browser validation, `type=\"password\"` visually masks entered characters, `type=\"number\"` is designed for numeric values, and `type=\"date\"` can provide a date picker in supported browsers.\n\nOther useful types include `tel` for telephone numbers, `url` for web addresses, `search` for search terms, and `checkbox` for an independent on/off choice. Choosing an appropriate type can improve mobile keyboard behavior and gives the browser more information about the data expected. A telephone number should not normally use `number`, because phone numbers may contain a plus sign, spaces, or leading zeros and are identifiers rather than quantities for arithmetic.\n\nThe `name` attribute is particularly important when a form is submitted. It supplies the field's key in the submitted data. The `id` attribute identifies an element in the page and can connect a `<label>` to its input. These attributes are not interchangeable: an input may have an id without a useful submission name, and a name alone does not automatically connect a visible label to the field.\n\nA reliable label uses a `for` value that matches the input's `id`. For example, `<label for=\"email\">Email address</label>` is associated with `<input id=\"email\" name=\"email\" type=\"email\">`. Clicking the label can focus or activate the associated control, and assistive technology can announce the label when the field receives focus.\n\nPlaceholders are optional short hints shown inside an empty control, such as `name@example.com`. They are not a replacement for a label: the placeholder disappears as the user types, may have low contrast, and is not a dependable permanent description. Keep the label visible and use a placeholder only when an additional example or hint is useful."
+    },
+    {
+      "id": "c2",
+      "type": "code",
+      "language": "html",
+      "title": "Choosing appropriate input types",
+      "code": "<form action=\"/profile\" method=\"post\">\n  <label for=\"phone\">Phone number</label>\n  <input id=\"phone\" name=\"phone\" type=\"tel\" autocomplete=\"tel\">\n\n  <label for=\"birth-date\">Date of birth</label>\n  <input id=\"birth-date\" name=\"birthDate\" type=\"date\">\n\n  <label for=\"website\">Website</label>\n  <input id=\"website\" name=\"website\" type=\"url\" placeholder=\"https://example.com\">\n\n  <button type=\"submit\">Save profile</button>\n</form>",
+      "output": "The browser can offer a telephone-friendly keyboard, a date control, and URL-oriented input. The labels remain visible, and each input has a name for form submission. The placeholder is an example, not a substitute for the Website label."
     },
     {
       "id": "q2",
       "type": "quiz",
-      "question": "You have radio buttons for service choice: Portfolio, Business, E-commerce. You gave each different name attribute: name=\"portfolio\", name=\"business\", name=\"ecommerce\". User can select all three at once but should only select one. What is bug and fix?",
+      "question": "A developer creates an input with id=\"student-email\" and name=\"emailAddress\", but writes <label for=\"email\">Email address</label>. What is the main problem?",
       "options": [
-        "Bug is using radio instead of checkbox - should use checkbox for single choice, radio is for multiple choices",
-        "Bug is that radio buttons with different name attributes are treated as separate groups, so all can be selected. Fix: Same name attribute for same group like name=\"service\" for all three, different value attributes to distinguish",
-        "Bug is missing checked attribute - must add checked to all radios to make them single choice group",
-        "Bug is that radio requires fieldset wrapper - without fieldset radios allow multiple selection"
+        "The input's name must always be identical to its id",
+        "The label's for value does not match the input's id, so the label is not properly associated with that input",
+        "Labels cannot be used with email inputs",
+        "The input must use type=\"text\" for a label to work"
       ],
       "correctIndex": 1,
-      "correctFeedback": "Perfect debugging! Same name = same group, different name = different groups. This is core form logic.",
-      "incorrectFeedback": "How does browser know which radios belong together? What groups them?",
-      "reasoning": "Radio buttons are grouped by name attribute. Same name = one can be selected in group. Different names = separate groups, all can be selected.",
-      "xpReward": 30
+      "explanation": "A label's for attribute should match the id of the control it labels. Here, for=\"email\" does not match id=\"student-email\". The name is used for submitted data and does not have to match the id.",
+      "hint": "Compare the value used by the label with the identifier on the input itself."
+    },
+    {
+      "id": "s3",
+      "type": "content",
+      "text": "## Page 3 — Required fields and browser validation\n\nA good form helps users correct mistakes before the information is submitted. HTML provides several built-in validation attributes. The `required` attribute means a value must be supplied before the browser allows a normal form submission. It is useful for genuinely necessary fields, but do not mark every field required simply because you can. Collect only what the task needs.\n\nFor an email field, `type=\"email\"` allows the browser to check whether the value has a basic email-like format. This is not proof that the address exists, belongs to the user, or can receive messages. Similarly, `type=\"url\"` checks for a URL-like value; it does not guarantee that the website is safe or reachable.\n\nThe `minlength` and `maxlength` attributes set limits on text length. For numeric inputs, `min`, `max`, and `step` can constrain the values a browser accepts. For example, `type=\"number\" min=\"1\" max=\"10\" step=\"1\"` describes whole-number choices from 1 through 10. These constraints help the user, but the backend must still validate submitted data because requests can be made without using the page's normal interface.\n\nValidation should be understandable. If a field is required, say so clearly. If a password has rules, explain those rules before submission rather than showing a vague error afterward. When errors occur, identify the field and explain how to correct it. Never rely on color alone to indicate an error; provide text or another clear cue as well.\n\nBrowser validation is useful, but it is not a security boundary. Users can change page code or send requests directly. A professional application repeats important checks on the server, handles unexpected input safely, and never trusts a value just because a browser accepted it."
+    },
+    {
+      "id": "c3",
+      "type": "code",
+      "language": "html",
+      "title": "A form with clear validation constraints",
+      "code": "<form action=\"/register\" method=\"post\">\n  <label for=\"username\">Username</label>\n  <input\n    id=\"username\"\n    name=\"username\"\n    type=\"text\"\n    minlength=\"3\"\n    maxlength=\"20\"\n    required\n  >\n\n  <label for=\"age\">Age</label>\n  <input id=\"age\" name=\"age\" type=\"number\" min=\"13\" max=\"120\" required>\n\n  <label for=\"account-email\">Email address</label>\n  <input id=\"account-email\" name=\"email\" type=\"email\" required>\n\n  <button type=\"submit\">Create account</button>\n</form>",
+      "output": "The browser can check that the username is between 3 and 20 characters, the age is within the declared range, and the email has a basic email-like format. The server must still validate all submitted values before creating an account."
     },
     {
       "id": "q3",
       "type": "quiz",
-      "question": "You need form to send data to server to create new contact message. Should you use GET or POST and why? Also what happens if you use GET for contact form?",
+      "question": "A registration form uses required and type=\"email\". A user enters a syntactically plausible email address that does not actually exist. What can the browser's built-in validation establish on its own?",
       "options": [
-        "Use GET because GET is for sending data and POST is for getting data, so contact form should use GET to send message",
-        "Use POST because POST sends data in body not URL, more secure and no length limit, data not visible in URL history. GET appends data to URL visible in address bar, has length limit, should be used only for search/filter, not for creating/sending sensitive data",
-        "Both GET and POST are same, only difference is spelling, can use either for contact form with no impact",
-        "Use GET with action=\"POST\" to combine benefits of both methods for contact forms"
+        "That the email account exists and belongs to the user",
+        "That the email address can definitely receive messages",
+        "That the field is non-empty and the value passes the browser's basic email-format check",
+        "That the registration is safe to save without any server-side checks"
       ],
-      "correctIndex": 1,
-      "correctFeedback": "Excellent backend awareness! Method choice matters for security, privacy and functionality.",
-      "incorrectFeedback": "Where does GET put data? Where does POST put data? Which is visible in URL?",
-      "reasoning": "GET = data in URL query string, visible, limited length, for retrieval. POST = data in body, not visible in URL, no length limit, for creation/submission.",
-      "xpReward": 25
+      "correctIndex": 2,
+      "explanation": "Required checks that a value was supplied, and type=\"email\" checks a basic email-like format. Neither proves the mailbox exists or belongs to the user. Applications may need additional verification and must validate submitted data on the server.",
+      "hint": "Separate checking the shape of a value from proving that the real-world value exists."
     },
     {
-      "id": "complete-webpage",
-      "type": "heading",
-      "text": "Build your complete webpage contact section - our target"
+      "id": "s4",
+      "type": "content",
+      "text": "## Page 4 — Checkboxes, radio buttons, select menus, and text areas\n\nNot every question should use a plain text field. The control should match the kind of answer the user needs to provide. A checkbox is suitable for an independent choice that can be on or off, such as agreeing to receive optional updates. Multiple checkboxes can be selected when the user may choose several items.\n\nRadio buttons are suitable when the user should select one option from a group, such as choosing one delivery method. To create a radio group, related radio inputs use the same `name` value and different `value` values. The name groups the choices for form submission, while each value identifies the chosen option. Give each radio input its own id and associated label so users can understand and select the choices.\n\nA `<select>` element creates a dropdown list. Each available choice is usually represented by an `<option>` element. The option's value is the value submitted with the form; the text between its tags is what the user normally sees. If the value is omitted, the option text is generally used as its value, but explicitly writing meaningful values makes the form easier to maintain.\n\nA `<textarea>` is used for longer, multi-line text such as a message, feedback, or a description. Unlike a single-line input, its initial text goes between the opening and closing tags. The `rows` attribute can suggest how many visible text lines it should show, while CSS can control its responsive width.\n\nFor related choices, use `<fieldset>` to group them and `<legend>` to give the group a title. For example, a legend such as “Preferred contact method” explains what a group of radio buttons is asking. This is especially useful when a form has several groups of choices, because each group needs context. Keep option wording clear and avoid forcing users to guess what a selection means."
     },
     {
-      "id": "cw1",
-      "type": "sentence",
-      "text": "Remember our mission: By Lesson 10 you will have a complete webpage that looks like real product. Today we add the contact section that makes your webpage functional - clients can contact you. Go to Menu > Practical, open your index.html from Lesson 5."
-    },
-    {
-      "id": "code-7",
+      "id": "c4",
       "type": "code",
       "language": "html",
-      "title": "Complete contact section for your final webpage",
-      "code": "<h2 id=\"contact\">Contact Me - Let's Build Your Webpage</h2>\n<p>Have a project? Fill this form and I will reply within 24 hours.</p>\n<form action=\"#\" method=\"POST\">\n <fieldset>\n <legend>Your Information</legend>\n <label for=\"cname\">Full Name *</label><br>\n <input type=\"text\" id=\"cname\" name=\"name\" required minlength=\"2\" placeholder=\"Prince Egyir\"><br><br>\n <label for=\"cemail\">Email *</label><br>\n <input type=\"email\" id=\"cemail\" name=\"email\" required placeholder=\"prince@example.com\"><br><br>\n <label for=\"cphone\">Phone</label><br>\n <input type=\"tel\" id=\"cphone\" name=\"phone\" placeholder=\"0240000000\"><br>\n </fieldset>\n <br>\n <fieldset>\n <legend>Project Details</legend>\n <label for=\"cservice\">Service Needed *</label><br>\n <select id=\"cservice\" name=\"service\" required>\n <option value=\"\">-- Choose Service --</option>\n <option value=\"portfolio\">Portfolio Website - GH₵500</option>\n <option value=\"business\">Business Website - GH₵1500</option>\n <option value=\"ecommerce\">E-commerce - GH₵3000</option>\n </select><br><br>\n <p>Features needed:</p>\n <input type=\"checkbox\" id=\"resp\" name=\"features\" value=\"responsive\"><label for=\"resp\"> Mobile Responsive</label><br>\n <input type=\"checkbox\" id=\"formf\" name=\"features\" value=\"form\"><label for=\"formf\"> Contact Form</label><br>\n <input type=\"checkbox\" id=\"cms\" name=\"features\" value=\"cms\"><label for=\"cms\"> Easy to Update</label><br><br>\n <label for=\"cmessage\">Project Description *</label><br>\n <textarea id=\"cmessage\" name=\"message\" rows=\"5\" cols=\"35\" required placeholder=\"Tell me about your business and what you need...\"></textarea><br>\n </fieldset>\n <br>\n <button type=\"submit\">Send Project Inquiry</button>\n <button type=\"reset\">Clear Form</button>\n</form>",
-      "output": "Contact Me - Let's Build Your Webpage\nHave a project? Fill this form...\n[Full contact form with fieldsets, inputs, selects, checkboxes, textarea]"
-    },
-    {
-      "id": "code-8",
-      "type": "code",
-      "language": "html",
-      "title": "Newsletter and search forms for complete webpage",
-      "code": "<!-- Newsletter - for your footer -->\n<h3>Subscribe to My Updates</h3>\n<form action=\"#\" method=\"POST\">\n <label for=\"newsemail\">Get new project alerts:</label><br>\n <input type=\"email\" id=\"newsemail\" name=\"newsletter_email\" placeholder=\"Your email\" required>\n <button type=\"submit\">Subscribe</button>\n</form>\n\n<!-- Search - for projects page -->\n<h3>Search Projects</h3>\n<form action=\"#\" method=\"GET\">\n <label for=\"searchproj\">Search:</label>\n <input type=\"search\" id=\"searchproj\" name=\"q\" placeholder=\"Search portfolio...\">\n <button type=\"submit\">Search</button>\n</form>\n<!-- Note: Search uses GET because it's retrieval, not creation -->",
-      "output": "Subscribe to My Updates\n[Email] [Subscribe]\nSearch Projects\n[Search box] [Search]"
+      "title": "A feedback form with grouped controls",
+      "code": "<form action=\"/feedback\" method=\"post\">\n  <label for=\"message\">Your feedback</label>\n  <textarea id=\"message\" name=\"message\" rows=\"4\" required></textarea>\n\n  <fieldset>\n    <legend>How should we contact you?</legend>\n\n    <input id=\"contact-email\" name=\"contactMethod\" type=\"radio\" value=\"email\" required>\n    <label for=\"contact-email\">Email</label>\n\n    <input id=\"contact-phone\" name=\"contactMethod\" type=\"radio\" value=\"phone\">\n    <label for=\"contact-phone\">Phone</label>\n  </fieldset>\n\n  <label for=\"topic\">Feedback topic</label>\n  <select id=\"topic\" name=\"topic\" required>\n    <option value=\"\">Choose a topic</option>\n    <option value=\"course\">Course content</option>\n    <option value=\"technical\">Technical problem</option>\n    <option value=\"suggestion\">Suggestion</option>\n  </select>\n\n  <button type=\"submit\">Submit feedback</button>\n</form>",
+      "output": "The form collects a longer message, one contact preference, and a topic. The fieldset and legend describe the radio group. The empty-value prompt encourages the user to choose a real topic instead of accidentally submitting the prompt as a meaningful selection."
     },
     {
       "id": "q4",
       "type": "quiz",
-      "question": "You have <input type=\"text\" disabled value=\"GH₵500\"> for price and <input type=\"text\" readonly value=\"USER123\"> for user ID in same form. Form submits. Which value reaches server and why difference matters?",
+      "question": "A survey asks the user to select exactly one preferred learning format: video, text, or audio. Which implementation best matches that requirement?",
       "options": [
-        "Both values reach server because both disabled and readonly are sent, difference is only visual styling",
-        "Neither reaches server because both disabled and readonly prevent submission, need to use hidden type instead",
-        "Only readonly USER123 reaches server, disabled GH₵500 does NOT, because disabled inputs are excluded from form submission entirely, while readonly inputs are included but not editable - critical for pricing and IDs",
-        "Only disabled GH₵500 reaches server, readonly does not, because readonly means read-only display not for submission"
+        "Three checkboxes with the same name, because checkboxes enforce one choice",
+        "Three radio inputs with the same name and distinct values, each with a clear label",
+        "Three text inputs, because users should type one of the formats",
+        "Three buttons without names or values, because button text is always submitted as form data"
       ],
-      "correctIndex": 2,
-      "correctFeedback": "Perfect form mastery! This distinction is crucial for e-commerce and user management.",
-      "incorrectFeedback": "Which attribute excludes from submission vs includes but prevents editing?",
-      "reasoning": "disabled = not submitted, not focusable, excluded. readonly = submitted, focusable, not editable. Important for IDs (readonly) vs disabled promos.",
-      "xpReward": 30
+      "correctIndex": 1,
+      "explanation": "Radio inputs sharing a name form a single-choice group, and their distinct values identify the selected option. Checkboxes normally allow independent selections, while ordinary buttons do not automatically submit their visible text as a selected form value.",
+      "hint": "Choose the control designed for one selection from a group of alternatives."
+    },
+    {
+      "id": "s5",
+      "type": "content",
+      "text": "## Page 5 — Submission, accessibility, security, and professional polish\n\nA button inside a form commonly submits the form when its type is `submit`. A button with `type=\"button\"` does not submit the form by default; it is useful for actions controlled by JavaScript, such as showing an extra section. A `type=\"reset\"` button restores controls to their initial values, but reset buttons can surprise users and are often unnecessary in carefully designed forms.\n\nAlways give buttons an understandable label, such as “Send message” or “Save profile.” A vague label such as “Go” may not explain the result. Also make sure that a form can be used with a keyboard. Labels should be connected to controls, focus indicators should remain visible, and the page should not depend on a mouse or on color alone.\n\nThe `autocomplete` attribute can help the browser fill familiar information, such as a person's name, email, or telephone number. Use appropriate autocomplete tokens when they genuinely fit the field. This can make forms faster to complete, particularly on phones. Keep fields in a sensible order, use clear instructions, and avoid asking for information that is not needed.\n\nNever treat HTML validation as protection for private information. Use HTTPS for data in transit, validate and sanitize inputs appropriately on the server, apply access controls, and protect sensitive operations. Password fields visually mask typing but do not encrypt a password. Do not put passwords, private messages, or other sensitive values into GET query strings, where they may appear in browser history, logs, or shared URLs.\n\nBefore publishing a form, test it on a narrow mobile screen and with a keyboard. Check that labels are readable, controls are easy to operate, required fields are clearly indicated, and error messages help people recover. Submit realistic test values and confirm the backend responds correctly. A professional form is complete only when its structure, usability, accessibility, and data-handling behavior work together."
     },
     {
       "id": "q5",
       "type": "quiz",
-      "question": "You build login form with <input type=\"text\" for password and <button>Login</button> without type. Users report password visible and pressing Enter in username field doesn't submit. What are two bugs?",
+      "question": "A developer has built a form with required fields and browser validation. Before saving the submitted values to an account database, what is the most important additional responsibility for the server?",
       "options": [
-        "Bug 1: Should be type=\"password\" to mask characters, type=\"text\" shows password visible. Bug 2: Button without type defaults to type=\"submit\" actually so Enter should work, but if inside form with multiple buttons, first button might be submit; better to explicitly set type=\"submit\" for main action and type=\"button\" for others to control behavior",
-        "Bug 1: type=\"text\" is correct for password, browser should mask automatically. Bug 2: Need type=\"login\" for login button to enable Enter key",
-        "Bug 1: Need type=\"hidden\" for password to hide. Bug 2: Need JavaScript to enable Enter key, HTML alone can't handle Enter",
-        "Bug 1: Password field must be <textarea> not input to hide. Bug 2: Button must be <input type=\"submit\"> not <button>"
+        "Trust the browser because required prevents users from bypassing validation",
+        "Repeat relevant validation and enforce security and permission rules on the submitted data",
+        "Remove all labels because the server receives field names instead",
+        "Convert every form method to GET so the submitted data can be inspected in the URL"
       ],
-      "correctIndex": 0,
-      "correctFeedback": "Excellent debugging! Password masking and button type defaults are critical for production login forms.",
-      "incorrectFeedback": "What input type masks password? What does button default to when type omitted inside form?",
-      "reasoning": "type=password masks, type=text shows. Button without type inside form defaults to submit, but explicit type is best practice to avoid ambiguity with multiple buttons.",
-      "xpReward": 30
-    },
-    {
-      "id": "code-9",
-      "type": "code",
-      "language": "html",
-      "title": "Your full webpage so far - combine all lessons",
-      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Prince Egyir - Full-Stack Developer - Complete Webpage</title></head>\n<body>\n<nav><ul><li><a href=\"#about\">About</a></li><li><a href=\"#projects\">Projects</a></li><li><a href=\"#pricing\">Pricing</a></li><li><a href=\"#contact\">Contact</a></li></ul></nav>\n<h1>Prince Egyir</h1>\n<img src=\"https://via.placeholder.com/150\" alt=\"Prince Egyir developer portrait\" width=\"150\" height=\"150\">\n<h2 id=\"about\">About Me</h2><p><strong>Full-Stack Developer</strong> from Ghana building <em>complete webpages</em> for businesses.</p>\n<h2 id=\"projects\">My Projects</h2><ul><li>Code Academy App - 6 lessons completed</li><li>E-commerce Site</li></ul>\n<h2 id=\"pricing\">Pricing</h2><table><caption>Webpage Packages</caption><thead><tr><th scope=\"col\">Package</th><th scope=\"col\">Price</th></tr></thead><tbody><tr><th scope=\"row\">Starter Webpage</th><td>GH₵500</td></tr><tr><th scope=\"row\">Complete Webpage</th><td>GH₵1500</td></tr></tbody></table>\n<h2 id=\"contact\">Contact - Get Your Webpage Built</h2>\n<form action=\"#\" method=\"POST\"><label for=\"fname\">Name *</label><br><input type=\"text\" id=\"fname\" required><br><br><label for=\"femail\">Email *</label><br><input type=\"email\" id=\"femail\" required><br><br><label for=\"fmsg\">Message *</label><br><textarea id=\"fmsg\" rows=\"4\" required></textarea><br><br><button type=\"submit\">Send - Build My Webpage</button></form>\n</body>\n</html>",
-      "output": "Complete Webpage Structure: Nav, About, Projects, Pricing Table, Contact Form - All lessons combined"
-    },
-    {
-      "id": "next-6",
-      "type": "heading",
-      "text": "Your webpage is now interactive"
-    },
-    {
-      "id": "next6-1",
-      "type": "sentence",
-      "text": "You now know how to build production forms: label with for/id connection, 20+ input types for mobile UX, radio vs checkbox grouping by name, select dropdown, textarea, fieldset/legend grouping, validation with required/min/max/pattern, GET vs POST, disabled vs readonly, button types. Your webpage now has contact form, newsletter, search - it's becoming a complete product clients can use."
-    },
-    {
-      "id": "next6-2",
-      "type": "sentence",
-      "text": "Next: Lesson 7 - Semantic HTML. We will restructure your entire webpage with header, nav, main, section, article, aside, footer - making it professional, SEO-friendly, and accessible. This is what transforms your webpage from beginner code to production-grade complete webpage that Google loves. Practice your form in Menu > Practical - try submitting empty to see browser validation!"
+      "correctIndex": 1,
+      "explanation": "Client-side validation can be bypassed by modifying the page or sending a request directly. The server must validate submitted data and enforce security and authorization rules before saving or acting on it. Labels improve the interface but do not replace server-side checks.",
+      "hint": "Think about what happens when a request reaches the server without using the normal browser form."
     }
   ]
 }

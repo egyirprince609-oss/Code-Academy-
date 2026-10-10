@@ -2,275 +2,138 @@
   "course": "html",
   "lessonNumber": 5,
   "lessonId": "html-lesson-5",
-  "title": "HTML Lists and Tables",
-  "subtitle": "Organize information like professional dashboards",
-  "description": "Learn ordered lists, unordered lists, nested lists, description lists, and build professional tables with thead, tbody, tfoot, captions and accessibility - exactly what your final app dashboard will need.",
+  "title": "Lists and Tables",
+  "subtitle": "Organize related information clearly and accessibly",
+  "description": "Learn when to use ordered and unordered lists, how to build nested lists, and how to structure accessible HTML tables with headers and captions.",
   "level": "Beginner",
-  "xpReward": 100,
-  "coinsReward": 25,
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 30,
   "blocks": [
     {
-      "id": "welcome-5",
-      "type": "heading",
-      "text": "Why lists and tables power every app you use"
+      "id": "s1",
+      "type": "content",
+      "text": "## Page 1 — Choosing the right list\n\nWelcome back! In this lesson, you will learn how to present groups of related information so visitors can scan them quickly. Lists are useful for steps, ingredients, features, instructions, menus, and many other kinds of information. A list is not just decoration: its HTML structure tells the browser and assistive technology how the items belong together.\n\nHTML has three common list elements. Use `<ul>` for an **unordered list** when the order of the items does not change their meaning. The browser usually displays a bullet beside each item. Use `<ol>` for an **ordered list** when sequence or ranking matters, such as steps in a process or positions in a competition. Use `<li>` for each list item inside either type of list.\n\nDo not choose a list type only because you prefer bullets or numbers visually. Choose it based on meaning. For example, a list of school subjects usually does not need an order, so `<ul>` is suitable. A list explaining how to publish a website has a sequence, so `<ol>` is more meaningful. CSS can change how markers look without changing the list's underlying meaning.\n\nEvery list item should be placed inside its parent list. Avoid placing loose `<li>` elements directly in the page without an appropriate list container. Also avoid using repeated hyphens or numbers typed into ordinary paragraphs to imitate a list: those characters do not provide the same structural information to the browser or assistive technology.\n\nA useful habit is to ask: **If I rearranged these items, would the meaning change?** If yes, an ordered list is probably appropriate. If not, an unordered list is often the better choice."
     },
     {
-      "id": "w5-1",
-      "type": "sentence",
-      "text": "Look at any app: YouTube has list of videos, Jumia has list of products, your bank app has table of transactions, Code Academy has list of lessons and table of progress. Lists and tables are how we organize information so humans can scan quickly. Today your portfolio becomes organized and scannable."
-    },
-    {
-      "id": "w5-2",
-      "type": "sentence",
-      "text": "Open Menu > Practical now. You will create 3 things today: a skills list, a projects timeline, and a pricing table. These will go directly into your final complete app."
-    },
-    {
-      "id": "ul-deep",
-      "type": "heading",
-      "text": "Unordered lists - when order doesn't matter"
-    },
-    {
-      "id": "ul1",
-      "type": "sentence",
-      "text": "Use ul when order doesn't matter - like skills, features, ingredients. Each item is li. Browser adds bullet points by default. But semantic meaning is: this is a collection of related items where sequence is not important. That's why we use ul for navigation menus in Lesson 3 - nav items are related but order is not strictly sequential."
-    },
-    {
-      "id": "code-1",
+      "id": "c1",
       "type": "code",
       "language": "html",
-      "title": "Unordered list - your skills",
-      "code": "<h2>My Tech Stack</h2>\n<ul>\n  <li>HTML5 - Structure</li>\n  <li>CSS3 - Coming in next course</li>\n  <li>JavaScript - Coming soon</li>\n  <li>Firebase - For backend</li>\n</ul>\n\n<h2>What I Can Build</h2>\n<ul>\n  <li>Personal portfolio websites</li>\n  <li>Business landing pages</li>\n  <li>Multi-page apps like this Code Academy app</li>\n</ul>",
-      "output": "My Tech Stack\n• HTML5 - Structure\n• CSS3 - Coming in next course\n• JavaScript...\nWhat I Can Build\n• Personal portfolio..."
-    },
-    {
-      "id": "ol-deep",
-      "type": "heading",
-      "text": "Ordered lists - when sequence matters"
-    },
-    {
-      "id": "ol1",
-      "type": "sentence",
-      "text": "Use ol when order DOES matter - steps, rankings, timeline. Browser adds numbers 1,2,3. You can control numbering with type attribute: type=\"A\" for A,B,C, type=\"a\" for a,b,c, type=\"I\" for Roman I,II,III, type=\"i\" for i,ii,iii. Also start attribute to start from different number, and reversed to count backwards."
-    },
-    {
-      "id": "code-2",
-      "type": "code",
-      "language": "html",
-      "title": "Ordered lists with types - timeline and steps",
-      "code": "<h2>How I Built This App - Steps</h2>\n<ol>\n  <li>Learned HTML structure - Lesson 1</li>\n  <li>Added professional text - Lesson 2</li>\n  <li>Created multi-page navigation - Lesson 3</li>\n  <li>Added images and media - Lesson 4</li>\n  <li>Organized with lists and tables - You are here</li>\n</ol>\n\n<h2>Top 3 Projects - Ranked</h2>\n<ol type=\"A\" start=\"1\">\n  <li>Code Academy App - HTML Course</li>\n  <li>E-commerce for Local Shop</li>\n  <li>Church Website</li>\n</ol>\n\n<h2>Countdown - Launch in</h2>\n<ol reversed start=\"3\">\n  <li>Final testing</li>\n  <li>Add CSS styling</li>\n  <li>Deploy to internet</li>\n</ol>",
-      "output": "How I Built This App - Steps\n1. Learned HTML structure\n2. Added professional text\n3. Created multi-page...\nTop 3 Projects - Ranked\nA. Code Academy App\nB. E-commerce...\nCountdown\n3. Final testing\n2. Add CSS styling\n1. Deploy"
-    },
-    {
-      "id": "nested-deep",
-      "type": "heading",
-      "text": "Nested lists - lists inside lists for real menus"
-    },
-    {
-      "id": "ne1",
-      "type": "sentence",
-      "text": "Real apps have nested navigation - like Courses > HTML > Lesson 1, Lesson 2. You achieve this by putting ul or ol INSIDE li. Important: The nested list must be inside the li, not directly inside ul. This is where many beginners make invalid HTML."
-    },
-    {
-      "id": "code-3",
-      "type": "code",
-      "language": "html",
-      "title": "Nested list - correct vs wrong",
-      "code": "<!-- WRONG - ul directly inside ul -->\n<ul>\n  <li>HTML Course</li>\n  <ul>\n    <li>Lesson 1</li>\n  </ul>\n</ul>\n\n<!-- CORRECT - nested ul inside li -->\n<ul>\n  <li>HTML Course\n    <ul>\n      <li>Lesson 1 - Introduction</li>\n      <li>Lesson 2 - Text and Headings</li>\n      <li>Lesson 3 - Links and Navigation</li>\n    </ul>\n  </li>\n  <li>CSS Course - Coming Soon</li>\n  <li>JavaScript Course - Coming Soon</li>\n</ul>",
-      "output": "• HTML Course\n  • Lesson 1 - Introduction\n  • Lesson 2 - Text and Headings\n  • Lesson 3 - Links...\n• CSS Course\n• JavaScript Course"
-    },
-    {
-      "id": "code-4",
-      "type": "code",
-      "language": "html",
-      "title": "Professional nested nav for your app",
-      "code": "<nav>\n  <ul>\n    <li><a href=\"index.html\">Home</a></li>\n    <li>Projects\n      <ul>\n        <li><a href=\"projects.html#web\">Web Apps</a></li>\n        <li><a href=\"projects.html#mobile\">Mobile Concepts</a></li>\n      </ul>\n    </li>\n    <li><a href=\"about.html\">About</a></li>\n    <li><a href=\"#contact\">Contact</a></li>\n  </ul>\n</nav>",
-      "output": "Home\nProjects\n  Web Apps\n  Mobile Concepts\nAbout\nContact"
-    },
-    {
-      "id": "dl-deep",
-      "type": "heading",
-      "text": "Description lists - the hidden gem for portfolios"
-    },
-    {
-      "id": "dl1",
-      "type": "sentence",
-      "text": "Most tutorials skip dl, dt, dd but professionals use it daily. dl = description list, dt = term, dd = description of term. Perfect for FAQs, glossary, project details like Client: Code Academy, Year: 2026. Much more semantic than using p or div for term-description pairs."
-    },
-    {
-      "id": "code-5",
-      "type": "code",
-      "language": "html",
-      "title": "Description list - perfect for project details and FAQ",
-      "code": "<h2>Project Details - Code Academy App</h2>\n<dl>\n  <dt>Client</dt>\n  <dd>Code Academy Ghana</dd>\n  <dt>Role</dt>\n  <dd>Frontend Developer - HTML Structure</dd>\n  <dt>Technologies</dt>\n  <dd>HTML5, Semantic HTML, Accessible Images</dd>\n  <dt>Year</dt>\n  <dd>2026</dd>\n</dl>\n\n<h2>FAQ</h2>\n<dl>\n  <dt>What is HTML?</dt>\n  <dd>HyperText Markup Language - structure of web pages.</dd>\n  <dt>Do I need to know CSS before HTML?</dt>\n  <dd>No, HTML comes first. Learn structure before styling.</dd>\n</dl>",
-      "output": "Project Details\nClient\n  Code Academy Ghana\nRole\n  Frontend Developer...\nFAQ\nWhat is HTML?\n  HyperText Markup Language..."
-    },
-    {
-      "id": "table-deep",
-      "type": "heading",
-      "text": "Tables - not for layout, for data"
-    },
-    {
-      "id": "tb1",
-      "type": "sentence",
-      "text": "Old websites used tables for layout - that's WRONG today. Tables are ONLY for tabular data like price lists, schedules, transaction history. A table has table wrapper, caption for title, thead for header row, tbody for data rows, tfoot for footer/summary, tr for row, th for header cell, td for data cell."
-    },
-    {
-      "id": "tb2",
-      "type": "sentence",
-      "text": "Critical: th must have scope attribute - scope=\"col\" for column header, scope=\"row\" for row header. This helps screen readers announce table correctly. Without scope, blind users get lost in tables."
-    },
-    {
-      "id": "code-6",
-      "type": "code",
-      "language": "html",
-      "title": "Simple table - structure explained",
-      "code": "<table>\n  <caption>My Weekly Learning Schedule</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Day</th>\n      <th scope=\"col\">Topic</th>\n      <th scope=\"col\">Hours</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th scope=\"row\">Monday</th>\n      <td>HTML Text & Headings</td>\n      <td>2 hours</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Tuesday</th>\n      <td>Links and Navigation</td>\n      <td>3 hours</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Wednesday</th>\n      <td>Images & Multimedia</td>\n      <td>2 hours</td>\n    </tr>\n  </tbody>\n  <tfoot>\n    <tr>\n      <th scope=\"row\">Total</th>\n      <td colspan=\"2\">7 hours this week</td>\n    </tr>\n  </tfoot>\n</table>",
-      "output": "My Weekly Learning Schedule\nDay | Topic | Hours\nMonday | HTML Text & Headings | 2 hours\nTuesday | Links... | 3 hours\nWednesday | Images... | 2 hours\nTotal | 7 hours this week"
-    },
-    {
-      "id": "code-7",
-      "type": "code",
-      "language": "html",
-      "title": "Pricing table - for your final app",
-      "code": "<h2>Website Packages - What I Offer</h2>\n<table>\n  <caption>Choose your package</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Feature</th>\n      <th scope=\"col\">Starter</th>\n      <th scope=\"col\">Business</th>\n      <th scope=\"col\">Premium</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th scope=\"row\">Pages</th>\n      <td>1 page</td>\n      <td>5 pages</td>\n      <td>10+ pages</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Responsive</th>\n      <td>Yes</td>\n      <td>Yes</td>\n      <td>Yes</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Contact Form</th>\n      <td>No</td>\n      <td>Yes</td>\n      <td>Yes</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Price</th>\n      <td>GH₵500</td>\n      <td>GH₵1500</td>\n      <td>GH₵3000</td>\n    </tr>\n  </tbody>\n</table>",
-      "output": "Website Packages\nFeature | Starter | Business | Premium\nPages | 1 | 5 | 10+\nResponsive | Yes | Yes | Yes\nContact Form | No | Yes | Yes\nPrice | 500 | 1500 | 3000"
-    },
-    {
-      "id": "span-colspan",
-      "type": "heading",
-      "text": "Colspan and Rowspan - merging cells like Excel"
-    },
-    {
-      "id": "cr1",
-      "type": "sentence",
-      "text": "Sometimes cell needs to span multiple columns or rows. colspan=\"2\" means this cell takes 2 columns width, rowspan=\"2\" means 2 rows height. Use for summary rows, merged headers, complex data. But don't overuse - complex spanning hurts accessibility."
-    },
-    {
-      "id": "code-8",
-      "type": "code",
-      "language": "html",
-      "title": "Colspan and rowspan - practical",
-      "code": "<table>\n  <caption>HTML Course Progress</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Lesson</th>\n      <th scope=\"col\">Status</th>\n      <th scope=\"col\">XP Earned</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Lesson 1 - Intro</td>\n      <td>Completed</td>\n      <td>80 XP</td>\n    </tr>\n    <tr>\n      <td>Lesson 2 - Text</td>\n      <td>Completed</td>\n      <td>80 XP</td>\n    </tr>\n    <tr>\n      <td colspan=\"2\">Total Completed (2/10)</td>\n      <td>160 XP</td>\n    </tr>\n  </tbody>\n</table>",
-      "output": "HTML Course Progress\nLesson | Status | XP\nLesson 1 | Completed | 80 XP\nLesson 2 | Completed | 80 XP\nTotal Completed (2/10) | 160 XP"
+      "title": "An unordered list of course topics",
+      "code": "<h2>Topics to study</h2>\n<ul>\n  <li>HTML structure</li>\n  <li>CSS styling</li>\n  <li>JavaScript behavior</li>\n</ul>",
+      "output": "A heading followed by three bullet-list items. The browser understands that the three topics form one group."
     },
     {
       "id": "q1",
       "type": "quiz",
-      "question": "You need to show steps to deploy website: 1) Buy domain 2) Write HTML 3) Upload. Which list type and why?",
+      "question": "A safety guide must show instructions in the exact order learners should perform them. Which structure best communicates that sequence semantically?",
       "options": [
-        "<ul> because steps are collection of items and ul is default for any collection, order doesn't matter for deployment steps",
-        "<ol> because sequence matters - you must buy domain before uploading, order is critical to meaning, ol conveys sequential order semantically",
-        "<dl> because steps are terms and descriptions, so dl with dt for step number and dd for action is correct",
-        "<table> because steps should be in table with Step Number column and Action column for better structure"
+        "<ul> containing one <li> per instruction",
+        "<ol> containing one <li> per instruction",
+        "Separate <p> elements with numbers typed into their text",
+        "A <table> with one instruction in each row and no headers"
       ],
       "correctIndex": 1,
-      "correctFeedback": "Correct! ul = unordered collection, ol = ordered sequence. Deployment steps are sequential - order changes meaning.",
-      "incorrectFeedback": "Ask: If you swap step 1 and 3, does meaning change? If yes, order matters.",
-      "reasoning": "ol is for sequential order where sequence matters. ul is for collection where order doesn't matter. Deployment steps are ordered.",
-      "xpReward": 25
+      "explanation": "An ordered list communicates that the items form a sequence. The browser can display numbering, and assistive technology can identify the content as an ordered list. Typed numbers in paragraphs do not provide the same list semantics.",
+      "hint": "Choose the element whose meaning includes a meaningful sequence, not just a visual marker."
+    },
+    {
+      "id": "s2",
+      "type": "content",
+      "text": "## Page 2 — Ordered lists, nesting, and useful attributes\n\nAn ordered list can use numbering styles and starting points when the content requires them. The `start` attribute sets the first number, such as `<ol start=\"4\">`. The `reversed` attribute makes the numbering count downward. The `type` attribute can choose common marker styles such as numbers, letters, or Roman numerals, though CSS is usually more flexible for visual styling. Use these attributes because they help represent the content, not merely to force a particular design.\n\nLists can also be nested. A nested list is a list placed inside a list item, often to show subtopics or steps belonging to a larger topic. The inner `<ul>` or `<ol>` should be inside the relevant `<li>`, not placed as a separate sibling outside it. This nesting tells the browser which details belong under which parent item.\n\nFor example, a website project might have a main item called “Build the page” with smaller items for writing HTML and checking links. Nested lists can be useful, but too many levels make information hard to follow—especially on small phone screens. If the hierarchy becomes complicated, consider splitting the content into separate headings and shorter lists.\n\nRemember that the list's items are not limited to one line of plain text. A list item can contain paragraphs, links, or other appropriate content. Keep the markup logical and avoid adding unnecessary containers around every short item."
+    },
+    {
+      "id": "c2",
+      "type": "code",
+      "language": "html",
+      "title": "A nested project checklist",
+      "code": "<ol>\n  <li>Plan the website\n    <ul>\n      <li>Choose the audience</li>\n      <li>Write the page goals</li>\n    </ul>\n  </li>\n  <li>Build and test the page</li>\n</ol>",
+      "output": "A numbered list with two main steps. The first step contains a nested bullet list showing two planning tasks that belong to it."
     },
     {
       "id": "q2",
       "type": "quiz",
-      "question": "You write: <ul><li>HTML</li><ul><li>Lesson 1</li></ul></ul>. W3C validator says invalid. What is exact error and correct nesting?",
+      "question": "In the nested list example, where should the inner <ul> be placed so that its two tasks are correctly associated with “Plan the website”?",
       "options": [
-        "Invalid because ul cannot contain ul directly; nested ul must be inside li like <ul><li>HTML<ul><li>Lesson 1</li></ul></li></ul> because li is the only allowed direct child of ul that can contain nested lists",
-        "Invalid because you need ol for nested, not ul - ul cannot nest inside ul, must use ol for inner list",
-        "Valid actually, validator is wrong - ul inside ul is allowed directly without li wrapper in HTML5",
-        "Invalid because li text must be empty when it contains nested ul - <li>HTML</li> must be <li></li> before nested ul"
+        "Inside the first <li>, after the main task text",
+        "After the closing </ol>, because it is a separate list",
+        "Inside the <ol> but outside every <li>",
+        "Inside the <head> element so the browser loads it first"
       ],
       "correctIndex": 0,
-      "correctFeedback": "Perfect validation knowledge! This is most common list nesting error.",
-      "incorrectFeedback": "What can be direct child of ul? Only li. Can ul be direct child of ul?",
-      "reasoning": "ul/ol can only have li as direct children. Nested ul must be inside li, not sibling to li.",
-      "xpReward": 30
+      "explanation": "The nested list belongs inside the list item it expands. Placing it inside the first <li> preserves the relationship between the parent task and its sub-tasks.",
+      "hint": "A sub-list should be nested inside the item it explains."
+    },
+    {
+      "id": "s3",
+      "type": "content",
+      "text": "## Page 3 — When a table is the right tool\n\nA table is designed for **tabular data**: information arranged in rows and columns where the relationship between each value matters. Examples include a class timetable, product comparison, exam results, or a list of course names with their durations. A table lets a visitor compare values by reading across a row or down a column.\n\nDo not use tables just to arrange the visual layout of an ordinary page. Modern page layout is usually handled with CSS Flexbox or Grid. A data table should be chosen because the information naturally forms a grid of related values, not because a grid happens to look convenient.\n\nThe main table element is `<table>`. Each row uses `<tr>`. A normal data cell uses `<td>`, while a header cell uses `<th>`. Header cells identify what a row or column represents. For example, in a table of course durations, “Course” and “Duration” are column headings, while “HTML” and “30 minutes” are data values. Using `<th>` for genuine headers gives the table useful structure that assistive technology can communicate.\n\nA `<caption>` provides a title or short description for the table. It is especially helpful when a visitor arrives at the table without the surrounding explanation. Put the caption directly inside the `<table>`, typically as the first child. For simple tables, add `scope=\"col\"` to column header cells and `scope=\"row\"` to row header cells when that relationship is appropriate. These attributes help make the header relationships explicit.\n\nTables should be readable on narrow screens. Keep headings concise, avoid unnecessarily wide columns, and consider placing a wide table inside a horizontally scrollable wrapper if the data cannot sensibly reflow. Do not shrink the text until it becomes unreadable just to squeeze every column onto a phone screen."
+    },
+    {
+      "id": "c3",
+      "type": "code",
+      "language": "html",
+      "title": "A small course table with headers",
+      "code": "<table>\n  <caption>Estimated lesson time</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Course</th>\n      <th scope=\"col\">Minutes</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>HTML</td>\n      <td>30</td>\n    </tr>\n    <tr>\n      <td>CSS</td>\n      <td>25</td>\n    </tr>\n  </tbody>\n</table>",
+      "output": "A table titled “Estimated lesson time,” with two column headers and two rows of course data. The thead and tbody group the heading and body rows."
     },
     {
       "id": "q3",
       "type": "quiz",
-      "question": "You build pricing table with <td> for all cells including header row 'Feature, Starter, Business'. Screen reader user says it's confusing. What semantic fix makes table accessible?",
+      "question": "A table contains columns for Student, Score, and Grade. Which markup choice most directly helps assistive technology identify what each column represents?",
       "options": [
-        "Change header cells to <th scope=\"col\"> and row headers to <th scope=\"row\"> and add <caption> and use <thead> <tbody> because th with scope tells screen readers header relationship and caption gives table title",
-        "Add <b> to header cells to make them bold because screen readers announce bold as header",
-        "Add id attribute to each td because screen readers need id to identify headers",
-        "Wrap table in <nav> because tables are navigation and nav provides landmark"
+        "Put the column names in ordinary <td> cells and make them bold with CSS",
+        "Use <th scope=\"col\"> for each column heading",
+        "Place all column names in the table's <caption> and leave the first row empty",
+        "Use <h2> elements inside each data cell instead of table headers"
       ],
-      "correctIndex": 0,
-      "correctFeedback": "Excellent accessibility! th + scope + caption + thead/tbody is what WCAG requires for data tables.",
-      "incorrectFeedback": "How do screen readers know which cell is header for which data? What attribute defines header scope?",
-      "reasoning": "th denotes header cell, scope=col/row defines relationship, caption provides title, thead/tbody provide structure for assistive tech.",
-      "xpReward": 30
+      "correctIndex": 1,
+      "explanation": "A table header cell created with <th> identifies heading information, and scope=\"col\" associates it with the cells in that column. Bold styling on a <td> changes appearance but does not give the cell the same header semantics.",
+      "hint": "Think about the element designed specifically to mark a table heading, and how it relates to a column."
     },
     {
-      "id": "practical-5",
-      "type": "heading",
-      "text": "Practical: Organize your portfolio like a pro"
+      "id": "s4",
+      "type": "content",
+      "text": "## Page 4 — Table structure, row headings, and merging cells\n\nFor larger tables, `<thead>`, `<tbody>`, and `<tfoot>` can group the header, main data, and summary rows. They are not required for every simple table, but they make the structure clearer and can help with styling and maintenance. The browser can still display a basic table without all three grouping elements.\n\nSometimes a table needs a row heading as well as column headings. For example, a timetable may use each day as a row heading. In that case, a `<th scope=\"row\">Monday</th>` cell can identify the row, while column headers identify times or activities. Use row and column headers to express relationships, not simply to make certain cells look bold.\n\nThe `colspan` attribute allows a cell to span across more than one column. The `rowspan` attribute allows it to span across more than one row. These can represent information such as a morning session that covers two time columns. However, merged cells make a table's relationships more complicated, so use them only when they genuinely reflect the data. For a complex table, careful headers and a clear layout become especially important.\n\nDo not place unrelated content in a table just to align it. If you need cards, navigation columns, or a page layout, use CSS. If you need to show data with meaningful row-and-column relationships, use a data table. This distinction makes pages easier to maintain, more adaptable to phones, and more accessible to people using assistive technology."
     },
     {
-      "id": "pr5-1",
-      "type": "sentence",
-      "text": "Time to make your app organized. Open Menu > Practical. Edit your index.html and projects.html - add lists and tables. This is exactly what employers will see in your final app."
-    },
-    {
-      "id": "code-9",
+      "id": "c4",
       "type": "code",
       "language": "html",
-      "title": "Final upgrade for Lesson 5 - Your organized portfolio",
-      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><title>Prince Egyir | Developer</title></head>\n<body>\n<nav><ul><li><a href=\"index.html\">Home</a></li><li><a href=\"about.html\">About</a></li><li><a href=\"projects.html\">Projects</a></li></ul></nav>\n<h1>Prince Egyir</h1>\n<img src=\"https://via.placeholder.com/150\" alt=\"Prince Egyir developer\" width=\"150\" height=\"150\">\n<h2>My Skills</h2>\n<ul>\n  <li><strong>HTML5</strong> - Professional structure</li>\n  <li>CSS3 - Learning next</li>\n  <li>JavaScript - Coming soon</li>\n</ul>\n<h2>My Learning Path</h2>\n<ol>\n  <li>Lesson 1 - Introduction to HTML - Completed</li>\n  <li>Lesson 2 - Text and Headings - Completed</li>\n  <li>Lesson 3 - Links and Navigation - Completed</li>\n  <li>Lesson 4 - Images and Multimedia - Completed</li>\n  <li>Lesson 5 - Lists and Tables - You are here</li>\n</ol>\n<h2>My Services & Pricing</h2>\n<table>\n  <caption>Website Packages for Small Businesses in Ghana</caption>\n  <thead><tr><th scope=\"col\">Package</th><th scope=\"col\">Pages</th><th scope=\"col\">Price (GH₵)</th></tr></thead>\n  <tbody>\n    <tr><th scope=\"row\">Starter</th><td>1</td><td>500</td></tr>\n    <tr><th scope=\"row\">Business</th><td>5</td><td>1500</td></tr>\n    <tr><th scope=\"row\">Premium</th><td>10+</td><td>3000</td></tr>\n  </tbody>\n</table>\n<h2>Project Details</h2>\n<dl><dt>Current Project</dt><dd>Code Academy Portfolio App</dd><dt>Status</dt><dd>5 of 10 lessons completed</dd></dl>\n<h2 id=\"contact\">Contact</h2><p><a href=\"mailto:prince@example.com\">Email Me</a></p>\n</body>\n</html>",
-      "output": "Prince Egyir\nMy Skills • HTML5...\nMy Learning Path 1. Lesson 1...\nMy Services & Pricing Table\nProject Details\nContact"
-    },
-    {
-      "id": "pr5-2",
-      "type": "sentence",
-      "text": "Run it in Practical. See how organized it looks? You have ul for skills, ol for timeline, table for pricing, dl for project details. This is how real dashboards are structured. Save it!"
+      "title": "A table with row and column headings",
+      "code": "<table>\n  <caption>Weekly study plan</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Day</th>\n      <th scope=\"col\">Topic</th>\n      <th scope=\"col\">Minutes</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th scope=\"row\">Monday</th>\n      <td>HTML lists</td>\n      <td>30</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Tuesday</th>\n      <td>HTML tables</td>\n      <td>35</td>\n    </tr>\n  </tbody>\n</table>",
+      "output": "The table has column headers and a row header for each day. A visitor can understand what each value represents by following its row and column."
     },
     {
       "id": "q4",
       "type": "quiz",
-      "question": "You need FAQ section: Question 'What is HTML?' Answer 'Structure language'. Which markup is most semantic and why not use ul or p?",
+      "question": "A timetable has one row per day and columns for Morning and Afternoon. You want each day name to act as the heading for its row. Which choice is most semantically appropriate?",
       "options": [
-        "<ul><li>What is HTML?</li><li>Structure language</li></ul> because ul is for any question-answer pair",
-        "<p><b>What is HTML?</b></p><p>Structure language</p> because p with bold is simplest and most compatible",
-        "<dl><dt>What is HTML?</dt><dd>Structure language</dd></dl> because dl is specifically designed for term-description and question-answer pairs, conveying association semantically",
-        "<table><tr><td>What is HTML?</td><td>Structure language</td></tr></table> because FAQ should be in table for alignment"
+        "Use <td scope=\"row\">Monday</td>",
+        "Use <th scope=\"col\">Monday</th>",
+        "Use <th scope=\"row\">Monday</th>",
+        "Use <caption>Monday</caption> in every table row"
       ],
       "correctIndex": 2,
-      "correctFeedback": "Exactly! dl is the hidden gem for FAQ, glossary, key-value pairs. ul and p lose the semantic association.",
-      "incorrectFeedback": "Which element is designed for term and its description? Not ul (collection) nor table (tabular data).",
-      "reasoning": "dl = description list, dt = term/question, dd = description/answer. It semantically links them, unlike ul or separate p tags.",
-      "xpReward": 25
+      "explanation": "A th cell marks header content, and scope=\"row\" identifies it as the heading for that row. scope=\"col\" would indicate a column heading, while td is a data cell rather than a header cell.",
+      "hint": "The day labels describe rows, not columns, so choose the matching header relationship."
+    },
+    {
+      "id": "s5",
+      "type": "content",
+      "text": "## Page 5 — Mobile-friendly tables and final checks\n\nA table that looks fine on a laptop may overflow a phone screen if it has many columns or long text. Start by asking whether every column is necessary. Use concise headings, sensible values, and meaningful grouping. Avoid adding decorative columns that do not help the reader understand the data.\n\nIf the table must remain wide, a common approach is to put it inside a wrapper that permits horizontal scrolling. For example, a container styled with `overflow-x: auto` lets a visitor scroll the table sideways without forcing the entire page to become wider than the screen. Make sure users can discover the scrolling area and that the table remains usable with touch and keyboard navigation.\n\nAlways check the relationships between the markup and the displayed information. Every table row should have a sensible number of cells, taking any `rowspan` and `colspan` values into account. Each heading should describe the data beneath or beside it. A caption should describe the table's purpose, not repeat a long paragraph. A nested list should have its sub-list inside the correct parent list item.\n\nHere is a quick way to decide which structure to use: use `<ul>` for a group with no meaningful sequence, `<ol>` for a meaningful sequence, and `<table>` for data whose row-and-column relationships matter. Then use CSS to control visual styling and mobile layout. Semantic HTML is not only about passing checks; it helps your page make sense to browsers, assistive technology, future developers, and your visitors."
     },
     {
       "id": "q5",
       "type": "quiz",
-      "question": "You have table with <td colspan=\"2\">Total: 160 XP</td> in a 3-column table. It renders but layout looks off in some browsers. What is critical rule for colspan and accessibility?",
+      "question": "A comparison table has six useful columns and cannot fit comfortably on a phone. The information genuinely depends on comparing values in rows and columns. What is the strongest first improvement?",
       "options": [
-        "colspan is deprecated in HTML5 and should be replaced with CSS grid, that's why layout breaks",
-        "colspan value must not exceed remaining columns in row and you must ensure total columns per row still matches table structure, and use th with scope for total label for accessibility",
-        "colspan only works in thead not tbody, so move total row to thead to fix layout",
-        "colspan requires rowspan to be present as well, you must add rowspan=\"1\" whenever you use colspan"
+        "Replace the table with six unrelated paragraphs so no scrolling is needed",
+        "Keep the data table, simplify unnecessary width, and use a horizontally scrollable wrapper if needed",
+        "Remove all <th> elements and reduce the font until every column fits",
+        "Turn each table row into an <ol> because phones display lists vertically"
       ],
       "correctIndex": 1,
-      "correctFeedback": "Perfect table mastery! Colspan math and accessibility matters for production tables.",
-      "incorrectFeedback": "If table has 3 columns and you colspan 2, how many columns does that row have? Does it match others?",
-      "reasoning": "colspan merges columns, but row's total column count must remain consistent. Also header for total should be th scope=row for accessibility.",
-      "xpReward": 30
-    },
-    {
-      "id": "next-5",
-      "type": "heading",
-      "text": "Your app is now organized like a dashboard"
-    },
-    {
-      "id": "next5-1",
-      "type": "sentence",
-      "text": "You now know ul for unordered collections, ol for ordered sequences with type/start/reversed, nested lists must be inside li, dl for term-description and FAQ, tables with caption, thead, tbody, tfoot, th scope, colspan/rowspan. Your portfolio now has skills list, timeline, pricing table, and project details - exactly what clients want to see."
-    },
-    {
-      "id": "next5-2",
-      "type": "sentence",
-      "text": "Next: Lesson 6 - HTML Forms. Your app will become interactive. Users will be able to contact you, send messages, subscribe. You will learn inputs, labels, buttons, validation - the gateway to backend and real app functionality. Practice your lists and tables in Menu > Practical - try creating your own FAQ with dl!"
+      "explanation": "Because the information depends on row-and-column relationships, it should remain a data table. Simplifying avoidable width and allowing the table area to scroll horizontally can preserve meaning without making text too small or discarding header structure.",
+      "hint": "Keep the semantic structure that matches the information, then solve the screen-width problem."
     }
   ]
 }
