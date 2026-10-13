@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 9,
+  "lessonId": "sql-lesson-9",
+  "title": "Views, Indexes and Transactions",
+  "subtitle": "Views, indexes, transactions, COMMIT, ROLLBACK and database performance.",
+  "description": "Explore important SQL features used to organize queries, improve performance and safely manage changes.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Views, Indexes and Transactions"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 9: Views, Indexes and Transactions. This lesson follows the course dashboard topic “Views, Indexes and Transactions”. The goal is to views, indexes, transactions, COMMIT, ROLLBACK and database performance.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "A transaction groups database changes into one logical unit. COMMIT confirms the changes, while ROLLBACK discards uncommitted changes when the transaction is still reversible."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: Views, Indexes and Transactions in practice",
+      "code": "BEGIN TRANSACTION;\nUPDATE wallet SET balance = balance - 10 WHERE learner_id = 1;\nUPDATE wallet SET balance = balance + 10 WHERE learner_id = 2;\n-- Verify both updates before COMMIT in a real workflow.\nCOMMIT;"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Views, indexes, transactions, COMMIT, ROLLBACK and database performance. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l9-q-01",
+      "type": "quiz",
+      "question": "Two related account updates must either both succeed or neither persist. What should be used?",
+      "options": [
+        "Two unrelated updates with no checking.",
+        "A view only.",
+        "A SELECT without conditions.",
+        "A transaction with COMMIT or ROLLBACK based on validation."
+      ],
+      "correctIndex": 3,
+      "explanation": "A transaction groups related writes into an all-or-nothing logical unit when supported.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A transaction groups related writes into an all-or-nothing logical unit when supported.",
+      "incorrectFeedback": "Review the requirement again. A transaction groups related writes into an all-or-nothing logical unit when supported."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Explore important SQL features used to organize queries, improve performance and safely manage changes.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: Views, Indexes and Transactions in practice",
+      "code": "BEGIN TRANSACTION;\nUPDATE lesson_results SET score = 0 WHERE result_id = -1;\n-- If validation fails, use ROLLBACK instead of saving an invalid change.\nROLLBACK;"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l9-q-02",
+      "type": "quiz",
+      "question": "A query is slow on a large table. What is the sensible first performance step?",
+      "options": [
+        "Measure it and inspect the query plan before choosing an index.",
+        "Add every possible index without testing.",
+        "Delete the WHERE clause.",
+        "Convert the database to text files immediately."
+      ],
+      "correctIndex": 0,
+      "explanation": "Measurements and query plans reveal whether an index or another change would help.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Measurements and query plans reveal whether an index or another change would help.",
+      "incorrectFeedback": "Review the requirement again. Measurements and query plans reveal whether an index or another change would help."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Indexes can speed up filtering and joins, but they also use storage and add cost to writes. Measure real queries and inspect the execution plan before adding indexes without evidence."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: Views, Indexes and Transactions in practice",
+      "code": "CREATE VIEW active_courses AS\nSELECT course_id, title\nFROM courses\nWHERE active = 1;"
+    },
+    {
+      "id": "sql-l9-q-03",
+      "type": "quiz",
+      "question": "An index speeds up searching but writes become slower. Why can that happen?",
+      "options": [
+        "Indexes never affect writes.",
+        "The database must maintain the index as indexed records change.",
+        "The column name is too short.",
+        "The query has a line break."
+      ],
+      "correctIndex": 1,
+      "explanation": "Indexes consume storage and add maintenance work during inserts, updates, and deletes.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Indexes consume storage and add maintenance work during inserts, updates, and deletes.",
+      "incorrectFeedback": "Review the requirement again. Indexes consume storage and add maintenance work during inserts, updates, and deletes."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Views can package a useful query as a reusable database interface. Treat permissions and sensitive columns carefully: a convenient view should not accidentally expose data users are not allowed to see."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: Views, Indexes and Transactions in practice",
+      "code": "CREATE INDEX idx_results_learner ON lesson_results(learner_id);\n-- Check real query plans and write costs before adding indexes."
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Explore important SQL features used to organize queries, improve performance and safely manage changes. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l9-q-04",
+      "type": "quiz",
+      "question": "A file may not exist when a user starts the app. What is the best approach?",
+      "options": [
+        "Assume the file always exists.",
+        "Catch every possible error and ignore it.",
+        "Check/open the file safely and report a useful recoverable error.",
+        "Pretend an empty file is always correct."
+      ],
+      "correctIndex": 2,
+      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+    },
+    {
+      "id": "sql-l9-q-05",
+      "type": "quiz",
+      "question": "A numeric form field contains “abc”. What should happen?",
+      "options": [
+        "Convert it silently to a meaningful value without a rule.",
+        "Parse and validate it, then show a clear error if it is invalid.",
+        "Use the string in arithmetic.",
+        "Delete the user’s whole account."
+      ],
+      "correctIndex": 1,
+      "explanation": "Parsing and validation protect calculations from malformed input.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
+      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+    }
+  ]
+}

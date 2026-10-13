@@ -1,0 +1,197 @@
+{
+  "course": "r",
+  "lessonNumber": 6,
+  "lessonId": "r-lesson-6",
+  "title": "Reading and Cleaning Data",
+  "subtitle": "Importing CSV files, handling missing values, filtering data and preparing datasets.",
+  "description": "Learn how to bring real-world data into R and clean it before performing analysis.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Reading and Cleaning Data"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 6: Reading and Cleaning Data. This lesson follows the course dashboard topic “Reading and Cleaning Data”. The goal is to importing CSV files, handling missing values, filtering data and preparing datasets.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Real datasets often contain missing values, inconsistent labels, duplicate rows, and columns imported with the wrong type. Cleaning begins by measuring these issues rather than deleting values without understanding why they are missing."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-1",
+      "type": "code",
+      "language": "r",
+      "title": "Sample 1: Reading and Cleaning Data in practice",
+      "code": "data <- data.frame(score = c(80, NA, 92, 76))\nsum(is.na(data$score))"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Importing CSV files, handling missing values, filtering data and preparing datasets. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "r-l6-q-01",
+      "type": "quiz",
+      "question": "A score column has missing values. What should happen before removing them?",
+      "options": [
+        "Drop every row by default.",
+        "Measure and understand the missingness and define an analysis rule.",
+        "Replace all missing values with 100.",
+        "Rename the column and ignore it."
+      ],
+      "correctIndex": 1,
+      "explanation": "Missingness can have meaning; a defensible rule should be chosen before imputation or exclusion.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Missingness can have meaning; a defensible rule should be chosen before imputation or exclusion.",
+      "incorrectFeedback": "Review the requirement again. Missingness can have meaning; a defensible rule should be chosen before imputation or exclusion."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn how to bring real-world data into R and clean it before performing analysis.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-2",
+      "type": "code",
+      "language": "r",
+      "title": "Sample 2: Reading and Cleaning Data in practice",
+      "code": "data <- data.frame(name = c(\"Ama\", \"Ama\", \"Kojo\"), score = c(80, 80, 92))\ndata[!duplicated(data), ]"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real R project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "r-l6-q-02",
+      "type": "quiz",
+      "question": "Scores imported as text include “missing”. What is the safe next step?",
+      "options": [
+        "Treat every string as a valid numeric score.",
+        "Use the raw column as a numeric value.",
+        "Parse to numeric carefully and inspect values that fail conversion.",
+        "Replace all data with zeros."
+      ],
+      "correctIndex": 2,
+      "explanation": "Conversion should reveal malformed values rather than silently hiding them.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Conversion should reveal malformed values rather than silently hiding them.",
+      "incorrectFeedback": "Review the requirement again. Conversion should reveal malformed values rather than silently hiding them."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Use explicit rules for missing data and document any rows excluded from analysis. A blank, zero, and unknown value are not interchangeable in every dataset."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-3",
+      "type": "code",
+      "language": "r",
+      "title": "Sample 3: Reading and Cleaning Data in practice",
+      "code": "scores <- c(\"80\", \"missing\", \"92\")\nnumeric_scores <- suppressWarnings(as.numeric(scores))\nnumeric_scores"
+    },
+    {
+      "id": "r-l6-q-03",
+      "type": "quiz",
+      "question": "The number of rows drops after cleaning. How should the result be checked?",
+      "options": [
+        "Assume the smaller dataset is better.",
+        "Delete the cleaning code.",
+        "Hide the row count.",
+        "Compare row counts, exclusion reasons, and a sample of removed records."
+      ],
+      "correctIndex": 3,
+      "explanation": "Cleaning must be auditable so data are not silently discarded.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Cleaning must be auditable so data are not silently discarded.",
+      "incorrectFeedback": "Review the requirement again. Cleaning must be auditable so data are not silently discarded."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "After cleaning, re-check row counts, types, ranges, and key relationships. A cleaning step is successful only when it makes the data more trustworthy without silently changing the question."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-4",
+      "type": "code",
+      "language": "r",
+      "title": "Sample 4: Reading and Cleaning Data in practice",
+      "code": "data <- data.frame(score = c(80, NA, 92))\ncomplete.cases(data)"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to bring real-world data into R and clean it before performing analysis. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "r-l6-q-04",
+      "type": "quiz",
+      "question": "A file may not exist when a user starts the app. What is the best approach?",
+      "options": [
+        "Assume the file always exists.",
+        "Catch every possible error and ignore it.",
+        "Check/open the file safely and report a useful recoverable error.",
+        "Pretend an empty file is always correct."
+      ],
+      "correctIndex": 2,
+      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+    },
+    {
+      "id": "r-l6-q-05",
+      "type": "quiz",
+      "question": "A numeric form field contains “abc”. What should happen?",
+      "options": [
+        "Convert it silently to a meaningful value without a rule.",
+        "Parse and validate it, then show a clear error if it is invalid.",
+        "Use the string in arithmetic.",
+        "Delete the user’s whole account."
+      ],
+      "correctIndex": 1,
+      "explanation": "Parsing and validation protect calculations from malformed input.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
+      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+    }
+  ]
+}

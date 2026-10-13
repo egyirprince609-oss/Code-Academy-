@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 3,
+  "lessonId": "sql-lesson-3",
+  "title": "INSERT, UPDATE and DELETE",
+  "subtitle": "INSERT INTO, UPDATE, DELETE and safely modifying database records.",
+  "description": "Learn how to add new information, modify existing records and remove data from tables.",
+  "level": "Beginner",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand INSERT, UPDATE and DELETE"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 3: INSERT, UPDATE and DELETE. This lesson follows the course dashboard topic “INSERT, UPDATE and DELETE”. The goal is to iNSERT INTO, UPDATE, DELETE and safely modifying database records.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "INSERT adds records, UPDATE changes existing records, and DELETE removes rows. UPDATE and DELETE statements should use a deliberate WHERE condition unless every row is intentionally in scope."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l3-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: INSERT, UPDATE and DELETE in practice",
+      "code": "INSERT INTO learners (learner_id, display_name, email)\nVALUES (1, 'Ama', 'ama@example.com');"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates INSERT INTO, UPDATE, DELETE and safely modifying database records. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l3-q-01",
+      "type": "quiz",
+      "question": "An UPDATE should change one learner’s email. What must be verified before running it?",
+      "options": [
+        "That the SQL has no line breaks.",
+        "That the WHERE clause identifies the intended row or key.",
+        "That every row is meant to change.",
+        "That the table uses a long name."
+      ],
+      "correctIndex": 1,
+      "explanation": "Without an appropriate WHERE condition, an UPDATE can change every row.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Without an appropriate WHERE condition, an UPDATE can change every row.",
+      "incorrectFeedback": "Review the requirement again. Without an appropriate WHERE condition, an UPDATE can change every row."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn how to add new information, modify existing records and remove data from tables.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l3-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: INSERT, UPDATE and DELETE in practice",
+      "code": "UPDATE learners\nSET display_name = 'Ama Mensah'\nWHERE learner_id = 1;"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l3-q-02",
+      "type": "quiz",
+      "question": "A user-entered string becomes part of a SQL query. What protects the query structure?",
+      "options": [
+        "Concatenating the value between SQL quotes.",
+        "Removing all indexes.",
+        "Using a parameterized query through the database driver.",
+        "Hiding the submit button."
+      ],
+      "correctIndex": 2,
+      "explanation": "Parameterized queries keep data separate from SQL syntax and reduce injection risk.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parameterized queries keep data separate from SQL syntax and reduce injection risk.",
+      "incorrectFeedback": "Review the requirement again. Parameterized queries keep data separate from SQL syntax and reduce injection risk."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Before a destructive change, run a SELECT with the same filter to confirm which rows match. Use transactions when your database and workflow allow changes to be reviewed and rolled back together."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l3-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: INSERT, UPDATE and DELETE in practice",
+      "code": "-- Preview the target rows before deleting\nSELECT learner_id, display_name\nFROM learners\nWHERE email IS NULL;"
+    },
+    {
+      "id": "sql-l3-q-03",
+      "type": "quiz",
+      "question": "Before deleting old records, what is a useful review step?",
+      "options": [
+        "Delete first and count later.",
+        "Run DELETE without a filter.",
+        "Disable backups automatically.",
+        "SELECT the same target set and verify it is correct."
+      ],
+      "correctIndex": 3,
+      "explanation": "A preview with the same filter helps verify the intended rows before a destructive change.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A preview with the same filter helps verify the intended rows before a destructive change.",
+      "incorrectFeedback": "Review the requirement again. A preview with the same filter helps verify the intended rows before a destructive change."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Parameterized queries should be used when values come from users or other external sources. Do not build executable SQL by concatenating untrusted text into the query."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l3-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: INSERT, UPDATE and DELETE in practice",
+      "code": "-- Parameterize values through your database library, not string concatenation\n-- Example placeholder syntax varies by database driver:\nUPDATE courses SET active = ? WHERE course_id = ?;"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to add new information, modify existing records and remove data from tables. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l3-q-04",
+      "type": "quiz",
+      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
+      "options": [
+        "Test only a score of 200.",
+        "Test 99, 100, and 101.",
+        "Test a text value such as “high”.",
+        "Do not test the condition."
+      ],
+      "correctIndex": 1,
+      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
+      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
+    },
+    {
+      "id": "sql-l3-q-05",
+      "type": "quiz",
+      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
+      "options": [
+        "Use OR if either rule must pass.",
+        "Skip validation once the page looks correct.",
+        "Combine both checks with the appropriate AND condition.",
+        "Run the same check forever."
+      ],
+      "correctIndex": 2,
+      "explanation": "AND is appropriate when every required condition must be true.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
+      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
+    }
+  ]
+}

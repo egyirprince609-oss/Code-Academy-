@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 7,
+  "lessonId": "sql-lesson-7",
+  "title": "Subqueries and Advanced Queries",
+  "subtitle": "Subqueries, nested SELECT statements, EXISTS, IN and advanced filtering.",
+  "description": "Build more powerful queries by using one query inside another and combining multiple conditions.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Subqueries and Advanced Queries"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 7: Subqueries and Advanced Queries. This lesson follows the course dashboard topic “Subqueries and Advanced Queries”. The goal is to subqueries, nested SELECT statements, EXISTS, IN and advanced filtering.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "A subquery is a query nested inside another query. It can provide a set of values, a calculated result, or a test for whether matching rows exist."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l7-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: Subqueries and Advanced Queries in practice",
+      "code": "SELECT title\nFROM courses\nWHERE course_id IN (SELECT course_id FROM enrollments WHERE learner_id = 1);"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Subqueries, nested SELECT statements, EXISTS, IN and advanced filtering. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l7-q-01",
+      "type": "quiz",
+      "question": "A project repeats the same validation rule in four places and the rules now disagree. What should be done?",
+      "options": [
+        "Centralize the rule in a reusable function and test it.",
+        "Add a fifth copy.",
+        "Remove the validation everywhere.",
+        "Make the rule depend on screen size."
+      ],
+      "correctIndex": 0,
+      "explanation": "A single tested rule avoids inconsistent copies and reduces maintenance cost.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A single tested rule avoids inconsistent copies and reduces maintenance cost.",
+      "incorrectFeedback": "Review the requirement again. A single tested rule avoids inconsistent copies and reduces maintenance cost."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Build more powerful queries by using one query inside another and combining multiple conditions.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l7-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: Subqueries and Advanced Queries in practice",
+      "code": "SELECT display_name\nFROM learners AS l\nWHERE EXISTS (SELECT 1 FROM enrollments AS e WHERE e.learner_id = l.learner_id);"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l7-q-02",
+      "type": "quiz",
+      "question": "A project’s output looks correct but the code is difficult to maintain. What is the best next step?",
+      "options": [
+        "Rename every variable randomly.",
+        "Add a second implementation without removing the first.",
+        "Ignore structure because the output is right.",
+        "Separate responsibilities, improve names, and add targeted tests."
+      ],
+      "correctIndex": 3,
+      "explanation": "Maintainability and tests make later changes safer, beyond simply matching one output.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Maintainability and tests make later changes safer, beyond simply matching one output.",
+      "incorrectFeedback": "Review the requirement again. Maintainability and tests make later changes safer, beyond simply matching one output."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "EXISTS is useful when the question is whether at least one related row exists; IN can be useful for comparing against a list of values. The right choice depends on clarity and the SQL engine’s execution plan."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l7-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: Subqueries and Advanced Queries in practice",
+      "code": "SELECT title\nFROM courses\nWHERE course_id IN (SELECT course_id FROM lesson_results GROUP BY course_id HAVING AVG(score) > 80);"
+    },
+    {
+      "id": "sql-l7-q-03",
+      "type": "quiz",
+      "question": "An application relies on a service that may be unavailable. Which state should the UI or CLI handle?",
+      "options": [
+        "Success only.",
+        "A clear loading/success/error or recovery state.",
+        "No output until it crashes.",
+        "A fabricated result."
+      ],
+      "correctIndex": 1,
+      "explanation": "Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
+      "incorrectFeedback": "Review the requirement again. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Keep aliases and correlation rules clear. For a complicated query, write and verify the inner query first, then place it into the outer query."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l7-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: Subqueries and Advanced Queries in practice",
+      "code": "SELECT learner_id, score\nFROM lesson_results\nWHERE score > (SELECT AVG(score) FROM lesson_results);"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Build more powerful queries by using one query inside another and combining multiple conditions. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l7-q-04",
+      "type": "quiz",
+      "question": "What makes a final coding project reproducible?",
+      "options": [
+        "A screenshot of a successful run only.",
+        "A single unexplained binary.",
+        "Source, clear run instructions, and testable expected behavior.",
+        "A note saying “works on my phone.”"
+      ],
+      "correctIndex": 2,
+      "explanation": "Source and repeatable instructions let another person verify the behavior independently.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Source and repeatable instructions let another person verify the behavior independently.",
+      "incorrectFeedback": "Review the requirement again. Source and repeatable instructions let another person verify the behavior independently."
+    },
+    {
+      "id": "sql-l7-q-05",
+      "type": "quiz",
+      "question": "A final application calculates correct totals for typical inputs. What else should be tested before release?",
+      "options": [
+        "Only the title font.",
+        "Only the happy path.",
+        "Invalid, empty, boundary, and error cases as well as normal input.",
+        "Nothing, because the examples ran once."
+      ],
+      "correctIndex": 2,
+      "explanation": "Boundary and failure-path testing catches common defects that a happy-path run misses.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Boundary and failure-path testing catches common defects that a happy-path run misses.",
+      "incorrectFeedback": "Review the requirement again. Boundary and failure-path testing catches common defects that a happy-path run misses."
+    }
+  ]
+}

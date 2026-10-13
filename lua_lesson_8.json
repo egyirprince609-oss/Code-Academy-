@@ -1,0 +1,197 @@
+{
+  "course": "lua",
+  "lessonNumber": 8,
+  "lessonId": "lua-lesson-8",
+  "title": "Modules, Metatables and OOP",
+  "subtitle": "Modules, require, metatables, metamethods and object-oriented programming patterns.",
+  "description": "Organize larger Lua applications and understand how Lua can support object-oriented designs.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Modules, Metatables and OOP"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 8: Modules, Metatables and OOP. This lesson follows the course dashboard topic “Modules, Metatables and OOP”. The goal is to modules, require, metatables, metamethods and object-oriented programming patterns.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Errors are part of normal software work: users can enter unexpected values, files may be missing, and external services may fail. Reliable code detects failures at a useful boundary and communicates what happened without pretending the operation succeeded."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-1",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 1: Modules, Metatables and OOP in practice",
+      "code": "local Scoring = {}\nfunction Scoring.passed(score) return score >= 50 end\nreturn Scoring"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Modules, require, metatables, metamethods and object-oriented programming patterns. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "lua-l8-q-01",
+      "type": "quiz",
+      "question": "A catch/except block is empty. What is the main danger?",
+      "options": [
+        "The code becomes easier to diagnose.",
+        "It automatically retries safely.",
+        "It guarantees correct data.",
+        "It can hide real failures and make the program appear successful."
+      ],
+      "correctIndex": 3,
+      "explanation": "Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
+      "incorrectFeedback": "Review the requirement again. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Organize larger Lua applications and understand how Lua can support object-oriented designs.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-2",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 2: Modules, Metatables and OOP in practice",
+      "code": "local Text = {}\nfunction Text.slug(value) return string.lower((string.gsub(value, \"%s+\", \"-\"))) end\nreturn Text"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real Lua project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "lua-l8-q-02",
+      "type": "quiz",
+      "question": "A database query receives user-provided text. Which safeguard is strongest?",
+      "options": [
+        "Build the query by concatenating the text into SQL.",
+        "Remove all error messages.",
+        "Use parameterized queries and validate the expected data.",
+        "Trust the browser because it has a form."
+      ],
+      "correctIndex": 2,
+      "explanation": "Parameters keep user values separate from executable SQL syntax.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parameters keep user values separate from executable SQL syntax.",
+      "incorrectFeedback": "Review the requirement again. Parameters keep user values separate from executable SQL syntax."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Validate data before using it, and catch only failures you can handle meaningfully. Empty catch blocks hide defects; broad recovery can turn a visible problem into silently corrupted data."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-3",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 3: Modules, Metatables and OOP in practice",
+      "code": "local M = { courseCount = 20 }\nfunction M.lessonCount(perCourse) return M.courseCount * perCourse end\nreturn M"
+    },
+    {
+      "id": "lua-l8-q-03",
+      "type": "quiz",
+      "question": "A function can return either a result or a failure. What should callers do?",
+      "options": [
+        "Inspect and handle the documented success/error result.",
+        "Assume failure means success.",
+        "Discard the return value in every case.",
+        "Repeat the request infinitely."
+      ],
+      "correctIndex": 0,
+      "explanation": "Callers need to respond to the success or failure contract explicitly.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Callers need to respond to the success or failure contract explicitly.",
+      "incorrectFeedback": "Review the requirement again. Callers need to respond to the success or failure contract explicitly."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Keep responsibilities separate. A function that reads a file, validates records, computes results, and prints a report is difficult to test; small steps let you isolate a failure and reuse the successful parts."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-4",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 4: Modules, Metatables and OOP in practice",
+      "code": "local Progress = {}\nfunction Progress.percent(done, total) if total <= 0 then return 0 end return math.floor(done * 100 / total) end\nreturn Progress"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Organize larger Lua applications and understand how Lua can support object-oriented designs. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "lua-l8-q-04",
+      "type": "quiz",
+      "question": "A file may not exist when a user starts the app. What is the best approach?",
+      "options": [
+        "Assume the file always exists.",
+        "Catch every possible error and ignore it.",
+        "Check/open the file safely and report a useful recoverable error.",
+        "Pretend an empty file is always correct."
+      ],
+      "correctIndex": 2,
+      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+    },
+    {
+      "id": "lua-l8-q-05",
+      "type": "quiz",
+      "question": "A numeric form field contains “abc”. What should happen?",
+      "options": [
+        "Convert it silently to a meaningful value without a rule.",
+        "Parse and validate it, then show a clear error if it is invalid.",
+        "Use the string in arithmetic.",
+        "Delete the user’s whole account."
+      ],
+      "correctIndex": 1,
+      "explanation": "Parsing and validation protect calculations from malformed input.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
+      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+    }
+  ]
+}

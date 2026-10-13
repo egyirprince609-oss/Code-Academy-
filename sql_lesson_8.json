@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 8,
+  "lessonId": "sql-lesson-8",
+  "title": "Database Design and Constraints",
+  "subtitle": "Primary keys, foreign keys, UNIQUE, NOT NULL, CHECK and normalization concepts.",
+  "description": "Learn how to design reliable databases and protect data integrity using constraints.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Database Design and Constraints"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 8: Database Design and Constraints. This lesson follows the course dashboard topic “Database Design and Constraints”. The goal is to primary keys, foreign keys, UNIQUE, NOT NULL, CHECK and normalization concepts.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Constraints make important rules part of the schema rather than relying only on application code. UNIQUE, NOT NULL, CHECK, primary-key, and foreign-key rules protect data consistency across different writers."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: Database Design and Constraints in practice",
+      "code": "CREATE TABLE payments (\n  payment_id INTEGER PRIMARY KEY,\n  amount NUMERIC NOT NULL CHECK (amount >= 0),\n  reference TEXT UNIQUE NOT NULL\n);"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Primary keys, foreign keys, UNIQUE, NOT NULL, CHECK and normalization concepts. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l8-q-01",
+      "type": "quiz",
+      "question": "Two enrollment rows should not have the same learner-course pair. Which schema choice enforces that rule?",
+      "options": [
+        "A composite unique or primary key on learner_id and course_id.",
+        "A wider VARCHAR only.",
+        "A comment describing the rule.",
+        "A separate CSS class."
+      ],
+      "correctIndex": 0,
+      "explanation": "A composite key can prevent duplicate relationships at the database level.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A composite key can prevent duplicate relationships at the database level.",
+      "incorrectFeedback": "Review the requirement again. A composite key can prevent duplicate relationships at the database level."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn how to design reliable databases and protect data integrity using constraints.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: Database Design and Constraints in practice",
+      "code": "CREATE TABLE lesson_progress (\n  learner_id INTEGER NOT NULL,\n  lesson_id INTEGER NOT NULL,\n  completed_at TEXT,\n  PRIMARY KEY (learner_id, lesson_id)\n);"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l8-q-02",
+      "type": "quiz",
+      "question": "A course must always have a title. Which constraint communicates that rule?",
+      "options": [
+        "ORDER BY.",
+        "NOT NULL, often alongside other suitable validation.",
+        "LIMIT 1.",
+        "A SELECT alias."
+      ],
+      "correctIndex": 1,
+      "explanation": "NOT NULL prevents records from omitting a required column value.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. NOT NULL prevents records from omitting a required column value.",
+      "incorrectFeedback": "Review the requirement again. NOT NULL prevents records from omitting a required column value."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Normalization reduces unnecessary duplication so a fact does not need to be updated in many places. The right table design reflects relationships and functional dependencies in the real data."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: Database Design and Constraints in practice",
+      "code": "-- A foreign key keeps an enrollment tied to a real learner\nCREATE TABLE enrollments (\n  learner_id INTEGER NOT NULL REFERENCES learners(learner_id),\n  course_id INTEGER NOT NULL REFERENCES courses(course_id)\n);"
+    },
+    {
+      "id": "sql-l8-q-03",
+      "type": "quiz",
+      "question": "Application code validates a relationship, but another process writes directly to the database. What provides a shared integrity guarantee?",
+      "options": [
+        "A screenshot of the form.",
+        "A UI-only warning.",
+        "A foreign-key constraint.",
+        "A comment in the dashboard."
+      ],
+      "correctIndex": 2,
+      "explanation": "Database constraints protect integrity no matter which application writes the record.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Database constraints protect integrity no matter which application writes the record.",
+      "incorrectFeedback": "Review the requirement again. Database constraints protect integrity no matter which application writes the record."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Constraints should represent true business rules, not temporary assumptions. Test boundary cases and confirm the database rejects invalid data as expected."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: Database Design and Constraints in practice",
+      "code": "-- Normalize repeated learner facts into a learner table;\n-- store learner_id in enrollment/progress rows instead of name and email."
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to design reliable databases and protect data integrity using constraints. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l8-q-04",
+      "type": "quiz",
+      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
+      "options": [
+        "Test only a score of 200.",
+        "Test 99, 100, and 101.",
+        "Test a text value such as “high”.",
+        "Do not test the condition."
+      ],
+      "correctIndex": 1,
+      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
+      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
+    },
+    {
+      "id": "sql-l8-q-05",
+      "type": "quiz",
+      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
+      "options": [
+        "Use OR if either rule must pass.",
+        "Skip validation once the page looks correct.",
+        "Combine both checks with the appropriate AND condition.",
+        "Run the same check forever."
+      ],
+      "correctIndex": 2,
+      "explanation": "AND is appropriate when every required condition must be true.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
+      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
+    }
+  ]
+}

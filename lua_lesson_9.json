@@ -1,0 +1,197 @@
+{
+  "course": "lua",
+  "lessonNumber": 9,
+  "lessonId": "lua-lesson-9",
+  "title": "Error Handling and Practical Lua",
+  "subtitle": "Errors, protected calls, debugging, modules and practical application structure.",
+  "description": "Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Error Handling and Practical Lua"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 9: Error Handling and Practical Lua. This lesson follows the course dashboard topic “Error Handling and Practical Lua”. The goal is to errors, protected calls, debugging, modules and practical application structure.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Errors are part of normal software work: users can enter unexpected values, files may be missing, and external services may fail. Reliable code detects failures at a useful boundary and communicates what happened without pretending the operation succeeded."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-1",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 1: Error Handling and Practical Lua in practice",
+      "code": "local raw=\"42\"\nlocal value=tonumber(raw)\nif value then print(value) else print(\"Invalid number\") end"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Errors, protected calls, debugging, modules and practical application structure. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "lua-l9-q-01",
+      "type": "quiz",
+      "question": "A database query receives user-provided text. Which safeguard is strongest?",
+      "options": [
+        "Build the query by concatenating the text into SQL.",
+        "Remove all error messages.",
+        "Use parameterized queries and validate the expected data.",
+        "Trust the browser because it has a form."
+      ],
+      "correctIndex": 2,
+      "explanation": "Parameters keep user values separate from executable SQL syntax.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parameters keep user values separate from executable SQL syntax.",
+      "incorrectFeedback": "Review the requirement again. Parameters keep user values separate from executable SQL syntax."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-2",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 2: Error Handling and Practical Lua in practice",
+      "code": "local profile={name=\"Ama\"}\nprint(profile.email or \"not supplied\")"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real Lua project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "lua-l9-q-02",
+      "type": "quiz",
+      "question": "A function can return either a result or a failure. What should callers do?",
+      "options": [
+        "Inspect and handle the documented success/error result.",
+        "Assume failure means success.",
+        "Discard the return value in every case.",
+        "Repeat the request infinitely."
+      ],
+      "correctIndex": 0,
+      "explanation": "Callers need to respond to the success or failure contract explicitly.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Callers need to respond to the success or failure contract explicitly.",
+      "incorrectFeedback": "Review the requirement again. Callers need to respond to the success or failure contract explicitly."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Validate data before using it, and catch only failures you can handle meaningfully. Empty catch blocks hide defects; broad recovery can turn a visible problem into silently corrupted data."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-3",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 3: Error Handling and Practical Lua in practice",
+      "code": "local function safe_divide(a,b) if b==0 then return nil,\"zero denominator\" end return a/b end\nlocal value,err=safe_divide(10,2)\nprint(value or err)"
+    },
+    {
+      "id": "lua-l9-q-03",
+      "type": "quiz",
+      "question": "A file may not exist when a user starts the app. What is the best approach?",
+      "options": [
+        "Assume the file always exists.",
+        "Catch every possible error and ignore it.",
+        "Check/open the file safely and report a useful recoverable error.",
+        "Pretend an empty file is always correct."
+      ],
+      "correctIndex": 2,
+      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
+      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Keep responsibilities separate. A function that reads a file, validates records, computes results, and prints a report is difficult to test; small steps let you isolate a failure and reuse the successful parts."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-4",
+      "type": "code",
+      "language": "lua",
+      "title": "Sample 4: Error Handling and Practical Lua in practice",
+      "code": "local scores={}\nif #scores==0 then print(\"No scores yet\") else print(#scores) end"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "lua-l9-q-04",
+      "type": "quiz",
+      "question": "A numeric form field contains “abc”. What should happen?",
+      "options": [
+        "Convert it silently to a meaningful value without a rule.",
+        "Parse and validate it, then show a clear error if it is invalid.",
+        "Use the string in arithmetic.",
+        "Delete the user’s whole account."
+      ],
+      "correctIndex": 1,
+      "explanation": "Parsing and validation protect calculations from malformed input.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
+      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+    },
+    {
+      "id": "lua-l9-q-05",
+      "type": "quiz",
+      "question": "A catch/except block is empty. What is the main danger?",
+      "options": [
+        "The code becomes easier to diagnose.",
+        "It automatically retries safely.",
+        "It guarantees correct data.",
+        "It can hide real failures and make the program appear successful."
+      ],
+      "correctIndex": 3,
+      "explanation": "Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
+      "incorrectFeedback": "Review the requirement again. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results."
+    }
+  ]
+}

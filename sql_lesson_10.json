@@ -1,0 +1,420 @@
+{
+  "course": "sql",
+  "lessonNumber": 10,
+  "lessonId": "sql-lesson-10",
+  "title": "SQL Database Project and Final Review",
+  "subtitle": "A short practical refresher followed by 20 new application questions",
+  "description": "Review the ten SQL dashboard topics. Includes three capstone examples and exactly two fresh review questions from each of Lessons 1–10.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 100,
+  "coinsReward": 50,
+  "estimatedMinutes": 22,
+  "blocks": [
+    {
+      "id": "final-page-1",
+      "type": "heading",
+      "text": "PAGE 1 — A short capstone refresher"
+    },
+    {
+      "id": "final-intro",
+      "type": "sentence",
+      "text": "Welcome to the SQL final review. This lesson is intentionally shorter on new theory and longer on practical decisions. You will revisit the ten dashboard topics and answer two new application questions for each lesson, for exactly 20 questions."
+    },
+    {
+      "id": "final-method",
+      "type": "sentence",
+      "text": "Start by reading the requirement, tracing where its data comes from, and deciding what success should look like. Then test both a normal case and a boundary or failure case. A correct program should not only work once; it should behave predictably when its inputs change."
+    },
+    {
+      "id": "final-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l10-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Capstone sample 1: SQL Database Project and Final Review",
+      "code": "SELECT c.title, COUNT(e.learner_id) AS enrolled_learners\nFROM courses AS c\nLEFT JOIN enrollments AS e ON e.course_id = c.course_id\nGROUP BY c.course_id, c.title\nORDER BY enrolled_learners DESC;"
+    },
+    {
+      "id": "final-note-1",
+      "type": "sentence",
+      "text": "The first sample illustrates a small part of the solution. Before extending it, separate the input, the transformation, and the output. That separation makes it easier to test each part and locate defects."
+    },
+    {
+      "id": "final-page-2",
+      "type": "heading",
+      "text": "PAGE 2 — Connect the pieces"
+    },
+    {
+      "id": "final-method-2",
+      "type": "sentence",
+      "text": "A final project combines several ideas instead of treating each lesson as an isolated trick. Keep the responsibilities clear, choose data structures that match the job, and validate information at the boundary where it enters the program."
+    },
+    {
+      "id": "final-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l10-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Capstone sample 2: SQL Database Project and Final Review",
+      "code": "SELECT learner_id, AVG(score) AS average_score\nFROM lesson_results\nGROUP BY learner_id\nHAVING COUNT(*) >= 3\nORDER BY average_score DESC;"
+    },
+    {
+      "id": "final-note-2",
+      "type": "sentence",
+      "text": "Now consider how this idea would behave with empty data, invalid input, and a larger set of records. If an operation can fail, design the response deliberately rather than showing a success message before the operation has actually succeeded."
+    },
+    {
+      "id": "final-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l10-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Capstone sample 3: SQL Database Project and Final Review",
+      "code": "-- Use a transaction for a group of related changes\nBEGIN TRANSACTION;\nINSERT INTO enrollments (learner_id, course_id) VALUES (1, 2);\nCOMMIT;"
+    },
+    {
+      "id": "final-note-3",
+      "type": "sentence",
+      "text": "Use the third example as a starting point, then explain how it relates to the course topic: Combine your SQL skills into a practical database project and review the major concepts learned throughout the course."
+    },
+    {
+      "id": "final-bank-heading",
+      "type": "heading",
+      "text": "FINAL QUESTION BANK — 20 application questions"
+    },
+    {
+      "id": "final-bank-instructions",
+      "type": "sentence",
+      "text": "Answer two questions from each dashboard lesson. These questions are newly written for this review and are not copied from the corresponding lesson quizzes. Read carefully: select the option that best satisfies the requirement, not merely an option that could work in a different situation."
+    },
+    {
+      "id": "sql-l10-bank-01",
+      "type": "quiz",
+      "question": "Review from Lesson 1 — Introduction to SQL and Databases: A query result appears in a different order between runs. Why may that happen?",
+      "options": [
+        "Every table has an implicit fixed order.",
+        "The data is necessarily corrupted.",
+        "Without ORDER BY, SQL does not guarantee result order.",
+        "The database read CSS styles."
+      ],
+      "correctIndex": 2,
+      "explanation": "Relational results have no guaranteed ordering unless an ORDER BY clause specifies it.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Relational results have no guaranteed ordering unless an ORDER BY clause specifies it.",
+      "incorrectFeedback": "Review the requirement again. Relational results have no guaranteed ordering unless an ORDER BY clause specifies it."
+    },
+    {
+      "id": "sql-l10-bank-02",
+      "type": "quiz",
+      "question": "Review from Lesson 1 — Introduction to SQL and Databases: A table stores the same learner email in many unrelated rows. What design concern should be reviewed?",
+      "options": [
+        "The heading size.",
+        "The number of comments.",
+        "The screen width.",
+        "Whether learner facts should be normalized into a learner table and referenced by key."
+      ],
+      "correctIndex": 3,
+      "explanation": "Normalization can reduce repeated facts and inconsistent updates.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Normalization can reduce repeated facts and inconsistent updates.",
+      "incorrectFeedback": "Review the requirement again. Normalization can reduce repeated facts and inconsistent updates."
+    },
+    {
+      "id": "sql-l10-bank-03",
+      "type": "quiz",
+      "question": "Review from Lesson 2 — Creating Databases and Tables: A learner record must have a unique identifier. Which schema rule fits?",
+      "options": [
+        "A primary key.",
+        "ORDER BY.",
+        "HAVING.",
+        "LIMIT."
+      ],
+      "correctIndex": 0,
+      "explanation": "A primary key uniquely identifies each table row.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A primary key uniquely identifies each table row.",
+      "incorrectFeedback": "Review the requirement again. A primary key uniquely identifies each table row."
+    },
+    {
+      "id": "sql-l10-bank-04",
+      "type": "quiz",
+      "question": "Review from Lesson 2 — Creating Databases and Tables: A score must be between 0 and 100 no matter which app writes to the database. Which design provides durable enforcement?",
+      "options": [
+        "A comment in the web page.",
+        "A suitable database CHECK constraint along with any application validation.",
+        "A CSS class.",
+        "A SELECT alias only."
+      ],
+      "correctIndex": 1,
+      "explanation": "Database constraints help enforce valid ranges for every writer.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Database constraints help enforce valid ranges for every writer.",
+      "incorrectFeedback": "Review the requirement again. Database constraints help enforce valid ranges for every writer."
+    },
+    {
+      "id": "sql-l10-bank-05",
+      "type": "quiz",
+      "question": "Review from Lesson 3 — INSERT, UPDATE and DELETE: An UPDATE is intended for one course but no WHERE clause is present. What is the risk?",
+      "options": [
+        "Only the title changes.",
+        "The query becomes a SELECT.",
+        "Every row may be updated.",
+        "The database will infer the target row."
+      ],
+      "correctIndex": 2,
+      "explanation": "An UPDATE without WHERE normally changes every row in the table.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. An UPDATE without WHERE normally changes every row in the table.",
+      "incorrectFeedback": "Review the requirement again. An UPDATE without WHERE normally changes every row in the table."
+    },
+    {
+      "id": "sql-l10-bank-06",
+      "type": "quiz",
+      "question": "Review from Lesson 3 — INSERT, UPDATE and DELETE: A query needs to insert a name supplied by a user. Which strategy is safer?",
+      "options": [
+        "Concatenate raw input into the SQL string.",
+        "Remove quotation marks manually.",
+        "Trust client-side validation only.",
+        "Bind the value as a parameter."
+      ],
+      "correctIndex": 3,
+      "explanation": "Bound parameters separate the user’s data from the SQL command.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Bound parameters separate the user’s data from the SQL command.",
+      "incorrectFeedback": "Review the requirement again. Bound parameters separate the user’s data from the SQL command."
+    },
+    {
+      "id": "sql-l10-bank-07",
+      "type": "quiz",
+      "question": "Review from Lesson 4 — SELECT, Filtering and Sorting: A field may contain NULL. Which condition reliably selects missing values?",
+      "options": [
+        "IS NULL.",
+        "= NULL.",
+        "> NULL.",
+        "LIKE NULL."
+      ],
+      "correctIndex": 0,
+      "explanation": "SQL uses IS NULL for null checks.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. SQL uses IS NULL for null checks.",
+      "incorrectFeedback": "Review the requirement again. SQL uses IS NULL for null checks."
+    },
+    {
+      "id": "sql-l10-bank-08",
+      "type": "quiz",
+      "question": "Review from Lesson 4 — SELECT, Filtering and Sorting: A query is returning too much data for a summary screen. What should change?",
+      "options": [
+        "Always use SELECT *.",
+        "Select only necessary columns and filter to the needed rows.",
+        "Remove every predicate.",
+        "Use UPDATE instead."
+      ],
+      "correctIndex": 1,
+      "explanation": "Targeted queries are easier to read and reduce unnecessary work and data transfer.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Targeted queries are easier to read and reduce unnecessary work and data transfer.",
+      "incorrectFeedback": "Review the requirement again. Targeted queries are easier to read and reduce unnecessary work and data transfer."
+    },
+    {
+      "id": "sql-l10-bank-09",
+      "type": "quiz",
+      "question": "Review from Lesson 5 — Functions, GROUP BY and Aggregation: A report needs a count per course and must exclude courses with fewer than five learners. Where does the count threshold belong?",
+      "options": [
+        "WHERE count(*) before grouping.",
+        "INSERT.",
+        "HAVING after GROUP BY.",
+        "CREATE."
+      ],
+      "correctIndex": 2,
+      "explanation": "HAVING filters aggregate groups after grouping.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. HAVING filters aggregate groups after grouping.",
+      "incorrectFeedback": "Review the requirement again. HAVING filters aggregate groups after grouping."
+    },
+    {
+      "id": "sql-l10-bank-10",
+      "type": "quiz",
+      "question": "Review from Lesson 5 — Functions, GROUP BY and Aggregation: An average changes after adding a join. What should be checked first?",
+      "options": [
+        "Only the SQL keywords’ capitalization.",
+        "Whether the title column is wide enough.",
+        "Whether the result file has newlines.",
+        "Whether the join duplicated source rows before aggregation."
+      ],
+      "correctIndex": 3,
+      "explanation": "Aggregation after a one-to-many join can duplicate facts and distort averages/counts.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Aggregation after a one-to-many join can duplicate facts and distort averages/counts.",
+      "incorrectFeedback": "Review the requirement again. Aggregation after a one-to-many join can duplicate facts and distort averages/counts."
+    },
+    {
+      "id": "sql-l10-bank-11",
+      "type": "quiz",
+      "question": "Review from Lesson 6 — SQL JOINs and Relationships: A report must include unmatched records from the left table. Which join should be evaluated?",
+      "options": [
+        "LEFT JOIN.",
+        "INNER JOIN only.",
+        "CROSS JOIN by default.",
+        "A DELETE join."
+      ],
+      "correctIndex": 0,
+      "explanation": "LEFT JOIN retains all left-side rows, including those without a matching right-side row.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. LEFT JOIN retains all left-side rows, including those without a matching right-side row.",
+      "incorrectFeedback": "Review the requirement again. LEFT JOIN retains all left-side rows, including those without a matching right-side row."
+    },
+    {
+      "id": "sql-l10-bank-12",
+      "type": "quiz",
+      "question": "Review from Lesson 6 — SQL JOINs and Relationships: Two tables share a column name such as id. What makes the query unambiguous?",
+      "options": [
+        "SELECT * for every column.",
+        "Qualify the column with a table name or alias.",
+        "Remove the join condition.",
+        "Sort by an unrelated field."
+      ],
+      "correctIndex": 1,
+      "explanation": "Table qualifiers identify the intended column when names overlap.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Table qualifiers identify the intended column when names overlap.",
+      "incorrectFeedback": "Review the requirement again. Table qualifiers identify the intended column when names overlap."
+    },
+    {
+      "id": "sql-l10-bank-13",
+      "type": "quiz",
+      "question": "Review from Lesson 7 — Subqueries and Advanced Queries: A report only needs to know whether at least one related enrollment exists. Which construct expresses existence directly?",
+      "options": [
+        "ORDER BY.",
+        "CREATE INDEX only.",
+        "EXISTS.",
+        "UPDATE."
+      ],
+      "correctIndex": 2,
+      "explanation": "EXISTS checks whether the correlated subquery returns any row.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. EXISTS checks whether the correlated subquery returns any row.",
+      "incorrectFeedback": "Review the requirement again. EXISTS checks whether the correlated subquery returns any row."
+    },
+    {
+      "id": "sql-l10-bank-14",
+      "type": "quiz",
+      "question": "Review from Lesson 7 — Subqueries and Advanced Queries: A nested query is hard to debug. What is the best workflow?",
+      "options": [
+        "Rewrite it all at once without tests.",
+        "Add all columns blindly.",
+        "Hide the output.",
+        "Run and verify the inner query first, then integrate it."
+      ],
+      "correctIndex": 3,
+      "explanation": "Testing subquery components independently reduces the number of possible causes when the full query is wrong.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Testing subquery components independently reduces the number of possible causes when the full query is wrong.",
+      "incorrectFeedback": "Review the requirement again. Testing subquery components independently reduces the number of possible causes when the full query is wrong."
+    },
+    {
+      "id": "sql-l10-bank-15",
+      "type": "quiz",
+      "question": "Review from Lesson 8 — Database Design and Constraints: A relationship must not refer to a nonexistent learner. Which database rule expresses the relationship?",
+      "options": [
+        "Foreign key.",
+        "ORDER BY.",
+        "LIMIT.",
+        "Alias."
+      ],
+      "correctIndex": 0,
+      "explanation": "A foreign key can enforce referential integrity between related tables.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A foreign key can enforce referential integrity between related tables.",
+      "incorrectFeedback": "Review the requirement again. A foreign key can enforce referential integrity between related tables."
+    },
+    {
+      "id": "sql-l10-bank-16",
+      "type": "quiz",
+      "question": "Review from Lesson 8 — Database Design and Constraints: A business rule says the amount must never be negative. What should enforce it for all writers?",
+      "options": [
+        "A warning in one UI only.",
+        "A CHECK constraint plus suitable application validation.",
+        "A column alias.",
+        "A view with no validation."
+      ],
+      "correctIndex": 1,
+      "explanation": "Database constraints enforce the rule at the data boundary rather than trusting every client.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Database constraints enforce the rule at the data boundary rather than trusting every client.",
+      "incorrectFeedback": "Review the requirement again. Database constraints enforce the rule at the data boundary rather than trusting every client."
+    },
+    {
+      "id": "sql-l10-bank-17",
+      "type": "quiz",
+      "question": "Review from Lesson 9 — Views, Indexes and Transactions: Two related writes must be atomic. What is the correct concept?",
+      "options": [
+        "Two writes with no coordination.",
+        "An index only.",
+        "A transaction that commits both or rolls back when needed.",
+        "A view."
+      ],
+      "correctIndex": 2,
+      "explanation": "Transactions allow related operations to be treated as a logical unit.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Transactions allow related operations to be treated as a logical unit.",
+      "incorrectFeedback": "Review the requirement again. Transactions allow related operations to be treated as a logical unit."
+    },
+    {
+      "id": "sql-l10-bank-18",
+      "type": "quiz",
+      "question": "Review from Lesson 9 — Views, Indexes and Transactions: An index is being considered for a slow query. What is the most evidence-based next step?",
+      "options": [
+        "Add indexes to every column.",
+        "Drop all constraints.",
+        "Assume index order always helps.",
+        "Inspect query plans and measure read/write trade-offs."
+      ],
+      "correctIndex": 3,
+      "explanation": "Index decisions should be based on query behavior, data, and write overhead.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Index decisions should be based on query behavior, data, and write overhead.",
+      "incorrectFeedback": "Review the requirement again. Index decisions should be based on query behavior, data, and write overhead."
+    },
+    {
+      "id": "sql-l10-bank-19",
+      "type": "quiz",
+      "question": "Review from Lesson 10 — SQL Database Project and Final Review: The final project passes one example input. What is the strongest completion check?",
+      "options": [
+        "Stop testing as soon as the screen appears.",
+        "Remove error handling to reduce lines.",
+        "Test normal, boundary, empty, and failure cases and document how to run it.",
+        "Change the app name again."
+      ],
+      "correctIndex": 2,
+      "explanation": "Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
+      "incorrectFeedback": "Review the requirement again. Broader tests and reproducible setup provide stronger evidence than one happy-path example."
+    },
+    {
+      "id": "sql-l10-bank-20",
+      "type": "quiz",
+      "question": "Review from Lesson 10 — SQL Database Project and Final Review: A teammate cannot reproduce the project’s behavior. What is likely missing?",
+      "options": [
+        "A larger icon.",
+        "A longer splash screen.",
+        "More animated effects.",
+        "Repeatable instructions, clear dependencies, and a testable expected result."
+      ],
+      "correctIndex": 3,
+      "explanation": "Reproducibility requires enough source and setup information for another person to verify the same behavior.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Reproducibility requires enough source and setup information for another person to verify the same behavior.",
+      "incorrectFeedback": "Review the requirement again. Reproducibility requires enough source and setup information for another person to verify the same behavior."
+    }
+  ]
+}

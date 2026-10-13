@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 4,
+  "lessonId": "sql-lesson-4",
+  "title": "SELECT, Filtering and Sorting",
+  "subtitle": "SELECT, WHERE, AND, OR, NOT, ORDER BY, LIMIT and comparison operators.",
+  "description": "Master the core SQL query system for retrieving exactly the data you need from a database.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand SELECT, Filtering and Sorting"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 4: SELECT, Filtering and Sorting. This lesson follows the course dashboard topic “SELECT, Filtering and Sorting”. The goal is to sELECT, WHERE, AND, OR, NOT, ORDER BY, LIMIT and comparison operators.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "SELECT retrieves chosen columns, while WHERE filters rows before the result is returned. ORDER BY specifies ordering and LIMIT can cap output where supported by the database dialect."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: SELECT, Filtering and Sorting in practice",
+      "code": "SELECT title, total_lessons\nFROM courses\nWHERE total_lessons >= 10\nORDER BY title;"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates SELECT, WHERE, AND, OR, NOT, ORDER BY, LIMIT and comparison operators. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l4-q-01",
+      "type": "quiz",
+      "question": "A report must show courses from highest learner count to lowest. Which clause orders the result?",
+      "options": [
+        "ORDER BY learner_count DESC, where appropriate for the query.",
+        "WHERE only.",
+        "INSERT INTO.",
+        "CREATE TABLE."
+      ],
+      "correctIndex": 0,
+      "explanation": "ORDER BY defines result ordering; DESC sorts from higher to lower values.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. ORDER BY defines result ordering; DESC sorts from higher to lower values.",
+      "incorrectFeedback": "Review the requirement again. ORDER BY defines result ordering; DESC sorts from higher to lower values."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Master the core SQL query system for retrieving exactly the data you need from a database.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: SELECT, Filtering and Sorting in practice",
+      "code": "SELECT display_name\nFROM learners\nWHERE email IS NOT NULL\nORDER BY display_name\nLIMIT 5;"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l4-q-02",
+      "type": "quiz",
+      "question": "A table has a NULL email. Which condition correctly finds rows with no email?",
+      "options": [
+        "email = NULL",
+        "email IS NULL",
+        "email > NULL",
+        "email LIKE NULL"
+      ],
+      "correctIndex": 1,
+      "explanation": "SQL NULL is tested with IS NULL rather than ordinary equality.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. SQL NULL is tested with IS NULL rather than ordinary equality.",
+      "incorrectFeedback": "Review the requirement again. SQL NULL is tested with IS NULL rather than ordinary equality."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Use AND, OR, and parentheses to express compound conditions clearly. Remember that NULL requires null-aware checks such as IS NULL, not an ordinary equality comparison."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: SELECT, Filtering and Sorting in practice",
+      "code": "SELECT course_id, title\nFROM courses\nWHERE title LIKE '%Python%';"
+    },
+    {
+      "id": "sql-l4-q-03",
+      "type": "quiz",
+      "question": "A report returns thousands of unused columns. What is a better practice?",
+      "options": [
+        "Always select every column.",
+        "Remove the WHERE clause.",
+        "Select only the required columns.",
+        "Sort by a random field."
+      ],
+      "correctIndex": 2,
+      "explanation": "Selecting needed fields improves clarity and can reduce unnecessary data transfer.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Selecting needed fields improves clarity and can reduce unnecessary data transfer.",
+      "incorrectFeedback": "Review the requirement again. Selecting needed fields improves clarity and can reduce unnecessary data transfer."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Ask for only the columns you need and use deterministic sorting when order matters. This can improve performance and makes the query’s intent easier to review."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: SELECT, Filtering and Sorting in practice",
+      "code": "SELECT lesson_id, title\nFROM lessons\nWHERE published = 1 AND level <> 'Archived'\nORDER BY lesson_id DESC;"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Master the core SQL query system for retrieving exactly the data you need from a database. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l4-q-04",
+      "type": "quiz",
+      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "options": [
+        "A map/dictionary keyed by email, with suitable uniqueness handling.",
+        "A random number with no mapping.",
+        "A paragraph of comma-separated values that is never parsed.",
+        "A loop that guesses the correct person."
+      ],
+      "correctIndex": 0,
+      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
+    },
+    {
+      "id": "sql-l4-q-05",
+      "type": "quiz",
+      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
+      "options": [
+        "One.",
+        "The collection length.",
+        "Zero.",
+        "Minus one."
+      ],
+      "correctIndex": 2,
+      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+    }
+  ]
+}

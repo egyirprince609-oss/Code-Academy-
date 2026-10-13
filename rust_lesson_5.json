@@ -1,0 +1,197 @@
+{
+  "course": "rust",
+  "lessonNumber": 5,
+  "lessonId": "rust-lesson-5",
+  "title": "References and Borrowing",
+  "subtitle": "Use references safely without taking ownership of values.",
+  "description": "Master borrowing, immutable references, mutable references, borrowing rules and lifetime-related concepts.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand References and Borrowing"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 5: References and Borrowing. This lesson follows the course dashboard topic “References and Borrowing”. The goal is to use references safely without taking ownership of values.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "A reference borrows access to a value instead of transferring ownership. Immutable references allow reading, while mutable references allow changes under Rust’s borrowing rules."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-1",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 1: References and Borrowing in practice",
+      "code": "fn main() { let score = 88; let borrowed = &score; println!(\"{borrowed}\"); }"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Use references safely without taking ownership of values. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "rust-l5-q-01",
+      "type": "quiz",
+      "question": "A function reads a large collection but should not take ownership. What should it accept?",
+      "options": [
+        "An owned duplicate in every call.",
+        "A reference or slice with a suitable lifetime.",
+        "A hard-coded copy of the values.",
+        "A mutable reference even when no changes occur."
+      ],
+      "correctIndex": 1,
+      "explanation": "Borrowed references or slices let a function read data without taking ownership.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Borrowed references or slices let a function read data without taking ownership.",
+      "incorrectFeedback": "Review the requirement again. Borrowed references or slices let a function read data without taking ownership."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Master borrowing, immutable references, mutable references, borrowing rules and lifetime-related concepts.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-2",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 2: References and Borrowing in practice",
+      "code": "fn main() { let mut name = String::from(\"Ama\"); add_suffix(&mut name); println!(\"{name}\"); }\nfn add_suffix(name: &mut String) { name.push_str(\" Mensah\"); }"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real Rust project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "rust-l5-q-02",
+      "type": "quiz",
+      "question": "A returned reference would point to a local variable that disappears at function exit. What is the issue?",
+      "options": [
+        "The reference becomes a constant.",
+        "The variable stays alive forever.",
+        "The reference would outlive the data it points to.",
+        "No issue exists in any language."
+      ],
+      "correctIndex": 2,
+      "explanation": "A reference must not outlive its referent; Rust checks that relationship.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A reference must not outlive its referent; Rust checks that relationship.",
+      "incorrectFeedback": "Review the requirement again. A reference must not outlive its referent; Rust checks that relationship."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "References must not outlive the data they point to. Lifetimes describe these relationships when the compiler cannot infer them from local structure alone."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-3",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 3: References and Borrowing in practice",
+      "code": "fn main() { let items = vec![\"HTML\", \"CSS\"]; print_count(&items); }\nfn print_count(items: &[&str]) { println!(\"{}\", items.len()); }"
+    },
+    {
+      "id": "rust-l5-q-03",
+      "type": "quiz",
+      "question": "A function does not need to change a value. Which access should it prefer?",
+      "options": [
+        "Mutable access by default.",
+        "Raw pointers for every value.",
+        "Global state.",
+        "An immutable reference when appropriate."
+      ],
+      "correctIndex": 3,
+      "explanation": "The least powerful access expresses intent and avoids unnecessary mutation permissions.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. The least powerful access expresses intent and avoids unnecessary mutation permissions.",
+      "incorrectFeedback": "Review the requirement again. The least powerful access expresses intent and avoids unnecessary mutation permissions."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Prefer the least powerful access needed: use an immutable reference when you only need to read. This communicates intent and helps the compiler prevent conflicting access."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-4",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 4: References and Borrowing in practice",
+      "code": "fn main() { let text = String::from(\"hello\"); let a = &text; let b = &text; println!(\"{a} {b}\"); }"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Master borrowing, immutable references, mutable references, borrowing rules and lifetime-related concepts. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "rust-l5-q-04",
+      "type": "quiz",
+      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
+      "options": [
+        "Copy the calculation to three new places.",
+        "Turn the result into a comment.",
+        "Create a focused function and call it with the required inputs.",
+        "Store the calculation in the page title."
+      ],
+      "correctIndex": 2,
+      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
+      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+    },
+    {
+      "id": "rust-l5-q-05",
+      "type": "quiz",
+      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "options": [
+        "Return the total as a value.",
+        "Print the total in a larger font.",
+        "Rename the variable only.",
+        "Call the function repeatedly until the output is visible."
+      ],
+      "correctIndex": 0,
+      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
+      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
+    }
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 5,
+  "lessonId": "sql-lesson-5",
+  "title": "Functions, GROUP BY and Aggregation",
+  "subtitle": "COUNT, SUM, AVG, MIN, MAX, GROUP BY and HAVING.",
+  "description": "Turn raw database records into useful statistics and grouped information for analysis.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Functions, GROUP BY and Aggregation"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 5: Functions, GROUP BY and Aggregation. This lesson follows the course dashboard topic “Functions, GROUP BY and Aggregation”. The goal is to cOUNT, SUM, AVG, MIN, MAX, GROUP BY and HAVING.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Aggregate functions summarize multiple rows into values such as counts, totals, averages, minimums, and maximums. GROUP BY produces one result row for each group."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: Functions, GROUP BY and Aggregation in practice",
+      "code": "SELECT course_id, COUNT(*) AS learner_count\nFROM enrollments\nGROUP BY course_id;"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates COUNT, SUM, AVG, MIN, MAX, GROUP BY and HAVING. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l5-q-01",
+      "type": "quiz",
+      "question": "A report needs one average score per course. What should be paired with AVG(score)?",
+      "options": [
+        "Only LIMIT.",
+        "DELETE.",
+        "GROUP BY the course identifier or other grouping field.",
+        "A new HTML form."
+      ],
+      "correctIndex": 2,
+      "explanation": "GROUP BY defines the groups for which aggregate values are calculated.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. GROUP BY defines the groups for which aggregate values are calculated.",
+      "incorrectFeedback": "Review the requirement again. GROUP BY defines the groups for which aggregate values are calculated."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Turn raw database records into useful statistics and grouped information for analysis.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: Functions, GROUP BY and Aggregation in practice",
+      "code": "SELECT course_id, AVG(score) AS average_score\nFROM lesson_results\nGROUP BY course_id\nHAVING AVG(score) >= 70;"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l5-q-02",
+      "type": "quiz",
+      "question": "A query must filter out groups whose average score is below 70. Which clause applies after aggregation?",
+      "options": [
+        "WHERE AVG(score) before grouping in a standard query.",
+        "ORDER BY only.",
+        "INSERT.",
+        "HAVING."
+      ],
+      "correctIndex": 3,
+      "explanation": "HAVING filters aggregated groups, while WHERE filters source rows before grouping.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. HAVING filters aggregated groups, while WHERE filters source rows before grouping.",
+      "incorrectFeedback": "Review the requirement again. HAVING filters aggregated groups, while WHERE filters source rows before grouping."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "WHERE filters source rows before grouping; HAVING filters groups after aggregates are calculated. Confusing those stages can make totals misleading."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: Functions, GROUP BY and Aggregation in practice",
+      "code": "SELECT MIN(score) AS lowest, MAX(score) AS highest, AVG(score) AS average\nFROM lesson_results;"
+    },
+    {
+      "id": "sql-l5-q-03",
+      "type": "quiz",
+      "question": "A group count seems too high after a join. What should be checked?",
+      "options": [
+        "Whether the join multiplied source rows and whether DISTINCT/counting the correct key is needed.",
+        "The SQL indentation only.",
+        "Whether CSS Grid is used.",
+        "The size of the window."
+      ],
+      "correctIndex": 0,
+      "explanation": "Aggregation over duplicated join results can inflate counts and totals.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Aggregation over duplicated join results can inflate counts and totals.",
+      "incorrectFeedback": "Review the requirement again. Aggregation over duplicated join results can inflate counts and totals."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Check whether NULL values should be ignored or counted and verify the grouping columns match the business question. Always test aggregates against a small sample whose correct result you can calculate independently."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: Functions, GROUP BY and Aggregation in practice",
+      "code": "SELECT course_id, SUM(points) AS total_points\nFROM learner_points\nGROUP BY course_id\nORDER BY total_points DESC;"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Turn raw database records into useful statistics and grouped information for analysis. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l5-q-04",
+      "type": "quiz",
+      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
+      "options": [
+        "Copy the calculation to three new places.",
+        "Turn the result into a comment.",
+        "Create a focused function and call it with the required inputs.",
+        "Store the calculation in the page title."
+      ],
+      "correctIndex": 2,
+      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
+      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+    },
+    {
+      "id": "sql-l5-q-05",
+      "type": "quiz",
+      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "options": [
+        "Return the total as a value.",
+        "Print the total in a larger font.",
+        "Rename the variable only.",
+        "Call the function repeatedly until the output is visible."
+      ],
+      "correctIndex": 0,
+      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
+      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
+    }
+  ]
+}

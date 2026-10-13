@@ -1,0 +1,197 @@
+{
+  "course": "rust",
+  "lessonNumber": 4,
+  "lessonId": "rust-lesson-4",
+  "title": "Ownership and Memory",
+  "subtitle": "Understand Rust",
+  "description": "Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Ownership and Memory"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 4: Ownership and Memory. This lesson follows the course dashboard topic “Ownership and Memory”. The goal is to understand Rust. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Ownership gives a program clear responsibility for a value and its lifetime. Make ownership transfers and copies deliberate so data is not unexpectedly shared or discarded."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-1",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 1: Ownership and Memory in practice",
+      "code": "fn main() { let title = String::from(\"HTML\"); let moved = title; println!(\"{moved}\"); }"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Understand Rust. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "rust-l4-q-01",
+      "type": "quiz",
+      "question": "A Rust String is moved into a new binding. What should the original binding normally be expected to do?",
+      "options": [
+        "Remain usable for every operation without restriction.",
+        "Automatically become a global variable.",
+        "No longer be used as an owner unless the value was cloned or otherwise borrowed.",
+        "Become an integer."
+      ],
+      "correctIndex": 2,
+      "explanation": "A move transfers ownership, so the old binding is no longer valid for ordinary use.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A move transfers ownership, so the old binding is no longer valid for ordinary use.",
+      "incorrectFeedback": "Review the requirement again. A move transfers ownership, so the old binding is no longer valid for ordinary use."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-2",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 2: Ownership and Memory in practice",
+      "code": "fn main() { let name = String::from(\"Ama\"); let length = name.len(); println!(\"{name} has {length} characters\"); }"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real Rust project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "rust-l4-q-02",
+      "type": "quiz",
+      "question": "A function only needs to inspect a value. What Rust mechanism generally communicates that no ownership transfer is needed?",
+      "options": [
+        "Clone it repeatedly.",
+        "Use a mutable global.",
+        "Allocate a second value at random.",
+        "Borrow it through a reference."
+      ],
+      "correctIndex": 3,
+      "explanation": "Borrowing permits access without transferring ownership.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Borrowing permits access without transferring ownership.",
+      "incorrectFeedback": "Review the requirement again. Borrowing permits access without transferring ownership."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Ownership gives a program clear responsibility for a value and its lifetime. Make ownership transfers and copies deliberate so data is not unexpectedly shared or discarded."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-3",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 3: Ownership and Memory in practice",
+      "code": "fn main() { let values = vec![2, 4, 6]; let total: i32 = values.iter().sum(); println!(\"{total}\"); }"
+    },
+    {
+      "id": "rust-l4-q-03",
+      "type": "quiz",
+      "question": "Why restrict simultaneous mutable references to the same data?",
+      "options": [
+        "To prevent conflicting access and help avoid unsafe data races/aliasing bugs.",
+        "To make every value immutable forever.",
+        "To remove the need for types.",
+        "To force every variable to be copied."
+      ],
+      "correctIndex": 0,
+      "explanation": "Rust’s borrowing rules prevent conflicting mutable access and help guarantee memory safety.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Rust’s borrowing rules prevent conflicting mutable access and help guarantee memory safety.",
+      "incorrectFeedback": "Review the requirement again. Rust’s borrowing rules prevent conflicting mutable access and help guarantee memory safety."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Ownership gives a program clear responsibility for a value and its lifetime. Make ownership transfers and copies deliberate so data is not unexpectedly shared or discarded."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l4-code-4",
+      "type": "code",
+      "language": "rust",
+      "title": "Sample 4: Ownership and Memory in practice",
+      "code": "fn main() { let message = String::from(\"ready\"); print_message(&message); println!(\"{message}\"); }\nfn print_message(text: &String) { println!(\"{text}\"); }"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "rust-l4-q-04",
+      "type": "quiz",
+      "question": "A learner’s XP changes after every correct answer. Which design is easiest to maintain?",
+      "options": [
+        "Repeat the current XP number in many places.",
+        "Store XP in one appropriately scoped variable and update it deliberately.",
+        "Use a different variable name for every update.",
+        "Convert XP to a text label before doing arithmetic."
+      ],
+      "correctIndex": 1,
+      "explanation": "One well-defined source of truth prevents values from drifting apart.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. One well-defined source of truth prevents values from drifting apart.",
+      "incorrectFeedback": "Review the requirement again. One well-defined source of truth prevents values from drifting apart."
+    },
+    {
+      "id": "rust-l4-q-05",
+      "type": "quiz",
+      "question": "A setting must never be reassigned during the program. What should you choose?",
+      "options": [
+        "A constant or immutable binding supported by the language.",
+        "A global variable that any function can change.",
+        "A string containing the setting name.",
+        "A loop that resets the value repeatedly."
+      ],
+      "correctIndex": 0,
+      "explanation": "Constants communicate intent and help prevent accidental reassignment.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Constants communicate intent and help prevent accidental reassignment.",
+      "incorrectFeedback": "Review the requirement again. Constants communicate intent and help prevent accidental reassignment."
+    }
+  ]
+}

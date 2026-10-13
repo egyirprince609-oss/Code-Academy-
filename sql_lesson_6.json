@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 6,
+  "lessonId": "sql-lesson-6",
+  "title": "SQL JOINs and Relationships",
+  "subtitle": "INNER JOIN, LEFT JOIN, RIGHT JOIN and relationships between tables.",
+  "description": "Learn how multiple related tables can be combined to create powerful database queries.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand SQL JOINs and Relationships"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 6: SQL JOINs and Relationships. This lesson follows the course dashboard topic “SQL JOINs and Relationships”. The goal is to iNNER JOIN, LEFT JOIN, RIGHT JOIN and relationships between tables.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Joins combine rows from related tables using a relationship such as a customer ID. An INNER JOIN keeps matches, while a LEFT JOIN also retains rows from the left table that have no match."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: SQL JOINs and Relationships in practice",
+      "code": "SELECT learners.display_name, courses.title\nFROM enrollments\nINNER JOIN learners ON learners.learner_id = enrollments.learner_id\nINNER JOIN courses ON courses.course_id = enrollments.course_id;"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates INNER JOIN, LEFT JOIN, RIGHT JOIN and relationships between tables. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l6-q-01",
+      "type": "quiz",
+      "question": "A report must list every learner, even learners without a course enrollment. Which join preserves all learners?",
+      "options": [
+        "INNER JOIN from courses only.",
+        "CROSS JOIN all tables.",
+        "A filter that removes unmatched rows.",
+        "LEFT JOIN starting from learners."
+      ],
+      "correctIndex": 3,
+      "explanation": "A left join retains every row from the left-hand table even when no matching enrollment exists.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A left join retains every row from the left-hand table even when no matching enrollment exists.",
+      "incorrectFeedback": "Review the requirement again. A left join retains every row from the left-hand table even when no matching enrollment exists."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn how multiple related tables can be combined to create powerful database queries.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: SQL JOINs and Relationships in practice",
+      "code": "SELECT learners.display_name, enrollments.course_id\nFROM learners\nLEFT JOIN enrollments ON enrollments.learner_id = learners.learner_id;"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l6-q-02",
+      "type": "quiz",
+      "question": "A join unexpectedly triples the output rows. What should be checked?",
+      "options": [
+        "Whether the join keys uniquely identify the intended relationship and whether duplicate matches exist.",
+        "Only the column widths.",
+        "The page’s CSS.",
+        "The SQL keyword capitalization."
+      ],
+      "correctIndex": 0,
+      "explanation": "One-to-many relationships and incorrect join conditions can multiply rows.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. One-to-many relationships and incorrect join conditions can multiply rows.",
+      "incorrectFeedback": "Review the requirement again. One-to-many relationships and incorrect join conditions can multiply rows."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Incorrect join conditions can multiply rows or drop records unexpectedly. Check primary-key and foreign-key relationships and compare row counts before and after joining."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: SQL JOINs and Relationships in practice",
+      "code": "SELECT c.title, COUNT(e.learner_id) AS learners\nFROM courses AS c\nLEFT JOIN enrollments AS e ON e.course_id = c.course_id\nGROUP BY c.course_id, c.title;"
+    },
+    {
+      "id": "sql-l6-q-03",
+      "type": "quiz",
+      "question": "Two tables both have a column named id. How should the query avoid ambiguity?",
+      "options": [
+        "Remove both columns.",
+        "Qualify the columns with table names or aliases.",
+        "Use SELECT * and hope the right one wins.",
+        "Rename the output file only."
+      ],
+      "correctIndex": 1,
+      "explanation": "Qualified names show which table each column belongs to.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Qualified names show which table each column belongs to.",
+      "incorrectFeedback": "Review the requirement again. Qualified names show which table each column belongs to."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Use clear table aliases and qualify ambiguous column names. A join should express the actual relationship, not merely connect columns that happen to share a name."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l6-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: SQL JOINs and Relationships in practice",
+      "code": "SELECT results.learner_id, learners.display_name, results.score\nFROM lesson_results AS results\nJOIN learners ON learners.learner_id = results.learner_id\nWHERE results.score < 50;"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how multiple related tables can be combined to create powerful database queries. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l6-q-04",
+      "type": "quiz",
+      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "options": [
+        "A map/dictionary keyed by email, with suitable uniqueness handling.",
+        "A random number with no mapping.",
+        "A paragraph of comma-separated values that is never parsed.",
+        "A loop that guesses the correct person."
+      ],
+      "correctIndex": 0,
+      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
+    },
+    {
+      "id": "sql-l6-q-05",
+      "type": "quiz",
+      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
+      "options": [
+        "One.",
+        "The collection length.",
+        "Zero.",
+        "Minus one."
+      ],
+      "correctIndex": 2,
+      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+    }
+  ]
+}

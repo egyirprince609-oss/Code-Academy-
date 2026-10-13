@@ -1,0 +1,197 @@
+{
+  "course": "sql",
+  "lessonNumber": 2,
+  "lessonId": "sql-lesson-2",
+  "title": "Creating Databases and Tables",
+  "subtitle": "CREATE DATABASE, CREATE TABLE, columns, data types and primary keys.",
+  "description": "Learn how to create database structures and define the information each table will store.",
+  "level": "Beginner",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Creating Databases and Tables"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 2: Creating Databases and Tables. This lesson follows the course dashboard topic “Creating Databases and Tables”. The goal is to cREATE DATABASE, CREATE TABLE, columns, data types and primary keys.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "CREATE TABLE defines the columns and their data types before the table stores records. Choose types that reflect the data and constraints that prevent invalid states."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l2-code-1",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 1: Creating Databases and Tables in practice",
+      "code": "CREATE TABLE learners (\n  learner_id INTEGER PRIMARY KEY,\n  display_name TEXT NOT NULL,\n  email TEXT UNIQUE\n);"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates CREATE DATABASE, CREATE TABLE, columns, data types and primary keys. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "sql-l2-q-01",
+      "type": "quiz",
+      "question": "A project repeats the same validation rule in four places and the rules now disagree. What should be done?",
+      "options": [
+        "Centralize the rule in a reusable function and test it.",
+        "Add a fifth copy.",
+        "Remove the validation everywhere.",
+        "Make the rule depend on screen size."
+      ],
+      "correctIndex": 0,
+      "explanation": "A single tested rule avoids inconsistent copies and reduces maintenance cost.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A single tested rule avoids inconsistent copies and reduces maintenance cost.",
+      "incorrectFeedback": "Review the requirement again. A single tested rule avoids inconsistent copies and reduces maintenance cost."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn how to create database structures and define the information each table will store.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l2-code-2",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 2: Creating Databases and Tables in practice",
+      "code": "CREATE TABLE courses (\n  course_id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL,\n  total_lessons INTEGER NOT NULL CHECK (total_lessons > 0)\n);"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "sql-l2-q-02",
+      "type": "quiz",
+      "question": "A project’s output looks correct but the code is difficult to maintain. What is the best next step?",
+      "options": [
+        "Rename every variable randomly.",
+        "Add a second implementation without removing the first.",
+        "Ignore structure because the output is right.",
+        "Separate responsibilities, improve names, and add targeted tests."
+      ],
+      "correctIndex": 3,
+      "explanation": "Maintainability and tests make later changes safer, beyond simply matching one output.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Maintainability and tests make later changes safer, beyond simply matching one output.",
+      "incorrectFeedback": "Review the requirement again. Maintainability and tests make later changes safer, beyond simply matching one output."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "A primary key uniquely identifies each row. A foreign key can enforce a relationship with another table, and NOT NULL or UNIQUE constraints can express important data rules."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l2-code-3",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 3: Creating Databases and Tables in practice",
+      "code": "CREATE TABLE enrollments (\n  learner_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  PRIMARY KEY (learner_id, course_id),\n  FOREIGN KEY (learner_id) REFERENCES learners(learner_id),\n  FOREIGN KEY (course_id) REFERENCES courses(course_id)\n);"
+    },
+    {
+      "id": "sql-l2-q-03",
+      "type": "quiz",
+      "question": "An application relies on a service that may be unavailable. Which state should the UI or CLI handle?",
+      "options": [
+        "Success only.",
+        "A clear loading/success/error or recovery state.",
+        "No output until it crashes.",
+        "A fabricated result."
+      ],
+      "correctIndex": 1,
+      "explanation": "Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
+      "incorrectFeedback": "Review the requirement again. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Database dialects differ in some type names and identity syntax. Learn the database your app actually uses and test DDL changes in a safe development database before production."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l2-code-4",
+      "type": "code",
+      "language": "sql",
+      "title": "Sample 4: Creating Databases and Tables in practice",
+      "code": "CREATE TABLE lesson_results (\n  result_id INTEGER PRIMARY KEY,\n  learner_id INTEGER NOT NULL,\n  score INTEGER NOT NULL CHECK (score BETWEEN 0 AND 100)\n);"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to create database structures and define the information each table will store. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "sql-l2-q-04",
+      "type": "quiz",
+      "question": "What makes a final coding project reproducible?",
+      "options": [
+        "A screenshot of a successful run only.",
+        "A single unexplained binary.",
+        "Source, clear run instructions, and testable expected behavior.",
+        "A note saying “works on my phone.”"
+      ],
+      "correctIndex": 2,
+      "explanation": "Source and repeatable instructions let another person verify the behavior independently.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Source and repeatable instructions let another person verify the behavior independently.",
+      "incorrectFeedback": "Review the requirement again. Source and repeatable instructions let another person verify the behavior independently."
+    },
+    {
+      "id": "sql-l2-q-05",
+      "type": "quiz",
+      "question": "A final application calculates correct totals for typical inputs. What else should be tested before release?",
+      "options": [
+        "Only the title font.",
+        "Only the happy path.",
+        "Invalid, empty, boundary, and error cases as well as normal input.",
+        "Nothing, because the examples ran once."
+      ],
+      "correctIndex": 2,
+      "explanation": "Boundary and failure-path testing catches common defects that a happy-path run misses.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Boundary and failure-path testing catches common defects that a happy-path run misses.",
+      "incorrectFeedback": "Review the requirement again. Boundary and failure-path testing catches common defects that a happy-path run misses."
+    }
+  ]
+}
