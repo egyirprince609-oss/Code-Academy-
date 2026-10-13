@@ -1111,6 +1111,9 @@ button {
   }
 }
 </style>
+
+<link rel="manifest" href="./manifest.json"><meta name="robots" content="index,follow"><meta property="og:type" content="website"><meta property="og:title" content="Games Arena | Code Academy"><meta property="og:description" content="Ten learning games, thousands of practice opportunities, saved progress and responsive play."><meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/games_dash.html"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.png"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-login.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-signup.jpg"><meta property="twitter:card" content="summary_large_image">
+<style id="ca-games-dashboard-upgrade">.ca-games-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px auto 22px;max-width:1180px;padding:0 18px}.ca-games-tools .ca-tool{border:1px solid rgba(103,232,249,.3);border-radius:13px;padding:10px 12px;background:rgba(15,23,42,.8);color:#eef4ff;font:600 13px Inter,system-ui,sans-serif}.ca-games-tools button{cursor:pointer}.ca-games-tools .ca-tool-select{max-width:100%;}.ca-games-tools .ca-tool-status{font-size:12px;color:#9fb1cc}.game-card{transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.game-card:hover{transform:translateY(-3px)}.game-link{min-height:44px}@media(max-width:560px){.ca-games-tools{padding:0 12px}.ca-games-tools .ca-tool{width:100%}.game-card{min-width:0}}@media(prefers-reduced-motion:reduce){.game-card{transition:none}.game-card:hover{transform:none}}</style>
 </head>
 
 <body>
@@ -1230,7 +1233,7 @@ button {
         <div>
           <div class="section-kicker">SELECT YOUR NEXT CHALLENGE</div>
           <h2>The Games Collection</h2>
-          <p>Five existing games. Five new coding games. One arena.</p>
+          <p>Ten original games. 1,800 practice questions and 200 coding missions. One arena.</p>
         </div>
         <div class="count-badge"><i class="fa-solid fa-layer-group"></i> &nbsp;10 GAMES</div>
       </div>
@@ -1243,7 +1246,8 @@ button {
 
       <div class="games-grid" id="gamesGrid">
 
-        <!-- EXISTING GAME 1 -->
+        <section class="ca-games-tools" aria-label="Game preferences"><label class="ca-tool" for="caGamesLanguage">Preferred language <select class="ca-tool ca-tool-select" id="caGamesLanguage" aria-label="Preferred language"><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="sw">Kiswahili</option><option value="ha">Hausa</option><option value="yo">Yorùbá</option><option value="ak">Twi / Akan</option><option value="de">Deutsch</option><option value="zh">中文</option><option value="ja">日本語</option><option value="ru">Русский</option></select></label><button type="button" class="ca-tool" id="caGameNotifications">Enable game notifications</button><span class="ca-tool-status" id="caGamePreferenceStatus" role="status">Language preference saves on this device.</span></section>
+<!-- EXISTING GAME 1 -->
         <article class="game-card" data-category="logic">
           <div class="game-top">
             <div class="game-logo"><i class="fa-solid fa-vault"></i></div>
@@ -1315,7 +1319,7 @@ button {
           <div class="game-bottom">
             <div class="game-tags"><span class="game-tag">Analysis</span><span class="game-tag">Evidence</span></div>
             <!-- Confirm this filename matches your actual Truth or Lie file. -->
-            <a class="game-link" href="detective_man.html"><span>Find the truth</span><i class="fa-solid fa-arrow-right"></i></a>
+            <a class="game-link" href="truth_protocol.html"><span>Find the truth</span><i class="fa-solid fa-arrow-right"></i></a>
           </div>
         </article>
 
@@ -1557,5 +1561,5 @@ document.querySelectorAll(".game-link").forEach((link) => {
   });
 });
 </script>
-</body>
+<script>(function(){const key='code_academy_preferred_language_v1',sel=document.getElementById('caGamesLanguage'),status=document.getElementById('caGamePreferenceStatus'),btn=document.getElementById('caGameNotifications');try{sel.value=localStorage.getItem(key)||'en'}catch(e){}sel.addEventListener('change',()=>{try{localStorage.setItem(key,sel.value);status.textContent='Saved. Game banks will use this language where translation is supported.'}catch(e){status.textContent='Could not save the preference in this browser.'}});btn.addEventListener('click',async()=>{if(!('Notification'in window)){status.textContent='This browser does not support notifications.';return;}try{const p=await Notification.requestPermission();status.textContent=p==='granted'?'Notifications enabled on this device.':p==='denied'?'Notifications are blocked in browser settings.':'Permission was not changed.';if(p==='granted'&&navigator.serviceWorker?.controller){navigator.serviceWorker.ready.then(r=>r.showNotification('Code Academy Games',{body:'Game progress and milestones can now notify you when supported.',icon:'./web-app-manifest-192x192.png'})).catch(()=>{});}}catch(e){status.textContent='Could not enable notifications in this browser.'}});if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));})();</script></body>
 </html>

@@ -1,56 +1,24 @@
-// pwa.js - ONE FILE installer for Code Academy
-(function() {
-  if (document.getElementById('pwa-install-container')) return;
-
-  const css = `
-    #pwa-install-container{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(150px);width:92%;max-width:420px;background:#0a192f;color:#fff;border-radius:18px;padding:18px 20px;display:none;align-items:center;gap:15px;box-shadow:0 15px 40px rgba(0,0,0,.35);z-index:99999;transition:transform .5s ease;font-family:system-ui,sans-serif;border:1px solid rgba(255,255,255,.1)}
-    #pwa-install-container.show{transform:translateX(-50%) translateY(0)}
-    #pwa-install-container img{width:56px;height:56px;border-radius:14px;flex-shrink:0}
-    .pwa-text{flex:1}.pwa-text h4{margin:0 0 4px;font-size:16px}.pwa-text p{margin:0;font-size:13px;opacity:.8}
-    #pwa-install-btn{background:linear-gradient(135deg,#00c6ff,#0072ff);color:#fff;border:none;padding:10px 18px;border-radius:12px;font-weight:700;cursor:pointer;font-size:14px}
-    #pwa-close-btn{background:transparent;color:rgba(255,255,255,.6);border:none;font-size:13px;cursor:pointer;margin-top:6px}
-  `;
-  const style = document.createElement('style');
-  style.textContent = css;
-  document.head.appendChild(style);
-
-  const div = document.createElement('div');
-  div.id = 'pwa-install-container';
-  div.innerHTML = `
-    <img src="/Code-Academy-/logo-192.png" alt="Code Academy">
-    <div class="pwa-text"><h4>Install Code Academy</h4><p>Faster access, works offline like a real app.</p></div>
-    <div style="text-align:center"><button id="pwa-install-btn">Install</button><br><button id="pwa-close-btn">Later</button></div>
-  `;
-  document.body.appendChild(div);
-
-  let deferredPrompt = null;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    const dismissed = localStorage.getItem('pwa-dismissed');
-    if (!dismissed || Date.now() - parseInt(dismissed) > 7*24*60*60*1000) {
-      div.style.display = 'flex';
-      setTimeout(()=>div.classList.add('show'), 600);
-    }
-  });
-
-  div.querySelector('#pwa-install-btn').addEventListener('click', async () => {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-      await deferredPrompt.userChoice;
-      deferredPrompt = null;
-      div.classList.remove('show');
-      setTimeout(()=>div.style.display='none', 500);
-    }
-  });
-
-  div.querySelector('#pwa-close-btn').addEventListener('click', () => {
-    div.classList.remove('show');
-    setTimeout(()=>div.style.display='none', 500);
-    localStorage.setItem('pwa-dismissed', Date.now().toString());
-  });
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/Code-Academy-/sw.js', { scope: '/Code-Academy-/' });
-  }
-})();
+/* Code Academy PWA service worker. Bump CACHE_VERSION when releasing a new static bundle. */
+'use strict';
+const CACHE_VERSION='code-academy-shell-v3';
+const BASE=new URL('./',self.registration.scope);
+const CORE=[
+ 'index.html','home.html','menu.html','games_dash.html','manifest.json','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
+ 'authentication.js','game-platform.js','notification-engine.js','pwa.js','lesson.html','signup.html','login.html','verify-email.html','privacy.html','terms.html','aboutus.html','contactus.html',
+ 'digital_vault.html','detective_man.html','mind_palace.html','civilization.html','truth_protocol.html','code_breaker.html','cybermission.html','code_racer.html','algorithm_defender.html','code_quest.html',
+ 'digital_vault_questions.json','detective_man_questions.json','mind_palace_questions.json','civilization_questions.json','truth_protocol_questions.json','code_breaker_questions.json','cybermission_questions.json','code_racer_challenges.json','algorithm_defender_questions.json','code_quest_questions.json',
+ 'share-preview.jpg','share-preview.png','share-preview-login.jpg','share-preview-signup.jpg','share-preview-verify.jpg'
+];
+const absolute=path=>new URL(path,BASE).toString();
+self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE_VERSION);await Promise.allSettled(CORE.map(async path=>{try{const request=new Request(absolute(path),{cache:'reload'});const response=await fetch(request);if(response.ok)await cache.put(request,response);}catch(_){}}));await self.skipWaiting();})());});
+self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('code-academy-')&&key!==CACHE_VERSION).map(key=>caches.delete(key)));await self.clients.claim();})());});
+self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();if(event.data?.type==='CLEAR_APP_CACHE')event.waitUntil(caches.delete(CACHE_VERSION));});
+self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin||!url.href.startsWith(BASE.href))return;
+ if(req.mode==='navigate'){event.respondWith((async()=>{try{const fresh=await fetch(req);if(fresh.ok){const cache=await caches.open(CACHE_VERSION);cache.put(req,fresh.clone()).catch(()=>{});}return fresh;}catch(_){const cache=await caches.open(CACHE_VERSION);return await cache.match(req)||await cache.match(absolute('index.html'))||new Response('Code Academy is offline. Reconnect to try again.',{status:503,headers:{'Content-Type':'text/plain;charset=utf-8'}});}})());return;}
+ const isData=/\.json(?:$|\?)/i.test(url.pathname),isStatic=/\.(?:js|css|png|jpg|jpeg|webp|svg|woff2?|json)$/i.test(url.pathname);
+ if(isData||isStatic){event.respondWith((async()=>{const cache=await caches.open(CACHE_VERSION);const cached=await cache.match(req);const update=fetch(req).then(res=>{if(res.ok)cache.put(req,res.clone()).catch(()=>{});return res;}).catch(()=>null);if(cached){event.waitUntil(update);return cached;}return await update||new Response('{}',{status:503,headers:{'Content-Type':'application/json'}});})());}
+});
+self.addEventListener('push',event=>{let data={title:'Code Academy',body:'You have a new learning update.',url:'./menu.html',icon:'./web-app-manifest-192x192.png',tag:'code-academy-update'};try{const payload=event.data?.json();if(payload)data={...data,...payload};}catch(_){const text=event.data?.text();if(text)data.body=text;}
+ const options={body:String(data.body||'You have a new learning update.'),icon:absolute(data.icon||'web-app-manifest-192x192.png'),badge:absolute('web-app-manifest-192x192.png'),tag:String(data.tag||'code-academy-update'),data:{url:String(data.url||'./menu.html')},renotify:false,requireInteraction:false};event.waitUntil(self.registration.showNotification(String(data.title||'Code Academy'),options));
+});
+self.addEventListener('notificationclick',event=>{event.notification.close();const target=new URL(event.notification.data?.url||'./menu.html',BASE);if(target.origin!==self.location.origin||!target.href.startsWith(BASE.href))return;event.waitUntil((async()=>{const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});for(const client of windows){if(client.url.startsWith(BASE.href)&&'focus'in client){await client.navigate(target.href).catch(()=>{});return client.focus();}}if(self.clients.openWindow)return self.clients.openWindow(target.href);})());});
