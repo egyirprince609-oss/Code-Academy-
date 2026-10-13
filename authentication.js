@@ -20,8 +20,12 @@ import {
   signOut,
   signInWithPopup,
   sendPasswordResetEmail,
+  sendEmailVerification,
+  signInWithPhoneNumber,
+  RecaptchaVerifier,
+  reload,
+  applyActionCode,
   GoogleAuthProvider,
-  OAuthProvider,
   signInWithRedirect,
   getRedirectResult,
   updateProfile,
@@ -59,6 +63,10 @@ import {
   getDownloadURL
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
+import {
+  getDatabase
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
 
 // ============================================================
 // FIREBASE CONFIGURATION
@@ -67,11 +75,12 @@ import {
 const firebaseConfig = {
   apiKey: "AIzaSyC84eyA9-fxDiYFPBk3OXVH-AimkjVy9-s",
   authDomain: "codeacademybywm.firebaseapp.com",
+  databaseURL: "https://codeacademybywm-default-rtdb.firebaseio.com",
   projectId: "codeacademybywm",
   storageBucket: "codeacademybywm.firebasestorage.app",
   messagingSenderId: "677581551464",
-  appId: "1:677581551464:web:5eda0e67f5ef41f69d48dd",
-  measurementId: "G-X2B2D3W3MP"
+  appId: "1:677581551464:web:43d33c49806bf2099d48dd",
+  measurementId: "G-Y0LPZQS5B0"
 };
 
 
@@ -90,49 +99,44 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const rtdb = getDatabase(app, firebaseConfig.databaseURL);
 
 
 // ============================================================
 // AUTH PROVIDERS
 // ============================================================
 const googleProvider = new GoogleAuthProvider();
-const yahooProvider = new OAuthProvider("yahoo.com");
 
 
 // ============================================================
 // USER DEFAULT DATA
 // ============================================================
 function createDefaultUserData(user) {
+  const referralCode = createReferralCode(user.uid);
+  const profileURL = `${window.location.origin}${window.location.pathname.includes('/Code-Academy-/') ? '/Code-Academy-' : ''}/profile.html?uid=${encodeURIComponent(user.uid)}`;
   return {
+    uid: user.uid,
+    userId: user.uid,
     displayName: user.displayName || "User",
     email: user.email || "",
+    phoneNumber: user.phoneNumber || "",
     photoURL: user.photoURL || "",
-
-    createdAt: new Date(),
-
+    userURL: profileURL,
+    profileURL,
+    referralCode,
+    emailVerified: !!user.emailVerified,
+    providerId: user.providerData?.[0]?.providerId || "password",
+    accountStatus: "active",
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
     xp: 0,
     coins: 0,
     streak: 0,
-
-    lastLoginDate: new Date().toISOString().split("T")[0],
-
-    certificates: {
-      html: false,
-      css: false,
-      javascript: false,
-      python: false,
-      react: false
-    },
-
-    progress: {
-      html: 0,
-      css: 0,
-      javascript: 0,
-      python: 0,
-      react: 0
-    },
-
-    completedLessons: []
+    lastLoginDate: new Date().toISOString().slice(0, 10),
+    certificates: { html: false, css: false, javascript: false, python: false, react: false },
+    progress: { html: 0, css: 0, javascript: 0, python: 0, react: 0 },
+    completedLessons: [],
+    notificationPreferences: { email: true, inApp: true }
   };
 }
 
@@ -141,21 +145,22 @@ function createDefaultUserData(user) {
 // CREATE USER FIRESTORE DOCUMENT IF NEEDED
 // ============================================================
 async function createUserDocIfNotExists(user) {
-
   const userRef = doc(db, "users", user.uid);
-
   const snap = await getDoc(userRef);
-
   if (!snap.exists()) {
-
-    await setDoc(
-      userRef,
-      createDefaultUserData(user)
-    );
-
+    await setDoc(userRef, createDefaultUserData(user));
+    // Referral-code indexing is helpful but must never roll back a valid auth account.
+    try { await registerReferralCode(user); }
+    catch (error) { console.warn("Referral code registration did not complete:", error); }
     return true;
   }
-
+  const updates = { updatedAt: serverTimestamp() };
+  if (user.displayName && snap.data().displayName !== user.displayName) updates.displayName = user.displayName;
+  if (user.email && snap.data().email !== user.email) updates.email = user.email;
+  if (user.phoneNumber && snap.data().phoneNumber !== user.phoneNumber) updates.phoneNumber = user.phoneNumber;
+  if (user.photoURL && snap.data().photoURL !== user.photoURL) updates.photoURL = user.photoURL;
+  if (snap.data().emailVerified !== !!user.emailVerified) updates.emailVerified = !!user.emailVerified;
+  await updateDoc(userRef, updates);
   return false;
 }
 
@@ -227,183 +232,209 @@ async function updateStreak(uid) {
 // ============================================================
 // SIGN UP
 // ============================================================
-export async function signUp(
-  email,
-  password,
-  displayName
-) {
-
+export async function signUp(email, password, displayName) {
+  const cleanEmail = String(email || "").trim().toLowerCase();
+  const cleanName = String(displayName || "").trim();
+  if (!cleanName) throw new Error("Enter your full name.");
+  validatePasswordPolicy(password);
+  let authUserCreated = false;
   try {
-
-    const userCredential =
-      await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-
-    const user =
-      userCredential.user;
-
-
-    // --------------------------------------------------------
-    // Set Firebase display name
-    // --------------------------------------------------------
-    await updateProfile(
-      user,
-      {
-        displayName: displayName
-      }
-    );
-
-
-    // --------------------------------------------------------
-    // Create Firestore profile
-    // --------------------------------------------------------
-    await setDoc(
-      doc(db, "users", user.uid),
-      {
-        displayName: displayName,
-        email: email,
-        photoURL: "",
-
-        createdAt: new Date(),
-
-        xp: 0,
-        coins: 0,
-        streak: 0,
-
-        lastLoginDate:
-          new Date().toISOString().split("T")[0],
-
-        certificates: {
-          html: false,
-          css: false,
-          javascript: false,
-          python: false,
-          react: false
-        },
-
-        progress: {
-          html: 0,
-          css: 0,
-          javascript: 0,
-          python: 0,
-          react: 0
-        },
-
-        completedLessons: []
-      }
-    );
-
-
+    const credential = await createUserWithEmailAndPassword(auth, cleanEmail, password);
+    const user = credential.user;
+    authUserCreated = true;
+    await updateProfile(user, { displayName: cleanName });
+    // Keep a single canonical profile path for all existing Code Academy pages.
+    await setDoc(doc(db, "users", user.uid), {
+      ...createDefaultUserData({
+        uid: user.uid,
+        displayName: cleanName,
+        email: cleanEmail,
+        phoneNumber: user.phoneNumber || "",
+        photoURL: user.photoURL || "",
+        emailVerified: false,
+        providerData: user.providerData || []
+      }),
+      displayName: cleanName,
+      email: cleanEmail,
+      emailVerified: false,
+      providerId: "password"
+    }, { merge: true });
+    try { await registerReferralCode(user); }
+    catch (error) { console.warn("Referral code registration failed:", error); }
     return user;
-
   } catch (error) {
-
-    console.error(
-      "Sign up error:",
-      error
-    );
-
+    if (authUserCreated && error && typeof error === "object") error.accountCreated = true;
+    console.error("Code Academy email signup failed:", error);
     throw error;
   }
 }
 
+/** Enforce the client-side policy; Firebase remains the final authority. */
+export function validatePasswordPolicy(password) {
+  const value = String(password || "");
+  const checks = {
+    length: value.length >= 8,
+    uppercase: /[A-Z]/.test(value),
+    lowercase: /[a-z]/.test(value),
+    special: /[^A-Za-z0-9]/.test(value)
+  };
+  if (!Object.values(checks).every(Boolean)) {
+    const error = new Error("Password does not meet Code Academy's password requirements.");
+    error.code = "auth/password-policy-not-met";
+    error.checks = checks;
+    throw error;
+  }
+  return true;
+}
+
+/** Human-readable context plus the exact SDK code/message is shown by the UI. */
+export function getFirebaseErrorDetails(error) {
+  const code = String(error?.code || "unknown");
+  const message = String(error?.message || error || "Unknown Firebase error");
+  const descriptions = {
+    "auth/email-already-in-use": "An account already exists with this email address.",
+    "auth/invalid-email": "The email address is not valid.",
+    "auth/weak-password": "Firebase rejected the password. Check the configured password policy.",
+    "auth/operation-not-allowed": "This sign-in method is disabled in Firebase Authentication.",
+    "auth/unauthorized-domain": "This website domain is not authorized in Firebase Authentication settings.",
+    "auth/invalid-api-key": "Firebase rejected the API key. Check the web app configuration.",
+    "auth/network-request-failed": "The network request failed. Check your internet connection and retry.",
+    "auth/too-many-requests": "Firebase temporarily blocked repeated attempts. Wait before trying again.",
+    "auth/invalid-credential": "The credentials are invalid or expired.",
+    "auth/user-disabled": "This account has been disabled in Firebase Authentication.",
+    "auth/user-not-found": "No account was found for these credentials.",
+    "auth/wrong-password": "The password is incorrect.",
+    "auth/missing-phone-number": "Enter a phone number in international format, for example +233...",
+    "auth/invalid-phone-number": "Firebase rejected the phone number. Include the country code.",
+    "auth/quota-exceeded": "Firebase SMS quota was reached for this project.",
+    "auth/captcha-check-failed": "The reCAPTCHA check failed. Reload the page and try again.",
+    "auth/invalid-verification-code": "The SMS verification code is incorrect.",
+    "auth/code-expired": "The SMS verification code expired. Request a new code.",
+    "auth/unauthorized-continue-uri": "The email verification return URL is not authorized in Firebase.",
+    "auth/invalid-continue-uri": "The email verification return URL is invalid.",
+    "auth/invalid-app-credential": "Firebase rejected the app verification credential. Check reCAPTCHA, the authorized domain and phone-auth settings.",
+    "auth/missing-verification-code": "Enter the SMS verification code sent by Firebase.",
+    "auth/invalid-verification-id": "The SMS verification session is invalid or expired. Request a new code.",
+    "auth/expired-action-code": "This email verification link has expired. Request a fresh link.",
+    "auth/invalid-action-code": "This verification link is invalid or has already been used."
+  };
+  return { code, message, explanation: descriptions[code] || "Firebase returned an error. The exact SDK details are shown below." };
+}
+
+export async function sendEmailVerificationLink(user = auth.currentUser) {
+  if (!user) throw new Error("No signed-in account is available to verify.");
+  if (!user.email) throw new Error("This account does not have an email address to verify.");
+  const base = `${window.location.origin}${window.location.pathname.includes('/Code-Academy-/') ? '/Code-Academy-' : ''}`;
+  await sendEmailVerification(user, {
+    url: `${base}/email-verification.html`,
+    handleCodeInApp: false
+  });
+  return true;
+}
+
+export async function refreshCurrentUser() {
+  if (!auth.currentUser) return null;
+  await reload(auth.currentUser);
+  const user = auth.currentUser;
+  if (user) {
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      email: user.email || "",
+      phoneNumber: user.phoneNumber || "",
+      photoURL: user.photoURL || "",
+      emailVerified: !!user.emailVerified,
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+  }
+  return user;
+}
+
+export async function applyEmailVerificationCode(oobCode) {
+  if (!oobCode) throw new Error("The email verification link does not contain a verification code.");
+  await applyActionCode(auth, oobCode);
+  await refreshCurrentUser();
+  return true;
+}
+
+export async function setAuthPersistence(remember = true) {
+  const { setPersistence, browserLocalPersistence, browserSessionPersistence } = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js");
+  await setPersistence(auth, remember ? browserLocalPersistence : browserSessionPersistence);
+}
+
+/** Create a fresh, accessible reCAPTCHA verifier for Firebase phone auth. */
+export function createPhoneVerifier(containerId) {
+  const existing = window.__codeAcademyPhoneVerifier;
+  if (existing && typeof existing.clear === "function") {
+    try { existing.clear(); } catch (_) {}
+  }
+  const verifier = new RecaptchaVerifier(auth, containerId, {
+    size: "normal",
+    callback: () => console.info("Phone reCAPTCHA completed."),
+    "expired-callback": () => console.warn("Phone reCAPTCHA expired; complete it again.")
+  });
+  window.__codeAcademyPhoneVerifier = verifier;
+  return verifier;
+}
+
+export async function sendPhoneVerificationCode(phoneNumber, verifier) {
+  const phone = String(phoneNumber || "").replace(/[\s()-]/g, "");
+  if (!/^\+[1-9]\d{7,14}$/.test(phone)) {
+    const error = new Error("Enter the phone number in international format, for example +233241234567.");
+    error.code = "auth/invalid-phone-number";
+    throw error;
+  }
+  if (!verifier) throw new Error("Phone verification is not ready. Reload the page and try again.");
+  return await signInWithPhoneNumber(auth, phone, verifier);
+}
+
+export async function completePhoneVerification(confirmationResult, smsCode, displayName = "") {
+  if (!confirmationResult) throw new Error("Request an SMS verification code first.");
+  const code = String(smsCode || "").trim();
+  if (!/^\d{6}$/.test(code)) {
+    const error = new Error("Enter the six-digit code sent to your phone.");
+    error.code = "auth/invalid-verification-code";
+    throw error;
+  }
+  const credential = await confirmationResult.confirm(code);
+  const user = credential.user;
+  try {
+    if (displayName && !user.displayName) await updateProfile(user, { displayName: displayName.trim() });
+    await createUserDocIfNotExists(user);
+    await setDoc(doc(db, "users", user.uid), {
+      uid: user.uid,
+      userId: user.uid,
+      displayName: user.displayName || displayName.trim() || "User",
+      phoneNumber: user.phoneNumber || "",
+      email: user.email || "",
+      photoURL: user.photoURL || "",
+      providerId: "phone",
+      updatedAt: serverTimestamp()
+    }, { merge: true });
+    return user;
+  } catch (error) {
+    if (error && typeof error === "object") error.accountCreated = true;
+    throw error;
+  }
+}
 
 // ============================================================
 // LOGIN - EMAIL + PASSWORD + reCAPTCHA
 // ============================================================
-export async function logIn(
-  email,
-  password
-) {
-
+export async function logIn(email, password) {
   try {
-
-    // --------------------------------------------------------
-    // Check reCAPTCHA
-    // --------------------------------------------------------
-    if (
-      typeof grecaptcha === "undefined"
-    ) {
-
-      throw new Error(
-        "reCAPTCHA is not available. Please reload the page."
-      );
-    }
-
-
-    const recaptchaResponse =
-      grecaptcha.getResponse();
-
-
-    if (!recaptchaResponse) {
-
-      throw new Error(
-        "Please complete the reCAPTCHA verification."
-      );
-    }
-
-
-    // --------------------------------------------------------
-    // Firebase email/password login
-    // --------------------------------------------------------
-    const userCredential =
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-
-    // --------------------------------------------------------
-    // Reset reCAPTCHA
-    // --------------------------------------------------------
-    grecaptcha.reset();
-
-
-    // --------------------------------------------------------
-    // Update streak
-    // --------------------------------------------------------
-    await updateStreak(
-      userCredential.user.uid
-    );
-
-
-    return userCredential.user;
-
+    const cleanEmail = String(email || "").trim().toLowerCase();
+    const credential = await signInWithEmailAndPassword(auth, cleanEmail, password);
+    const user = credential.user;
+    try { await createUserDocIfNotExists(user); }
+    catch (profileError) { if (profileError && typeof profileError === "object") profileError.accountAuthenticated = true; throw profileError; }
+    try { await updateStreak(user.uid); }
+    catch (streakError) { console.warn("Login succeeded but streak update failed:", streakError); }
+    return user;
   } catch (error) {
-
-    console.error(
-      "Email login error:",
-      error
-    );
-
-
-    // --------------------------------------------------------
-    // Safely reset reCAPTCHA
-    // --------------------------------------------------------
-    if (
-      typeof grecaptcha !== "undefined"
-    ) {
-
-      try {
-        grecaptcha.reset();
-      } catch (recaptchaError) {
-        console.warn(
-          "Could not reset reCAPTCHA:",
-          recaptchaError
-        );
-      }
-    }
-
-
+    console.error("Code Academy email login failed:", error);
     throw error;
   }
 }
-
 
 // ============================================================
 // GOOGLE LOGIN
@@ -539,57 +570,6 @@ export async function completeGoogleRedirect() {
 
     console.error(
       "Google redirect result error:",
-      error
-    );
-
-    throw error;
-  }
-}
-
-
-// ============================================================
-// YAHOO LOGIN
-//
-// Yahoo remains POPUP-based because we are only changing
-// the Google mobile authentication flow.
-// ============================================================
-export async function signInWithYahoo() {
-
-  try {
-
-    const result =
-      await signInWithPopup(
-        auth,
-        yahooProvider
-      );
-
-
-    const user =
-      result.user;
-
-
-    // --------------------------------------------------------
-    // Create user document if necessary
-    // --------------------------------------------------------
-    await createUserDocIfNotExists(
-      user
-    );
-
-
-    // --------------------------------------------------------
-    // Update streak
-    // --------------------------------------------------------
-    await updateStreak(
-      user.uid
-    );
-
-
-    return user;
-
-  } catch (error) {
-
-    console.error(
-      "Yahoo login error:",
       error
     );
 
@@ -959,6 +939,8 @@ export {
   auth,
   db,
   storage,
+  rtdb,
+  firebaseConfig,
 
   onAuthStateChanged,
 
@@ -1393,8 +1375,8 @@ export async function processReferral(
 
         return {
             success:false,
-            reason:
-                error.message
+            reason: error.message || "Referral processing failed.",
+            code: error.code || "unknown"
         };
 
     }
