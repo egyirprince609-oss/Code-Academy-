@@ -513,14 +513,13 @@ button {
                 ✓
             </div>
 
-            <h2>
-                Welcome to Code Academy! 🎉
+            <h2 id="verificationHeading">
+                Check your email
             </h2>
 
-            <p>
-                Your account has been created successfully.
-                <br><br>
-                Your next step is to log in with your new account.
+            <p id="verificationDescription">
+                We will send a secure verification link to your email address.
+                Open the message and follow the link to activate your account.
             </p>
 
             <div
@@ -529,12 +528,13 @@ button {
                 style="display:none;"
             ></div>
 
-            <p class="redirect-text">
-
-                <span class="loader"></span>
-
-                Taking you to the login page...
-
+            <div class="verification-actions" style="display:grid;gap:10px;margin-top:18px;">
+                <button type="button" id="resendVerificationButton" class="signup-btn">Resend verification email</button>
+                <button type="button" id="continueAfterVerificationButton" class="social-btn">I have verified my email</button>
+                <a href="login.html" class="login-link" style="display:block;text-align:center;">Return to login</a>
+            </div>
+            <p class="redirect-text" id="verificationStatus" aria-live="polite" style="margin-top:14px;">
+                Keep this page open while you check your email.
             </p>
 
         </div>
@@ -747,1114 +747,406 @@ button {
 
 
 <script type="module">
-
-/* ============================================================
-   FIREBASE AUTH
-============================================================ */
-
 import {
-    createUserWithEmailAndPassword,
-    updateProfile,
-    signInWithPopup,
-    signOut,
-    GoogleAuthProvider,
-    OAuthProvider
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-
-/* ============================================================
-   FIRESTORE
-============================================================ */
-
-import {
-    doc,
-    getDoc,
-    setDoc,
-    serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-
-/* ============================================================
-   CODE ACADEMY ROOT FIREBASE
-============================================================ */
-
-import {
-    auth,
-    db
+  auth,
+  signUp,
+  signInWithGoogle,
+  signInWithGoogleRedirect,
+  completeGoogleRedirect,
+  signInWithYahoo,
+  getFriendlyAuthError,
+  needsEmailVerification,
+  sendVerificationEmail,
+  resendVerificationEmail,
+  reload,
+  validateReferralCode,
+  processReferral,
+  rememberReferral,
+  getSavedReferral,
+  processPendingReferral
 } from "./authentication.js";
 
+const signupForm = document.getElementById("signupForm");
+const fullNameInput = document.getElementById("fullName");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const confirmPasswordInput = document.getElementById("confirmPassword");
+const referralCodeInput = document.getElementById("referralCode");
+const referralStatus = document.getElementById("referralStatus");
+const signupButton = document.getElementById("signupButton");
+const googleButton = document.getElementById("googleButton");
+const yahooButton = document.getElementById("yahooButton");
+const message = document.getElementById("message");
+const messageTitle = document.getElementById("messageTitle");
+const messageText = document.getElementById("messageText");
+const errorDetails = document.getElementById("errorDetails");
+const signupContent = document.getElementById("signupContent");
+const successScreen = document.getElementById("successScreen");
+const rewardSummary = document.getElementById("rewardSummary");
+const verificationHeading = document.getElementById("verificationHeading");
+const verificationDescription = document.getElementById("verificationDescription");
+const resendVerificationButton = document.getElementById("resendVerificationButton");
+const continueAfterVerificationButton = document.getElementById("continueAfterVerificationButton");
+const verificationStatus = document.getElementById("verificationStatus");
 
-/* ============================================================
-   REFERRAL ENGINE
-============================================================ */
+let busy = false;
+let currentVerificationUser = null;
+let referralTimer = null;
+let fallbackSheet = null;
 
-import {
-    initializeReferral,
-    validateReferralCode,
-    processReferralSignup
-} from "./referral-engine.js";
-
-
-/* ============================================================
-   ELEMENTS
-============================================================ */
-
-const signupForm =
-    document.getElementById("signupForm");
-
-const fullNameInput =
-    document.getElementById("fullName");
-
-const emailInput =
-    document.getElementById("email");
-
-const passwordInput =
-    document.getElementById("password");
-
-const confirmPasswordInput =
-    document.getElementById("confirmPassword");
-
-const referralCodeInput =
-    document.getElementById("referralCode");
-
-const referralStatus =
-    document.getElementById("referralStatus");
-
-const signupButton =
-    document.getElementById("signupButton");
-
-const googleButton =
-    document.getElementById("googleButton");
-
-const yahooButton =
-    document.getElementById("yahooButton");
-
-const message =
-    document.getElementById("message");
-
-const messageTitle =
-    document.getElementById("messageTitle");
-
-const messageText =
-    document.getElementById("messageText");
-
-const errorDetails =
-    document.getElementById("errorDetails");
-
-const signupContent =
-    document.getElementById("signupContent");
-
-const successScreen =
-    document.getElementById("successScreen");
-
-const rewardSummary =
-    document.getElementById("rewardSummary");
-
-
-/* ============================================================
-   PROVIDERS
-============================================================ */
-
-const googleProvider =
-    new GoogleAuthProvider();
-
-const yahooProvider =
-    new OAuthProvider("yahoo.com");
-
-
-/* ============================================================
-   REFERRAL INITIALIZATION
-============================================================ */
-
-initializeReferral(referralCodeInput);
-
-
-/* ============================================================
-   REFERRAL VALIDATION
-============================================================ */
-
-let referralValidationTimer = null;
-
-referralCodeInput.addEventListener(
-    "input",
-    () => {
-
-        clearTimeout(referralValidationTimer);
-
-        referralStatus.className =
-            "referral-status";
-
-        referralStatus.textContent = "";
-
-        const code =
-            referralCodeInput.value.trim();
-
-        if (!code) {
-            return;
-        }
-
-        referralValidationTimer =
-            setTimeout(
-                async () => {
-
-                    try {
-
-                        const result =
-                            await validateReferralCode(code);
-
-                        if (result.valid) {
-
-                            referralStatus.className =
-                                "referral-status show valid";
-
-                            referralStatus.textContent =
-                                "✓ Referral code is valid. Your referral reward will be applied after signup.";
-
-                        } else {
-
-                            referralStatus.className =
-                                "referral-status show invalid";
-
-                            referralStatus.textContent =
-                                result.message ||
-                                "This referral code is not valid.";
-
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "REFERRAL VALIDATION ERROR:",
-                            error
-                        );
-
-                    }
-
-                },
-                500
-            );
-    }
-);
-
-
-/* ============================================================
-   SHOW MESSAGE
-============================================================ */
-
-function showMessage(
-    type,
-    title,
-    text,
-    error = null
-) {
-
-    message.className =
-        "message show " + type;
-
-    messageTitle.textContent =
-        title;
-
-    messageText.textContent =
-        text;
-
-    errorDetails.textContent =
-        "";
-
-    if (error) {
-
-        const code =
-            error.code
-                ? `Error code: ${error.code}`
-                : "Error code: unavailable";
-
-        const firebaseMessage =
-            error.message
-                ? `Firebase message: ${error.message}`
-                : "Firebase message: unavailable";
-
-        errorDetails.textContent =
-            `${code}\n${firebaseMessage}`;
-    }
-
-    message.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
+function showMessage(type, title, text) {
+  message.className = "message show " + type;
+  messageTitle.textContent = title;
+  messageText.textContent = text;
+  // Do not expose raw Firebase codes/messages to learners.
+  errorDetails.textContent = "";
+  message.scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
-
-
-/* ============================================================
-   HIDE MESSAGE
-============================================================ */
 
 function hideMessage() {
-
-    message.className =
-        "message";
-
-    messageTitle.textContent =
-        "";
-
-    messageText.textContent =
-        "";
-
-    errorDetails.textContent =
-        "";
+  message.className = "message";
+  messageTitle.textContent = "";
+  messageText.textContent = "";
+  errorDetails.textContent = "";
 }
 
-
-/* ============================================================
-   LOADING STATE
-============================================================ */
-
-function setLoading(
-    loading,
-    button = null
-) {
-
-    signupButton.disabled =
-        loading;
-
-    googleButton.disabled =
-        loading;
-
-    yahooButton.disabled =
-        loading;
-
-    if (button) {
-
-        if (!button.dataset.originalText) {
-
-            button.dataset.originalText =
-                button.textContent;
-        }
-
-        button.textContent =
-            loading
-                ? "Please wait..."
-                : button.dataset.originalText;
-    }
+function setBusy(value, activeButton = null, status = "Please wait while Code Academy completes this step…") {
+  busy = value;
+  [signupButton, googleButton, yahooButton, resendVerificationButton, continueAfterVerificationButton].forEach(button => {
+    if (button) button.disabled = value;
+  });
+  if (value) showMessage("info", "Working on your request", status);
 }
 
-
-/* ============================================================
-   PASSWORD VALIDATION
-============================================================ */
-
-function validatePassword(
-    password,
-    confirmPassword
-) {
-
-    if (password.length < 8) {
-
-        return "Password must contain at least 8 characters.";
-    }
-
-    if (password !== confirmPassword) {
-
-        return "The two passwords do not match.";
-    }
-
-    return null;
+function currentReferralCode() {
+  return String(referralCodeInput.value || "").trim().toUpperCase();
 }
 
-
-/* ============================================================
-   CREATE FIRESTORE USER DOCUMENT
-============================================================ */
-
-async function createUserDocument(user) {
-
-    const userRef =
-        doc(
-            db,
-            "users",
-            user.uid
-        );
-
-    const existingUser =
-        await getDoc(userRef);
-
-    if (!existingUser.exists()) {
-
-        await setDoc(
-            userRef,
-            {
-
-                displayName:
-                    user.displayName || "",
-
-                email:
-                    user.email || "",
-
-                photoURL:
-                    user.photoURL || "",
-
-                createdAt:
-                    serverTimestamp(),
-
-                xp: 0,
-
-                coins: 0,
-
-                streak: 0,
-
-                certificates: {
-
-                    html: false,
-                    css: false,
-                    javascript: false,
-                    python: false,
-                    react: false
-
-                },
-
-                progress: {
-
-                    html: 0,
-                    css: 0,
-                    javascript: 0,
-                    python: 0,
-                    react: 0
-
-                },
-
-                completedLessons: []
-
-            }
-        );
-
-    } else {
-
-        /*
-           Existing Google/Yahoo account.
-
-           We don't overwrite their existing progress,
-           XP, coins, certificates, etc.
-        */
-
-        const updates = {};
-
-        if (!existingUser.data().displayName &&
-            user.displayName) {
-
-            updates.displayName =
-                user.displayName;
-        }
-
-        if (!existingUser.data().email &&
-            user.email) {
-
-            updates.email =
-                user.email;
-        }
-
-        if (user.photoURL &&
-            !existingUser.data().photoURL) {
-
-            updates.photoURL =
-                user.photoURL;
-        }
-
-        if (Object.keys(updates).length > 0) {
-
-            await setDoc(
-                userRef,
-                updates,
-                { merge: true }
-            );
-        }
-    }
+function saveReferralCode(code) {
+  if (!code) return;
+  try { localStorage.setItem("codeAcademyReferral", code); } catch (_) {}
 }
 
+function showReferralStatus(kind, text) {
+  referralStatus.className = "referral-status show " + kind;
+  referralStatus.textContent = text;
+}
 
-/* ============================================================
-   SUCCESS SCREEN
-============================================================ */
+function describeReferralReason(reason) {
+  if (reason === "SELF_REFERRAL") return "You cannot use your own referral code.";
+  if (reason === "UNAVAILABLE") return "We could not check that code right now. Try again or remove the optional code.";
+  return "That referral code could not be found. Check the code and try again.";
+}
 
-function signupSuccessful(
-    referralResult = null
-) {
+async function checkReferral(code) {
+  if (!code) {
+    referralStatus.className = "referral-status";
+    referralStatus.textContent = "";
+    return { valid: true, empty: true };
+  }
+  showReferralStatus("", "Checking referral code…");
+  const result = await validateReferralCode(code, auth.currentUser?.uid || "");
+  if (result.valid) {
+    showReferralStatus("valid", "✓ Referral code looks good. The reward is processed after account verification.");
+  } else {
+    showReferralStatus("invalid", describeReferralReason(result.reason));
+  }
+  return result;
+}
 
-    hideMessage();
+rememberReferral();
+const referralFromUrl = new URLSearchParams(location.search).get("ref") || "";
+referralCodeInput.value = (referralFromUrl || getSavedReferral() || "").toUpperCase();
+if (referralCodeInput.value) checkReferral(referralCodeInput.value);
 
-    signupContent.style.display =
-        "none";
+referralCodeInput.addEventListener("input", () => {
+  clearTimeout(referralTimer);
+  referralTimer = setTimeout(() => {
+    checkReferral(currentReferralCode()).catch(() => {
+      showReferralStatus("invalid", "We could not check the referral code. You can remove it and continue without it.");
+    });
+  }, 450);
+});
 
-    successScreen.classList.add(
-        "show"
-    );
+function hideSignupForm() {
+  signupContent.style.display = "none";
+  successScreen.classList.add("show");
+}
 
+function showVerificationScreen(user, emailSent = true, extraMessage = "") {
+  currentVerificationUser = user || auth.currentUser || null;
+  hideMessage();
+  hideSignupForm();
+  verificationHeading.textContent = "Verify your email to continue";
+  verificationDescription.textContent = emailSent
+    ? `A secure verification link has been sent to ${currentVerificationUser?.email || emailInput.value.trim()}. Open that email and tap the verification link. When verification finishes, Code Academy will continue to your dashboard.`
+    : `Your account was created, but the verification email could not be sent. Use the resend button below, then open your inbox and follow the link.`;
+  verificationStatus.textContent = extraMessage || (emailSent
+    ? "The verification link is generated and sent by Firebase Authentication. Check your spam or promotions folder too."
+    : "We have kept the account state so you can retry sending the verification message.");
+  resendVerificationButton.style.display = "block";
+  continueAfterVerificationButton.style.display = "block";
+}
 
-    if (
-        referralResult &&
-        referralResult.success
-    ) {
+function isPopupFallbackError(error) {
+  return [
+    "auth/popup-blocked",
+    "auth/operation-not-supported-in-this-environment",
+    "auth/web-storage-unsupported"
+  ].includes(String(error?.code || ""));
+}
 
-        rewardSummary.style.display =
-            "block";
+function closeGoogleFallbackSheet() {
+  if (fallbackSheet) fallbackSheet.remove();
+  fallbackSheet = null;
+}
 
-        rewardSummary.innerHTML = `
-            🎁 <strong>Referral bonus unlocked!</strong><br>
-            You received <strong>50 XP</strong> and
-            <strong>5 coins</strong>.
-        `;
+function showGoogleFallbackSheet(onRetry, onRedirect, triedAgain = false) {
+  closeGoogleFallbackSheet();
+  const style = document.createElement("style");
+  style.id = "googleFallbackSheetStyles";
+  style.textContent = `
+    .ca-auth-sheet-overlay{position:fixed;inset:0;z-index:99999;background:rgba(1,6,18,.76);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding:14px}
+    .ca-auth-sheet{width:min(520px,100%);background:#08152a;border:1px solid #284b70;border-radius:22px;padding:22px;color:#f4f8ff;box-shadow:0 22px 70px #0009;animation:caSheetIn .22s ease-out}
+    .ca-auth-sheet h3{margin:0 0 8px;font-size:1.1rem}.ca-auth-sheet p{color:#aabbd3;line-height:1.55;margin:0 0 15px;font-size:.92rem}
+    .ca-auth-sheet button{width:100%;border:1px solid #365778;border-radius:12px;padding:13px 15px;margin-top:9px;font-weight:800;cursor:pointer;background:#102541;color:#edf7ff}
+    .ca-auth-sheet .primary{background:linear-gradient(110deg,#67e8f9,#a78bfa);color:#061120;border:0}.ca-auth-sheet .subtle{background:transparent;color:#b5c7de}
+    @keyframes caSheetIn{from{transform:translateY(35px);opacity:.6}to{transform:translateY(0);opacity:1}}
+    @media(min-width:650px){.ca-auth-sheet-overlay{align-items:center}.ca-auth-sheet{animation:caSheetIn .22s ease-out}}
+  `;
+  if (!document.getElementById(style.id)) document.head.appendChild(style);
+  fallbackSheet = document.createElement("div");
+  fallbackSheet.className = "ca-auth-sheet-overlay";
+  fallbackSheet.innerHTML = `
+    <section class="ca-auth-sheet" role="dialog" aria-modal="true" aria-labelledby="caGoogleFallbackTitle">
+      <h3 id="caGoogleFallbackTitle">Google needs another sign-in method</h3>
+      <p>${triedAgain
+        ? "The browser still blocked the Google popup. You can choose a full-page Google sign-in, which is often more reliable on mobile browsers."
+        : "The centered Google sign-in popup was blocked or is not supported by this browser. Try again from this panel, or continue with the full-page Google sign-in."}</p>
+      <button type="button" id="caRetryGooglePopup" class="primary">${triedAgain ? "Try the popup again" : "Try opening Google again"}</button>
+      <button type="button" id="caUseGoogleRedirect">Continue with full-page Google sign-in</button>
+      <button type="button" id="caCancelGoogleFallback" class="subtle">Cancel</button>
+    </section>`;
+  document.body.appendChild(fallbackSheet);
+  fallbackSheet.querySelector("#caRetryGooglePopup").addEventListener("click", async () => {
+    closeGoogleFallbackSheet();
+    await onRetry();
+  });
+  fallbackSheet.querySelector("#caUseGoogleRedirect").addEventListener("click", async () => {
+    closeGoogleFallbackSheet();
+    await onRedirect();
+  });
+  fallbackSheet.querySelector("#caCancelGoogleFallback").addEventListener("click", closeGoogleFallbackSheet);
+  fallbackSheet.addEventListener("click", event => {
+    if (event.target === fallbackSheet) closeGoogleFallbackSheet();
+  });
+}
 
-    } else {
-
-        rewardSummary.style.display =
-            "none";
+async function finishSocialSignup(result, providerName) {
+  const user = result?.user;
+  if (!user) throw new Error("No user was returned by the sign-in provider.");
+  const code = currentReferralCode() || getSavedReferral();
+  if (result.isNewUser && code && !needsEmailVerification(user)) {
+    const referralResult = await processReferral(user, code);
+    if (!referralResult.success && !referralResult.alreadyProcessed) {
+      console.warn("The account was created, but its referral reward was not applied:", referralResult.reason || "unknown");
     }
+  }
+  if (needsEmailVerification(user)) {
+    showVerificationScreen(user, false, "This account still needs email verification. Resend the verification email below.");
+    return;
+  }
+  showMessage("success", `${providerName} signup ready`, "Your account is connected. Opening your Code Academy dashboard…");
+  window.setTimeout(() => location.replace("menu.html"), 650);
+}
 
-
-    setTimeout(
-        () => {
-
-            window.location.replace(
-                "login.html"
-            );
-
+async function runGoogleSignup(retryFromSheet = false) {
+  if (busy) return;
+  hideMessage();
+  const code = currentReferralCode();
+  if (code) {
+    const check = await checkReferral(code);
+    if (!check.valid) {
+      showMessage("error", "Check the referral code", describeReferralReason(check.reason));
+      referralCodeInput.focus();
+      return;
+    }
+    saveReferralCode(code);
+  }
+  setBusy(true, googleButton, "Opening the Google account chooser…");
+  try {
+    const result = await signInWithGoogle({ withStatus: true, intent: "signup" });
+    closeGoogleFallbackSheet();
+    setBusy(false);
+    await finishSocialSignup(result, "Google");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Google signup did not complete:", error?.code || error);
+    if (isPopupFallbackError(error)) {
+      showMessage("info", "Google popup was blocked", getFriendlyAuthError(error, "google"));
+      showGoogleFallbackSheet(
+        () => runGoogleSignup(true),
+        async () => {
+          if (code) saveReferralCode(code);
+          setBusy(true, googleButton, "Opening full-page Google sign-in…");
+          try { await signInWithGoogleRedirect("signup"); }
+          catch (redirectError) {
+            setBusy(false);
+            showMessage("error", "Google sign-in could not open", getFriendlyAuthError(redirectError, "google"));
+          }
         },
-        3000
-    );
+        retryFromSheet
+      );
+    } else {
+      closeGoogleFallbackSheet();
+      showMessage("error", "Google signup was not completed", getFriendlyAuthError(error, "google"));
+    }
+  }
 }
 
+googleButton.addEventListener("click", () => runGoogleSignup(false));
 
-/* ============================================================
-   PROCESS REFERRAL
-============================================================ */
+signupForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (busy) return;
+  hideMessage();
+  const name = fullNameInput.value.trim();
+  const email = emailInput.value.trim().toLowerCase();
+  const password = passwordInput.value;
+  const confirmPassword = confirmPasswordInput.value;
+  const referralCode = currentReferralCode();
 
-async function handleReferral(
-    newUser
-) {
-
-    const code =
-        referralCodeInput.value.trim();
-
-    /*
-       No referral = completely normal signup.
-    */
-
-    if (!code) {
-
-        return {
-            success: false,
-            referred: false
-        };
+  if (name.length < 2) {
+    showMessage("error", "Name required", "Enter your name so Code Academy can personalize your account.");
+    fullNameInput.focus(); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showMessage("error", "Check your email address", "Enter a valid email address and try again.");
+    emailInput.focus(); return;
+  }
+  if (password.length < 8) {
+    showMessage("error", "Choose a stronger password", "Use at least 8 characters for your password.");
+    passwordInput.focus(); return;
+  }
+  if (password !== confirmPassword) {
+    showMessage("error", "Passwords do not match", "Enter the same password in both password fields.");
+    confirmPasswordInput.focus(); return;
+  }
+  if (!navigator.onLine) {
+    showMessage("error", "You are offline", "Connect to the internet before creating your account."); return;
+  }
+  if (referralCode) {
+    const validation = await checkReferral(referralCode);
+    if (!validation.valid) {
+      showMessage("error", "Check the referral code", describeReferralReason(validation.reason));
+      referralCodeInput.focus(); return;
     }
+    saveReferralCode(referralCode);
+  }
 
-
-    try {
-
-        const result =
-            await processReferralSignup(
-                newUser,
-                code
-            );
-
-        return result;
-
-    } catch (error) {
-
-        console.error(
-            "REFERRAL PROCESSING ERROR:",
-            error
-        );
-
-        /*
-           IMPORTANT:
-
-           Referral failure must NOT destroy
-           an otherwise successful account creation.
-
-           The account already exists.
-        */
-
-        return {
-            success: false,
-            referred: false,
-            pending: true,
-            error
-        };
+  setBusy(true, signupButton, "Creating your account and preparing email verification…");
+  try {
+    const result = await signUp(email, password, name, { withStatus: true, referralCode });
+    setBusy(false);
+    showVerificationScreen(result.user, result.verificationEmailSent);
+  } catch (error) {
+    setBusy(false);
+    console.warn("Email signup did not finish:", error?.code || error);
+    if (error?.accountCreated || error?.user) {
+      showVerificationScreen(error.user, false, getFriendlyAuthError(error, "signup"));
+    } else {
+      showMessage("error", "Account creation was not completed", getFriendlyAuthError(error, "signup"));
     }
+  }
+});
+
+yahooButton.addEventListener("click", async () => {
+  if (busy) return;
+  hideMessage();
+  const code = currentReferralCode();
+  if (code) {
+    const check = await checkReferral(code);
+    if (!check.valid) {
+      showMessage("error", "Check the referral code", describeReferralReason(check.reason));
+      referralCodeInput.focus(); return;
+    }
+    saveReferralCode(code);
+  }
+  if (!navigator.onLine) {
+    showMessage("error", "You are offline", "Connect to the internet before continuing with Yahoo."); return;
+  }
+  setBusy(true, yahooButton, "Opening Yahoo sign-in…");
+  try {
+    const result = await signInWithYahoo({ withStatus: true, intent: "signup" });
+    setBusy(false);
+    await finishSocialSignup(result, "Yahoo");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Yahoo signup did not complete:", error?.code || error);
+    showMessage("error", "Yahoo signup was not completed", getFriendlyAuthError(error, "auth"));
+  }
+});
+
+resendVerificationButton.addEventListener("click", async () => {
+  if (busy) return;
+  setBusy(true, resendVerificationButton, "Sending a fresh verification email…");
+  try {
+    const result = await resendVerificationEmail(currentVerificationUser || auth.currentUser);
+    setBusy(false);
+    if (result.alreadyVerified) {
+      verificationStatus.textContent = "Your email is already verified. Opening your dashboard…";
+      location.replace("menu.html");
+      return;
+    }
+    verificationStatus.textContent = `A fresh verification link was sent to ${(currentVerificationUser || auth.currentUser)?.email || "your email address"}. Check your inbox.`;
+    showMessage("success", "Verification email sent", "Open the newest message and use its verification link.");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Resending verification email failed:", error?.code || error);
+    showMessage("error", "Could not resend the verification email", getFriendlyAuthError(error, "verification"));
+    verificationStatus.textContent = getFriendlyAuthError(error, "verification");
+  }
+});
+
+continueAfterVerificationButton.addEventListener("click", async () => {
+  if (busy) return;
+  const user = currentVerificationUser || auth.currentUser;
+  if (!user) {
+    showMessage("info", "Sign in after verifying", "The email link may have opened in a different browser. Verify your email, then log in to continue.");
+    return;
+  }
+  setBusy(true, continueAfterVerificationButton, "Checking your email verification status…");
+  try {
+    await reload(user);
+    setBusy(false);
+    if (user.emailVerified) {
+      await processPendingReferral(user);
+      location.replace("menu.html");
+    } else {
+      showMessage("info", "Verification not detected yet", "Open the verification email and tap the link first. Then return here and try again.");
+      verificationStatus.textContent = "We have not received confirmation from Firebase yet. Check your inbox or resend the link.";
+    }
+  } catch (error) {
+    setBusy(false);
+    showMessage("error", "Could not check verification", getFriendlyAuthError(error, "verification"));
+  }
+});
+
+async function handleGoogleRedirectReturn() {
+  try {
+    const result = await completeGoogleRedirect({ withStatus: true });
+    if (!result?.user) return;
+    setBusy(false);
+    await finishSocialSignup(result, "Google");
+  } catch (error) {
+    console.warn("Google redirect return failed:", error?.code || error);
+    showMessage("error", "Google sign-in could not finish", getFriendlyAuthError(error, "google"));
+  }
 }
 
-
-/* ============================================================
-   EMAIL SIGNUP
-============================================================ */
-
-signupForm.addEventListener(
-    "submit",
-    async (event) => {
-
-        event.preventDefault();
-
-        hideMessage();
-
-
-        const fullName =
-            fullNameInput.value.trim();
-
-        const email =
-            emailInput.value.trim();
-
-        const password =
-            passwordInput.value;
-
-        const confirmPassword =
-            confirmPasswordInput.value;
-
-        const referralCode =
-            referralCodeInput.value.trim();
-
-
-        /* ----------------------------------------
-           BASIC VALIDATION
-        ---------------------------------------- */
-
-        if (!fullName) {
-
-            showMessage(
-                "error",
-                "Full name required",
-                "Please enter your full name."
-            );
-
-            return;
-        }
-
-
-        if (!email) {
-
-            showMessage(
-                "error",
-                "Email required",
-                "Please enter your email address."
-            );
-
-            return;
-        }
-
-
-        const passwordError =
-            validatePassword(
-                password,
-                confirmPassword
-            );
-
-
-        if (passwordError) {
-
-            showMessage(
-                "error",
-                "Password problem",
-                passwordError
-            );
-
-            return;
-        }
-
-
-        /* ----------------------------------------
-           VALIDATE REFERRAL BEFORE ACCOUNT CREATION
-        ---------------------------------------- */
-
-        if (referralCode) {
-
-            const validation =
-                await validateReferralCode(
-                    referralCode
-                );
-
-            if (!validation.valid) {
-
-                showMessage(
-                    "error",
-                    "Invalid referral code",
-                    validation.message ||
-                    "The referral code you entered is not valid."
-                );
-
-                referralCodeInput.focus();
-
-                return;
-            }
-        }
-
-
-        /* ----------------------------------------
-           INTERNET
-        ---------------------------------------- */
-
-        if (!navigator.onLine) {
-
-            showMessage(
-                "error",
-                "No internet connection",
-                "Your device appears to be offline. Please connect to the internet and try again."
-            );
-
-            return;
-        }
-
-
-        /* ----------------------------------------
-           START SIGNUP
-        ---------------------------------------- */
-
-        setLoading(
-            true,
-            signupButton
-        );
-
-        showMessage(
-            "info",
-            "Creating your account...",
-            "Please wait while Firebase creates your Code Academy account."
-        );
-
-
-        try {
-
-            /* ------------------------------------
-               CREATE FIREBASE ACCOUNT
-            ------------------------------------ */
-
-            const credential =
-                await createUserWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
-
-
-            const user =
-                credential.user;
-
-
-            /* ------------------------------------
-               SAVE NAME
-            ------------------------------------ */
-
-            await updateProfile(
-                user,
-                {
-                    displayName:
-                        fullName
-                }
-            );
-
-
-            /* ------------------------------------
-               CREATE PROFILE
-            ------------------------------------ */
-
-            await createUserDocument(
-                user
-            );
-
-
-            /* ------------------------------------
-               PROCESS REFERRAL
-            ------------------------------------ */
-
-            const referralResult =
-                await handleReferral(
-                    user
-                );
-
-
-            /* ------------------------------------
-               SIGN OUT
-            ------------------------------------ */
-
-            await signOut(
-                auth
-            );
-
-
-            /* ------------------------------------
-               SUCCESS
-            ------------------------------------ */
-
-            signupSuccessful(
-                referralResult
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "CODE ACADEMY SIGNUP ERROR:",
-                error
-            );
-
-
-            showMessage(
-                "error",
-                "Account creation failed",
-                "Firebase could not complete the signup. The actual error returned by Firebase is shown below.",
-                error
-            );
-
-
-            setLoading(
-                false,
-                signupButton
-            );
-        }
-
-    }
-);
-
-
-/* ============================================================
-   GOOGLE SIGNUP
-============================================================ */
-
-googleButton.addEventListener(
-    "click",
-    async () => {
-
-        hideMessage();
-
-
-        if (!navigator.onLine) {
-
-            showMessage(
-                "error",
-                "No internet connection",
-                "Connect to the internet and try again."
-            );
-
-            return;
-        }
-
-
-        const referralCode =
-            referralCodeInput.value.trim();
-
-
-        /* ----------------------------------------
-           VALIDATE REFERRAL FIRST
-        ---------------------------------------- */
-
-        if (referralCode) {
-
-            const validation =
-                await validateReferralCode(
-                    referralCode
-                );
-
-            if (!validation.valid) {
-
-                showMessage(
-                    "error",
-                    "Invalid referral code",
-                    validation.message ||
-                    "The referral code you entered is not valid."
-                );
-
-                referralCodeInput.focus();
-
-                return;
-            }
-        }
-
-
-        setLoading(
-            true,
-            googleButton
-        );
-
-
-        showMessage(
-            "info",
-            "Opening Google...",
-            "Please select your Google account in the popup."
-        );
-
-
-        try {
-
-            /* ------------------------------------
-               POPUP ONLY
-            ------------------------------------ */
-
-            const result =
-                await signInWithPopup(
-                    auth,
-                    googleProvider
-                );
-
-
-            const user =
-                result.user;
-
-
-            /* ------------------------------------
-               PROFILE
-            ------------------------------------ */
-
-            await createUserDocument(
-                user
-            );
-
-
-            /* ------------------------------------
-               REFERRAL
-            ------------------------------------ */
-
-            const referralResult =
-                await handleReferral(
-                    user
-                );
-
-
-            /* ------------------------------------
-               SIGN OUT
-            ------------------------------------ */
-
-            await signOut(
-                auth
-            );
-
-
-            /* ------------------------------------
-               SUCCESS
-            ------------------------------------ */
-
-            signupSuccessful(
-                referralResult
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "GOOGLE SIGNUP ERROR:",
-                error
-            );
-
-
-            showMessage(
-                "error",
-                "Google signup was not completed",
-                "Google authentication did not finish successfully.",
-                error
-            );
-
-
-            setLoading(
-                false,
-                googleButton
-            );
-        }
-
-    }
-);
-
-
-/* ============================================================
-   YAHOO SIGNUP
-============================================================ */
-
-yahooButton.addEventListener(
-    "click",
-    async () => {
-
-        hideMessage();
-
-
-        if (!navigator.onLine) {
-
-            showMessage(
-                "error",
-                "No internet connection",
-                "Connect to the internet and try again."
-            );
-
-            return;
-        }
-
-
-        const referralCode =
-            referralCodeInput.value.trim();
-
-
-        /* ----------------------------------------
-           VALIDATE REFERRAL
-        ---------------------------------------- */
-
-        if (referralCode) {
-
-            const validation =
-                await validateReferralCode(
-                    referralCode
-                );
-
-            if (!validation.valid) {
-
-                showMessage(
-                    "error",
-                    "Invalid referral code",
-                    validation.message ||
-                    "The referral code you entered is not valid."
-                );
-
-                referralCodeInput.focus();
-
-                return;
-            }
-        }
-
-
-        setLoading(
-            true,
-            yahooButton
-        );
-
-
-        showMessage(
-            "info",
-            "Opening Yahoo...",
-            "Please complete Yahoo authentication in the popup."
-        );
-
-
-        try {
-
-            /* ------------------------------------
-               POPUP ONLY
-            ------------------------------------ */
-
-            const result =
-                await signInWithPopup(
-                    auth,
-                    yahooProvider
-                );
-
-
-            const user =
-                result.user;
-
-
-            /* ------------------------------------
-               PROFILE
-            ------------------------------------ */
-
-            await createUserDocument(
-                user
-            );
-
-
-            /* ------------------------------------
-               REFERRAL
-            ------------------------------------ */
-
-            const referralResult =
-                await handleReferral(
-                    user
-                );
-
-
-            /* ------------------------------------
-               SIGN OUT
-            ------------------------------------ */
-
-            await signOut(
-                auth
-            );
-
-
-            /* ------------------------------------
-               SUCCESS
-            ------------------------------------ */
-
-            signupSuccessful(
-                referralResult
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "YAHOO SIGNUP ERROR:",
-                error
-            );
-
-
-            showMessage(
-                "error",
-                "Yahoo signup was not completed",
-                "Yahoo authentication did not finish successfully.",
-                error
-            );
-
-
-            setLoading(
-                false,
-                yahooButton
-            );
-        }
-
-    }
-);
-
-
-/* ============================================================
-   NETWORK EVENTS
-============================================================ */
-
-window.addEventListener(
-    "offline",
-    () => {
-
-        showMessage(
-            "error",
-            "Internet connection lost",
-            "Your device has gone offline."
-        );
-
-    }
-);
-
-
-window.addEventListener(
-    "online",
-    () => {
-
-        showMessage(
-            "info",
-            "Internet connection restored",
-            "Your device is back online."
-        );
-
-    }
-);
-
-
-/* ============================================================
-   PAGESHOW
-============================================================ */
-
-window.addEventListener(
-    "pageshow",
-    () => {
-
-        /*
-           Intentionally no automatic
-           authentication redirect here.
-        */
-
-    }
-);
-
+window.addEventListener("online", () => showMessage("info", "Connection restored", "You can continue with account creation."));
+window.addEventListener("offline", () => showMessage("error", "Connection lost", "Reconnect to the internet before starting another authentication request."));
+handleGoogleRedirectReturn();
 </script>
 
 </body>

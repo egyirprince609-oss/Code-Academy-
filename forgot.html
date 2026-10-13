@@ -941,7 +941,8 @@ body::before{
    ========================================================= */
 
 import {
-  resetPassword
+  resetPassword,
+  getFriendlyAuthError
 } from "./authentication.js";
 
 
@@ -1091,37 +1092,11 @@ confirmEmailInput.addEventListener("input", () => {
 
 /* =========================================================
    FIREBASE ERROR TRANSLATOR
+   Uses the same friendly messages as signup and login.
    ========================================================= */
 
 function getFriendlyError(error){
-
-  const code =
-    error?.code || "";
-
-  switch(code){
-
-    case "auth/invalid-email":
-      return "Please enter a valid email address.";
-
-    case "auth/missing-email":
-      return "Please enter your account email.";
-
-    case "auth/too-many-requests":
-      return "Too many recovery attempts. Please wait a while and try again.";
-
-    case "auth/network-request-failed":
-      return "Network connection failed. Check your internet connection and try again.";
-
-    case "auth/user-disabled":
-      return "This account has been disabled. Please contact Code Academy support.";
-
-    case "auth/operation-not-allowed":
-      return "Password recovery is not currently enabled for this account type.";
-
-    default:
-      return "We could not process the password recovery request. Please try again.";
-  }
-
+  return getFriendlyAuthError(error, "reset");
 }
 
 

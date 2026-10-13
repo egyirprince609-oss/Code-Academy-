@@ -690,965 +690,309 @@ body{
 
 
 <script type="module">
-
-
-/* ============================================================
-   FIREBASE IMPORTS
-============================================================ */
-
 import {
+  auth,
   logIn,
   signInWithGoogle,
+  signInWithGoogleRedirect,
+  completeGoogleRedirect,
   signInWithYahoo,
-  auth
+  getFriendlyAuthError,
+  needsEmailVerification,
+  resendVerificationEmail,
+  reload
 } from "./authentication.js";
-
 import {
   setPersistence,
   browserLocalPersistence,
   browserSessionPersistence
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const googleBtn = document.getElementById("googleBtn");
+const yahooBtn = document.getElementById("yahooBtn");
+const loading = document.getElementById("loading");
+const loadingText = document.getElementById("loadingText");
+const loginContent = document.getElementById("loginContent");
+const successScreen = document.getElementById("successScreen");
+const messageBox = document.getElementById("messageBox");
+const messageTitle = document.getElementById("messageTitle");
+const messageText = document.getElementById("messageText");
+const messageDetails = document.getElementById("messageDetails");
+let busy = false;
+let fallbackSheet = null;
 
-/* ============================================================
-   ELEMENTS
-============================================================ */
+function ensureActionArea() {
+  let area = document.getElementById("authActionArea");
+  if (!area) {
+    area = document.createElement("div");
+    area.id = "authActionArea";
+    area.style.cssText = "display:grid;gap:9px;margin-top:12px;";
+    messageBox.appendChild(area);
+  }
+  return area;
+}
 
-const loginForm =
-  document.getElementById("loginForm");
+function showMessage(type, title, text, actionBuilder = null) {
+  messageBox.className = "message-box show " + type;
+  messageTitle.textContent = title;
+  messageText.textContent = text;
+  // The actual Firebase code stays in the console for debugging. Learners see
+  // a human-readable explanation rather than raw auth/… messages.
+  messageDetails.textContent = "";
+  const area = ensureActionArea();
+  area.replaceChildren();
+  if (typeof actionBuilder === "function") actionBuilder(area);
+}
 
-const loginBtn =
-  document.getElementById("loginBtn");
+function hideMessage() {
+  messageBox.className = "message-box";
+  messageTitle.textContent = "";
+  messageText.textContent = "";
+  messageDetails.textContent = "";
+  ensureActionArea().replaceChildren();
+}
 
-const googleBtn =
-  document.getElementById("googleBtn");
+function setBusy(value, status = "Please wait while Code Academy checks your request…") {
+  busy = value;
+  loading.classList.toggle("show", value);
+  loadingText.textContent = status;
+  [loginBtn, googleBtn, yahooBtn].forEach(button => { if (button) button.disabled = value; });
+}
 
-const yahooBtn =
-  document.getElementById("yahooBtn");
+function addActionButton(area, label, onClick, primary = false) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = label;
+  button.style.cssText = `width:100%;padding:11px 13px;border-radius:11px;border:1px solid #365778;background:${primary ? "linear-gradient(110deg,#67e8f9,#a78bfa)" : "#102541"};color:${primary ? "#061120" : "#eaf5ff"};font-weight:800;cursor:pointer;`;
+  button.addEventListener("click", onClick);
+  area.appendChild(button);
+  return button;
+}
 
-const loading =
-  document.getElementById("loading");
+function showVerificationPrompt(user, note = "") {
+  showMessage("info", "Verify your email to continue", `${note || `Your account email (${user?.email || "your email"}) has not been verified yet.`} Open the verification message and tap its link.`, area => {
+    addActionButton(area, "Resend verification email", async () => {
+      if (busy) return;
+      setBusy(true, "Sending a fresh verification email…");
+      try {
+        const result = await resendVerificationEmail(user || auth.currentUser);
+        setBusy(false);
+        if (result.alreadyVerified) {
+          showMessage("success", "Email already verified", "Your email is verified. Opening Code Academy…");
+          location.replace("menu.html");
+        } else {
+          showMessage("success", "Verification email sent", `A new link has been sent to ${user?.email || "your email"}. Check your inbox and spam folder.`);
+        }
+      } catch (error) {
+        setBusy(false);
+        console.warn("Resending verification failed:", error?.code || error);
+        showMessage("error", "Could not send the verification email", getFriendlyAuthError(error, "verification"));
+      }
+    }, true);
+    addActionButton(area, "I have verified my email", async () => {
+      if (busy) return;
+      setBusy(true, "Checking your email verification status…");
+      try {
+        await reload(user || auth.currentUser);
+        const activeUser = user || auth.currentUser;
+        setBusy(false);
+        if (activeUser && !needsEmailVerification(activeUser)) {
+          showMessage("success", "Email verified", "Your email is confirmed. Opening your dashboard…");
+          location.replace("menu.html");
+        } else {
+          showVerificationPrompt(activeUser, "Firebase has not confirmed the verification yet.");
+        }
+      } catch (error) {
+        setBusy(false);
+        showMessage("error", "Could not check verification", getFriendlyAuthError(error, "verification"));
+      }
+    });
+  });
+}
 
-const loadingText =
-  document.getElementById("loadingText");
+function isPopupFallbackError(error) {
+  return ["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(String(error?.code || ""));
+}
 
-const loginContent =
-  document.getElementById("loginContent");
+function closeGoogleFallbackSheet() {
+  if (fallbackSheet) fallbackSheet.remove();
+  fallbackSheet = null;
+}
 
-const successScreen =
-  document.getElementById("successScreen");
+function showGoogleFallbackSheet(onRetry, onRedirect, triedAgain = false) {
+  closeGoogleFallbackSheet();
+  const style = document.createElement("style");
+  style.id = "googleFallbackSheetStyles";
+  style.textContent = `
+    .ca-auth-sheet-overlay{position:fixed;inset:0;z-index:99999;background:rgba(1,6,18,.76);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding:14px}
+    .ca-auth-sheet{width:min(520px,100%);background:#08152a;border:1px solid #284b70;border-radius:22px;padding:22px;color:#f4f8ff;box-shadow:0 22px 70px #0009;animation:caSheetIn .22s ease-out}
+    .ca-auth-sheet h3{margin:0 0 8px;font-size:1.1rem}.ca-auth-sheet p{color:#aabbd3;line-height:1.55;margin:0 0 15px;font-size:.92rem}
+    .ca-auth-sheet button{width:100%;border:1px solid #365778;border-radius:12px;padding:13px 15px;margin-top:9px;font-weight:800;cursor:pointer;background:#102541;color:#edf7ff}
+    .ca-auth-sheet .primary{background:linear-gradient(110deg,#67e8f9,#a78bfa);color:#061120;border:0}.ca-auth-sheet .subtle{background:transparent;color:#b5c7de}
+    @keyframes caSheetIn{from{transform:translateY(35px);opacity:.6}to{transform:translateY(0);opacity:1}}
+    @media(min-width:650px){.ca-auth-sheet-overlay{align-items:center}.ca-auth-sheet{animation:caSheetIn .22s ease-out}}
+  `;
+  if (!document.getElementById(style.id)) document.head.appendChild(style);
+  fallbackSheet = document.createElement("div");
+  fallbackSheet.className = "ca-auth-sheet-overlay";
+  fallbackSheet.innerHTML = `
+    <section class="ca-auth-sheet" role="dialog" aria-modal="true" aria-labelledby="caGoogleFallbackTitle">
+      <h3 id="caGoogleFallbackTitle">Google needs another sign-in method</h3>
+      <p>${triedAgain
+        ? "The browser still blocked the Google popup. Continue with full-page Google sign-in, or retry the popup."
+        : "The centered Google account chooser could not open. Try it again from this bottom panel, or continue with full-page Google sign-in."}</p>
+      <button type="button" id="caRetryGooglePopup" class="primary">Try Google popup again</button>
+      <button type="button" id="caUseGoogleRedirect">Continue with full-page Google sign-in</button>
+      <button type="button" id="caCancelGoogleFallback" class="subtle">Cancel</button>
+    </section>`;
+  document.body.appendChild(fallbackSheet);
+  fallbackSheet.querySelector("#caRetryGooglePopup").addEventListener("click", async () => { closeGoogleFallbackSheet(); await onRetry(); });
+  fallbackSheet.querySelector("#caUseGoogleRedirect").addEventListener("click", async () => { closeGoogleFallbackSheet(); await onRedirect(); });
+  fallbackSheet.querySelector("#caCancelGoogleFallback").addEventListener("click", closeGoogleFallbackSheet);
+  fallbackSheet.addEventListener("click", event => { if (event.target === fallbackSheet) closeGoogleFallbackSheet(); });
+}
 
-const messageBox =
-  document.getElementById("messageBox");
+function finishLogin(user, providerName = "Code Academy") {
+  if (!user) {
+    showMessage("error", "Sign-in did not finish", "The sign-in service did not return an account. Please try again.");
+    setBusy(false);
+    return;
+  }
+  if (needsEmailVerification(user)) {
+    setBusy(false);
+    showVerificationPrompt(user);
+    return;
+  }
+  showMessage("success", `${providerName} login successful`, "Your account is connected. Opening your Code Academy dashboard…");
+  loginContent.style.display = "none";
+  successScreen.classList.add("show");
+  setTimeout(() => location.replace("menu.html"), 650);
+}
 
-const messageTitle =
-  document.getElementById("messageTitle");
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (busy) return;
+  hideMessage();
+  if (!navigator.onLine) {
+    showMessage("error", "No internet connection", "Connect to the internet and try again."); return;
+  }
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const rememberMe = document.getElementById("rememberMe").checked;
+  if (!email) { showMessage("error", "Email required", "Enter the email address connected to your account."); return; }
+  if (!password) { showMessage("error", "Password required", "Enter your password to continue."); return; }
 
-const messageText =
-  document.getElementById("messageText");
-
-const messageDetails =
-  document.getElementById("messageDetails");
-
-
-/* ============================================================
-   MESSAGE SYSTEM
-============================================================ */
-
-function showMessage(
-  type,
-  title,
-  text,
-  error = null
-){
-
-  messageBox.className =
-    "message-box show " + type;
-
-  messageTitle.textContent =
-    title;
-
-  messageText.textContent =
-    text;
-
-  messageDetails.textContent =
-    "";
-
-
-  if(error){
-
-    const code =
-      error.code
-        ? "Firebase error code: " + error.code
-        : "Firebase error code: unavailable";
-
-    const firebaseMessage =
-      error.message
-        ? "Firebase message: " + error.message
-        : "Firebase message: unavailable";
-
-    messageDetails.textContent =
-      code + "\n" + firebaseMessage;
+  // reCAPTCHA is a front-end anti-bot gate on this page. If it has been
+  // configured but did not load, tell the learner instead of throwing raw JS.
+  if (document.querySelector(".g-recaptcha")) {
+    if (typeof grecaptcha === "undefined" || typeof grecaptcha.getResponse !== "function") {
+      showMessage("error", "Security check did not load", "Reload this page so the security check can load, then try again."); return;
+    }
+    if (!grecaptcha.getResponse()) {
+      showMessage("error", "Verification required", "Complete the “I'm not a robot” check before logging in."); return;
+    }
   }
 
-}
-
-
-function hideMessage(){
-
-  messageBox.className =
-    "message-box";
-
-  messageTitle.textContent =
-    "";
-
-  messageText.textContent =
-    "";
-
-  messageDetails.textContent =
-    "";
-
-}
-
-
-/* ============================================================
-   LOADING
-============================================================ */
-
-function startLoading(text){
-
-  loading.classList.add("show");
-
-  loadingText.textContent =
-    text;
-
-  loginBtn.disabled =
-    true;
-
-  googleBtn.disabled =
-    true;
-
-  yahooBtn.disabled =
-    true;
-
-}
-
-
-function stopLoading(){
-
-  loading.classList.remove("show");
-
-  loginBtn.disabled =
-    false;
-
-  googleBtn.disabled =
-    false;
-
-  yahooBtn.disabled =
-    false;
-
-}
-
-
-/* ============================================================
-   RECAPTCHA RESET
-============================================================ */
-
-function resetRecaptcha(){
-
-  try{
-
-    if(
-      typeof grecaptcha !== "undefined" &&
-      grecaptcha.reset
-    ){
-
-      grecaptcha.reset();
-
+  setBusy(true, "Checking your account with Firebase…");
+  showMessage("info", "Logging you in", "Firebase is checking your email and password. Please keep this page open.");
+  try {
+    try {
+      await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+    } catch (persistenceError) {
+      // Some privacy-focused browsers block persistence APIs. Authentication
+      // should still be attempted using Firebase's current default persistence.
+      console.warn("Could not change sign-in persistence:", persistenceError?.code || persistenceError);
+      showMessage("info", "Browser storage is restricted", "We will still try to sign you in, but this browser may not keep you signed in after it closes.");
     }
-
-  }catch(error){
-
-    console.warn(
-      "Could not reset reCAPTCHA:",
-      error
-    );
-
+    const user = await logIn(email, password);
+    setBusy(false);
+    finishLogin(user, "Code Academy");
+  } catch (error) {
+    setBusy(false);
+    try { if (typeof grecaptcha !== "undefined" && grecaptcha.reset) grecaptcha.reset(); } catch (_) {}
+    console.warn("Email login failed:", error?.code || error);
+    showMessage("error", "Login was not completed", getFriendlyAuthError(error, "login"));
   }
-
-}
-
-
-/* ============================================================
-   NETWORK CHECK
-============================================================ */
-
-function isOnline(){
-
-  return navigator.onLine;
-
-}
-
-
-/* ============================================================
-   EMAIL + PASSWORD LOGIN
-============================================================ */
-
-loginForm.addEventListener(
-  "submit",
-  async (event) => {
-
-    event.preventDefault();
-
-    hideMessage();
-
-
-    /* ------------------------------------------
-       INTERNET
-    ------------------------------------------ */
-
-    if(!isOnline()){
-
-      showMessage(
-        "error",
-        "No internet connection",
-        "Your device is currently offline. Please connect to the internet and try again."
-      );
-
-      return;
-
-    }
-
-
-    /* ------------------------------------------
-       INPUTS
-    ------------------------------------------ */
-
-    const email =
-      document
-        .getElementById("email")
-        .value
-        .trim();
-
-    const password =
-      document
-        .getElementById("password")
-        .value;
-
-    const rememberMe =
-      document
-        .getElementById("rememberMe")
-        .checked;
-
-
-    if(!email){
-
-      showMessage(
-        "error",
-        "Email required",
-        "Please enter your email address."
-      );
-
-      return;
-
-    }
-
-
-    if(!password){
-
-      showMessage(
-        "error",
-        "Password required",
-        "Please enter your password."
-      );
-
-      return;
-
-    }
-
-
-    /* ------------------------------------------
-       RECAPTCHA
-    ------------------------------------------ */
-
-    let recaptchaResponse = "";
-
-    try{
-
-      if(
-        typeof grecaptcha === "undefined"
-      ){
-
-        showMessage(
-          "error",
-          "Security verification unavailable",
-          "Google reCAPTCHA has not loaded yet. Please wait a moment and try again."
-        );
-
-        return;
-
-      }
-
-      recaptchaResponse =
-        grecaptcha.getResponse();
-
-    }catch(error){
-
-      showMessage(
-        "error",
-        "Security verification failed",
-        "The reCAPTCHA system could not be accessed.",
-        error
-      );
-
-      return;
-
-    }
-
-
-    if(!recaptchaResponse){
-
-      showMessage(
-        "error",
-        "Verification required",
-        "Please complete the 'I'm not a robot' verification before logging in."
-      );
-
-      return;
-
-    }
-
-
-    /* ------------------------------------------
-       START
-    ------------------------------------------ */
-
-    startLoading(
-      "Checking your account..."
-    );
-
-    showMessage(
-      "info",
-      "Logging you in...",
-      "Please wait while Firebase verifies your account. Do not close this page."
-    );
-
-
-    try{
-
-      /* ----------------------------------------
-         REMEMBER ME
-      ---------------------------------------- */
-
-      const persistence =
-        rememberMe
-          ? browserLocalPersistence
-          : browserSessionPersistence;
-
-
-      await setPersistence(
-        auth,
-        persistence
-      );
-
-
-      /* ----------------------------------------
-         FIREBASE LOGIN
-      ---------------------------------------- */
-
-      const user =
-        await logIn(
-          email,
-          password
-        );
-
-
-      if(!user){
-
-        throw new Error(
-          "Firebase completed the login operation but did not return a user."
-        );
-
-      }
-
-
-      /* ----------------------------------------
-         SUCCESS
-      ---------------------------------------- */
-
-      showMessage(
-        "success",
-        "Login successful! ✓",
-        "Your account has been verified successfully. Preparing your Code Academy dashboard..."
-      );
-
-
-      loginContent.style.display =
-        "none";
-
-      successScreen.classList.add(
-        "show"
-      );
-
-
-      /*
-         We do not redirect immediately.
-
-         Give the browser a moment to finish Firebase
-         persistence and UI updates.
-      */
-
-      setTimeout(
-        () => {
-
-          window.location.replace(
-            "menu.html"
-          );
-
+});
+
+async function runGoogleLogin(retryFromSheet = false) {
+  if (busy) return;
+  hideMessage();
+  if (!navigator.onLine) { showMessage("error", "No internet connection", "Connect to the internet before continuing with Google."); return; }
+  setBusy(true, "Opening the Google account chooser…");
+  showMessage("info", "Connecting to Google", "Choose your Google account and approve the sign-in request.");
+  try {
+    const result = await signInWithGoogle({ withStatus: true, intent: "login" });
+    closeGoogleFallbackSheet();
+    setBusy(false);
+    finishLogin(result?.user, "Google");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Google login failed:", error?.code || error);
+    if (isPopupFallbackError(error)) {
+      showMessage("info", "Google popup was blocked", getFriendlyAuthError(error, "google"));
+      showGoogleFallbackSheet(
+        () => runGoogleLogin(true),
+        async () => {
+          setBusy(true, "Opening full-page Google sign-in…");
+          try { await signInWithGoogleRedirect("login"); }
+          catch (redirectError) {
+            setBusy(false);
+            showMessage("error", "Google sign-in could not open", getFriendlyAuthError(redirectError, "google"));
+          }
         },
-        1800
+        retryFromSheet
       );
-
-
-    }catch(error){
-
-      console.error(
-        "EMAIL LOGIN ERROR:",
-        error
-      );
-
-
-      stopLoading();
-
-      resetRecaptcha();
-
-
-      /*
-         IMPORTANT:
-
-         We do NOT replace this with a fake message.
-
-         The actual Firebase error is displayed.
-      */
-
-      showMessage(
-        "error",
-        "Login was not completed",
-        "Firebase could not complete your login. You are still on the login page. The actual error returned by Firebase is shown below.",
-        error
-      );
-
+    } else {
+      closeGoogleFallbackSheet();
+      showMessage("error", "Google login was not completed", getFriendlyAuthError(error, "google"));
     }
-
   }
-);
-
-
-/* ============================================================
-   GOOGLE LOGIN
-============================================================ */
-
-googleBtn.addEventListener(
-  "click",
-  async () => {
-
-    hideMessage();
-
-
-    /* ------------------------------------------
-       INTERNET
-    ------------------------------------------ */
-
-    if(!isOnline()){
-
-      showMessage(
-        "error",
-        "No internet connection",
-        "Your device is currently offline. Connect to the internet before continuing with Google."
-      );
-
-      return;
-
-    }
-
-
-    /* ------------------------------------------
-       START GOOGLE
-    ------------------------------------------ */
-
-    startLoading(
-      "Opening Google..."
-    );
-
-
-    showMessage(
-      "info",
-      "Google sign-in is working...",
-      "Please select your Google account and complete the Google authentication. This page will wait for Google to finish."
-    );
-
-
-    /*
-       IMPORTANT:
-
-       There is intentionally NO 5-second,
-       7-second, or 10-second timeout here.
-
-       signInWithGoogle() waits for Firebase's
-       signInWithPopup() to finish.
-
-       Google may take time to load, search for the
-       account, ask for permission, or return the
-       authentication result.
-
-       We WAIT.
-    */
-
-    let stillWaitingTimer = null;
-
-    let secondsWaiting = 0;
-
-
-    try{
-
-      /* ----------------------------------------
-         STATUS TIMER
-
-         This DOES NOT cancel Google.
-
-         It only changes the message if Google
-         takes a long time.
-      ---------------------------------------- */
-
-      stillWaitingTimer =
-        setInterval(
-          () => {
-
-            secondsWaiting += 1;
-
-
-            if(secondsWaiting === 30){
-
-              showMessage(
-                "info",
-                "Google is still working...",
-                "Google authentication is taking longer than usual. Please do not close the page or cancel the Google window. We are still waiting for Firebase to finish."
-              );
-
-            }
-
-
-            if(secondsWaiting === 60){
-
-              showMessage(
-                "info",
-                "Google is still working — please wait",
-                "It has been more than one minute. Google has not finished yet, but we have NOT cancelled the operation. Please continue waiting."
-              );
-
-            }
-
-
-            if(secondsWaiting === 120){
-
-              showMessage(
-                "info",
-                "Google authentication is taking a while",
-                "Google is still being given time to complete. We will continue waiting for the actual Firebase result."
-              );
-
-            }
-
-
-            if(secondsWaiting === 300){
-
-              showMessage(
-                "info",
-                "Google is still responding",
-                "This has taken more than five minutes. We are still waiting for Firebase's actual response rather than cancelling your authentication automatically."
-              );
-
-            }
-
-          },
-          1000
-        );
-
-
-      /* ----------------------------------------
-         ACTUAL GOOGLE AUTHENTICATION
-      ---------------------------------------- */
-
-      const user =
-        await signInWithGoogle();
-
-
-      /* ----------------------------------------
-         STOP STATUS TIMER
-      ---------------------------------------- */
-
-      if(stillWaitingTimer){
-
-        clearInterval(
-          stillWaitingTimer
-        );
-
-        stillWaitingTimer =
-          null;
-
-      }
-
-
-      /* ----------------------------------------
-         VERIFY RESULT
-      ---------------------------------------- */
-
-      if(!user){
-
-        throw new Error(
-          "Google authentication completed without returning a Firebase user."
-        );
-
-      }
-
-
-      /* ----------------------------------------
-         SUCCESS
-      ---------------------------------------- */
-
-      showMessage(
-        "success",
-        "Google login successful! ✓",
-        "Your Google account has been authenticated successfully. Preparing your Code Academy dashboard..."
-      );
-
-
-      loginContent.style.display =
-        "none";
-
-      successScreen.classList.add(
-        "show"
-      );
-
-
-      /*
-         Give the success message time to appear.
-      */
-
-      setTimeout(
-        () => {
-
-          window.location.replace(
-            "menu.html"
-          );
-
-        },
-        1800
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "GOOGLE LOGIN ERROR:",
-        error
-      );
-
-
-      if(stillWaitingTimer){
-
-        clearInterval(
-          stillWaitingTimer
-        );
-
-        stillWaitingTimer =
-          null;
-
-      }
-
-
-      stopLoading();
-
-
-      /*
-         REAL FIREBASE ERROR.
-
-         Nothing is hardcoded as the reason.
-      */
-
-      showMessage(
-        "error",
-        "Google login was not completed",
-        "Google/Firebase did not complete the authentication. You are still on the login page. The actual error returned by Firebase is shown below.",
-        error
-      );
-
-    }
-
+}
+
+googleBtn.addEventListener("click", () => runGoogleLogin(false));
+
+yahooBtn.addEventListener("click", async () => {
+  if (busy) return;
+  hideMessage();
+  if (!navigator.onLine) { showMessage("error", "No internet connection", "Connect to the internet before continuing with Yahoo."); return; }
+  setBusy(true, "Opening Yahoo sign-in…");
+  showMessage("info", "Connecting to Yahoo", "Complete the authentication request to continue.");
+  try {
+    const result = await signInWithYahoo({ withStatus: true, intent: "login" });
+    setBusy(false);
+    finishLogin(result?.user, "Yahoo");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Yahoo login failed:", error?.code || error);
+    showMessage("error", "Yahoo login was not completed", getFriendlyAuthError(error, "auth"));
   }
-);
-
-
-/* ============================================================
-   YAHOO LOGIN
-============================================================ */
-
-yahooBtn.addEventListener(
-  "click",
-  async () => {
-
-    hideMessage();
-
-
-    /* ------------------------------------------
-       INTERNET
-    ------------------------------------------ */
-
-    if(!isOnline()){
-
-      showMessage(
-        "error",
-        "No internet connection",
-        "Your device is currently offline. Connect to the internet before continuing with Yahoo."
-      );
-
-      return;
-
-    }
-
-
-    startLoading(
-      "Opening Yahoo..."
-    );
-
-
-    showMessage(
-      "info",
-      "Yahoo sign-in is working...",
-      "Please complete the Yahoo authentication. This page will wait for Firebase to finish."
-    );
-
-
-    let stillWaitingTimer = null;
-
-    let secondsWaiting = 0;
-
-
-    try{
-
-      /*
-         Again:
-
-         NO SHORT TIMEOUT.
-
-         This timer only provides information.
-         It NEVER cancels Yahoo authentication.
-      */
-
-      stillWaitingTimer =
-        setInterval(
-          () => {
-
-            secondsWaiting += 1;
-
-
-            if(secondsWaiting === 30){
-
-              showMessage(
-                "info",
-                "Yahoo is still working...",
-                "Yahoo authentication is taking longer than usual. Please continue waiting."
-              );
-
-            }
-
-
-            if(secondsWaiting === 60){
-
-              showMessage(
-                "info",
-                "Yahoo is still working — please wait",
-                "More than one minute has passed, but we have not cancelled the authentication. We are still waiting for Firebase."
-              );
-
-            }
-
-
-            if(secondsWaiting === 120){
-
-              showMessage(
-                "info",
-                "Yahoo authentication is taking a while",
-                "The authentication is still running. Please allow it to finish."
-              );
-
-            }
-
-
-            if(secondsWaiting === 300){
-
-              showMessage(
-                "info",
-                "Yahoo is still responding",
-                "This has taken more than five minutes. We are still waiting for the actual Firebase result."
-              );
-
-            }
-
-          },
-          1000
-        );
-
-
-      /* ----------------------------------------
-         ACTUAL YAHOO AUTHENTICATION
-      ---------------------------------------- */
-
-      const user =
-        await signInWithYahoo();
-
-
-      if(stillWaitingTimer){
-
-        clearInterval(
-          stillWaitingTimer
-        );
-
-        stillWaitingTimer =
-          null;
-
-      }
-
-
-      if(!user){
-
-        throw new Error(
-          "Yahoo authentication completed without returning a Firebase user."
-        );
-
-      }
-
-
-      /* ----------------------------------------
-         SUCCESS
-      ---------------------------------------- */
-
-      showMessage(
-        "success",
-        "Yahoo login successful! ✓",
-        "Your Yahoo account has been authenticated successfully. Preparing your Code Academy dashboard..."
-      );
-
-
-      loginContent.style.display =
-        "none";
-
-      successScreen.classList.add(
-        "show"
-      );
-
-
-      setTimeout(
-        () => {
-
-          window.location.replace(
-            "menu.html"
-          );
-
-        },
-        1800
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "YAHOO LOGIN ERROR:",
-        error
-      );
-
-
-      if(stillWaitingTimer){
-
-        clearInterval(
-          stillWaitingTimer
-        );
-
-        stillWaitingTimer =
-          null;
-
-      }
-
-
-      stopLoading();
-
-
-      showMessage(
-        "error",
-        "Yahoo login was not completed",
-        "Yahoo/Firebase did not complete the authentication. You are still on the login page. The actual error returned by Firebase is shown below.",
-        error
-      );
-
-    }
-
+});
+
+async function handleGoogleRedirectReturn() {
+  try {
+    const result = await completeGoogleRedirect({ withStatus: true, intent: "login" });
+    if (!result?.user) return;
+    setBusy(false);
+    finishLogin(result.user, "Google");
+  } catch (error) {
+    console.warn("Google redirect return failed:", error?.code || error);
+    showMessage("error", "Google sign-in could not finish", getFriendlyAuthError(error, "google"));
   }
-);
+}
 
+const params = new URLSearchParams(location.search);
+if (params.get("verified") === "1") {
+  showMessage("success", "Email verified", "Your email address has been confirmed. Sign in to continue.");
+} else if (params.get("passwordReset") === "success") {
+  showMessage("success", "Password updated", "Your password was reset. Log in with your new password.");
+}
 
-/* ============================================================
-   NETWORK STATUS
-============================================================ */
-
-window.addEventListener(
-  "offline",
-  () => {
-
-    showMessage(
-      "error",
-      "Internet connection lost",
-      "Your device has gone offline. Any Firebase operation currently running may fail."
-    );
-
-  }
-);
-
-
-window.addEventListener(
-  "online",
-  () => {
-
-    showMessage(
-      "info",
-      "Internet connection restored",
-      "Your internet connection is back. You can continue."
-    );
-
-  }
-);
-
-
-/* ============================================================
-   PAGE RESTORATION
-============================================================ */
-
-window.addEventListener(
-  "pageshow",
-  () => {
-
-    /*
-       Do NOT automatically redirect based on auth state.
-
-       login.html controls its own successful-login
-       navigation.
-
-       Successful login -> menu.html.
-       Failed login -> remain here.
-    */
-
-  }
-);
-
+window.addEventListener("offline", () => showMessage("error", "Connection lost", "Reconnect to the internet before starting another sign-in request."));
+window.addEventListener("online", () => showMessage("info", "Connection restored", "Your connection is back. You can try again."));
+handleGoogleRedirectReturn();
 </script>
 
 </body>
