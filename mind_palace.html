@@ -2,12 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="description" content="Train observation, memory, patterns and logical reasoning in Code Academy Mind Palace. Save progress and earn XP.">
-<meta name="robots" content="index,follow">
-<link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/mind_palace.html">
-<meta name="theme-color" content="#0a0c14">
-<link rel="icon" href="logo.png" type="image/png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Mind Palace Fixed</title>
 
 <style>
@@ -291,8 +286,6 @@ html,body{
     opacity:1;
 }
 </style>
-  <link rel="stylesheet" href="game-responsive.css">
-  <script src="game-responsive.js"></script>
 </head>
 
 <body>
@@ -637,19 +630,7 @@ function selectAnswer(selectedIdx){
 
     if(selectedIdx === currentData.answer){
         feedback.className = 'feedback correct show';
-        feedback.innerHTML = `✅ CORRECT! ${currentData.explanation}<br><strong>+5 XP · +2.5 coins</strong>`;
-        window.CodeAcademyPlatform?.award({
-            eventKey: `floor-${currentFloor}-puzzle-${currentPuzzle + 1}`,
-            xp: 5, coins: 2.5, score: currentPuzzle + 1, level: currentFloor,
-            message: `Mind Palace floor ${currentFloor}, puzzle ${currentPuzzle + 1} solved. +5 XP and +2.5 coins.`,
-            icon: '🧠', link: 'mind_palace.html'
-        }).then(result => {
-            if (result?.awarded) showMsg('Puzzle reward saved: +5 XP · +2.5 coins');
-            else if (result) showMsg('This puzzle reward was already claimed.');
-        }).catch(error => {
-            console.error('Mind Palace reward sync failed:', error);
-            showMsg('Puzzle solved, but reward sync failed. Check your connection.');
-        });
+        feedback.innerHTML = `✅ CORRECT! ${currentData.explanation}`;
         speak(`Correct. ${currentData.explanation}`);
         setTimeout(() => nextPuzzle(), 3000);
     } else {
@@ -684,11 +665,6 @@ function showMsg(text){
     msg.classList.add('show');
     setTimeout(() => msg.classList.remove('show'), 3000);
 }
-</script>
-
-<script type="module">
-import { initGamePlatform } from "./game-platform.js";
-initGamePlatform({ gameId: "mind_palace", gameTitle: "Mind Palace", requireAuth: true, link: "mind_palace.html" });
 </script>
 </body>
 </html>
