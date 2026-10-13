@@ -1,179 +1,197 @@
-
 {
   "course": "css",
   "lessonNumber": 9,
   "lessonId": "css-lesson-9",
   "title": "Animations and Transitions",
-  "subtitle": "Bring websites to life with smooth, purposeful motion",
-  "description": "Learn to create smooth transitions, transform elements, build keyframe animations and make motion more accessible.",
-  "level": "Intermediate",
-  "estimatedMinutes": 30,
+  "subtitle": "Add smooth movement and interactive visual effects to webpages.",
+  "description": "Learn transitions, transforms, keyframe animations and hover effects without relying on JavaScript.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
   "blocks": [
     {
-      "type": "content",
-      "title": "1. Introduction to CSS Motion",
-      "text": "CSS transitions and animations make websites feel more responsive and engaging. A transition smoothly changes a property from one value to another when a change occurs, such as hovering over a button. An animation can run through several stages defined by keyframes. Both can improve the user experience when used carefully. For example, a button might change color when hovered, while a notification might gently fade into view. Motion should support the content, not distract users or slow down their tasks. In this lesson, you will learn when to use transitions, transforms and keyframe animations."
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Animations and Transitions"
     },
     {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 9: Animations and Transitions. This lesson follows the course dashboard topic “Animations and Transitions”. The goal is to add smooth movement and interactive visual effects to webpages.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Transitions smooth a change between CSS property values, while keyframe animations can describe several stages. Transform is usually preferable for simple movement because it avoids changing document flow."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-1",
       "type": "code",
-      "title": "Example 1: A Smooth Button Transition",
-      "language": "html",
-      "code": "<style>\n  .button {\n    padding: 12px 22px;\n    border: none;\n    border-radius: 8px;\n    background: #2563eb;\n    color: white;\n    cursor: pointer;\n    transition: background-color 0.3s ease, transform 0.3s ease;\n  }\n\n  .button:hover {\n    background: #1d4ed8;\n    transform: translateY(-3px);\n  }\n</style>\n\n<button class=\"button\">Explore Courses</button>",
-      "explanation": "Hover over the button to see the effect. The transition smoothly changes the background color and position-related transform over 0.3 seconds. Without a transition, those property changes would normally happen immediately."
+      "language": "css",
+      "title": "Sample 1: Animations and Transitions in practice",
+      "code": "<!doctype html><html><head><style>.button{padding:12px 18px;transition:transform .18s ease,background .18s ease}.button:hover{transform:translateY(-2px);background:#c7d2fe}</style></head><body><button class=\"button\">Hover gently</button></body></html>"
     },
     {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Add smooth movement and interactive visual effects to webpages. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "css-l9-q-01",
       "type": "quiz",
-      "question": "What does transition: background-color 0.3s ease do in this example?",
+      "question": "A button should respond smoothly to hover without shifting nearby content. Which property type is usually appropriate for movement?",
       "options": [
-        "It changes the background color every 0.3 seconds forever.",
-        "It smoothly changes the background color over 0.3 seconds when its value changes.",
-        "It delays the entire webpage from loading for 0.3 seconds.",
-        "It makes the background color change only when the page scrolls."
-      ],
-      "correctIndex": 1,
-      "explanation": "A transition controls how a property change is animated over time. Here, the background-color change takes 0.3 seconds with an ease timing curve."
-    },
-    {
-      "type": "content",
-      "title": "2. Understanding Transition Properties",
-      "text": "The transition property can control four things: which property changes, how long the change takes, the timing function and the delay before it begins. For example, transition: opacity 0.5s ease-in 0.2s means the opacity transition lasts half a second, uses an ease-in timing curve and waits 0.2 seconds before starting. Common timing functions include ease, linear, ease-in, ease-out and ease-in-out. linear uses a constant rate, while the ease options vary the rate over time. You can transition several properties by separating their definitions with commas. Prefer transitioning specific properties instead of using transition: all everywhere, because broad transitions can animate unexpected changes."
-    },
-    {
-      "type": "code",
-      "title": "Example 2: A Card That Fades and Lifts",
-      "language": "html",
-      "code": "<style>\n  .course-card {\n    padding: 20px;\n    border-radius: 12px;\n    background: #f1f5f9;\n    box-shadow: 0 2px 6px rgb(15 23 42 / 10%);\n    transition: transform 0.25s ease, box-shadow 0.25s ease;\n  }\n\n  .course-card:hover {\n    transform: translateY(-5px);\n    box-shadow: 0 10px 20px rgb(15 23 42 / 15%);\n  }\n</style>\n\n<article class=\"course-card\">\n  <h2>CSS Fundamentals</h2>\n  <p>Build your styling skills step by step.</p>\n</article>",
-      "explanation": "The card moves upward slightly and gains a stronger shadow when hovered. The transition makes both changes smooth. The card's content and layout remain the same."
-    },
-    {
-      "type": "quiz",
-      "question": "Which timing function keeps the animation's rate constant throughout its duration?",
-      "options": [
-        "ease-in",
-        "ease-out",
-        "linear",
-        "ease-in-out"
-      ],
-      "correctIndex": 2,
-      "explanation": "linear maintains a constant rate. The ease functions change the rate during different parts of the transition."
-    },
-    {
-      "type": "content",
-      "title": "3. CSS Transforms: Move, Rotate and Scale",
-      "text": "The transform property changes how an element is visually positioned or shaped without changing the normal document flow. translate() moves an element, rotate() turns it, scale() changes its visual size, and skew() slants it. You can combine multiple transform functions in one declaration. For example, transform: translateY(-4px) scale(1.02) moves an element upward and enlarges it slightly. Transforms are often useful for interactive buttons, cards and icons. Be careful with large movements or scaling, because they can overlap nearby content or feel distracting. A transform changes the element's visual appearance; it does not automatically move other elements out of its way."
-    },
-    {
-      "type": "code",
-      "title": "Example 3: Transform an Icon",
-      "language": "html",
-      "code": "<style>\n  .icon-box {\n    display: inline-block;\n    padding: 18px;\n    background: #dbeafe;\n    border-radius: 10px;\n    transition: transform 0.3s ease;\n  }\n\n  .icon-box:hover {\n    transform: rotate(8deg) scale(1.08);\n  }\n</style>\n\n<div class=\"icon-box\">CSS</div>",
-      "explanation": "When the pointer hovers over the box, it rotates by 8 degrees and scales to 108% of its original visual size. The transition makes the transform gradual rather than immediate."
-    },
-    {
-      "type": "quiz",
-      "question": "What is an important characteristic of transform: scale(1.1)?",
-      "options": [
-        "It increases the element's visual size to 110% without changing normal document flow.",
-        "It increases the element's width by exactly 1.1 pixels.",
-        "It adds 1.1 seconds to the animation duration.",
-        "It moves the element down by 110 pixels."
-      ],
-      "correctIndex": 0,
-      "explanation": "scale(1.1) visually scales the element to 110% of its original size. Transforms do not normally change the element's space in the document flow."
-    },
-    {
-      "type": "content",
-      "title": "4. Keyframes: Create Full Animations",
-      "text": "Use @keyframes when you want to describe an animation with multiple stages. Give the animation a name, then define what should happen at different points. The from and to keywords represent the beginning and end, while percentages let you define intermediate stages. Apply the animation with the animation property or its individual properties. Important settings include animation-name, animation-duration, animation-timing-function, animation-delay, animation-iteration-count and animation-direction. For example, animation: fadeIn 0.6s ease-out 1 runs a named animation for 0.6 seconds with an ease-out timing curve and one iteration. A keyframe animation can run automatically without a hover or click. Use repeated or infinite animations only when they have a clear purpose."
-    },
-    {
-      "type": "code",
-      "title": "Example 4: Fade In an Element",
-      "language": "html",
-      "code": "<style>\n  @keyframes fadeIn {\n    from {\n      opacity: 0;\n      transform: translateY(12px);\n    }\n    to {\n      opacity: 1;\n      transform: translateY(0);\n    }\n  }\n\n  .welcome {\n    padding: 20px;\n    background: #dbeafe;\n    border-radius: 10px;\n    animation: fadeIn 0.6s ease-out 1 both;\n  }\n</style>\n\n<section class=\"welcome\">\n  <h2>Welcome to Code Academy</h2>\n  <p>Your next coding lesson is ready.</p>\n</section>",
-      "explanation": "The keyframes move the element from a slightly lower position with zero opacity to its normal position with full opacity. The animation shorthand sets a 0.6-second duration, ease-out timing, one iteration and both-mode fill behavior."
-    },
-    {
-      "type": "quiz",
-      "question": "What is the purpose of @keyframes in CSS?",
-      "options": [
-        "To define the stages of a named animation.",
-        "To create a media query for smaller screens.",
-        "To set the spacing between flex items.",
-        "To make an element respond only to keyboard input."
-      ],
-      "correctIndex": 0,
-      "explanation": "@keyframes defines the stages an animation passes through. The animation property then applies that named animation to an element."
-    },
-    {
-      "type": "content",
-      "title": "5. Duration, Delay and Repetition",
-      "text": "Animation duration determines how long one iteration takes. Animation delay determines how long the browser waits before starting. Animation iteration-count determines how many times the animation runs; use infinite only when continuous motion is intentional. Animation-direction controls the playback direction, with values such as normal, reverse, alternate and alternate-reverse. The alternate value plays forward on one iteration and backward on the next. The animation-fill-mode property controls how keyframe styles apply before or after the animation. For example, forwards retains the styles from the final keyframe after the animation finishes, while backwards can apply the appropriate starting keyframe styles during the delay. These options give you control over when an animation starts, how often it runs and what remains when it ends."
-    },
-    {
-      "type": "quiz",
-      "question": "What does animation-iteration-count: infinite do?",
-      "options": [
-        "Runs the animation once and keeps its final frame.",
-        "Repeats the animation continuously.",
-        "Waits forever before starting the animation.",
-        "Makes the animation duration equal to zero."
-      ],
-      "correctIndex": 1,
-      "explanation": "The infinite value repeats the animation continuously. It does not control the delay or make the duration zero."
-    },
-    {
-      "type": "content",
-      "title": "6. Motion, Performance and Accessibility",
-      "text": "Professional animations should be smooth, purposeful and comfortable to use. For many simple effects, transform and opacity are good starting points because they can often be animated efficiently by the browser. Animating layout-heavy properties such as width, height, top or left may require more layout work, depending on the effect. Test performance instead of assuming every animation will be smooth. Also consider people who prefer reduced motion. CSS provides the prefers-reduced-motion media feature so you can reduce or remove nonessential motion when a user has enabled that preference on their device. Avoid rapid flashing, excessive movement and animations that make essential content difficult to read. Motion should enhance the experience rather than block access to information."
-    },
-    {
-      "type": "code",
-      "title": "Example 5: Respect Reduced-Motion Preferences",
-      "language": "html",
-      "code": "<style>\n  .notice {\n    opacity: 0;\n    animation: showNotice 0.5s ease-out forwards;\n  }\n\n  @keyframes showNotice {\n    from {\n      opacity: 0;\n      transform: translateY(8px);\n    }\n    to {\n      opacity: 1;\n      transform: translateY(0);\n    }\n  }\n\n  @media (prefers-reduced-motion: reduce) {\n    .notice {\n      animation: none;\n      opacity: 1;\n      transform: none;\n    }\n  }\n</style>\n\n<div class=\"notice\">\n  Your lesson is ready.\n</div>",
-      "explanation": "Normally, the notice fades into view. When the user has enabled reduced motion, the media query removes the animation and displays the notice immediately, so the message remains visible."
-    },
-    {
-      "type": "quiz",
-      "question": "Why should a developer consider prefers-reduced-motion?",
-      "options": [
-        "It automatically makes all images responsive.",
-        "It lets the design respect users who prefer less motion.",
-        "It makes every animation repeat infinitely.",
-        "It forces all transitions to last exactly one second."
-      ],
-      "correctIndex": 1,
-      "explanation": "prefers-reduced-motion allows styles to adapt to a user's operating-system or browser preference for reduced motion. It does not control image sizing or require infinite animations."
-    },
-    {
-      "type": "content",
-      "title": "7. Putting It Together",
-      "text": "You now know how to create transitions for changes triggered by interactions, use transforms to move or resize elements visually, and define multi-stage animations with @keyframes. You have also learned to control timing, delay and repetition, and to consider performance and reduced-motion preferences. For practice, create a course card that lifts slightly on hover and a welcome message that fades in when the page loads. Keep the effects subtle and make sure the content remains readable. Test your page with a mouse, keyboard and a touch screen where possible. Remember: a transition describes how a property change happens over time, while a keyframe animation describes a sequence of stages that can run independently of a property change triggered by the user."
-    },
-    {
-      "type": "quiz",
-      "question": "Which statement best distinguishes a CSS transition from a CSS keyframe animation?",
-      "options": [
-        "A transition smooths a property change, while a keyframe animation can define multiple stages and run on its own.",
-        "A transition can change colors, while a keyframe animation can only move elements.",
-        "A transition requires @keyframes, while a keyframe animation cannot use opacity.",
-        "There is no difference; both properties must be triggered by hover."
-      ],
-      "correctIndex": 0,
-      "explanation": "Transitions interpolate property changes over time. Keyframe animations define named stages and can run automatically or repeat without requiring a hover event."
-    },
-    {
-      "type": "quiz",
-      "question": "Which CSS property would you use to rotate an element visually?",
-      "options": [
-        "transition-duration",
-        "animation-delay",
         "transform",
-        "animation-iteration-count"
+        "margin-left with a large animated change",
+        "position the button off-screen",
+        "change document structure repeatedly"
+      ],
+      "correctIndex": 0,
+      "explanation": "Transform is usually suitable for visual movement without changing document flow.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Transform is usually suitable for visual movement without changing document flow.",
+      "incorrectFeedback": "Review the requirement again. Transform is usually suitable for visual movement without changing document flow."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn transitions, transforms, keyframe animations and hover effects without relying on JavaScript.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-2",
+      "type": "code",
+      "language": "css",
+      "title": "Sample 2: Animations and Transitions in practice",
+      "code": "<!doctype html><html><head><style>.dot{width:32px;height:32px;border-radius:50%;background:#4f46e5;animation:arrive .8s ease-out}@keyframes arrive{from{opacity:0;transform:translateX(-12px)}to{opacity:1;transform:translateX(0)}}</style></head><body><div class=\"dot\"></div></body></html>"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real CSS project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "css-l9-q-02",
+      "type": "quiz",
+      "question": "A learner requests reduced motion in their operating system. What should a polished page do?",
+      "options": [
+        "Ignore the preference.",
+        "Honor prefers-reduced-motion where appropriate.",
+        "Increase animation speed.",
+        "Hide labels during transitions."
+      ],
+      "correctIndex": 1,
+      "explanation": "Respecting reduced-motion preferences can reduce discomfort and distraction.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Respecting reduced-motion preferences can reduce discomfort and distraction.",
+      "incorrectFeedback": "Review the requirement again. Respecting reduced-motion preferences can reduce discomfort and distraction."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Animate only to communicate state or provide feedback. Large or constant motion can distract users, and some users request reduced motion through their operating-system settings."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-3",
+      "type": "code",
+      "language": "css",
+      "title": "Sample 3: Animations and Transitions in practice",
+      "code": "<!doctype html><html><head><style>.panel{transition:box-shadow .2s ease}.panel:hover{box-shadow:0 8px 20px #0002}@media(prefers-reduced-motion:reduce){.panel{transition:none}}</style></head><body><div class=\"panel\">A subtle hover response</div></body></html>"
+    },
+    {
+      "id": "css-l9-q-03",
+      "type": "quiz",
+      "question": "A loading animation lasts forever and the app is already ready. What should happen?",
+      "options": [
+        "Keep animating to appear active.",
+        "Remove all status information.",
+        "Stop the animation and show the real state.",
+        "Make the entire page rotate."
       ],
       "correctIndex": 2,
-      "explanation": "The transform property supports rotate(), translate(), scale() and other visual transformations. The other options control animation timing or repetition."
+      "explanation": "Animation should reflect actual state and not mislead users.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Animation should reflect actual state and not mislead users.",
+      "incorrectFeedback": "Review the requirement again. Animation should reflect actual state and not mislead users."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Keep the end state understandable without animation, and make sure interactive controls remain visible and usable during motion."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-4",
+      "type": "code",
+      "language": "css",
+      "title": "Sample 4: Animations and Transitions in practice",
+      "code": "<!doctype html><html><head><style>.notice{animation:fade-in .4s ease-out}@keyframes fade-in{from{opacity:0}to{opacity:1}}</style></head><body><p class=\"notice\">Saved successfully.</p></body></html>"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn transitions, transforms, keyframe animations and hover effects without relying on JavaScript. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "css-l9-q-04",
+      "type": "quiz",
+      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
+      "options": [
+        "Copy the calculation to three new places.",
+        "Turn the result into a comment.",
+        "Create a focused function and call it with the required inputs.",
+        "Store the calculation in the page title."
+      ],
+      "correctIndex": 2,
+      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
+      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+    },
+    {
+      "id": "css-l9-q-05",
+      "type": "quiz",
+      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "options": [
+        "Return the total as a value.",
+        "Print the total in a larger font.",
+        "Rename the variable only.",
+        "Call the function repeatedly until the output is visible."
+      ],
+      "correctIndex": 0,
+      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
+      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
     }
   ]
 }

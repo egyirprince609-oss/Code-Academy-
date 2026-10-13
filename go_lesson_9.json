@@ -1,0 +1,197 @@
+{
+  "course": "go",
+  "lessonNumber": 9,
+  "lessonId": "go-lesson-9",
+  "title": "Goroutines and Concurrency",
+  "subtitle": "Understand Go",
+  "description": "Learn goroutines, channels, synchronization and how Go programs can perform multiple tasks efficiently.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Goroutines and Concurrency"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 9: Goroutines and Concurrency. This lesson follows the course dashboard topic “Goroutines and Concurrency”. The goal is to understand Go. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Concurrency structures a program so multiple tasks can make progress without blocking each other unnecessarily. In Go, goroutines are lightweight concurrent tasks and channels can communicate values between them."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-1",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 1: Goroutines and Concurrency in practice",
+      "code": "package main\nimport (\"fmt\"; \"time\")\nfunc main() { go func() { fmt.Println(\"background task\") }(); time.Sleep(10 * time.Millisecond) }"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Understand Go. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "go-l9-q-01",
+      "type": "quiz",
+      "question": "Two Go goroutines update shared data without synchronization. What risk should be considered?",
+      "options": [
+        "The code becomes automatically sequential.",
+        "The variables become constants.",
+        "The compiler always repairs it.",
+        "A data race or nondeterministic result."
+      ],
+      "correctIndex": 3,
+      "explanation": "Concurrent unsynchronized writes can race and lead to unpredictable behavior.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Concurrent unsynchronized writes can race and lead to unpredictable behavior.",
+      "incorrectFeedback": "Review the requirement again. Concurrent unsynchronized writes can race and lead to unpredictable behavior."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn goroutines, channels, synchronization and how Go programs can perform multiple tasks efficiently.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-2",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 2: Goroutines and Concurrency in practice",
+      "code": "package main\nimport \"fmt\"\nfunc main() { messages := make(chan string); go func() { messages <- \"done\" }(); fmt.Println(<-messages) }"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real Go project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "go-l9-q-02",
+      "type": "quiz",
+      "question": "A goroutine must send a result to another task. Which Go feature is designed for communicating values between goroutines?",
+      "options": [
+        "A channel.",
+        "A CSS class.",
+        "A SQL view.",
+        "A HTML heading."
+      ],
+      "correctIndex": 0,
+      "explanation": "Channels are a core Go mechanism for communication between goroutines.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Channels are a core Go mechanism for communication between goroutines.",
+      "incorrectFeedback": "Review the requirement again. Channels are a core Go mechanism for communication between goroutines."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Shared mutable state needs a clear synchronization strategy. Concurrency does not automatically make work faster, and unsynchronized writes can create data races."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-3",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 3: Goroutines and Concurrency in practice",
+      "code": "package main\nimport \"fmt\"\nfunc main() { jobs := make(chan int, 2); jobs <- 1; jobs <- 2; close(jobs); for job := range jobs { fmt.Println(job) } }"
+    },
+    {
+      "id": "go-l9-q-03",
+      "type": "quiz",
+      "question": "A concurrent worker should stop when the request is canceled. What should the design include?",
+      "options": [
+        "A hard-coded infinite loop.",
+        "A cancellation/context mechanism and a clear shutdown path.",
+        "More goroutines with no coordination.",
+        "A global counter that never changes."
+      ],
+      "correctIndex": 1,
+      "explanation": "Cancellation prevents unnecessary work and helps concurrent applications shut down cleanly.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Cancellation prevents unnecessary work and helps concurrent applications shut down cleanly.",
+      "incorrectFeedback": "Review the requirement again. Cancellation prevents unnecessary work and helps concurrent applications shut down cleanly."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Use context, cancellation, and clear ownership of channels in larger programs. Test the behavior of failure and shutdown paths, not only the happy path."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l9-code-4",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 4: Goroutines and Concurrency in practice",
+      "code": "package main\nimport \"fmt\"\nfunc main() { values := []int{2, 4, 6}; total := 0; for _, v := range values { total += v }; fmt.Println(total) }"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn goroutines, channels, synchronization and how Go programs can perform multiple tasks efficiently. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "go-l9-q-04",
+      "type": "quiz",
+      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
+      "options": [
+        "Copy the calculation to three new places.",
+        "Turn the result into a comment.",
+        "Create a focused function and call it with the required inputs.",
+        "Store the calculation in the page title."
+      ],
+      "correctIndex": 2,
+      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
+      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+    },
+    {
+      "id": "go-l9-q-05",
+      "type": "quiz",
+      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "options": [
+        "Return the total as a value.",
+        "Print the total in a larger font.",
+        "Rename the variable only.",
+        "Call the function repeatedly until the output is visible."
+      ],
+      "correctIndex": 0,
+      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
+      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
+    }
+  ]
+}

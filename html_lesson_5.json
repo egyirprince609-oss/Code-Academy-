@@ -2,138 +2,196 @@
   "course": "html",
   "lessonNumber": 5,
   "lessonId": "html-lesson-5",
-  "title": "Lists and Tables",
-  "subtitle": "Organize related information clearly and accessibly",
-  "description": "Learn when to use ordered and unordered lists, how to build nested lists, and how to structure accessible HTML tables with headers and captions.",
-  "level": "Beginner",
-  "estimatedMinutes": 30,
+  "title": "HTML Lists and Tables",
+  "subtitle": "Ordered lists, unordered lists, nested lists, tables, rows, columns and table structure.",
+  "description": "Present structured information clearly using lists and tables.",
+  "level": "Intermediate",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
   "blocks": [
     {
-      "id": "s1",
-      "type": "content",
-      "text": "## Page 1 — Choosing the right list\n\nWelcome back! In this lesson, you will learn how to present groups of related information so visitors can scan them quickly. Lists are useful for steps, ingredients, features, instructions, menus, and many other kinds of information. A list is not just decoration: its HTML structure tells the browser and assistive technology how the items belong together.\n\nHTML has three common list elements. Use `<ul>` for an **unordered list** when the order of the items does not change their meaning. The browser usually displays a bullet beside each item. Use `<ol>` for an **ordered list** when sequence or ranking matters, such as steps in a process or positions in a competition. Use `<li>` for each list item inside either type of list.\n\nDo not choose a list type only because you prefer bullets or numbers visually. Choose it based on meaning. For example, a list of school subjects usually does not need an order, so `<ul>` is suitable. A list explaining how to publish a website has a sequence, so `<ol>` is more meaningful. CSS can change how markers look without changing the list's underlying meaning.\n\nEvery list item should be placed inside its parent list. Avoid placing loose `<li>` elements directly in the page without an appropriate list container. Also avoid using repeated hyphens or numbers typed into ordinary paragraphs to imitate a list: those characters do not provide the same structural information to the browser or assistive technology.\n\nA useful habit is to ask: **If I rearranged these items, would the meaning change?** If yes, an ordered list is probably appropriate. If not, an unordered list is often the better choice."
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand HTML Lists and Tables"
     },
     {
-      "id": "c1",
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 5: HTML Lists and Tables. This lesson follows the course dashboard topic “HTML Lists and Tables”. The goal is to ordered lists, unordered lists, nested lists, tables, rows, columns and table structure.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Use lists for grouped items and tables for genuinely tabular relationships between row and column headers. Tables need a clear header structure so users can understand what each value represents."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select HTML. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-1",
       "type": "code",
       "language": "html",
-      "title": "An unordered list of course topics",
-      "code": "<h2>Topics to study</h2>\n<ul>\n  <li>HTML structure</li>\n  <li>CSS styling</li>\n  <li>JavaScript behavior</li>\n</ul>",
-      "output": "A heading followed by three bullet-list items. The browser understands that the three topics form one group."
+      "title": "Sample 1: HTML Lists and Tables in practice",
+      "code": "<ol><li>Plan</li><li>Build</li><li>Test</li></ol>"
     },
     {
-      "id": "q1",
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Ordered lists, unordered lists, nested lists, tables, rows, columns and table structure. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "html-l5-q-01",
       "type": "quiz",
-      "question": "A safety guide must show instructions in the exact order learners should perform them. Which structure best communicates that sequence semantically?",
+      "question": "A price list has values associated with column headings. What makes the table easier to interpret?",
       "options": [
-        "<ul> containing one <li> per instruction",
-        "<ol> containing one <li> per instruction",
-        "Separate <p> elements with numbers typed into their text",
-        "A <table> with one instruction in each row and no headers"
-      ],
-      "correctIndex": 1,
-      "explanation": "An ordered list communicates that the items form a sequence. The browser can display numbering, and assistive technology can identify the content as an ordered list. Typed numbers in paragraphs do not provide the same list semantics.",
-      "hint": "Choose the element whose meaning includes a meaningful sequence, not just a visual marker."
-    },
-    {
-      "id": "s2",
-      "type": "content",
-      "text": "## Page 2 — Ordered lists, nesting, and useful attributes\n\nAn ordered list can use numbering styles and starting points when the content requires them. The `start` attribute sets the first number, such as `<ol start=\"4\">`. The `reversed` attribute makes the numbering count downward. The `type` attribute can choose common marker styles such as numbers, letters, or Roman numerals, though CSS is usually more flexible for visual styling. Use these attributes because they help represent the content, not merely to force a particular design.\n\nLists can also be nested. A nested list is a list placed inside a list item, often to show subtopics or steps belonging to a larger topic. The inner `<ul>` or `<ol>` should be inside the relevant `<li>`, not placed as a separate sibling outside it. This nesting tells the browser which details belong under which parent item.\n\nFor example, a website project might have a main item called “Build the page” with smaller items for writing HTML and checking links. Nested lists can be useful, but too many levels make information hard to follow—especially on small phone screens. If the hierarchy becomes complicated, consider splitting the content into separate headings and shorter lists.\n\nRemember that the list's items are not limited to one line of plain text. A list item can contain paragraphs, links, or other appropriate content. Keep the markup logical and avoid adding unnecessary containers around every short item."
-    },
-    {
-      "id": "c2",
-      "type": "code",
-      "language": "html",
-      "title": "A nested project checklist",
-      "code": "<ol>\n  <li>Plan the website\n    <ul>\n      <li>Choose the audience</li>\n      <li>Write the page goals</li>\n    </ul>\n  </li>\n  <li>Build and test the page</li>\n</ol>",
-      "output": "A numbered list with two main steps. The first step contains a nested bullet list showing two planning tasks that belong to it."
-    },
-    {
-      "id": "q2",
-      "type": "quiz",
-      "question": "In the nested list example, where should the inner <ul> be placed so that its two tasks are correctly associated with “Plan the website”?",
-      "options": [
-        "Inside the first <li>, after the main task text",
-        "After the closing </ol>, because it is a separate list",
-        "Inside the <ol> but outside every <li>",
-        "Inside the <head> element so the browser loads it first"
+        "Use header cells and a clear row/column structure.",
+        "Put everything in one giant cell.",
+        "Use bold paragraphs instead of rows.",
+        "Remove all headings."
       ],
       "correctIndex": 0,
-      "explanation": "The nested list belongs inside the list item it expands. Placing it inside the first <li> preserves the relationship between the parent task and its sub-tasks.",
-      "hint": "A sub-list should be nested inside the item it explains."
+      "explanation": "Header cells communicate the relationship between labels and data cells.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Header cells communicate the relationship between labels and data cells.",
+      "incorrectFeedback": "Review the requirement again. Header cells communicate the relationship between labels and data cells."
     },
     {
-      "id": "s3",
-      "type": "content",
-      "text": "## Page 3 — When a table is the right tool\n\nA table is designed for **tabular data**: information arranged in rows and columns where the relationship between each value matters. Examples include a class timetable, product comparison, exam results, or a list of course names with their durations. A table lets a visitor compare values by reading across a row or down a column.\n\nDo not use tables just to arrange the visual layout of an ordinary page. Modern page layout is usually handled with CSS Flexbox or Grid. A data table should be chosen because the information naturally forms a grid of related values, not because a grid happens to look convenient.\n\nThe main table element is `<table>`. Each row uses `<tr>`. A normal data cell uses `<td>`, while a header cell uses `<th>`. Header cells identify what a row or column represents. For example, in a table of course durations, “Course” and “Duration” are column headings, while “HTML” and “30 minutes” are data values. Using `<th>` for genuine headers gives the table useful structure that assistive technology can communicate.\n\nA `<caption>` provides a title or short description for the table. It is especially helpful when a visitor arrives at the table without the surrounding explanation. Put the caption directly inside the `<table>`, typically as the first child. For simple tables, add `scope=\"col\"` to column header cells and `scope=\"row\"` to row header cells when that relationship is appropriate. These attributes help make the header relationships explicit.\n\nTables should be readable on narrow screens. Keep headings concise, avoid unnecessarily wide columns, and consider placing a wide table inside a horizontally scrollable wrapper if the data cannot sensibly reflow. Do not shrink the text until it becomes unreadable just to squeeze every column onto a phone screen."
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
     },
     {
-      "id": "c3",
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Present structured information clearly using lists and tables.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select HTML. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-2",
       "type": "code",
       "language": "html",
-      "title": "A small course table with headers",
-      "code": "<table>\n  <caption>Estimated lesson time</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Course</th>\n      <th scope=\"col\">Minutes</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>HTML</td>\n      <td>30</td>\n    </tr>\n    <tr>\n      <td>CSS</td>\n      <td>25</td>\n    </tr>\n  </tbody>\n</table>",
-      "output": "A table titled “Estimated lesson time,” with two column headers and two rows of course data. The thead and tbody group the heading and body rows."
+      "title": "Sample 2: HTML Lists and Tables in practice",
+      "code": "<table><caption>Course progress</caption><thead><tr><th scope=\"col\">Course</th><th scope=\"col\">Completed</th></tr></thead><tbody><tr><td>HTML</td><td>4 lessons</td></tr><tr><td>CSS</td><td>2 lessons</td></tr></tbody></table>"
     },
     {
-      "id": "q3",
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real HTML project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "html-l5-q-02",
       "type": "quiz",
-      "question": "A table contains columns for Student, Score, and Grade. Which markup choice most directly helps assistive technology identify what each column represents?",
+      "question": "A page lists three steps in a process. Which structure is best?",
       "options": [
-        "Put the column names in ordinary <td> cells and make them bold with CSS",
-        "Use <th scope=\"col\"> for each column heading",
-        "Place all column names in the table's <caption> and leave the first row empty",
-        "Use <h2> elements inside each data cell instead of table headers"
+        "A table with blank cells.",
+        "An ordered list.",
+        "A form with required fields.",
+        "A video without controls."
       ],
       "correctIndex": 1,
-      "explanation": "A table header cell created with <th> identifies heading information, and scope=\"col\" associates it with the cells in that column. Bold styling on a <td> changes appearance but does not give the cell the same header semantics.",
-      "hint": "Think about the element designed specifically to mark a table heading, and how it relates to a column."
+      "explanation": "A numbered sequence is most naturally represented by an ordered list.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A numbered sequence is most naturally represented by an ordered list.",
+      "incorrectFeedback": "Review the requirement again. A numbered sequence is most naturally represented by an ordered list."
     },
     {
-      "id": "s4",
-      "type": "content",
-      "text": "## Page 4 — Table structure, row headings, and merging cells\n\nFor larger tables, `<thead>`, `<tbody>`, and `<tfoot>` can group the header, main data, and summary rows. They are not required for every simple table, but they make the structure clearer and can help with styling and maintenance. The browser can still display a basic table without all three grouping elements.\n\nSometimes a table needs a row heading as well as column headings. For example, a timetable may use each day as a row heading. In that case, a `<th scope=\"row\">Monday</th>` cell can identify the row, while column headers identify times or activities. Use row and column headers to express relationships, not simply to make certain cells look bold.\n\nThe `colspan` attribute allows a cell to span across more than one column. The `rowspan` attribute allows it to span across more than one row. These can represent information such as a morning session that covers two time columns. However, merged cells make a table's relationships more complicated, so use them only when they genuinely reflect the data. For a complex table, careful headers and a clear layout become especially important.\n\nDo not place unrelated content in a table just to align it. If you need cards, navigation columns, or a page layout, use CSS. If you need to show data with meaningful row-and-column relationships, use a data table. This distinction makes pages easier to maintain, more adaptable to phones, and more accessible to people using assistive technology."
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Nested lists can express hierarchy, but keep nesting shallow enough to remain readable. In tables, use header cells for headings and add a caption when it clarifies the table’s purpose."
     },
     {
-      "id": "c4",
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select HTML. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-3",
       "type": "code",
       "language": "html",
-      "title": "A table with row and column headings",
-      "code": "<table>\n  <caption>Weekly study plan</caption>\n  <thead>\n    <tr>\n      <th scope=\"col\">Day</th>\n      <th scope=\"col\">Topic</th>\n      <th scope=\"col\">Minutes</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th scope=\"row\">Monday</th>\n      <td>HTML lists</td>\n      <td>30</td>\n    </tr>\n    <tr>\n      <th scope=\"row\">Tuesday</th>\n      <td>HTML tables</td>\n      <td>35</td>\n    </tr>\n  </tbody>\n</table>",
-      "output": "The table has column headers and a row header for each day. A visitor can understand what each value represents by following its row and column."
+      "title": "Sample 3: HTML Lists and Tables in practice",
+      "code": "<ul><li>HTML<ul><li>Elements</li><li>Attributes</li></ul></li><li>CSS</li></ul>"
     },
     {
-      "id": "q4",
+      "id": "html-l5-q-03",
       "type": "quiz",
-      "question": "A timetable has one row per day and columns for Morning and Afternoon. You want each day name to act as the heading for its row. Which choice is most semantically appropriate?",
+      "question": "A wide data table overflows a phone screen. What should the developer consider?",
       "options": [
-        "Use <td scope=\"row\">Monday</td>",
-        "Use <th scope=\"col\">Monday</th>",
-        "Use <th scope=\"row\">Monday</th>",
-        "Use <caption>Monday</caption> in every table row"
+        "Hide the headings.",
+        "Make every cell one character wide.",
+        "Provide a responsive strategy, such as a scrollable container or alternative view.",
+        "Remove the data from the page."
       ],
       "correctIndex": 2,
-      "explanation": "A th cell marks header content, and scope=\"row\" identifies it as the heading for that row. scope=\"col\" would indicate a column heading, while td is a data cell rather than a header cell.",
-      "hint": "The day labels describe rows, not columns, so choose the matching header relationship."
+      "explanation": "Wide tables need a mobile strategy that preserves access to the information.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Wide tables need a mobile strategy that preserves access to the information.",
+      "incorrectFeedback": "Review the requirement again. Wide tables need a mobile strategy that preserves access to the information."
     },
     {
-      "id": "s5",
-      "type": "content",
-      "text": "## Page 5 — Mobile-friendly tables and final checks\n\nA table that looks fine on a laptop may overflow a phone screen if it has many columns or long text. Start by asking whether every column is necessary. Use concise headings, sensible values, and meaningful grouping. Avoid adding decorative columns that do not help the reader understand the data.\n\nIf the table must remain wide, a common approach is to put it inside a wrapper that permits horizontal scrolling. For example, a container styled with `overflow-x: auto` lets a visitor scroll the table sideways without forcing the entire page to become wider than the screen. Make sure users can discover the scrolling area and that the table remains usable with touch and keyboard navigation.\n\nAlways check the relationships between the markup and the displayed information. Every table row should have a sensible number of cells, taking any `rowspan` and `colspan` values into account. Each heading should describe the data beneath or beside it. A caption should describe the table's purpose, not repeat a long paragraph. A nested list should have its sub-list inside the correct parent list item.\n\nHere is a quick way to decide which structure to use: use `<ul>` for a group with no meaningful sequence, `<ol>` for a meaningful sequence, and `<table>` for data whose row-and-column relationships matter. Then use CSS to control visual styling and mobile layout. Semantic HTML is not only about passing checks; it helps your page make sense to browsers, assistive technology, future developers, and your visitors."
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
     },
     {
-      "id": "q5",
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "On small screens, wide tables may need a horizontal scroll container or a different presentation. Do not use tables merely to position the page layout."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select HTML. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l5-code-4",
+      "type": "code",
+      "language": "html",
+      "title": "Sample 4: HTML Lists and Tables in practice",
+      "code": "<table><thead><tr><th scope=\"col\">Item</th><th scope=\"col\">Quantity</th></tr></thead><tbody><tr><td>Notebooks</td><td>12</td></tr><tr><td>Pens</td><td>25</td></tr></tbody></table>"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Present structured information clearly using lists and tables. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "html-l5-q-04",
       "type": "quiz",
-      "question": "A comparison table has six useful columns and cannot fit comfortably on a phone. The information genuinely depends on comparing values in rows and columns. What is the strongest first improvement?",
+      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
       "options": [
-        "Replace the table with six unrelated paragraphs so no scrolling is needed",
-        "Keep the data table, simplify unnecessary width, and use a horizontally scrollable wrapper if needed",
-        "Remove all <th> elements and reduce the font until every column fits",
-        "Turn each table row into an <ol> because phones display lists vertically"
+        "A map/dictionary keyed by email, with suitable uniqueness handling.",
+        "A random number with no mapping.",
+        "A paragraph of comma-separated values that is never parsed.",
+        "A loop that guesses the correct person."
       ],
-      "correctIndex": 1,
-      "explanation": "Because the information depends on row-and-column relationships, it should remain a data table. Simplifying avoidable width and allowing the table area to scroll horizontally can preserve meaning without making text too small or discarding header structure.",
-      "hint": "Keep the semantic structure that matches the information, then solve the screen-width problem."
+      "correctIndex": 0,
+      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
+    },
+    {
+      "id": "html-l5-q-05",
+      "type": "quiz",
+      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
+      "options": [
+        "One.",
+        "The collection length.",
+        "Zero.",
+        "Minus one."
+      ],
+      "correctIndex": 2,
+      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
     }
   ]
 }

@@ -1,0 +1,197 @@
+{
+  "course": "go",
+  "lessonNumber": 8,
+  "lessonId": "go-lesson-8",
+  "title": "Pointers, Maps and Packages",
+  "subtitle": "Understand references, key-value data and code organization.",
+  "description": "Learn pointers, maps, package structure, imports, visibility rules and how to organize larger Go programs.",
+  "level": "Intermediate to Advanced",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "estimatedMinutes": 12,
+  "blocks": [
+    {
+      "id": "page-1-heading",
+      "type": "heading",
+      "text": "PAGE 1 — Understand Pointers, Maps and Packages"
+    },
+    {
+      "id": "intro",
+      "type": "sentence",
+      "text": "Welcome to Lesson 8: Pointers, Maps and Packages. This lesson follows the course dashboard topic “Pointers, Maps and Packages”. The goal is to understand references, key-value data and code organization.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+    },
+    {
+      "id": "concept-1",
+      "type": "sentence",
+      "text": "Collections group related values. Use a sequence when order or position matters, a set when uniqueness is the main concern, and a map or dictionary when values should be found by a meaningful key."
+    },
+    {
+      "id": "practice-direction-1",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-1",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 1: Pointers, Maps and Packages in practice",
+      "code": "package main\nimport \"fmt\"\n\nfunc main() {\ncourses := []string{\"HTML\", \"CSS\"}\ncourses = append(courses, \"Go\")\nfmt.Println(courses)\n}"
+    },
+    {
+      "id": "notice-1",
+      "type": "sentence",
+      "text": "What to notice: focus on the part of the sample that demonstrates Understand references, key-value data and code organization. Identify the input, the operation, and the result before making changes."
+    },
+    {
+      "id": "go-l8-q-01",
+      "type": "quiz",
+      "question": "A collection must contain each category only once. What data structure or operation helps?",
+      "options": [
+        "A list that intentionally keeps every duplicate.",
+        "A set or explicit uniqueness check.",
+        "A loop that prints the items.",
+        "A longer variable name."
+      ],
+      "correctIndex": 1,
+      "explanation": "A set or uniqueness rule prevents repeated categories.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. A set or uniqueness rule prevents repeated categories.",
+      "incorrectFeedback": "Review the requirement again. A set or uniqueness rule prevents repeated categories."
+    },
+    {
+      "id": "page-2-heading",
+      "type": "heading",
+      "text": "PAGE 2 — Build the idea step by step"
+    },
+    {
+      "id": "concept-2",
+      "type": "sentence",
+      "text": "The dashboard frames the practical purpose this way: “Learn pointers, maps, package structure, imports, visibility rules and how to organize larger Go programs.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+    },
+    {
+      "id": "practice-direction-2",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-2",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 2: Pointers, Maps and Packages in practice",
+      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nprofile := map[string]int{\"xp\": 120}\nfmt.Println(profile[\"xp\"])\n}"
+    },
+    {
+      "id": "notice-2",
+      "type": "sentence",
+      "text": "Application tip: in a real Go project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+    },
+    {
+      "id": "go-l8-q-02",
+      "type": "quiz",
+      "question": "A list is filtered but the original list unexpectedly changes. What should be checked?",
+      "options": [
+        "The computer’s date.",
+        "Whether comments were removed.",
+        "Only the font size.",
+        "Whether the chosen operation mutates the original collection or returns a new one."
+      ],
+      "correctIndex": 3,
+      "explanation": "Mutation behavior differs by language and method; understand whether the source is changed.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Mutation behavior differs by language and method; understand whether the source is changed.",
+      "incorrectFeedback": "Review the requirement again. Mutation behavior differs by language and method; understand whether the source is changed."
+    },
+    {
+      "id": "concept-3",
+      "type": "sentence",
+      "text": "Indexes are commonly zero-based, so the first element is often at position zero and the last index is one less than the collection length. Key-based collections use keys instead of numeric positions and may have different lookup guarantees."
+    },
+    {
+      "id": "practice-direction-3",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-3",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 3: Pointers, Maps and Packages in practice",
+      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nlevels := map[string]bool{\"beginner\": true, \"advanced\": true}\nfmt.Println(len(levels))\n}"
+    },
+    {
+      "id": "go-l8-q-03",
+      "type": "quiz",
+      "question": "A collection lookup can fail when the key is missing. What should the code do?",
+      "options": [
+        "Check for absence or use a documented fallback/error result.",
+        "Assume every possible key exists.",
+        "Use the missing value as a list index.",
+        "Ignore the result and display success."
+      ],
+      "correctIndex": 0,
+      "explanation": "Handling absent keys makes the behavior predictable and avoids hidden failures.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Handling absent keys makes the behavior predictable and avoids hidden failures.",
+      "incorrectFeedback": "Review the requirement again. Handling absent keys makes the behavior predictable and avoids hidden failures."
+    },
+    {
+      "id": "page-3-heading",
+      "type": "heading",
+      "text": "PAGE 3 — Apply it and check your reasoning"
+    },
+    {
+      "id": "concept-4",
+      "type": "sentence",
+      "text": "Consider whether the collection should be mutable, whether a copy or a reference is being shared, and what should happen when an item is missing. These decisions affect correctness as much as the data structure’s syntax."
+    },
+    {
+      "id": "practice-direction-4",
+      "type": "sentence",
+      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+    },
+    {
+      "id": "l8-code-4",
+      "type": "code",
+      "language": "go",
+      "title": "Sample 4: Pointers, Maps and Packages in practice",
+      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nfor _, score := range []int{45, 80, 92} { if score >= 50 { fmt.Println(score) } }\n}"
+    },
+    {
+      "id": "wrap-up",
+      "type": "sentence",
+      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn pointers, maps, package structure, imports, visibility rules and how to organize larger Go programs. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+    },
+    {
+      "id": "go-l8-q-04",
+      "type": "quiz",
+      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "options": [
+        "A map/dictionary keyed by email, with suitable uniqueness handling.",
+        "A random number with no mapping.",
+        "A paragraph of comma-separated values that is never parsed.",
+        "A loop that guesses the correct person."
+      ],
+      "correctIndex": 0,
+      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
+      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
+    },
+    {
+      "id": "go-l8-q-05",
+      "type": "quiz",
+      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
+      "options": [
+        "One.",
+        "The collection length.",
+        "Zero.",
+        "Minus one."
+      ],
+      "correctIndex": 2,
+      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
+      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
+      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+    }
+  ]
+}
