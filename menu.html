@@ -3231,8 +3231,7 @@ import {
     onSnapshot,
     updateDoc,
     writeBatch,
-    limit,
-    orderBy
+    limit
 } from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -3733,6 +3732,16 @@ onAuthStateChanged(
         }
 
 
+        const needsEmailVerification =
+            Array.isArray(user.providerData) &&
+            user.providerData.some(provider => provider.providerId === "password") &&
+            !user.emailVerified;
+
+        if (needsEmailVerification) {
+            window.location.replace("verify-email.html");
+            return;
+        }
+
         currentUser =
             user;
 
@@ -3947,7 +3956,6 @@ function startNotificationListener(uid){
     const q =
         query(
             ref,
-            orderBy("createdAt", "desc"),
             limit(50)
         );
 

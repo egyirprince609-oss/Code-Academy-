@@ -3091,9 +3091,13 @@ function checkAuthentication(){
             user.uid
           );
 
+          const needsEmailVerification =
+            Array.isArray(user.providerData) &&
+            user.providerData.some(provider => provider.providerId === 'password') &&
+            !user.emailVerified;
 
           location.replace(
-            'menu.html'
+            needsEmailVerification ? 'verify-email.html' : 'menu.html'
           );
 
         }else{
