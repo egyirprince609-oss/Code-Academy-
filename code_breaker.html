@@ -354,6 +354,9 @@ pre {
   *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important; }
 }
 </style>
+  <link rel="stylesheet" href="game-responsive.css">
+  <script src="game-responsive.js"></script>
+  <link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/code_breaker.html">
 </head>
 
 <body>
@@ -1237,7 +1240,7 @@ async function addActivity(entry) {
 async function addNotification(title,message,type="achievement") {
   try {
     await addDoc(collection(db,"users",currentUser.uid,"notifications"), {
-      title, message, type, read:false, createdAt:serverTimestamp()
+      title, message, type, icon:"🧩", link:"code_breaker.html", gameId:"code_breaker", read:false, createdAt:serverTimestamp()
     });
   } catch (error) {
     console.warn("Notification write failed:",error);
@@ -1287,12 +1290,10 @@ async function awardQuestion(question) {
       questionId:question.id,level:result.completed,xp:10,coins:5
     });
     await addNotification(
-      "Code Breaker badge unlocked",
-      `Completed a new ${question.difficulty.toLowerCase()} question in Code Breaker. Earned 10 XP and 5 coins.`,
-      "achievement"
+      "Code Breaker challenge cleared",
+      `Completed ${question.topic.toLowerCase()} challenge ${question.id}. Earned 10 XP and 5 coins.`,
+      "game"
     );
-    await addNotification("XP earned","You earned 10 XP in Code Breaker.","xp");
-    await addNotification("Coins earned","You earned 5 coins in Code Breaker.","coins");
   }
   return result;
 }
@@ -1535,6 +1536,11 @@ onAuthStateChanged(auth,async user=>{
     showToast("Could not load your game data. Check your internet connection and Firebase rules.", "error");
   }
 });
+</script>
+
+<script type="module">
+import { initGamePlatform } from "./game-platform.js";
+initGamePlatform({ gameId: "code_breaker", gameTitle: "Code Breaker", requireAuth: true, link: "code_breaker.html" });
 </script>
 </body>
 </html>

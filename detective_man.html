@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Investigate digital cases, analyze system logs, connect evidence and earn Code Academy XP for solved cases.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/detective_man.html">
+<meta name="theme-color" content="#0a0e1a">
+<link rel="icon" href="logo.png" type="image/png">
 <title>Digital Detective Pro</title>
 
 <style>
@@ -350,6 +355,8 @@ html,body{
     opacity:1;
 }
 </style>
+  <link rel="stylesheet" href="game-responsive.css">
+  <script src="game-responsive.js"></script>
 </head>
 
 <body>
@@ -801,6 +808,18 @@ function submitDeduction(){
             <br><br><strong>Case solved! Loading next case...</strong>
         `;
         speak(`Excellent deduction ${detectiveName}. ${currentCase.explanation}`);
+        window.CodeAcademyPlatform?.award({
+            eventKey: `case-${currentCase.id || currentCaseIndex + 1}`,
+            xp: 5, coins: 2.5, score: currentCaseIndex + 1, level: currentCaseIndex + 1,
+            message: `Case ${currentCase.id || currentCaseIndex + 1} solved in Digital Detective. +5 XP and +2.5 coins.`,
+            icon: "🕵️", link: "detective_man.html"
+        }).then(result => {
+            if (result?.awarded) showMsg("Case reward saved: +5 XP · +2.5 coins");
+            else if (result) showMsg("Case already rewarded. No duplicate XP or coins.");
+        }).catch(error => {
+            console.error("Digital Detective reward failed:", error);
+            showMsg("Case solved, but reward sync failed. Check your connection.", "warning");
+        });
         setTimeout(() => loadCase(currentCaseIndex + 1), 4000);
     } else {
         feedback.className = 'feedback wrong show';
@@ -841,6 +860,11 @@ function showMsg(text){
     msg.classList.add('show');
     setTimeout(() => msg.classList.remove('show'), 3000);
 }
+</script>
+
+<script type="module">
+import { initGamePlatform } from "./game-platform.js";
+initGamePlatform({ gameId: "detective_man", gameTitle: "Digital Detective", requireAuth: true, link: "detective_man.html" });
 </script>
 </body>
 </html>

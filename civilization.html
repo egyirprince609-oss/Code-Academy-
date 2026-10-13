@@ -3,10 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <meta name="theme-color" content="#050814">
 
+<meta name="description" content="Build and protect a growing civilization through strategic choices in Code Academy Civilization Puzzle.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/civilization.html">
+<meta name="theme-color" content="#050814">
+<link rel="icon" href="logo.png" type="image/png">
 <title>Civilization Puzzle | Code Academy</title>
 
 <style>
@@ -824,6 +829,8 @@ button{
     }
 }
 </style>
+  <link rel="stylesheet" href="game-responsive.css">
+  <script src="game-responsive.js"></script>
 </head>
 
 <body>
@@ -2810,6 +2817,13 @@ async function rewardVictory(){
                 `VICTORY REWARD: +${XP_PER_VICTORY} XP +${COINS_PER_VICTORY} Coins`
             );
 
+            await window.CodeAcademyPlatform?.notify({
+                eventKey: `campaign-victory-${Date.now()}`,
+                title: "Civilization campaign won",
+                message: `Your civilization survived 50 turns. +${XP_PER_VICTORY} XP and +${COINS_PER_VICTORY} coins were awarded.`,
+                type: "game", icon: "🏛️", link: "civilization.html"
+            });
+
             speak(
                 `Victory achieved, ${rulerName}. ` +
                 `You earned ${XP_PER_VICTORY} XP and ` +
@@ -3188,5 +3202,10 @@ window.addEventListener(
 
 </script>
 
+
+<script type="module">
+import { initGamePlatform } from "./game-platform.js";
+initGamePlatform({ gameId: "civilization", gameTitle: "Civilization Puzzle", requireAuth: true, link: "civilization.html" });
+</script>
 </body>
 </html>
