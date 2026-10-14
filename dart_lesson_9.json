@@ -2,196 +2,175 @@
   "course": "dart",
   "lessonNumber": 9,
   "lessonId": "dart-lesson-9",
-  "title": "Async Programming and Error Handling",
-  "subtitle": "Build programs that can handle asynchronous work and recover from errors safely.",
-  "description": "Work with Future, async, await, Streams, try-catch and asynchronous workflows used in real-world Dart applications.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Futures, Async/Await and Exceptions",
+  "subtitle": "Futures, Async/Await and Exceptions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on futures, async/await and exceptions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "dart-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Async Programming and Error Handling"
+      "text": "PAGE 1 — Futures, Async/Await and Exceptions: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Async Programming and Error Handling. This lesson follows the course dashboard topic “Async Programming and Error Handling”. The goal is to build programs that can handle asynchronous work and recover from errors safely.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "dart-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Futures, Async/Await and Exceptions is not just a syntax topic: it is a way to make the application’s intent explicit. Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. In the Code Academy dashboard, that idea matters because A course model benefits from sound types and clear asynchronous boundaries. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A function packages a task behind a name so callers can use it without repeating its implementation. Good functions have a focused responsibility, meaningful parameter names, and a clear result or documented side effect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Dart. Paste this snippet into the Dart editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "dart-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Futures, Async/Await and Exceptions: An async function can return a Future representing a value available later",
       "language": "dart",
-      "title": "Sample 1: Async Programming and Error Handling in practice",
-      "code": "Future<String> loadTitle() async { return \"Lesson ready\"; }\nvoid main() async { print(await loadTitle()); }"
+      "code": "Future<String> loadTitle() async { return \"HTML Foundations\"; }",
+      "output": "An async function can return a Future representing a value available later."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Build programs that can handle asynchronous work and recover from errors safely. Identify the input, the operation, and the result before making changes."
+      "id": "dart-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “Future<String> loadTitle() async { return \"HTML Foundations\"; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: An async function can return a Future representing a value available later. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "dart-l9-q-01",
+      "id": "dart-9-quiz-1-5",
       "type": "quiz",
-      "question": "A function receives an unexpected input. What should the contract make clear?",
+      "question": "A request returns a Promise and the next line reads its result immediately without await or a handler. What is the likely problem?",
       "options": [
-        "Only the function’s color.",
-        "The screen size.",
-        "How many comments it contains.",
-        "Which inputs are valid and what happens for invalid input."
+        "The browser converts every Promise to JSON automatically",
+        "The request becomes a CSS animation",
+        "The Promise blocks the thread until it succeeds",
+        "The code may use the pending asynchronous result instead of the completed value"
       ],
       "correctIndex": 3,
-      "explanation": "A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "incorrectFeedback": "Review the requirement again. A clear function contract specifies assumptions, returned values, and failure behavior."
+      "explanation": "Correct answer: The code may use the pending asynchronous result instead of the completed value. An asynchronous result is not available until its completion path runs.",
+      "reasoning": "An asynchronous result is not available until its completion path runs. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Work with Future, async, await, Streams, try-catch and asynchronous workflows used in real-world Dart applications.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Dart. Paste this snippet into the Dart editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "dart-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Futures, Async/Await and Exceptions: await waits for asynchronous completion and try/catch handles failure",
       "language": "dart",
-      "title": "Sample 2: Async Programming and Error Handling in practice",
-      "code": "Future<int> calculate() async => 2 + 3;\nvoid main() async { final total = await calculate(); print(total); }"
+      "code": "Future<void> load() async { try { final response = await fetchLesson(); print(response); } catch (error) { print(\"Could not load lesson\"); } }",
+      "output": "await waits for asynchronous completion and try/catch handles failure."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Dart project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "dart-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “Future<void> load() async { try { final response = await fetchLesson(); print(response); } catch (error) { print(\"Could not load lesson\"); } }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: await waits for asynchronous completion and try/catch handles failure. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "dart-l9-q-02",
+      "id": "dart-9-quiz-2-8",
       "type": "quiz",
-      "question": "A function calculates whether a score passes. How should the caller reuse the result?",
+      "question": "A lesson fetch can fail offline. Which UI states should be distinct?",
       "options": [
-        "Infer it from a printed sentence.",
-        "Re-run the whole application.",
-        "Use the returned Boolean or documented result.",
-        "Read the function’s source text at runtime."
+        "Only a loading spinner that never changes",
+        "A single state that always claims the lesson loaded",
+        "Loading, success, and failure",
+        "Success and failure represented by the same empty string"
       ],
       "correctIndex": 2,
-      "explanation": "A returned result is a reliable interface between the function and its caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A returned result is a reliable interface between the function and its caller.",
-      "incorrectFeedback": "Review the requirement again. A returned result is a reliable interface between the function and its caller."
+      "explanation": "Correct answer: Loading, success, and failure. Clear async states avoid presenting failure as success or leaving stale loading indicators.",
+      "reasoning": "Clear async states avoid presenting failure as success or leaving stale loading indicators. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Parameters are the inputs a function accepts; arguments are the actual values supplied by a call. A return value sends a result back to the caller, while printing merely displays information and does not automatically make it available for later calculations."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Dart. Paste this snippet into the Dart editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "dart",
-      "title": "Sample 3: Async Programming and Error Handling in practice",
-      "code": "Future<void> main() async { try { await Future<void>.delayed(const Duration(milliseconds: 10)); print(\"Complete\"); } catch (error) { print(\"Could not finish: $error\"); } }"
-    },
-    {
-      "id": "dart-l9-q-03",
-      "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
-      "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
-      ],
-      "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "dart-9-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Futures, Async/Await and Exceptions: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Testing a function with normal, minimum, maximum, and invalid inputs exposes assumptions early. Small functions are easier to test and combine than one large function that handles unrelated jobs."
+      "id": "dart-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A course model benefits from sound types and clear asynchronous boundaries. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Dart. Paste this snippet into the Dart editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
+      "id": "dart-9-code-3-11",
       "type": "code",
+      "title": "Example 3 — Futures, Async/Await and Exceptions: Future",
       "language": "dart",
-      "title": "Sample 4: Async Programming and Error Handling in practice",
-      "code": "Future<String> greet() async => \"Welcome\";\nvoid main() async { print(await greet()); }"
+      "code": "final values = await Future.wait([Future.value(5), Future.value(2)]);\nprint(values.reduce((a, b) => a + b));",
+      "output": "Future.wait waits for multiple futures and returns their results."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Work with Future, async, await, Streams, try-catch and asynchronous workflows used in real-world Dart applications. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "dart-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “final values = await Future.wait([Future.value(5), Future.value(2)]);”: Waits for or coordinates work that completes asynchronously, so the result is handled at the correct time. Line 2 — “print(values.reduce((a, b) => a + b));”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Future.wait waits for multiple futures and returns their results. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "dart-l9-q-04",
+      "id": "dart-9-quiz-2-13",
       "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "question": "A slow response for an old search overwrites a newer result. What should be added?",
       "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
-      ],
-      "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
-    },
-    {
-      "id": "dart-l9-q-05",
-      "type": "quiz",
-      "question": "A function has eight unrelated responsibilities and is hard to test. What is the best improvement?",
-      "options": [
-        "Add more global variables.",
-        "Split it into small functions with clear responsibilities.",
-        "Remove all function names.",
-        "Put all code into one conditional."
+        "A retry loop without a stop condition",
+        "A request identity, cancellation, or stale-response guard",
+        "A longer fixed delay for every response",
+        "A global variable containing only the last character"
       ],
       "correctIndex": 1,
-      "explanation": "Small cohesive functions are easier to test and maintain.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Small cohesive functions are easier to test and maintain.",
-      "incorrectFeedback": "Review the requirement again. Small cohesive functions are easier to test and maintain."
+      "explanation": "Correct answer: A request identity, cancellation, or stale-response guard. Asynchronous results can arrive out of order; stale work must not replace the latest intent.",
+      "reasoning": "Asynchronous results can arrive out of order; stale work must not replace the latest intent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Futures, Async/Await and Exceptions: A safe parse and fallback keeps invalid text from causing an unhandled conversion failure",
+      "language": "dart",
+      "code": "Future<int> safeScore(String raw) async { return int.tryParse(raw) ?? 0; }",
+      "output": "A safe parse and fallback keeps invalid text from causing an unhandled conversion failure."
+    },
+    {
+      "id": "dart-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “Future<int> safeScore(String raw) async { return int.tryParse(raw) ?? 0; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A safe parse and fallback keeps invalid text from causing an unhandled conversion failure. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "dart-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Several independent requests are all required before rendering. What is a common approach?",
+      "options": [
+        "Await a coordination operation such as Promise.all and handle rejection",
+        "Await only the first request and ignore the others",
+        "Assume launching requests means they have completed",
+        "Convert all errors to empty success values silently"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Await a coordination operation such as Promise.all and handle rejection. A coordination step makes completion requirements explicit and lets the failure path be handled.",
+      "reasoning": "A coordination step makes completion requirements explicit and lets the failure path be handled. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Futures, Async/Await and Exceptions: applied challenge and mastery check"
+    },
+    {
+      "id": "dart-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. For the Code Academy dashboard, A course model benefits from sound types and clear asynchronous boundaries. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "dart-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses futures, async/await and exceptions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "dart-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A task may outlive the screen that started it. What should the design consider?",
+      "options": [
+        "Never remove any event listener",
+        "Assume the screen remains mounted forever",
+        "Make the task mutate whichever page is now visible",
+        "Cancellation or stale-result handling and cleanup of listeners/resources"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Cancellation or stale-result handling and cleanup of listeners/resources. Async work should respect the lifetime of the interface or operation that created it.",
+      "reasoning": "Async work should respect the lifetime of the interface or operation that created it. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

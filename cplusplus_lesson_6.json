@@ -2,196 +2,175 @@
   "course": "cplusplus",
   "lessonNumber": 6,
   "lessonId": "cplusplus-lesson-6",
-  "title": "Functions",
-  "subtitle": "Design reusable functions with parameters, return values and overloads.",
-  "description": "Declare and call functions with clear inputs and outputs.",
+  "title": "Arrays, Strings and Vectors",
+  "subtitle": "Arrays, Strings and Vectors: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on arrays, strings and vectors, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "cplusplus-6-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Functions"
+      "text": "PAGE 1 — Arrays, Strings and Vectors: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 6: Functions. This lesson follows the course dashboard topic “Functions”. The goal is to design reusable functions with parameters, return values and overloads.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "cplusplus-6-page-1-teaching-2",
+      "type": "content",
+      "text": "Arrays, Strings and Vectors is not just a syntax topic: it is a way to make the application’s intent explicit. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. In the Code Academy dashboard, that idea matters because A progress tracker can combine standard containers, small functions, and clear data structures. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A function packages a task behind a name so callers can use it without repeating its implementation. Good functions have a focused responsibility, meaningful parameter names, and a clear result or documented side effect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-1",
+      "id": "cplusplus-6-code-1-3",
       "type": "code",
+      "title": "Example 1 — Arrays, Strings and Vectors: vector stores ordered values and at() checks bounds",
       "language": "cpp",
-      "title": "Sample 1: Functions in practice",
-      "code": "#include <iostream>\nint add(int a, int b) { return a + b; }\nint main() { std::cout << add(8, 4) << \"\\n\"; }"
+      "code": "std::vector<std::string> courses{\"HTML\", \"CSS\", \"C++\"};\nstd::cout << courses.at(0);",
+      "output": "vector stores ordered values and at() checks bounds."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Design reusable functions with parameters, return values and overloads. Identify the input, the operation, and the result before making changes."
+      "id": "cplusplus-6-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “std::vector<std::string> courses{\"HTML\", \"CSS\", \"C++\"};”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “std::cout << courses.at(0);”: Displays the computed value so the behavior can be observed and checked. Expected behavior: vector stores ordered values and at() checks bounds. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "cplusplus-l6-q-01",
+      "id": "cplusplus-6-quiz-1-5",
       "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
+      "question": "A course list contains three entries and uses zero-based indexing. Which expression selects the first item?",
       "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
+        "courses[3]",
+        "courses[-3] in every language",
+        "courses[0]",
+        "courses[1]"
       ],
       "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+      "explanation": "Correct answer: courses[0]. In zero-based arrays, index zero refers to the first entry.",
+      "reasoning": "In zero-based arrays, index zero refers to the first entry. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Declare and call functions with clear inputs and outputs.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-2",
+      "id": "cplusplus-6-code-2-6",
       "type": "code",
+      "title": "Example 2 — Arrays, Strings and Vectors: map associates keys with values",
       "language": "cpp",
-      "title": "Sample 2: Functions in practice",
-      "code": "#include <iostream>\nbool passed(int score) { return score >= 50; }\nint main() { std::cout << std::boolalpha << passed(72) << \"\\n\"; }"
+      "code": "std::map<std::string, int> xp{{\"HTML\", 20}, {\"CSS\", 10}};\nstd::cout << xp[\"HTML\"];",
+      "output": "map associates keys with values."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real C++ project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "cplusplus-6-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “std::map<std::string, int> xp{{\"HTML\", 20}, {\"CSS\", 10}};”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “std::cout << xp[\"HTML\"];”: Displays the computed value so the behavior can be observed and checked. Expected behavior: map associates keys with values. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "cplusplus-l6-q-02",
+      "id": "cplusplus-6-quiz-2-8",
       "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "question": "The dashboard must prevent the same completed lesson ID being counted twice. Which data structure is a natural fit?",
       "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
-      ],
-      "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Parameters are the inputs a function accepts; arguments are the actual values supplied by a call. A return value sends a result back to the caller, while printing merely displays information and does not automatically make it available for later calculations."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-3",
-      "type": "code",
-      "language": "cpp",
-      "title": "Sample 3: Functions in practice",
-      "code": "#include <iostream>\nint doubleValue(int value) { return value * 2; }\nint main() { std::cout << doubleValue(9) << \"\\n\"; }"
-    },
-    {
-      "id": "cplusplus-l6-q-03",
-      "type": "quiz",
-      "question": "A function has eight unrelated responsibilities and is hard to test. What is the best improvement?",
-      "options": [
-        "Add more global variables.",
-        "Split it into small functions with clear responsibilities.",
-        "Remove all function names.",
-        "Put all code into one conditional."
+        "A counter incremented without checking the lesson ID",
+        "A set or a keyed map that enforces unique IDs",
+        "An unparsed text string with duplicates",
+        "Parallel arrays with no shared key"
       ],
       "correctIndex": 1,
-      "explanation": "Small cohesive functions are easier to test and maintain.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Small cohesive functions are easier to test and maintain.",
-      "incorrectFeedback": "Review the requirement again. Small cohesive functions are easier to test and maintain."
+      "explanation": "Correct answer: A set or a keyed map that enforces unique IDs. Uniqueness should be enforced by the data structure or explicit key check.",
+      "reasoning": "Uniqueness should be enforced by the data structure or explicit key check. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
+      "id": "cplusplus-6-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Arrays, Strings and Vectors: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Testing a function with normal, minimum, maximum, and invalid inputs exposes assumptions early. Small functions are easier to test and combine than one large function that handles unrelated jobs."
+      "id": "cplusplus-6-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress tracker can combine standard containers, small functions, and clear data structures. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-4",
+      "id": "cplusplus-6-code-3-11",
       "type": "code",
+      "title": "Example 3 — Arrays, Strings and Vectors: accumulate computes a total; include numeric for this algorithm",
       "language": "cpp",
-      "title": "Sample 4: Functions in practice",
-      "code": "#include <iostream>\nint maxValue(int a, int b) { return a > b ? a : b; }\nint main() { std::cout << maxValue(7, 11) << \"\\n\"; }"
+      "code": "std::vector<int> scores{4, 5, 3};\nint total = std::accumulate(scores.begin(), scores.end(), 0);",
+      "output": "accumulate computes a total; include numeric for this algorithm."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Declare and call functions with clear inputs and outputs. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "cplusplus-6-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “std::vector<int> scores{4, 5, 3};”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “int total = std::accumulate(scores.begin(), scores.end(), 0);”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: accumulate computes a total; include numeric for this algorithm. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "cplusplus-l6-q-04",
+      "id": "cplusplus-6-quiz-2-13",
       "type": "quiz",
-      "question": "A function receives an unexpected input. What should the contract make clear?",
+      "question": "A dictionary lookup may not find a key. What should the code do?",
       "options": [
-        "Only the function’s color.",
-        "The screen size.",
-        "How many comments it contains.",
-        "Which inputs are valid and what happens for invalid input."
+        "Handle the missing-key result or use a deliberate fallback",
+        "Assume the lookup always succeeds",
+        "Treat the key’s absence as proof that its value is zero",
+        "Access a missing nested property without checking"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Handle the missing-key result or use a deliberate fallback. A missing key may be distinct from a key whose value is zero or empty.",
+      "reasoning": "A missing key may be distinct from a key whose value is zero or empty. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "cplusplus-6-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Arrays, Strings and Vectors: set stores unique values",
+      "language": "cpp",
+      "code": "std::set<std::string> completed{\"html-1\", \"html-1\"};\nstd::cout << completed.size();",
+      "output": "set stores unique values."
+    },
+    {
+      "id": "cplusplus-6-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “std::set<std::string> completed{\"html-1\", \"html-1\"};”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “std::cout << completed.size();”: Displays the computed value so the behavior can be observed and checked. Expected behavior: set stores unique values. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "cplusplus-6-quiz-3-16",
+      "type": "quiz",
+      "question": "Each quiz attempt has both correctness and XP. Which representation best preserves the relationship?",
+      "options": [
+        "Separate arrays that can become different lengths",
+        "One string containing all values without delimiters",
+        "A single number containing the sum only",
+        "A list of structured attempt records"
       ],
       "correctIndex": 3,
-      "explanation": "A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "incorrectFeedback": "Review the requirement again. A clear function contract specifies assumptions, returned values, and failure behavior."
+      "explanation": "Correct answer: A list of structured attempt records. Records keep related fields together and prevent losing which XP belongs to which attempt.",
+      "reasoning": "Records keep related fields together and prevent losing which XP belongs to which attempt. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "cplusplus-l6-q-05",
+      "id": "cplusplus-6-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Arrays, Strings and Vectors: applied challenge and mastery check"
+    },
+    {
+      "id": "cplusplus-6-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. For the Code Academy dashboard, A progress tracker can combine standard containers, small functions, and clear data structures. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "cplusplus-6-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses arrays, strings and vectors. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "cplusplus-6-quiz-5-20",
       "type": "quiz",
-      "question": "A function calculates whether a score passes. How should the caller reuse the result?",
+      "question": "A score array may be empty. What should the maximum-score calculation consider?",
       "options": [
-        "Infer it from a printed sentence.",
-        "Re-run the whole application.",
-        "Use the returned Boolean or documented result.",
-        "Read the function’s source text at runtime."
+        "Use the array length as the maximum score",
+        "Sort it and read index zero without a check",
+        "Handle the empty collection before assuming a maximum exists",
+        "Assume the maximum is always the first item"
       ],
       "correctIndex": 2,
-      "explanation": "A returned result is a reliable interface between the function and its caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A returned result is a reliable interface between the function and its caller.",
-      "incorrectFeedback": "Review the requirement again. A returned result is a reliable interface between the function and its caller."
+      "explanation": "Correct answer: Handle the empty collection before assuming a maximum exists. An empty collection has no element to return as its maximum.",
+      "reasoning": "An empty collection has no element to return as its maximum. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "cplusplus-6-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

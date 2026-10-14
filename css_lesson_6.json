@@ -3,195 +3,256 @@
   "lessonNumber": 6,
   "lessonId": "css-lesson-6",
   "title": "CSS Flexbox",
-  "subtitle": "Build flexible one-dimensional layouts with Flexbox.",
-  "description": "Learn how to align, distribute and organize elements efficiently using containers, rows, columns and flexible sizing.",
+  "subtitle": "Arrange, align and distribute elements with flexible layouts",
+  "description": "Learn how CSS Flexbox works, how to control the direction and alignment of items, how wrapping and spacing work, and how to create responsive layouts.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "page-1-added",
       "type": "heading",
-      "text": "PAGE 1 — Understand CSS Flexbox"
+      "text": "PAGE 1 — CSS Flexbox: concepts and applied practice"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 6: CSS Flexbox. This lesson follows the course dashboard topic “CSS Flexbox”. The goal is to build flexible one-dimensional layouts with Flexbox.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "type": "content",
+      "title": "1. Introduction to CSS Flexbox",
+      "text": "CSS Flexbox, also called the Flexible Box Layout, is a CSS layout system for arranging elements in one dimension. One dimension means that Flexbox primarily arranges items along a row or a column. It is useful for navigation bars, button groups, card rows, toolbars and vertically aligned content. To use Flexbox, set display: flex on a parent element. That parent becomes the flex container, and its direct children become flex items. Flexbox properties can control how those items are positioned, spaced, aligned and sized. Important: display: flex affects the direct children of the container. It does not automatically make every deeply nested descendant a flex item. Flexbox can also work with different screen sizes, but responsive behavior may require additional properties or media queries.",
+      "id": "css-6-block-2"
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Flexbox is designed for arranging items along one main axis. The container controls direction and alignment, while flex items can grow or shrink based on available space."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-1",
       "type": "code",
-      "language": "css",
-      "title": "Sample 1: CSS Flexbox in practice",
-      "code": "<!doctype html><html><head><style>.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px;background:#e0e7ff}</style></head><body><div class=\"toolbar\"><strong>Code Academy</strong><button>Sign in</button></div></body></html>"
+      "title": "Code Sample 1: Create Your First Flex Container",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My First Flexbox</title>\n  <style>\n    .container {\n      display: flex;\n      background: #e2e8f0;\n      padding: 12px;\n      gap: 10px;\n    }\n\n    .item {\n      background: #2563eb;\n      color: white;\n      padding: 20px;\n      border-radius: 8px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"container\">\n    <div class=\"item\">One</div>\n    <div class=\"item\">Two</div>\n    <div class=\"item\">Three</div>\n  </div>\n</body>\n</html>",
+      "explanation": "The container uses display: flex, so its three direct child elements are arranged in a row by default. The gap property adds space between adjacent items without adding that space around the outside edges.",
+      "output": "The container uses display: flex, so its three direct child elements are arranged in a row by default. The gap property adds space between adjacent items without adding that space around the outside edges.",
+      "id": "css-6-block-3"
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Build flexible one-dimensional layouts with Flexbox. Identify the input, the operation, and the result before making changes."
+      "type": "content",
+      "title": "2. The Main Axis and Cross Axis",
+      "text": "Flexbox uses two important directions: the main axis and the cross axis. The main axis follows the direction set by flex-direction. With the default value row, the main axis runs horizontally in the usual left-to-right writing direction, while the cross axis runs vertically. With flex-direction: column, the main axis runs vertically and the cross axis runs horizontally. These axes explain why justify-content and align-items do different jobs. justify-content positions or distributes items along the main axis. align-items aligns items along the cross axis. Remember that the axis direction depends on flex-direction, so justify-content does not always mean horizontal alignment.",
+      "id": "css-6-block-4"
     },
     {
-      "id": "css-l6-q-01",
       "type": "quiz",
-      "question": "A toolbar has a logo on the left and actions on the right. Which layout tool is suited for alignment along one axis?",
+      "question": "A flex container uses flex-direction: column. Which axis does justify-content control?",
       "options": [
-        "CSS Grid is the only layout that can align items.",
-        "float on every element.",
-        "Absolute positioning for all items.",
-        "Flexbox with appropriate justify-content and align-items."
-      ],
-      "correctIndex": 3,
-      "explanation": "Flexbox is designed for one-dimensional alignment and distribution.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Flexbox is designed for one-dimensional alignment and distribution.",
-      "incorrectFeedback": "Review the requirement again. Flexbox is designed for one-dimensional alignment and distribution."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn how to align, distribute and organize elements efficiently using containers, rows, columns and flexible sizing.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-2",
-      "type": "code",
-      "language": "css",
-      "title": "Sample 2: CSS Flexbox in practice",
-      "code": "<!doctype html><html><head><style>.cards{display:flex;gap:12px;flex-wrap:wrap}.card{flex:1 1 150px;padding:20px;background:#f1f5f9}</style></head><body><div class=\"cards\"><div class=\"card\">HTML</div><div class=\"card\">CSS</div><div class=\"card\">JS</div></div></body></html>"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real CSS project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "css-l6-q-02",
-      "type": "quiz",
-      "question": "Items should wrap onto new rows when space is limited. What can help?",
-      "options": [
-        "flex-wrap: wrap",
-        "white-space: nowrap on every child",
-        "width: 2000px",
-        "position: fixed"
+        "The vertical main axis",
+        "The horizontal cross axis",
+        "Both axes equally",
+        "Neither axis"
       ],
       "correctIndex": 0,
-      "explanation": "Flex wrapping lets items move onto additional lines when the container is too narrow.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Flex wrapping lets items move onto additional lines when the container is too narrow.",
-      "incorrectFeedback": "Review the requirement again. Flex wrapping lets items move onto additional lines when the container is too narrow."
+      "explanation": "With flex-direction: column, the main axis is vertical. justify-content controls distribution along that main axis.",
+      "id": "css-6-block-5"
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Use justify-content to distribute items along the main axis and align-items for alignment across the cross axis. The axes change when flex-direction changes, so confirm whether the layout is a row or a column."
+      "type": "content",
+      "title": "3. Understanding flex-direction",
+      "text": "The flex-direction property determines the direction in which flex items are laid out. The value row lays items along the main axis in the row direction. row-reverse reverses the main-axis order. column stacks items vertically, while column-reverse stacks them in the reverse direction. Reversing the direction changes visual ordering, but it does not change the underlying order of elements in the HTML document. This distinction matters for keyboard navigation and assistive technology. In most interfaces, use the natural HTML order and choose a layout direction that keeps the visual order understandable.",
+      "id": "css-6-block-6"
     },
     {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-3",
       "type": "code",
-      "language": "css",
-      "title": "Sample 3: CSS Flexbox in practice",
-      "code": "<!doctype html><html><head><style>.center{min-height:180px;display:flex;justify-content:center;align-items:center;background:#fef3c7}</style></head><body><div class=\"center\">Centered content</div></body></html>"
+      "title": "Code Sample 2: Change the Direction",
+      "language": "html",
+      "code": "<style>\n  .menu {\n    display: flex;\n    flex-direction: column;\n    gap: 8px;\n    max-width: 220px;\n  }\n\n  .menu a {\n    display: block;\n    padding: 12px;\n    background: #0f172a;\n    color: white;\n    text-decoration: none;\n    border-radius: 6px;\n  }\n</style>\n\n<nav class=\"menu\">\n  <a href=\"#home\">Home</a>\n  <a href=\"#courses\">Courses</a>\n  <a href=\"#about\">About</a>\n</nav>",
+      "explanation": "The menu links are stacked vertically because the parent uses flex-direction: column. Change the value to row to arrange them horizontally. The gap property keeps consistent spacing between adjacent links.",
+      "output": "The menu links are stacked vertically because the parent uses flex-direction: column. Change the value to row to arrange them horizontally. The gap property keeps consistent spacing between adjacent links.",
+      "id": "css-6-block-7"
     },
     {
-      "id": "css-l6-q-03",
       "type": "quiz",
-      "question": "A row uses justify-content but the items align on the wrong direction after flex-direction changes. Why?",
+      "question": "Which flex-direction value stacks items vertically in the normal main-axis order?",
       "options": [
-        "The browser forgot the CSS.",
-        "The main and cross axes depend on flex-direction.",
-        "The element needs a table caption.",
-        "The font was too large."
+        "row",
+        "column",
+        "row-reverse",
+        "wrap"
       ],
       "correctIndex": 1,
-      "explanation": "Flexbox axes change with direction, so alignment properties must be interpreted against those axes.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Flexbox axes change with direction, so alignment properties must be interpreted against those axes.",
-      "incorrectFeedback": "Review the requirement again. Flexbox axes change with direction, so alignment properties must be interpreted against those axes."
+      "explanation": "column makes the main axis vertical and lays items out in the normal column direction. wrap is a different property value used with flex-wrap.",
+      "id": "css-6-block-8"
     },
     {
-      "id": "page-3-heading",
+      "id": "page-2-added",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — CSS Flexbox: concepts and applied practice"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Gap often provides cleaner spacing between items than individual margins. Check behavior when labels wrap, buttons grow, or a small screen leaves limited horizontal room."
+      "type": "content",
+      "title": "4. Aligning and Distributing Items",
+      "text": "Two of the most frequently used Flexbox properties are justify-content and align-items. justify-content controls how items are distributed along the main axis. Common values include flex-start, flex-end, center, space-between, space-around and space-evenly. For example, space-between places the first item at the main-start edge and the last item at the main-end edge, distributing remaining space between the items. align-items controls alignment along the cross axis. Common values include stretch, flex-start, flex-end and center. The default align-items value is stretch, which can stretch items across the cross axis when their cross size is automatic and other constraints allow it. To see vertical centering in a row container, give the container a height and use align-items: center. The two properties are not interchangeable.",
+      "id": "css-6-block-10"
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-4",
       "type": "code",
-      "language": "css",
-      "title": "Sample 4: CSS Flexbox in practice",
-      "code": "<!doctype html><html><head><style>.layout{display:flex;gap:16px}.main{flex:3}.side{flex:1}.layout>div{padding:12px;background:#dbeafe}@media(max-width:520px){.layout{flex-direction:column}}</style></head><body><div class=\"layout\"><div class=\"main\">Main content</div><div class=\"side\">Sidebar</div></div></body></html>"
+      "title": "Code Sample 3: Center Content in a Container",
+      "language": "html",
+      "code": "<style>\n  .hero {\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    min-height: 240px;\n    background: #dbeafe;\n    border-radius: 12px;\n  }\n\n  .hero-content {\n    padding: 20px;\n    background: white;\n    border-radius: 8px;\n    text-align: center;\n  }\n</style>\n\n<section class=\"hero\">\n  <div class=\"hero-content\">\n    <h2>Welcome</h2>\n    <p>Start learning CSS today.</p>\n  </div>\n</section>",
+      "explanation": "justify-content: center centers the content along the main axis. align-items: center centers it along the cross axis. Because the default flex-direction is row, the first property centers horizontally and the second vertically in this example.",
+      "output": "justify-content: center centers the content along the main axis. align-items: center centers it along the cross axis. Because the default flex-direction is row, the first property centers horizontally and the second vertically in this example.",
+      "id": "css-6-block-11"
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to align, distribute and organize elements efficiently using containers, rows, columns and flexible sizing. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "css-l6-q-04",
       "type": "quiz",
-      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "question": "A container uses the default flex-direction: row. Which pair centers its direct child horizontally and vertically?",
       "options": [
-        "A map/dictionary keyed by email, with suitable uniqueness handling.",
-        "A random number with no mapping.",
-        "A paragraph of comma-separated values that is never parsed.",
-        "A loop that guesses the correct person."
+        "justify-content: center and align-items: center",
+        "align-items: center and flex-wrap: center",
+        "flex-direction: center and justify-content: stretch",
+        "gap: center and text-align: middle"
       ],
       "correctIndex": 0,
-      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
+      "explanation": "In a row container, justify-content centers along the horizontal main axis and align-items centers along the vertical cross axis. The other options use invalid or unrelated values.",
+      "id": "css-6-block-12"
     },
     {
-      "id": "css-l6-q-05",
+      "type": "content",
+      "title": "5. Wrapping, Gap and Multiple Rows",
+      "text": "By default, flex items use flex-wrap: nowrap, meaning they try to stay on one line. If the items cannot fit, they may shrink according to their flex sizing rules. Set flex-wrap: wrap when items should move onto additional lines as space becomes insufficient. The value wrap-reverse reverses the cross-axis direction of the lines. The gap property sets spacing between rows and columns of flex items without needing margins on every child. You can use gap: 12px for the same spacing in both directions, or row-gap and column-gap to control the two directions separately. Wrapping is useful for groups of cards, tags, buttons and small product panels. Remember that wrapping does not automatically make every item the same width; you may also need to set an item's width, flex-basis or flex sizing.",
+      "id": "css-6-block-13"
+    },
+    {
       "type": "quiz",
-      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
+      "question": "A row of cards should move onto additional lines when there is not enough room. Which property should you use?",
       "options": [
-        "One.",
-        "The collection length.",
-        "Zero.",
-        "Minus one."
+        "flex-direction: wrap",
+        "justify-content: wrap",
+        "flex-wrap: wrap",
+        "align-items: wrap"
       ],
       "correctIndex": 2,
-      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+      "explanation": "flex-wrap: wrap allows flex items to move onto additional lines when needed. wrap is not a valid value for flex-direction, justify-content or align-items.",
+      "id": "css-6-block-14"
+    },
+    {
+      "type": "content",
+      "title": "6. Controlling Individual Flex Items",
+      "text": "Flexbox also provides properties for individual items. The flex-grow property controls how an item can grow to use available positive free space. A value of 0 means it does not grow through flex-grow; a positive value allows it to participate in distributing extra space. flex-shrink controls how an item can shrink when there is insufficient space. Its default is 1, so items can shrink when necessary, subject to their sizing constraints. flex-basis sets an item's initial main size before remaining free space is distributed or shortage is resolved. For example, flex: 1 is a common shorthand that makes items flexibly share available space, but shorthand expansion and minimum-size constraints can affect exact results. Another property, align-self, lets one item override the container's align-items setting. These properties apply to flex items, which means the elements must be direct children of the flex container.",
+      "id": "css-6-block-15"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 4: Flexible Card Layout",
+      "language": "html",
+      "code": "<style>\n  .cards {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 16px;\n  }\n\n  .card {\n    flex: 1 1 220px;\n    padding: 18px;\n    background: #f1f5f9;\n    border: 1px solid #cbd5e1;\n    border-radius: 10px;\n  }\n\n  .card.featured {\n    align-self: stretch;\n    background: #dbeafe;\n  }\n</style>\n\n<div class=\"cards\">\n  <article class=\"card\">\n    <h3>HTML</h3>\n    <p>Structure web pages.</p>\n  </article>\n  <article class=\"card featured\">\n    <h3>CSS</h3>\n    <p>Style and arrange page content.</p>\n  </article>\n  <article class=\"card\">\n    <h3>JavaScript</h3>\n    <p>Add interaction to websites.</p>\n  </article>\n</div>",
+      "explanation": "flex: 1 1 220px sets flex-grow to 1, flex-shrink to 1 and flex-basis to 220px. Each card starts with a 220px basis and can grow or shrink as the layout requires, while flex-wrap allows cards to move to additional lines. The exact final width depends on the container width, gaps and sizing constraints.",
+      "output": "flex: 1 1 220px sets flex-grow to 1, flex-shrink to 1 and flex-basis to 220px. Each card starts with a 220px basis and can grow or shrink as the layout requires, while flex-wrap allows cards to move to additional lines. The exact final width depends on the container width, gaps and sizing constraints.",
+      "id": "css-6-block-16"
+    },
+    {
+      "type": "quiz",
+      "question": "In the shorthand flex: 1 1 220px, what does 220px represent?",
+      "options": [
+        "The flex-grow value",
+        "The flex-shrink value",
+        "The flex-basis value",
+        "The gap between cards"
+      ],
+      "correctIndex": 2,
+      "explanation": "The three-part flex shorthand is flex-grow, flex-shrink and flex-basis. Therefore, 220px is the flex-basis.",
+      "id": "css-6-block-17"
+    },
+    {
+      "id": "page-3-added",
+      "type": "heading",
+      "text": "PAGE 3 — CSS Flexbox: concepts and applied practice"
+    },
+    {
+      "type": "content",
+      "title": "7. Build a Responsive Navigation Bar",
+      "text": "A responsive navigation bar is a practical Flexbox project. On wider screens, links can appear in a row. On narrower screens, flex-wrap: wrap allows them to move to another line if they cannot fit. You can also use a media query to switch flex-direction to column below a chosen width. A media query applies CSS only when its condition matches. In this example, the navigation links remain readable and can wrap on smaller screens. Choose breakpoints based on when the content stops fitting comfortably, rather than relying on a device name. Flexbox helps with layout, but it does not replace good semantic HTML, keyboard accessibility or testing at different screen widths.",
+      "id": "css-6-block-19"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 5: Responsive Navigation",
+      "language": "html",
+      "code": "<style>\n  .navbar {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: 12px;\n    padding: 16px;\n    background: #0f172a;\n  }\n\n  .brand {\n    color: white;\n    font-weight: bold;\n  }\n\n  .nav-links {\n    display: flex;\n    flex-wrap: wrap;\n    gap: 12px;\n  }\n\n  .nav-links a {\n    color: white;\n    text-decoration: none;\n    padding: 8px;\n  }\n\n  @media (max-width: 480px) {\n    .navbar {\n      flex-direction: column;\n      align-items: stretch;\n    }\n\n    .nav-links {\n      flex-direction: column;\n    }\n  }\n</style>\n\n<nav class=\"navbar\">\n  <div class=\"brand\">Code Academy</div>\n  <div class=\"nav-links\">\n    <a href=\"#courses\">Courses</a>\n    <a href=\"#lessons\">Lessons</a>\n    <a href=\"#about\">About</a>\n  </div>\n</nav>",
+      "explanation": "On wider screens, the navbar uses a row layout and space-between to separate the brand from the links. Below 480px, the media query changes the navbar and links to column layouts. The wrapping rules also help prevent items from overflowing when space is limited.",
+      "output": "On wider screens, the navbar uses a row layout and space-between to separate the brand from the links. Below 480px, the media query changes the navbar and links to column layouts. The wrapping rules also help prevent items from overflowing when space is limited.",
+      "id": "css-6-block-20"
+    },
+    {
+      "type": "quiz",
+      "question": "Which statement correctly describes flex-grow?",
+      "options": [
+        "It controls whether an item can take part in using extra free space.",
+        "It sets the space between every pair of items.",
+        "It determines whether items are arranged in rows or columns.",
+        "It forces all flex items to have identical content."
+      ],
+      "correctIndex": 0,
+      "explanation": "flex-grow determines how flex items share available positive free space. It does not set gaps, choose the direction or make content identical.",
+      "id": "css-6-block-21"
+    },
+    {
+      "type": "quiz",
+      "question": "Which statement about flex-wrap is correct?",
+      "options": [
+        "It centers items on the cross axis.",
+        "It lets items move onto additional lines when there is insufficient room.",
+        "It reverses the HTML document order permanently.",
+        "It makes every item exactly the same width."
+      ],
+      "correctIndex": 1,
+      "explanation": "flex-wrap controls whether flex items stay on one line or can move onto additional lines. It does not perform the other listed tasks.",
+      "id": "css-6-block-22"
+    },
+    {
+      "type": "content",
+      "title": "8. Common Flexbox Mistakes and Best Practices",
+      "text": "When using Flexbox, first identify the flex container and its direct children. If a property seems to have no effect, check whether you applied it to the correct element. For example, justify-content belongs on the flex container, while flex-grow belongs on a flex item. Remember that justify-content follows the main axis and align-items follows the cross axis; changing flex-direction changes those axes. Do not confuse gap with margin: gap controls spacing between items in the layout, while margins belong to individual elements and can affect their outside spacing. Flexbox items can also have minimum-size constraints, so long text or wide content may need min-width: 0 to shrink appropriately in some layouts. Use flex-wrap when items should flow onto multiple lines, and media queries when the layout needs a deliberate change at a particular width. Finally, test your layout with short and long text, different screen sizes and keyboard navigation.",
+      "id": "css-6-block-23"
+    },
+    {
+      "type": "quiz",
+      "question": "You set justify-content: center on a child element, but the sibling items do not move. What is the most likely issue?",
+      "options": [
+        "justify-content should usually be applied to the flex container that arranges those items.",
+        "justify-content only works when the page uses JavaScript.",
+        "justify-content can only be used on images.",
+        "Every child must have position: absolute."
+      ],
+      "correctIndex": 0,
+      "explanation": "justify-content controls the distribution of a flex container's items, so it should be applied to their flex container. It does not require JavaScript or absolute positioning.",
+      "id": "css-6-block-24"
+    },
+    {
+      "type": "quiz",
+      "question": "Which property controls alignment of flex items along the cross axis?",
+      "options": [
+        "flex-basis",
+        "justify-content",
+        "align-items",
+        "flex-grow"
+      ],
+      "correctIndex": 2,
+      "explanation": "align-items controls the cross-axis alignment of flex items. justify-content controls the main axis, while flex-basis and flex-grow affect item sizing.",
+      "id": "css-6-block-25"
+    },
+    {
+      "type": "quiz",
+      "question": "What is the main difference between gap and flex-grow?",
+      "options": [
+        "gap controls spacing between items, while flex-grow controls how items can use extra free space.",
+        "gap controls text color, while flex-grow controls font size.",
+        "gap changes the flex direction, while flex-grow wraps items onto new lines.",
+        "gap controls the cross axis, while flex-grow always centers items."
+      ],
+      "correctIndex": 0,
+      "explanation": "gap defines spacing between flex items. flex-grow controls how items participate in distributing positive free space.",
+      "id": "css-6-block-26"
+    },
+    {
+      "type": "content",
+      "title": "9. Lesson Summary",
+      "text": "You have learned the main ideas behind CSS Flexbox. Set display: flex on a parent to create a flex container. Use flex-direction to choose a row or column layout. Use justify-content for main-axis distribution and align-items for cross-axis alignment. Use flex-wrap to allow multiple lines and gap to control spacing between items. For individual items, flex-grow, flex-shrink and flex-basis control flexible sizing, while align-self can override the container's cross-axis alignment for one item. Media queries can change the layout at selected screen widths. Practice by creating a navigation bar, a row of cards and a centered hero section. If your layout does not behave as expected, inspect which element is the flex container, identify its main axis and check the sizes of its items.",
+      "id": "css-6-block-27"
     }
-  ]
+  ],
+  "xpReward": 5,
+  "coinsReward": 2
 }

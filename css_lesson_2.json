@@ -3,195 +3,229 @@
   "lessonNumber": 2,
   "lessonId": "css-lesson-2",
   "title": "CSS Selectors",
-  "subtitle": "Target HTML elements using element, class, ID and attribute selectors.",
-  "description": "Master the selectors CSS uses to decide exactly which elements should receive a particular style.",
+  "subtitle": "Target the right elements with the right rules",
+  "description": "Learn how to select HTML elements using element, class, ID, grouping, descendant, child, and attribute selectors.",
   "level": "Beginner",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 20,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "page-1-added",
       "type": "heading",
-      "text": "PAGE 1 — Understand CSS Selectors"
+      "text": "PAGE 1 — CSS Selectors: concepts and applied practice"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 2: CSS Selectors. This lesson follows the course dashboard topic “CSS Selectors”. The goal is to target HTML elements using element, class, ID and attribute selectors.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "css2-intro",
+      "type": "content",
+      "title": "1. What Is a CSS Selector?",
+      "text": "A CSS selector tells the browser which HTML elements should receive a style. For example, p selects paragraphs, .card selects elements with the class card, and #header selects the element with the ID header. Choosing the right selector helps you style exactly what you want without affecting unrelated elements."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Selectors tell CSS which elements should receive declarations. Element selectors apply broadly, class selectors are reusable, and ID selectors are intended for a unique element; attribute and pseudo-class selectors can target more specific states."
+      "id": "css2-basic",
+      "type": "content",
+      "title": "2. Element, Class, and ID Selectors",
+      "text": "An element selector uses an HTML tag name, such as h1 or button. A class selector begins with a period (.) and can be reused on many elements. An ID selector begins with a hash (#) and should identify one unique element on the page. Remember: class=\"card\" matches .card, while id=\"card\" matches #card."
     },
     {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-1",
+      "id": "css2-basic-code",
       "type": "code",
-      "language": "css",
-      "title": "Sample 1: CSS Selectors in practice",
-      "code": "<!doctype html><html><head><style>p{color:#334155}.notice{color:#b45309}.active{font-weight:700}</style></head><body><p>Normal text</p><p class=\"notice active\">Important note</p></body></html>"
+      "title": "3. Try the Three Main Selectors",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Basic Selectors</title>\n  <style>\n    p {\n      color: #475569;\n    }\n\n    .highlight {\n      background-color: #fef3c7;\n      padding: 8px;\n    }\n\n    #page-title {\n      color: #4f46e5;\n    }\n  </style>\n</head>\n<body>\n  <h1 id=\"page-title\">My Website</h1>\n  <p>This paragraph uses the element selector.</p>\n  <p class=\"highlight\">This paragraph uses a class selector.</p>\n  <p class=\"highlight\">The same class can be reused.</p>\n</body>\n</html>",
+      "output": "The heading is purple, all paragraphs have slate-colored text, and the two highlighted paragraphs have a pale yellow background."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Target HTML elements using element, class, ID and attribute selectors. Identify the input, the operation, and the result before making changes."
+      "id": "css2-grouping",
+      "type": "content",
+      "title": "4. Grouping Selectors",
+      "text": "When several elements need the same style, group their selectors with commas. For example, h1, h2, p { font-family: Arial, sans-serif; } applies the font family to all three types of elements. Grouping avoids repeating the same declaration in separate rules. The comma means each selector is targeted independently."
     },
     {
-      "id": "css-l2-q-01",
-      "type": "quiz",
-      "question": "A card style should apply to many cards, not just one unique element. Which selector is usually reusable?",
-      "options": [
-        "A class selector.",
-        "An ID selector reused for every card.",
-        "A selector based on the card’s current text.",
-        "A universal selector for all page elements."
-      ],
-      "correctIndex": 0,
-      "explanation": "Classes can be applied consistently to many components; IDs should be unique in a document.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Classes can be applied consistently to many components; IDs should be unique in a document.",
-      "incorrectFeedback": "Review the requirement again. Classes can be applied consistently to many components; IDs should be unique in a document."
+      "id": "css2-grouping-code",
+      "type": "code",
+      "title": "5. Style Several Elements Together",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Grouping Selectors</title>\n  <style>\n    h1, h2, p {\n      font-family: Arial, sans-serif;\n    }\n\n    h1, h2 {\n      color: #0f766e;\n    }\n  </style>\n</head>\n<body>\n  <h1>Welcome</h1>\n  <h2>About Us</h2>\n  <p>We are learning CSS selectors.</p>\n</body>\n</html>",
+      "output": "All three elements use Arial. Both headings are teal, while the paragraph keeps its default text color."
     },
     {
-      "id": "page-2-heading",
+      "id": "css2-relationships",
+      "type": "content",
+      "title": "6. Descendant and Child Selectors",
+      "text": "A descendant selector uses a space. For example, .card p selects every paragraph inside an element with class card, even if another element sits between them. A child selector uses > and selects only direct children. For example, .card > p selects paragraphs directly inside the card, but not paragraphs nested inside another element within it. Use descendant selectors for broader targeting and child selectors when the direct relationship matters."
+    },
+    {
+      "id": "page-2-added",
       "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
+      "text": "PAGE 2 — CSS Selectors: concepts and applied practice"
     },
     {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Master the selectors CSS uses to decide exactly which elements should receive a particular style.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-2",
+      "id": "css2-relationships-code",
       "type": "code",
-      "language": "css",
-      "title": "Sample 2: CSS Selectors in practice",
-      "code": "<!doctype html><html><head><style>#hero{padding:18px;background:#dbeafe}a:hover{color:#c2410c}</style></head><body><section id=\"hero\">Hero section</section><a href=\"#hero\">Hover over this link</a></body></html>"
+      "title": "7. Space Versus Greater-Than Sign",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Related Selectors</title>\n  <style>\n    .card p {\n      color: #2563eb;\n    }\n\n    .card > p {\n      font-weight: bold;\n    }\n  </style>\n</head>\n<body>\n  <section class=\"card\">\n    <p>Direct child paragraph.</p>\n    <div>\n      <p>Nested paragraph.</p>\n    </div>\n  </section>\n</body>\n</html>",
+      "output": "Both paragraphs are blue because both are descendants of .card. Only the direct child paragraph is bold."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real CSS project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "css2-attribute",
+      "type": "content",
+      "title": "8. Attribute Selectors",
+      "text": "Attribute selectors target elements based on their HTML attributes. For example, input[type=\"email\"] selects email input fields. The selector a[target=\"_blank\"] selects links whose target attribute is exactly _blank. Attribute selectors are useful when you want to style a particular kind of form field or link without adding extra classes."
     },
     {
-      "id": "css-l2-q-02",
+      "id": "css2-attribute-code",
+      "type": "code",
+      "title": "9. Target an Input by Its Attribute",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Attribute Selectors</title>\n  <style>\n    input[type=\"email\"] {\n      border: 2px solid #0f766e;\n      padding: 8px;\n    }\n\n    input[type=\"text\"] {\n      border: 2px solid #94a3b8;\n      padding: 8px;\n    }\n  </style>\n</head>\n<body>\n  <p><label>Name: <input type=\"text\"></label></p>\n  <p><label>Email: <input type=\"email\"></label></p>\n</body>\n</html>",
+      "output": "The email field has a teal border, while the text field has a gray border."
+    },
+    {
+      "id": "css2-specificity",
+      "type": "content",
+      "title": "10. Which Selector Wins?",
+      "text": "Sometimes several selectors target the same element and set the same property. CSS uses specificity and the cascade to decide which declaration wins. In a simple comparison, an ID selector is more specific than a class selector, and a class selector is more specific than an element selector. For example, #notice generally beats .message for the same color property when both declarations have the same importance and origin. Specificity is not the only cascade rule, but understanding this basic order helps you debug styling problems."
+    },
+    {
+      "id": "css2-specificity-code",
+      "type": "code",
+      "title": "11. Understand Specificity",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Selector Specificity</title>\n  <style>\n    p {\n      color: gray;\n    }\n\n    .message {\n      color: blue;\n    }\n\n    #notice {\n      color: crimson;\n    }\n  </style>\n</head>\n<body>\n  <p id=\"notice\" class=\"message\">Which color will this paragraph use?</p>\n</body>\n</html>",
+      "output": "The paragraph is crimson because the ID selector has greater specificity than the class and element selectors for this color declaration."
+    },
+    {
+      "id": "css2-practice",
+      "type": "content",
+      "title": "12. Apply What You Have Learned",
+      "text": "Imagine you are styling a student dashboard. You need to make every button blue, highlight several cards, style one page heading, and change only email input fields. You could use button, .card, #page-title, and input[type=\"email\"] respectively. Before writing a selector, ask yourself: which elements should be affected, and how are those elements identified in the HTML? This habit helps you avoid accidental styling and makes your CSS easier to maintain."
+    },
+    {
+      "id": "page-3-added",
+      "type": "heading",
+      "text": "PAGE 3 — CSS Selectors: concepts and applied practice"
+    },
+    {
+      "id": "css2-quiz-1",
       "type": "quiz",
-      "question": "A hover rule is not taking effect because another rule wins. What is the best debugging step?",
+      "title": "Knowledge Check 1",
+      "question": "Which selector targets every element with class=\"product\"?",
       "options": [
-        "Add ten copies of the hover rule.",
-        "Inspect the cascade and specificity of the competing declarations.",
-        "Change the HTML title.",
-        "Remove all class names."
+        "#product",
+        ".product",
+        "product",
+        "*product"
       ],
       "correctIndex": 1,
-      "explanation": "Inspecting computed styles reveals which declarations win and why.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Inspecting computed styles reveals which declarations win and why.",
-      "incorrectFeedback": "Review the requirement again. Inspecting computed styles reveals which declarations win and why."
+      "explanation": "A period starts a class selector. The selector .product targets elements whose class list includes product.",
+      "hint": "Remember the symbol used before a class name."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "When two declarations compete, the cascade considers importance, origin, specificity, and source order. A selector that is too specific can make later maintenance harder, so prefer reusable classes and clear component boundaries."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-3",
-      "type": "code",
-      "language": "css",
-      "title": "Sample 3: CSS Selectors in practice",
-      "code": "<!doctype html><html><head><style>input[required]{border:2px solid #2563eb}button:focus{outline:3px solid #f59e0b}</style></head><body><label>Email <input type=\"email\" required></label><button>Continue</button></body></html>"
-    },
-    {
-      "id": "css-l2-q-03",
+      "id": "css2-quiz-2",
       "type": "quiz",
-      "question": "A selector must target a required input. Which selector is appropriate?",
+      "title": "Knowledge Check 2",
+      "question": "You need to style only the element with id=\"main-title\". Which selector should you use?",
       "options": [
-        "body body body",
-        "h1:first-child input",
-        "input[required]",
-        "a:visited input:hover"
+        ".main-title",
+        "main-title",
+        "#main-title",
+        "*main-title"
       ],
       "correctIndex": 2,
-      "explanation": "An attribute selector can target inputs whose required attribute is present.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. An attribute selector can target inputs whose required attribute is present.",
-      "incorrectFeedback": "Review the requirement again. An attribute selector can target inputs whose required attribute is present."
+      "explanation": "An ID selector begins with # and matches the element with the corresponding ID.",
+      "hint": "An ID selector uses a hash symbol."
     },
     {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Debug by inspecting the element and checking which rule wins rather than adding random overrides. A smaller, predictable stylesheet is usually easier to maintain than a large chain of exceptions."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-4",
-      "type": "code",
-      "language": "css",
-      "title": "Sample 4: CSS Selectors in practice",
-      "code": "<!doctype html><html><head><style>.lesson-card{padding:14px;border:1px solid #cbd5e1}.lesson-card h2{margin-top:0}.lesson-card:hover{border-color:#4f46e5}</style></head><body><article class=\"lesson-card\"><h2>Lesson 2</h2><p>Selectors target elements.</p></article></body></html>"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Master the selectors CSS uses to decide exactly which elements should receive a particular style. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "css-l2-q-04",
+      "id": "css2-quiz-3",
       "type": "quiz",
-      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
+      "title": "Knowledge Check 3",
+      "question": "Which rule applies the same font to both h1 and p elements?",
       "options": [
-        "Test only a score of 200.",
-        "Test 99, 100, and 101.",
-        "Test a text value such as “high”.",
-        "Do not test the condition."
+        "h1 p { font-family: Arial; }",
+        "h1 + p { font-family: Arial; }",
+        "h1 > p { font-family: Arial; }",
+        "h1, p { font-family: Arial; }"
+      ],
+      "correctIndex": 3,
+      "explanation": "A comma groups selectors so the same declaration applies independently to both h1 and p elements.",
+      "hint": "Use a comma to list separate selectors in one rule."
+    },
+    {
+      "id": "css2-quiz-4",
+      "type": "quiz",
+      "title": "Application Question 1",
+      "question": "A page has five cards, all using class=\"card\". You want every card to have rounded corners. Which selector is most suitable?",
+      "options": [
+        "#card",
+        "card",
+        ".card",
+        "body.card"
+      ],
+      "correctIndex": 2,
+      "explanation": "The reusable class selector .card applies to all elements with that class, making it suitable for styling repeated cards.",
+      "hint": "The same class can be assigned to many elements."
+    },
+    {
+      "id": "css2-quiz-5",
+      "type": "quiz",
+      "title": "Application Question 2",
+      "question": "Inside a .menu element, you want to style only links that are direct children of .menu. Which selector is correct?",
+      "options": [
+        ".menu a",
+        ".menu > a",
+        ".menu + a",
+        "#menu a"
       ],
       "correctIndex": 1,
-      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
-      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
+      "explanation": "The > combinator selects direct children. Therefore, .menu > a matches links directly inside the menu, not links nested in another element.",
+      "hint": "Use the direct-child combinator."
     },
     {
-      "id": "css-l2-q-05",
+      "id": "css2-quiz-6",
       "type": "quiz",
-      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
+      "title": "Application Question 3",
+      "question": "A form contains text, email, and password inputs. You want to give only email inputs a teal border. Which selector should you use?",
       "options": [
-        "Use OR if either rule must pass.",
-        "Skip validation once the page looks correct.",
-        "Combine both checks with the appropriate AND condition.",
-        "Run the same check forever."
+        "input.email",
+        "#email",
+        "input[type=\"email\"]",
+        "email input"
       ],
       "correctIndex": 2,
-      "explanation": "AND is appropriate when every required condition must be true.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
-      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
+      "explanation": "The attribute selector input[type=\"email\"] targets input elements whose type attribute is email, without affecting the other input types.",
+      "hint": "The desired elements are identified by an HTML attribute."
+    },
+    {
+      "id": "css2-quiz-7",
+      "type": "quiz",
+      "title": "Critical Thinking",
+      "question": "A paragraph matches both p { color: gray; } and .warning { color: orange; }. Both declarations have the same importance and origin. Which color normally wins?",
+      "options": [
+        "Gray, because element selectors always win",
+        "Orange, because the class selector is more specific",
+        "The browser chooses randomly",
+        "Both colors are blended together"
+      ],
+      "correctIndex": 1,
+      "explanation": "A class selector has greater specificity than an element selector, so orange normally wins for this property in the stated situation.",
+      "hint": "Compare class-selector specificity with element-selector specificity."
+    },
+    {
+      "id": "css2-quiz-8",
+      "type": "quiz",
+      "title": "Application Question 4",
+      "question": "You want every paragraph inside .article to be green, including paragraphs nested inside other elements. Which selector should you choose?",
+      "options": [
+        ".article > p",
+        "#article p",
+        ".article p",
+        "article + p"
+      ],
+      "correctIndex": 2,
+      "explanation": "The descendant selector .article p matches paragraphs anywhere inside an element with class article, including nested paragraphs.",
+      "hint": "A space between selectors matches descendants at any nesting depth."
     }
-  ]
+  ],
+  "xpReward": 5,
+  "coinsReward": 2
 }

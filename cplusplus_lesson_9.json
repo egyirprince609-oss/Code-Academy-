@@ -2,196 +2,175 @@
   "course": "cplusplus",
   "lessonNumber": 9,
   "lessonId": "cplusplus-lesson-9",
-  "title": "STL, Pointers and Memory",
-  "subtitle": "Choose STL containers and understand pointer/reference responsibilities.",
-  "description": "Use standard containers and understand pointers, references and object lifetime.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Inheritance, Templates and Exceptions",
+  "subtitle": "Inheritance, Templates and Exceptions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on inheritance, templates and exceptions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "cplusplus-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand STL, Pointers and Memory"
+      "text": "PAGE 1 — Inheritance, Templates and Exceptions: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: STL, Pointers and Memory. This lesson follows the course dashboard topic “STL, Pointers and Memory”. The goal is to choose STL containers and understand pointer/reference responsibilities.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "cplusplus-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Inheritance, Templates and Exceptions is not just a syntax topic: it is a way to make the application’s intent explicit. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. In the Code Academy dashboard, that idea matters because A progress tracker can combine standard containers, small functions, and clear data structures. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Collections group related values. Use a sequence when order or position matters, a set when uniqueness is the main concern, and a map or dictionary when values should be found by a meaningful key."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "cplusplus-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Inheritance, Templates and Exceptions: Exceptions transfer control to a handler; user-facing feedback can remain general",
       "language": "cpp",
-      "title": "Sample 1: STL, Pointers and Memory in practice",
-      "code": "#include <iostream>\n#include <vector>\nint main() { std::vector<int> scores{70, 85, 92}; for (int score : scores) std::cout << score << \"\\n\"; }"
+      "code": "try { throw std::runtime_error(\"save failed\"); } catch (const std::exception& error) { std::cerr << \"Could not save attempt\\n\"; }",
+      "output": "Exceptions transfer control to a handler; user-facing feedback can remain general."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Choose STL containers and understand pointer/reference responsibilities. Identify the input, the operation, and the result before making changes."
+      "id": "cplusplus-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “try { throw std::runtime_error(\"save failed\"); } catch (const std::exception& error) { std::cerr << \"Could not save attempt\\n\"; }”: Starts a protected operation whose expected failures are handled by a corresponding handler. Expected behavior: Exceptions transfer control to a handler; user-facing feedback can remain general. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "cplusplus-l9-q-01",
+      "id": "cplusplus-9-quiz-1-5",
       "type": "quiz",
-      "question": "A list is filtered but the original list unexpectedly changes. What should be checked?",
+      "question": "A score is converted from external text, and the input may be \"eighty\". What should occur?",
       "options": [
-        "The computer’s date.",
-        "Whether comments were removed.",
-        "Only the font size.",
-        "Whether the chosen operation mutates the original collection or returns a new one."
+        "Treat the failed conversion as a valid score of zero in every context",
+        "Ignore the failure and report success",
+        "Display a full private stack trace to the learner",
+        "Handle the conversion failure and show a controlled validation message"
       ],
       "correctIndex": 3,
-      "explanation": "Mutation behavior differs by language and method; understand whether the source is changed.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Mutation behavior differs by language and method; understand whether the source is changed.",
-      "incorrectFeedback": "Review the requirement again. Mutation behavior differs by language and method; understand whether the source is changed."
+      "explanation": "Correct answer: Handle the conversion failure and show a controlled validation message. Invalid input should not silently become success; handle expected conversion errors at the boundary.",
+      "reasoning": "Invalid input should not silently become success; handle expected conversion errors at the boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Use standard containers and understand pointers, references and object lifetime.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "cplusplus-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Inheritance, Templates and Exceptions: A pure virtual function makes the class an interface-like abstract base",
       "language": "cpp",
-      "title": "Sample 2: STL, Pointers and Memory in practice",
-      "code": "#include <iostream>\n#include <memory>\nint main() { auto score = std::make_unique<int>(90); std::cout << *score << \"\\n\"; }"
+      "code": "class Reporter { public: virtual std::string report() const = 0; virtual ~Reporter() = default; };",
+      "output": "A pure virtual function makes the class an interface-like abstract base."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real C++ project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "cplusplus-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “class Reporter { public: virtual std::string report() const = 0; virtual ~Reporter() = default; };”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: A pure virtual function makes the class an interface-like abstract base. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "cplusplus-l9-q-02",
+      "id": "cplusplus-9-quiz-2-8",
       "type": "quiz",
-      "question": "A collection lookup can fail when the key is missing. What should the code do?",
+      "question": "A file read fails because the file is missing. Which response is most useful?",
       "options": [
-        "Check for absence or use a documented fallback/error result.",
-        "Assume every possible key exists.",
-        "Use the missing value as a list index.",
-        "Ignore the result and display success."
-      ],
-      "correctIndex": 0,
-      "explanation": "Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "incorrectFeedback": "Review the requirement again. Handling absent keys makes the behavior predictable and avoids hidden failures."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Indexes are commonly zero-based, so the first element is often at position zero and the last index is one less than the collection length. Key-based collections use keys instead of numeric positions and may have different lookup guarantees."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "cpp",
-      "title": "Sample 3: STL, Pointers and Memory in practice",
-      "code": "#include <algorithm>\n#include <iostream>\n#include <vector>\nint main() { std::vector<int> values{3, 1, 2}; std::sort(values.begin(), values.end()); for (int n : values) std::cout << n << \" \"; }"
-    },
-    {
-      "id": "cplusplus-l9-q-03",
-      "type": "quiz",
-      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
-      "options": [
-        "A map/dictionary keyed by email, with suitable uniqueness handling.",
-        "A random number with no mapping.",
-        "A paragraph of comma-separated values that is never parsed.",
-        "A loop that guesses the correct person."
-      ],
-      "correctIndex": 0,
-      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Consider whether the collection should be mutable, whether a copy or a reference is being shared, and what should happen when an item is missing. These decisions affect correctness as much as the data structure’s syntax."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C++. Paste this snippet into the C++ editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "cpp",
-      "title": "Sample 4: STL, Pointers and Memory in practice",
-      "code": "#include <iostream>\nint main() { int value = 8; int& reference = value; reference = 11; std::cout << value << \"\\n\"; }"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Use standard containers and understand pointers, references and object lifetime. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "cplusplus-l9-q-04",
-      "type": "quiz",
-      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
-      "options": [
-        "One.",
-        "The collection length.",
-        "Zero.",
-        "Minus one."
+        "Catch every error and do nothing",
+        "Expose server paths and secrets in the page",
+        "Handle the specific I/O failure and keep detailed diagnostics in a protected log",
+        "Continue using the missing file’s contents"
       ],
       "correctIndex": 2,
-      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+      "explanation": "Correct answer: Handle the specific I/O failure and keep detailed diagnostics in a protected log. A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals.",
+      "reasoning": "A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "cplusplus-l9-q-05",
+      "id": "cplusplus-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Inheritance, Templates and Exceptions: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "cplusplus-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress tracker can combine standard containers, small functions, and clear data structures. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "cplusplus-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Inheritance, Templates and Exceptions: override makes the compiler verify the intended base virtual method",
+      "language": "cpp",
+      "code": "class CourseReporter : public Reporter { public: std::string report() const override { return \"Progress ready\"; } };",
+      "output": "override makes the compiler verify the intended base virtual method."
+    },
+    {
+      "id": "cplusplus-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “class CourseReporter : public Reporter { public: std::string report() const override { return \"Progress ready\"; } };”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: override makes the compiler verify the intended base virtual method. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "cplusplus-9-quiz-2-13",
       "type": "quiz",
-      "question": "A collection must contain each category only once. What data structure or operation helps?",
+      "question": "A broad catch block returns a successful result after any exception. What is the core defect?",
       "options": [
-        "A list that intentionally keeps every duplicate.",
-        "A set or explicit uniqueness check.",
-        "A loop that prints the items.",
-        "A longer variable name."
+        "It makes type checking stricter",
+        "It turns failures into false success and makes corruption harder to detect",
+        "It forces every function to become asynchronous",
+        "It guarantees all resources are closed"
       ],
       "correctIndex": 1,
-      "explanation": "A set or uniqueness rule prevents repeated categories.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A set or uniqueness rule prevents repeated categories.",
-      "incorrectFeedback": "Review the requirement again. A set or uniqueness rule prevents repeated categories."
+      "explanation": "Correct answer: It turns failures into false success and makes corruption harder to detect. Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data.",
+      "reasoning": "Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "cplusplus-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Inheritance, Templates and Exceptions: Check container state before operations that require an element",
+      "language": "cpp",
+      "code": "std::vector<int> scores{4, 5, 3};\nif (!scores.empty()) std::cout << scores.front();",
+      "output": "Check container state before operations that require an element."
+    },
+    {
+      "id": "cplusplus-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “std::vector<int> scores{4, 5, 3};”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “if (!scores.empty()) std::cout << scores.front();”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Check container state before operations that require an element. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "cplusplus-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two database updates must both succeed or both be undone. Which mechanism is designed for that?",
+      "options": [
+        "A transaction with commit on success and rollback on failure",
+        "A loop that retries forever",
+        "HTML form validation alone",
+        "A display-only warning after each update"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A transaction with commit on success and rollback on failure. Transactions group related operations atomically when used correctly.",
+      "reasoning": "Transactions group related operations atomically when used correctly. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "cplusplus-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Inheritance, Templates and Exceptions: applied challenge and mastery check"
+    },
+    {
+      "id": "cplusplus-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. For the Code Academy dashboard, A progress tracker can combine standard containers, small functions, and clear data structures. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "cplusplus-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses inheritance, templates and exceptions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "cplusplus-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A failure is expected and the caller can recover. What belongs in the function contract?",
+      "options": [
+        "A silent return value that looks like success",
+        "An unconditional retry with no limit",
+        "An undocumented global flag",
+        "A clear error/result path or a documented exception"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A clear error/result path or a documented exception. A caller needs a reliable way to distinguish success from a recoverable failure.",
+      "reasoning": "A caller needs a reliable way to distinguish success from a recoverable failure. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "cplusplus-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

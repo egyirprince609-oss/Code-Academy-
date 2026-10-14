@@ -2,419 +2,175 @@
   "course": "go",
   "lessonNumber": 10,
   "lessonId": "go-lesson-10",
-  "title": "Go Project and Final Review",
-  "subtitle": "A short practical refresher followed by 20 new application questions",
-  "description": "Review the ten Go dashboard topics. Includes three capstone examples and exactly two fresh review questions from each of Lessons 1–10.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 100,
-  "coinsReward": 50,
-  "estimatedMinutes": 22,
+  "title": "Goroutines, Channels and a Small Service",
+  "subtitle": "Goroutines, Channels and a Small Service: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on goroutines, channels and a small service, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "final-page-1",
+      "id": "go-10-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — A short capstone refresher"
+      "text": "PAGE 1 — Goroutines, Channels and a Small Service: foundations and mental model"
     },
     {
-      "id": "final-intro",
-      "type": "sentence",
-      "text": "Welcome to the Go final review. This lesson is intentionally shorter on new theory and longer on practical decisions. You will revisit the ten dashboard topics and answer two new application questions for each lesson, for exactly 20 questions."
+      "id": "go-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Goroutines, Channels and a Small Service is not just a syntax topic: it is a way to make the application’s intent explicit. Concurrent tasks need explicit communication and a clear lifetime. Avoid shared mutable state where possible and ensure goroutines can finish or be cancelled. In the Code Academy dashboard, that idea matters because A progress service benefits from simple functions, explicit errors, and clear concurrency boundaries. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "final-method",
-      "type": "sentence",
-      "text": "Start by reading the requirement, tracing where its data comes from, and deciding what success should look like. Then test both a normal case and a boundary or failure case. A correct program should not only work once; it should behave predictably when its inputs change."
-    },
-    {
-      "id": "final-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l10-code-1",
+      "id": "go-10-code-1-3",
       "type": "code",
+      "title": "Example 1 — Goroutines, Channels and a Small Service: A WaitGroup makes the caller wait for the goroutine to finish",
       "language": "go",
-      "title": "Capstone sample 1: Go Project and Final Review",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nscores := []int{72, 86, 91}\ntotal := 0\nfor _, s := range scores { total += s }\nfmt.Printf(\"Average: %.1f\\n\", float64(total)/float64(len(scores)))\n}"
+      "code": "var wg sync.WaitGroup\nwg.Add(1)\ngo func() { defer wg.Done(); fmt.Println(\"lesson loaded\") }()\nwg.Wait()",
+      "output": "A WaitGroup makes the caller wait for the goroutine to finish."
     },
     {
-      "id": "final-note-1",
-      "type": "sentence",
-      "text": "The first sample illustrates a small part of the solution. Before extending it, separate the input, the transformation, and the output. That separation makes it easier to test each part and locate defects."
+      "id": "go-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “var wg sync.WaitGroup”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “wg.Add(1)”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “go func() { defer wg.Done(); fmt.Println(\"lesson loaded\") }()”: Displays the computed value so the behavior can be observed and checked. Line 4 — “wg.Wait()”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: A WaitGroup makes the caller wait for the goroutine to finish. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-page-2",
+      "id": "go-10-quiz-1-5",
+      "type": "quiz",
+      "question": "A Go program launches a goroutine then returns from `main` immediately. What risk exists?",
+      "options": [
+        "The goroutine becomes a database transaction",
+        "The Go runtime guarantees every task writes its result first",
+        "The process may exit before the goroutine finishes its work",
+        "The goroutine automatically blocks main until done"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The process may exit before the goroutine finishes its work. Goroutines need explicit synchronization or lifecycle management when completion matters.",
+      "reasoning": "Goroutines need explicit synchronization or lifecycle management when completion matters. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "go-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Goroutines, Channels and a Small Service: A channel transfers a message between concurrent goroutines",
+      "language": "go",
+      "code": "messages := make(chan string)\ngo func() { messages <- \"saved\" }()\nmessage := <-messages\nfmt.Println(message)",
+      "output": "A channel transfers a message between concurrent goroutines."
+    },
+    {
+      "id": "go-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “messages := make(chan string)”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “go func() { messages <- \"saved\" }()”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “message := <-messages”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “fmt.Println(message)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A channel transfers a message between concurrent goroutines. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "go-10-quiz-2-8",
+      "type": "quiz",
+      "question": "A channel send blocks forever because nobody receives the value. What should be reviewed?",
+      "options": [
+        "Whether a comment ends with a period",
+        "Whether a receiver exists and whether channel closure or cancellation is coordinated",
+        "The color of the terminal",
+        "Whether the integer has a descriptive name"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Whether a receiver exists and whether channel closure or cancellation is coordinated. Unbuffered sends require a corresponding receiver; channel lifecycle must be designed.",
+      "reasoning": "Unbuffered sends require a corresponding receiver; channel lifecycle must be designed. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "go-10-page-2-9",
       "type": "heading",
-      "text": "PAGE 2 — Connect the pieces"
+      "text": "PAGE 2 — Goroutines, Channels and a Small Service: implementation, debugging, and edge cases"
     },
     {
-      "id": "final-method-2",
-      "type": "sentence",
-      "text": "A final project combines several ideas instead of treating each lesson as an isolated trick. Keep the responsibilities clear, choose data structures that match the job, and validate information at the boundary where it enters the program."
+      "id": "go-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Concurrent tasks need explicit communication and a clear lifetime. Avoid shared mutable state where possible and ensure goroutines can finish or be cancelled. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress service benefits from simple functions, explicit errors, and clear concurrency boundaries. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "final-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l10-code-2",
+      "id": "go-10-code-3-11",
       "type": "code",
+      "title": "Example 3 — Goroutines, Channels and a Small Service: A context communicates cancellation or deadlines; it should be passed to real work",
       "language": "go",
-      "title": "Capstone sample 2: Go Project and Final Review",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\ncorrect := true\nxp := 0\nif correct { xp = 5 }\nfmt.Println(\"XP earned:\", xp)\n}"
+      "code": "ctx, cancel := context.WithTimeout(context.Background(), time.Second)\ndefer cancel()\nselect { case <-ctx.Done(): fmt.Println(\"task cancelled or timed out\") }",
+      "output": "A context communicates cancellation or deadlines; it should be passed to real work."
     },
     {
-      "id": "final-note-2",
-      "type": "sentence",
-      "text": "Now consider how this idea would behave with empty data, invalid input, and a larger set of records. If an operation can fail, design the response deliberately rather than showing a success message before the operation has actually succeeded."
+      "id": "go-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “ctx, cancel := context.WithTimeout(context.Background(), time.Second)”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “defer cancel()”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “select { case <-ctx.Done(): fmt.Println(\"task cancelled or timed out\") }”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A context communicates cancellation or deadlines; it should be passed to real work. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "go-10-quiz-2-13",
+      "type": "quiz",
+      "question": "Two goroutines update the same mutable state without synchronization. What is the concern?",
+      "options": [
+        "A data race and nondeterministic results",
+        "The compiler will always serialize the updates",
+        "The values become immutable automatically",
+        "The code is guaranteed to be faster"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A data race and nondeterministic results. Shared mutable state needs synchronization or a design that avoids concurrent mutation.",
+      "reasoning": "Shared mutable state needs synchronization or a design that avoids concurrent mutation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "l10-code-3",
+      "id": "go-10-code-4-14",
       "type": "code",
+      "title": "Example 4 — Goroutines, Channels and a Small Service: A buffered channel can carry a limited number of values before a receiver is required",
       "language": "go",
-      "title": "Capstone sample 3: Go Project and Final Review",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\ndone, total := 4, 10\nfmt.Printf(\"Progress: %d%%\\n\", done*100/total)\n}"
+      "code": "ch := make(chan int, 2)\nch <- 5\nch <- 10\nclose(ch)\nfor value := range ch { fmt.Println(value) }",
+      "output": "A buffered channel can carry a limited number of values before a receiver is required."
     },
     {
-      "id": "final-note-3",
-      "type": "sentence",
-      "text": "Use the third example as a starting point, then explain how it relates to the course topic: Build a structured Go project while reviewing variables, functions, structs, interfaces, packages and concurrency."
+      "id": "go-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “ch := make(chan int, 2)”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “ch <- 5”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “ch <- 10”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 4 — “close(ch)”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 5 — “for value := range ch { fmt.Println(value) }”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Expected behavior: A buffered channel can carry a limited number of values before a receiver is required. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-bank-heading",
+      "id": "go-10-quiz-3-16",
+      "type": "quiz",
+      "question": "A worker should stop when an HTTP request is cancelled. What should be propagated?",
+      "options": [
+        "A copied CSS class name",
+        "A successful result before the work begins",
+        "A goroutine that waits forever",
+        "A cancellation context or another explicit stop signal"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A cancellation context or another explicit stop signal. Cancellation lets dependent work stop when its caller no longer needs the result.",
+      "reasoning": "Cancellation lets dependent work stop when its caller no longer needs the result. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "go-10-page-3-17",
       "type": "heading",
-      "text": "FINAL QUESTION BANK — 20 application questions"
+      "text": "PAGE 3 — Goroutines, Channels and a Small Service: applied challenge and mastery check"
     },
     {
-      "id": "final-bank-instructions",
-      "type": "sentence",
-      "text": "Answer two questions from each dashboard lesson. These questions are newly written for this review and are not copied from the corresponding lesson quizzes. Read carefully: select the option that best satisfies the requirement, not merely an option that could work in a different situation."
+      "id": "go-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Concurrent tasks need explicit communication and a clear lifetime. Avoid shared mutable state where possible and ensure goroutines can finish or be cancelled. For the Code Academy dashboard, A progress service benefits from simple functions, explicit errors, and clear concurrency boundaries. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
     },
     {
-      "id": "go-l10-bank-01",
+      "id": "go-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses goroutines, channels and a small service. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "go-10-quiz-5-20",
       "type": "quiz",
-      "question": "Review from Lesson 1 — Introduction to Go: A team receives a repository with no run instructions. What should the maintainer add to make a fresh setup verifiable?",
+      "question": "A service starts a background worker for each request. What ensures resources do not accumulate?",
       "options": [
-        "A setup/run guide plus a minimal test or sample command.",
-        "Only a screenshot of the editor.",
-        "A larger logo.",
-        "A statement that setup is obvious."
-      ],
-      "correctIndex": 0,
-      "explanation": "A reproducible setup guide helps another developer validate the project from a clean start.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A reproducible setup guide helps another developer validate the project from a clean start.",
-      "incorrectFeedback": "Review the requirement again. A reproducible setup guide helps another developer validate the project from a clean start."
-    },
-    {
-      "id": "go-l10-bank-02",
-      "type": "quiz",
-      "question": "Review from Lesson 1 — Introduction to Go: The app works after manual edits but fails when built from source. What should be compared?",
-      "options": [
-        "The wallpaper on each device.",
-        "The actual source, compiler/runtime configuration, and documented build path.",
-        "The author’s typing speed.",
-        "The names of unrelated files."
-      ],
-      "correctIndex": 1,
-      "explanation": "Build and runtime configuration are part of a reproducible program, not separate from it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Build and runtime configuration are part of a reproducible program, not separate from it.",
-      "incorrectFeedback": "Review the requirement again. Build and runtime configuration are part of a reproducible program, not separate from it."
-    },
-    {
-      "id": "go-l10-bank-03",
-      "type": "quiz",
-      "question": "Review from Lesson 2 — Variables, Constants and Data Types: Two components disagree about a learner’s current XP. Which refactor is strongest?",
-      "options": [
-        "Keep both independent values and sync them by hand.",
-        "Show both values so the user chooses.",
-        "Use one authoritative value and derive each display from it.",
-        "Store the value in a constant even though it changes."
+        "Ignore every send error",
+        "Use an unbounded retry loop",
+        "Bound worker lifetimes, handle cancellation, and close or drain channels according to the design",
+        "Start workers without tracking them"
       ],
       "correctIndex": 2,
-      "explanation": "One source of truth avoids state drift.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. One source of truth avoids state drift.",
-      "incorrectFeedback": "Review the requirement again. One source of truth avoids state drift."
+      "explanation": "Correct answer: Bound worker lifetimes, handle cancellation, and close or drain channels according to the design. Concurrent services need defined lifecycle, cancellation, and backpressure behavior.",
+      "reasoning": "Concurrent services need defined lifecycle, cancellation, and backpressure behavior. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "go-l10-bank-04",
-      "type": "quiz",
-      "question": "Review from Lesson 2 — Variables, Constants and Data Types: A production setting should not change after configuration. How should it be represented?",
-      "options": [
-        "As an input field that always accepts edits.",
-        "As duplicated mutable global state.",
-        "As a variable reset every second.",
-        "As a constant/immutable binding after safe configuration."
-      ],
-      "correctIndex": 3,
-      "explanation": "Immutable configuration communicates that the value should not be reassigned.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Immutable configuration communicates that the value should not be reassigned.",
-      "incorrectFeedback": "Review the requirement again. Immutable configuration communicates that the value should not be reassigned."
-    },
-    {
-      "id": "go-l10-bank-05",
-      "type": "quiz",
-      "question": "Review from Lesson 3 — Operators and Expressions: A discount expression is correct for simple values but fails when several operations are combined. What is the best review action?",
-      "options": [
-        "Add parentheses to make the intended grouping explicit and test representative values.",
-        "Convert the result to a sentence before calculating.",
-        "Remove the tests.",
-        "Replace all operators with addition."
-      ],
-      "correctIndex": 0,
-      "explanation": "Explicit grouping plus tests reduces errors involving precedence and edge values.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Explicit grouping plus tests reduces errors involving precedence and edge values.",
-      "incorrectFeedback": "Review the requirement again. Explicit grouping plus tests reduces errors involving precedence and edge values."
-    },
-    {
-      "id": "go-l10-bank-06",
-      "type": "quiz",
-      "question": "Review from Lesson 3 — Operators and Expressions: A filter should include scores equal to the cutoff. Which requirement should the comparison encode?",
-      "options": [
-        "Only values greater than the cutoff.",
-        "Greater-than-or-equal to the cutoff.",
-        "Only values below the cutoff.",
-        "A string concatenation."
-      ],
-      "correctIndex": 1,
-      "explanation": "The boundary condition must match the explicit inclusion rule.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. The boundary condition must match the explicit inclusion rule.",
-      "incorrectFeedback": "Review the requirement again. The boundary condition must match the explicit inclusion rule."
-    },
-    {
-      "id": "go-l10-bank-07",
-      "type": "quiz",
-      "question": "Review from Lesson 4 — Conditions and Control Flow: A branch for a premium feature is never reached. What should be investigated?",
-      "options": [
-        "The footer styling.",
-        "The size of the source file.",
-        "Whether earlier conditions already catch the input.",
-        "The names of unrelated classes."
-      ],
-      "correctIndex": 2,
-      "explanation": "Earlier conditions can shadow a later branch if the conditions overlap or are ordered poorly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Earlier conditions can shadow a later branch if the conditions overlap or are ordered poorly.",
-      "incorrectFeedback": "Review the requirement again. Earlier conditions can shadow a later branch if the conditions overlap or are ordered poorly."
-    },
-    {
-      "id": "go-l10-bank-08",
-      "type": "quiz",
-      "question": "Review from Lesson 4 — Conditions and Control Flow: A value enters from a form and controls a feature. Which approach best avoids invalid states?",
-      "options": [
-        "Trust that the form never changes.",
-        "Check only the button’s caption.",
-        "Remove all constraints.",
-        "Validate the value and explicitly handle rejected inputs."
-      ],
-      "correctIndex": 3,
-      "explanation": "External input must be checked at the point where it becomes trusted application state.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External input must be checked at the point where it becomes trusted application state.",
-      "incorrectFeedback": "Review the requirement again. External input must be checked at the point where it becomes trusted application state."
-    },
-    {
-      "id": "go-l10-bank-09",
-      "type": "quiz",
-      "question": "Review from Lesson 5 — Loops, Arrays and Slices: A report skips the final record in a list. Which class of defect should be checked first?",
-      "options": [
-        "An iteration boundary/off-by-one error.",
-        "A font fallback.",
-        "A URL fragment.",
-        "An unused CSS class."
-      ],
-      "correctIndex": 0,
-      "explanation": "Off-by-one mistakes often arise from confusing inclusive endpoints and collection length.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Off-by-one mistakes often arise from confusing inclusive endpoints and collection length.",
-      "incorrectFeedback": "Review the requirement again. Off-by-one mistakes often arise from confusing inclusive endpoints and collection length."
-    },
-    {
-      "id": "go-l10-bank-10",
-      "type": "quiz",
-      "question": "Review from Lesson 5 — Loops, Arrays and Slices: A processing loop may wait forever for a state change. What improvement makes it safer?",
-      "options": [
-        "Remove its stopping condition.",
-        "Define a termination condition, timeout or cancellation strategy where appropriate.",
-        "Increase the loop speed only.",
-        "Hide its output."
-      ],
-      "correctIndex": 1,
-      "explanation": "Long-running loops need a deliberate termination or cancellation plan.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Long-running loops need a deliberate termination or cancellation plan.",
-      "incorrectFeedback": "Review the requirement again. Long-running loops need a deliberate termination or cancellation plan."
-    },
-    {
-      "id": "go-l10-bank-11",
-      "type": "quiz",
-      "question": "Review from Lesson 6 — Functions and Error Handling: Two features calculate eligibility differently after one rule changes. What is a better design?",
-      "options": [
-        "Keep both implementations independent.",
-        "Put the rule in a comment only.",
-        "Share one tested function that owns the eligibility rule.",
-        "Let each screen guess."
-      ],
-      "correctIndex": 2,
-      "explanation": "Centralizing one business rule prevents inconsistent implementations.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Centralizing one business rule prevents inconsistent implementations.",
-      "incorrectFeedback": "Review the requirement again. Centralizing one business rule prevents inconsistent implementations."
-    },
-    {
-      "id": "go-l10-bank-12",
-      "type": "quiz",
-      "question": "Review from Lesson 6 — Functions and Error Handling: A calculation’s output is needed by three later operations. Which interface is most useful?",
-      "options": [
-        "Only print a decorative message.",
-        "Return nothing and rely on visible output.",
-        "Store the result in an unrelated global.",
-        "Return a value with a clear contract."
-      ],
-      "correctIndex": 3,
-      "explanation": "Returning values allows callers to compose operations without relying on printed text or hidden state.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Returning values allows callers to compose operations without relying on printed text or hidden state.",
-      "incorrectFeedback": "Review the requirement again. Returning values allows callers to compose operations without relying on printed text or hidden state."
-    },
-    {
-      "id": "go-l10-bank-13",
-      "type": "quiz",
-      "question": "Review from Lesson 7 — Structs, Methods and Interfaces: An object’s internal data can be changed into impossible combinations by any caller. What design improvement addresses that?",
-      "options": [
-        "Encapsulate state and expose validated operations.",
-        "Make even more fields public.",
-        "Duplicate the object every time.",
-        "Remove all types."
-      ],
-      "correctIndex": 0,
-      "explanation": "Encapsulation helps enforce invariants across every caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Encapsulation helps enforce invariants across every caller.",
-      "incorrectFeedback": "Review the requirement again. Encapsulation helps enforce invariants across every caller."
-    },
-    {
-      "id": "go-l10-bank-14",
-      "type": "quiz",
-      "question": "Review from Lesson 7 — Structs, Methods and Interfaces: A design uses deep inheritance to share one small helper. What alternative should be evaluated?",
-      "options": [
-        "An even deeper inheritance chain.",
-        "Composition or a small interface when the relationship is not truly “is-a.”",
-        "Public mutable state everywhere.",
-        "No tests of the helper."
-      ],
-      "correctIndex": 1,
-      "explanation": "Composition can reuse behavior without forcing an incorrect type relationship.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Composition can reuse behavior without forcing an incorrect type relationship.",
-      "incorrectFeedback": "Review the requirement again. Composition can reuse behavior without forcing an incorrect type relationship."
-    },
-    {
-      "id": "go-l10-bank-15",
-      "type": "quiz",
-      "question": "Review from Lesson 8 — Pointers, Maps and Packages: A collection is used to retrieve a learner by a unique identifier. What design question matters most?",
-      "options": [
-        "Whether a map/dictionary keyed by the identifier fits the lookup requirement and uniqueness rule.",
-        "Whether the item names are colorful.",
-        "Whether the code has a heading.",
-        "Whether every collection uses indexes."
-      ],
-      "correctIndex": 0,
-      "explanation": "Data structures should fit the expected access pattern and identity constraints.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Data structures should fit the expected access pattern and identity constraints.",
-      "incorrectFeedback": "Review the requirement again. Data structures should fit the expected access pattern and identity constraints."
-    },
-    {
-      "id": "go-l10-bank-16",
-      "type": "quiz",
-      "question": "Review from Lesson 8 — Pointers, Maps and Packages: A filtered list is unexpectedly missing items after an update. What should you check?",
-      "options": [
-        "Only the page title.",
-        "Whether the loop/indexing or collection mutation changes the original values during iteration.",
-        "The operating system wallpaper.",
-        "Whether comments are uppercase."
-      ],
-      "correctIndex": 1,
-      "explanation": "Collection mutation and index behavior can cause skipped, duplicated, or missing results.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Collection mutation and index behavior can cause skipped, duplicated, or missing results.",
-      "incorrectFeedback": "Review the requirement again. Collection mutation and index behavior can cause skipped, duplicated, or missing results."
-    },
-    {
-      "id": "go-l10-bank-17",
-      "type": "quiz",
-      "question": "Review from Lesson 9 — Goroutines and Concurrency: Two features calculate eligibility differently after one rule changes. What is a better design?",
-      "options": [
-        "Keep both implementations independent.",
-        "Put the rule in a comment only.",
-        "Share one tested function that owns the eligibility rule.",
-        "Let each screen guess."
-      ],
-      "correctIndex": 2,
-      "explanation": "Centralizing one business rule prevents inconsistent implementations.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Centralizing one business rule prevents inconsistent implementations.",
-      "incorrectFeedback": "Review the requirement again. Centralizing one business rule prevents inconsistent implementations."
-    },
-    {
-      "id": "go-l10-bank-18",
-      "type": "quiz",
-      "question": "Review from Lesson 9 — Goroutines and Concurrency: A calculation’s output is needed by three later operations. Which interface is most useful?",
-      "options": [
-        "Only print a decorative message.",
-        "Return nothing and rely on visible output.",
-        "Store the result in an unrelated global.",
-        "Return a value with a clear contract."
-      ],
-      "correctIndex": 3,
-      "explanation": "Returning values allows callers to compose operations without relying on printed text or hidden state.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Returning values allows callers to compose operations without relying on printed text or hidden state.",
-      "incorrectFeedback": "Review the requirement again. Returning values allows callers to compose operations without relying on printed text or hidden state."
-    },
-    {
-      "id": "go-l10-bank-19",
-      "type": "quiz",
-      "question": "Review from Lesson 10 — Go Project and Final Review: The final project passes one example input. What is the strongest completion check?",
-      "options": [
-        "Stop testing as soon as the screen appears.",
-        "Remove error handling to reduce lines.",
-        "Test normal, boundary, empty, and failure cases and document how to run it.",
-        "Change the app name again."
-      ],
-      "correctIndex": 2,
-      "explanation": "Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
-      "incorrectFeedback": "Review the requirement again. Broader tests and reproducible setup provide stronger evidence than one happy-path example."
-    },
-    {
-      "id": "go-l10-bank-20",
-      "type": "quiz",
-      "question": "Review from Lesson 10 — Go Project and Final Review: A teammate cannot reproduce the project’s behavior. What is likely missing?",
-      "options": [
-        "A larger icon.",
-        "A longer splash screen.",
-        "More animated effects.",
-        "Repeatable instructions, clear dependencies, and a testable expected result."
-      ],
-      "correctIndex": 3,
-      "explanation": "Reproducibility requires enough source and setup information for another person to verify the same behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Reproducibility requires enough source and setup information for another person to verify the same behavior.",
-      "incorrectFeedback": "Review the requirement again. Reproducibility requires enough source and setup information for another person to verify the same behavior."
+      "id": "go-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Concurrent tasks need explicit communication and a clear lifetime. Avoid shared mutable state where possible and ensure goroutines can finish or be cancelled. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

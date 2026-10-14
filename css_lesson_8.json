@@ -3,195 +3,190 @@
   "lessonNumber": 8,
   "lessonId": "css-lesson-8",
   "title": "Responsive Web Design",
-  "subtitle": "Make websites adapt beautifully to phones, tablets and desktops.",
-  "description": "Learn media queries, responsive units, flexible layouts and mobile-first techniques for modern websites.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "subtitle": "Build websites that adapt to phones, tablets and computers",
+  "description": "Learn how to make web pages fit different screen sizes using the viewport meta tag, flexible layouts, responsive images and CSS media queries.",
+  "level": "Intermediate",
+  "estimatedMinutes": 25,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "page-1-added",
       "type": "heading",
-      "text": "PAGE 1 — Understand Responsive Web Design"
+      "text": "PAGE 1 — Responsive Web Design: concepts and applied practice"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 8: Responsive Web Design. This lesson follows the course dashboard topic “Responsive Web Design”. The goal is to make websites adapt beautifully to phones, tablets and desktops.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "type": "content",
+      "title": "1. What Is Responsive Web Design?",
+      "text": "Responsive Web Design means creating websites that adapt to different screen sizes. A website should remain readable and usable on a phone, tablet or computer. Instead of designing for only one screen width, we use flexible layouts, suitable text sizes, responsive images and CSS media queries. For example, three course cards may appear in one row on a computer but stack vertically on a small phone. The goal is not simply to make everything smaller. It is to make the content fit comfortably and remain easy to use.",
+      "id": "css-8-block-2"
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Responsive design lets content adapt to the available viewport instead of assuming a single screen size. Flexible widths, min/max constraints, responsive images, and relative units are often more robust than many fixed pixel measurements."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-1",
       "type": "code",
-      "language": "css",
-      "title": "Sample 1: Responsive Web Design in practice",
-      "code": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>.wrap{width:min(100% - 32px,900px);margin:auto}.hero{padding:clamp(20px,5vw,56px)}</style></head><body><main class=\"wrap\"><section class=\"hero\"><h1>Responsive layout</h1><p>Flexible width keeps the content readable.</p></section></main></body></html>"
+      "title": "Example 1: Set Up the Viewport",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Responsive Page</title>\n</head>\n<body>\n  <h1>Welcome to Code Academy</h1>\n  <p>Learn to code on any device.</p>\n</body>\n</html>",
+      "explanation": "The viewport meta tag tells mobile browsers to use the device's viewport width when laying out the page. Without it, a phone may render the page as if it were a much wider desktop page and scale it down.",
+      "output": "The viewport meta tag tells mobile browsers to use the device's viewport width when laying out the page. Without it, a phone may render the page as if it were a much wider desktop page and scale it down.",
+      "id": "css-8-block-3"
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Make websites adapt beautifully to phones, tablets and desktops. Identify the input, the operation, and the result before making changes."
-    },
-    {
-      "id": "css-l8-q-01",
       "type": "quiz",
-      "question": "A site works at 390px but overflows at 320px. What is the best next step?",
+      "question": "Why is the viewport meta tag important for responsive websites?",
       "options": [
-        "Assume only larger phones matter.",
-        "Test narrow widths and find the element exceeding its container.",
-        "Hide every paragraph.",
-        "Add one fixed width to body."
+        "It automatically creates a navigation menu.",
+        "It helps the browser use the device's viewport width for page layout.",
+        "It changes every font to a smaller size.",
+        "It automatically creates CSS media queries."
       ],
       "correctIndex": 1,
-      "explanation": "Responsive testing should include narrower viewports and identify the specific overflow source.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Responsive testing should include narrower viewports and identify the specific overflow source.",
-      "incorrectFeedback": "Review the requirement again. Responsive testing should include narrower viewports and identify the specific overflow source."
+      "explanation": "The viewport meta tag helps mobile browsers lay out the page using the device's viewport width. It does not automatically create menus, resize all fonts or write media queries.",
+      "id": "css-8-block-4"
     },
     {
-      "id": "page-2-heading",
+      "type": "content",
+      "title": "2. Use Flexible Layouts",
+      "text": "Fixed widths can cause problems on small screens. For example, a container with width: 900px may overflow a phone screen. Using width: 100% lets an element fill the width available from its containing block, while max-width limits how wide it can grow. The box-sizing: border-box rule makes an element's declared width include its padding and border, which can make sizing easier to manage. Flexbox and Grid are also useful for responsive layouts because they can arrange content according to the available space. Remember that width: 100% does not mean the element will always fit if other constraints or overflowing content are present.",
+      "id": "css-8-block-5"
+    },
+    {
+      "type": "code",
+      "title": "Example 2: Make a Flexible Container",
+      "language": "html",
+      "code": "<style>\n  * {\n    box-sizing: border-box;\n  }\n\n  .container {\n    width: 100%;\n    max-width: 900px;\n    margin: 0 auto;\n    padding: 16px;\n    background: #dbeafe;\n    border-radius: 10px;\n  }\n</style>\n\n<div class=\"container\">\n  <h2>Learn Anywhere</h2>\n  <p>This container adapts to smaller screens but stays limited in width on larger screens.</p>\n</div>",
+      "explanation": "width: 100% allows the container to use the available width. max-width: 900px prevents it from growing beyond 900px, and margin: 0 auto centers it when extra horizontal space is available.",
+      "output": "width: 100% allows the container to use the available width. max-width: 900px prevents it from growing beyond 900px, and margin: 0 auto centers it when extra horizontal space is available.",
+      "id": "css-8-block-6"
+    },
+    {
+      "id": "page-2-added",
       "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
+      "text": "PAGE 2 — Responsive Web Design: concepts and applied practice"
     },
     {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn media queries, responsive units, flexible layouts and mobile-first techniques for modern websites.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-2",
-      "type": "code",
-      "language": "css",
-      "title": "Sample 2: Responsive Web Design in practice",
-      "code": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>.nav{display:flex;gap:12px;flex-wrap:wrap}@media(max-width:480px){.nav a{width:100%}}</style></head><body><nav class=\"nav\"><a href=\"#a\">Home</a><a href=\"#b\">Lessons</a><a href=\"#c\">Community</a></nav></body></html>"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real CSS project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "css-l8-q-02",
       "type": "quiz",
-      "question": "Which is the strongest reason to add a media query?",
+      "question": "What is the main purpose of max-width: 900px on a container with width: 100%?",
       "options": [
-        "A device is called a tablet.",
-        "The CSS file has more than 100 lines.",
-        "The content no longer fits well and needs a layout change at that width.",
-        "A designer wants more selectors."
-      ],
-      "correctIndex": 2,
-      "explanation": "Breakpoints should respond to the content’s needs rather than arbitrary device labels.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Breakpoints should respond to the content’s needs rather than arbitrary device labels.",
-      "incorrectFeedback": "Review the requirement again. Breakpoints should respond to the content’s needs rather than arbitrary device labels."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Media queries are best added when the content needs a layout change, not merely because a device has a particular name. Start with the narrow layout when appropriate, then enhance it as more space becomes available."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-3",
-      "type": "code",
-      "language": "css",
-      "title": "Sample 3: Responsive Web Design in practice",
-      "code": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>img{max-width:100%;height:auto}.content{max-width:65ch;padding:1rem}</style></head><body><main class=\"content\"><h1>Fits many screens</h1><p>Responsive images avoid overflowing their container.</p></main></body></html>"
-    },
-    {
-      "id": "css-l8-q-03",
-      "type": "quiz",
-      "question": "A responsive image stretches beyond its container. Which simple rule is often helpful?",
-      "options": [
-        "width: 2000px",
-        "position: fixed",
-        "height: 100vh with no width rule",
-        "max-width: 100%; height: auto"
-      ],
-      "correctIndex": 3,
-      "explanation": "This allows an image to shrink within its container while preserving its aspect ratio.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. This allows an image to shrink within its container while preserving its aspect ratio.",
-      "incorrectFeedback": "Review the requirement again. This allows an image to shrink within its container while preserving its aspect ratio."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Test on narrow, medium, and wide viewports and use browser zoom. Prevent horizontal overflow and ensure touch targets, text, and navigation remain usable."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select CSS. Paste this snippet into the matching web/React editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-4",
-      "type": "code",
-      "language": "css",
-      "title": "Sample 4: Responsive Web Design in practice",
-      "code": "<!doctype html><html><head><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><style>.layout{display:grid;grid-template-columns:2fr 1fr;gap:18px}@media(max-width:600px){.layout{grid-template-columns:1fr}}</style></head><body><div class=\"layout\"><main>Lesson content</main><aside>Related links</aside></div></body></html>"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn media queries, responsive units, flexible layouts and mobile-first techniques for modern websites. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "css-l8-q-04",
-      "type": "quiz",
-      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
-      "options": [
-        "Test only a score of 200.",
-        "Test 99, 100, and 101.",
-        "Test a text value such as “high”.",
-        "Do not test the condition."
+        "It makes the container always 900px wide.",
+        "It prevents the container from growing beyond 900px.",
+        "It forces the container to use 90% of the screen.",
+        "It makes the container visible only on desktop screens."
       ],
       "correctIndex": 1,
-      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
-      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
+      "explanation": "width: 100% lets the container fill the available width, while max-width: 900px limits its maximum width to 900px.",
+      "id": "css-8-block-8"
     },
     {
-      "id": "css-l8-q-05",
+      "type": "content",
+      "title": "3. Media Queries: Change the Layout",
+      "text": "A CSS media query applies styles when a specified condition is met. For example, @media (max-width: 600px) applies its styles when the viewport width is 600px or less. You can use it to stack navigation links, reduce spacing or change a multi-column layout into one column. The breakpoint should be chosen based on when your content needs a different layout, not just because a particular device exists. Styles outside the media query continue to apply unless the query overrides them. This lets you define a normal layout and make targeted changes for smaller or larger screens.",
+      "id": "css-8-block-9"
+    },
+    {
+      "type": "code",
+      "title": "Example 3: Change Three Columns to One",
+      "language": "html",
+      "code": "<style>\n  .cards {\n    display: grid;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 12px;\n  }\n\n  .card {\n    padding: 18px;\n    background: #e2e8f0;\n    border-radius: 8px;\n  }\n\n  @media (max-width: 600px) {\n    .cards {\n      grid-template-columns: minmax(0, 1fr);\n    }\n  }\n</style>\n\n<div class=\"cards\">\n  <div class=\"card\">HTML</div>\n  <div class=\"card\">CSS</div>\n  <div class=\"card\">JavaScript</div>\n</div>",
+      "explanation": "On wider screens, the cards use three columns. At viewport widths of 600px or less, the media query changes the grid to one column, stacking the cards vertically.",
+      "output": "On wider screens, the cards use three columns. At viewport widths of 600px or less, the media query changes the grid to one column, stacking the cards vertically.",
+      "id": "css-8-block-10"
+    },
+    {
       "type": "quiz",
-      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
+      "question": "When does @media (max-width: 600px) apply?",
       "options": [
-        "Use OR if either rule must pass.",
-        "Skip validation once the page looks correct.",
-        "Combine both checks with the appropriate AND condition.",
-        "Run the same check forever."
+        "Only when the viewport is exactly 600px wide.",
+        "When the viewport is 600px wide or narrower.",
+        "Only when the viewport is wider than 600px.",
+        "Whenever the page contains an image."
       ],
-      "correctIndex": 2,
-      "explanation": "AND is appropriate when every required condition must be true.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
-      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
+      "correctIndex": 1,
+      "explanation": "max-width: 600px includes viewport widths of 600px and below. It is not limited to exactly 600px.",
+      "id": "css-8-block-11"
+    },
+    {
+      "type": "content",
+      "title": "4. Responsive Images and Text",
+      "text": "Images that are wider than their containers can cause horizontal scrolling. A common solution is max-width: 100% and height: auto. This lets an image shrink to fit its containing block while preserving its natural aspect ratio. For text, use readable font sizes and line heights. Relative units such as rem can help text scale consistently with the root font size. Avoid setting large fixed widths on text containers, and make sure long words or links do not force the page wider than the screen. Responsive design is about comfortable reading and interaction, not just fitting everything onto the screen.",
+      "id": "css-8-block-12"
+    },
+    {
+      "id": "page-3-added",
+      "type": "heading",
+      "text": "PAGE 3 — Responsive Web Design: concepts and applied practice"
+    },
+    {
+      "type": "code",
+      "title": "Example 4: Keep Images Within Their Containers",
+      "language": "html",
+      "code": "<style>\n  .article {\n    width: 100%;\n    max-width: 700px;\n    margin: 0 auto;\n    padding: 16px;\n  }\n\n  .article img {\n    display: block;\n    max-width: 100%;\n    height: auto;\n    border-radius: 10px;\n  }\n\n  .article p {\n    font-size: 1rem;\n    line-height: 1.6;\n    overflow-wrap: anywhere;\n  }\n</style>\n\n<article class=\"article\">\n  <h2>Learning Web Design</h2>\n  <img src=\"lesson-image.jpg\" alt=\"A student learning web design\">\n  <p>Responsive pages help people read and use content on different screens.</p>\n</article>",
+      "explanation": "The image can shrink to fit the article's available width without being stretched to a fixed height. The paragraph's line-height improves readability, while overflow-wrap helps prevent long unbroken text from forcing horizontal overflow. Replace lesson-image.jpg with the path to an actual image in your project.",
+      "output": "The image can shrink to fit the article's available width without being stretched to a fixed height. The paragraph's line-height improves readability, while overflow-wrap helps prevent long unbroken text from forcing horizontal overflow. Replace lesson-image.jpg with the path to an actual image in your project.",
+      "id": "css-8-block-14"
+    },
+    {
+      "type": "quiz",
+      "question": "Which CSS rule allows an image to shrink to fit its container while preserving its aspect ratio?",
+      "options": [
+        "width: 900px; height: 900px;",
+        "max-width: 100%; height: auto;",
+        "min-width: 1000px; height: auto;",
+        "width: 100vw; height: 100vh;"
+      ],
+      "correctIndex": 1,
+      "explanation": "max-width: 100% limits the image to the width available in its container, and height: auto preserves its natural aspect ratio.",
+      "id": "css-8-block-15"
+    },
+    {
+      "type": "content",
+      "title": "5. Mobile-First Design",
+      "text": "Mobile-first design means starting with styles for small screens and then adding enhancements for wider screens. This approach encourages you to focus on essential content, clear spacing and simple navigation first. For example, you might begin with one column and add three columns when the viewport becomes wider. A min-width media query is commonly used for these wider-screen enhancements. Mobile-first is a design strategy, not a requirement that every website must use. The best approach is the one that keeps your content clear and usable at every relevant screen size. Always test your layout rather than assuming it will work.",
+      "id": "css-8-block-16"
+    },
+    {
+      "type": "quiz",
+      "question": "Which example best represents a mobile-first approach?",
+      "options": [
+        "Start with a three-column layout and never change it.",
+        "Start with a one-column layout, then add columns at wider breakpoints.",
+        "Hide all content on small screens.",
+        "Use fixed pixel widths for every element."
+      ],
+      "correctIndex": 1,
+      "explanation": "Mobile-first begins with a layout suitable for smaller screens, then enhances it for wider screens, often using min-width media queries.",
+      "id": "css-8-block-17"
+    },
+    {
+      "type": "content",
+      "title": "6. Quick Practice and Summary",
+      "text": "You now know the foundations of Responsive Web Design. Use the viewport meta tag so mobile browsers can lay out pages at the intended device width. Prefer flexible widths and sensible max-width limits over unnecessarily large fixed widths. Use Grid or Flexbox to arrange content, media queries to adjust layouts at selected breakpoints, and max-width: 100% with height: auto for responsive images. Mobile-first design is a useful strategy when it suits your project. For practice, create a page with three course cards, make them stack on small screens, and add an image that stays inside its container. Test the page at different widths and check for horizontal scrolling, unreadable text and links that are difficult to tap. A responsive website should remain clear and usable, not merely look smaller.",
+      "id": "css-8-block-18"
+    },
+    {
+      "type": "quiz",
+      "question": "A website looks fine on a computer but causes horizontal scrolling on a phone. Which is the best first step?",
+      "options": [
+        "Inspect fixed widths, oversized content and the viewport setup.",
+        "Remove every media query from the stylesheet.",
+        "Set every element to position: absolute.",
+        "Increase all fixed widths so the layout has more room."
+      ],
+      "correctIndex": 0,
+      "explanation": "Fixed widths, oversized images or long content can cause overflow. Check those issues and confirm the viewport meta tag is present before choosing an appropriate responsive fix.",
+      "id": "css-8-block-19"
+    },
+    {
+      "type": "quiz",
+      "question": "What is the main purpose of responsive web design?",
+      "options": [
+        "To make every screen display exactly the same fixed layout.",
+        "To adapt the layout and content so the website remains usable across screen sizes.",
+        "To replace HTML with CSS.",
+        "To make every image fill the entire screen."
+      ],
+      "correctIndex": 1,
+      "explanation": "Responsive web design adapts layouts and content to different screen sizes while keeping the website readable and usable.",
+      "id": "css-8-block-20"
     }
-  ]
+  ],
+  "xpReward": 5,
+  "coinsReward": 2
 }

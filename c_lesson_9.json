@@ -2,196 +2,175 @@
   "course": "c",
   "lessonNumber": 9,
   "lessonId": "c-lesson-9",
-  "title": "Structures and File Handling",
-  "subtitle": "Create custom data structures and work with files.",
-  "description": "Learn structs, grouping related data, opening files, reading data, writing data and closing files safely.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Memory Safety and File Errors",
+  "subtitle": "Memory Safety and File Errors: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on memory safety and file errors, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "c-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Structures and File Handling"
+      "text": "PAGE 1 — Memory Safety and File Errors: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Structures and File Handling. This lesson follows the course dashboard topic “Structures and File Handling”. The goal is to create custom data structures and work with files.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "c-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Memory Safety and File Errors is not just a syntax topic: it is a way to make the application’s intent explicit. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. In the Code Academy dashboard, that idea matters because A score tracker makes explicit types, array bounds, and pointer validity important. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Errors are part of normal software work: users can enter unexpected values, files may be missing, and external services may fail. Reliable code detects failures at a useful boundary and communicates what happened without pretending the operation succeeded."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C. Paste this snippet into the C editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "c-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Memory Safety and File Errors: Check fopen for NULL before using the file and close successful handles",
       "language": "c",
-      "title": "Sample 1: Structures and File Handling in practice",
-      "code": "#include <stdio.h>\nint main(void) {\nint denominator = 0;\nif (denominator != 0) printf(\"%.1f\\n\", 10.0 / denominator); else puts(\"Cannot divide by zero\");\n  return 0;\n}"
+      "code": "FILE *file = fopen(\"lessons.txt\", \"r\");\nif (file == NULL) { perror(\"open failed\"); } else { fclose(file); }",
+      "output": "Check fopen for NULL before using the file and close successful handles."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Create custom data structures and work with files. Identify the input, the operation, and the result before making changes."
+      "id": "c-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “FILE *file = fopen(\"lessons.txt\", \"r\");”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “if (file == NULL) { perror(\"open failed\"); } else { fclose(file); }”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Check fopen for NULL before using the file and close successful handles. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "c-l9-q-01",
+      "id": "c-9-quiz-1-5",
       "type": "quiz",
-      "question": "A database query receives user-provided text. Which safeguard is strongest?",
+      "question": "A score is converted from external text, and the input may be \"eighty\". What should occur?",
       "options": [
-        "Build the query by concatenating the text into SQL.",
-        "Remove all error messages.",
-        "Use parameterized queries and validate the expected data.",
-        "Trust the browser because it has a form."
-      ],
-      "correctIndex": 2,
-      "explanation": "Parameters keep user values separate from executable SQL syntax.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parameters keep user values separate from executable SQL syntax.",
-      "incorrectFeedback": "Review the requirement again. Parameters keep user values separate from executable SQL syntax."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn structs, grouping related data, opening files, reading data, writing data and closing files safely.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C. Paste this snippet into the C editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
-      "type": "code",
-      "language": "c",
-      "title": "Sample 2: Structures and File Handling in practice",
-      "code": "#include <stdio.h>\nint main(void) {\nint values[] = {1, 2, 3}; int index = 4;\nif (index >= 0 && index < 3) printf(\"%d\\n\", values[index]); else puts(\"Index out of range\");\n  return 0;\n}"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real C project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "c-l9-q-02",
-      "type": "quiz",
-      "question": "A function can return either a result or a failure. What should callers do?",
-      "options": [
-        "Inspect and handle the documented success/error result.",
-        "Assume failure means success.",
-        "Discard the return value in every case.",
-        "Repeat the request infinitely."
-      ],
-      "correctIndex": 0,
-      "explanation": "Callers need to respond to the success or failure contract explicitly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Callers need to respond to the success or failure contract explicitly.",
-      "incorrectFeedback": "Review the requirement again. Callers need to respond to the success or failure contract explicitly."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Validate data before using it, and catch only failures you can handle meaningfully. Empty catch blocks hide defects; broad recovery can turn a visible problem into silently corrupted data."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C. Paste this snippet into the C editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "c",
-      "title": "Sample 3: Structures and File Handling in practice",
-      "code": "#include <stdio.h>\nint main(void) {\nint score = -1;\nif (score < 0 || score > 100) puts(\"Invalid score\"); else puts(\"Accepted\");\n  return 0;\n}"
-    },
-    {
-      "id": "c-l9-q-03",
-      "type": "quiz",
-      "question": "A file may not exist when a user starts the app. What is the best approach?",
-      "options": [
-        "Assume the file always exists.",
-        "Catch every possible error and ignore it.",
-        "Check/open the file safely and report a useful recoverable error.",
-        "Pretend an empty file is always correct."
-      ],
-      "correctIndex": 2,
-      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Keep responsibilities separate. A function that reads a file, validates records, computes results, and prints a report is difficult to test; small steps let you isolate a failure and reuse the successful parts."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C. Paste this snippet into the C editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "c",
-      "title": "Sample 4: Structures and File Handling in practice",
-      "code": "#include <stdio.h>\nint main(void) {\nFILE *file = fopen(\"scores.txt\", \"r\");\nif (file == NULL) puts(\"Could not open file\"); else { puts(\"File opened\"); fclose(file); }\n  return 0;\n}"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn structs, grouping related data, opening files, reading data, writing data and closing files safely. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "c-l9-q-04",
-      "type": "quiz",
-      "question": "A numeric form field contains “abc”. What should happen?",
-      "options": [
-        "Convert it silently to a meaningful value without a rule.",
-        "Parse and validate it, then show a clear error if it is invalid.",
-        "Use the string in arithmetic.",
-        "Delete the user’s whole account."
-      ],
-      "correctIndex": 1,
-      "explanation": "Parsing and validation protect calculations from malformed input.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
-      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
-    },
-    {
-      "id": "c-l9-q-05",
-      "type": "quiz",
-      "question": "A catch/except block is empty. What is the main danger?",
-      "options": [
-        "The code becomes easier to diagnose.",
-        "It automatically retries safely.",
-        "It guarantees correct data.",
-        "It can hide real failures and make the program appear successful."
+        "Treat the failed conversion as a valid score of zero in every context",
+        "Ignore the failure and report success",
+        "Display a full private stack trace to the learner",
+        "Handle the conversion failure and show a controlled validation message"
       ],
       "correctIndex": 3,
-      "explanation": "Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "incorrectFeedback": "Review the requirement again. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results."
+      "explanation": "Correct answer: Handle the conversion failure and show a controlled validation message. Invalid input should not silently become success; handle expected conversion errors at the boundary.",
+      "reasoning": "Invalid input should not silently become success; handle expected conversion errors at the boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-9-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Memory Safety and File Errors: Check allocation and release owned memory exactly once; include stdlib",
+      "language": "c",
+      "code": "int *values = malloc(3 * sizeof *values);\nif (values == NULL) { fprintf(stderr, \"allocation failed\\n\"); return 1; }\nfree(values);",
+      "output": "Check allocation and release owned memory exactly once; include stdlib.h."
+    },
+    {
+      "id": "c-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “int *values = malloc(3 * sizeof *values);”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “if (values == NULL) { fprintf(stderr, \"allocation failed\\n\"); return 1; }”: Checks a condition or selects a branch; the result determines which path executes. Line 3 — “free(values);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Check allocation and release owned memory exactly once; include stdlib.h. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-9-quiz-2-8",
+      "type": "quiz",
+      "question": "A file read fails because the file is missing. Which response is most useful?",
+      "options": [
+        "Catch every error and do nothing",
+        "Expose server paths and secrets in the page",
+        "Handle the specific I/O failure and keep detailed diagnostics in a protected log",
+        "Continue using the missing file’s contents"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Handle the specific I/O failure and keep detailed diagnostics in a protected log. A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals.",
+      "reasoning": "A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Memory Safety and File Errors: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "c-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A score tracker makes explicit types, array bounds, and pointer validity important. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "c-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Memory Safety and File Errors: Use a valid array bound to avoid out-of-bounds access",
+      "language": "c",
+      "code": "int values[] = {4, 5, 3};\nsize_t length = sizeof values / sizeof values[0];\nfor (size_t i = 0; i < length; ++i) printf(\"%d\\n\", values[i]);",
+      "output": "Use a valid array bound to avoid out-of-bounds access."
+    },
+    {
+      "id": "c-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “int values[] = {4, 5, 3};”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “size_t length = sizeof values / sizeof values[0];”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 3 — “for (size_t i = 0; i < length; ++i) printf(\"%d\\n\", values[i]);”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Expected behavior: Use a valid array bound to avoid out-of-bounds access. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-9-quiz-2-13",
+      "type": "quiz",
+      "question": "A broad catch block returns a successful result after any exception. What is the core defect?",
+      "options": [
+        "It makes type checking stricter",
+        "It turns failures into false success and makes corruption harder to detect",
+        "It forces every function to become asynchronous",
+        "It guarantees all resources are closed"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: It turns failures into false success and makes corruption harder to detect. Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data.",
+      "reasoning": "Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Memory Safety and File Errors: Check the conversion end pointer so trailing junk is not silently accepted",
+      "language": "c",
+      "code": "char *end = NULL;\nlong n = strtol(\"12x\", &end, 10);\nif (*end != '\\0') puts(\"Invalid integer input\");",
+      "output": "Check the conversion end pointer so trailing junk is not silently accepted."
+    },
+    {
+      "id": "c-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “char *end = NULL;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “long n = strtol(\"12x\", &end, 10);”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “if (*end != '\\0') puts(\"Invalid integer input\");”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Check the conversion end pointer so trailing junk is not silently accepted. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two database updates must both succeed or both be undone. Which mechanism is designed for that?",
+      "options": [
+        "A transaction with commit on success and rollback on failure",
+        "A loop that retries forever",
+        "HTML form validation alone",
+        "A display-only warning after each update"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A transaction with commit on success and rollback on failure. Transactions group related operations atomically when used correctly.",
+      "reasoning": "Transactions group related operations atomically when used correctly. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Memory Safety and File Errors: applied challenge and mastery check"
+    },
+    {
+      "id": "c-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. For the Code Academy dashboard, A score tracker makes explicit types, array bounds, and pointer validity important. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "c-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses memory safety and file errors. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "c-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A failure is expected and the caller can recover. What belongs in the function contract?",
+      "options": [
+        "A silent return value that looks like success",
+        "An unconditional retry with no limit",
+        "An undocumented global flag",
+        "A clear error/result path or a documented exception"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A clear error/result path or a documented exception. A caller needs a reliable way to distinguish success from a recoverable failure.",
+      "reasoning": "A caller needs a reliable way to distinguish success from a recoverable failure. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

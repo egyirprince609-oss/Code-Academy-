@@ -2,196 +2,175 @@
   "course": "go",
   "lessonNumber": 8,
   "lessonId": "go-lesson-8",
-  "title": "Pointers, Maps and Packages",
-  "subtitle": "Understand references, key-value data and code organization.",
-  "description": "Learn pointers, maps, package structure, imports, visibility rules and how to organize larger Go programs.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Structs, Methods and Interfaces",
+  "subtitle": "Structs, Methods and Interfaces: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on structs, methods and interfaces, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "go-8-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Pointers, Maps and Packages"
+      "text": "PAGE 1 — Structs, Methods and Interfaces: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 8: Pointers, Maps and Packages. This lesson follows the course dashboard topic “Pointers, Maps and Packages”. The goal is to understand references, key-value data and code organization.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "go-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Structs, Methods and Interfaces is not just a syntax topic: it is a way to make the application’s intent explicit. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. In the Code Academy dashboard, that idea matters because A progress service benefits from simple functions, explicit errors, and clear concurrency boundaries. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Collections group related values. Use a sequence when order or position matters, a set when uniqueness is the main concern, and a map or dictionary when values should be found by a meaningful key."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-1",
+      "id": "go-8-code-1-3",
       "type": "code",
+      "title": "Example 1 — Structs, Methods and Interfaces: A struct groups a lesson’s related fields",
       "language": "go",
-      "title": "Sample 1: Pointers, Maps and Packages in practice",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\ncourses := []string{\"HTML\", \"CSS\"}\ncourses = append(courses, \"Go\")\nfmt.Println(courses)\n}"
+      "code": "type Lesson struct { ID string; Title string }\nl := Lesson{ID: \"html-1\", Title: \"HTML\"}\nfmt.Println(l.Title)",
+      "output": "A struct groups a lesson’s related fields."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Understand references, key-value data and code organization. Identify the input, the operation, and the result before making changes."
+      "id": "go-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “type Lesson struct { ID string; Title string }”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “l := Lesson{ID: \"html-1\", Title: \"HTML\"}”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 3 — “fmt.Println(l.Title)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A struct groups a lesson’s related fields. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "go-l8-q-01",
+      "id": "go-8-quiz-1-5",
       "type": "quiz",
-      "question": "A collection must contain each category only once. What data structure or operation helps?",
+      "question": "A learner record contains name and XP. What is the main benefit of grouping them in one model?",
       "options": [
-        "A list that intentionally keeps every duplicate.",
-        "A set or explicit uniqueness check.",
-        "A loop that prints the items.",
-        "A longer variable name."
+        "Related state stays together and can be validated through a clear interface",
+        "The model automatically saves itself to Firebase",
+        "Every field becomes safe from modification automatically",
+        "All records must share the same XP value"
       ],
-      "correctIndex": 1,
-      "explanation": "A set or uniqueness rule prevents repeated categories.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A set or uniqueness rule prevents repeated categories.",
-      "incorrectFeedback": "Review the requirement again. A set or uniqueness rule prevents repeated categories."
+      "correctIndex": 0,
+      "explanation": "Correct answer: Related state stays together and can be validated through a clear interface. A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation.",
+      "reasoning": "A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn pointers, maps, package structure, imports, visibility rules and how to organize larger Go programs.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-2",
+      "id": "go-8-code-2-6",
       "type": "code",
+      "title": "Example 2 — Structs, Methods and Interfaces: A method attaches behavior to a receiver type",
       "language": "go",
-      "title": "Sample 2: Pointers, Maps and Packages in practice",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nprofile := map[string]int{\"xp\": 120}\nfmt.Println(profile[\"xp\"])\n}"
+      "code": "func (l Lesson) Label() string { return l.ID + \": \" + l.Title }",
+      "output": "A method attaches behavior to a receiver type."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Go project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "go-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “func (l Lesson) Label() string { return l.ID + \": \" + l.Title }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A method attaches behavior to a receiver type. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "go-l8-q-02",
+      "id": "go-8-quiz-2-8",
       "type": "quiz",
-      "question": "A list is filtered but the original list unexpectedly changes. What should be checked?",
+      "question": "Several types must provide `report()`, but their internal data differs. Which abstraction is suitable?",
       "options": [
-        "The computer’s date.",
-        "Whether comments were removed.",
-        "Only the font size.",
-        "Whether the chosen operation mutates the original collection or returns a new one."
+        "Copy the same method into unrelated caller code",
+        "Use one global variable for all records",
+        "Store source code in the report field",
+        "An interface or protocol describing the required behavior"
       ],
       "correctIndex": 3,
-      "explanation": "Mutation behavior differs by language and method; understand whether the source is changed.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Mutation behavior differs by language and method; understand whether the source is changed.",
-      "incorrectFeedback": "Review the requirement again. Mutation behavior differs by language and method; understand whether the source is changed."
+      "explanation": "Correct answer: An interface or protocol describing the required behavior. An interface or protocol defines a contract without requiring identical internal representations.",
+      "reasoning": "An interface or protocol defines a contract without requiring identical internal representations. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Indexes are commonly zero-based, so the first element is often at position zero and the last index is one less than the collection length. Key-based collections use keys instead of numeric positions and may have different lookup guarantees."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-3",
-      "type": "code",
-      "language": "go",
-      "title": "Sample 3: Pointers, Maps and Packages in practice",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nlevels := map[string]bool{\"beginner\": true, \"advanced\": true}\nfmt.Println(len(levels))\n}"
-    },
-    {
-      "id": "go-l8-q-03",
-      "type": "quiz",
-      "question": "A collection lookup can fail when the key is missing. What should the code do?",
-      "options": [
-        "Check for absence or use a documented fallback/error result.",
-        "Assume every possible key exists.",
-        "Use the missing value as a list index.",
-        "Ignore the result and display success."
-      ],
-      "correctIndex": 0,
-      "explanation": "Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "incorrectFeedback": "Review the requirement again. Handling absent keys makes the behavior predictable and avoids hidden failures."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "go-8-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Structs, Methods and Interfaces: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Consider whether the collection should be mutable, whether a copy or a reference is being shared, and what should happen when an item is missing. These decisions affect correctness as much as the data structure’s syntax."
+      "id": "go-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress service benefits from simple functions, explicit errors, and clear concurrency boundaries. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Go. Paste this snippet into the Go editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-4",
+      "id": "go-8-code-3-11",
       "type": "code",
+      "title": "Example 3 — Structs, Methods and Interfaces: A type satisfies an interface by implementing its required methods",
       "language": "go",
-      "title": "Sample 4: Pointers, Maps and Packages in practice",
-      "code": "package main\nimport \"fmt\"\n\nfunc main() {\nfor _, score := range []int{45, 80, 92} { if score >= 50 { fmt.Println(score) } }\n}"
+      "code": "type Reporter interface { Report() string }\ntype Progress struct { Done int }\nfunc (p Progress) Report() string { return fmt.Sprintf(\"%d complete\", p.Done) }",
+      "output": "A type satisfies an interface by implementing its required methods."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn pointers, maps, package structure, imports, visibility rules and how to organize larger Go programs. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "go-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “type Reporter interface { Report() string }”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “type Progress struct { Done int }”: Declares a data type or contract that groups fields and/or behavior. Line 3 — “func (p Progress) Report() string { return fmt.Sprintf(\"%d complete\", p.Done) }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A type satisfies an interface by implementing its required methods. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "go-l8-q-04",
+      "id": "go-8-quiz-2-13",
       "type": "quiz",
-      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "question": "A course-progress object must never have a negative total. Where should that rule be protected?",
       "options": [
-        "A map/dictionary keyed by email, with suitable uniqueness handling.",
-        "A random number with no mapping.",
-        "A paragraph of comma-separated values that is never parsed.",
-        "A loop that guesses the correct person."
-      ],
-      "correctIndex": 0,
-      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
-    },
-    {
-      "id": "go-l8-q-05",
-      "type": "quiz",
-      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
-      "options": [
-        "One.",
-        "The collection length.",
-        "Zero.",
-        "Minus one."
+        "Only when the object is printed",
+        "By assuming all call sites follow a comment",
+        "At the model or validation boundary that creates and updates the object",
+        "Only in the page heading"
       ],
       "correctIndex": 2,
-      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+      "explanation": "Correct answer: At the model or validation boundary that creates and updates the object. Domain invariants should be enforced where data enters or changes, not only at display time.",
+      "reasoning": "Domain invariants should be enforced where data enters or changes, not only at display time. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "go-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Structs, Methods and Interfaces: An interface value enables code to work with different implementations",
+      "language": "go",
+      "code": "var reporter Reporter = Progress{Done: 4}\nfmt.Println(reporter.Report())",
+      "output": "An interface value enables code to work with different implementations."
+    },
+    {
+      "id": "go-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “var reporter Reporter = Progress{Done: 4}”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “fmt.Println(reporter.Report())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An interface value enables code to work with different implementations. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "go-8-quiz-3-16",
+      "type": "quiz",
+      "question": "A type has only two fields and no behavior or identity requirements. What design principle applies?",
+      "options": [
+        "Make all members globally mutable",
+        "Prefer the simplest data structure that clearly represents the value",
+        "Use inheritance by default",
+        "Create an abstract hierarchy for every field"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Prefer the simplest data structure that clearly represents the value. Classes, structs, and records should match actual domain needs rather than add ceremony.",
+      "reasoning": "Classes, structs, and records should match actual domain needs rather than add ceremony. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "go-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Structs, Methods and Interfaces: applied challenge and mastery check"
+    },
+    {
+      "id": "go-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. For the Code Academy dashboard, A progress service benefits from simple functions, explicit errors, and clear concurrency boundaries. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "go-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses structs, methods and interfaces. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "go-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A subclass overrides a method with an incompatible meaning. What is the key design risk?",
+      "options": [
+        "The subtype may violate the contract expected by callers",
+        "The compiler must automatically rewrite all callers",
+        "The program gains database persistence",
+        "Object fields become inaccessible in every language"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: The subtype may violate the contract expected by callers. Subtyping is safe only when the subtype respects the behavioral expectations of its base contract.",
+      "reasoning": "Subtyping is safe only when the subtype respects the behavioral expectations of its base contract. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "go-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

@@ -2,196 +2,175 @@
   "course": "csharp",
   "lessonNumber": 8,
   "lessonId": "csharp-lesson-8",
-  "title": "Arrays, Lists and Dictionaries",
-  "subtitle": "Store and manage collections of information using common C# collection types.",
-  "description": "Work with arrays, List<T>, Dictionary<TKey,TValue>, indexing and collection traversal.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Classes, Properties and Encapsulation",
+  "subtitle": "Classes, Properties and Encapsulation: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on classes, properties and encapsulation, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "csharp-8-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Arrays, Lists and Dictionaries"
+      "text": "PAGE 1 — Classes, Properties and Encapsulation: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 8: Arrays, Lists and Dictionaries. This lesson follows the course dashboard topic “Arrays, Lists and Dictionaries”. The goal is to store and manage collections of information using common C# collection types.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "csharp-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Classes, Properties and Encapsulation is not just a syntax topic: it is a way to make the application’s intent explicit. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. In the Code Academy dashboard, that idea matters because A progress tracker benefits from clear data models and testable methods. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Collections group related values. Use a sequence when order or position matters, a set when uniqueness is the main concern, and a map or dictionary when values should be found by a meaningful key."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C#. Paste this snippet into the C# editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-1",
+      "id": "csharp-8-code-1-3",
       "type": "code",
+      "title": "Example 1 — Classes, Properties and Encapsulation: A record expresses a value-oriented data model",
       "language": "csharp",
-      "title": "Sample 1: Arrays, Lists and Dictionaries in practice",
-      "code": "var courses = new List<string> { \"HTML\", \"CSS\" };\ncourses.Add(\"C#\");\nConsole.WriteLine(string.Join(\", \", courses));"
+      "code": "public sealed record Lesson(string Id, string Title);\nvar lesson = new Lesson(\"html-1\", \"HTML\");\nConsole.WriteLine(lesson.Title);",
+      "output": "A record expresses a value-oriented data model."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Store and manage collections of information using common C# collection types. Identify the input, the operation, and the result before making changes."
+      "id": "csharp-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “public sealed record Lesson(string Id, string Title);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “var lesson = new Lesson(\"html-1\", \"HTML\");”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “Console.WriteLine(lesson.Title);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: A record expresses a value-oriented data model. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "csharp-l8-q-01",
+      "id": "csharp-8-quiz-1-5",
       "type": "quiz",
-      "question": "A collection must contain each category only once. What data structure or operation helps?",
+      "question": "A learner record contains name and XP. What is the main benefit of grouping them in one model?",
       "options": [
-        "A list that intentionally keeps every duplicate.",
-        "A set or explicit uniqueness check.",
-        "A loop that prints the items.",
-        "A longer variable name."
+        "Related state stays together and can be validated through a clear interface",
+        "The model automatically saves itself to Firebase",
+        "Every field becomes safe from modification automatically",
+        "All records must share the same XP value"
       ],
-      "correctIndex": 1,
-      "explanation": "A set or uniqueness rule prevents repeated categories.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A set or uniqueness rule prevents repeated categories.",
-      "incorrectFeedback": "Review the requirement again. A set or uniqueness rule prevents repeated categories."
+      "correctIndex": 0,
+      "explanation": "Correct answer: Related state stays together and can be validated through a clear interface. A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation.",
+      "reasoning": "A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Work with arrays, List<T>, Dictionary<TKey,TValue>, indexing and collection traversal.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C#. Paste this snippet into the C# editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-2",
+      "id": "csharp-8-code-2-6",
       "type": "code",
+      "title": "Example 2 — Classes, Properties and Encapsulation: A private field plus a method protects the progress rule",
       "language": "csharp",
-      "title": "Sample 2: Arrays, Lists and Dictionaries in practice",
-      "code": "var profile = new Dictionary<string, int> { [\"xp\"] = 120 };\nConsole.WriteLine(profile[\"xp\"]);"
+      "code": "public class Progress { private readonly int total; public Progress(int total) { this.total = total; } public double Percent(int done) => total > 0 ? done * 100.0 / total : 0; }",
+      "output": "A private field plus a method protects the progress rule."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real C# project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "csharp-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “public class Progress { private readonly int total; public Progress(int total) { this.total = total; } public double Percent(int done) => total > 0 ? done * 100.0 / total : 0; }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: A private field plus a method protects the progress rule. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "csharp-l8-q-02",
+      "id": "csharp-8-quiz-2-8",
       "type": "quiz",
-      "question": "A list is filtered but the original list unexpectedly changes. What should be checked?",
+      "question": "Several types must provide `report()`, but their internal data differs. Which abstraction is suitable?",
       "options": [
-        "The computer’s date.",
-        "Whether comments were removed.",
-        "Only the font size.",
-        "Whether the chosen operation mutates the original collection or returns a new one."
+        "Copy the same method into unrelated caller code",
+        "Use one global variable for all records",
+        "Store source code in the report field",
+        "An interface or protocol describing the required behavior"
       ],
       "correctIndex": 3,
-      "explanation": "Mutation behavior differs by language and method; understand whether the source is changed.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Mutation behavior differs by language and method; understand whether the source is changed.",
-      "incorrectFeedback": "Review the requirement again. Mutation behavior differs by language and method; understand whether the source is changed."
+      "explanation": "Correct answer: An interface or protocol describing the required behavior. An interface or protocol defines a contract without requiring identical internal representations.",
+      "reasoning": "An interface or protocol defines a contract without requiring identical internal representations. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Indexes are commonly zero-based, so the first element is often at position zero and the last index is one less than the collection length. Key-based collections use keys instead of numeric positions and may have different lookup guarantees."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C#. Paste this snippet into the C# editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-3",
-      "type": "code",
-      "language": "csharp",
-      "title": "Sample 3: Arrays, Lists and Dictionaries in practice",
-      "code": "var unique = new HashSet<string> { \"beginner\", \"advanced\", \"beginner\" };\nConsole.WriteLine(unique.Count);"
-    },
-    {
-      "id": "csharp-l8-q-03",
-      "type": "quiz",
-      "question": "A collection lookup can fail when the key is missing. What should the code do?",
-      "options": [
-        "Check for absence or use a documented fallback/error result.",
-        "Assume every possible key exists.",
-        "Use the missing value as a list index.",
-        "Ignore the result and display success."
-      ],
-      "correctIndex": 0,
-      "explanation": "Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "incorrectFeedback": "Review the requirement again. Handling absent keys makes the behavior predictable and avoids hidden failures."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "csharp-8-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Classes, Properties and Encapsulation: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Consider whether the collection should be mutable, whether a copy or a reference is being shared, and what should happen when an item is missing. These decisions affect correctness as much as the data structure’s syntax."
+      "id": "csharp-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress tracker benefits from clear data models and testable methods. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select C#. Paste this snippet into the C# editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-4",
+      "id": "csharp-8-code-3-11",
       "type": "code",
+      "title": "Example 3 — Classes, Properties and Encapsulation: An interface defines a contract for implementing classes",
       "language": "csharp",
-      "title": "Sample 4: Arrays, Lists and Dictionaries in practice",
-      "code": "var passed = new[] { 45, 80, 92 }.Where(score => score >= 50);\nConsole.WriteLine(string.Join(\", \", passed));"
+      "code": "public interface IReporter { string Report(); }\npublic class Reporter : IReporter { public string Report() => \"Saved\"; }",
+      "output": "An interface defines a contract for implementing classes."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Work with arrays, List<T>, Dictionary<TKey,TValue>, indexing and collection traversal. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "csharp-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “public interface IReporter { string Report(); }”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “public class Reporter : IReporter { public string Report() => \"Saved\"; }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: An interface defines a contract for implementing classes. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "csharp-l8-q-04",
+      "id": "csharp-8-quiz-2-13",
       "type": "quiz",
-      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "question": "A course-progress object must never have a negative total. Where should that rule be protected?",
       "options": [
-        "A map/dictionary keyed by email, with suitable uniqueness handling.",
-        "A random number with no mapping.",
-        "A paragraph of comma-separated values that is never parsed.",
-        "A loop that guesses the correct person."
-      ],
-      "correctIndex": 0,
-      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
-    },
-    {
-      "id": "csharp-l8-q-05",
-      "type": "quiz",
-      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
-      "options": [
-        "One.",
-        "The collection length.",
-        "Zero.",
-        "Minus one."
+        "Only when the object is printed",
+        "By assuming all call sites follow a comment",
+        "At the model or validation boundary that creates and updates the object",
+        "Only in the page heading"
       ],
       "correctIndex": 2,
-      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+      "explanation": "Correct answer: At the model or validation boundary that creates and updates the object. Domain invariants should be enforced where data enters or changes, not only at display time.",
+      "reasoning": "Domain invariants should be enforced where data enters or changes, not only at display time. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Classes, Properties and Encapsulation: LINQ transforms collections; include System",
+      "language": "csharp",
+      "code": "var scores = new List<int> { 4, 5, 3 };\nvar doubled = scores.Select(score => score * 2).ToList();",
+      "output": "LINQ transforms collections; include System.Linq in the surrounding file."
+    },
+    {
+      "id": "csharp-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “var scores = new List<int> { 4, 5, 3 };”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “var doubled = scores.Select(score => score * 2).ToList();”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: LINQ transforms collections; include System.Linq in the surrounding file. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "csharp-8-quiz-3-16",
+      "type": "quiz",
+      "question": "A type has only two fields and no behavior or identity requirements. What design principle applies?",
+      "options": [
+        "Make all members globally mutable",
+        "Prefer the simplest data structure that clearly represents the value",
+        "Use inheritance by default",
+        "Create an abstract hierarchy for every field"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Prefer the simplest data structure that clearly represents the value. Classes, structs, and records should match actual domain needs rather than add ceremony.",
+      "reasoning": "Classes, structs, and records should match actual domain needs rather than add ceremony. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Classes, Properties and Encapsulation: applied challenge and mastery check"
+    },
+    {
+      "id": "csharp-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. For the Code Academy dashboard, A progress tracker benefits from clear data models and testable methods. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "csharp-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses classes, properties and encapsulation. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "csharp-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A subclass overrides a method with an incompatible meaning. What is the key design risk?",
+      "options": [
+        "The subtype may violate the contract expected by callers",
+        "The compiler must automatically rewrite all callers",
+        "The program gains database persistence",
+        "Object fields become inaccessible in every language"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: The subtype may violate the contract expected by callers. Subtyping is safe only when the subtype respects the behavioral expectations of its base contract.",
+      "reasoning": "Subtyping is safe only when the subtype respects the behavioral expectations of its base contract. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }
