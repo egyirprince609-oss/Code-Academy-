@@ -2,196 +2,175 @@
   "course": "typescript",
   "lessonNumber": 9,
   "lessonId": "typescript-lesson-9",
-  "title": "Modules, APIs and TypeScript Projects",
-  "subtitle": "Organize TypeScript applications and work with external data.",
-  "description": "Learn imports, exports, modules, interfaces for API data, async programming, and project organization.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Promises, Async/Await and Error Types",
+  "subtitle": "Promises, Async/Await and Error Types: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on promises, async/await and error types, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "typescript-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Modules, APIs and TypeScript Projects"
+      "text": "PAGE 1 — Promises, Async/Await and Error Types: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Modules, APIs and TypeScript Projects. This lesson follows the course dashboard topic “Modules, APIs and TypeScript Projects”. The goal is to organize TypeScript applications and work with external data.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "typescript-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Promises, Async/Await and Error Types is not just a syntax topic: it is a way to make the application’s intent explicit. Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. In the Code Academy dashboard, that idea matters because A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Errors are part of normal software work: users can enter unexpected values, files may be missing, and external services may fail. Reliable code detects failures at a useful boundary and communicates what happened without pretending the operation succeeded."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "typescript-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Promises, Async/Await and Error Types: An async function returns a Promise even when it returns a plain value",
       "language": "typescript",
-      "title": "Sample 1: Modules, APIs and TypeScript Projects in practice",
-      "code": "export type CourseId = string;\nexport function makeCourseId(value: CourseId): CourseId { return value.trim().toLowerCase(); }"
+      "code": "async function loadTitle(): Promise<string> { return \"HTML Foundations\"; }\nloadTitle().then(console.log);",
+      "output": "An async function returns a Promise even when it returns a plain value."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Organize TypeScript applications and work with external data. Identify the input, the operation, and the result before making changes."
+      "id": "typescript-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “async function loadTitle(): Promise<string> { return \"HTML Foundations\"; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “loadTitle().then(console.log);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: An async function returns a Promise even when it returns a plain value. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "typescript-l9-q-01",
+      "id": "typescript-9-quiz-1-5",
       "type": "quiz",
-      "question": "A database query receives user-provided text. Which safeguard is strongest?",
+      "question": "A request returns a Promise and the next line reads its result immediately without await or a handler. What is the likely problem?",
       "options": [
-        "Build the query by concatenating the text into SQL.",
-        "Remove all error messages.",
-        "Use parameterized queries and validate the expected data.",
-        "Trust the browser because it has a form."
-      ],
-      "correctIndex": 2,
-      "explanation": "Parameters keep user values separate from executable SQL syntax.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parameters keep user values separate from executable SQL syntax.",
-      "incorrectFeedback": "Review the requirement again. Parameters keep user values separate from executable SQL syntax."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn imports, exports, modules, interfaces for API data, async programming, and project organization.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 2: Modules, APIs and TypeScript Projects in practice",
-      "code": "export interface Learner { id: number; name: string; }\nexport const learner: Learner = { id: 1, name: \"Ama\" };"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real TypeScript project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "typescript-l9-q-02",
-      "type": "quiz",
-      "question": "A function can return either a result or a failure. What should callers do?",
-      "options": [
-        "Inspect and handle the documented success/error result.",
-        "Assume failure means success.",
-        "Discard the return value in every case.",
-        "Repeat the request infinitely."
-      ],
-      "correctIndex": 0,
-      "explanation": "Callers need to respond to the success or failure contract explicitly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Callers need to respond to the success or failure contract explicitly.",
-      "incorrectFeedback": "Review the requirement again. Callers need to respond to the success or failure contract explicitly."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Validate data before using it, and catch only failures you can handle meaningfully. Empty catch blocks hide defects; broad recovery can turn a visible problem into silently corrupted data."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 3: Modules, APIs and TypeScript Projects in practice",
-      "code": "export async function loadTitle(): Promise<string> { return \"Course overview\"; }"
-    },
-    {
-      "id": "typescript-l9-q-03",
-      "type": "quiz",
-      "question": "A file may not exist when a user starts the app. What is the best approach?",
-      "options": [
-        "Assume the file always exists.",
-        "Catch every possible error and ignore it.",
-        "Check/open the file safely and report a useful recoverable error.",
-        "Pretend an empty file is always correct."
-      ],
-      "correctIndex": 2,
-      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Keep responsibilities separate. A function that reads a file, validates records, computes results, and prints a report is difficult to test; small steps let you isolate a failure and reuse the successful parts."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 4: Modules, APIs and TypeScript Projects in practice",
-      "code": "export const appConfig = { courseCount: 20, lessonsPerCourse: 10 } as const;"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn imports, exports, modules, interfaces for API data, async programming, and project organization. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "typescript-l9-q-04",
-      "type": "quiz",
-      "question": "A numeric form field contains “abc”. What should happen?",
-      "options": [
-        "Convert it silently to a meaningful value without a rule.",
-        "Parse and validate it, then show a clear error if it is invalid.",
-        "Use the string in arithmetic.",
-        "Delete the user’s whole account."
-      ],
-      "correctIndex": 1,
-      "explanation": "Parsing and validation protect calculations from malformed input.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
-      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
-    },
-    {
-      "id": "typescript-l9-q-05",
-      "type": "quiz",
-      "question": "A catch/except block is empty. What is the main danger?",
-      "options": [
-        "The code becomes easier to diagnose.",
-        "It automatically retries safely.",
-        "It guarantees correct data.",
-        "It can hide real failures and make the program appear successful."
+        "The browser converts every Promise to JSON automatically",
+        "The request becomes a CSS animation",
+        "The Promise blocks the thread until it succeeds",
+        "The code may use the pending asynchronous result instead of the completed value"
       ],
       "correctIndex": 3,
-      "explanation": "Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "incorrectFeedback": "Review the requirement again. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results."
+      "explanation": "Correct answer: The code may use the pending asynchronous result instead of the completed value. An asynchronous result is not available until its completion path runs.",
+      "reasoning": "An asynchronous result is not available until its completion path runs. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-9-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Promises, Async/Await and Error Types: await pauses this async function; explicit status and rejection handling separate failure from success",
+      "language": "typescript",
+      "code": "async function loadLesson(): Promise<void> {\n  try { const response = await fetch(\"/lessons/html_lesson_1.json\"); if (!response.ok) throw new Error(\"Load failed\"); console.log(await response.json()); } catch (error) { console.error(\"Could not load lesson\", error); }\n}",
+      "output": "await pauses this async function; explicit status and rejection handling separate failure from success."
+    },
+    {
+      "id": "typescript-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “async function loadLesson(): Promise<void> {”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “try { const response = await fetch(\"/lessons/html_lesson_1.json\"); if (!response.ok) throw new Error(\"Load failed\"); console.log(await response.json()); } catch (error) { console.error(\"Could not load lesson\", error); }”: Displays the computed value so the behavior can be observed and checked. Line 3 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: await pauses this async function; explicit status and rejection handling separate failure from success. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-9-quiz-2-8",
+      "type": "quiz",
+      "question": "A lesson fetch can fail offline. Which UI states should be distinct?",
+      "options": [
+        "Only a loading spinner that never changes",
+        "A single state that always claims the lesson loaded",
+        "Loading, success, and failure",
+        "Success and failure represented by the same empty string"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Loading, success, and failure. Clear async states avoid presenting failure as success or leaving stale loading indicators.",
+      "reasoning": "Clear async states avoid presenting failure as success or leaving stale loading indicators. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Promises, Async/Await and Error Types: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "typescript-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "typescript-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Promises, Async/Await and Error Types: Promise",
+      "language": "typescript",
+      "code": "const results = await Promise.all([Promise.resolve(5), Promise.resolve(2)]);\nconsole.log(results.reduce((a, b) => a + b, 0));",
+      "output": "Promise.all waits for all tasks and fails if one rejects."
+    },
+    {
+      "id": "typescript-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “const results = await Promise.all([Promise.resolve(5), Promise.resolve(2)]);”: Waits for or coordinates work that completes asynchronously, so the result is handled at the correct time. Line 2 — “console.log(results.reduce((a, b) => a + b, 0));”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Promise.all waits for all tasks and fails if one rejects. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-9-quiz-2-13",
+      "type": "quiz",
+      "question": "A slow response for an old search overwrites a newer result. What should be added?",
+      "options": [
+        "A retry loop without a stop condition",
+        "A request identity, cancellation, or stale-response guard",
+        "A longer fixed delay for every response",
+        "A global variable containing only the last character"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: A request identity, cancellation, or stale-response guard. Asynchronous results can arrive out of order; stale work must not replace the latest intent.",
+      "reasoning": "Asynchronous results can arrive out of order; stale work must not replace the latest intent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Promises, Async/Await and Error Types: A discriminated result makes success and failure data explicit",
+      "language": "typescript",
+      "code": "type Result<T> = { ok: true; value: T } | { ok: false; message: string };\nconst result: Result<number> = { ok: false, message: \"Offline\" };",
+      "output": "A discriminated result makes success and failure data explicit."
+    },
+    {
+      "id": "typescript-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “type Result<T> = { ok: true; value: T } | { ok: false; message: string };”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “const result: Result<number> = { ok: false, message: \"Offline\" };”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A discriminated result makes success and failure data explicit. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Several independent requests are all required before rendering. What is a common approach?",
+      "options": [
+        "Await a coordination operation such as Promise.all and handle rejection",
+        "Await only the first request and ignore the others",
+        "Assume launching requests means they have completed",
+        "Convert all errors to empty success values silently"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Await a coordination operation such as Promise.all and handle rejection. A coordination step makes completion requirements explicit and lets the failure path be handled.",
+      "reasoning": "A coordination step makes completion requirements explicit and lets the failure path be handled. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Promises, Async/Await and Error Types: applied challenge and mastery check"
+    },
+    {
+      "id": "typescript-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "typescript-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses promises, async/await and error types. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "typescript-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A task may outlive the screen that started it. What should the design consider?",
+      "options": [
+        "Never remove any event listener",
+        "Assume the screen remains mounted forever",
+        "Make the task mutate whichever page is now visible",
+        "Cancellation or stale-result handling and cleanup of listeners/resources"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Cancellation or stale-result handling and cleanup of listeners/resources. Async work should respect the lifetime of the interface or operation that created it.",
+      "reasoning": "Async work should respect the lifetime of the interface or operation that created it. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Asynchronous work may complete later or fail. Await the intended operation, handle rejection or errors, and keep loading, success, and failure states distinct. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

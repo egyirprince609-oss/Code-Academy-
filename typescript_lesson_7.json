@@ -2,196 +2,175 @@
   "course": "typescript",
   "lessonNumber": 7,
   "lessonId": "typescript-lesson-7",
-  "title": "Classes and Object-Oriented TypeScript",
-  "subtitle": "Build classes using TypeScript",
-  "description": "Work with constructors, properties, methods, inheritance, access modifiers, and abstract classes.",
+  "title": "Functions and Function Types",
+  "subtitle": "Functions and Function Types: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on functions and function types, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "typescript-7-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Classes and Object-Oriented TypeScript"
+      "text": "PAGE 1 — Functions and Function Types: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 7: Classes and Object-Oriented TypeScript. This lesson follows the course dashboard topic “Classes and Object-Oriented TypeScript”. The goal is to build classes using TypeScript. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "typescript-7-page-1-teaching-2",
+      "type": "content",
+      "text": "Functions and Function Types is not just a syntax topic: it is a way to make the application’s intent explicit. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. In the Code Academy dashboard, that idea matters because A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A class or equivalent type can group related state and behavior into one understandable model. An object is an instance of that model, with its own current values."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-1",
+      "id": "typescript-7-code-1-3",
       "type": "code",
+      "title": "Example 1 — Functions and Function Types: A return type documents the value the function produces",
       "language": "typescript",
-      "title": "Sample 1: Classes and Object-Oriented TypeScript in practice",
-      "code": "class Learner { constructor(public name: string, public xp: number) {} summary(): string { return `${this.name}: ${this.xp} XP`; } }\nconsole.log(new Learner(\"Ama\", 120).summary());"
+      "code": "function awardXp(correct: boolean): number { return correct ? 5 : 0; }\nconsole.log(awardXp(true));",
+      "output": "A return type documents the value the function produces."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Build classes using TypeScript. Identify the input, the operation, and the result before making changes."
+      "id": "typescript-7-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “function awardXp(correct: boolean): number { return correct ? 5 : 0; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “console.log(awardXp(true));”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A return type documents the value the function produces. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "typescript-l7-q-01",
+      "id": "typescript-7-quiz-1-5",
       "type": "quiz",
-      "question": "An object must never allow its balance to fall below zero. Which design protects the rule?",
+      "question": "A helper computes XP and another function must add the returned amount to the profile. What should the helper do?",
       "options": [
-        "Allow any caller to rewrite the field.",
-        "Document the rule but never check it.",
-        "Hide every object method.",
-        "Control updates through methods that validate the new balance."
+        "Write the reward into a page title",
+        "Return the numeric reward so the caller can use it",
+        "Only print the reward and return nothing",
+        "Update an unrelated global variable without a clear contract"
       ],
-      "correctIndex": 3,
-      "explanation": "Encapsulation protects invariants by controlling how state changes.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Encapsulation protects invariants by controlling how state changes.",
-      "incorrectFeedback": "Review the requirement again. Encapsulation protects invariants by controlling how state changes."
+      "correctIndex": 1,
+      "explanation": "Correct answer: Return the numeric reward so the caller can use it. A return value makes the result reusable by the caller and testable independently.",
+      "reasoning": "A return value makes the result reusable by the caller and testable independently. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Work with constructors, properties, methods, inheritance, access modifiers, and abstract classes.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-2",
+      "id": "typescript-7-code-2-6",
       "type": "code",
+      "title": "Example 2 — Functions and Function Types: An arrow function can use a default parameter",
       "language": "typescript",
-      "title": "Sample 2: Classes and Object-Oriented TypeScript in practice",
-      "code": "class Counter { private value = 0; add(amount = 1): void { this.value += amount; } get total(): number { return this.value; } }\nconst counter = new Counter(); counter.add(5); console.log(counter.total);"
+      "code": "const label = (course: string, level = \"Beginner\"): string => `${course} · ${level}`;",
+      "output": "An arrow function can use a default parameter."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real TypeScript project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "typescript-7-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “const label = (course: string, level = \"Beginner\"): string => `${course} · ${level}`;”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: An arrow function can use a default parameter. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "typescript-l7-q-02",
+      "id": "typescript-7-quiz-2-8",
       "type": "quiz",
-      "question": "Two types share a small helper behavior but are not true specializations of one another. What should be considered?",
+      "question": "A progress helper divides completed lessons by the total. Which check belongs before division?",
       "options": [
-        "Composition or a focused interface instead of forcing inheritance.",
-        "An inheritance chain of many levels.",
-        "Duplicating the helper in every method.",
-        "Making all fields public."
+        "Confirm total is greater than zero",
+        "Confirm the lesson title has uppercase letters",
+        "Convert the percentage to a string first",
+        "Ignore the total and use a fixed divisor"
       ],
       "correctIndex": 0,
-      "explanation": "Inheritance should represent a genuine “is-a” relationship; composition is often better for using a capability.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Inheritance should represent a genuine “is-a” relationship; composition is often better for using a capability.",
-      "incorrectFeedback": "Review the requirement again. Inheritance should represent a genuine “is-a” relationship; composition is often better for using a capability."
+      "explanation": "Correct answer: Confirm total is greater than zero. The denominator must be valid to avoid division by zero and nonsensical progress.",
+      "reasoning": "The denominator must be valid to avoid division by zero and nonsensical progress. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Encapsulation protects an object’s rules. For example, a balance should not become negative simply because any caller can edit an internal field; provide operations that validate changes instead."
+      "id": "typescript-7-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Functions and Function Types: implementation, debugging, and edge cases"
     },
     {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "typescript-7-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "l7-code-3",
+      "id": "typescript-7-code-3-11",
       "type": "code",
+      "title": "Example 3 — Functions and Function Types: A guard handles the invalid denominator",
       "language": "typescript",
-      "title": "Sample 3: Classes and Object-Oriented TypeScript in practice",
-      "code": "class Course { constructor(public readonly title: string, public readonly lessons: number) {} }\nconsole.log(new Course(\"TypeScript\", 10).title);"
+      "code": "function progress(done: number, total: number): number {\n  if (total <= 0) return 0;\n  return done / total * 100;\n}",
+      "output": "A guard handles the invalid denominator."
     },
     {
-      "id": "typescript-l7-q-03",
+      "id": "typescript-7-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “function progress(done: number, total: number): number {”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “if (total <= 0) return 0;”: Checks a condition or selects a branch; the result determines which path executes. Line 3 — “return done / total * 100;”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 4 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: A guard handles the invalid denominator. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-7-quiz-2-13",
       "type": "quiz",
-      "question": "A class has one hundred unrelated methods. What is the likely design problem?",
+      "question": "The same reward calculation appears in five click handlers. What is the best refactor?",
       "options": [
-        "It needs more responsibilities.",
-        "Its name is too short.",
-        "It has too many unrelated responsibilities and should be split.",
-        "It should stop being tested."
+        "Copy it into five more handlers",
+        "Make each handler compute a different reward",
+        "Hide the arithmetic inside a CSS class name",
+        "Move the calculation into one focused function and call it from each handler"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Move the calculation into one focused function and call it from each handler. One focused function reduces duplication and keeps behavior consistent.",
+      "reasoning": "One focused function reduces duplication and keeps behavior consistent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-7-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Functions and Function Types: A function type describes the required call signature",
+      "language": "typescript",
+      "code": "type Formatter = (value: number) => string;\nconst formatXp: Formatter = value => `${value} XP`;",
+      "output": "A function type describes the required call signature."
+    },
+    {
+      "id": "typescript-7-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “type Formatter = (value: number) => string;”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “const formatXp: Formatter = value => `${value} XP`;”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: A function type describes the required call signature. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-7-quiz-3-16",
+      "type": "quiz",
+      "question": "A function receives a list and should report its result without changing unrelated global state. What is the strongest design?",
+      "options": [
+        "Read user interface text as hidden input",
+        "Change global state as a side effect without documenting it",
+        "Use explicit parameters and return a result",
+        "Depend on whichever global value was most recently set"
       ],
       "correctIndex": 2,
-      "explanation": "A type with many unrelated jobs is difficult to understand, change, and test.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A type with many unrelated jobs is difficult to understand, change, and test.",
-      "incorrectFeedback": "Review the requirement again. A type with many unrelated jobs is difficult to understand, change, and test."
+      "explanation": "Correct answer: Use explicit parameters and return a result. Explicit inputs and outputs make functions easier to test and reason about.",
+      "reasoning": "Explicit inputs and outputs make functions easier to test and reason about. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
+      "id": "typescript-7-page-3-17",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 3 — Functions and Function Types: applied challenge and mastery check"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Use inheritance only when one type truly is a specialized form of another. Prefer simple composition when one object merely needs to use another, and keep each type responsible for a small, coherent job."
+      "id": "typescript-7-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "typescript-7-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses functions and function types. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
     },
     {
-      "id": "l7-code-4",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 4: Classes and Object-Oriented TypeScript in practice",
-      "code": "interface Badge { label(): string; }\nclass LearnerBadge implements Badge { label(): string { return \"Practice champion\"; } }\nconsole.log(new LearnerBadge().label());"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Work with constructors, properties, methods, inheritance, access modifiers, and abstract classes. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "typescript-l7-q-04",
+      "id": "typescript-7-quiz-5-20",
       "type": "quiz",
-      "question": "A child type must work wherever a parent contract is expected. What matters most?",
+      "question": "A function may receive an empty input. Where should that case be handled?",
       "options": [
-        "Matching the parent’s color.",
-        "Preserving the expected behavior of the contract.",
-        "Having the most methods possible.",
-        "Using global state instead of parameters."
+        "By assuming the input never becomes empty",
+        "Inside the function’s contract or by a clearly enforced caller precondition",
+        "Only in a comment",
+        "After accessing the first item"
       ],
       "correctIndex": 1,
-      "explanation": "Subtypes should honor the behavior callers expect from the shared abstraction.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Subtypes should honor the behavior callers expect from the shared abstraction.",
-      "incorrectFeedback": "Review the requirement again. Subtypes should honor the behavior callers expect from the shared abstraction."
+      "explanation": "Correct answer: Inside the function’s contract or by a clearly enforced caller precondition. The empty-input behavior should be explicit wherever the contract is enforced.",
+      "reasoning": "The empty-input behavior should be explicit wherever the contract is enforced. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "typescript-l7-q-05",
-      "type": "quiz",
-      "question": "Several values and operations always belong together in a domain model. What design helps?",
-      "options": [
-        "Global variables scattered through every screen.",
-        "A focused class/type that groups related data and behavior.",
-        "One class with every unrelated feature.",
-        "A collection of unlabelled numbers."
-      ],
-      "correctIndex": 1,
-      "explanation": "A cohesive type communicates related state and behavior together.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A cohesive type communicates related state and behavior together.",
-      "incorrectFeedback": "Review the requirement again. A cohesive type communicates related state and behavior together."
+      "id": "typescript-7-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }
