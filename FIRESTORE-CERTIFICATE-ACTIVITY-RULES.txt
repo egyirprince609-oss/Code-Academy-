@@ -1,0 +1,64 @@
+CODE ACADEMY — CERTIFICATE VIEW EVENT RULE
+
+IMPORTANT
+Add this `match` block INSIDE your existing:
+  match /databases/{database}/documents {
+
+Do not replace your complete Firestore rules with this snippet. Keep all your existing rules.
+
+match /certificates/{certificateId}/views/{viewId} {
+  function certificateRecord() {
+    return get(/databases/$(database)/documents/certificates/$(certificateId));
+  }
+
+  // The public verification/view page may create a small event only if the
+  // registered certificate exists and the event identifies its real owner.
+  // The write stores no IP address and does not collect device fingerprint data.
+  allow create: if
+    request.resource.data.keys().hasOnly([
+      'certificateId',
+      'ownerUid',
+      'courseId',
+      'courseName',
+      'level',
+      'viewerUid',
+      'viewerAuthenticated',
+      'viewedAt',
+      'source'
+    ]) &&
+    request.resource.data.keys().hasAll([
+      'certificateId',
+      'ownerUid',
+      'courseId',
+      'courseName',
+      'level',
+      'viewerUid',
+      'viewerAuthenticated',
+      'viewedAt',
+      'source'
+    ]) &&
+    request.resource.data.certificateId == certificateId &&
+    request.resource.data.ownerUid == certificateRecord().data.uid &&
+    request.resource.data.ownerUid is string &&
+    request.resource.data.courseId is string &&
+    request.resource.data.courseName is string &&
+    request.resource.data.level is string &&
+    request.resource.data.viewerUid is string &&
+    request.resource.data.viewerAuthenticated is bool &&
+    request.resource.data.viewedAt == request.time &&
+    request.resource.data.source in ['verify.html', 'certificate_view.html'];
+
+  // Only the owner of the registered credential can read its view events.
+  allow get, list: if request.auth != null &&
+    certificateRecord().data.uid == request.auth.uid;
+
+  // Event records are immutable.
+  allow update, delete: if false;
+}
+
+SECURITY NOTE
+The browser can only record that a verification/view page attempted to open a public
+credential. Client-side event logging is not a tamper-proof audit trail and anonymous
+clients can potentially submit repeated events. For production-grade fraud resistance,
+use App Check and a trusted server endpoint/Cloud Function with rate limiting. These
+rules enable the requested in-app event feed, but do not prove a viewer's real-world identity.

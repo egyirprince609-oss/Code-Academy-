@@ -1,354 +1,45 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Certificate | Code Academy</title>
-<link rel="icon" href="logo.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#020617"><title>Certificate | Code Academy</title><link rel="icon" href="logo.png"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Georgia, serif}
-body{min-height:100vh;background:#020617;color:#fff;padding-bottom:40px}
-.topbar{position:sticky;top:0;z-index:1000;min-height:72px;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,23,42,.92);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.08)}
-.logoBox{display:flex;align-items:center;gap:12px}.logoBox img{width:42px;height:42px;border-radius:10px}.logoBox h2{font-size:16px;color:#38bdf8;font-family:Arial}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.actions button{border:none;padding:10px 14px;border-radius:10px;cursor:pointer;font-family:Arial;font-weight:bold;font-size:12px}
-.btn-back{background:#1e293b;color:#fff;border:1px solid #334155 !important}
-.btn-download{background:linear-gradient(135deg,#2563eb,#38bdf8);color:#fff}
-.btn-share{background:#16a34a;color:#fff}
-.btn-verify{background:#0f172a;color:#94a3b8;border:1px solid #334155 !important}
-.container{width:min(1100px,96%);margin:25px auto}
-.status{padding:14px;border-radius:12px;margin-bottom:15px;font-family:Arial;font-size:13px;display:none}
-.status.show{display:block}.status.error{background:#450a0a;border:1px solid #7f1d1d;color:#fecaca}.status.success{background:#052e16;border:1px solid #166534;color:#bbf7d0}
-
-#certificatePaper{
-width:min(900px,100%);margin:auto;background:#fff;color:#0f172a;
-border-radius:18px;padding:28px;position:relative;overflow:hidden;
-border:8px double #2563eb;box-shadow:0 25px 70px rgba(0,0,0,.4)
-}
-.cert-header{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;border-bottom:2px solid #e2e8f0;padding-bottom:18px;margin-bottom:20px}
-.cert-logo{display:flex;align-items:center;gap:12px}
-.cert-logo img{width:55px;height:55px;border-radius:12px;object-fit:cover}
-.cert-logo h3{color:#2563eb;font-size:18px;line-height:1.1}.cert-logo p{color:#64748b;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-family:Arial}
-.cert-id{font-family:Arial;font-size:10px;color:#64748b;text-align:right}
-.cert-id strong{color:#0f172a;display:block;font-size:12px;margin-top:3px}
-
-.cert-body{text-align:center;padding:10px 0}
-.cert-body h1{font-size:clamp(26px,5vw,42px);color:#1e40af;margin-bottom:8px;letter-spacing:1px}
-.cert-body .sub{font-family:Arial;color:#64748b;font-size:12px;letter-spacing:3px;text-transform:uppercase;margin-bottom:22px}
-.student-photo-wrap{width:125px;height:125px;margin:0 auto 15px;border-radius:50%;overflow:hidden;border:4px solid #38bdf8;box-shadow:0 8px 20px rgba(37,99,235,.25)}
-.student-photo-wrap img{width:100%;height:100%;object-fit:cover}
-.awarded{font-family:Arial;color:#64748b;font-size:13px;margin-bottom:6px}
-.studentName{font-size:clamp(24px,4vw,34px);color:#0f172a;margin-bottom:18px;border-bottom:2px solid #38bdf8;display:inline-block;padding-bottom:4px;min-width:260px}
-.courseDesc{font-family:Arial;color:#475569;font-size:14px;line-height:1.6;max-width:600px;margin:0 auto 20px}
-.courseName{font-size:22px;color:#2563eb;margin-bottom:20px;display:block}
-
-.skills{max-width:650px;margin:15px auto;display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
-.skills span{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af;padding:6px 10px;border-radius:999px;font-family:Arial;font-size:10px;font-weight:bold}
-
-.cert-footer{margin-top:28px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;align-items:end;border-top:2px solid #e2e8f0;padding-top:18px}
-.footer-box{text-align:center}.footer-box span{display:block;font-family:Arial;color:#94a3b8;font-size:9px;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
-.footer-box strong{font-size:12px;color:#0f172a}.footer-box img{max-width:130px;max-height:55px;object-fit:contain;border-bottom:1px solid #e2e8f0;padding-bottom:5px}
-.qrBox{width:92px;height:92px;margin:0 auto 6px;background:#fff;padding:5px;border:1px solid #e2e8f0;border-radius:8px}
-.verifyLink{font-family:Arial;font-size:8px;color:#64748b;word-break:break-all;margin-top:6px;display:block}
-
-.watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:110px;opacity:.03;pointer-events:none;font-weight:900;color:#2563eb}
-
-.loadingScreen{position:fixed;inset:0;z-index:9999;background:#020617;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px}
-.loadingScreen i{font-size:34px;color:#38bdf8;animation:spin 1s linear infinite}
-.loadingScreen p{font-family:Arial;color:#94a3b8;font-size:13px}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-@media(max-width:700px){
-.cert-footer{grid-template-columns:1fr;gap:20px}
-#certificatePaper{padding:18px;border-width:5px}
-.actions{width:100%;justify-content:center}
-}
-@media print{
-body{background:#fff}.topbar,.container> .status,.actions{display:none !important}
-#certificatePaper{box-shadow:none;border:10px double #2563eb;margin:0;width:100%}
-}
-</style>
-</head>
-<body>
-<div class="loadingScreen" id="loadingScreen"><i class="fas fa-spinner"></i><p>Loading official certificate...</p></div>
-
-<header class="topbar">
-<div class="logoBox"><img src="logo.png" alt="Code Academy"><h2>Code Academy</h2></div>
-<div class="actions">
-<button class="btn-back" id="backBtn"><i class="fas fa-arrow-left"></i> Back</button>
-<button class="btn-verify" id="verifyBtn"><i class="fas fa-shield-check"></i> Verify</button>
-<button class="btn-share" id="shareBtn"><i class="fas fa-share-nodes"></i> Share</button>
-<button class="btn-download" id="downloadBtn"><i class="fas fa-download"></i> Download PDF</button>
-</div>
-</header>
-
-<main class="container">
-<div id="statusBox" class="status"></div>
-
-<!-- THIS IS WHAT YOU DOWNLOAD -->
-<div id="certificatePaper">
-<div class="watermark">CODE ACADEMY</div>
-
-<div class="cert-header">
-<div class="cert-logo">
-<img src="logo.png" alt="Logo">
-<div><h3>Code Academy</h3><p>Learn • Build • Grow</p></div>
-</div>
-<div class="cert-id">
-CERTIFICATE ID
-<strong id="certIdText">--</strong>
-<span id="issueDateText">--</span>
-</div>
-</div>
-
-<div class="cert-body">
-<h1>Certificate of Completion</h1>
-<div class="sub">This certificate is proudly presented to</div>
-
-<div class="student-photo-wrap"><img id="studentPhoto" src="logo.png" alt="Student"></div>
-
-<div class="awarded">Awarded to</div>
-<div class="studentName" id="studentName">Student Name</div>
-
-<div class="courseDesc">
-For successfully completing all required lessons and demonstrating outstanding proficiency in
-<span class="courseName" id="courseTitle">HTML Developer</span>
-</div>
-
-<div class="skills" id="skillsList"></div>
-</div>
-
-<div class="cert-footer">
-<div class="footer-box">
-<img id="signatureImg" src="" alt="Signature" style="display:none">
-<div id="noSig" style="font-family:Arial;color:#94a3b8;font-size:11px;padding:10px 0;border-bottom:1px solid #e2e8f0">No signature</div>
-<span>Learner Signature</span>
-<strong id="footerName">Student</strong>
-</div>
-
-<div class="footer-box">
-<div class="qrBox" id="qrCode"></div>
-<span>Verify Certificate</span>
-<strong>Scan to Verify</strong>
-<a class="verifyLink" id="verifyLinkText" target="_blank">--</a>
-</div>
-
-<div class="footer-box">
-<img src="logo.png" alt="Seal" style="width:65px;height:65px;border-radius:50%;border:2px solid #2563eb">
-<span>Official Seal</span>
-<strong>Code Academy</strong>
-<span>Learning Department</span>
-</div>
-</div>
-</div>
-</main>
-
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 0 0,rgba(37,99,235,.16),transparent 35%),#020617;color:#f8fafc;font-family:Inter,system-ui,sans-serif}.top{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px max(3%,calc((100% - 1220px)/2));background:rgba(2,6,23,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(148,163,184,.15)}.brand{display:flex;align-items:center;gap:10px;color:white;text-decoration:none}.brand img{height:40px;width:40px;object-fit:cover;border-radius:12px}.brand strong{display:block;font-size:14px}.brand small{display:block;margin-top:3px;font-size:9px;color:#8295ae;letter-spacing:.13em;text-transform:uppercase}.actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.actions button{height:39px;padding:0 12px;border:1px solid #334155;border-radius:10px;background:#111c30;color:#e5eefb;font-weight:800;font-size:10px;display:inline-flex;align-items:center;justify-content:center;gap:7px}.actions button:hover{border-color:#67e8f9}.actions .primary{background:linear-gradient(110deg,#1d4ed8,#0284c7);border-color:#2563eb;color:#fff}.actions .share{background:linear-gradient(110deg,#047857,#16a34a);border-color:#16a34a}.bell-wrap{position:relative}.bell-wrap button{width:40px;padding:0}.badge{display:none;position:absolute;right:-3px;top:-5px;min-width:17px;height:17px;border-radius:99px;background:#ef4444;border:2px solid #020617;font-size:8px;font-weight:900;align-items:center;justify-content:center}.wrap{width:min(1220px,96%);margin:23px auto 60px}.status{display:none;padding:12px 15px;border-radius:11px;font-size:11px;margin-bottom:13px;line-height:1.6}.status.show{display:block}.status.success{color:#bbf7d0;background:rgba(20,83,45,.22);border:1px solid rgba(74,222,128,.28)}.status.error{color:#fecaca;background:rgba(127,29,29,.22);border:1px solid rgba(248,113,113,.25)}.status.info{color:#bae6fd;background:rgba(8,47,73,.22);border:1px solid rgba(56,189,248,.24)}.certificate-stage{display:flex;flex-direction:column;align-items:center;gap:18px}.print-sheet{width:min(1160px,100%);aspect-ratio:1.414/1;background:#fff;color:#111827;position:relative;padding:clamp(11px,2vw,24px);box-shadow:0 28px 85px rgba(0,0,0,.38);overflow:hidden}.certificate-paper{height:100%;width:100%;position:relative;isolation:isolate;background:#fff;color:#162033;padding:clamp(14px,2.1vw,27px);border:10px double #2563eb;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}.certificate-paper:before{content:"";position:absolute;inset:0;z-index:-2;background:url('logo.png') center/270px no-repeat;opacity:.045;pointer-events:none}.certificate-paper:after{content:"❦  ✧  ❦  ✧  ❦";position:absolute;z-index:-1;left:0;right:0;top:7px;text-align:center;font-family:Georgia,serif;font-size:23px;letter-spacing:17px;color:#b8860b;opacity:.65;pointer-events:none}.level-beginner{border-color:#0f766e!important;outline:2px solid #cbd5e1;outline-offset:-16px}.level-beginner:after{color:#0f766e}.level-beginner .cert-title{color:#0f766e}.level-beginner .name{border-color:#0f766e}.level-beginner .ornament{color:#0f766e}.level-professional{border:12px double #b8860b!important;outline:2px solid #d6b45c;outline-offset:-18px;background:linear-gradient(145deg,#fffefa,#fff 65%,#fffdf4)}.level-professional:after{font-size:25px;color:#a16207}.level-professional .cert-title{color:#1e3a8a}.level-professional .name{border-color:#b8860b}.level-professional .ornament{color:#b8860b}.level-grandmaster{border:15px double #7c3aed!important;outline:3px solid #eab308;outline-offset:-21px;background:radial-gradient(ellipse at 50% 35%,rgba(250,204,21,.07),transparent 50%),linear-gradient(130deg,#fffdf5,#fff 45%,#faf5ff)}.level-grandmaster:before{background:url('logo.png') center/350px no-repeat;opacity:.08}.level-grandmaster:after{font-size:30px;color:#7c3aed;letter-spacing:23px}.level-grandmaster .cert-title{color:#5b21b6}.level-grandmaster .name{border-color:#ca8a04;color:#3b0764}.level-grandmaster .ornament{color:#92400e}.cert-header{display:flex;justify-content:space-between;align-items:center;gap:15px;padding-bottom:10px;border-bottom:1px solid #e2e8f0}.brand-mark{display:flex;align-items:center;gap:10px;min-width:0}.brand-mark img{width:clamp(38px,5vw,60px);height:clamp(38px,5vw,60px);object-fit:cover;border-radius:13px}.brand-mark strong{font:900 clamp(11px,1.5vw,18px)/1.2 Inter,system-ui,sans-serif;color:#1e3a8a;display:block}.brand-mark small{font:700 clamp(6px,.7vw,9px)/1.4 Inter,system-ui,sans-serif;color:#64748b;letter-spacing:.12em;text-transform:uppercase}.certificate-meta{text-align:right;font:700 clamp(6px,.72vw,9px)/1.6 Inter,system-ui,sans-serif;color:#64748b;max-width:44%;overflow-wrap:anywhere}.certificate-meta b{display:block;font-size:clamp(8px,.95vw,12px);color:#111827;letter-spacing:.04em}.cert-body{text-align:center;min-height:0;padding:8px 4px 3px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}.ornament{font:italic clamp(8px,1vw,12px) Georgia,serif;letter-spacing:.24em;color:#a16207;margin:0 0 4px}.cert-title{font:700 clamp(25px,4.2vw,50px)/1.05 Georgia,'Times New Roman',serif;letter-spacing:.025em;margin:0 0 5px;color:#1e3a8a;text-wrap:balance}.cert-subtitle{font:800 clamp(6px,.8vw,10px)/1.5 Inter,system-ui,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#64748b}.presented{font:italic clamp(9px,1.2vw,14px) Georgia,serif;color:#475569;margin:12px 0 2px}.name{font:700 clamp(24px,4.2vw,45px)/1.08 Georgia,'Times New Roman',serif;color:#0f172a;border-bottom:2px solid #2563eb;padding:0 15px 6px;max-width:92%;overflow-wrap:anywhere;margin:2px 0 9px}.statement{font:clamp(8px,1vw,12px)/1.55 Inter,system-ui,sans-serif;color:#475569;max-width:80%;margin:0 auto 5px}.course-name{display:block;font:700 clamp(14px,2vw,23px)/1.3 Georgia,serif;color:#1d4ed8;margin-top:3px}.skill-list{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;max-width:80%;margin-top:9px}.skill-list span{border:1px solid #dbeafe;background:#eff6ff;color:#1e40af;border-radius:99px;padding:4px 8px;font:800 clamp(5px,.65vw,8px) Inter,system-ui,sans-serif}.cert-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:end;gap:9px;border-top:1px solid #e2e8f0;padding-top:9px}.sign-block,.qr-block,.seal-block{text-align:center;font-family:Inter,system-ui,sans-serif;color:#64748b;font-size:clamp(5px,.62vw,8px)}.sign-block img{max-width:135px;width:95%;height:36px;object-fit:contain;display:block;margin:0 auto 1px}.sign-line{border-bottom:1px solid #94a3b8;width:82%;margin:0 auto 4px;height:15px}.sign-block b,.qr-block b,.seal-block b{display:block;font-size:clamp(6px,.75vw,9px);color:#334155;margin-top:3px}.qr-box{width:clamp(43px,5vw,64px);height:clamp(43px,5vw,64px);padding:3px;background:#fff;border:1px solid #e2e8f0;margin:0 auto 3px}.qr-box img,.qr-box canvas{max-width:100%;max-height:100%}.seal{width:clamp(38px,4.5vw,54px);height:clamp(38px,4.5vw,54px);display:grid;place-items:center;margin:0 auto 3px;border:3px double #b8860b;border-radius:50%;color:#a16207;font-size:20px;background:#fffdf4}.barcode-wrap{margin-top:4px;display:flex;justify-content:center}.barcode-wrap svg{width:clamp(90px,13vw,145px);height:clamp(19px,2.4vw,26px)}.cert-bottom .tiny-url{display:block;font-size:clamp(4px,.48vw,6px);max-width:130px;overflow-wrap:anywhere;margin:3px auto 0;color:#64748b}.front-footer{position:absolute;left:0;right:0;bottom:2px;text-align:center;font:800 clamp(4px,.55vw,7px) Inter,system-ui,sans-serif;color:#94a3b8;letter-spacing:.22em;text-transform:uppercase}.print-back{background:#fbfcff;display:grid;place-items:center}.back-panel{position:absolute;inset:12px;border:8px double #2563eb;outline:2px solid #d4af37;outline-offset:-17px;overflow:hidden;display:grid;place-items:center}.back-grid{position:absolute;inset:20px;display:grid;grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(8,1fr);gap:9px;align-items:center;justify-items:center;transform:rotate(-9deg);opacity:.22;color:#193a72;font:900 9px Inter,system-ui,sans-serif;letter-spacing:.14em;white-space:nowrap}.back-center{position:relative;z-index:2;width:min(290px,56%);padding:25px 18px;text-align:center;border:1px solid rgba(30,58,138,.24);border-radius:20px;background:rgba(255,255,255,.92);box-shadow:0 20px 55px rgba(15,23,42,.12)}.back-center img{width:100px;height:100px;max-width:35%;max-height:35%;object-fit:contain;border-radius:22px}.back-center h2{font:900 clamp(18px,3vw,28px) Georgia,serif;color:#1e3a8a;margin:14px 0 7px}.back-center p{font:800 9px/1.7 Inter,system-ui,sans-serif;color:#64748b;letter-spacing:.16em;text-transform:uppercase;margin:0}.back-center .divider{width:80px;height:2px;background:linear-gradient(90deg,#0f766e,#d4af37,#7c3aed);margin:15px auto}.back-center small{font:10px/1.6 Inter,system-ui,sans-serif;color:#64748b}.overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);display:none;justify-content:flex-end;padding:70px 12px 12px}.overlay.active{display:flex}.drawer{width:min(380px,100%);max-height:calc(100vh - 85px);display:flex;flex-direction:column;background:#0b1220;border:1px solid #334155;border-radius:16px;overflow:hidden}.drawer header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px;border-bottom:1px solid #1e293b}.drawer header strong{font-size:13px}.drawer header button{font-size:10px;padding:7px 9px;border:1px solid #334155;border-radius:8px;background:#172236;color:white}.notification-list{overflow:auto}.notification{padding:12px;border-bottom:1px solid rgba(148,163,184,.12)}.notification strong{display:block;font-size:10px;margin-bottom:5px}.notification p{margin:0;color:#9aabc3;font-size:10px;line-height:1.6}.empty{padding:28px;text-align:center;color:#71839d;font-size:10px}.loading{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:#020617;color:#94a3b8}.loading-inner{display:grid;gap:10px;text-align:center;justify-items:center}.loading i{font-size:28px;color:#67e8f9}.loading span{font-size:11px}@media(max-width:850px){.top{align-items:flex-start}.actions{justify-content:flex-end}.actions button{font-size:0;padding:0 10px}.actions button i{font-size:13px}.actions .bell-wrap button{font-size:13px}.wrap{width:98%;margin-top:13px}.print-sheet{padding:8px}.certificate-paper{padding:12px;border-width:6px}.certificate-paper:after{font-size:14px}.cert-header{padding-bottom:7px}.cert-bottom{padding-top:6px}.sign-block img{height:22px}.skill-list{gap:3px}.skill-list span{padding:3px 5px}.statement{max-width:90%}}@media(max-width:520px){.brand small{display:none}.actions{gap:5px}.print-sheet{min-width:0;width:100%;aspect-ratio:1.1/1;padding:5px}.certificate-paper{padding:9px;border-width:5px}.cert-title{font-size:clamp(18px,6vw,30px)}.name{font-size:clamp(18px,6vw,28px);padding-bottom:3px}.cert-header{gap:5px}.brand-mark{gap:5px}.certificate-meta{font-size:5px}.certificate-meta b{font-size:7px}.cert-bottom{grid-template-columns:1fr 1fr 1fr;gap:3px}.qr-box{width:35px;height:35px}.seal{width:30px;height:30px;font-size:14px}.back-grid{grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(12,1fr);gap:7px;font-size:7px}.back-center{width:65%;padding:16px 10px}.back-center img{width:70px;height:70px}.back-center p{font-size:7px}}
+@page{size:A4 landscape;margin:0}body.pdf-capture .print-sheet{width:1160px!important;height:820px!important;min-width:1160px!important;aspect-ratio:auto!important;padding:24px!important}body.pdf-capture .certificate-paper{padding:27px!important}@media print{html,body{width:297mm;background:#fff!important;margin:0!important;padding:0!important}.top,.wrap>.status,.loading,.overlay{display:none!important}.wrap{display:block!important;width:297mm!important;margin:0!important;padding:0!important}.certificate-stage{display:block!important}#printFront,#printBack{display:block!important;width:297mm!important;height:210mm!important;aspect-ratio:auto!important;margin:0!important;padding:9mm!important;box-shadow:none!important;break-inside:avoid;page-break-inside:avoid}.certificate-paper{height:100%!important;width:100%!important;padding:7mm!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.certificate-paper:before,.certificate-paper:after{print-color-adjust:exact;-webkit-print-color-adjust:exact}.cert-title{font-size:30pt}.name{font-size:29pt}.course-name{font-size:17pt}.cert-subtitle{font-size:7pt}.statement{font-size:8pt}.skill-list span{font-size:6pt}.cert-bottom{padding-top:3mm}.sign-block img{height:9mm}.qr-box{width:17mm;height:17mm}.seal{width:14mm;height:14mm}.barcode-wrap svg{width:35mm;height:7mm}.front-footer{font-size:5pt}#printBack{break-before:page;page-break-before:always}.back-panel{inset:4mm}.back-grid{font-size:7pt;opacity:.25}.back-center{padding:7mm}.back-center img{width:27mm;height:27mm}}
+</style></head>
+<body><header class="top"><a class="brand" href="menu.html"><img src="logo.png" alt="Code Academy"><span><strong>Code Academy</strong><small>Credential viewer</small></span></a><div class="actions"><div class="bell-wrap" id="bellWrap" hidden><button id="notificationBtn" title="Notifications" aria-label="Notifications"><i class="fa-regular fa-bell"></i><span class="badge" id="notificationBadge">0</span></button></div><button id="backBtn" title="Back to certificates"><i class="fa-solid fa-arrow-left"></i><span>Back</span></button><button id="printBtn"><i class="fa-solid fa-print"></i><span>Print</span></button><button class="primary" id="downloadBtn"><i class="fa-solid fa-download"></i><span>Download PDF</span></button><button class="primary" id="saveBtn"><i class="fa-solid fa-bookmark"></i><span>Save certificate</span></button><button class="share" id="shareBtn"><i class="fa-solid fa-share-nodes"></i><span>Share</span></button><button id="verifyBtn"><i class="fa-solid fa-shield-halved"></i><span>Verify</span></button></div></header>
+<div class="overlay" id="notificationOverlay"><section class="drawer"><header><strong><i class="fa-regular fa-bell" style="color:#67e8f9;margin-right:6px"></i>Notifications</strong><div style="display:flex;gap:5px"><button id="markAllReadBtn">Mark all read</button><button id="closeNotifications">Close</button></div></header><div class="notification-list" id="notificationList"><div class="empty">Loading notifications…</div></div></section></div>
+<div class="loading" id="loadingScreen"><div class="loading-inner"><i class="fa-solid fa-circle-notch fa-spin"></i><span>Loading credential, QR code and barcode…</span></div></div>
+<main class="wrap"><div id="statusBox" class="status"></div><div class="certificate-stage">
+<section id="printFront" class="print-sheet"><article id="certificatePaper" class="certificate-paper level-beginner"><div class="cert-header"><div class="brand-mark"><img src="logo.png" alt="Code Academy logo"><div><strong>Code Academy</strong><small>We Learn · We Code · We Succeed</small></div></div><div class="certificate-meta">OFFICIAL CREDENTIAL<strong id="certIdText">CA-—</strong><span id="issueDateText">Date issued: —</span><span id="scoreText">Quiz accuracy: —</span></div></div>
+<div class="cert-body"><div class="ornament" id="ornament">❦ CERTIFICATE OF ACHIEVEMENT ❦</div><h1 class="cert-title" id="certTitle">Certificate of Foundations</h1><div class="cert-subtitle" id="certSubtitle">CODE ACADEMY · BEGINNER LEVEL</div><p class="presented">This credential is proudly presented to</p><div class="name" id="studentName">Learner Name</div><p class="statement" id="certStatement">For completing the required learning milestones and demonstrating applied understanding in</p><div class="course-name" id="courseName">HTML Developer</div><div class="skill-list" id="skillList"></div></div>
+<div class="cert-bottom"><div class="sign-block"><img id="signatureImage" src="" alt="Learner signature" hidden><div class="sign-line" id="signatureLine"></div><b id="signatureName">Learner</b><span>LEARNER SIGNATURE</span></div><div class="qr-block"><div class="qr-box" id="qrCode"></div><b>SCAN TO VERIFY</b><span class="tiny-url" id="verifyURLText">Loading verification link…</span></div><div class="seal-block"><div class="seal" id="sealIcon"><i class="fa-solid fa-award"></i></div><b>CODE ACADEMY</b><span id="sealText">Verified Learning Credential</span><div class="barcode-wrap"><svg id="barcode"></svg></div><span class="tiny-url" id="barcodeText">Credential barcode</span></div></div><div class="front-footer">CODE ACADEMY · OFFICIAL DIGITAL CREDENTIAL · VERIFY BEFORE RELYING ON THIS DOCUMENT</div></article></section>
+<section id="printBack" class="print-sheet print-back"><div class="back-panel"><div class="back-grid" id="backGrid"></div><div class="back-center"><img src="logo.png" alt="Code Academy logo"><h2>Code Academy</h2><div class="divider"></div><p>We Learn · We Code · We Succeed</p><small>Credential registry · Verify authenticity online<br>Every achievement begins with learning.</small></div></div></section>
+</div></main>
 <script type="module">
-import { auth, db, onAuthStateChanged } from "./authentication.js";
-import { doc, getDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const loadingScreen = document.getElementById("loadingScreen");
-const statusBox = document.getElementById("statusBox");
-const certIdText = document.getElementById("certIdText");
-const issueDateText = document.getElementById("issueDateText");
-const studentNameEl = document.getElementById("studentName");
-const studentPhoto = document.getElementById("studentPhoto");
-const courseTitle = document.getElementById("courseTitle");
-const skillsList = document.getElementById("skillsList");
-const signatureImg = document.getElementById("signatureImg");
-const noSig = document.getElementById("noSig");
-const footerName = document.getElementById("footerName");
-const qrDiv = document.getElementById("qrCode");
-const verifyLinkText = document.getElementById("verifyLinkText");
-const downloadBtn = document.getElementById("downloadBtn");
-const shareBtn = document.getElementById("shareBtn");
-const verifyBtn = document.getElementById("verifyBtn");
-
-let currentUser = null;
-let certificateData = null;
-let qrGenerated = false;
-
-function showStatus(msg,type="success"){
- statusBox.textContent = msg;
- statusBox.className = `status show ${type}`;
- setTimeout(()=>{ statusBox.className="status"; },4000);
+import {auth,db,onAuthStateChanged} from './authentication.js';
+import {collection,doc,getDoc,getDocs,setDoc,addDoc,serverTimestamp,writeBatch} from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import {certificateKeyFromRecord,levelInfo,normalizeCourseId} from './certificate-engine.js';
+const $=id=>document.getElementById(id);let currentUser=null,authReady=false,certificateData=null,certificateId='',credentialKey='';let viewLogged=false;
+const params=new URLSearchParams(location.search);certificateId=params.get('id')||sessionStorage.getItem('certificateId')||'';credentialKey=params.get('key')||'';
+function showStatus(message,type='info'){const node=$('statusBox');node.textContent=message;node.className=`status show ${type}`;}
+function normalizeDate(value){if(!value)return new Date();if(value?.toDate)return value.toDate();if(typeof value==='object'&&value.seconds)return new Date(value.seconds*1000);const d=new Date(value);return Number.isNaN(d.getTime())?new Date():d;}
+function baseUrl(){return `${location.origin}${location.pathname.replace(/[^/]*$/,'')}`;}
+function verifierUrl(data){return data.verificationURL&&/^https?:/i.test(data.verificationURL)?data.verificationURL:`${baseUrl()}verify.html?id=${encodeURIComponent(data.id||certificateId)}`;}
+function setTheme(data){const level=String(data.certificateLevel||data.levelKey||'professional').toLowerCase();const theme=level.includes('grand')?'grandmaster':level.includes('begin')?'beginner':'professional';$('certificatePaper').classList.remove('level-beginner','level-professional','level-grandmaster');$('certificatePaper').classList.add(`level-${theme}`);$('certTitle').textContent=theme==='grandmaster'?'Code Academy Grand Master':theme==='beginner'?'Certificate of Foundations':'Professional Certificate of Achievement';$('certSubtitle').textContent=theme==='grandmaster'?'CODE ACADEMY · GRAND MASTER DISTINCTION':`CODE ACADEMY · ${theme.toUpperCase()} LEVEL`;$('ornament').textContent=theme==='grandmaster'?'✦ ❦ GRAND MASTER DISTINCTION ❦ ✦':theme==='professional'?'❦ PROFESSIONAL CERTIFICATE OF ACHIEVEMENT ❦':'❦ CERTIFICATE OF FOUNDATIONS ❦';$('certStatement').textContent=theme==='grandmaster'?'For completing every Code Academy course, earning all 40 course certificates, and demonstrating sustained learning across 20 programming disciplines.':theme==='beginner'?'For completing the first five lessons and achieving the required quiz accuracy in':'For completing all ten lessons and achieving the required quiz accuracy in';$('sealIcon').innerHTML=theme==='grandmaster'?'<i class="fa-solid fa-crown"></i>':theme==='professional'?'<i class="fa-solid fa-award"></i>':'<i class="fa-solid fa-seedling"></i>';$('sealText').textContent=theme==='grandmaster'?'Grand Master Distinction':theme==='professional'?'Professional Credential':'Foundations Credential';}
+function render(data){certificateData=data;const level=levelInfo(data.certificateLevel||data.levelKey||data.level||'professional');setTheme(data);$('certIdText').textContent=data.id||certificateId;$('issueDateText').textContent=`Issued: ${normalizeDate(data.issueDate).toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}`;$('scoreText').textContent=`Quiz accuracy: ${Number(data.scorePercent??data.completionPercentage??0)}%`;$('studentName').textContent=data.studentName||data.name||'Learner';$('signatureName').textContent=data.studentName||'Learner';$('courseName').textContent=data.course||data.courseName||'Code Academy Courses';$('skillList').replaceChildren();for(const skill of Array.isArray(data.skills)?data.skills:[]){const span=document.createElement('span');span.textContent=skill;$('skillList').append(span);}if(data.signature){$('signatureImage').src=data.signature;$('signatureImage').hidden=false;$('signatureLine').hidden=true;}else{$('signatureImage').hidden=true;$('signatureLine').hidden=false;}
+ const verify=verifierUrl(data);$('verifyURLText').textContent=verify;$('barcodeText').textContent=data.id||certificateId;$('qrCode').replaceChildren();try{if(window.QRCode)new QRCode($('qrCode'),{text:verify,width:128,height:128,correctLevel:QRCode.CorrectLevel.H});else $('qrCode').textContent='QR unavailable';}catch(error){$('qrCode').textContent='QR unavailable';console.warn(error);}
+ try{if(window.JsBarcode)JsBarcode('#barcode',String(data.id||certificateId),{format:'CODE128',lineColor:'#111827',width:1.45,height:30,displayValue:false,margin:0,background:'#ffffff'});else $('barcodeText').textContent='Barcode library unavailable';}catch(error){console.warn(error);$('barcodeText').textContent='Barcode could not be generated';}
+ const bg=$('backGrid');bg.replaceChildren();for(let i=0;i<60;i++){const span=document.createElement('span');span.textContent='CODE ACADEMY';bg.append(span);}document.title=`${data.studentName||'Learner'} · ${data.course||'Certificate'} · Code Academy`;
 }
-
-function getParams(){
- const url = new URLSearchParams(window.location.search);
- let id = url.get("id");
- let course = url.get("course");
- // fallback from setup.html sessionStorage
- if(!id) id = sessionStorage.getItem("certificateId");
- if(!course) course = sessionStorage.getItem("certificateCourse");
- let stored = null;
- try{ stored = JSON.parse(sessionStorage.getItem("certificateUser")||"null"); }catch{}
- return { id, course, stored };
-}
-
-async function loadCertificate(user){
- const { id, course, stored } = getParams();
- if(!id){ showStatus("No certificate ID found. Go back to Certificate Center.","error"); return; }
-
- // 1. Try users/{uid}/certificates/{course}
- let data = null;
- if(course){
-   try{
-     const ref = doc(db,"users",user.uid,"certificates",course);
-     const snap = await getDoc(ref);
-     if(snap.exists()) data = snap.data();
-   }catch(e){ console.warn(e); }
- }
-
- // 2. Try certificates/{id} (public registry)
- if(!data){
-   try{
-     const ref = doc(db,"certificates",id);
-     const snap = await getDoc(ref);
-     if(snap.exists()) data = snap.data();
-   }catch(e){ console.warn(e); }
- }
-
- // 3. Fallback to sessionStorage
- if(!data && stored){
-   data = {
-     id: stored.id || id,
-     studentName: stored.name,
-     course: stored.course,
-     courseId: stored.courseId || course,
-     photo: stored.photo,
-     signature: stored.signature,
-     issueDate: stored.date,
-     email: stored.email
-   };
- }
-
- if(!data){
-   showStatus("Certificate not found in your account. Please regenerate from certificate_setup.html","error");
-   return;
- }
-
- certificateData = data;
-
- // Render
- certIdText.textContent = data.id || id;
- issueDateText.textContent = data.issueDate ? new Date(data.issueDate).toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"}) : new Date().toLocaleDateString();
- studentNameEl.textContent = data.studentName || data.name || user.displayName || "Student";
- footerName.textContent = data.studentName || data.name || "Student";
- studentPhoto.src = data.photo || user.photoURL || "logo.png";
- courseTitle.textContent = data.course || data.courseId || course || "Developer Course";
-
- // Skills
- skillsList.innerHTML = "";
- (data.skills || ["Completion","Practical Skills","Problem Solving"]).forEach(s=>{
-   const span = document.createElement("span"); span.textContent = s; skillsList.appendChild(span);
- });
-
- // Signature
- if(data.signature && data.signature.startsWith("data:image")){
-   signatureImg.src = data.signature;
-   signatureImg.style.display = "inline-block";
-   noSig.style.display = "none";
- } else if(data.signature){
-   signatureImg.src = data.signature;
-   signatureImg.style.display = "inline-block";
-   noSig.style.display = "none";
- }
-
- // Verification URL - FIXED
- const base = window.location.origin + window.location.pathname.replace(/[^/]*$/,"");
- const verifyURL = data.verificationURL || `${base}verify.html?id=${encodeURIComponent(data.id||id)}`;
- verifyLinkText.textContent = verifyURL;
- verifyLinkText.href = verifyURL;
- verifyBtn.onclick = ()=> window.open(verifyURL,"_blank");
- document.getElementById("verifyLinkText").onclick = (e)=>{ e.preventDefault(); window.open(verifyURL,"_blank"); };
-
- // Generate QR + Save to user account
- if(!qrGenerated){
-   qrDiv.innerHTML = "";
-   new QRCode(qrDiv, { text: verifyURL, width:82, height:82, correctLevel: QRCode.CorrectLevel.H });
-   qrGenerated = true;
-
-   // Store QR data in user's certificate doc for future
-   setTimeout(async ()=>{
-     try{
-       const canvas = qrDiv.querySelector("canvas");
-       let qrDataUrl = "";
-       if(canvas) qrDataUrl = canvas.toDataURL("image/png");
-       if(course){
-         const userCertRef = doc(db,"users",user.uid,"certificates",course);
-         await updateDoc(userCertRef, { qrCode: qrDataUrl, verificationURL: verifyURL, lastViewedAt: serverTimestamp() });
-       }
-       // also update public registry
-       const pubRef = doc(db,"certificates", data.id||id);
-       await updateDoc(pubRef, { qrCode: qrDataUrl, verificationURL: verifyURL }).catch(()=>{});
-     }catch(err){ console.log("QR save error:", err); }
-   }, 800);
- }
-
- showStatus(`Certificate ${data.id} loaded successfully`,"success");
-}
-
-async function downloadPDF(){
- if(!certificateData){ showStatus("Certificate not loaded yet","error"); return; }
- downloadBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Generating...`;
- try{
-   const paper = document.getElementById("certificatePaper");
-   const canvas = await html2canvas(paper,{scale:2,useCORS:true,allowTaint:true,backgroundColor:"#ffffff"});
-   const imgData = canvas.toDataURL("image/png");
-   const { jsPDF } = window.jspdf;
-   const pdf = new jsPDF({ orientation:"landscape", unit:"px", format:[canvas.width, canvas.height] });
-   pdf.addImage(imgData, "PNG", 0, 0, canvas.width, canvas.height);
-   pdf.save(`${certificateData.course||"Certificate"}_${certificateData.id}.pdf`);
-   showStatus("PDF downloaded","success");
- }catch(e){
-   console.error(e);
-   // fallback to image download
-   const paper = document.getElementById("certificatePaper");
-   const canvas = await html2canvas(paper,{scale:2,useCORS:true});
-   const link = document.createElement("a");
-   link.download = `${certificateData.id||"certificate"}.png`;
-   link.href = canvas.toDataURL();
-   link.click();
- }finally{
-   downloadBtn.innerHTML = `<i class="fas fa-download"></i> Download PDF`;
- }
-}
-
-async function shareCertificate(){
- if(!certificateData) return;
- const verifyURL = verifyLinkText.href;
- if(navigator.share){
-   try{
-     await navigator.share({
-       title: `${certificateData.course} Certificate - Code Academy`,
-       text: `I just earned my ${certificateData.course} certificate from Code Academy! Verify: ${verifyURL}`,
-       url: verifyURL
-     });
-   }catch(e){}
- }else{
-   try{
-     await navigator.clipboard.writeText(verifyURL);
-     showStatus("Verification link copied to clipboard","success");
-   }catch{
-     prompt("Copy this verification link:", verifyURL);
-   }
- }
-}
-
-downloadBtn.addEventListener("click", downloadPDF);
-shareBtn.addEventListener("click", shareCertificate);
-document.getElementById("backBtn").addEventListener("click", ()=>{ window.location.href = "certificate.html"; });
-
-onAuthStateChanged(auth, async (user)=>{
- if(!user){ window.location.href="login.html"; return; }
- currentUser = user;
- try{ await loadCertificate(user); }catch(e){ showStatus(e.message,"error"); }
- finally{ loadingScreen.style.display="none"; }
-});
-</script>
-</body>
-</html>
+async function recordView(){if(!certificateData?.uid||!certificateId||currentUser?.uid===certificateData.uid||viewLogged)return;const storageKey=`ca-cert-view-${certificateId}-certificate_view`;try{if(sessionStorage.getItem(storageKey))return;await addDoc(collection(db,'certificates',certificateId,'views'),{certificateId,ownerUid:certificateData.uid,courseId:certificateData.courseId||'',courseName:certificateData.course||certificateData.courseName||'Code Academy',level:certificateData.certificateLevel||certificateData.level||'professional',viewerUid:currentUser?.uid||'',viewerAuthenticated:!!currentUser,viewedAt:serverTimestamp(),source:'certificate_view.html'});sessionStorage.setItem(storageKey,'1');viewLogged=true;}catch(error){console.warn('Certificate view activity could not be recorded. Check activity rules.',error);}}
+async function load(){if(!certificateId){showStatus('No certificate ID was provided. Open the credential from the certificate center or use its complete verification link.','error');return;}
+ let data=null;try{const snapshot=await getDoc(doc(db,'certificates',certificateId));if(snapshot.exists())data=snapshot.data();}catch(error){console.warn('Public certificate lookup failed:',error);}
+ if(!data&&currentUser&&credentialKey){try{const snapshot=await getDoc(doc(db,'users',currentUser.uid,'certificates',credentialKey));if(snapshot.exists())data=snapshot.data();}catch{}}
+ if(!data){showStatus('Certificate not found. Check the ID, or return to the certificate center and issue the credential again.','error');return;}
+ if(String(data.status||'active').toLowerCase()==='revoked'||String(data.status||'').toLowerCase()==='suspended'){showStatus('This credential exists but is not currently active. Its status will be shown to anyone who verifies it.','error');}
+ render({...data,id:data.id||certificateId});await recordView();showStatus('Credential loaded. Use Verify to check its current status in the public registry.','success');if(currentUser){$('bellWrap').hidden=false;await loadNotifications();}}
+async function createNotification(id,title,message,link){if(!currentUser||certificateData?.uid!==currentUser.uid)return;const ref=doc(db,'users',currentUser.uid,'notifications',id);const snap=await getDoc(ref);if(!snap.exists())await setDoc(ref,{title,message,type:'certificate',icon:'🏅',link,read:false,createdAt:serverTimestamp()});}
+async function downloadPdf(){if(!certificateData)return showStatus('Certificate is not loaded yet.','error');const button=$('downloadBtn');const old=button.innerHTML;button.disabled=true;button.innerHTML='<i class="fa-solid fa-circle-notch fa-spin"></i><span>Creating PDF…</span>';document.body.classList.add('pdf-capture');try{await new Promise(resolve=>setTimeout(resolve,450));const front=await html2canvas($('printFront'),{scale:1.5,useCORS:true,allowTaint:false,backgroundColor:'#ffffff',logging:false,width:1160,height:820,windowWidth:1200});const back=await html2canvas($('printBack'),{scale:1.5,useCORS:true,allowTaint:false,backgroundColor:'#ffffff',logging:false,width:1160,height:820,windowWidth:1200});const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'landscape',unit:'mm',format:'a4',compress:true});pdf.addImage(front.toDataURL('image/jpeg',.94),'JPEG',0,0,297,210);pdf.addPage('a4','landscape');pdf.addImage(back.toDataURL('image/jpeg',.94),'JPEG',0,0,297,210);pdf.save(`Code-Academy-${String(certificateData.course||'Certificate').replace(/[^a-z0-9-_]+/gi,'-')}-${certificateData.id||certificateId}.pdf`);showStatus('Two-sided certificate PDF downloaded (front and branded back).','success');}catch(error){console.error(error);showStatus('PDF creation failed. Use Print and choose “Save as PDF” as a fallback. '+(error.message||''),'error');}finally{document.body.classList.remove('pdf-capture');button.disabled=false;button.innerHTML=old;}}
+async function saveCertificate(){if(!certificateData)return showStatus('Certificate is not loaded yet.','error');try{const saved={id:certificateData.id||certificateId,course:certificateData.course,courseId:certificateData.courseId,certificateLevel:certificateData.certificateLevel,studentName:certificateData.studentName,issueDate:certificateData.issueDate,verificationURL:verifierUrl(certificateData),savedAt:new Date().toISOString()};const localKey=`codeacademy-saved-certificates-${currentUser?.uid||'guest'}`;let rows=[];try{rows=JSON.parse(localStorage.getItem(localKey)||'[]');}catch{}if(!rows.some(item=>item.id===saved.id))rows.unshift(saved);localStorage.setItem(localKey,JSON.stringify(rows.slice(0,100)));if(currentUser&&currentUser.uid===certificateData.uid){await setDoc(doc(db,'users',currentUser.uid,'savedCertificates',saved.id),{...saved,createdAt:serverTimestamp()},{merge:true});await createNotification(`saved_${saved.id}`,'Certificate saved','Your certificate has been saved to your Code Academy account.',`certificate_view.html?id=${encodeURIComponent(saved.id)}`);}showStatus(currentUser?.uid===certificateData.uid?'Certificate saved to this device and your Code Academy account.':'Certificate saved to this device’s saved-certificate list.','success');}catch(error){showStatus('Certificate save did not complete: '+(error.message||error),'error');}}
+async function shareCertificate(){if(!certificateData)return;const url=verifierUrl(certificateData);const payload={title:`${certificateData.course||'Code Academy'} Certificate`,text:`View and verify this Code Academy credential for ${certificateData.studentName||'the learner'}:`,url};try{if(navigator.share){await navigator.share(payload);showStatus('Share sheet opened for this certificate.','success');}else{await navigator.clipboard.writeText(`${payload.text}\n${url}`);showStatus('Verification link copied. It can now be shared.','success');}await createNotification(`shared_${certificateData.id||certificateId}`,'Certificate shared','Your certificate’s verification link was shared or copied from the certificate viewer.',`verify.html?id=${encodeURIComponent(certificateData.id||certificateId)}`);}catch(error){if(error?.name==='AbortError')return;try{await navigator.clipboard.writeText(url);showStatus('Share could not open; verification link copied instead.','success');}catch{showStatus('Unable to share automatically. Copy this link: '+url,'error');}}}
+async function loadNotifications(){if(!currentUser)return;try{const snap=await getDocs(collection(db,'users',currentUser.uid,'notifications'));const items=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,50);$('notificationList').replaceChildren();if(!items.length)$('notificationList').innerHTML='<div class="empty">No notifications yet.</div>';for(const n of items){const row=document.createElement('article');row.className='notification';const strong=document.createElement('strong');strong.textContent=`${n.icon||'🔔'} ${n.title||'Code Academy'}`;const p=document.createElement('p');p.textContent=n.message||'';row.append(strong,p);if(n.link){row.style.cursor='pointer';row.addEventListener('click',()=>location.href=n.link);}$('notificationList').append(row);}const count=items.filter(n=>!n.read).length;$('notificationBadge').textContent=count;$('notificationBadge').style.display=count?'flex':'none';}catch{$('notificationList').innerHTML='<div class="empty">Notifications unavailable.</div>';}}
+$('printBtn').addEventListener('click',()=>{if(certificateData)window.print();else showStatus('Certificate is not loaded yet.','error');});$('downloadBtn').addEventListener('click',downloadPdf);$('saveBtn').addEventListener('click',saveCertificate);$('shareBtn').addEventListener('click',shareCertificate);$('verifyBtn').addEventListener('click',()=>{if(certificateData)location.href=verifierUrl(certificateData);});$('backBtn').addEventListener('click',()=>location.href='certificate.html');$('notificationBtn').addEventListener('click',async()=>{$('notificationOverlay').classList.add('active');await loadNotifications();});$('closeNotifications').addEventListener('click',()=>$('notificationOverlay').classList.remove('active'));$('notificationOverlay').addEventListener('click',e=>{if(e.target===$('notificationOverlay'))$('notificationOverlay').classList.remove('active');});$('markAllReadBtn').addEventListener('click',async()=>{if(!currentUser)return;try{const snap=await getDocs(collection(db,'users',currentUser.uid,'notifications'));const batch=writeBatch(db);snap.docs.filter(d=>!d.data().read).forEach(d=>batch.update(d.ref,{read:true}));await batch.commit();await loadNotifications();}catch(error){showStatus('Could not update notifications: '+(error.message||error),'error');}});
+let loadStarted=false;onAuthStateChanged(auth,user=>{currentUser=user;authReady=true;if(!loadStarted){loadStarted=true;load().catch(error=>showStatus('Could not load certificate: '+(error.message||error),'error')).finally(()=>$('loadingScreen').style.display='none');}else if(user){$('bellWrap').hidden=false;loadNotifications();}});
+</script></body></html>
