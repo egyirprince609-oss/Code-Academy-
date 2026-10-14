@@ -2,196 +2,175 @@
   "course": "kotlin",
   "lessonNumber": 9,
   "lessonId": "kotlin-lesson-9",
-  "title": "Coroutines, Exceptions and Projects",
-  "subtitle": "Understand asynchronous programming and reliable application structure.",
-  "description": "Learn exception handling, coroutine fundamentals, suspend functions and how to organize larger Kotlin applications.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Interfaces, Lambdas and Errors",
+  "subtitle": "Interfaces, Lambdas and Errors: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on interfaces, lambdas and errors, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "kotlin-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Coroutines, Exceptions and Projects"
+      "text": "PAGE 1 — Interfaces, Lambdas and Errors: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Coroutines, Exceptions and Projects. This lesson follows the course dashboard topic “Coroutines, Exceptions and Projects”. The goal is to understand asynchronous programming and reliable application structure.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "kotlin-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Interfaces, Lambdas and Errors is not just a syntax topic: it is a way to make the application’s intent explicit. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. In the Code Academy dashboard, that idea matters because A tracker can use data classes and null-safe operations to keep model state clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A function packages a task behind a name so callers can use it without repeating its implementation. Good functions have a focused responsibility, meaningful parameter names, and a clear result or documented side effect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Kotlin. Paste this snippet into the Kotlin editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "kotlin-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Interfaces, Lambdas and Errors: A nullable return type communicates that parsing may fail",
       "language": "kotlin",
-      "title": "Sample 1: Coroutines, Exceptions and Projects in practice",
-      "code": "// Concept preview: suspend functions are used with kotlinx.coroutines in a configured project.\nsuspend fun loadTitle(): String { return \"Lesson ready\" }"
+      "code": "fun parseScore(raw: String): Int? = raw.toIntOrNull()",
+      "output": "A nullable return type communicates that parsing may fail."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Understand asynchronous programming and reliable application structure. Identify the input, the operation, and the result before making changes."
+      "id": "kotlin-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “fun parseScore(raw: String): Int? = raw.toIntOrNull()”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Expected behavior: A nullable return type communicates that parsing may fail. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "kotlin-l9-q-01",
+      "id": "kotlin-9-quiz-1-5",
       "type": "quiz",
-      "question": "A function receives an unexpected input. What should the contract make clear?",
+      "question": "A score is converted from external text, and the input may be \"eighty\". What should occur?",
       "options": [
-        "Only the function’s color.",
-        "The screen size.",
-        "How many comments it contains.",
-        "Which inputs are valid and what happens for invalid input."
+        "Treat the failed conversion as a valid score of zero in every context",
+        "Ignore the failure and report success",
+        "Display a full private stack trace to the learner",
+        "Handle the conversion failure and show a controlled validation message"
       ],
       "correctIndex": 3,
-      "explanation": "A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "incorrectFeedback": "Review the requirement again. A clear function contract specifies assumptions, returned values, and failure behavior."
+      "explanation": "Correct answer: Handle the conversion failure and show a controlled validation message. Invalid input should not silently become success; handle expected conversion errors at the boundary.",
+      "reasoning": "Invalid input should not silently become success; handle expected conversion errors at the boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn exception handling, coroutine fundamentals, suspend functions and how to organize larger Kotlin applications.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Kotlin. Paste this snippet into the Kotlin editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "kotlin-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Interfaces, Lambdas and Errors: Catch a specific expected conversion failure",
       "language": "kotlin",
-      "title": "Sample 2: Coroutines, Exceptions and Projects in practice",
-      "code": "fun main() { val names = listOf(\"HTML\", \"CSS\", \"Python\"); val upper = names.map { it.uppercase() }; println(upper) }"
+      "code": "try { println(\"85\".toInt()) } catch (error: NumberFormatException) { println(\"Invalid score\") }",
+      "output": "Catch a specific expected conversion failure."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Kotlin project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "kotlin-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “try { println(\"85\".toInt()) } catch (error: NumberFormatException) { println(\"Invalid score\") }”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Catch a specific expected conversion failure. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "kotlin-l9-q-02",
+      "id": "kotlin-9-quiz-2-8",
       "type": "quiz",
-      "question": "A function calculates whether a score passes. How should the caller reuse the result?",
+      "question": "A file read fails because the file is missing. Which response is most useful?",
       "options": [
-        "Infer it from a printed sentence.",
-        "Re-run the whole application.",
-        "Use the returned Boolean or documented result.",
-        "Read the function’s source text at runtime."
+        "Catch every error and do nothing",
+        "Expose server paths and secrets in the page",
+        "Handle the specific I/O failure and keep detailed diagnostics in a protected log",
+        "Continue using the missing file’s contents"
       ],
       "correctIndex": 2,
-      "explanation": "A returned result is a reliable interface between the function and its caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A returned result is a reliable interface between the function and its caller.",
-      "incorrectFeedback": "Review the requirement again. A returned result is a reliable interface between the function and its caller."
+      "explanation": "Correct answer: Handle the specific I/O failure and keep detailed diagnostics in a protected log. A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals.",
+      "reasoning": "A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Parameters are the inputs a function accepts; arguments are the actual values supplied by a call. A return value sends a result back to the caller, while printing merely displays information and does not automatically make it available for later calculations."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Kotlin. Paste this snippet into the Kotlin editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "kotlin",
-      "title": "Sample 3: Coroutines, Exceptions and Projects in practice",
-      "code": "fun main() { val result = runCatching { \"42\".toInt() }; println(result.getOrDefault(0)) }"
-    },
-    {
-      "id": "kotlin-l9-q-03",
-      "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
-      "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
-      ],
-      "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "kotlin-9-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Interfaces, Lambdas and Errors: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Testing a function with normal, minimum, maximum, and invalid inputs exposes assumptions early. Small functions are easier to test and combine than one large function that handles unrelated jobs."
+      "id": "kotlin-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker can use data classes and null-safe operations to keep model state clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Kotlin. Paste this snippet into the Kotlin editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
+      "id": "kotlin-9-code-3-11",
       "type": "code",
+      "title": "Example 3 — Interfaces, Lambdas and Errors: An interface defines a contract; an object expression provides an implementation",
       "language": "kotlin",
-      "title": "Sample 4: Coroutines, Exceptions and Projects in practice",
-      "code": "fun describe(score: Int): String = if (score >= 80) \"Strong result\" else \"Keep practising\"\nfun main() { println(describe(86)) }"
+      "code": "interface Reporter { fun report(): String }\nval reporter = object : Reporter { override fun report() = \"Progress saved\" }\nprintln(reporter.report())",
+      "output": "An interface defines a contract; an object expression provides an implementation."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn exception handling, coroutine fundamentals, suspend functions and how to organize larger Kotlin applications. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "kotlin-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “interface Reporter { fun report(): String }”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “val reporter = object : Reporter { override fun report() = \"Progress saved\" }”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println(reporter.report())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An interface defines a contract; an object expression provides an implementation. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "kotlin-l9-q-04",
+      "id": "kotlin-9-quiz-2-13",
       "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "question": "A broad catch block returns a successful result after any exception. What is the core defect?",
       "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
-      ],
-      "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
-    },
-    {
-      "id": "kotlin-l9-q-05",
-      "type": "quiz",
-      "question": "A function has eight unrelated responsibilities and is hard to test. What is the best improvement?",
-      "options": [
-        "Add more global variables.",
-        "Split it into small functions with clear responsibilities.",
-        "Remove all function names.",
-        "Put all code into one conditional."
+        "It makes type checking stricter",
+        "It turns failures into false success and makes corruption harder to detect",
+        "It forces every function to become asynchronous",
+        "It guarantees all resources are closed"
       ],
       "correctIndex": 1,
-      "explanation": "Small cohesive functions are easier to test and maintain.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Small cohesive functions are easier to test and maintain.",
-      "incorrectFeedback": "Review the requirement again. Small cohesive functions are easier to test and maintain."
+      "explanation": "Correct answer: It turns failures into false success and makes corruption harder to detect. Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data.",
+      "reasoning": "Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Interfaces, Lambdas and Errors: A lambda transforms each input and returns the mapped list",
+      "language": "kotlin",
+      "code": "val names = listOf(\"Ama\", \"Kojo\")\nval labels = names.map { name -> \"Learner: $name\" }",
+      "output": "A lambda transforms each input and returns the mapped list."
+    },
+    {
+      "id": "kotlin-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “val names = listOf(\"Ama\", \"Kojo\")”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “val labels = names.map { name -> \"Learner: $name\" }”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: A lambda transforms each input and returns the mapped list. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "kotlin-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two database updates must both succeed or both be undone. Which mechanism is designed for that?",
+      "options": [
+        "A transaction with commit on success and rollback on failure",
+        "A loop that retries forever",
+        "HTML form validation alone",
+        "A display-only warning after each update"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A transaction with commit on success and rollback on failure. Transactions group related operations atomically when used correctly.",
+      "reasoning": "Transactions group related operations atomically when used correctly. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Interfaces, Lambdas and Errors: applied challenge and mastery check"
+    },
+    {
+      "id": "kotlin-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. For the Code Academy dashboard, A tracker can use data classes and null-safe operations to keep model state clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "kotlin-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses interfaces, lambdas and errors. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "kotlin-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A failure is expected and the caller can recover. What belongs in the function contract?",
+      "options": [
+        "A silent return value that looks like success",
+        "An unconditional retry with no limit",
+        "An undocumented global flag",
+        "A clear error/result path or a documented exception"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A clear error/result path or a documented exception. A caller needs a reliable way to distinguish success from a recoverable failure.",
+      "reasoning": "A caller needs a reliable way to distinguish success from a recoverable failure. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

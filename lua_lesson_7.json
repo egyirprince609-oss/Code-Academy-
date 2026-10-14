@@ -2,196 +2,175 @@
   "course": "lua",
   "lessonNumber": 7,
   "lessonId": "lua-lesson-7",
-  "title": "Functions and Scope",
-  "subtitle": "Functions, parameters, return values, local variables, closures and scope.",
-  "description": "Create reusable code and understand how Lua handles functions, variables and program scope.",
+  "title": "Iterators and Generic For Loops",
+  "subtitle": "Iterators and Generic For Loops: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on iterators and generic for loops, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "lua-7-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Functions and Scope"
+      "text": "PAGE 1 — Iterators and Generic For Loops: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 7: Functions and Scope. This lesson follows the course dashboard topic “Functions and Scope”. The goal is to functions, parameters, return values, local variables, closures and scope.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "lua-7-page-1-teaching-2",
+      "type": "content",
+      "text": "Iterators and Generic For Loops is not just a syntax topic: it is a way to make the application’s intent explicit. A Lua generic for loop asks an iterator for the next value until the iterator signals completion. Use ipairs for sequential array-like entries and pairs for key-value tables, and do not rely on an unspecified map iteration order. In the Code Academy dashboard, that idea matters because A small lesson tracker can use tables and functions while keeping state changes and errors clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A function packages a task behind a name so callers can use it without repeating its implementation. Good functions have a focused responsibility, meaningful parameter names, and a clear result or documented side effect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-1",
+      "id": "lua-7-code-1-3",
       "type": "code",
+      "title": "Example 1 — Iterators and Generic For Loops: ipairs walks sequential array-style entries in order",
       "language": "lua",
-      "title": "Sample 1: Functions and Scope in practice",
-      "code": "local function greet(name) return \"Welcome, \" .. name .. \"!\" end\nprint(greet(\"Ama\"))"
+      "code": "local courses = {\"HTML\", \"CSS\", \"Lua\"}\nfor index, course in ipairs(courses) do print(index, course) end",
+      "output": "ipairs walks sequential array-style entries in order."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Functions, parameters, return values, local variables, closures and scope. Identify the input, the operation, and the result before making changes."
+      "id": "lua-7-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “local courses = {\"HTML\", \"CSS\", \"Lua\"}”: Creates a local variable or table binding for this scope. Line 2 — “for index, course in ipairs(courses) do print(index, course) end”: Begins iteration over a numeric range or iterator. Expected behavior: ipairs walks sequential array-style entries in order. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "lua-l7-q-01",
+      "id": "lua-7-quiz-1-5",
       "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "question": "A Lua table is a sequential list of courses and its order matters. Which iterator is normally suitable?",
       "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
-      ],
-      "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Create reusable code and understand how Lua handles functions, variables and program scope.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-2",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 2: Functions and Scope in practice",
-      "code": "local function add(a,b) return a+b end\nprint(add(8,4))"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Lua project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "lua-l7-q-02",
-      "type": "quiz",
-      "question": "A function has eight unrelated responsibilities and is hard to test. What is the best improvement?",
-      "options": [
-        "Add more global variables.",
-        "Split it into small functions with clear responsibilities.",
-        "Remove all function names.",
-        "Put all code into one conditional."
+        "next called without checking completion",
+        "ipairs",
+        "pairs, because it guarantees sorted keys",
+        "a coroutine that never yields nil"
       ],
       "correctIndex": 1,
-      "explanation": "Small cohesive functions are easier to test and maintain.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Small cohesive functions are easier to test and maintain.",
-      "incorrectFeedback": "Review the requirement again. Small cohesive functions are easier to test and maintain."
+      "explanation": "Correct answer: ipairs. ipairs traverses sequential array-like entries; pairs is for general key-value tables and does not guarantee order.",
+      "reasoning": "ipairs traverses sequential array-like entries; pairs is for general key-value tables and does not guarantee order. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Parameters are the inputs a function accepts; arguments are the actual values supplied by a call. A return value sends a result back to the caller, while printing merely displays information and does not automatically make it available for later calculations."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-3",
+      "id": "lua-7-code-2-6",
       "type": "code",
+      "title": "Example 2 — Iterators and Generic For Loops: pairs iterates keys and values; its order should not be assumed",
       "language": "lua",
-      "title": "Sample 3: Functions and Scope in practice",
-      "code": "local function passed(score,cutoff) cutoff=cutoff or 50; return score>=cutoff end\nprint(passed(72))"
+      "code": "local xp = {HTML = 20, CSS = 10}\nfor course, reward in pairs(xp) do print(course, reward) end",
+      "output": "pairs iterates keys and values; its order should not be assumed."
     },
     {
-      "id": "lua-l7-q-03",
+      "id": "lua-7-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “local xp = {HTML = 20, CSS = 10}”: Creates a local variable or table binding for this scope. Line 2 — “for course, reward in pairs(xp) do print(course, reward) end”: Begins iteration over a numeric range or iterator. Expected behavior: pairs iterates keys and values; its order should not be assumed. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-7-quiz-2-8",
       "type": "quiz",
-      "question": "A function receives an unexpected input. What should the contract make clear?",
+      "question": "A Lua table maps course names to XP and both key and value are needed. Which function is appropriate?",
       "options": [
-        "Only the function’s color.",
-        "The screen size.",
-        "How many comments it contains.",
-        "Which inputs are valid and what happens for invalid input."
+        "pairs",
+        "ipairs only, regardless of the key types",
+        "string.gmatch",
+        "math.floor"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: pairs. pairs yields keys and values from a general table.",
+      "reasoning": "pairs yields keys and values from a general table. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-7-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Iterators and Generic For Loops: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "lua-7-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. A Lua generic for loop asks an iterator for the next value until the iterator signals completion. Use ipairs for sequential array-like entries and pairs for key-value tables, and do not rely on an unspecified map iteration order. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "lua-7-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Iterators and Generic For Loops: A generic for loop can consume a custom iterator that returns nil when finished",
+      "language": "lua",
+      "code": "local function countDown(maximum) local current = maximum; return function() if current < 1 then return nil end; local result = current; current = current - 1; return result end end\nfor value in countDown(3) do print(value) end",
+      "output": "A generic for loop can consume a custom iterator that returns nil when finished."
+    },
+    {
+      "id": "lua-7-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “local function countDown(maximum) local current = maximum; return function() if current < 1 then return nil end; local result = current; current = current - 1; return result end end”: Declares a function whose name is limited to the local scope. Line 2 — “for value in countDown(3) do print(value) end”: Begins iteration over a numeric range or iterator. Expected behavior: A generic for loop can consume a custom iterator that returns nil when finished. What if a line changes? If the loop update or stopping condition is removed or changed, iterations may be skipped, repeated, or never finish. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-7-quiz-2-13",
+      "type": "quiz",
+      "question": "A custom iterator has no more values to yield. What return convention terminates a generic for loop?",
+      "options": [
+        "Repeat the previous value forever",
+        "Return true and restart the iterator",
+        "Raise a new error for normal completion",
+        "Return nil as the iterator result"
       ],
       "correctIndex": 3,
-      "explanation": "A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "incorrectFeedback": "Review the requirement again. A clear function contract specifies assumptions, returned values, and failure behavior."
+      "explanation": "Correct answer: Return nil as the iterator result. The generic for loop stops when the iterator returns nil.",
+      "reasoning": "The generic for loop stops when the iterator returns nil. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Testing a function with normal, minimum, maximum, and invalid inputs exposes assumptions early. Small functions are easier to test and combine than one large function that handles unrelated jobs."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-4",
+      "id": "lua-7-code-4-14",
       "type": "code",
+      "title": "Example 4 — Iterators and Generic For Loops: io",
       "language": "lua",
-      "title": "Sample 4: Functions and Scope in practice",
-      "code": "local double = function(value) return value*2 end\nprint(double(9))"
+      "code": "for line in io.lines(\"lessons.txt\") do print(line) end",
+      "output": "io.lines provides an iterator over file lines; handle file-access errors in production code."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Create reusable code and understand how Lua handles functions, variables and program scope. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "lua-7-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “for line in io.lines(\"lessons.txt\") do print(line) end”: Begins iteration over a numeric range or iterator. Expected behavior: io.lines provides an iterator over file lines; handle file-access errors in production code. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "lua-l7-q-04",
+      "id": "lua-7-quiz-3-16",
       "type": "quiz",
-      "question": "A function calculates whether a score passes. How should the caller reuse the result?",
+      "question": "A report needs deterministic alphabetical order from a map-like table. What should be done?",
       "options": [
-        "Infer it from a printed sentence.",
-        "Re-run the whole application.",
-        "Use the returned Boolean or documented result.",
-        "Read the function’s source text at runtime."
+        "Replace pairs with ipairs even though keys are strings",
+        "Use the memory address as a sort order",
+        "Collect and sort the keys or entries explicitly",
+        "Assume pairs iterates alphabetically"
       ],
       "correctIndex": 2,
-      "explanation": "A returned result is a reliable interface between the function and its caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A returned result is a reliable interface between the function and its caller.",
-      "incorrectFeedback": "Review the requirement again. A returned result is a reliable interface between the function and its caller."
+      "explanation": "Correct answer: Collect and sort the keys or entries explicitly. pairs ordering is unspecified, so deterministic output requires explicit sorting.",
+      "reasoning": "pairs ordering is unspecified, so deterministic output requires explicit sorting. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "lua-l7-q-05",
+      "id": "lua-7-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Iterators and Generic For Loops: applied challenge and mastery check"
+    },
+    {
+      "id": "lua-7-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. A Lua generic for loop asks an iterator for the next value until the iterator signals completion. Use ipairs for sequential array-like entries and pairs for key-value tables, and do not rely on an unspecified map iteration order. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "lua-7-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses iterators and generic for loops. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "lua-7-quiz-5-20",
       "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
+      "question": "An iterator reads lines from a file. Which failure should be considered?",
       "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
+        "File paths cannot contain letters",
+        "The file can be missing or inaccessible, so the read path needs error handling",
+        "Lua automatically creates every missing file",
+        "The iterator always sorts lines"
       ],
-      "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+      "correctIndex": 1,
+      "explanation": "Correct answer: The file can be missing or inaccessible, so the read path needs error handling. File access depends on the environment and may fail; handle the failure rather than assuming success.",
+      "reasoning": "File access depends on the environment and may fail; handle the failure rather than assuming success. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-7-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: A Lua generic for loop asks an iterator for the next value until the iterator signals completion. Use ipairs for sequential array-like entries and pairs for key-value tables, and do not rely on an unspecified map iteration order. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

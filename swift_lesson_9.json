@@ -2,196 +2,175 @@
   "course": "swift",
   "lessonNumber": 9,
   "lessonId": "swift-lesson-9",
-  "title": "Error Handling and Concurrency",
-  "subtitle": "Handle failures and understand the purpose of asynchronous work.",
-  "description": "Model recoverable errors and distinguish asynchronous work from immediate results.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Protocols and Error Handling",
+  "subtitle": "Protocols and Error Handling: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on protocols and error handling, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "swift-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Error Handling and Concurrency"
+      "text": "PAGE 1 — Protocols and Error Handling: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Error Handling and Concurrency. This lesson follows the course dashboard topic “Error Handling and Concurrency”. The goal is to handle failures and understand the purpose of asynchronous work.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "swift-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Protocols and Error Handling is not just a syntax topic: it is a way to make the application’s intent explicit. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. In the Code Academy dashboard, that idea matters because A tracker can represent lessons as values and model missing data and failures deliberately. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A function packages a task behind a name so callers can use it without repeating its implementation. Good functions have a focused responsibility, meaningful parameter names, and a clear result or documented side effect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "swift-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Protocols and Error Handling: A custom Error type gives failure states meaningful names",
       "language": "swift",
-      "title": "Sample 1: Error Handling and Concurrency in practice",
-      "code": "func loadTitle() async -> String { \"Lesson ready\" }\nTask { print(await loadTitle()) }"
+      "code": "enum LoadError: Error { case offline, invalidData }",
+      "output": "A custom Error type gives failure states meaningful names."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Handle failures and understand the purpose of asynchronous work. Identify the input, the operation, and the result before making changes."
+      "id": "swift-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “enum LoadError: Error { case offline, invalidData }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: A custom Error type gives failure states meaningful names. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "swift-l9-q-01",
+      "id": "swift-9-quiz-1-5",
       "type": "quiz",
-      "question": "A function receives an unexpected input. What should the contract make clear?",
+      "question": "A score is converted from external text, and the input may be \"eighty\". What should occur?",
       "options": [
-        "Only the function’s color.",
-        "The screen size.",
-        "How many comments it contains.",
-        "Which inputs are valid and what happens for invalid input."
+        "Treat the failed conversion as a valid score of zero in every context",
+        "Ignore the failure and report success",
+        "Display a full private stack trace to the learner",
+        "Handle the conversion failure and show a controlled validation message"
       ],
       "correctIndex": 3,
-      "explanation": "A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "incorrectFeedback": "Review the requirement again. A clear function contract specifies assumptions, returned values, and failure behavior."
+      "explanation": "Correct answer: Handle the conversion failure and show a controlled validation message. Invalid input should not silently become success; handle expected conversion errors at the boundary.",
+      "reasoning": "Invalid input should not silently become success; handle expected conversion errors at the boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Model recoverable errors and distinguish asynchronous work from immediate results.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "swift-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Protocols and Error Handling: Failable conversion returns nil when the text is not an integer",
       "language": "swift",
-      "title": "Sample 2: Error Handling and Concurrency in practice",
-      "code": "func add(_ a: Int, _ b: Int) async -> Int { a + b }\nTask { print(await add(8, 4)) }"
+      "code": "func parseScore(_ text: String) -> Int? { Int(text) }\nprint(parseScore(\"bad\") as Any)",
+      "output": "Failable conversion returns nil when the text is not an integer."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Swift project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "swift-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “func parseScore(_ text: String) -> Int? { Int(text) }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “print(parseScore(\"bad\") as Any)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Failable conversion returns nil when the text is not an integer. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "swift-l9-q-02",
+      "id": "swift-9-quiz-2-8",
       "type": "quiz",
-      "question": "A function calculates whether a score passes. How should the caller reuse the result?",
+      "question": "A file read fails because the file is missing. Which response is most useful?",
       "options": [
-        "Infer it from a printed sentence.",
-        "Re-run the whole application.",
-        "Use the returned Boolean or documented result.",
-        "Read the function’s source text at runtime."
+        "Catch every error and do nothing",
+        "Expose server paths and secrets in the page",
+        "Handle the specific I/O failure and keep detailed diagnostics in a protected log",
+        "Continue using the missing file’s contents"
       ],
       "correctIndex": 2,
-      "explanation": "A returned result is a reliable interface between the function and its caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A returned result is a reliable interface between the function and its caller.",
-      "incorrectFeedback": "Review the requirement again. A returned result is a reliable interface between the function and its caller."
+      "explanation": "Correct answer: Handle the specific I/O failure and keep detailed diagnostics in a protected log. A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals.",
+      "reasoning": "A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Parameters are the inputs a function accepts; arguments are the actual values supplied by a call. A return value sends a result back to the caller, while printing merely displays information and does not automatically make it available for later calculations."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "swift",
-      "title": "Sample 3: Error Handling and Concurrency in practice",
-      "code": "func parseScore(_ raw: String) async -> Int? { Int(raw) }\nTask { print(await parseScore(\"92\") ?? 0) }"
-    },
-    {
-      "id": "swift-l9-q-03",
-      "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
-      "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
-      ],
-      "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "swift-9-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Protocols and Error Handling: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Testing a function with normal, minimum, maximum, and invalid inputs exposes assumptions early. Small functions are easier to test and combine than one large function that handles unrelated jobs."
+      "id": "swift-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker can represent lessons as values and model missing data and failures deliberately. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
+      "id": "swift-9-code-3-11",
       "type": "code",
+      "title": "Example 3 — Protocols and Error Handling: throws marks a function that can fail and do/catch handles that failure",
       "language": "swift",
-      "title": "Sample 4: Error Handling and Concurrency in practice",
-      "code": "func firstLesson() async -> String { \"Introduction\" }\nTask { async let title = firstLesson(); print(await title) }"
+      "code": "func load() throws { throw LoadError.offline }\ndo { try load() } catch { print(\"Lesson could not be loaded\") }",
+      "output": "throws marks a function that can fail and do/catch handles that failure."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Model recoverable errors and distinguish asynchronous work from immediate results. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "swift-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “func load() throws { throw LoadError.offline }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “do { try load() } catch { print(\"Lesson could not be loaded\") }”: Displays the computed value so the behavior can be observed and checked. Expected behavior: throws marks a function that can fail and do/catch handles that failure. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "swift-l9-q-04",
+      "id": "swift-9-quiz-2-13",
       "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "question": "A broad catch block returns a successful result after any exception. What is the core defect?",
       "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
-      ],
-      "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
-    },
-    {
-      "id": "swift-l9-q-05",
-      "type": "quiz",
-      "question": "A function has eight unrelated responsibilities and is hard to test. What is the best improvement?",
-      "options": [
-        "Add more global variables.",
-        "Split it into small functions with clear responsibilities.",
-        "Remove all function names.",
-        "Put all code into one conditional."
+        "It makes type checking stricter",
+        "It turns failures into false success and makes corruption harder to detect",
+        "It forces every function to become asynchronous",
+        "It guarantees all resources are closed"
       ],
       "correctIndex": 1,
-      "explanation": "Small cohesive functions are easier to test and maintain.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Small cohesive functions are easier to test and maintain.",
-      "incorrectFeedback": "Review the requirement again. Small cohesive functions are easier to test and maintain."
+      "explanation": "Correct answer: It turns failures into false success and makes corruption harder to detect. Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data.",
+      "reasoning": "Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Protocols and Error Handling: Protocol conformance makes the required implementation explicit",
+      "language": "swift",
+      "code": "protocol Reporter { func report() -> String }\nstruct ConsoleReporter: Reporter { func report() -> String { \"Saved\" } }",
+      "output": "Protocol conformance makes the required implementation explicit."
+    },
+    {
+      "id": "swift-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “protocol Reporter { func report() -> String }”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Line 2 — “struct ConsoleReporter: Reporter { func report() -> String { \"Saved\" } }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: Protocol conformance makes the required implementation explicit. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "swift-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two database updates must both succeed or both be undone. Which mechanism is designed for that?",
+      "options": [
+        "A transaction with commit on success and rollback on failure",
+        "A loop that retries forever",
+        "HTML form validation alone",
+        "A display-only warning after each update"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A transaction with commit on success and rollback on failure. Transactions group related operations atomically when used correctly.",
+      "reasoning": "Transactions group related operations atomically when used correctly. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Protocols and Error Handling: applied challenge and mastery check"
+    },
+    {
+      "id": "swift-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. For the Code Academy dashboard, A tracker can represent lessons as values and model missing data and failures deliberately. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "swift-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses protocols and error handling. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "swift-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A failure is expected and the caller can recover. What belongs in the function contract?",
+      "options": [
+        "A silent return value that looks like success",
+        "An unconditional retry with no limit",
+        "An undocumented global flag",
+        "A clear error/result path or a documented exception"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A clear error/result path or a documented exception. A caller needs a reliable way to distinguish success from a recoverable failure.",
+      "reasoning": "A caller needs a reliable way to distinguish success from a recoverable failure. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

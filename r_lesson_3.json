@@ -2,196 +2,175 @@
   "course": "r",
   "lessonNumber": 3,
   "lessonId": "r-lesson-3",
-  "title": "Operators and Control Flow",
-  "subtitle": "Arithmetic, comparison and logical operators together with if, else and conditional logic.",
-  "description": "Build programs that calculate values, compare information and make decisions based on conditions.",
+  "title": "Matrices, Lists and Dimensions",
+  "subtitle": "Matrices, Lists and Dimensions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on matrices, lists and dimensions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Beginner",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "r-3-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Operators and Control Flow"
+      "text": "PAGE 1 — Matrices, Lists and Dimensions: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 3: Operators and Control Flow. This lesson follows the course dashboard topic “Operators and Control Flow”. The goal is to arithmetic, comparison and logical operators together with if, else and conditional logic.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "r-3-page-1-teaching-2",
+      "type": "content",
+      "text": "Matrices, Lists and Dimensions is not just a syntax topic: it is a way to make the application’s intent explicit. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. In the Code Academy dashboard, that idea matters because Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A conditional statement lets a program select a path based on a Boolean expression. Put the most important conditions in a readable order and make the fallback behavior explicit."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-1",
+      "id": "r-3-code-1-3",
       "type": "code",
+      "title": "Example 1 — Matrices, Lists and Dimensions: R vector indexing begins at 1",
       "language": "r",
-      "title": "Sample 1: Operators and Control Flow in practice",
-      "code": "score <- 86\nif (score >= 80) { print(\"Strong result\") } else { print(\"Keep practising\") }"
+      "code": "scores <- c(4, 5, 3)\nscores[1]",
+      "output": "R vector indexing begins at 1."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Arithmetic, comparison and logical operators together with if, else and conditional logic. Identify the input, the operation, and the result before making changes."
+      "id": "r-3-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “scores <- c(4, 5, 3)”: Assigns the evaluated value to a named R object. Line 2 — “scores[1]”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: R vector indexing begins at 1. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l3-q-01",
+      "id": "r-3-quiz-1-5",
       "type": "quiz",
-      "question": "A program has overlapping score bands. Which approach prevents a higher score from being assigned to a lower band?",
+      "question": "A course list contains three entries and uses zero-based indexing. Which expression selects the first item?",
       "options": [
-        "Check bands in a clear order from higher threshold to lower threshold, or use non-overlapping ranges.",
-        "Use unrelated variable names.",
-        "Remove the boundary checks.",
-        "Make every branch print the same label."
+        "courses[-3] in every language",
+        "courses[0]",
+        "courses[1]",
+        "courses[3]"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: courses[0]. In zero-based arrays, index zero refers to the first entry.",
+      "reasoning": "In zero-based arrays, index zero refers to the first entry. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-3-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Matrices, Lists and Dimensions: A matrix stores values in rows and columns",
+      "language": "r",
+      "code": "m <- matrix(1:6, nrow = 2, byrow = TRUE)\nprint(m)",
+      "output": "A matrix stores values in rows and columns."
+    },
+    {
+      "id": "r-3-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “m <- matrix(1:6, nrow = 2, byrow = TRUE)”: Assigns the evaluated value to a named R object. Line 2 — “print(m)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A matrix stores values in rows and columns. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-3-quiz-2-8",
+      "type": "quiz",
+      "question": "The dashboard must prevent the same completed lesson ID being counted twice. Which data structure is a natural fit?",
+      "options": [
+        "A set or a keyed map that enforces unique IDs",
+        "An unparsed text string with duplicates",
+        "Parallel arrays with no shared key",
+        "A counter incremented without checking the lesson ID"
       ],
       "correctIndex": 0,
-      "explanation": "Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one.",
-      "incorrectFeedback": "Review the requirement again. Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one."
+      "explanation": "Correct answer: A set or a keyed map that enforces unique IDs. Uniqueness should be enforced by the data structure or explicit key check.",
+      "reasoning": "Uniqueness should be enforced by the data structure or explicit key check. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
+      "id": "r-3-page-2-9",
       "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
+      "text": "PAGE 2 — Matrices, Lists and Dimensions: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Build programs that calculate values, compare information and make decisions based on conditions.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
+      "id": "r-3-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-2",
+      "id": "r-3-code-3-11",
       "type": "code",
+      "title": "Example 3 — Matrices, Lists and Dimensions: A list can contain nested vectors",
       "language": "r",
-      "title": "Sample 2: Operators and Control Flow in practice",
-      "code": "xp <- 45\nlevel <- if (xp >= 100) \"advanced\" else if (xp >= 40) \"intermediate\" else \"beginner\"\nprint(level)"
+      "code": "profile <- list(name = \"Ama\", scores = c(4, 5))\nprofile$scores",
+      "output": "A list can contain nested vectors."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real R project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "r-3-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “profile <- list(name = \"Ama\", scores = c(4, 5))”: Assigns the evaluated value to a named R object. Line 2 — “profile$scores”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A list can contain nested vectors. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l3-q-02",
+      "id": "r-3-quiz-2-13",
       "type": "quiz",
-      "question": "A form accepts an empty username even though one is required. What should the program do?",
+      "question": "A dictionary lookup may not find a key. What should the code do?",
       "options": [
-        "Treat the empty value as a valid username.",
-        "Change the button color only.",
-        "Save it and hope the database fixes it.",
-        "Check for empty or whitespace-only input and give a clear message."
+        "Assume the lookup always succeeds",
+        "Treat the key’s absence as proof that its value is zero",
+        "Access a missing nested property without checking",
+        "Handle the missing-key result or use a deliberate fallback"
       ],
       "correctIndex": 3,
-      "explanation": "Validation must check the actual input state and tell the user how to correct it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Validation must check the actual input state and tell the user how to correct it.",
-      "incorrectFeedback": "Review the requirement again. Validation must check the actual input state and tell the user how to correct it."
+      "explanation": "Correct answer: Handle the missing-key result or use a deliberate fallback. A missing key may be distinct from a key whose value is zero or empty.",
+      "reasoning": "A missing key may be distinct from a key whose value is zero or empty. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Boundary values reveal many bugs. If a reward starts at 100 points, test 99, 100, and 101; testing only a typical value can hide an incorrect comparison operator."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-3",
+      "id": "r-3-code-4-14",
       "type": "code",
+      "title": "Example 4 — Matrices, Lists and Dimensions: unique returns distinct values",
       "language": "r",
-      "title": "Sample 3: Operators and Control Flow in practice",
-      "code": "stock <- 0\nif (stock > 0) print(\"Available\") else print(\"Out of stock\")"
+      "code": "unique(c(\"html-1\", \"html-1\", \"html-2\"))",
+      "output": "unique returns distinct values."
     },
     {
-      "id": "r-l3-q-03",
+      "id": "r-3-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “unique(c(\"html-1\", \"html-1\", \"html-2\"))”: Applies a summary or inspection function to the selected data. Expected behavior: unique returns distinct values. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-3-quiz-3-16",
       "type": "quiz",
-      "question": "A fallback branch never runs during testing. What should the developer verify?",
+      "question": "Each quiz attempt has both correctness and XP. Which representation best preserves the relationship?",
       "options": [
-        "The page has a newer color palette.",
-        "The earlier conditions do not already match every possible case.",
-        "The variable was renamed to a longer word.",
-        "The program has more comments."
-      ],
-      "correctIndex": 1,
-      "explanation": "An overly broad earlier condition can make a fallback unreachable.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. An overly broad earlier condition can make a fallback unreachable.",
-      "incorrectFeedback": "Review the requirement again. An overly broad earlier condition can make a fallback unreachable."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Combine conditions only when the rule is clear. If the expression becomes hard to explain in one sentence, give parts of it descriptive names or split it into separate checks."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-4",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 4: Operators and Control Flow in practice",
-      "code": "email <- \"ama@example.com\"\nif (grepl(\"@\", email)) print(\"Check the full format too\")"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Build programs that calculate values, compare information and make decisions based on conditions. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "r-l3-q-04",
-      "type": "quiz",
-      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
-      "options": [
-        "Test only a score of 200.",
-        "Test 99, 100, and 101.",
-        "Test a text value such as “high”.",
-        "Do not test the condition."
-      ],
-      "correctIndex": 1,
-      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
-      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
-    },
-    {
-      "id": "r-l3-q-05",
-      "type": "quiz",
-      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
-      "options": [
-        "Use OR if either rule must pass.",
-        "Skip validation once the page looks correct.",
-        "Combine both checks with the appropriate AND condition.",
-        "Run the same check forever."
+        "One string containing all values without delimiters",
+        "A single number containing the sum only",
+        "A list of structured attempt records",
+        "Separate arrays that can become different lengths"
       ],
       "correctIndex": 2,
-      "explanation": "AND is appropriate when every required condition must be true.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
-      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
+      "explanation": "Correct answer: A list of structured attempt records. Records keep related fields together and prevent losing which XP belongs to which attempt.",
+      "reasoning": "Records keep related fields together and prevent losing which XP belongs to which attempt. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-3-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Matrices, Lists and Dimensions: applied challenge and mastery check"
+    },
+    {
+      "id": "r-3-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "r-3-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses matrices, lists and dimensions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "r-3-quiz-5-20",
+      "type": "quiz",
+      "question": "A score array may be empty. What should the maximum-score calculation consider?",
+      "options": [
+        "Sort it and read index zero without a check",
+        "Handle the empty collection before assuming a maximum exists",
+        "Assume the maximum is always the first item",
+        "Use the array length as the maximum score"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Handle the empty collection before assuming a maximum exists. An empty collection has no element to return as its maximum.",
+      "reasoning": "An empty collection has no element to return as its maximum. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-3-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

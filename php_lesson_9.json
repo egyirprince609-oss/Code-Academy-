@@ -2,196 +2,175 @@
   "course": "php",
   "lessonNumber": 9,
   "lessonId": "php-lesson-9",
-  "title": "PHP and Databases",
-  "subtitle": "Connect PHP applications to databases and work with stored information.",
-  "description": "Learn database concepts, SQL from PHP, CRUD operations, prepared statements and secure database access.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Database Access with Parameterized Queries",
+  "subtitle": "Database Access with Parameterized Queries: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on database access with parameterized queries, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "php-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand PHP and Databases"
+      "text": "PAGE 1 — Database Access with Parameterized Queries: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: PHP and Databases. This lesson follows the course dashboard topic “PHP and Databases”. The goal is to connect PHP applications to databases and work with stored information.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "php-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Database Access with Parameterized Queries is not just a syntax topic: it is a way to make the application’s intent explicit. Use prepared statements to keep untrusted values separate from SQL syntax. Validate inputs, check the current user’s authorization, handle database failures, and roll back related writes when necessary. In the Code Academy dashboard, that idea matters because A course portal must validate requests and keep generated output and database interactions safe. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Collections group related values. Use a sequence when order or position matters, a set when uniqueness is the main concern, and a map or dictionary when values should be found by a meaningful key."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "php-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Database Access with Parameterized Queries: PDO exception mode makes database failures visible to controlled error handling",
       "language": "php",
-      "title": "Sample 1: PHP and Databases in practice",
-      "code": "<?php\n// Use a prepared statement; credentials should come from secure configuration.\n$stmt = $pdo->prepare(\"SELECT id, display_name FROM learners WHERE email = ?\");\n$stmt->execute([$email]);\n$learner = $stmt->fetch();"
+      "code": "$pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);",
+      "output": "PDO exception mode makes database failures visible to controlled error handling."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Connect PHP applications to databases and work with stored information. Identify the input, the operation, and the result before making changes."
+      "id": "php-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “$pdo = new PDO($dsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: PDO exception mode makes database failures visible to controlled error handling. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "php-l9-q-01",
+      "id": "php-9-quiz-1-5",
       "type": "quiz",
-      "question": "A list is filtered but the original list unexpectedly changes. What should be checked?",
+      "question": "A PHP request uses a learner ID in a SQL query. Which combination is correct?",
       "options": [
-        "The computer’s date.",
-        "Whether comments were removed.",
-        "Only the font size.",
-        "Whether the chosen operation mutates the original collection or returns a new one."
+        "Escape the ID for HTML and concatenate it into SQL",
+        "Trust a hidden field because it was generated by the server",
+        "Remove the WHERE clause to avoid query errors",
+        "Use a prepared statement and separately authorize that the current user may access that learner"
       ],
       "correctIndex": 3,
-      "explanation": "Mutation behavior differs by language and method; understand whether the source is changed.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Mutation behavior differs by language and method; understand whether the source is changed.",
-      "incorrectFeedback": "Review the requirement again. Mutation behavior differs by language and method; understand whether the source is changed."
+      "explanation": "Correct answer: Use a prepared statement and separately authorize that the current user may access that learner. Parameterization protects SQL structure; authorization checks whether the requester is allowed to access the record.",
+      "reasoning": "Parameterization protects SQL structure; authorization checks whether the requester is allowed to access the record. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn database concepts, SQL from PHP, CRUD operations, prepared statements and secure database access.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "php-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Database Access with Parameterized Queries: A prepared statement keeps user input separate from SQL structure",
       "language": "php",
-      "title": "Sample 2: PHP and Databases in practice",
-      "code": "<?php\n$stmt = $pdo->prepare(\"INSERT INTO courses (title) VALUES (?)\");\n$stmt->execute([$title]);"
+      "code": "$stmt = $pdo->prepare(\"SELECT id, xp FROM learners WHERE id = :id\");\n$stmt->execute([\"id\" => $learnerId]);\n$learner = $stmt->fetch(PDO::FETCH_ASSOC);",
+      "output": "A prepared statement keeps user input separate from SQL structure."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real PHP project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "php-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “$stmt = $pdo->prepare(\"SELECT id, xp FROM learners WHERE id = :id\");”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Line 2 — “$stmt->execute([\"id\" => $learnerId]);”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Line 3 — “$learner = $stmt->fetch(PDO::FETCH_ASSOC);”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: A prepared statement keeps user input separate from SQL structure. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "php-l9-q-02",
+      "id": "php-9-quiz-2-8",
       "type": "quiz",
-      "question": "A collection lookup can fail when the key is missing. What should the code do?",
+      "question": "A PDO statement selects a learner by ID but the ID field may be missing. What should happen first?",
       "options": [
-        "Check for absence or use a documented fallback/error result.",
-        "Assume every possible key exists.",
-        "Use the missing value as a list index.",
-        "Ignore the result and display success."
-      ],
-      "correctIndex": 0,
-      "explanation": "Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Handling absent keys makes the behavior predictable and avoids hidden failures.",
-      "incorrectFeedback": "Review the requirement again. Handling absent keys makes the behavior predictable and avoids hidden failures."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Indexes are commonly zero-based, so the first element is often at position zero and the last index is one less than the collection length. Key-based collections use keys instead of numeric positions and may have different lookup guarantees."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "php",
-      "title": "Sample 3: PHP and Databases in practice",
-      "code": "<?php\n$stmt = $pdo->prepare(\"UPDATE lesson_results SET score = ? WHERE result_id = ?\");\n$stmt->execute([$score, $resultId]);"
-    },
-    {
-      "id": "php-l9-q-03",
-      "type": "quiz",
-      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
-      "options": [
-        "A map/dictionary keyed by email, with suitable uniqueness handling.",
-        "A random number with no mapping.",
-        "A paragraph of comma-separated values that is never parsed.",
-        "A loop that guesses the correct person."
-      ],
-      "correctIndex": 0,
-      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Consider whether the collection should be mutable, whether a copy or a reference is being shared, and what should happen when an item is missing. These decisions affect correctness as much as the data structure’s syntax."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "php",
-      "title": "Sample 4: PHP and Databases in practice",
-      "code": "<?php\n// Handle the no-match case deliberately.\n$learner = $stmt->fetch();\nif (!$learner) { echo \"Learner not found\"; }"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn database concepts, SQL from PHP, CRUD operations, prepared statements and secure database access. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "php-l9-q-04",
-      "type": "quiz",
-      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
-      "options": [
-        "One.",
-        "The collection length.",
-        "Zero.",
-        "Minus one."
+        "Query every learner and choose the first result",
+        "Use the form label as an authorization token",
+        "Validate the input type and allowed range before executing the query",
+        "Cast any arbitrary string and assume it is a valid identity"
       ],
       "correctIndex": 2,
-      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+      "explanation": "Correct answer: Validate the input type and allowed range before executing the query. Validate inputs before passing them to the database, and do not confuse a valid ID with permission to access it.",
+      "reasoning": "Validate inputs before passing them to the database, and do not confuse a valid ID with permission to access it. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "php-l9-q-05",
+      "id": "php-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Database Access with Parameterized Queries: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "php-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Use prepared statements to keep untrusted values separate from SQL syntax. Validate inputs, check the current user’s authorization, handle database failures, and roll back related writes when necessary. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A course portal must validate requests and keep generated output and database interactions safe. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "php-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Database Access with Parameterized Queries: Parameters represent values; validate authorization and numeric ranges separately",
+      "language": "php",
+      "code": "$stmt = $pdo->prepare(\"UPDATE learners SET xp = xp + :bonus WHERE id = :id\");\n$stmt->execute([\"bonus\" => $bonus, \"id\" => $learnerId]);",
+      "output": "Parameters represent values; validate authorization and numeric ranges separately."
+    },
+    {
+      "id": "php-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “$stmt = $pdo->prepare(\"UPDATE learners SET xp = xp + :bonus WHERE id = :id\");”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Line 2 — “$stmt->execute([\"bonus\" => $bonus, \"id\" => $learnerId]);”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: Parameters represent values; validate authorization and numeric ranges separately. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-9-quiz-2-13",
       "type": "quiz",
-      "question": "A collection must contain each category only once. What data structure or operation helps?",
+      "question": "A submitted title is stored safely but displayed later inside HTML. What remains necessary?",
       "options": [
-        "A list that intentionally keeps every duplicate.",
-        "A set or explicit uniqueness check.",
-        "A loop that prints the items.",
-        "A longer variable name."
+        "Execute it as a PHP expression",
+        "Escape the title for HTML output at render time",
+        "Assume prepared SQL statements also escape HTML",
+        "Trust that stored text cannot change"
       ],
       "correctIndex": 1,
-      "explanation": "A set or uniqueness rule prevents repeated categories.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A set or uniqueness rule prevents repeated categories.",
-      "incorrectFeedback": "Review the requirement again. A set or uniqueness rule prevents repeated categories."
+      "explanation": "Correct answer: Escape the title for HTML output at render time. SQL parameterization and HTML output escaping address different injection contexts.",
+      "reasoning": "SQL parameterization and HTML output escaping address different injection contexts. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Database Access with Parameterized Queries: Use transaction cleanup on failure and keep detailed diagnostics in server logs, not raw output to visitors",
+      "language": "php",
+      "code": "try { $pdo->beginTransaction(); /* perform related writes */ $pdo->commit(); } catch (Throwable $error) { if ($pdo->inTransaction()) $pdo->rollBack(); error_log($error->getMessage()); throw $error; }",
+      "output": "Use transaction cleanup on failure and keep detailed diagnostics in server logs, not raw output to visitors."
+    },
+    {
+      "id": "php-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “try { $pdo->beginTransaction(); /* perform related writes */ $pdo->commit(); } catch (Throwable $error) { if ($pdo->inTransaction()) $pdo->rollBack(); error_log($error->getMessage()); throw $error; }”: Starts a protected operation whose expected failures are handled by a corresponding handler. Expected behavior: Use transaction cleanup on failure and keep detailed diagnostics in server logs, not raw output to visitors. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two database writes update XP and add a reward log. What protects consistency if the second write fails?",
+      "options": [
+        "Wrap related writes in a transaction and roll back when an operation fails",
+        "Send a success message before running the writes",
+        "Suppress all exceptions and commit partial state",
+        "Retry the second write forever without checking state"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Wrap related writes in a transaction and roll back when an operation fails. A transaction can keep the update and audit record atomic, and errors must not be reported as success.",
+      "reasoning": "A transaction can keep the update and audit record atomic, and errors must not be reported as success. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Database Access with Parameterized Queries: applied challenge and mastery check"
+    },
+    {
+      "id": "php-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Use prepared statements to keep untrusted values separate from SQL syntax. Validate inputs, check the current user’s authorization, handle database failures, and roll back related writes when necessary. For the Code Academy dashboard, A course portal must validate requests and keep generated output and database interactions safe. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "php-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses database access with parameterized queries. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "php-9-quiz-5-20",
+      "type": "quiz",
+      "question": "Production database errors may contain internal paths or query details. What should the app return to the learner?",
+      "options": [
+        "The complete database credentials and stack trace",
+        "A fabricated successful XP balance",
+        "The raw SQL string and submitted parameters",
+        "A controlled error message while detailed diagnostics go to protected logs"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A controlled error message while detailed diagnostics go to protected logs. Do not expose internals to end users; log safely and return honest but non-sensitive feedback.",
+      "reasoning": "Do not expose internals to end users; log safely and return honest but non-sensitive feedback. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Use prepared statements to keep untrusted values separate from SQL syntax. Validate inputs, check the current user’s authorization, handle database failures, and roll back related writes when necessary. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

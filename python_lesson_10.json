@@ -2,419 +2,175 @@
   "course": "python",
   "lessonNumber": 10,
   "lessonId": "python-lesson-10",
-  "title": "Build a Complete Python Project",
-  "subtitle": "A short practical refresher followed by 20 new application questions",
-  "description": "Review the ten Python dashboard topics. Includes three capstone examples and exactly two fresh review questions from each of Lessons 1–10.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 100,
-  "coinsReward": 50,
-  "estimatedMinutes": 22,
+  "title": "Classes and a Practical Mini-Project",
+  "subtitle": "Classes and a Practical Mini-Project: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on classes and a practical mini-project, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "final-page-1",
+      "id": "python-10-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — A short capstone refresher"
+      "text": "PAGE 1 — Classes and a Practical Mini-Project: foundations and mental model"
     },
     {
-      "id": "final-intro",
-      "type": "sentence",
-      "text": "Welcome to the Python final review. This lesson is intentionally shorter on new theory and longer on practical decisions. You will revisit the ten dashboard topics and answer two new application questions for each lesson, for exactly 20 questions."
+      "id": "python-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Classes and a Practical Mini-Project is not just a syntax topic: it is a way to make the application’s intent explicit. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. In the Code Academy dashboard, that idea matters because A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "final-method",
-      "type": "sentence",
-      "text": "Start by reading the requirement, tracing where its data comes from, and deciding what success should look like. Then test both a normal case and a boundary or failure case. A correct program should not only work once; it should behave predictably when its inputs change."
-    },
-    {
-      "id": "final-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Python. Paste this snippet into the Python editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l10-code-1",
+      "id": "python-10-code-1-3",
       "type": "code",
+      "title": "Example 1 — Classes and a Practical Mini-Project: An instance stores state in attributes",
       "language": "python",
-      "title": "Capstone sample 1: Build a Complete Python Project",
-      "code": "scores = [72, 86, 91]\naverage = sum(scores) / len(scores)\nprint(f\"Average: {average:.1f}\")"
+      "code": "class Learner:\n    def __init__(self, name, xp):\n        self.name = name\n        self.xp = xp\nlearner = Learner('Ama', 120)\nprint(learner.name)",
+      "output": "An instance stores state in attributes."
     },
     {
-      "id": "final-note-1",
-      "type": "sentence",
-      "text": "The first sample illustrates a small part of the solution. Before extending it, separate the input, the transformation, and the output. That separation makes it easier to test each part and locate defects."
+      "id": "python-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “class Learner:”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def __init__(self, name, xp):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “self.name = name”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “self.xp = xp”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 5 — “learner = Learner('Ama', 120)”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 6 — “print(learner.name)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An instance stores state in attributes. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-page-2",
+      "id": "python-10-quiz-1-5",
+      "type": "quiz",
+      "question": "A learner record contains name and XP. What is the main benefit of grouping them in one model?",
+      "options": [
+        "Every field becomes safe from modification automatically",
+        "All records must share the same XP value",
+        "Related state stays together and can be validated through a clear interface",
+        "The model automatically saves itself to Firebase"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Related state stays together and can be validated through a clear interface. A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation.",
+      "reasoning": "A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Classes and a Practical Mini-Project: Methods define behavior attached to objects",
+      "language": "python",
+      "code": "class Lesson:\n    def __init__(self, title):\n        self.title = title\n    def label(self):\n        return f'Lesson: {self.title}'\nprint(Lesson('Loops').label())",
+      "output": "Methods define behavior attached to objects."
+    },
+    {
+      "id": "python-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “class Lesson:”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def __init__(self, title):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “self.title = title”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “def label(self):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 5 — “return f'Lesson: {self.title}'”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 6 — “print(Lesson('Loops').label())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Methods define behavior attached to objects. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-10-quiz-2-8",
+      "type": "quiz",
+      "question": "Several types must provide `report()`, but their internal data differs. Which abstraction is suitable?",
+      "options": [
+        "Store source code in the report field",
+        "An interface or protocol describing the required behavior",
+        "Copy the same method into unrelated caller code",
+        "Use one global variable for all records"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: An interface or protocol describing the required behavior. An interface or protocol defines a contract without requiring identical internal representations.",
+      "reasoning": "An interface or protocol defines a contract without requiring identical internal representations. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-page-2-9",
       "type": "heading",
-      "text": "PAGE 2 — Connect the pieces"
+      "text": "PAGE 2 — Classes and a Practical Mini-Project: implementation, debugging, and edge cases"
     },
     {
-      "id": "final-method-2",
-      "type": "sentence",
-      "text": "A final project combines several ideas instead of treating each lesson as an isolated trick. Keep the responsibilities clear, choose data structures that match the job, and validate information at the boundary where it enters the program."
+      "id": "python-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "final-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Python. Paste this snippet into the Python editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l10-code-2",
+      "id": "python-10-code-3-11",
       "type": "code",
+      "title": "Example 3 — Classes and a Practical Mini-Project: A dataclass can reduce repetitive data-model code",
       "language": "python",
-      "title": "Capstone sample 2: Build a Complete Python Project",
-      "code": "def award_xp(correct):\n    return 5 if correct else 0\nprint(award_xp(True))"
+      "code": "from dataclasses import dataclass\n@dataclass\nclass Course:\n    name: str\n    lesson_count: int\nprint(Course('Python', 10))",
+      "output": "A dataclass can reduce repetitive data-model code."
     },
     {
-      "id": "final-note-2",
-      "type": "sentence",
-      "text": "Now consider how this idea would behave with empty data, invalid input, and a larger set of records. If an operation can fail, design the response deliberately rather than showing a success message before the operation has actually succeeded."
+      "id": "python-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “from dataclasses import dataclass”: Makes the needed library available or declares the package/module context for the code. Line 2 — “@dataclass”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “class Course:”: Declares a data type or contract that groups fields and/or behavior. Line 4 — “name: str”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 5 — “lesson_count: int”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 6 — “print(Course('Python', 10))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A dataclass can reduce repetitive data-model code. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Python. Paste this snippet into the Python editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "python-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A course-progress object must never have a negative total. Where should that rule be protected?",
+      "options": [
+        "At the model or validation boundary that creates and updates the object",
+        "Only in the page heading",
+        "Only when the object is printed",
+        "By assuming all call sites follow a comment"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: At the model or validation boundary that creates and updates the object. Domain invariants should be enforced where data enters or changes, not only at display time.",
+      "reasoning": "Domain invariants should be enforced where data enters or changes, not only at display time. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "l10-code-3",
+      "id": "python-10-code-4-14",
       "type": "code",
+      "title": "Example 4 — Classes and a Practical Mini-Project: The method handles a zero-total edge case",
       "language": "python",
-      "title": "Capstone sample 3: Build a Complete Python Project",
-      "code": "lessons = {\"HTML\": 6, \"CSS\": 3}\nfor course, completed in lessons.items():\n    print(f\"{course}: {completed}/10\")"
+      "code": "class Progress:\n    def __init__(self, done, total):\n        self.done = done\n        self.total = total\n    def percent(self):\n        return 0 if self.total == 0 else self.done / self.total * 100\nprint(Progress(4, 10).percent())",
+      "output": "The method handles a zero-total edge case."
     },
     {
-      "id": "final-note-3",
-      "type": "sentence",
-      "text": "Use the third example as a starting point, then explain how it relates to the course topic: Bring variables, conditions, loops, functions, data structures, files and object-oriented concepts together in a real project."
+      "id": "python-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “class Progress:”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def __init__(self, done, total):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “self.done = done”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “self.total = total”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 5 — “def percent(self):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 6 — “return 0 if self.total == 0 else self.done / self.total * 100”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 7 — “print(Progress(4, 10).percent())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: The method handles a zero-total edge case. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-bank-heading",
+      "id": "python-10-quiz-3-16",
+      "type": "quiz",
+      "question": "A type has only two fields and no behavior or identity requirements. What design principle applies?",
+      "options": [
+        "Use inheritance by default",
+        "Create an abstract hierarchy for every field",
+        "Make all members globally mutable",
+        "Prefer the simplest data structure that clearly represents the value"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Prefer the simplest data structure that clearly represents the value. Classes, structs, and records should match actual domain needs rather than add ceremony.",
+      "reasoning": "Classes, structs, and records should match actual domain needs rather than add ceremony. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-page-3-17",
       "type": "heading",
-      "text": "FINAL QUESTION BANK — 20 application questions"
+      "text": "PAGE 3 — Classes and a Practical Mini-Project: applied challenge and mastery check"
     },
     {
-      "id": "final-bank-instructions",
-      "type": "sentence",
-      "text": "Answer two questions from each dashboard lesson. These questions are newly written for this review and are not copied from the corresponding lesson quizzes. Read carefully: select the option that best satisfies the requirement, not merely an option that could work in a different situation."
+      "id": "python-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. For the Code Academy dashboard, A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
     },
     {
-      "id": "python-l10-bank-01",
+      "id": "python-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses classes and a practical mini-project. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "python-10-quiz-5-20",
       "type": "quiz",
-      "question": "Review from Lesson 1 — Introduction to Python: A team receives a repository with no run instructions. What should the maintainer add to make a fresh setup verifiable?",
+      "question": "A subclass overrides a method with an incompatible meaning. What is the key design risk?",
       "options": [
-        "A setup/run guide plus a minimal test or sample command.",
-        "Only a screenshot of the editor.",
-        "A larger logo.",
-        "A statement that setup is obvious."
-      ],
-      "correctIndex": 0,
-      "explanation": "A reproducible setup guide helps another developer validate the project from a clean start.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A reproducible setup guide helps another developer validate the project from a clean start.",
-      "incorrectFeedback": "Review the requirement again. A reproducible setup guide helps another developer validate the project from a clean start."
-    },
-    {
-      "id": "python-l10-bank-02",
-      "type": "quiz",
-      "question": "Review from Lesson 1 — Introduction to Python: The app works after manual edits but fails when built from source. What should be compared?",
-      "options": [
-        "The wallpaper on each device.",
-        "The actual source, compiler/runtime configuration, and documented build path.",
-        "The author’s typing speed.",
-        "The names of unrelated files."
-      ],
-      "correctIndex": 1,
-      "explanation": "Build and runtime configuration are part of a reproducible program, not separate from it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Build and runtime configuration are part of a reproducible program, not separate from it.",
-      "incorrectFeedback": "Review the requirement again. Build and runtime configuration are part of a reproducible program, not separate from it."
-    },
-    {
-      "id": "python-l10-bank-03",
-      "type": "quiz",
-      "question": "Review from Lesson 2 — Variables and Data Types: Two components disagree about a learner’s current XP. Which refactor is strongest?",
-      "options": [
-        "Keep both independent values and sync them by hand.",
-        "Show both values so the user chooses.",
-        "Use one authoritative value and derive each display from it.",
-        "Store the value in a constant even though it changes."
+        "The program gains database persistence",
+        "Object fields become inaccessible in every language",
+        "The subtype may violate the contract expected by callers",
+        "The compiler must automatically rewrite all callers"
       ],
       "correctIndex": 2,
-      "explanation": "One source of truth avoids state drift.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. One source of truth avoids state drift.",
-      "incorrectFeedback": "Review the requirement again. One source of truth avoids state drift."
+      "explanation": "Correct answer: The subtype may violate the contract expected by callers. Subtyping is safe only when the subtype respects the behavioral expectations of its base contract.",
+      "reasoning": "Subtyping is safe only when the subtype respects the behavioral expectations of its base contract. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "python-l10-bank-04",
-      "type": "quiz",
-      "question": "Review from Lesson 2 — Variables and Data Types: A production setting should not change after configuration. How should it be represented?",
-      "options": [
-        "As an input field that always accepts edits.",
-        "As duplicated mutable global state.",
-        "As a variable reset every second.",
-        "As a constant/immutable binding after safe configuration."
-      ],
-      "correctIndex": 3,
-      "explanation": "Immutable configuration communicates that the value should not be reassigned.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Immutable configuration communicates that the value should not be reassigned.",
-      "incorrectFeedback": "Review the requirement again. Immutable configuration communicates that the value should not be reassigned."
-    },
-    {
-      "id": "python-l10-bank-05",
-      "type": "quiz",
-      "question": "Review from Lesson 3 — Operators and Expressions: A discount expression is correct for simple values but fails when several operations are combined. What is the best review action?",
-      "options": [
-        "Add parentheses to make the intended grouping explicit and test representative values.",
-        "Convert the result to a sentence before calculating.",
-        "Remove the tests.",
-        "Replace all operators with addition."
-      ],
-      "correctIndex": 0,
-      "explanation": "Explicit grouping plus tests reduces errors involving precedence and edge values.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Explicit grouping plus tests reduces errors involving precedence and edge values.",
-      "incorrectFeedback": "Review the requirement again. Explicit grouping plus tests reduces errors involving precedence and edge values."
-    },
-    {
-      "id": "python-l10-bank-06",
-      "type": "quiz",
-      "question": "Review from Lesson 3 — Operators and Expressions: A filter should include scores equal to the cutoff. Which requirement should the comparison encode?",
-      "options": [
-        "Only values greater than the cutoff.",
-        "Greater-than-or-equal to the cutoff.",
-        "Only values below the cutoff.",
-        "A string concatenation."
-      ],
-      "correctIndex": 1,
-      "explanation": "The boundary condition must match the explicit inclusion rule.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. The boundary condition must match the explicit inclusion rule.",
-      "incorrectFeedback": "Review the requirement again. The boundary condition must match the explicit inclusion rule."
-    },
-    {
-      "id": "python-l10-bank-07",
-      "type": "quiz",
-      "question": "Review from Lesson 4 — Conditions and Decision Making: A branch for a premium feature is never reached. What should be investigated?",
-      "options": [
-        "The footer styling.",
-        "The size of the source file.",
-        "Whether earlier conditions already catch the input.",
-        "The names of unrelated classes."
-      ],
-      "correctIndex": 2,
-      "explanation": "Earlier conditions can shadow a later branch if the conditions overlap or are ordered poorly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Earlier conditions can shadow a later branch if the conditions overlap or are ordered poorly.",
-      "incorrectFeedback": "Review the requirement again. Earlier conditions can shadow a later branch if the conditions overlap or are ordered poorly."
-    },
-    {
-      "id": "python-l10-bank-08",
-      "type": "quiz",
-      "question": "Review from Lesson 4 — Conditions and Decision Making: A value enters from a form and controls a feature. Which approach best avoids invalid states?",
-      "options": [
-        "Trust that the form never changes.",
-        "Check only the button’s caption.",
-        "Remove all constraints.",
-        "Validate the value and explicitly handle rejected inputs."
-      ],
-      "correctIndex": 3,
-      "explanation": "External input must be checked at the point where it becomes trusted application state.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External input must be checked at the point where it becomes trusted application state.",
-      "incorrectFeedback": "Review the requirement again. External input must be checked at the point where it becomes trusted application state."
-    },
-    {
-      "id": "python-l10-bank-09",
-      "type": "quiz",
-      "question": "Review from Lesson 5 — Loops and Iteration: A report skips the final record in a list. Which class of defect should be checked first?",
-      "options": [
-        "An iteration boundary/off-by-one error.",
-        "A font fallback.",
-        "A URL fragment.",
-        "An unused CSS class."
-      ],
-      "correctIndex": 0,
-      "explanation": "Off-by-one mistakes often arise from confusing inclusive endpoints and collection length.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Off-by-one mistakes often arise from confusing inclusive endpoints and collection length.",
-      "incorrectFeedback": "Review the requirement again. Off-by-one mistakes often arise from confusing inclusive endpoints and collection length."
-    },
-    {
-      "id": "python-l10-bank-10",
-      "type": "quiz",
-      "question": "Review from Lesson 5 — Loops and Iteration: A processing loop may wait forever for a state change. What improvement makes it safer?",
-      "options": [
-        "Remove its stopping condition.",
-        "Define a termination condition, timeout or cancellation strategy where appropriate.",
-        "Increase the loop speed only.",
-        "Hide its output."
-      ],
-      "correctIndex": 1,
-      "explanation": "Long-running loops need a deliberate termination or cancellation plan.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Long-running loops need a deliberate termination or cancellation plan.",
-      "incorrectFeedback": "Review the requirement again. Long-running loops need a deliberate termination or cancellation plan."
-    },
-    {
-      "id": "python-l10-bank-11",
-      "type": "quiz",
-      "question": "Review from Lesson 6 — Functions: Two features calculate eligibility differently after one rule changes. What is a better design?",
-      "options": [
-        "Keep both implementations independent.",
-        "Put the rule in a comment only.",
-        "Share one tested function that owns the eligibility rule.",
-        "Let each screen guess."
-      ],
-      "correctIndex": 2,
-      "explanation": "Centralizing one business rule prevents inconsistent implementations.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Centralizing one business rule prevents inconsistent implementations.",
-      "incorrectFeedback": "Review the requirement again. Centralizing one business rule prevents inconsistent implementations."
-    },
-    {
-      "id": "python-l10-bank-12",
-      "type": "quiz",
-      "question": "Review from Lesson 6 — Functions: A calculation’s output is needed by three later operations. Which interface is most useful?",
-      "options": [
-        "Only print a decorative message.",
-        "Return nothing and rely on visible output.",
-        "Store the result in an unrelated global.",
-        "Return a value with a clear contract."
-      ],
-      "correctIndex": 3,
-      "explanation": "Returning values allows callers to compose operations without relying on printed text or hidden state.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Returning values allows callers to compose operations without relying on printed text or hidden state.",
-      "incorrectFeedback": "Review the requirement again. Returning values allows callers to compose operations without relying on printed text or hidden state."
-    },
-    {
-      "id": "python-l10-bank-13",
-      "type": "quiz",
-      "question": "Review from Lesson 7 — Lists, Tuples, Sets and Dictionaries: A collection is used to retrieve a learner by a unique identifier. What design question matters most?",
-      "options": [
-        "Whether a map/dictionary keyed by the identifier fits the lookup requirement and uniqueness rule.",
-        "Whether the item names are colorful.",
-        "Whether the code has a heading.",
-        "Whether every collection uses indexes."
-      ],
-      "correctIndex": 0,
-      "explanation": "Data structures should fit the expected access pattern and identity constraints.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Data structures should fit the expected access pattern and identity constraints.",
-      "incorrectFeedback": "Review the requirement again. Data structures should fit the expected access pattern and identity constraints."
-    },
-    {
-      "id": "python-l10-bank-14",
-      "type": "quiz",
-      "question": "Review from Lesson 7 — Lists, Tuples, Sets and Dictionaries: A filtered list is unexpectedly missing items after an update. What should you check?",
-      "options": [
-        "Only the page title.",
-        "Whether the loop/indexing or collection mutation changes the original values during iteration.",
-        "The operating system wallpaper.",
-        "Whether comments are uppercase."
-      ],
-      "correctIndex": 1,
-      "explanation": "Collection mutation and index behavior can cause skipped, duplicated, or missing results.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Collection mutation and index behavior can cause skipped, duplicated, or missing results.",
-      "incorrectFeedback": "Review the requirement again. Collection mutation and index behavior can cause skipped, duplicated, or missing results."
-    },
-    {
-      "id": "python-l10-bank-15",
-      "type": "quiz",
-      "question": "Review from Lesson 8 — Files, Errors and Modules: A service call fails, but the application still shows “Saved successfully.” What needs correction?",
-      "options": [
-        "Use a more colorful success message.",
-        "Remove the error path.",
-        "Only show success after confirmation and provide meaningful failure handling.",
-        "Repeat the same request indefinitely."
-      ],
-      "correctIndex": 2,
-      "explanation": "A success message must reflect confirmed success, and failures need accurate handling.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A success message must reflect confirmed success, and failures need accurate handling.",
-      "incorrectFeedback": "Review the requirement again. A success message must reflect confirmed success, and failures need accurate handling."
-    },
-    {
-      "id": "python-l10-bank-16",
-      "type": "quiz",
-      "question": "Review from Lesson 8 — Files, Errors and Modules: An input fails numeric parsing. What should the program preserve?",
-      "options": [
-        "An unvalidated value as though it were valid.",
-        "A made-up fallback without a documented rule.",
-        "No record of the problem.",
-        "A clear validation result so it can reject or recover according to the app’s policy."
-      ],
-      "correctIndex": 3,
-      "explanation": "Explicit validation prevents malformed input from contaminating later calculations.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Explicit validation prevents malformed input from contaminating later calculations.",
-      "incorrectFeedback": "Review the requirement again. Explicit validation prevents malformed input from contaminating later calculations."
-    },
-    {
-      "id": "python-l10-bank-17",
-      "type": "quiz",
-      "question": "Review from Lesson 9 — Object-Oriented Python: An object’s internal data can be changed into impossible combinations by any caller. What design improvement addresses that?",
-      "options": [
-        "Encapsulate state and expose validated operations.",
-        "Make even more fields public.",
-        "Duplicate the object every time.",
-        "Remove all types."
-      ],
-      "correctIndex": 0,
-      "explanation": "Encapsulation helps enforce invariants across every caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Encapsulation helps enforce invariants across every caller.",
-      "incorrectFeedback": "Review the requirement again. Encapsulation helps enforce invariants across every caller."
-    },
-    {
-      "id": "python-l10-bank-18",
-      "type": "quiz",
-      "question": "Review from Lesson 9 — Object-Oriented Python: A design uses deep inheritance to share one small helper. What alternative should be evaluated?",
-      "options": [
-        "An even deeper inheritance chain.",
-        "Composition or a small interface when the relationship is not truly “is-a.”",
-        "Public mutable state everywhere.",
-        "No tests of the helper."
-      ],
-      "correctIndex": 1,
-      "explanation": "Composition can reuse behavior without forcing an incorrect type relationship.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Composition can reuse behavior without forcing an incorrect type relationship.",
-      "incorrectFeedback": "Review the requirement again. Composition can reuse behavior without forcing an incorrect type relationship."
-    },
-    {
-      "id": "python-l10-bank-19",
-      "type": "quiz",
-      "question": "Review from Lesson 10 — Build a Complete Python Project: The final project passes one example input. What is the strongest completion check?",
-      "options": [
-        "Stop testing as soon as the screen appears.",
-        "Remove error handling to reduce lines.",
-        "Test normal, boundary, empty, and failure cases and document how to run it.",
-        "Change the app name again."
-      ],
-      "correctIndex": 2,
-      "explanation": "Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
-      "incorrectFeedback": "Review the requirement again. Broader tests and reproducible setup provide stronger evidence than one happy-path example."
-    },
-    {
-      "id": "python-l10-bank-20",
-      "type": "quiz",
-      "question": "Review from Lesson 10 — Build a Complete Python Project: A teammate cannot reproduce the project’s behavior. What is likely missing?",
-      "options": [
-        "A larger icon.",
-        "A longer splash screen.",
-        "More animated effects.",
-        "Repeatable instructions, clear dependencies, and a testable expected result."
-      ],
-      "correctIndex": 3,
-      "explanation": "Reproducibility requires enough source and setup information for another person to verify the same behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Reproducibility requires enough source and setup information for another person to verify the same behavior.",
-      "incorrectFeedback": "Review the requirement again. Reproducibility requires enough source and setup information for another person to verify the same behavior."
+      "id": "python-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

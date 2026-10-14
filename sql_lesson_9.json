@@ -2,196 +2,175 @@
   "course": "sql",
   "lessonNumber": 9,
   "lessonId": "sql-lesson-9",
-  "title": "Views, Indexes and Transactions",
-  "subtitle": "Views, indexes, transactions, COMMIT, ROLLBACK and database performance.",
-  "description": "Explore important SQL features used to organize queries, improve performance and safely manage changes.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Constraints and Indexes",
+  "subtitle": "Constraints and Indexes: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on constraints and indexes, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "sql-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Views, Indexes and Transactions"
+      "text": "PAGE 1 — Constraints and Indexes: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Views, Indexes and Transactions. This lesson follows the course dashboard topic “Views, Indexes and Transactions”. The goal is to views, indexes, transactions, COMMIT, ROLLBACK and database performance.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "sql-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Constraints and Indexes is not just a syntax topic: it is a way to make the application’s intent explicit. Constraints protect data rules regardless of which application writes. Indexes can speed reads but cost storage and may slow writes. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A transaction groups database changes into one logical unit. COMMIT confirms the changes, while ROLLBACK discards uncommitted changes when the transaction is still reversible."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "sql-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Constraints and Indexes: Adds identity, required value, and uniqueness rules",
       "language": "sql",
-      "title": "Sample 1: Views, Indexes and Transactions in practice",
-      "code": "BEGIN TRANSACTION;\nUPDATE wallet SET balance = balance - 10 WHERE learner_id = 1;\nUPDATE wallet SET balance = balance + 10 WHERE learner_id = 2;\n-- Verify both updates before COMMIT in a real workflow.\nCOMMIT;"
+      "code": "CREATE TABLE courses (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);",
+      "output": "Adds identity, required value, and uniqueness rules."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Views, indexes, transactions, COMMIT, ROLLBACK and database performance. Identify the input, the operation, and the result before making changes."
+      "id": "sql-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “CREATE TABLE courses (id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE);”: Declares a database structure or performance index. Expected behavior: Adds identity, required value, and uniqueness rules. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l9-q-01",
+      "id": "sql-9-quiz-1-5",
       "type": "quiz",
-      "question": "Two related account updates must either both succeed or neither persist. What should be used?",
+      "question": "Every learner must have a unique primary ID. Which rule best expresses this at the database layer?",
       "options": [
-        "Two unrelated updates with no checking.",
-        "A view only.",
-        "A SELECT without conditions.",
-        "A transaction with COMMIT or ROLLBACK based on validation."
+        "A comment on the frontend form",
+        "A non-unique index alone",
+        "A CSS class named unique",
+        "A PRIMARY KEY constraint"
       ],
       "correctIndex": 3,
-      "explanation": "A transaction groups related writes into an all-or-nothing logical unit when supported.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A transaction groups related writes into an all-or-nothing logical unit when supported.",
-      "incorrectFeedback": "Review the requirement again. A transaction groups related writes into an all-or-nothing logical unit when supported."
+      "explanation": "Correct answer: A PRIMARY KEY constraint. A primary key enforces unique, non-null row identity.",
+      "reasoning": "A primary key enforces unique, non-null row identity. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Explore important SQL features used to organize queries, improve performance and safely manage changes.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "sql-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Constraints and Indexes: Protects a score range and a relationship",
       "language": "sql",
-      "title": "Sample 2: Views, Indexes and Transactions in practice",
-      "code": "BEGIN TRANSACTION;\nUPDATE lesson_results SET score = 0 WHERE result_id = -1;\n-- If validation fails, use ROLLBACK instead of saving an invalid change.\nROLLBACK;"
+      "code": "CREATE TABLE attempts (id INTEGER PRIMARY KEY, learner_id INTEGER NOT NULL REFERENCES learners(id), score INTEGER CHECK(score BETWEEN 0 AND 100));",
+      "output": "Protects a score range and a relationship."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "sql-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “CREATE TABLE attempts (id INTEGER PRIMARY KEY, learner_id INTEGER NOT NULL REFERENCES learners(id), score INTEGER CHECK(score BETWEEN 0 AND 100));”: Declares a database structure or performance index. Expected behavior: Protects a score range and a relationship. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l9-q-02",
+      "id": "sql-9-quiz-2-8",
       "type": "quiz",
-      "question": "A query is slow on a large table. What is the sensible first performance step?",
+      "question": "A score must stay between 0 and 100 regardless of which application writes it. What should be considered?",
       "options": [
-        "Measure it and inspect the query plan before choosing an index.",
-        "Add every possible index without testing.",
-        "Delete the WHERE clause.",
-        "Convert the database to text files immediately."
-      ],
-      "correctIndex": 0,
-      "explanation": "Measurements and query plans reveal whether an index or another change would help.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Measurements and query plans reveal whether an index or another change would help.",
-      "incorrectFeedback": "Review the requirement again. Measurements and query plans reveal whether an index or another change would help."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Indexes can speed up filtering and joins, but they also use storage and add cost to writes. Measure real queries and inspect the execution plan before adding indexes without evidence."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "sql",
-      "title": "Sample 3: Views, Indexes and Transactions in practice",
-      "code": "CREATE VIEW active_courses AS\nSELECT course_id, title\nFROM courses\nWHERE active = 1;"
-    },
-    {
-      "id": "sql-l9-q-03",
-      "type": "quiz",
-      "question": "An index speeds up searching but writes become slower. Why can that happen?",
-      "options": [
-        "Indexes never affect writes.",
-        "The database must maintain the index as indexed records change.",
-        "The column name is too short.",
-        "The query has a line break."
-      ],
-      "correctIndex": 1,
-      "explanation": "Indexes consume storage and add maintenance work during inserts, updates, and deletes.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Indexes consume storage and add maintenance work during inserts, updates, and deletes.",
-      "incorrectFeedback": "Review the requirement again. Indexes consume storage and add maintenance work during inserts, updates, and deletes."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Views can package a useful query as a reusable database interface. Treat permissions and sensitive columns carefully: a convenient view should not accidentally expose data users are not allowed to see."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "sql",
-      "title": "Sample 4: Views, Indexes and Transactions in practice",
-      "code": "CREATE INDEX idx_results_learner ON lesson_results(learner_id);\n-- Check real query plans and write costs before adding indexes."
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Explore important SQL features used to organize queries, improve performance and safely manage changes. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "sql-l9-q-04",
-      "type": "quiz",
-      "question": "A file may not exist when a user starts the app. What is the best approach?",
-      "options": [
-        "Assume the file always exists.",
-        "Catch every possible error and ignore it.",
-        "Check/open the file safely and report a useful recoverable error.",
-        "Pretend an empty file is always correct."
+        "A sort order on the score",
+        "An index that permits invalid values",
+        "A CHECK constraint on the score column",
+        "Validation only in one page"
       ],
       "correctIndex": 2,
-      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+      "explanation": "Correct answer: A CHECK constraint on the score column. Database constraints protect integrity across all writers.",
+      "reasoning": "Database constraints protect integrity across all writers. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "sql-l9-q-05",
+      "id": "sql-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Constraints and Indexes: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Constraints protect data rules regardless of which application writes. Indexes can speed reads but cost storage and may slow writes. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Constraints and Indexes: Creates an index for a common lookup, with storage/write trade-offs",
+      "language": "sql",
+      "code": "CREATE INDEX idx_lessons_course ON lessons(course_id);",
+      "output": "Creates an index for a common lookup, with storage/write trade-offs."
+    },
+    {
+      "id": "sql-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “CREATE INDEX idx_lessons_course ON lessons(course_id);”: Declares a database structure or performance index. Expected behavior: Creates an index for a common lookup, with storage/write trade-offs. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-9-quiz-2-13",
       "type": "quiz",
-      "question": "A numeric form field contains “abc”. What should happen?",
+      "question": "An index speeds lesson lookup by course_id. What is its trade-off?",
       "options": [
-        "Convert it silently to a meaningful value without a rule.",
-        "Parse and validate it, then show a clear error if it is invalid.",
-        "Use the string in arithmetic.",
-        "Delete the user’s whole account."
+        "It ensures rows are always sorted in returned results",
+        "Storage cost and potentially slower writes as the index is maintained",
+        "It guarantees every query is faster",
+        "It replaces foreign-key validation in all systems"
       ],
       "correctIndex": 1,
-      "explanation": "Parsing and validation protect calculations from malformed input.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
-      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+      "explanation": "Correct answer: Storage cost and potentially slower writes as the index is maintained. Indexes can accelerate suitable lookups but consume resources and affect updates.",
+      "reasoning": "Indexes can accelerate suitable lookups but consume resources and affect updates. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Constraints and Indexes: A composite key prevents duplicate enrollment pairs",
+      "language": "sql",
+      "code": "CREATE TABLE enrollments (learner_id INTEGER, course_id INTEGER, PRIMARY KEY (learner_id, course_id));",
+      "output": "A composite key prevents duplicate enrollment pairs."
+    },
+    {
+      "id": "sql-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “CREATE TABLE enrollments (learner_id INTEGER, course_id INTEGER, PRIMARY KEY (learner_id, course_id));”: Declares a database structure or performance index. Expected behavior: A composite key prevents duplicate enrollment pairs. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two learners must not enroll in the same course twice. Which schema design can enforce that pair uniqueness?",
+      "options": [
+        "A UNIQUE constraint or composite primary key on (learner_id, course_id)",
+        "A comment saying duplicates are discouraged",
+        "An index on learner_id alone with no uniqueness",
+        "A client-side check that can be bypassed"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A UNIQUE constraint or composite primary key on (learner_id, course_id). A constraint protects the relation even when requests arrive concurrently or from different clients.",
+      "reasoning": "A constraint protects the relation even when requests arrive concurrently or from different clients. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Constraints and Indexes: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Constraints protect data rules regardless of which application writes. Indexes can speed reads but cost storage and may slow writes. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses constraints and indexes. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A foreign key points to a learner ID that does not exist. What should happen?",
+      "options": [
+        "The database creates a learner automatically in every case",
+        "The app silently changes the ID",
+        "The index hides the error",
+        "The database should reject the invalid reference when the constraint is enforced"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The database should reject the invalid reference when the constraint is enforced. Foreign keys enforce relational integrity for referenced records.",
+      "reasoning": "Foreign keys enforce relational integrity for referenced records. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Constraints protect data rules regardless of which application writes. Indexes can speed reads but cost storage and may slow writes. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

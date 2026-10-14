@@ -2,196 +2,175 @@
   "course": "php",
   "lessonNumber": 7,
   "lessonId": "php-lesson-7",
-  "title": "Forms and User Input",
-  "subtitle": "Build PHP pages that receive and process information submitted by users.",
-  "description": "Learn HTML forms with PHP, GET, POST, validation, sanitization and safe handling of user input.",
+  "title": "Functions and Reusable Logic",
+  "subtitle": "Functions and Reusable Logic: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on functions and reusable logic, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "php-7-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Forms and User Input"
+      "text": "PAGE 1 — Functions and Reusable Logic: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 7: Forms and User Input. This lesson follows the course dashboard topic “Forms and User Input”. The goal is to build PHP pages that receive and process information submitted by users.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "php-7-page-1-teaching-2",
+      "type": "content",
+      "text": "Functions and Reusable Logic is not just a syntax topic: it is a way to make the application’s intent explicit. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. In the Code Academy dashboard, that idea matters because A course portal must validate requests and keep generated output and database interactions safe. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A conditional statement lets a program select a path based on a Boolean expression. Put the most important conditions in a readable order and make the fallback behavior explicit."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-1",
+      "id": "php-7-code-1-3",
       "type": "code",
+      "title": "Example 1 — Functions and Reusable Logic: A return type documents the integer result",
       "language": "php",
-      "title": "Sample 1: Forms and User Input in practice",
-      "code": "<?php\n$name = trim($_POST[\"name\"] ?? \"\");\nif ($name === \"\") { echo \"Name is required\"; } else { echo \"Welcome, \" . htmlspecialchars($name, ENT_QUOTES, \"UTF-8\"); }"
+      "code": "function awardXp(bool $correct): int { return $correct ? 5 : 0; }\necho awardXp(true);",
+      "output": "A return type documents the integer result."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Build PHP pages that receive and process information submitted by users. Identify the input, the operation, and the result before making changes."
+      "id": "php-7-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “function awardXp(bool $correct): int { return $correct ? 5 : 0; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “echo awardXp(true);”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A return type documents the integer result. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "php-l7-q-01",
+      "id": "php-7-quiz-1-5",
       "type": "quiz",
-      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
+      "question": "A helper computes XP and another function must add the returned amount to the profile. What should the helper do?",
       "options": [
-        "Use OR if either rule must pass.",
-        "Skip validation once the page looks correct.",
-        "Combine both checks with the appropriate AND condition.",
-        "Run the same check forever."
+        "Write the reward into a page title",
+        "Return the numeric reward so the caller can use it",
+        "Only print the reward and return nothing",
+        "Update an unrelated global variable without a clear contract"
       ],
-      "correctIndex": 2,
-      "explanation": "AND is appropriate when every required condition must be true.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
-      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
+      "correctIndex": 1,
+      "explanation": "Correct answer: Return the numeric reward so the caller can use it. A return value makes the result reusable by the caller and testable independently.",
+      "reasoning": "A return value makes the result reusable by the caller and testable independently. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn HTML forms with PHP, GET, POST, validation, sanitization and safe handling of user input.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-2",
+      "id": "php-7-code-2-6",
       "type": "code",
+      "title": "Example 2 — Functions and Reusable Logic: A guard prevents division by zero",
       "language": "php",
-      "title": "Sample 2: Forms and User Input in practice",
-      "code": "<?php\n$email = filter_input(INPUT_POST, \"email\", FILTER_VALIDATE_EMAIL);\nif ($email) { echo \"Email looks valid\"; } else { echo \"Enter a valid email\"; }"
+      "code": "function progress(int $done, int $total): float { if ($total <= 0) return 0; return $done / $total * 100; }",
+      "output": "A guard prevents division by zero."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real PHP project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "php-7-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “function progress(int $done, int $total): float { if ($total <= 0) return 0; return $done / $total * 100; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A guard prevents division by zero. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "php-l7-q-02",
+      "id": "php-7-quiz-2-8",
       "type": "quiz",
-      "question": "A program has overlapping score bands. Which approach prevents a higher score from being assigned to a lower band?",
+      "question": "A progress helper divides completed lessons by the total. Which check belongs before division?",
       "options": [
-        "Check bands in a clear order from higher threshold to lower threshold, or use non-overlapping ranges.",
-        "Use unrelated variable names.",
-        "Remove the boundary checks.",
-        "Make every branch print the same label."
+        "Confirm total is greater than zero",
+        "Confirm the lesson title has uppercase letters",
+        "Convert the percentage to a string first",
+        "Ignore the total and use a fixed divisor"
       ],
       "correctIndex": 0,
-      "explanation": "Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one.",
-      "incorrectFeedback": "Review the requirement again. Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one."
+      "explanation": "Correct answer: Confirm total is greater than zero. The denominator must be valid to avoid division by zero and nonsensical progress.",
+      "reasoning": "The denominator must be valid to avoid division by zero and nonsensical progress. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Boundary values reveal many bugs. If a reward starts at 100 points, test 99, 100, and 101; testing only a typical value can hide an incorrect comparison operator."
+      "id": "php-7-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Functions and Reusable Logic: implementation, debugging, and edge cases"
     },
     {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "php-7-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A course portal must validate requests and keep generated output and database interactions safe. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "l7-code-3",
+      "id": "php-7-code-3-11",
       "type": "code",
+      "title": "Example 3 — Functions and Reusable Logic: A default parameter is used when the caller omits a level",
       "language": "php",
-      "title": "Sample 3: Forms and User Input in practice",
-      "code": "<?php\n$level = $_POST[\"level\"] ?? \"beginner\";\n$allowed = [\"beginner\", \"intermediate\"];\nif (!in_array($level, $allowed, true)) { $level = \"beginner\"; }\necho $level;"
+      "code": "function label(string $course, string $level = \"Beginner\"): string { return \"$course · $level\"; }",
+      "output": "A default parameter is used when the caller omits a level."
     },
     {
-      "id": "php-l7-q-03",
+      "id": "php-7-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “function label(string $course, string $level = \"Beginner\"): string { return \"$course · $level\"; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A default parameter is used when the caller omits a level. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-7-quiz-2-13",
       "type": "quiz",
-      "question": "A form accepts an empty username even though one is required. What should the program do?",
+      "question": "The same reward calculation appears in five click handlers. What is the best refactor?",
       "options": [
-        "Treat the empty value as a valid username.",
-        "Change the button color only.",
-        "Save it and hope the database fixes it.",
-        "Check for empty or whitespace-only input and give a clear message."
+        "Copy it into five more handlers",
+        "Make each handler compute a different reward",
+        "Hide the arithmetic inside a CSS class name",
+        "Move the calculation into one focused function and call it from each handler"
       ],
       "correctIndex": 3,
-      "explanation": "Validation must check the actual input state and tell the user how to correct it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Validation must check the actual input state and tell the user how to correct it.",
-      "incorrectFeedback": "Review the requirement again. Validation must check the actual input state and tell the user how to correct it."
+      "explanation": "Correct answer: Move the calculation into one focused function and call it from each handler. One focused function reduces duplication and keeps behavior consistent.",
+      "reasoning": "One focused function reduces duplication and keeps behavior consistent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Combine conditions only when the rule is clear. If the expression becomes hard to explain in one sentence, give parts of it descriptive names or split it into separate checks."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select PHP. Paste this snippet into the PHP editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-4",
+      "id": "php-7-code-4-14",
       "type": "code",
+      "title": "Example 4 — Functions and Reusable Logic: An arrow function is useful for a short expression",
       "language": "php",
-      "title": "Sample 4: Forms and User Input in practice",
-      "code": "<?php\n// Escape user-controlled output to avoid treating it as HTML.\n$comment = $_POST[\"comment\"] ?? \"\";\necho htmlspecialchars($comment, ENT_QUOTES, \"UTF-8\");"
+      "code": "$formatXp = fn(int $xp): string => \"$xp XP\";\necho $formatXp(120);",
+      "output": "An arrow function is useful for a short expression."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn HTML forms with PHP, GET, POST, validation, sanitization and safe handling of user input. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "php-7-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “$formatXp = fn(int $xp): string => \"$xp XP\";”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Line 2 — “echo $formatXp(120);”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An arrow function is useful for a short expression. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "php-l7-q-04",
+      "id": "php-7-quiz-3-16",
       "type": "quiz",
-      "question": "A fallback branch never runs during testing. What should the developer verify?",
+      "question": "A function receives a list and should report its result without changing unrelated global state. What is the strongest design?",
       "options": [
-        "The page has a newer color palette.",
-        "The earlier conditions do not already match every possible case.",
-        "The variable was renamed to a longer word.",
-        "The program has more comments."
+        "Read user interface text as hidden input",
+        "Change global state as a side effect without documenting it",
+        "Use explicit parameters and return a result",
+        "Depend on whichever global value was most recently set"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Use explicit parameters and return a result. Explicit inputs and outputs make functions easier to test and reason about.",
+      "reasoning": "Explicit inputs and outputs make functions easier to test and reason about. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-7-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Functions and Reusable Logic: applied challenge and mastery check"
+    },
+    {
+      "id": "php-7-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. For the Code Academy dashboard, A course portal must validate requests and keep generated output and database interactions safe. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "php-7-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses functions and reusable logic. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "php-7-quiz-5-20",
+      "type": "quiz",
+      "question": "A function may receive an empty input. Where should that case be handled?",
+      "options": [
+        "By assuming the input never becomes empty",
+        "Inside the function’s contract or by a clearly enforced caller precondition",
+        "Only in a comment",
+        "After accessing the first item"
       ],
       "correctIndex": 1,
-      "explanation": "An overly broad earlier condition can make a fallback unreachable.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. An overly broad earlier condition can make a fallback unreachable.",
-      "incorrectFeedback": "Review the requirement again. An overly broad earlier condition can make a fallback unreachable."
+      "explanation": "Correct answer: Inside the function’s contract or by a clearly enforced caller precondition. The empty-input behavior should be explicit wherever the contract is enforced.",
+      "reasoning": "The empty-input behavior should be explicit wherever the contract is enforced. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "php-l7-q-05",
-      "type": "quiz",
-      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
-      "options": [
-        "Test only a score of 200.",
-        "Test 99, 100, and 101.",
-        "Test a text value such as “high”.",
-        "Do not test the condition."
-      ],
-      "correctIndex": 1,
-      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
-      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
+      "id": "php-7-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

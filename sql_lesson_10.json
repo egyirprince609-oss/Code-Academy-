@@ -2,419 +2,175 @@
   "course": "sql",
   "lessonNumber": 10,
   "lessonId": "sql-lesson-10",
-  "title": "SQL Database Project and Final Review",
-  "subtitle": "A short practical refresher followed by 20 new application questions",
-  "description": "Review the ten SQL dashboard topics. Includes three capstone examples and exactly two fresh review questions from each of Lessons 1–10.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 100,
-  "coinsReward": 50,
-  "estimatedMinutes": 22,
+  "title": "Transactions, Least Privilege and Data Safety",
+  "subtitle": "Transactions, Least Privilege and Data Safety: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on transactions, least privilege and data safety, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "final-page-1",
+      "id": "sql-10-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — A short capstone refresher"
+      "text": "PAGE 1 — Transactions, Least Privilege and Data Safety: foundations and mental model"
     },
     {
-      "id": "final-intro",
-      "type": "sentence",
-      "text": "Welcome to the SQL final review. This lesson is intentionally shorter on new theory and longer on practical decisions. You will revisit the ten dashboard topics and answer two new application questions for each lesson, for exactly 20 questions."
+      "id": "sql-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Transactions, Least Privilege and Data Safety is not just a syntax topic: it is a way to make the application’s intent explicit. Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "final-method",
-      "type": "sentence",
-      "text": "Start by reading the requirement, tracing where its data comes from, and deciding what success should look like. Then test both a normal case and a boundary or failure case. A correct program should not only work once; it should behave predictably when its inputs change."
-    },
-    {
-      "id": "final-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l10-code-1",
+      "id": "sql-10-code-1-3",
       "type": "code",
+      "title": "Example 1 — Transactions, Least Privilege and Data Safety: Keeps balance update and audit log together",
       "language": "sql",
-      "title": "Capstone sample 1: SQL Database Project and Final Review",
-      "code": "SELECT c.title, COUNT(e.learner_id) AS enrolled_learners\nFROM courses AS c\nLEFT JOIN enrollments AS e ON e.course_id = c.course_id\nGROUP BY c.course_id, c.title\nORDER BY enrolled_learners DESC;"
+      "code": "BEGIN;\nUPDATE learners SET xp = xp + 10 WHERE id = ?;\nINSERT INTO reward_log (learner_id, amount) VALUES (?, 10);\nCOMMIT;",
+      "output": "Keeps balance update and audit log together."
     },
     {
-      "id": "final-note-1",
-      "type": "sentence",
-      "text": "The first sample illustrates a small part of the solution. Before extending it, separate the input, the transformation, and the output. That separation makes it easier to test each part and locate defects."
+      "id": "sql-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “BEGIN;”: Controls a transaction boundary and determines whether related changes persist together. Line 2 — “UPDATE learners SET xp = xp + 10 WHERE id = ?;”: Names the table whose rows will be changed; a precise WHERE condition is essential. Line 3 — “INSERT INTO reward_log (learner_id, amount) VALUES (?, 10);”: Defines the row or field values to insert; parameters should keep user input separate from SQL syntax. Line 4 — “COMMIT;”: Controls a transaction boundary and determines whether related changes persist together. Expected behavior: Keeps balance update and audit log together. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-page-2",
+      "id": "sql-10-quiz-1-5",
+      "type": "quiz",
+      "question": "XP is updated and a reward-log row is inserted. If one write fails, what behavior is usually desired?",
+      "options": [
+        "Delete unrelated learners",
+        "Skip checking either error",
+        "Rollback both writes so the state and audit log remain consistent",
+        "Commit whichever write completed first and pretend success"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Rollback both writes so the state and audit log remain consistent. A transaction groups related updates so partial success does not leave inconsistent state.",
+      "reasoning": "A transaction groups related updates so partial success does not leave inconsistent state. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Transactions, Least Privilege and Data Safety: Rolls back a transaction when the operation must not persist",
+      "language": "sql",
+      "code": "BEGIN;\n-- perform the related writes\nROLLBACK;",
+      "output": "Rolls back a transaction when the operation must not persist."
+    },
+    {
+      "id": "sql-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “BEGIN;”: Controls a transaction boundary and determines whether related changes persist together. Line 2 — “-- perform the related writes”: This comment records the intent for a reader; it does not change program state by itself. Line 3 — “ROLLBACK;”: Controls a transaction boundary and determines whether related changes persist together. Expected behavior: Rolls back a transaction when the operation must not persist. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-10-quiz-2-8",
+      "type": "quiz",
+      "question": "A transaction changes data but never commits or rolls back. What is a risk?",
+      "options": [
+        "All writes must be committed by the frontend",
+        "The transaction may hold resources or locks and leave the operation incomplete",
+        "The database automatically renders a lesson",
+        "The transaction becomes a chart"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The transaction may hold resources or locks and leave the operation incomplete. Transactions need explicit completion and cleanup in the application’s control flow.",
+      "reasoning": "Transactions need explicit completion and cleanup in the application’s control flow. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-page-2-9",
       "type": "heading",
-      "text": "PAGE 2 — Connect the pieces"
+      "text": "PAGE 2 — Transactions, Least Privilege and Data Safety: implementation, debugging, and edge cases"
     },
     {
-      "id": "final-method-2",
-      "type": "sentence",
-      "text": "A final project combines several ideas instead of treating each lesson as an isolated trick. Keep the responsibilities clear, choose data structures that match the job, and validate information at the boundary where it enters the program."
+      "id": "sql-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "final-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l10-code-2",
+      "id": "sql-10-code-3-11",
       "type": "code",
+      "title": "Example 3 — Transactions, Least Privilege and Data Safety: Reads a specific learner using a bound parameter",
       "language": "sql",
-      "title": "Capstone sample 2: SQL Database Project and Final Review",
-      "code": "SELECT learner_id, AVG(score) AS average_score\nFROM lesson_results\nGROUP BY learner_id\nHAVING COUNT(*) >= 3\nORDER BY average_score DESC;"
+      "code": "SELECT id, xp FROM learners WHERE id = ?;",
+      "output": "Reads a specific learner using a bound parameter."
     },
     {
-      "id": "final-note-2",
-      "type": "sentence",
-      "text": "Now consider how this idea would behave with empty data, invalid input, and a larger set of records. If an operation can fail, design the response deliberately rather than showing a success message before the operation has actually succeeded."
+      "id": "sql-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT id, xp FROM learners WHERE id = ?;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Reads a specific learner using a bound parameter. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "sql-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A parameterized query is used inside a transaction. Does that alone guarantee authorization?",
+      "options": [
+        "No; parameterization protects query structure, while authorization must be checked separately",
+        "Yes; a parameterized query grants every user permission",
+        "No; parameterized queries always corrupt rows",
+        "Yes; because transactions disable all security checks"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: No; parameterization protects query structure, while authorization must be checked separately. Security controls address different threats and are not interchangeable.",
+      "reasoning": "Security controls address different threats and are not interchangeable. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "l10-code-3",
+      "id": "sql-10-code-4-14",
       "type": "code",
+      "title": "Example 4 — Transactions, Least Privilege and Data Safety: Separates query structure from user-supplied values",
       "language": "sql",
-      "title": "Capstone sample 3: SQL Database Project and Final Review",
-      "code": "-- Use a transaction for a group of related changes\nBEGIN TRANSACTION;\nINSERT INTO enrollments (learner_id, course_id) VALUES (1, 2);\nCOMMIT;"
+      "code": "UPDATE lessons SET title = ? WHERE id = ?;",
+      "output": "Separates query structure from user-supplied values."
     },
     {
-      "id": "final-note-3",
-      "type": "sentence",
-      "text": "Use the third example as a starting point, then explain how it relates to the course topic: Combine your SQL skills into a practical database project and review the major concepts learned throughout the course."
+      "id": "sql-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “UPDATE lessons SET title = ? WHERE id = ?;”: Names the table whose rows will be changed; a precise WHERE condition is essential. Expected behavior: Separates query structure from user-supplied values. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "final-bank-heading",
+      "id": "sql-10-quiz-3-16",
+      "type": "quiz",
+      "question": "An application account only needs to read lesson metadata. What permission design is preferable?",
+      "options": [
+        "Grant database administrator rights for convenience",
+        "Allow schema deletion by every user",
+        "Share one unrestricted credential with all clients",
+        "Grant only the required read permissions"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Grant only the required read permissions. Least privilege limits the damage possible if the application or credentials are misused.",
+      "reasoning": "Least privilege limits the damage possible if the application or credentials are misused. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-page-3-17",
       "type": "heading",
-      "text": "FINAL QUESTION BANK — 20 application questions"
+      "text": "PAGE 3 — Transactions, Least Privilege and Data Safety: applied challenge and mastery check"
     },
     {
-      "id": "final-bank-instructions",
-      "type": "sentence",
-      "text": "Answer two questions from each dashboard lesson. These questions are newly written for this review and are not copied from the corresponding lesson quizzes. Read carefully: select the option that best satisfies the requirement, not merely an option that could work in a different situation."
+      "id": "sql-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
     },
     {
-      "id": "sql-l10-bank-01",
+      "id": "sql-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses transactions, least privilege and data safety. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-10-quiz-5-20",
       "type": "quiz",
-      "question": "Review from Lesson 1 — Introduction to SQL and Databases: A query result appears in a different order between runs. Why may that happen?",
+      "question": "A transaction may fail halfway through multiple operations. What should error handling ensure?",
       "options": [
-        "Every table has an implicit fixed order.",
-        "The data is necessarily corrupted.",
-        "Without ORDER BY, SQL does not guarantee result order.",
-        "The database read CSS styles."
+        "It swallows all exceptions and continues",
+        "It retries indefinitely without checking whether a commit already happened",
+        "The application rolls back when appropriate and reports failure honestly",
+        "It logs success before commit"
       ],
       "correctIndex": 2,
-      "explanation": "Relational results have no guaranteed ordering unless an ORDER BY clause specifies it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Relational results have no guaranteed ordering unless an ORDER BY clause specifies it.",
-      "incorrectFeedback": "Review the requirement again. Relational results have no guaranteed ordering unless an ORDER BY clause specifies it."
+      "explanation": "Correct answer: The application rolls back when appropriate and reports failure honestly. Failure handling should preserve atomicity and should not report success before the commit succeeds.",
+      "reasoning": "Failure handling should preserve atomicity and should not report success before the commit succeeds. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "sql-l10-bank-02",
-      "type": "quiz",
-      "question": "Review from Lesson 1 — Introduction to SQL and Databases: A table stores the same learner email in many unrelated rows. What design concern should be reviewed?",
-      "options": [
-        "The heading size.",
-        "The number of comments.",
-        "The screen width.",
-        "Whether learner facts should be normalized into a learner table and referenced by key."
-      ],
-      "correctIndex": 3,
-      "explanation": "Normalization can reduce repeated facts and inconsistent updates.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Normalization can reduce repeated facts and inconsistent updates.",
-      "incorrectFeedback": "Review the requirement again. Normalization can reduce repeated facts and inconsistent updates."
-    },
-    {
-      "id": "sql-l10-bank-03",
-      "type": "quiz",
-      "question": "Review from Lesson 2 — Creating Databases and Tables: A learner record must have a unique identifier. Which schema rule fits?",
-      "options": [
-        "A primary key.",
-        "ORDER BY.",
-        "HAVING.",
-        "LIMIT."
-      ],
-      "correctIndex": 0,
-      "explanation": "A primary key uniquely identifies each table row.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A primary key uniquely identifies each table row.",
-      "incorrectFeedback": "Review the requirement again. A primary key uniquely identifies each table row."
-    },
-    {
-      "id": "sql-l10-bank-04",
-      "type": "quiz",
-      "question": "Review from Lesson 2 — Creating Databases and Tables: A score must be between 0 and 100 no matter which app writes to the database. Which design provides durable enforcement?",
-      "options": [
-        "A comment in the web page.",
-        "A suitable database CHECK constraint along with any application validation.",
-        "A CSS class.",
-        "A SELECT alias only."
-      ],
-      "correctIndex": 1,
-      "explanation": "Database constraints help enforce valid ranges for every writer.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Database constraints help enforce valid ranges for every writer.",
-      "incorrectFeedback": "Review the requirement again. Database constraints help enforce valid ranges for every writer."
-    },
-    {
-      "id": "sql-l10-bank-05",
-      "type": "quiz",
-      "question": "Review from Lesson 3 — INSERT, UPDATE and DELETE: An UPDATE is intended for one course but no WHERE clause is present. What is the risk?",
-      "options": [
-        "Only the title changes.",
-        "The query becomes a SELECT.",
-        "Every row may be updated.",
-        "The database will infer the target row."
-      ],
-      "correctIndex": 2,
-      "explanation": "An UPDATE without WHERE normally changes every row in the table.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. An UPDATE without WHERE normally changes every row in the table.",
-      "incorrectFeedback": "Review the requirement again. An UPDATE without WHERE normally changes every row in the table."
-    },
-    {
-      "id": "sql-l10-bank-06",
-      "type": "quiz",
-      "question": "Review from Lesson 3 — INSERT, UPDATE and DELETE: A query needs to insert a name supplied by a user. Which strategy is safer?",
-      "options": [
-        "Concatenate raw input into the SQL string.",
-        "Remove quotation marks manually.",
-        "Trust client-side validation only.",
-        "Bind the value as a parameter."
-      ],
-      "correctIndex": 3,
-      "explanation": "Bound parameters separate the user’s data from the SQL command.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Bound parameters separate the user’s data from the SQL command.",
-      "incorrectFeedback": "Review the requirement again. Bound parameters separate the user’s data from the SQL command."
-    },
-    {
-      "id": "sql-l10-bank-07",
-      "type": "quiz",
-      "question": "Review from Lesson 4 — SELECT, Filtering and Sorting: A field may contain NULL. Which condition reliably selects missing values?",
-      "options": [
-        "IS NULL.",
-        "= NULL.",
-        "> NULL.",
-        "LIKE NULL."
-      ],
-      "correctIndex": 0,
-      "explanation": "SQL uses IS NULL for null checks.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. SQL uses IS NULL for null checks.",
-      "incorrectFeedback": "Review the requirement again. SQL uses IS NULL for null checks."
-    },
-    {
-      "id": "sql-l10-bank-08",
-      "type": "quiz",
-      "question": "Review from Lesson 4 — SELECT, Filtering and Sorting: A query is returning too much data for a summary screen. What should change?",
-      "options": [
-        "Always use SELECT *.",
-        "Select only necessary columns and filter to the needed rows.",
-        "Remove every predicate.",
-        "Use UPDATE instead."
-      ],
-      "correctIndex": 1,
-      "explanation": "Targeted queries are easier to read and reduce unnecessary work and data transfer.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Targeted queries are easier to read and reduce unnecessary work and data transfer.",
-      "incorrectFeedback": "Review the requirement again. Targeted queries are easier to read and reduce unnecessary work and data transfer."
-    },
-    {
-      "id": "sql-l10-bank-09",
-      "type": "quiz",
-      "question": "Review from Lesson 5 — Functions, GROUP BY and Aggregation: A report needs a count per course and must exclude courses with fewer than five learners. Where does the count threshold belong?",
-      "options": [
-        "WHERE count(*) before grouping.",
-        "INSERT.",
-        "HAVING after GROUP BY.",
-        "CREATE."
-      ],
-      "correctIndex": 2,
-      "explanation": "HAVING filters aggregate groups after grouping.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. HAVING filters aggregate groups after grouping.",
-      "incorrectFeedback": "Review the requirement again. HAVING filters aggregate groups after grouping."
-    },
-    {
-      "id": "sql-l10-bank-10",
-      "type": "quiz",
-      "question": "Review from Lesson 5 — Functions, GROUP BY and Aggregation: An average changes after adding a join. What should be checked first?",
-      "options": [
-        "Only the SQL keywords’ capitalization.",
-        "Whether the title column is wide enough.",
-        "Whether the result file has newlines.",
-        "Whether the join duplicated source rows before aggregation."
-      ],
-      "correctIndex": 3,
-      "explanation": "Aggregation after a one-to-many join can duplicate facts and distort averages/counts.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Aggregation after a one-to-many join can duplicate facts and distort averages/counts.",
-      "incorrectFeedback": "Review the requirement again. Aggregation after a one-to-many join can duplicate facts and distort averages/counts."
-    },
-    {
-      "id": "sql-l10-bank-11",
-      "type": "quiz",
-      "question": "Review from Lesson 6 — SQL JOINs and Relationships: A report must include unmatched records from the left table. Which join should be evaluated?",
-      "options": [
-        "LEFT JOIN.",
-        "INNER JOIN only.",
-        "CROSS JOIN by default.",
-        "A DELETE join."
-      ],
-      "correctIndex": 0,
-      "explanation": "LEFT JOIN retains all left-side rows, including those without a matching right-side row.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. LEFT JOIN retains all left-side rows, including those without a matching right-side row.",
-      "incorrectFeedback": "Review the requirement again. LEFT JOIN retains all left-side rows, including those without a matching right-side row."
-    },
-    {
-      "id": "sql-l10-bank-12",
-      "type": "quiz",
-      "question": "Review from Lesson 6 — SQL JOINs and Relationships: Two tables share a column name such as id. What makes the query unambiguous?",
-      "options": [
-        "SELECT * for every column.",
-        "Qualify the column with a table name or alias.",
-        "Remove the join condition.",
-        "Sort by an unrelated field."
-      ],
-      "correctIndex": 1,
-      "explanation": "Table qualifiers identify the intended column when names overlap.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Table qualifiers identify the intended column when names overlap.",
-      "incorrectFeedback": "Review the requirement again. Table qualifiers identify the intended column when names overlap."
-    },
-    {
-      "id": "sql-l10-bank-13",
-      "type": "quiz",
-      "question": "Review from Lesson 7 — Subqueries and Advanced Queries: A report only needs to know whether at least one related enrollment exists. Which construct expresses existence directly?",
-      "options": [
-        "ORDER BY.",
-        "CREATE INDEX only.",
-        "EXISTS.",
-        "UPDATE."
-      ],
-      "correctIndex": 2,
-      "explanation": "EXISTS checks whether the correlated subquery returns any row.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. EXISTS checks whether the correlated subquery returns any row.",
-      "incorrectFeedback": "Review the requirement again. EXISTS checks whether the correlated subquery returns any row."
-    },
-    {
-      "id": "sql-l10-bank-14",
-      "type": "quiz",
-      "question": "Review from Lesson 7 — Subqueries and Advanced Queries: A nested query is hard to debug. What is the best workflow?",
-      "options": [
-        "Rewrite it all at once without tests.",
-        "Add all columns blindly.",
-        "Hide the output.",
-        "Run and verify the inner query first, then integrate it."
-      ],
-      "correctIndex": 3,
-      "explanation": "Testing subquery components independently reduces the number of possible causes when the full query is wrong.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Testing subquery components independently reduces the number of possible causes when the full query is wrong.",
-      "incorrectFeedback": "Review the requirement again. Testing subquery components independently reduces the number of possible causes when the full query is wrong."
-    },
-    {
-      "id": "sql-l10-bank-15",
-      "type": "quiz",
-      "question": "Review from Lesson 8 — Database Design and Constraints: A relationship must not refer to a nonexistent learner. Which database rule expresses the relationship?",
-      "options": [
-        "Foreign key.",
-        "ORDER BY.",
-        "LIMIT.",
-        "Alias."
-      ],
-      "correctIndex": 0,
-      "explanation": "A foreign key can enforce referential integrity between related tables.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A foreign key can enforce referential integrity between related tables.",
-      "incorrectFeedback": "Review the requirement again. A foreign key can enforce referential integrity between related tables."
-    },
-    {
-      "id": "sql-l10-bank-16",
-      "type": "quiz",
-      "question": "Review from Lesson 8 — Database Design and Constraints: A business rule says the amount must never be negative. What should enforce it for all writers?",
-      "options": [
-        "A warning in one UI only.",
-        "A CHECK constraint plus suitable application validation.",
-        "A column alias.",
-        "A view with no validation."
-      ],
-      "correctIndex": 1,
-      "explanation": "Database constraints enforce the rule at the data boundary rather than trusting every client.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Database constraints enforce the rule at the data boundary rather than trusting every client.",
-      "incorrectFeedback": "Review the requirement again. Database constraints enforce the rule at the data boundary rather than trusting every client."
-    },
-    {
-      "id": "sql-l10-bank-17",
-      "type": "quiz",
-      "question": "Review from Lesson 9 — Views, Indexes and Transactions: Two related writes must be atomic. What is the correct concept?",
-      "options": [
-        "Two writes with no coordination.",
-        "An index only.",
-        "A transaction that commits both or rolls back when needed.",
-        "A view."
-      ],
-      "correctIndex": 2,
-      "explanation": "Transactions allow related operations to be treated as a logical unit.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Transactions allow related operations to be treated as a logical unit.",
-      "incorrectFeedback": "Review the requirement again. Transactions allow related operations to be treated as a logical unit."
-    },
-    {
-      "id": "sql-l10-bank-18",
-      "type": "quiz",
-      "question": "Review from Lesson 9 — Views, Indexes and Transactions: An index is being considered for a slow query. What is the most evidence-based next step?",
-      "options": [
-        "Add indexes to every column.",
-        "Drop all constraints.",
-        "Assume index order always helps.",
-        "Inspect query plans and measure read/write trade-offs."
-      ],
-      "correctIndex": 3,
-      "explanation": "Index decisions should be based on query behavior, data, and write overhead.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Index decisions should be based on query behavior, data, and write overhead.",
-      "incorrectFeedback": "Review the requirement again. Index decisions should be based on query behavior, data, and write overhead."
-    },
-    {
-      "id": "sql-l10-bank-19",
-      "type": "quiz",
-      "question": "Review from Lesson 10 — SQL Database Project and Final Review: The final project passes one example input. What is the strongest completion check?",
-      "options": [
-        "Stop testing as soon as the screen appears.",
-        "Remove error handling to reduce lines.",
-        "Test normal, boundary, empty, and failure cases and document how to run it.",
-        "Change the app name again."
-      ],
-      "correctIndex": 2,
-      "explanation": "Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Broader tests and reproducible setup provide stronger evidence than one happy-path example.",
-      "incorrectFeedback": "Review the requirement again. Broader tests and reproducible setup provide stronger evidence than one happy-path example."
-    },
-    {
-      "id": "sql-l10-bank-20",
-      "type": "quiz",
-      "question": "Review from Lesson 10 — SQL Database Project and Final Review: A teammate cannot reproduce the project’s behavior. What is likely missing?",
-      "options": [
-        "A larger icon.",
-        "A longer splash screen.",
-        "More animated effects.",
-        "Repeatable instructions, clear dependencies, and a testable expected result."
-      ],
-      "correctIndex": 3,
-      "explanation": "Reproducibility requires enough source and setup information for another person to verify the same behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Reproducibility requires enough source and setup information for another person to verify the same behavior.",
-      "incorrectFeedback": "Review the requirement again. Reproducibility requires enough source and setup information for another person to verify the same behavior."
+      "id": "sql-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

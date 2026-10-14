@@ -2,196 +2,175 @@
   "course": "typescript",
   "lessonNumber": 6,
   "lessonId": "typescript-lesson-6",
-  "title": "Interfaces and Type Aliases",
-  "subtitle": "Design reusable structures for objects and application data.",
-  "description": "Learn interfaces, type aliases, extending interfaces, reusable contracts, and when to use each.",
+  "title": "Typed Arrays, Objects and Generics",
+  "subtitle": "Typed Arrays, Objects and Generics: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on typed arrays, objects and generics, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "typescript-6-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Interfaces and Type Aliases"
+      "text": "PAGE 1 — Typed Arrays, Objects and Generics: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 6: Interfaces and Type Aliases. This lesson follows the course dashboard topic “Interfaces and Type Aliases”. The goal is to design reusable structures for objects and application data.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "typescript-6-page-1-teaching-2",
+      "type": "content",
+      "text": "Typed Arrays, Objects and Generics is not just a syntax topic: it is a way to make the application’s intent explicit. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. In the Code Academy dashboard, that idea matters because A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A class or equivalent type can group related state and behavior into one understandable model. An object is an instance of that model, with its own current values."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-1",
+      "id": "typescript-6-code-1-3",
       "type": "code",
+      "title": "Example 1 — Typed Arrays, Objects and Generics: The first array element is at index zero",
       "language": "typescript",
-      "title": "Sample 1: Interfaces and Type Aliases in practice",
-      "code": "interface Learner { name: string; xp: number; }\nconst learner: Learner = { name: \"Ama\", xp: 120 };\nconsole.log(learner.name);"
+      "code": "const courses: string[] = [\"HTML\", \"CSS\", \"Python\"];\nconsole.log(courses[0]);",
+      "output": "The first array element is at index zero."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Design reusable structures for objects and application data. Identify the input, the operation, and the result before making changes."
+      "id": "typescript-6-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “const courses: string[] = [\"HTML\", \"CSS\", \"Python\"];”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “console.log(courses[0]);”: Displays the computed value so the behavior can be observed and checked. Expected behavior: The first array element is at index zero. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "typescript-l6-q-01",
+      "id": "typescript-6-quiz-1-5",
       "type": "quiz",
-      "question": "Several values and operations always belong together in a domain model. What design helps?",
+      "question": "A course list contains three entries and uses zero-based indexing. Which expression selects the first item?",
       "options": [
-        "Global variables scattered through every screen.",
-        "A focused class/type that groups related data and behavior.",
-        "One class with every unrelated feature.",
-        "A collection of unlabelled numbers."
-      ],
-      "correctIndex": 1,
-      "explanation": "A cohesive type communicates related state and behavior together.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A cohesive type communicates related state and behavior together.",
-      "incorrectFeedback": "Review the requirement again. A cohesive type communicates related state and behavior together."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn interfaces, type aliases, extending interfaces, reusable contracts, and when to use each.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-2",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 2: Interfaces and Type Aliases in practice",
-      "code": "interface Labelled { label(): string; }\nconst course: Labelled = { label: () => \"HTML Basics\" };\nconsole.log(course.label());"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real TypeScript project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "typescript-l6-q-02",
-      "type": "quiz",
-      "question": "An object must never allow its balance to fall below zero. Which design protects the rule?",
-      "options": [
-        "Allow any caller to rewrite the field.",
-        "Document the rule but never check it.",
-        "Hide every object method.",
-        "Control updates through methods that validate the new balance."
-      ],
-      "correctIndex": 3,
-      "explanation": "Encapsulation protects invariants by controlling how state changes.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Encapsulation protects invariants by controlling how state changes.",
-      "incorrectFeedback": "Review the requirement again. Encapsulation protects invariants by controlling how state changes."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Encapsulation protects an object’s rules. For example, a balance should not become negative simply because any caller can edit an internal field; provide operations that validate changes instead."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-3",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 3: Interfaces and Type Aliases in practice",
-      "code": "type CourseSummary = { title: string; readonly lessonCount: number };\nconst course: CourseSummary = { title: \"Python\", lessonCount: 10 };\nconsole.log(course.lessonCount);"
-    },
-    {
-      "id": "typescript-l6-q-03",
-      "type": "quiz",
-      "question": "Two types share a small helper behavior but are not true specializations of one another. What should be considered?",
-      "options": [
-        "Composition or a focused interface instead of forcing inheritance.",
-        "An inheritance chain of many levels.",
-        "Duplicating the helper in every method.",
-        "Making all fields public."
-      ],
-      "correctIndex": 0,
-      "explanation": "Inheritance should represent a genuine “is-a” relationship; composition is often better for using a capability.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Inheritance should represent a genuine “is-a” relationship; composition is often better for using a capability.",
-      "incorrectFeedback": "Review the requirement again. Inheritance should represent a genuine “is-a” relationship; composition is often better for using a capability."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Use inheritance only when one type truly is a specialized form of another. Prefer simple composition when one object merely needs to use another, and keep each type responsible for a small, coherent job."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select TypeScript. Paste this snippet into the TypeScript editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-4",
-      "type": "code",
-      "language": "typescript",
-      "title": "Sample 4: Interfaces and Type Aliases in practice",
-      "code": "interface Repository<T> { getById(id: number): T | undefined; }\nconst repo: Repository<string> = { getById: id => id === 1 ? \"HTML\" : undefined };\nconsole.log(repo.getById(1));"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn interfaces, type aliases, extending interfaces, reusable contracts, and when to use each. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "typescript-l6-q-04",
-      "type": "quiz",
-      "question": "A class has one hundred unrelated methods. What is the likely design problem?",
-      "options": [
-        "It needs more responsibilities.",
-        "Its name is too short.",
-        "It has too many unrelated responsibilities and should be split.",
-        "It should stop being tested."
+        "courses[3]",
+        "courses[-3] in every language",
+        "courses[0]",
+        "courses[1]"
       ],
       "correctIndex": 2,
-      "explanation": "A type with many unrelated jobs is difficult to understand, change, and test.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A type with many unrelated jobs is difficult to understand, change, and test.",
-      "incorrectFeedback": "Review the requirement again. A type with many unrelated jobs is difficult to understand, change, and test."
+      "explanation": "Correct answer: courses[0]. In zero-based arrays, index zero refers to the first entry.",
+      "reasoning": "In zero-based arrays, index zero refers to the first entry. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "typescript-l6-q-05",
+      "id": "typescript-6-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Typed Arrays, Objects and Generics: A named type describes object fields",
+      "language": "typescript",
+      "code": "type Learner = { id: string; xp: number };\nconst learner: Learner = { id: \"u1\", xp: 120 };",
+      "output": "A named type describes object fields."
+    },
+    {
+      "id": "typescript-6-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “type Learner = { id: string; xp: number };”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “const learner: Learner = { id: \"u1\", xp: 120 };”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A named type describes object fields. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-6-quiz-2-8",
       "type": "quiz",
-      "question": "A child type must work wherever a parent contract is expected. What matters most?",
+      "question": "The dashboard must prevent the same completed lesson ID being counted twice. Which data structure is a natural fit?",
       "options": [
-        "Matching the parent’s color.",
-        "Preserving the expected behavior of the contract.",
-        "Having the most methods possible.",
-        "Using global state instead of parameters."
+        "A counter incremented without checking the lesson ID",
+        "A set or a keyed map that enforces unique IDs",
+        "An unparsed text string with duplicates",
+        "Parallel arrays with no shared key"
       ],
       "correctIndex": 1,
-      "explanation": "Subtypes should honor the behavior callers expect from the shared abstraction.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Subtypes should honor the behavior callers expect from the shared abstraction.",
-      "incorrectFeedback": "Review the requirement again. Subtypes should honor the behavior callers expect from the shared abstraction."
+      "explanation": "Correct answer: A set or a keyed map that enforces unique IDs. Uniqueness should be enforced by the data structure or explicit key check.",
+      "reasoning": "Uniqueness should be enforced by the data structure or explicit key check. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-6-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Typed Arrays, Objects and Generics: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "typescript-6-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "typescript-6-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Typed Arrays, Objects and Generics: Map models keyed values; get may return undefined",
+      "language": "typescript",
+      "code": "const xpByCourse = new Map<string, number>([[\"HTML\", 20]]);\nconsole.log(xpByCourse.get(\"HTML\"));",
+      "output": "Map models keyed values; get may return undefined."
+    },
+    {
+      "id": "typescript-6-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “const xpByCourse = new Map<string, number>([[\"HTML\", 20]]);”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “console.log(xpByCourse.get(\"HTML\"));”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Map models keyed values; get may return undefined. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-6-quiz-2-13",
+      "type": "quiz",
+      "question": "A dictionary lookup may not find a key. What should the code do?",
+      "options": [
+        "Handle the missing-key result or use a deliberate fallback",
+        "Assume the lookup always succeeds",
+        "Treat the key’s absence as proof that its value is zero",
+        "Access a missing nested property without checking"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Handle the missing-key result or use a deliberate fallback. A missing key may be distinct from a key whose value is zero or empty.",
+      "reasoning": "A missing key may be distinct from a key whose value is zero or empty. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-6-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Typed Arrays, Objects and Generics: A generic function can operate on arrays of different element types",
+      "language": "typescript",
+      "code": "function first<T>(values: T[]): T | undefined { return values[0]; }",
+      "output": "A generic function can operate on arrays of different element types."
+    },
+    {
+      "id": "typescript-6-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “function first<T>(values: T[]): T | undefined { return values[0]; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A generic function can operate on arrays of different element types. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-6-quiz-3-16",
+      "type": "quiz",
+      "question": "Each quiz attempt has both correctness and XP. Which representation best preserves the relationship?",
+      "options": [
+        "Separate arrays that can become different lengths",
+        "One string containing all values without delimiters",
+        "A single number containing the sum only",
+        "A list of structured attempt records"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A list of structured attempt records. Records keep related fields together and prevent losing which XP belongs to which attempt.",
+      "reasoning": "Records keep related fields together and prevent losing which XP belongs to which attempt. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-6-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Typed Arrays, Objects and Generics: applied challenge and mastery check"
+    },
+    {
+      "id": "typescript-6-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "typescript-6-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses typed arrays, objects and generics. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "typescript-6-quiz-5-20",
+      "type": "quiz",
+      "question": "A score array may be empty. What should the maximum-score calculation consider?",
+      "options": [
+        "Use the array length as the maximum score",
+        "Sort it and read index zero without a check",
+        "Handle the empty collection before assuming a maximum exists",
+        "Assume the maximum is always the first item"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Handle the empty collection before assuming a maximum exists. An empty collection has no element to return as its maximum.",
+      "reasoning": "An empty collection has no element to return as its maximum. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-6-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

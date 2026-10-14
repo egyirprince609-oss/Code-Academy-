@@ -2,196 +2,175 @@
   "course": "lua",
   "lessonNumber": 9,
   "lessonId": "lua-lesson-9",
-  "title": "Error Handling and Practical Lua",
-  "subtitle": "Errors, protected calls, debugging, modules and practical application structure.",
-  "description": "Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Metatables and Object-Like Patterns",
+  "subtitle": "Metatables and Object-Like Patterns: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on metatables and object-like patterns, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "lua-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Error Handling and Practical Lua"
+      "text": "PAGE 1 — Metatables and Object-Like Patterns: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Error Handling and Practical Lua. This lesson follows the course dashboard topic “Error Handling and Practical Lua”. The goal is to errors, protected calls, debugging, modules and practical application structure.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "lua-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Metatables and Object-Like Patterns is not just a syntax topic: it is a way to make the application’s intent explicit. Metatables let Lua customize table behavior, including lookup and operators. Use them deliberately because implicit behavior can obscure control flow; keep object-like patterns and metamethods predictable. In the Code Academy dashboard, that idea matters because A small lesson tracker can use tables and functions while keeping state changes and errors clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Errors are part of normal software work: users can enter unexpected values, files may be missing, and external services may fail. Reliable code detects failures at a useful boundary and communicates what happened without pretending the operation succeeded."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "lua-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Metatables and Object-Like Patterns: A metatable can provide method lookup through __index",
       "language": "lua",
-      "title": "Sample 1: Error Handling and Practical Lua in practice",
-      "code": "local raw=\"42\"\nlocal value=tonumber(raw)\nif value then print(value) else print(\"Invalid number\") end"
+      "code": "local Learner = {}\nLearner.__index = Learner\nfunction Learner.new(name) return setmetatable({name = name}, Learner) end\nfunction Learner:label() return \"Learner: \" .. self.name end",
+      "output": "A metatable can provide method lookup through __index."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Errors, protected calls, debugging, modules and practical application structure. Identify the input, the operation, and the result before making changes."
+      "id": "lua-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “local Learner = {}”: Creates a local variable or table binding for this scope. Line 2 — “Learner.__index = Learner”: Connects a table to metatable behavior; this affects how missing fields or operators are interpreted. Line 3 — “function Learner.new(name) return setmetatable({name = name}, Learner) end”: Connects a table to metatable behavior; this affects how missing fields or operators are interpreted. Line 4 — “function Learner:label() return \"Learner: \" .. self.name end”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A metatable can provide method lookup through __index. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "lua-l9-q-01",
+      "id": "lua-9-quiz-1-5",
       "type": "quiz",
-      "question": "A database query receives user-provided text. Which safeguard is strongest?",
+      "question": "A Lua table should look up missing method names from a shared method table. Which metamethod is commonly used?",
       "options": [
-        "Build the query by concatenating the text into SQL.",
-        "Remove all error messages.",
-        "Use parameterized queries and validate the expected data.",
-        "Trust the browser because it has a form."
-      ],
-      "correctIndex": 2,
-      "explanation": "Parameters keep user values separate from executable SQL syntax.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parameters keep user values separate from executable SQL syntax.",
-      "incorrectFeedback": "Review the requirement again. Parameters keep user values separate from executable SQL syntax."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 2: Error Handling and Practical Lua in practice",
-      "code": "local profile={name=\"Ama\"}\nprint(profile.email or \"not supplied\")"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Lua project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "lua-l9-q-02",
-      "type": "quiz",
-      "question": "A function can return either a result or a failure. What should callers do?",
-      "options": [
-        "Inspect and handle the documented success/error result.",
-        "Assume failure means success.",
-        "Discard the return value in every case.",
-        "Repeat the request infinitely."
-      ],
-      "correctIndex": 0,
-      "explanation": "Callers need to respond to the success or failure contract explicitly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Callers need to respond to the success or failure contract explicitly.",
-      "incorrectFeedback": "Review the requirement again. Callers need to respond to the success or failure contract explicitly."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Validate data before using it, and catch only failures you can handle meaningfully. Empty catch blocks hide defects; broad recovery can turn a visible problem into silently corrupted data."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 3: Error Handling and Practical Lua in practice",
-      "code": "local function safe_divide(a,b) if b==0 then return nil,\"zero denominator\" end return a/b end\nlocal value,err=safe_divide(10,2)\nprint(value or err)"
-    },
-    {
-      "id": "lua-l9-q-03",
-      "type": "quiz",
-      "question": "A file may not exist when a user starts the app. What is the best approach?",
-      "options": [
-        "Assume the file always exists.",
-        "Catch every possible error and ignore it.",
-        "Check/open the file safely and report a useful recoverable error.",
-        "Pretend an empty file is always correct."
-      ],
-      "correctIndex": 2,
-      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Keep responsibilities separate. A function that reads a file, validates records, computes results, and prints a report is difficult to test; small steps let you isolate a failure and reuse the successful parts."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 4: Error Handling and Practical Lua in practice",
-      "code": "local scores={}\nif #scores==0 then print(\"No scores yet\") else print(#scores) end"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to make Lua programs more reliable and apply your skills to realistic programming tasks. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "lua-l9-q-04",
-      "type": "quiz",
-      "question": "A numeric form field contains “abc”. What should happen?",
-      "options": [
-        "Convert it silently to a meaningful value without a rule.",
-        "Parse and validate it, then show a clear error if it is invalid.",
-        "Use the string in arithmetic.",
-        "Delete the user’s whole account."
-      ],
-      "correctIndex": 1,
-      "explanation": "Parsing and validation protect calculations from malformed input.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
-      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
-    },
-    {
-      "id": "lua-l9-q-05",
-      "type": "quiz",
-      "question": "A catch/except block is empty. What is the main danger?",
-      "options": [
-        "The code becomes easier to diagnose.",
-        "It automatically retries safely.",
-        "It guarantees correct data.",
-        "It can hide real failures and make the program appear successful."
+        "__add",
+        "__len only",
+        "__tostring only",
+        "__index"
       ],
       "correctIndex": 3,
-      "explanation": "Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "incorrectFeedback": "Review the requirement again. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results."
+      "explanation": "Correct answer: __index. __index can redirect missing-key lookup to another table or function, commonly for object-like methods.",
+      "reasoning": "__index can redirect missing-key lookup to another table or function, commonly for object-like methods. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-9-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Metatables and Object-Like Patterns: Metamethods customize operators for tables; keep such behavior surprising only when the domain justifies it",
+      "language": "lua",
+      "code": "local meta = { __add = function(a, b) return {xp = a.xp + b.xp} end }\nlocal total = setmetatable({xp = 5}, meta) + setmetatable({xp = 3}, meta)\nprint(total.xp)",
+      "output": "Metamethods customize operators for tables; keep such behavior surprising only when the domain justifies it."
+    },
+    {
+      "id": "lua-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “local meta = { __add = function(a, b) return {xp = a.xp + b.xp} end }”: Creates a local variable or table binding for this scope. Line 2 — “local total = setmetatable({xp = 5}, meta) + setmetatable({xp = 3}, meta)”: Creates a local variable or table binding for this scope. Line 3 — “print(total.xp)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Metamethods customize operators for tables; keep such behavior surprising only when the domain justifies it. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-9-quiz-2-8",
+      "type": "quiz",
+      "question": "A metatable overloads addition for XP objects. What is the key maintainability requirement?",
+      "options": [
+        "Use __add to silently delete values",
+        "Avoid documenting which operand types are supported",
+        "Define the meaning consistently and keep it unsurprising for callers",
+        "Make every table behave differently based on hidden global state"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Define the meaning consistently and keep it unsurprising for callers. Operator metamethods can make a domain model concise, but surprising implicit behavior makes programs harder to reason about.",
+      "reasoning": "Operator metamethods can make a domain model concise, but surprising implicit behavior makes programs harder to reason about. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Metatables and Object-Like Patterns: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "lua-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Metatables let Lua customize table behavior, including lookup and operators. Use them deliberately because implicit behavior can obscure control flow; keep object-like patterns and metamethods predictable. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "lua-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Metatables and Object-Like Patterns: The length operator counts a sequence-like table when its sequence portion is well formed",
+      "language": "lua",
+      "code": "local scores = {4, 5, 3}\nprint(#scores)",
+      "output": "The length operator counts a sequence-like table when its sequence portion is well formed."
+    },
+    {
+      "id": "lua-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “local scores = {4, 5, 3}”: Creates a local variable or table binding for this scope. Line 2 — “print(#scores)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: The length operator counts a sequence-like table when its sequence portion is well formed. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-9-quiz-2-13",
+      "type": "quiz",
+      "question": "A table has `__index = Methods`. What does this usually enable?",
+      "options": [
+        "The table is serialized to JSON automatically",
+        "A missing method lookup can be resolved from the Methods table",
+        "Every missing key automatically becomes zero",
+        "All fields become immutable"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: A missing method lookup can be resolved from the Methods table. Lua lookup can fall back through __index, which supports prototype-style method lookup.",
+      "reasoning": "Lua lookup can fall back through __index, which supports prototype-style method lookup. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Metatables and Object-Like Patterns: pcall catches a runtime error and returns a success flag plus result/error",
+      "language": "lua",
+      "code": "local ok, result = pcall(function() error(\"lesson failed\") end)\nif not ok then print(\"Could not complete lesson\") end",
+      "output": "pcall catches a runtime error and returns a success flag plus result/error."
+    },
+    {
+      "id": "lua-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “local ok, result = pcall(function() error(\"lesson failed\") end)”: Creates a local variable or table binding for this scope. Line 2 — “if not ok then print(\"Could not complete lesson\") end”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: pcall catches a runtime error and returns a success flag plus result/error. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-9-quiz-3-16",
+      "type": "quiz",
+      "question": "A `pcall` call returns `false` and an error value. What should the code do?",
+      "options": [
+        "Handle the failure path and provide useful controlled feedback",
+        "Use the error value as a successful result",
+        "Assume the protected function completed normally",
+        "Retry forever without a stopping condition"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Handle the failure path and provide useful controlled feedback. pcall reports whether the protected call succeeded; the Boolean must guide the caller’s response.",
+      "reasoning": "pcall reports whether the protected call succeeded; the Boolean must guide the caller’s response. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Metatables and Object-Like Patterns: applied challenge and mastery check"
+    },
+    {
+      "id": "lua-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Metatables let Lua customize table behavior, including lookup and operators. Use them deliberately because implicit behavior can obscure control flow; keep object-like patterns and metamethods predictable. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "lua-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses metatables and object-like patterns. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "lua-9-quiz-5-20",
+      "type": "quiz",
+      "question": "When is a plain table preferable to an object-like metatable pattern?",
+      "options": [
+        "Never; every Lua table requires a metatable",
+        "Only when the object has no data",
+        "Whenever hidden behavior would make debugging harder",
+        "When direct fields and functions express the behavior clearly without extra lookup machinery"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: When direct fields and functions express the behavior clearly without extra lookup machinery. Use the simplest representation that clearly expresses the domain; metatables are powerful but not required for every table.",
+      "reasoning": "Use the simplest representation that clearly expresses the domain; metatables are powerful but not required for every table. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Metatables let Lua customize table behavior, including lookup and operators. Use them deliberately because implicit behavior can obscure control flow; keep object-like patterns and metamethods predictable. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

@@ -2,196 +2,175 @@
   "course": "ruby",
   "lessonNumber": 8,
   "lessonId": "ruby-lesson-8",
-  "title": "Modules, Mixins and Error Handling",
-  "subtitle": "Modules, mixins, require, exceptions, begin, rescue, ensure and custom errors.",
-  "description": "Organize larger Ruby applications and make your programs safer and easier to maintain.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Classes, Objects and Modules",
+  "subtitle": "Classes, Objects and Modules: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on classes, objects and modules, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "ruby-8-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Modules, Mixins and Error Handling"
+      "text": "PAGE 1 — Classes, Objects and Modules: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 8: Modules, Mixins and Error Handling. This lesson follows the course dashboard topic “Modules, Mixins and Error Handling”. The goal is to modules, mixins, require, exceptions, begin, rescue, ensure and custom errors.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "ruby-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Classes, Objects and Modules is not just a syntax topic: it is a way to make the application’s intent explicit. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. In the Code Academy dashboard, that idea matters because A tracker illustrates how collection methods can keep business logic readable. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Errors are part of normal software work: users can enter unexpected values, files may be missing, and external services may fail. Reliable code detects failures at a useful boundary and communicates what happened without pretending the operation succeeded."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Ruby. Paste this snippet into the Ruby editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-1",
+      "id": "ruby-8-code-1-3",
       "type": "code",
+      "title": "Example 1 — Classes, Objects and Modules: initialize sets instance state and attr_reader exposes read access",
       "language": "ruby",
-      "title": "Sample 1: Modules, Mixins and Error Handling in practice",
-      "code": "module Formatter\n  def self.label(name)\n    \"Course: #{name}\"\n  end\nend\nputs Formatter.label(\"Ruby\")"
+      "code": "class Learner\n  attr_reader :name, :xp\n  def initialize(name, xp)\n    @name, @xp = name, xp\n  end\nend\nputs Learner.new(\"Ama\", 120).name",
+      "output": "initialize sets instance state and attr_reader exposes read access."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Modules, mixins, require, exceptions, begin, rescue, ensure and custom errors. Identify the input, the operation, and the result before making changes."
+      "id": "ruby-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “class Learner”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “attr_reader :name, :xp”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “def initialize(name, xp)”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 4 — “@name, @xp = name, xp”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 5 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Line 6 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Line 7 — “puts Learner.new(\"Ama\", 120).name”: Displays the computed value so the behavior can be observed and checked. Expected behavior: initialize sets instance state and attr_reader exposes read access. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "ruby-l8-q-01",
+      "id": "ruby-8-quiz-1-5",
       "type": "quiz",
-      "question": "A catch/except block is empty. What is the main danger?",
+      "question": "A learner record contains name and XP. What is the main benefit of grouping them in one model?",
       "options": [
-        "The code becomes easier to diagnose.",
-        "It automatically retries safely.",
-        "It guarantees correct data.",
-        "It can hide real failures and make the program appear successful."
-      ],
-      "correctIndex": 3,
-      "explanation": "Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results.",
-      "incorrectFeedback": "Review the requirement again. Silently swallowing errors obscures the cause and can lead to corrupted or incomplete results."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Organize larger Ruby applications and make your programs safer and easier to maintain.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Ruby. Paste this snippet into the Ruby editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-2",
-      "type": "code",
-      "language": "ruby",
-      "title": "Sample 2: Modules, Mixins and Error Handling in practice",
-      "code": "items = [\"HTML\", \"CSS\"]\nputs items.map(&:upcase)"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Ruby project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "ruby-l8-q-02",
-      "type": "quiz",
-      "question": "A database query receives user-provided text. Which safeguard is strongest?",
-      "options": [
-        "Build the query by concatenating the text into SQL.",
-        "Remove all error messages.",
-        "Use parameterized queries and validate the expected data.",
-        "Trust the browser because it has a form."
-      ],
-      "correctIndex": 2,
-      "explanation": "Parameters keep user values separate from executable SQL syntax.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parameters keep user values separate from executable SQL syntax.",
-      "incorrectFeedback": "Review the requirement again. Parameters keep user values separate from executable SQL syntax."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Validate data before using it, and catch only failures you can handle meaningfully. Empty catch blocks hide defects; broad recovery can turn a visible problem into silently corrupted data."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Ruby. Paste this snippet into the Ruby editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-3",
-      "type": "code",
-      "language": "ruby",
-      "title": "Sample 3: Modules, Mixins and Error Handling in practice",
-      "code": "begin\n  value = Integer(\"42\")\n  puts value\nrescue ArgumentError\n  puts \"Enter a whole number\"\nend"
-    },
-    {
-      "id": "ruby-l8-q-03",
-      "type": "quiz",
-      "question": "A function can return either a result or a failure. What should callers do?",
-      "options": [
-        "Inspect and handle the documented success/error result.",
-        "Assume failure means success.",
-        "Discard the return value in every case.",
-        "Repeat the request infinitely."
+        "Related state stays together and can be validated through a clear interface",
+        "The model automatically saves itself to Firebase",
+        "Every field becomes safe from modification automatically",
+        "All records must share the same XP value"
       ],
       "correctIndex": 0,
-      "explanation": "Callers need to respond to the success or failure contract explicitly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Callers need to respond to the success or failure contract explicitly.",
-      "incorrectFeedback": "Review the requirement again. Callers need to respond to the success or failure contract explicitly."
+      "explanation": "Correct answer: Related state stays together and can be validated through a clear interface. A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation.",
+      "reasoning": "A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Keep responsibilities separate. A function that reads a file, validates records, computes results, and prints a report is difficult to test; small steps let you isolate a failure and reuse the successful parts."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Ruby. Paste this snippet into the Ruby editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l8-code-4",
+      "id": "ruby-8-code-2-6",
       "type": "code",
+      "title": "Example 2 — Classes, Objects and Modules: A module groups reusable functionality without creating an instance",
       "language": "ruby",
-      "title": "Sample 4: Modules, Mixins and Error Handling in practice",
-      "code": "File.write(\"practice.txt\", \"Ruby practice\\n\")\nputs File.read(\"practice.txt\")"
+      "code": "module ProgressRules\n  def self.percent(done, total)\n    total.positive? ? done.to_f / total * 100 : 0\n  end\nend",
+      "output": "A module groups reusable functionality without creating an instance."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Organize larger Ruby applications and make your programs safer and easier to maintain. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "ruby-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “module ProgressRules”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “def self.percent(done, total)”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “total.positive? ? done.to_f / total * 100 : 0”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 4 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Line 5 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: A module groups reusable functionality without creating an instance. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "ruby-l8-q-04",
+      "id": "ruby-8-quiz-2-8",
       "type": "quiz",
-      "question": "A file may not exist when a user starts the app. What is the best approach?",
+      "question": "Several types must provide `report()`, but their internal data differs. Which abstraction is suitable?",
       "options": [
-        "Assume the file always exists.",
-        "Catch every possible error and ignore it.",
-        "Check/open the file safely and report a useful recoverable error.",
-        "Pretend an empty file is always correct."
+        "Copy the same method into unrelated caller code",
+        "Use one global variable for all records",
+        "Store source code in the report field",
+        "An interface or protocol describing the required behavior"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: An interface or protocol describing the required behavior. An interface or protocol defines a contract without requiring identical internal representations.",
+      "reasoning": "An interface or protocol defines a contract without requiring identical internal representations. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "ruby-8-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Classes, Objects and Modules: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "ruby-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker illustrates how collection methods can keep business logic readable. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "ruby-8-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Classes, Objects and Modules: A method can expose behavior using the instance state",
+      "language": "ruby",
+      "code": "class Lesson\n  def label\n    \"Lesson: #{title}\"\n  end\n  attr_reader :title\n  def initialize(title) = @title = title\nend",
+      "output": "A method can expose behavior using the instance state."
+    },
+    {
+      "id": "ruby-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “class Lesson”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def label”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “\"Lesson: #{title}\"”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 4 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Line 5 — “attr_reader :title”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 6 — “def initialize(title) = @title = title”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 7 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: A method can expose behavior using the instance state. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "ruby-8-quiz-2-13",
+      "type": "quiz",
+      "question": "A course-progress object must never have a negative total. Where should that rule be protected?",
+      "options": [
+        "Only when the object is printed",
+        "By assuming all call sites follow a comment",
+        "At the model or validation boundary that creates and updates the object",
+        "Only in the page heading"
       ],
       "correctIndex": 2,
-      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+      "explanation": "Correct answer: At the model or validation boundary that creates and updates the object. Domain invariants should be enforced where data enters or changes, not only at display time.",
+      "reasoning": "Domain invariants should be enforced where data enters or changes, not only at display time. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "ruby-l8-q-05",
+      "id": "ruby-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Classes, Objects and Modules: Struct is a concise way to create a simple data object",
+      "language": "ruby",
+      "code": "Course = Struct.new(:name, :lesson_count, keyword_init: true)\nputs Course.new(name: \"Ruby\", lesson_count: 10)",
+      "output": "Struct is a concise way to create a simple data object."
+    },
+    {
+      "id": "ruby-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “Course = Struct.new(:name, :lesson_count, keyword_init: true)”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “puts Course.new(name: \"Ruby\", lesson_count: 10)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Struct is a concise way to create a simple data object. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "ruby-8-quiz-3-16",
       "type": "quiz",
-      "question": "A numeric form field contains “abc”. What should happen?",
+      "question": "A type has only two fields and no behavior or identity requirements. What design principle applies?",
       "options": [
-        "Convert it silently to a meaningful value without a rule.",
-        "Parse and validate it, then show a clear error if it is invalid.",
-        "Use the string in arithmetic.",
-        "Delete the user’s whole account."
+        "Make all members globally mutable",
+        "Prefer the simplest data structure that clearly represents the value",
+        "Use inheritance by default",
+        "Create an abstract hierarchy for every field"
       ],
       "correctIndex": 1,
-      "explanation": "Parsing and validation protect calculations from malformed input.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
-      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+      "explanation": "Correct answer: Prefer the simplest data structure that clearly represents the value. Classes, structs, and records should match actual domain needs rather than add ceremony.",
+      "reasoning": "Classes, structs, and records should match actual domain needs rather than add ceremony. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "ruby-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Classes, Objects and Modules: applied challenge and mastery check"
+    },
+    {
+      "id": "ruby-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. For the Code Academy dashboard, A tracker illustrates how collection methods can keep business logic readable. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "ruby-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses classes, objects and modules. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "ruby-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A subclass overrides a method with an incompatible meaning. What is the key design risk?",
+      "options": [
+        "The subtype may violate the contract expected by callers",
+        "The compiler must automatically rewrite all callers",
+        "The program gains database persistence",
+        "Object fields become inaccessible in every language"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: The subtype may violate the contract expected by callers. Subtyping is safe only when the subtype respects the behavioral expectations of its base contract.",
+      "reasoning": "Subtyping is safe only when the subtype respects the behavioral expectations of its base contract. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "ruby-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

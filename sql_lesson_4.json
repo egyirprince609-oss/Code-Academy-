@@ -2,196 +2,175 @@
   "course": "sql",
   "lessonNumber": 4,
   "lessonId": "sql-lesson-4",
-  "title": "SELECT, Filtering and Sorting",
-  "subtitle": "SELECT, WHERE, AND, OR, NOT, ORDER BY, LIMIT and comparison operators.",
-  "description": "Master the core SQL query system for retrieving exactly the data you need from a database.",
+  "title": "Aggregate Functions and NULL",
+  "subtitle": "Aggregate Functions and NULL: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on aggregate functions and null, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "sql-4-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand SELECT, Filtering and Sorting"
+      "text": "PAGE 1 — Aggregate Functions and NULL: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 4: SELECT, Filtering and Sorting. This lesson follows the course dashboard topic “SELECT, Filtering and Sorting”. The goal is to sELECT, WHERE, AND, OR, NOT, ORDER BY, LIMIT and comparison operators.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "sql-4-page-1-teaching-2",
+      "type": "content",
+      "text": "Aggregate Functions and NULL is not just a syntax topic: it is a way to make the application’s intent explicit. COUNT, SUM, AVG, MIN, and MAX summarize rows differently. Check NULL behavior and confirm which rows belong in the calculation. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "SELECT retrieves chosen columns, while WHERE filters rows before the result is returned. ORDER BY specifies ordering and LIMIT can cap output where supported by the database dialect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-1",
+      "id": "sql-4-code-1-3",
       "type": "code",
+      "title": "Example 1 — Aggregate Functions and NULL: Counts rows",
       "language": "sql",
-      "title": "Sample 1: SELECT, Filtering and Sorting in practice",
-      "code": "SELECT title, total_lessons\nFROM courses\nWHERE total_lessons >= 10\nORDER BY title;"
+      "code": "SELECT COUNT(*) AS total FROM lessons;",
+      "output": "Counts rows."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates SELECT, WHERE, AND, OR, NOT, ORDER BY, LIMIT and comparison operators. Identify the input, the operation, and the result before making changes."
+      "id": "sql-4-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT COUNT(*) AS total FROM lessons;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Counts rows. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l4-q-01",
+      "id": "sql-4-quiz-1-5",
       "type": "quiz",
-      "question": "A report must show courses from highest learner count to lowest. Which clause orders the result?",
+      "question": "How many attempt rows exist, including rows whose score is NULL?",
       "options": [
-        "ORDER BY learner_count DESC, where appropriate for the query.",
-        "WHERE only.",
-        "INSERT INTO.",
-        "CREATE TABLE."
+        "COUNT(*)",
+        "COUNT(score) in every situation",
+        "SUM(learner_name)",
+        "AVG(attempt_id)"
       ],
       "correctIndex": 0,
-      "explanation": "ORDER BY defines result ordering; DESC sorts from higher to lower values.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. ORDER BY defines result ordering; DESC sorts from higher to lower values.",
-      "incorrectFeedback": "Review the requirement again. ORDER BY defines result ordering; DESC sorts from higher to lower values."
+      "explanation": "Correct answer: COUNT(*). COUNT(*) counts rows; COUNT(score) ignores NULL score values.",
+      "reasoning": "COUNT(*) counts rows; COUNT(score) ignores NULL score values. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Master the core SQL query system for retrieving exactly the data you need from a database.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-2",
+      "id": "sql-4-code-2-6",
       "type": "code",
+      "title": "Example 2 — Aggregate Functions and NULL: Averages present scores",
       "language": "sql",
-      "title": "Sample 2: SELECT, Filtering and Sorting in practice",
-      "code": "SELECT display_name\nFROM learners\nWHERE email IS NOT NULL\nORDER BY display_name\nLIMIT 5;"
+      "code": "SELECT AVG(score) AS mean_score FROM attempts WHERE score IS NOT NULL;",
+      "output": "Averages present scores."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "sql-4-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT AVG(score) AS mean_score FROM attempts WHERE score IS NOT NULL;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Averages present scores. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l4-q-02",
+      "id": "sql-4-quiz-2-8",
       "type": "quiz",
-      "question": "A table has a NULL email. Which condition correctly finds rows with no email?",
+      "question": "What does `AVG(score)` do with NULL scores in typical SQL semantics?",
       "options": [
-        "email = NULL",
-        "email IS NULL",
-        "email > NULL",
-        "email LIKE NULL"
+        "Treats each NULL as numeric zero",
+        "Returns the row count",
+        "Treats NULL as the literal text \"NULL\"",
+        "Ignores NULL values in the average"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Ignores NULL values in the average. Aggregate functions generally ignore NULL input values, which affects the denominator.",
+      "reasoning": "Aggregate functions generally ignore NULL input values, which affects the denominator. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-4-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Aggregate Functions and NULL: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-4-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. COUNT, SUM, AVG, MIN, and MAX summarize rows differently. Check NULL behavior and confirm which rows belong in the calculation. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-4-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Aggregate Functions and NULL: Finds bounds",
+      "language": "sql",
+      "code": "SELECT MIN(score), MAX(score) FROM attempts;",
+      "output": "Finds bounds."
+    },
+    {
+      "id": "sql-4-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT MIN(score), MAX(score) FROM attempts;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Finds bounds. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-4-quiz-2-13",
+      "type": "quiz",
+      "question": "No attempts match a query. What should be considered about SUM?",
+      "options": [
+        "It creates a new row automatically",
+        "It changes missing XP to 1",
+        "It may return NULL, so use an intentional fallback if the application requires zero",
+        "It must always return the string \"0\""
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: It may return NULL, so use an intentional fallback if the application requires zero. Aggregate results over empty input need deliberate handling.",
+      "reasoning": "Aggregate results over empty input need deliberate handling. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-4-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Aggregate Functions and NULL: Totals rewards per course",
+      "language": "sql",
+      "code": "SELECT course, SUM(xp_reward) FROM lessons GROUP BY course;",
+      "output": "Totals rewards per course."
+    },
+    {
+      "id": "sql-4-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT course, SUM(xp_reward) FROM lessons GROUP BY course;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Totals rewards per course. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-4-quiz-3-16",
+      "type": "quiz",
+      "question": "The application needs the largest score recorded. Which aggregate applies?",
+      "options": [
+        "AVG(score)",
+        "MAX(score)",
+        "COUNT(score)",
+        "SUM(score)"
       ],
       "correctIndex": 1,
-      "explanation": "SQL NULL is tested with IS NULL rather than ordinary equality.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. SQL NULL is tested with IS NULL rather than ordinary equality.",
-      "incorrectFeedback": "Review the requirement again. SQL NULL is tested with IS NULL rather than ordinary equality."
+      "explanation": "Correct answer: MAX(score). MAX returns the greatest non-NULL input value.",
+      "reasoning": "MAX returns the greatest non-NULL input value. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Use AND, OR, and parentheses to express compound conditions clearly. Remember that NULL requires null-aware checks such as IS NULL, not an ordinary equality comparison."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-3",
-      "type": "code",
-      "language": "sql",
-      "title": "Sample 3: SELECT, Filtering and Sorting in practice",
-      "code": "SELECT course_id, title\nFROM courses\nWHERE title LIKE '%Python%';"
-    },
-    {
-      "id": "sql-l4-q-03",
-      "type": "quiz",
-      "question": "A report returns thousands of unused columns. What is a better practice?",
-      "options": [
-        "Always select every column.",
-        "Remove the WHERE clause.",
-        "Select only the required columns.",
-        "Sort by a random field."
-      ],
-      "correctIndex": 2,
-      "explanation": "Selecting needed fields improves clarity and can reduce unnecessary data transfer.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Selecting needed fields improves clarity and can reduce unnecessary data transfer.",
-      "incorrectFeedback": "Review the requirement again. Selecting needed fields improves clarity and can reduce unnecessary data transfer."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "sql-4-page-3-17",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 3 — Aggregate Functions and NULL: applied challenge and mastery check"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Ask for only the columns you need and use deterministic sorting when order matters. This can improve performance and makes the query’s intent easier to review."
+      "id": "sql-4-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. COUNT, SUM, AVG, MIN, and MAX summarize rows differently. Check NULL behavior and confirm which rows belong in the calculation. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "sql-4-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses aggregate functions and null. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
     },
     {
-      "id": "l4-code-4",
-      "type": "code",
-      "language": "sql",
-      "title": "Sample 4: SELECT, Filtering and Sorting in practice",
-      "code": "SELECT lesson_id, title\nFROM lessons\nWHERE published = 1 AND level <> 'Archived'\nORDER BY lesson_id DESC;"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Master the core SQL query system for retrieving exactly the data you need from a database. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "sql-l4-q-04",
+      "id": "sql-4-quiz-5-20",
       "type": "quiz",
-      "question": "A program repeatedly looks up a learner by a unique email address. Which structure is a natural fit?",
+      "question": "A report must count attempts with non-missing scores only. Which expression is appropriate?",
       "options": [
-        "A map/dictionary keyed by email, with suitable uniqueness handling.",
-        "A random number with no mapping.",
-        "A paragraph of comma-separated values that is never parsed.",
-        "A loop that guesses the correct person."
+        "COUNT(score)",
+        "COUNT(*) regardless of score presence",
+        "SUM(score = NULL)",
+        "AVG(*)"
       ],
       "correctIndex": 0,
-      "explanation": "Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data.",
-      "incorrectFeedback": "Review the requirement again. Key-value structures express lookup by identifier more directly than repeatedly scanning unrelated data."
+      "explanation": "Correct answer: COUNT(score). COUNT(column) excludes rows where that column is NULL.",
+      "reasoning": "COUNT(column) excludes rows where that column is NULL. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "sql-l4-q-05",
-      "type": "quiz",
-      "question": "A list contains a value at the first position. In a zero-based language, which index usually addresses it?",
-      "options": [
-        "One.",
-        "The collection length.",
-        "Zero.",
-        "Minus one."
-      ],
-      "correctIndex": 2,
-      "explanation": "Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ.",
-      "incorrectFeedback": "Review the requirement again. Most common programming-language arrays and lists use zero-based indexing, though language-specific structures may differ."
+      "id": "sql-4-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: COUNT, SUM, AVG, MIN, and MAX summarize rows differently. Check NULL behavior and confirm which rows belong in the calculation. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

@@ -2,196 +2,175 @@
   "course": "r",
   "lessonNumber": 7,
   "lessonId": "r-lesson-7",
-  "title": "Data Manipulation with R",
-  "subtitle": "Sorting, filtering, grouping, transforming and combining datasets.",
-  "description": "Develop practical data manipulation skills for extracting useful information from large datasets.",
+  "title": "Writing Reusable Functions",
+  "subtitle": "Writing Reusable Functions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on writing reusable functions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "r-7-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Data Manipulation with R"
+      "text": "PAGE 1 — Writing Reusable Functions: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 7: Data Manipulation with R. This lesson follows the course dashboard topic “Data Manipulation with R”. The goal is to sorting, filtering, grouping, transforming and combining datasets.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "r-7-page-1-teaching-2",
+      "type": "content",
+      "text": "Writing Reusable Functions is not just a syntax topic: it is a way to make the application’s intent explicit. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. In the Code Academy dashboard, that idea matters because Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Data manipulation transforms a dataset into the shape needed for analysis: filter relevant rows, select useful columns, create derived values, arrange records, and summarize groups."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-1",
+      "id": "r-7-code-1-3",
       "type": "code",
+      "title": "Example 1 — Writing Reusable Functions: A function returns its final evaluated expression",
       "language": "r",
-      "title": "Sample 1: Data Manipulation with R in practice",
-      "code": "data <- data.frame(name = c(\"Ama\", \"Kojo\", \"Esi\"), score = c(84, 67, 91))\nsubset(data, score >= 80)"
+      "code": "award_xp <- function(correct) ifelse(correct, 5, 0)\naward_xp(TRUE)",
+      "output": "A function returns its final evaluated expression."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Sorting, filtering, grouping, transforming and combining datasets. Identify the input, the operation, and the result before making changes."
+      "id": "r-7-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “award_xp <- function(correct) ifelse(correct, 5, 0)”: Assigns the evaluated value to a named R object. Line 2 — “award_xp(TRUE)”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: A function returns its final evaluated expression. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l7-q-01",
+      "id": "r-7-quiz-1-5",
       "type": "quiz",
-      "question": "A project repeats the same validation rule in four places and the rules now disagree. What should be done?",
+      "question": "A helper computes XP and another function must add the returned amount to the profile. What should the helper do?",
       "options": [
-        "Centralize the rule in a reusable function and test it.",
-        "Add a fifth copy.",
-        "Remove the validation everywhere.",
-        "Make the rule depend on screen size."
-      ],
-      "correctIndex": 0,
-      "explanation": "A single tested rule avoids inconsistent copies and reduces maintenance cost.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A single tested rule avoids inconsistent copies and reduces maintenance cost.",
-      "incorrectFeedback": "Review the requirement again. A single tested rule avoids inconsistent copies and reduces maintenance cost."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Develop practical data manipulation skills for extracting useful information from large datasets.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-2",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 2: Data Manipulation with R in practice",
-      "code": "data <- data.frame(group = c(\"A\", \"A\", \"B\"), score = c(5, 7, 9))\naggregate(score ~ group, data, mean)"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real R project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "r-l7-q-02",
-      "type": "quiz",
-      "question": "A project’s output looks correct but the code is difficult to maintain. What is the best next step?",
-      "options": [
-        "Rename every variable randomly.",
-        "Add a second implementation without removing the first.",
-        "Ignore structure because the output is right.",
-        "Separate responsibilities, improve names, and add targeted tests."
-      ],
-      "correctIndex": 3,
-      "explanation": "Maintainability and tests make later changes safer, beyond simply matching one output.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Maintainability and tests make later changes safer, beyond simply matching one output.",
-      "incorrectFeedback": "Review the requirement again. Maintainability and tests make later changes safer, beyond simply matching one output."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Keep transformations reproducible by expressing them in code rather than editing a spreadsheet manually. Make one logical transformation at a time so it can be checked and reused."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-3",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 3: Data Manipulation with R in practice",
-      "code": "data <- data.frame(score = c(40, 75, 90))\ndata$passed <- data$score >= 50\ndata"
-    },
-    {
-      "id": "r-l7-q-03",
-      "type": "quiz",
-      "question": "An application relies on a service that may be unavailable. Which state should the UI or CLI handle?",
-      "options": [
-        "Success only.",
-        "A clear loading/success/error or recovery state.",
-        "No output until it crashes.",
-        "A fabricated result."
+        "Write the reward into a page title",
+        "Return the numeric reward so the caller can use it",
+        "Only print the reward and return nothing",
+        "Update an unrelated global variable without a clear contract"
       ],
       "correctIndex": 1,
-      "explanation": "Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
-      "incorrectFeedback": "Review the requirement again. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not."
+      "explanation": "Correct answer: Return the numeric reward so the caller can use it. A return value makes the result reusable by the caller and testable independently.",
+      "reasoning": "A return value makes the result reusable by the caller and testable independently. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Compare before-and-after row counts and inspect a small sample of the output. Unexpected row duplication or removal may indicate a join or filtering mistake."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l7-code-4",
+      "id": "r-7-code-2-6",
       "type": "code",
+      "title": "Example 2 — Writing Reusable Functions: An early return guards the denominator",
       "language": "r",
-      "title": "Sample 4: Data Manipulation with R in practice",
-      "code": "data <- data.frame(name = c(\"Ama\", \"Kojo\"), xp = c(100, 80))\ndata[order(-data$xp), ]"
+      "code": "progress <- function(done, total) { if (total <= 0) return(0); done / total * 100 }",
+      "output": "An early return guards the denominator."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Develop practical data manipulation skills for extracting useful information from large datasets. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "r-7-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “progress <- function(done, total) { if (total <= 0) return(0); done / total * 100 }”: Assigns the evaluated value to a named R object. Expected behavior: An early return guards the denominator. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l7-q-04",
+      "id": "r-7-quiz-2-8",
       "type": "quiz",
-      "question": "What makes a final coding project reproducible?",
+      "question": "A progress helper divides completed lessons by the total. Which check belongs before division?",
       "options": [
-        "A screenshot of a successful run only.",
-        "A single unexplained binary.",
-        "Source, clear run instructions, and testable expected behavior.",
-        "A note saying “works on my phone.”"
+        "Confirm total is greater than zero",
+        "Confirm the lesson title has uppercase letters",
+        "Convert the percentage to a string first",
+        "Ignore the total and use a fixed divisor"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Confirm total is greater than zero. The denominator must be valid to avoid division by zero and nonsensical progress.",
+      "reasoning": "The denominator must be valid to avoid division by zero and nonsensical progress. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-7-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Writing Reusable Functions: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "r-7-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "r-7-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Writing Reusable Functions: Default arguments reduce repeated caller details",
+      "language": "r",
+      "code": "label <- function(course, level = \"Beginner\") paste(course, level, sep = \" · \")",
+      "output": "Default arguments reduce repeated caller details."
+    },
+    {
+      "id": "r-7-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “label <- function(course, level = \"Beginner\") paste(course, level, sep = \" · \")”: Assigns the evaluated value to a named R object. Expected behavior: Default arguments reduce repeated caller details. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-7-quiz-2-13",
+      "type": "quiz",
+      "question": "The same reward calculation appears in five click handlers. What is the best refactor?",
+      "options": [
+        "Copy it into five more handlers",
+        "Make each handler compute a different reward",
+        "Hide the arithmetic inside a CSS class name",
+        "Move the calculation into one focused function and call it from each handler"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Move the calculation into one focused function and call it from each handler. One focused function reduces duplication and keeps behavior consistent.",
+      "reasoning": "One focused function reduces duplication and keeps behavior consistent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-7-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Writing Reusable Functions: A function can define what happens for an empty input",
+      "language": "r",
+      "code": "first_value <- function(x) if (length(x)) x[[1]] else NULL",
+      "output": "A function can define what happens for an empty input."
+    },
+    {
+      "id": "r-7-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “first_value <- function(x) if (length(x)) x[[1]] else NULL”: Assigns the evaluated value to a named R object. Expected behavior: A function can define what happens for an empty input. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-7-quiz-3-16",
+      "type": "quiz",
+      "question": "A function receives a list and should report its result without changing unrelated global state. What is the strongest design?",
+      "options": [
+        "Read user interface text as hidden input",
+        "Change global state as a side effect without documenting it",
+        "Use explicit parameters and return a result",
+        "Depend on whichever global value was most recently set"
       ],
       "correctIndex": 2,
-      "explanation": "Source and repeatable instructions let another person verify the behavior independently.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Source and repeatable instructions let another person verify the behavior independently.",
-      "incorrectFeedback": "Review the requirement again. Source and repeatable instructions let another person verify the behavior independently."
+      "explanation": "Correct answer: Use explicit parameters and return a result. Explicit inputs and outputs make functions easier to test and reason about.",
+      "reasoning": "Explicit inputs and outputs make functions easier to test and reason about. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "r-l7-q-05",
+      "id": "r-7-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Writing Reusable Functions: applied challenge and mastery check"
+    },
+    {
+      "id": "r-7-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "r-7-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses writing reusable functions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "r-7-quiz-5-20",
       "type": "quiz",
-      "question": "A final application calculates correct totals for typical inputs. What else should be tested before release?",
+      "question": "A function may receive an empty input. Where should that case be handled?",
       "options": [
-        "Only the title font.",
-        "Only the happy path.",
-        "Invalid, empty, boundary, and error cases as well as normal input.",
-        "Nothing, because the examples ran once."
+        "By assuming the input never becomes empty",
+        "Inside the function’s contract or by a clearly enforced caller precondition",
+        "Only in a comment",
+        "After accessing the first item"
       ],
-      "correctIndex": 2,
-      "explanation": "Boundary and failure-path testing catches common defects that a happy-path run misses.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary and failure-path testing catches common defects that a happy-path run misses.",
-      "incorrectFeedback": "Review the requirement again. Boundary and failure-path testing catches common defects that a happy-path run misses."
+      "correctIndex": 1,
+      "explanation": "Correct answer: Inside the function’s contract or by a clearly enforced caller precondition. The empty-input behavior should be explicit wherever the contract is enforced.",
+      "reasoning": "The empty-input behavior should be explicit wherever the contract is enforced. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-7-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

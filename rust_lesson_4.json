@@ -2,196 +2,175 @@
   "course": "rust",
   "lessonNumber": 4,
   "lessonId": "rust-lesson-4",
-  "title": "Ownership and Memory",
-  "subtitle": "Understand Rust",
-  "description": "Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector.",
+  "title": "Borrowing and References",
+  "subtitle": "Borrowing and References: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on borrowing and references, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "rust-4-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Ownership and Memory"
+      "text": "PAGE 1 — Borrowing and References: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 4: Ownership and Memory. This lesson follows the course dashboard topic “Ownership and Memory”. The goal is to understand Rust. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "rust-4-page-1-teaching-2",
+      "type": "content",
+      "text": "Borrowing and References is not just a syntax topic: it is a way to make the application’s intent explicit. References provide access without taking ownership. Follow lifetime and mutability rules, and avoid creating incompatible references to the same data. In the Code Academy dashboard, that idea matters because A tracker is a practical way to model valid state and make ownership and failure handling explicit. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Ownership gives a program clear responsibility for a value and its lifetime. Make ownership transfers and copies deliberate so data is not unexpectedly shared or discarded."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-1",
+      "id": "rust-4-code-1-3",
       "type": "code",
+      "title": "Example 1 — Borrowing and References: An immutable reference permits reading without taking ownership",
       "language": "rust",
-      "title": "Sample 1: Ownership and Memory in practice",
-      "code": "fn main() { let title = String::from(\"HTML\"); let moved = title; println!(\"{moved}\"); }"
+      "code": "fn length(text: &String) -> usize { text.len() }\nlet title = String::from(\"Borrowing\");\nprintln!(\"{}\", length(&title));",
+      "output": "An immutable reference permits reading without taking ownership."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Understand Rust. Identify the input, the operation, and the result before making changes."
+      "id": "rust-4-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “fn length(text: &String) -> usize { text.len() }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “let title = String::from(\"Borrowing\");”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println!(\"{}\", length(&title));”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: An immutable reference permits reading without taking ownership. What if a line changes? In Rust, changing a move to a borrow or clone changes the ownership contract; after a move, the previous String binding cannot be used. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "rust-l4-q-01",
+      "id": "rust-4-quiz-1-5",
       "type": "quiz",
-      "question": "A Rust String is moved into a new binding. What should the original binding normally be expected to do?",
+      "question": "A function only needs to inspect a lesson title and should leave it usable by the caller. Which parameter is appropriate?",
       "options": [
-        "Remain usable for every operation without restriction.",
-        "Automatically become a global variable.",
-        "No longer be used as an owner unless the value was cloned or otherwise borrowed.",
-        "Become an integer."
+        "A borrowed reference such as `&str`",
+        "Take ownership of a String unnecessarily",
+        "Return a reference to a local temporary",
+        "Create a mutable reference despite needing no mutation"
       ],
-      "correctIndex": 2,
-      "explanation": "A move transfers ownership, so the old binding is no longer valid for ordinary use.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A move transfers ownership, so the old binding is no longer valid for ordinary use.",
-      "incorrectFeedback": "Review the requirement again. A move transfers ownership, so the old binding is no longer valid for ordinary use."
+      "correctIndex": 0,
+      "explanation": "Correct answer: A borrowed reference such as `&str`. An immutable borrow permits reading without transferring ownership.",
+      "reasoning": "An immutable borrow permits reading without transferring ownership. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-2",
+      "id": "rust-4-code-2-6",
       "type": "code",
+      "title": "Example 2 — Borrowing and References: A mutable reference can update the borrowed value while exclusive",
       "language": "rust",
-      "title": "Sample 2: Ownership and Memory in practice",
-      "code": "fn main() { let name = String::from(\"Ama\"); let length = name.len(); println!(\"{name} has {length} characters\"); }"
+      "code": "let mut xp = 100;\nlet points = &mut xp;\n*points += 5;\nprintln!(\"{xp}\");",
+      "output": "A mutable reference can update the borrowed value while exclusive."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Rust project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "rust-4-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “let mut xp = 100;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let points = &mut xp;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “*points += 5;”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “println!(\"{xp}\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: A mutable reference can update the borrowed value while exclusive. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "rust-l4-q-02",
+      "id": "rust-4-quiz-2-8",
       "type": "quiz",
-      "question": "A function only needs to inspect a value. What Rust mechanism generally communicates that no ownership transfer is needed?",
+      "question": "Why can Rust reject a mutable reference while an immutable reference to the same value is active?",
       "options": [
-        "Clone it repeatedly.",
-        "Use a mutable global.",
-        "Allocate a second value at random.",
-        "Borrow it through a reference."
+        "Rust forbids reading any value more than once",
+        "All references must own their values",
+        "Immutable references automatically delete the data",
+        "The exclusivity rule prevents conflicting access that could invalidate assumptions"
       ],
       "correctIndex": 3,
-      "explanation": "Borrowing permits access without transferring ownership.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Borrowing permits access without transferring ownership.",
-      "incorrectFeedback": "Review the requirement again. Borrowing permits access without transferring ownership."
+      "explanation": "Correct answer: The exclusivity rule prevents conflicting access that could invalidate assumptions. Rust limits aliasing of mutable state to prevent data races and invalid assumptions.",
+      "reasoning": "Rust limits aliasing of mutable state to prevent data races and invalid assumptions. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Ownership gives a program clear responsibility for a value and its lifetime. Make ownership transfers and copies deliberate so data is not unexpectedly shared or discarded."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-3",
-      "type": "code",
-      "language": "rust",
-      "title": "Sample 3: Ownership and Memory in practice",
-      "code": "fn main() { let values = vec![2, 4, 6]; let total: i32 = values.iter().sum(); println!(\"{total}\"); }"
-    },
-    {
-      "id": "rust-l4-q-03",
-      "type": "quiz",
-      "question": "Why restrict simultaneous mutable references to the same data?",
-      "options": [
-        "To prevent conflicting access and help avoid unsafe data races/aliasing bugs.",
-        "To make every value immutable forever.",
-        "To remove the need for types.",
-        "To force every variable to be copied."
-      ],
-      "correctIndex": 0,
-      "explanation": "Rust’s borrowing rules prevent conflicting mutable access and help guarantee memory safety.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Rust’s borrowing rules prevent conflicting mutable access and help guarantee memory safety.",
-      "incorrectFeedback": "Review the requirement again. Rust’s borrowing rules prevent conflicting mutable access and help guarantee memory safety."
-    },
-    {
-      "id": "page-3-heading",
+      "id": "rust-4-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — Borrowing and References: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Ownership gives a program clear responsibility for a value and its lifetime. Make ownership transfers and copies deliberate so data is not unexpectedly shared or discarded."
+      "id": "rust-4-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. References provide access without taking ownership. Follow lifetime and mutability rules, and avoid creating incompatible references to the same data. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker is a practical way to model valid state and make ownership and failure handling explicit. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-4",
+      "id": "rust-4-code-3-11",
       "type": "code",
+      "title": "Example 3 — Borrowing and References: A string slice accepts a borrowed view of string data",
       "language": "rust",
-      "title": "Sample 4: Ownership and Memory in practice",
-      "code": "fn main() { let message = String::from(\"ready\"); print_message(&message); println!(\"{message}\"); }\nfn print_message(text: &String) { println!(\"{text}\"); }"
+      "code": "fn display(name: &str) { println!(\"{name}\"); }\ndisplay(\"Code Academy\");",
+      "output": "A string slice accepts a borrowed view of string data."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn ownership rules, moves, stack and heap concepts, scope and how Rust manages memory without a garbage collector. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "rust-4-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “fn display(name: &str) { println!(\"{name}\"); }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “display(\"Code Academy\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: A string slice accepts a borrowed view of string data. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "rust-l4-q-04",
+      "id": "rust-4-quiz-2-13",
       "type": "quiz",
-      "question": "A learner’s XP changes after every correct answer. Which design is easiest to maintain?",
+      "question": "A function returns a reference to a local String created inside that function. What is the issue?",
       "options": [
-        "Repeat the current XP number in many places.",
-        "Store XP in one appropriately scoped variable and update it deliberately.",
-        "Use a different variable name for every update.",
-        "Convert XP to a text label before doing arithmetic."
+        "Every reference extends a local variable lifetime",
+        "A reference copies the String contents",
+        "The referenced value would be dropped before the returned reference could be used",
+        "The String is automatically global"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The referenced value would be dropped before the returned reference could be used. References cannot outlive the data they point to.",
+      "reasoning": "References cannot outlive the data they point to. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "rust-4-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Borrowing and References: The reference must not outlive the collection it refers to",
+      "language": "rust",
+      "code": "let values = vec![1, 2, 3];\nlet first = &values[0];\nprintln!(\"{first}\");",
+      "output": "The reference must not outlive the collection it refers to."
+    },
+    {
+      "id": "rust-4-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “let values = vec![1, 2, 3];”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let first = &values[0];”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println!(\"{first}\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: The reference must not outlive the collection it refers to. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "rust-4-quiz-3-16",
+      "type": "quiz",
+      "question": "A caller needs an independent String that outlives the original. What should it consider?",
+      "options": [
+        "Ignore the compiler lifetime error",
+        "Return or create an owned String rather than returning a short-lived borrow",
+        "Return a reference to stack-local data",
+        "Use an immutable reference as permanent storage"
       ],
       "correctIndex": 1,
-      "explanation": "One well-defined source of truth prevents values from drifting apart.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. One well-defined source of truth prevents values from drifting apart.",
-      "incorrectFeedback": "Review the requirement again. One well-defined source of truth prevents values from drifting apart."
+      "explanation": "Correct answer: Return or create an owned String rather than returning a short-lived borrow. Owned data has its own lifetime and can safely outlive a local borrowed scope.",
+      "reasoning": "Owned data has its own lifetime and can safely outlive a local borrowed scope. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "rust-l4-q-05",
+      "id": "rust-4-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Borrowing and References: applied challenge and mastery check"
+    },
+    {
+      "id": "rust-4-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. References provide access without taking ownership. Follow lifetime and mutability rules, and avoid creating incompatible references to the same data. For the Code Academy dashboard, A tracker is a practical way to model valid state and make ownership and failure handling explicit. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "rust-4-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses borrowing and references. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "rust-4-quiz-5-20",
       "type": "quiz",
-      "question": "A setting must never be reassigned during the program. What should you choose?",
+      "question": "A function only reads data. Which API contract is clearest?",
       "options": [
-        "A constant or immutable binding supported by the language.",
-        "A global variable that any function can change.",
-        "A string containing the setting name.",
-        "A loop that resets the value repeatedly."
+        "Accept an immutable reference and avoid requiring mutation",
+        "Accept `&mut` solely by habit",
+        "Consume ownership even though the caller still needs the value",
+        "Expose the value through an unchecked raw pointer"
       ],
       "correctIndex": 0,
-      "explanation": "Constants communicate intent and help prevent accidental reassignment.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Constants communicate intent and help prevent accidental reassignment.",
-      "incorrectFeedback": "Review the requirement again. Constants communicate intent and help prevent accidental reassignment."
+      "explanation": "Correct answer: Accept an immutable reference and avoid requiring mutation. The signature should express the minimum access the function requires.",
+      "reasoning": "The signature should express the minimum access the function requires. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "rust-4-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: References provide access without taking ownership. Follow lifetime and mutability rules, and avoid creating incompatible references to the same data. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

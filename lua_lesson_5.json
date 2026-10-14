@@ -2,196 +2,175 @@
   "course": "lua",
   "lessonNumber": 5,
   "lessonId": "lua-lesson-5",
-  "title": "Loops and Iteration",
-  "subtitle": "while, repeat-until, numeric for loops and generic for loops.",
-  "description": "Automate repeated operations and efficiently process collections of information.",
+  "title": "Functions, Scope and Return Values",
+  "subtitle": "Functions, Scope and Return Values: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on functions, scope and return values, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "lua-5-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Loops and Iteration"
+      "text": "PAGE 1 — Functions, Scope and Return Values: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 5: Loops and Iteration. This lesson follows the course dashboard topic “Loops and Iteration”. The goal is to while, repeat-until, numeric for loops and generic for loops.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "lua-5-page-1-teaching-2",
+      "type": "content",
+      "text": "Functions, Scope and Return Values is not just a syntax topic: it is a way to make the application’s intent explicit. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. In the Code Academy dashboard, that idea matters because A small lesson tracker can use tables and functions while keeping state changes and errors clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Loops repeat work while changing or examining a sequence of values. Choose a loop that matches the task: a counted loop for a known range, or a condition-controlled loop when the stopping point depends on the data."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l5-code-1",
+      "id": "lua-5-code-1-3",
       "type": "code",
+      "title": "Example 1 — Functions, Scope and Return Values: A local function has lexical scope and returns a reward",
       "language": "lua",
-      "title": "Sample 1: Loops and Iteration in practice",
-      "code": "for lesson=1,3 do print(\"Lesson \" .. lesson) end"
+      "code": "local function awardXp(correct) if correct then return 5 end return 0 end\nprint(awardXp(true))",
+      "output": "A local function has lexical scope and returns a reward."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates while, repeat-until, numeric for loops and generic for loops. Identify the input, the operation, and the result before making changes."
+      "id": "lua-5-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “local function awardXp(correct) if correct then return 5 end return 0 end”: Declares a function whose name is limited to the local scope. Line 2 — “print(awardXp(true))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A local function has lexical scope and returns a reward. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "lua-l5-q-01",
+      "id": "lua-5-quiz-1-5",
       "type": "quiz",
-      "question": "A loop works for a three-item list but fails for an empty list. What should be verified?",
+      "question": "A helper computes XP and another function must add the returned amount to the profile. What should the helper do?",
       "options": [
-        "The initial state and zero-iteration behavior.",
-        "The author’s keyboard.",
-        "The text color.",
-        "Whether the list has a descriptive name."
-      ],
-      "correctIndex": 0,
-      "explanation": "Empty input is an important boundary case and may mean the loop body never runs.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Empty input is an important boundary case and may mean the loop body never runs.",
-      "incorrectFeedback": "Review the requirement again. Empty input is an important boundary case and may mean the loop body never runs."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Automate repeated operations and efficiently process collections of information.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l5-code-2",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 2: Loops and Iteration in practice",
-      "code": "for _, score in ipairs({72,88,91}) do print(score) end"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Lua project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "lua-l5-q-02",
-      "type": "quiz",
-      "question": "A loop should process indexes 0 through 4. Which boundary is most likely to process five items without accessing index 5?",
-      "options": [
-        "Continue while index < 5.",
-        "Continue while index <= 5.",
-        "Start at 1 and continue while index <= 5.",
-        "Increase the index by zero."
-      ],
-      "correctIndex": 0,
-      "explanation": "For zero-based indexes, values 0, 1, 2, 3, and 4 are selected by a less-than-five boundary.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. For zero-based indexes, values 0, 1, 2, 3, and 4 are selected by a less-than-five boundary.",
-      "incorrectFeedback": "Review the requirement again. For zero-based indexes, values 0, 1, 2, 3, and 4 are selected by a less-than-five boundary."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "A reliable loop has an initialization, a condition that will eventually become false, and an update that moves the program toward that stopping point. If one of these is missing or incorrect, the result may be an infinite loop or an off-by-one error."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l5-code-3",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 3: Loops and Iteration in practice",
-      "code": "local count=3\nwhile count>0 do print(count); count=count-1 end"
-    },
-    {
-      "id": "lua-l5-q-03",
-      "type": "quiz",
-      "question": "A while loop never stops. What should be inspected first?",
-      "options": [
-        "The colors used by the program.",
-        "The file name only.",
-        "Whether its condition can become false and whether loop state changes.",
-        "The comment at the top."
-      ],
-      "correctIndex": 2,
-      "explanation": "A terminating loop needs a condition that can become false and an update that moves toward it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A terminating loop needs a condition that can become false and an update that moves toward it.",
-      "incorrectFeedback": "Review the requirement again. A terminating loop needs a condition that can become false and an update that moves toward it."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "For collections, prefer the language’s safe iteration tools when possible. Avoid changing the same collection during iteration unless the language and algorithm explicitly support that operation."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Lua. Paste this snippet into the Lua editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l5-code-4",
-      "type": "code",
-      "language": "lua",
-      "title": "Sample 4: Loops and Iteration in practice",
-      "code": "local total=0\nfor _, value in ipairs({2,4,6}) do total=total+value end\nprint(total)"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Automate repeated operations and efficiently process collections of information. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "lua-l5-q-04",
-      "type": "quiz",
-      "question": "A collection may grow while being processed. Which approach is safest?",
-      "options": [
-        "Assume its length never changes.",
-        "Choose an iteration strategy that defines how changes are handled.",
-        "Always delete the first item.",
-        "Use nested loops without checking bounds."
-      ],
-      "correctIndex": 1,
-      "explanation": "Changing a collection during iteration can invalidate indexes or skip work unless the behavior is deliberately designed.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Changing a collection during iteration can invalidate indexes or skip work unless the behavior is deliberately designed.",
-      "incorrectFeedback": "Review the requirement again. Changing a collection during iteration can invalidate indexes or skip work unless the behavior is deliberately designed."
-    },
-    {
-      "id": "lua-l5-q-05",
-      "type": "quiz",
-      "question": "A program must calculate the total of every score in a list. Which technique is appropriate?",
-      "options": [
-        "Print the first score and ignore the rest.",
-        "Use the list length as the total score.",
-        "Stop after one iteration.",
-        "Initialize an accumulator and add each score during iteration."
+        "Only print the reward and return nothing",
+        "Update an unrelated global variable without a clear contract",
+        "Write the reward into a page title",
+        "Return the numeric reward so the caller can use it"
       ],
       "correctIndex": 3,
-      "explanation": "An accumulator combines values as the loop visits each item.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. An accumulator combines values as the loop visits each item.",
-      "incorrectFeedback": "Review the requirement again. An accumulator combines values as the loop visits each item."
+      "explanation": "Correct answer: Return the numeric reward so the caller can use it. A return value makes the result reusable by the caller and testable independently.",
+      "reasoning": "A return value makes the result reusable by the caller and testable independently. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-5-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Functions, Scope and Return Values: Checks the denominator and returns a calculated percentage",
+      "language": "lua",
+      "code": "local function progress(done, total) if total <= 0 then return 0 end return done / total * 100 end",
+      "output": "Checks the denominator and returns a calculated percentage."
+    },
+    {
+      "id": "lua-5-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “local function progress(done, total) if total <= 0 then return 0 end return done / total * 100 end”: Declares a function whose name is limited to the local scope. Expected behavior: Checks the denominator and returns a calculated percentage. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-5-quiz-2-8",
+      "type": "quiz",
+      "question": "A progress helper divides completed lessons by the total. Which check belongs before division?",
+      "options": [
+        "Convert the percentage to a string first",
+        "Ignore the total and use a fixed divisor",
+        "Confirm total is greater than zero",
+        "Confirm the lesson title has uppercase letters"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Confirm total is greater than zero. The denominator must be valid to avoid division by zero and nonsensical progress.",
+      "reasoning": "The denominator must be valid to avoid division by zero and nonsensical progress. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-5-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Functions, Scope and Return Values: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "lua-5-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "lua-5-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Functions, Scope and Return Values: An optional argument can be given a default inside the function",
+      "language": "lua",
+      "code": "local function label(course, level) level = level or \"Beginner\"; return course .. \" · \" .. level end\nprint(label(\"Lua\"))",
+      "output": "An optional argument can be given a default inside the function."
+    },
+    {
+      "id": "lua-5-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “local function label(course, level) level = level or \"Beginner\"; return course .. \" · \" .. level end”: Declares a function whose name is limited to the local scope. Line 2 — “print(label(\"Lua\"))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An optional argument can be given a default inside the function. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-5-quiz-2-13",
+      "type": "quiz",
+      "question": "The same reward calculation appears in five click handlers. What is the best refactor?",
+      "options": [
+        "Hide the arithmetic inside a CSS class name",
+        "Move the calculation into one focused function and call it from each handler",
+        "Copy it into five more handlers",
+        "Make each handler compute a different reward"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Move the calculation into one focused function and call it from each handler. One focused function reduces duplication and keeps behavior consistent.",
+      "reasoning": "One focused function reduces duplication and keeps behavior consistent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-5-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Functions, Scope and Return Values: Returning data lets callers use a calculation rather than relying on output side effects",
+      "language": "lua",
+      "code": "local function sum(a, b) return a + b end\nlocal total = sum(4, 6)\nprint(total)",
+      "output": "Returning data lets callers use a calculation rather than relying on output side effects."
+    },
+    {
+      "id": "lua-5-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “local function sum(a, b) return a + b end”: Declares a function whose name is limited to the local scope. Line 2 — “local total = sum(4, 6)”: Creates a local variable or table binding for this scope. Line 3 — “print(total)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Returning data lets callers use a calculation rather than relying on output side effects. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-5-quiz-3-16",
+      "type": "quiz",
+      "question": "A function receives a list and should report its result without changing unrelated global state. What is the strongest design?",
+      "options": [
+        "Use explicit parameters and return a result",
+        "Depend on whichever global value was most recently set",
+        "Read user interface text as hidden input",
+        "Change global state as a side effect without documenting it"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Use explicit parameters and return a result. Explicit inputs and outputs make functions easier to test and reason about.",
+      "reasoning": "Explicit inputs and outputs make functions easier to test and reason about. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-5-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Functions, Scope and Return Values: applied challenge and mastery check"
+    },
+    {
+      "id": "lua-5-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "lua-5-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses functions, scope and return values. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "lua-5-quiz-5-20",
+      "type": "quiz",
+      "question": "A function may receive an empty input. Where should that case be handled?",
+      "options": [
+        "Only in a comment",
+        "After accessing the first item",
+        "By assuming the input never becomes empty",
+        "Inside the function’s contract or by a clearly enforced caller precondition"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Inside the function’s contract or by a clearly enforced caller precondition. The empty-input behavior should be explicit wherever the contract is enforced.",
+      "reasoning": "The empty-input behavior should be explicit wherever the contract is enforced. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-5-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Functions package a named task, receive arguments, and may return a reusable result. A definition alone does not execute the function. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

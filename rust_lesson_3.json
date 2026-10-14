@@ -2,196 +2,175 @@
   "course": "rust",
   "lessonNumber": 3,
   "lessonId": "rust-lesson-3",
-  "title": "Functions, Expressions and Control Flow",
-  "subtitle": "Build reusable functions and control program execution.",
-  "description": "Learn functions, parameters, return values, expressions, if, else, loops, while, for and match.",
+  "title": "Ownership and Moves",
+  "subtitle": "Ownership and Moves: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on ownership and moves, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Beginner",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "rust-3-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Functions, Expressions and Control Flow"
+      "text": "PAGE 1 — Ownership and Moves: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 3: Functions, Expressions and Control Flow. This lesson follows the course dashboard topic “Functions, Expressions and Control Flow”. The goal is to build reusable functions and control program execution.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "rust-3-page-1-teaching-2",
+      "type": "content",
+      "text": "Ownership and Moves is not just a syntax topic: it is a way to make the application’s intent explicit. Ownership determines which binding controls a value’s lifetime. Moving a value transfers ownership; borrowing can provide access without creating another owner. In the Code Academy dashboard, that idea matters because A tracker is a practical way to model valid state and make ownership and failure handling explicit. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A function packages a task behind a name so callers can use it without repeating its implementation. Good functions have a focused responsibility, meaningful parameter names, and a clear result or documented side effect."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-1",
+      "id": "rust-3-code-1-3",
       "type": "code",
+      "title": "Example 1 — Ownership and Moves: Moving a String transfers ownership; the original binding can no longer be used",
       "language": "rust",
-      "title": "Sample 1: Functions, Expressions and Control Flow in practice",
-      "code": "fn greet(name: &str) -> String { format!(\"Welcome, {name}!\") }\nfn main() { println!(\"{}\", greet(\"Ama\")); }"
+      "code": "let course = String::from(\"Rust\");\nlet active_course = course;\nprintln!(\"{active_course}\");",
+      "output": "Moving a String transfers ownership; the original binding can no longer be used."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Build reusable functions and control program execution. Identify the input, the operation, and the result before making changes."
+      "id": "rust-3-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “let course = String::from(\"Rust\");”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let active_course = course;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println!(\"{active_course}\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Moving a String transfers ownership; the original binding can no longer be used. What if a line changes? In Rust, changing a move to a borrow or clone changes the ownership contract; after a move, the previous String binding cannot be used. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "rust-l3-q-01",
+      "id": "rust-3-quiz-1-5",
       "type": "quiz",
-      "question": "A function has eight unrelated responsibilities and is hard to test. What is the best improvement?",
+      "question": "A Rust `String` is assigned to another binding. What typically happens to the original binding?",
       "options": [
-        "Add more global variables.",
-        "Split it into small functions with clear responsibilities.",
-        "Remove all function names.",
-        "Put all code into one conditional."
+        "The value is dropped before the new binding receives it",
+        "Ownership moves, so the original binding cannot be used afterward",
+        "The string is always deeply copied automatically",
+        "Both bindings become independent owners without cost"
       ],
       "correctIndex": 1,
-      "explanation": "Small cohesive functions are easier to test and maintain.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Small cohesive functions are easier to test and maintain.",
-      "incorrectFeedback": "Review the requirement again. Small cohesive functions are easier to test and maintain."
+      "explanation": "Correct answer: Ownership moves, so the original binding cannot be used afterward. A String move transfers ownership; use borrowing or clone when the intended semantics require it.",
+      "reasoning": "A String move transfers ownership; use borrowing or clone when the intended semantics require it. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn functions, parameters, return values, expressions, if, else, loops, while, for and match.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-2",
+      "id": "rust-3-code-2-6",
       "type": "code",
+      "title": "Example 2 — Ownership and Moves: Borrowing for len() does not move the String",
       "language": "rust",
-      "title": "Sample 2: Functions, Expressions and Control Flow in practice",
-      "code": "fn add(a: i32, b: i32) -> i32 { a + b }\nfn main() { println!(\"{}\", add(8, 4)); }"
+      "code": "let title = String::from(\"Ownership\");\nlet count = title.len();\nprintln!(\"{title}: {count}\");",
+      "output": "Borrowing for len() does not move the String."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Rust project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "rust-3-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “let title = String::from(\"Ownership\");”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let count = title.len();”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println!(\"{title}: {count}\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Borrowing for len() does not move the String. What if a line changes? In Rust, changing a move to a borrow or clone changes the ownership contract; after a move, the previous String binding cannot be used. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "rust-l3-q-02",
+      "id": "rust-3-quiz-2-8",
       "type": "quiz",
-      "question": "A function receives an unexpected input. What should the contract make clear?",
+      "question": "A small integer such as `u32` is assigned to another variable. Why may the original still be usable?",
       "options": [
-        "Only the function’s color.",
-        "The screen size.",
-        "How many comments it contains.",
-        "Which inputs are valid and what happens for invalid input."
-      ],
-      "correctIndex": 3,
-      "explanation": "A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A clear function contract specifies assumptions, returned values, and failure behavior.",
-      "incorrectFeedback": "Review the requirement again. A clear function contract specifies assumptions, returned values, and failure behavior."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Parameters are the inputs a function accepts; arguments are the actual values supplied by a call. A return value sends a result back to the caller, while printing merely displays information and does not automatically make it available for later calculations."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-3",
-      "type": "code",
-      "language": "rust",
-      "title": "Sample 3: Functions, Expressions and Control Flow in practice",
-      "code": "fn passed(score: i32, cutoff: i32) -> bool { score >= cutoff }\nfn main() { println!(\"{}\", passed(72, 50)); }"
-    },
-    {
-      "id": "rust-l3-q-03",
-      "type": "quiz",
-      "question": "A function calculates whether a score passes. How should the caller reuse the result?",
-      "options": [
-        "Infer it from a printed sentence.",
-        "Re-run the whole application.",
-        "Use the returned Boolean or documented result.",
-        "Read the function’s source text at runtime."
-      ],
-      "correctIndex": 2,
-      "explanation": "A returned result is a reliable interface between the function and its caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A returned result is a reliable interface between the function and its caller.",
-      "incorrectFeedback": "Review the requirement again. A returned result is a reliable interface between the function and its caller."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Testing a function with normal, minimum, maximum, and invalid inputs exposes assumptions early. Small functions are easier to test and combine than one large function that handles unrelated jobs."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Rust. Paste this snippet into the Rust editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l3-code-4",
-      "type": "code",
-      "language": "rust",
-      "title": "Sample 4: Functions, Expressions and Control Flow in practice",
-      "code": "fn double_value(value: i32) -> i32 { value * 2 }\nfn main() { println!(\"{}\", double_value(9)); }"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn functions, parameters, return values, expressions, if, else, loops, while, for and match. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "rust-l3-q-04",
-      "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
-      "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
-      ],
-      "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
-    },
-    {
-      "id": "rust-l3-q-05",
-      "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
-      "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
+        "The type implements Copy, so the value is copied by assignment",
+        "All Rust types implement Copy",
+        "The compiler disables ownership for local variables",
+        "Integers become references automatically"
       ],
       "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
+      "explanation": "Correct answer: The type implements Copy, so the value is copied by assignment. Copy types include simple scalar values; heap-owning String does not implement Copy.",
+      "reasoning": "Copy types include simple scalar values; heap-owning String does not implement Copy. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "rust-3-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Ownership and Moves: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "rust-3-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Ownership determines which binding controls a value’s lifetime. Moving a value transfers ownership; borrowing can provide access without creating another owner. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker is a practical way to model valid state and make ownership and failure handling explicit. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "rust-3-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Ownership and Moves: clone explicitly duplicates owned data when that cost is appropriate",
+      "language": "rust",
+      "code": "let first = String::from(\"lesson\");\nlet second = first.clone();\nprintln!(\"{first}, {second}\");",
+      "output": "clone explicitly duplicates owned data when that cost is appropriate."
+    },
+    {
+      "id": "rust-3-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “let first = String::from(\"lesson\");”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let second = first.clone();”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println!(\"{first}, {second}\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: clone explicitly duplicates owned data when that cost is appropriate. What if a line changes? In Rust, changing a move to a borrow or clone changes the ownership contract; after a move, the previous String binding cannot be used. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "rust-3-quiz-2-13",
+      "type": "quiz",
+      "question": "Two independent owned copies of a String are genuinely required. Which operation makes that cost explicit?",
+      "options": [
+        "Reuse the moved binding after assignment",
+        "Take a reference and store it beyond the owner’s lifetime",
+        "Replace the value with an uninitialized variable",
+        "Call clone() on the original value"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Call clone() on the original value. clone creates a distinct owned value when duplicating the data is intended.",
+      "reasoning": "clone creates a distinct owned value when duplicating the data is intended. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "rust-3-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Ownership and Moves: Copy types such as small integers remain usable after assignment",
+      "language": "rust",
+      "code": "let score: u32 = 5;\nlet other = score;\nprintln!(\"{score} {other}\");",
+      "output": "Copy types such as small integers remain usable after assignment."
+    },
+    {
+      "id": "rust-3-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “let score: u32 = 5;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let other = score;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println!(\"{score} {other}\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Copy types such as small integers remain usable after assignment. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "rust-3-quiz-3-16",
+      "type": "quiz",
+      "question": "A function only needs to inspect a String briefly. What is normally preferable to cloning it?",
+      "options": [
+        "Move it and then try to use the original",
+        "Return a pointer without lifetime guarantees",
+        "Borrow it through a reference such as `&str` or `&String`",
+        "Clone it on every call regardless of cost"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Borrow it through a reference such as `&str` or `&String`. Borrowing permits access without taking ownership or duplicating the owned data.",
+      "reasoning": "Borrowing permits access without taking ownership or duplicating the owned data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "rust-3-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Ownership and Moves: applied challenge and mastery check"
+    },
+    {
+      "id": "rust-3-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Ownership determines which binding controls a value’s lifetime. Moving a value transfers ownership; borrowing can provide access without creating another owner. For the Code Academy dashboard, A tracker is a practical way to model valid state and make ownership and failure handling explicit. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "rust-3-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses ownership and moves. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "rust-3-quiz-5-20",
+      "type": "quiz",
+      "question": "What key question should guide choosing move, borrow, or clone?",
+      "options": [
+        "Which choice always copies the value",
+        "Whether the caller should transfer ownership, share temporary access, or create a separate owned value",
+        "Which choice uses the most syntax",
+        "Which choice hides the ownership behavior"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Whether the caller should transfer ownership, share temporary access, or create a separate owned value. The intended lifetime and ownership contract determine the correct operation.",
+      "reasoning": "The intended lifetime and ownership contract determine the correct operation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "rust-3-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Ownership determines which binding controls a value’s lifetime. Moving a value transfers ownership; borrowing can provide access without creating another owner. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

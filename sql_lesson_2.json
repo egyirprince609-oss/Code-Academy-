@@ -2,196 +2,175 @@
   "course": "sql",
   "lessonNumber": 2,
   "lessonId": "sql-lesson-2",
-  "title": "Creating Databases and Tables",
-  "subtitle": "CREATE DATABASE, CREATE TABLE, columns, data types and primary keys.",
-  "description": "Learn how to create database structures and define the information each table will store.",
+  "title": "WHERE: Filter Rows Precisely",
+  "subtitle": "WHERE: Filter Rows Precisely: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on where: filter rows precisely, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Beginner",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "sql-2-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Creating Databases and Tables"
+      "text": "PAGE 1 — WHERE: Filter Rows Precisely: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 2: Creating Databases and Tables. This lesson follows the course dashboard topic “Creating Databases and Tables”. The goal is to cREATE DATABASE, CREATE TABLE, columns, data types and primary keys.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "sql-2-page-1-teaching-2",
+      "type": "content",
+      "text": "WHERE: Filter Rows Precisely is not just a syntax topic: it is a way to make the application’s intent explicit. WHERE filters rows before grouping. NULL is not a regular value, so use IS NULL or IS NOT NULL instead of ordinary equality. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "CREATE TABLE defines the columns and their data types before the table stores records. Choose types that reflect the data and constraints that prevent invalid states."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-1",
+      "id": "sql-2-code-1-3",
       "type": "code",
+      "title": "Example 1 — WHERE: Filter Rows Precisely: Uses a parameter placeholder rather than concatenating input",
       "language": "sql",
-      "title": "Sample 1: Creating Databases and Tables in practice",
-      "code": "CREATE TABLE learners (\n  learner_id INTEGER PRIMARY KEY,\n  display_name TEXT NOT NULL,\n  email TEXT UNIQUE\n);"
+      "code": "SELECT title FROM lessons WHERE course = ?;",
+      "output": "Uses a parameter placeholder rather than concatenating input."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates CREATE DATABASE, CREATE TABLE, columns, data types and primary keys. Identify the input, the operation, and the result before making changes."
+      "id": "sql-2-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT title FROM lessons WHERE course = ?;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Uses a parameter placeholder rather than concatenating input. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l2-q-01",
+      "id": "sql-2-quiz-1-5",
       "type": "quiz",
-      "question": "A project repeats the same validation rule in four places and the rules now disagree. What should be done?",
+      "question": "A query should return published lessons with lesson_number >= 3. Which clause expresses this row condition?",
       "options": [
-        "Centralize the rule in a reusable function and test it.",
-        "Add a fifth copy.",
-        "Remove the validation everywhere.",
-        "Make the rule depend on screen size."
+        "ORDER BY published = TRUE",
+        "LIMIT published = TRUE",
+        "WHERE published = TRUE AND lesson_number >= 3",
+        "HAVING without GROUP BY in any dialect"
       ],
-      "correctIndex": 0,
-      "explanation": "A single tested rule avoids inconsistent copies and reduces maintenance cost.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A single tested rule avoids inconsistent copies and reduces maintenance cost.",
-      "incorrectFeedback": "Review the requirement again. A single tested rule avoids inconsistent copies and reduces maintenance cost."
+      "correctIndex": 2,
+      "explanation": "Correct answer: WHERE published = TRUE AND lesson_number >= 3. WHERE filters rows before grouping or sorting.",
+      "reasoning": "WHERE filters rows before grouping or sorting. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn how to create database structures and define the information each table will store.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-2",
+      "id": "sql-2-code-2-6",
       "type": "code",
+      "title": "Example 2 — WHERE: Filter Rows Precisely: Combines safe row conditions",
       "language": "sql",
-      "title": "Sample 2: Creating Databases and Tables in practice",
-      "code": "CREATE TABLE courses (\n  course_id INTEGER PRIMARY KEY,\n  title TEXT NOT NULL,\n  total_lessons INTEGER NOT NULL CHECK (total_lessons > 0)\n);"
+      "code": "SELECT title FROM lessons WHERE published = TRUE AND lesson_number >= 3;",
+      "output": "Combines safe row conditions."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real SQL project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "sql-2-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT title FROM lessons WHERE published = TRUE AND lesson_number >= 3;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Combines safe row conditions. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l2-q-02",
+      "id": "sql-2-quiz-2-8",
       "type": "quiz",
-      "question": "A project’s output looks correct but the code is difficult to maintain. What is the best next step?",
+      "question": "A query must find lessons with no subtitle. Which predicate is correct?",
       "options": [
-        "Rename every variable randomly.",
-        "Add a second implementation without removing the first.",
-        "Ignore structure because the output is right.",
-        "Separate responsibilities, improve names, and add targeted tests."
-      ],
-      "correctIndex": 3,
-      "explanation": "Maintainability and tests make later changes safer, beyond simply matching one output.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Maintainability and tests make later changes safer, beyond simply matching one output.",
-      "incorrectFeedback": "Review the requirement again. Maintainability and tests make later changes safer, beyond simply matching one output."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "A primary key uniquely identifies each row. A foreign key can enforce a relationship with another table, and NOT NULL or UNIQUE constraints can express important data rules."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-3",
-      "type": "code",
-      "language": "sql",
-      "title": "Sample 3: Creating Databases and Tables in practice",
-      "code": "CREATE TABLE enrollments (\n  learner_id INTEGER NOT NULL,\n  course_id INTEGER NOT NULL,\n  PRIMARY KEY (learner_id, course_id),\n  FOREIGN KEY (learner_id) REFERENCES learners(learner_id),\n  FOREIGN KEY (course_id) REFERENCES courses(course_id)\n);"
-    },
-    {
-      "id": "sql-l2-q-03",
-      "type": "quiz",
-      "question": "An application relies on a service that may be unavailable. Which state should the UI or CLI handle?",
-      "options": [
-        "Success only.",
-        "A clear loading/success/error or recovery state.",
-        "No output until it crashes.",
-        "A fabricated result."
+        "subtitle IS FALSE",
+        "subtitle IS NULL",
+        "subtitle = NULL",
+        "subtitle == \"\" for every missing case"
       ],
       "correctIndex": 1,
-      "explanation": "Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not.",
-      "incorrectFeedback": "Review the requirement again. Real applications must communicate expected failure states and avoid claiming work succeeded when it did not."
+      "explanation": "Correct answer: subtitle IS NULL. SQL NULL must be tested with IS NULL because ordinary equality yields unknown.",
+      "reasoning": "SQL NULL must be tested with IS NULL because ordinary equality yields unknown. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
+      "id": "sql-2-page-2-9",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 2 — WHERE: Filter Rows Precisely: implementation, debugging, and edge cases"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Database dialects differ in some type names and identity syntax. Learn the database your app actually uses and test DDL changes in a safe development database before production."
+      "id": "sql-2-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. WHERE filters rows before grouping. NULL is not a regular value, so use IS NULL or IS NOT NULL instead of ordinary equality. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select SQL. Paste this snippet into the SQL practice editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l2-code-4",
+      "id": "sql-2-code-3-11",
       "type": "code",
+      "title": "Example 3 — WHERE: Filter Rows Precisely: Tests for missing values correctly",
       "language": "sql",
-      "title": "Sample 4: Creating Databases and Tables in practice",
-      "code": "CREATE TABLE lesson_results (\n  result_id INTEGER PRIMARY KEY,\n  learner_id INTEGER NOT NULL,\n  score INTEGER NOT NULL CHECK (score BETWEEN 0 AND 100)\n);"
+      "code": "SELECT title FROM lessons WHERE subtitle IS NULL;",
+      "output": "Tests for missing values correctly."
     },
     {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to create database structures and define the information each table will store. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
+      "id": "sql-2-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT title FROM lessons WHERE subtitle IS NULL;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Tests for missing values correctly. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "sql-l2-q-04",
+      "id": "sql-2-quiz-2-13",
       "type": "quiz",
-      "question": "What makes a final coding project reproducible?",
+      "question": "A filter requires scores between 70 and 100 inclusive. Which condition is correct?",
       "options": [
-        "A screenshot of a successful run only.",
-        "A single unexplained binary.",
-        "Source, clear run instructions, and testable expected behavior.",
-        "A note saying “works on my phone.”"
+        "score BETWEEN 70 AND 100",
+        "score > 70 AND score < 100",
+        "score < 70 OR score > 100",
+        "score = 70 AND score = 100"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: score BETWEEN 70 AND 100. BETWEEN is inclusive in SQL and includes both boundary values.",
+      "reasoning": "BETWEEN is inclusive in SQL and includes both boundary values. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-2-code-4-14",
+      "type": "code",
+      "title": "Example 4 — WHERE: Filter Rows Precisely: Uses an inclusive range predicate",
+      "language": "sql",
+      "code": "SELECT title FROM lessons WHERE lesson_number BETWEEN 1 AND 5;",
+      "output": "Uses an inclusive range predicate."
+    },
+    {
+      "id": "sql-2-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT title FROM lessons WHERE lesson_number BETWEEN 1 AND 5;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Uses an inclusive range predicate. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-2-quiz-3-16",
+      "type": "quiz",
+      "question": "A report should include only a particular learner’s attempts. What is essential?",
+      "options": [
+        "An ORDER BY on the learner key alone",
+        "A SELECT * with no condition",
+        "A HAVING clause that never references grouped data",
+        "A WHERE predicate on the learner key, using a bound parameter"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A WHERE predicate on the learner key, using a bound parameter. The row predicate restricts the returned records; parameterization is safer for application input.",
+      "reasoning": "The row predicate restricts the returned records; parameterization is safer for application input. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-2-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — WHERE: Filter Rows Precisely: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-2-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. WHERE filters rows before grouping. NULL is not a regular value, so use IS NULL or IS NOT NULL instead of ordinary equality. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-2-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses where: filter rows precisely. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-2-quiz-5-20",
+      "type": "quiz",
+      "question": "Why can `score <> 0` fail to include rows where score is NULL?",
+      "options": [
+        "SQL automatically converts NULL to an empty string",
+        "WHERE ignores every numeric condition",
+        "Comparison with NULL yields unknown rather than true",
+        "NULL is always equal to zero"
       ],
       "correctIndex": 2,
-      "explanation": "Source and repeatable instructions let another person verify the behavior independently.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Source and repeatable instructions let another person verify the behavior independently.",
-      "incorrectFeedback": "Review the requirement again. Source and repeatable instructions let another person verify the behavior independently."
+      "explanation": "Correct answer: Comparison with NULL yields unknown rather than true. Missing values must be handled explicitly with IS NULL or IS NOT NULL.",
+      "reasoning": "Missing values must be handled explicitly with IS NULL or IS NOT NULL. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "sql-l2-q-05",
-      "type": "quiz",
-      "question": "A final application calculates correct totals for typical inputs. What else should be tested before release?",
-      "options": [
-        "Only the title font.",
-        "Only the happy path.",
-        "Invalid, empty, boundary, and error cases as well as normal input.",
-        "Nothing, because the examples ran once."
-      ],
-      "correctIndex": 2,
-      "explanation": "Boundary and failure-path testing catches common defects that a happy-path run misses.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary and failure-path testing catches common defects that a happy-path run misses.",
-      "incorrectFeedback": "Review the requirement again. Boundary and failure-path testing catches common defects that a happy-path run misses."
+      "id": "sql-2-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: WHERE filters rows before grouping. NULL is not a regular value, so use IS NULL or IS NOT NULL instead of ordinary equality. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

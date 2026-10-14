@@ -2,196 +2,175 @@
   "course": "r",
   "lessonNumber": 9,
   "lessonId": "r-lesson-9",
-  "title": "Statistics and Data Analysis",
-  "subtitle": "Descriptive statistics, distributions, correlation and basic statistical analysis.",
-  "description": "Use R to explore datasets, calculate statistics and discover meaningful patterns in information.",
-  "level": "Intermediate to Advanced",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "title": "Clear Plots and Data Visualisation",
+  "subtitle": "Clear Plots and Data Visualisation: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on clear plots and data visualisation, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "r-9-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Statistics and Data Analysis"
+      "text": "PAGE 1 — Clear Plots and Data Visualisation: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 9: Statistics and Data Analysis. This lesson follows the course dashboard topic “Statistics and Data Analysis”. The goal is to descriptive statistics, distributions, correlation and basic statistical analysis.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "r-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Clear Plots and Data Visualisation is not just a syntax topic: it is a way to make the application’s intent explicit. Choose a chart type that answers a specific question, label axes and units, inspect scales, and avoid visual decoration that distorts comparisons. Check missing data before interpreting a trend. In the Code Academy dashboard, that idea matters because Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Descriptive statistics summarize a dataset using measures such as mean, median, range, variance, and standard deviation. Each measure responds differently to skew and outliers."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-1",
+      "id": "r-9-code-1-3",
       "type": "code",
+      "title": "Example 1 — Clear Plots and Data Visualisation: Labels explain the measured quantity and the x-axis meaning",
       "language": "r",
-      "title": "Sample 1: Statistics and Data Analysis in practice",
-      "code": "scores <- c(72, 88, 91, 64)\nmedian(scores); sd(scores)"
+      "code": "scores <- c(85, 72, 91, 64)\nplot(scores, type = \"b\", xlab = \"Attempt\", ylab = \"Score\", main = \"Lesson scores\")",
+      "output": "Labels explain the measured quantity and the x-axis meaning."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Descriptive statistics, distributions, correlation and basic statistical analysis. Identify the input, the operation, and the result before making changes."
+      "id": "r-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “scores <- c(85, 72, 91, 64)”: Assigns the evaluated value to a named R object. Line 2 — “plot(scores, type = \"b\", xlab = \"Attempt\", ylab = \"Score\", main = \"Lesson scores\")”: Creates a visualization from the data and settings supplied to the plotting function. Expected behavior: Labels explain the measured quantity and the x-axis meaning. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l9-q-01",
+      "id": "r-9-quiz-1-5",
       "type": "quiz",
-      "question": "A dataset has one extreme outlier. Which measure is often less sensitive to it?",
+      "question": "A scatter plot compares study hours and exam score. Which axis labels are most informative?",
       "options": [
-        "The maximum.",
-        "The range.",
-        "The arithmetic mean.",
-        "The median."
+        "X and Y only",
+        "No labels because the plot title exists",
+        "Labels unrelated to the variables",
+        "Study hours and Exam score, including units or scale where appropriate"
       ],
       "correctIndex": 3,
-      "explanation": "The median depends on the middle rank and is usually less affected by extreme values than the mean.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. The median depends on the middle rank and is usually less affected by extreme values than the mean.",
-      "incorrectFeedback": "Review the requirement again. The median depends on the middle rank and is usually less affected by extreme values than the mean."
+      "explanation": "Correct answer: Study hours and Exam score, including units or scale where appropriate. Axis labels tell the reader what each position means.",
+      "reasoning": "Axis labels tell the reader what each position means. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Use R to explore datasets, calculate statistics and discover meaningful patterns in information.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-2",
+      "id": "r-9-code-2-6",
       "type": "code",
+      "title": "Example 2 — Clear Plots and Data Visualisation: A bar chart compares discrete categories using a shared scale",
       "language": "r",
-      "title": "Sample 2: Statistics and Data Analysis in practice",
-      "code": "hours <- c(1, 2, 3, 4, 5)\nscores <- c(50, 58, 68, 74, 82)\ncor(hours, scores)"
+      "code": "courses <- c(\"HTML\", \"CSS\", \"Python\")\ncounts <- c(10, 8, 6)\nbarplot(counts, names.arg = courses, ylab = \"Completed lessons\")",
+      "output": "A bar chart compares discrete categories using a shared scale."
     },
     {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real R project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
+      "id": "r-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “courses <- c(\"HTML\", \"CSS\", \"Python\")”: Assigns the evaluated value to a named R object. Line 2 — “counts <- c(10, 8, 6)”: Assigns the evaluated value to a named R object. Line 3 — “barplot(counts, names.arg = courses, ylab = \"Completed lessons\")”: Creates a visualization from the data and settings supplied to the plotting function. Expected behavior: A bar chart compares discrete categories using a shared scale. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l9-q-02",
+      "id": "r-9-quiz-2-8",
       "type": "quiz",
-      "question": "A correlation is high between study time and score. Which statement is most scientifically careful?",
+      "question": "A bar chart compares counts for HTML, CSS, and Python. Which chart choice suits the data?",
       "options": [
-        "The variables are associated in this sample, but correlation alone does not prove causation.",
-        "Study time is definitely the only cause.",
-        "The dataset has no uncertainty.",
-        "The result applies to every population automatically."
-      ],
-      "correctIndex": 0,
-      "explanation": "Correlation describes association; confounding and study design matter for causal claims.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Correlation describes association; confounding and study design matter for causal claims.",
-      "incorrectFeedback": "Review the requirement again. Correlation describes association; confounding and study design matter for causal claims."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Correlation describes how two variables vary together; it does not establish a causal relationship. Consider sample size, measurement quality, confounding variables, and the question that produced the data."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-3",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 3: Statistics and Data Analysis in practice",
-      "code": "wait <- c(4, 5, 7, 8, 9)\nsummary(wait)"
-    },
-    {
-      "id": "r-l9-q-03",
-      "type": "quiz",
-      "question": "A report gives a mean without units or context. What is missing?",
-      "options": [
-        "A brighter chart color.",
-        "The sample and measurement context needed to interpret the number.",
-        "A larger file name.",
-        "An extra decimal in every number."
-      ],
-      "correctIndex": 1,
-      "explanation": "Statistics need relevant units, sample information, and context to be interpreted correctly.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Statistics need relevant units, sample information, and context to be interpreted correctly.",
-      "incorrectFeedback": "Review the requirement again. Statistics need relevant units, sample information, and context to be interpreted correctly."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Always report the population or sample being analyzed and the units of measurement. A result can be mathematically correct yet misleading if the underlying data do not represent the target group."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l9-code-4",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 4: Statistics and Data Analysis in practice",
-      "code": "values <- c(10, 12, 11, 13, 100)\nmean(values); median(values)"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Use R to explore datasets, calculate statistics and discover meaningful patterns in information. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "r-l9-q-04",
-      "type": "quiz",
-      "question": "A calculation is needed in three parts of the program. Which change reduces duplicated logic?",
-      "options": [
-        "Copy the calculation to three new places.",
-        "Turn the result into a comment.",
-        "Create a focused function and call it with the required inputs.",
-        "Store the calculation in the page title."
+        "A pie chart with dozens of tiny unlabelled slices",
+        "A 3D plot that distorts bar heights",
+        "A bar plot with the course categories labelled",
+        "A line chart implying a continuous time series"
       ],
       "correctIndex": 2,
-      "explanation": "A focused function centralizes the rule and lets the same behavior be tested once.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. A focused function centralizes the rule and lets the same behavior be tested once.",
-      "incorrectFeedback": "Review the requirement again. A focused function centralizes the rule and lets the same behavior be tested once."
+      "explanation": "Correct answer: A bar plot with the course categories labelled. Bars are a clear way to compare discrete category values.",
+      "reasoning": "Bars are a clear way to compare discrete category values. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "r-l9-q-05",
+      "id": "r-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Clear Plots and Data Visualisation: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "r-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Choose a chart type that answers a specific question, label axes and units, inspect scales, and avoid visual decoration that distorts comparisons. Check missing data before interpreting a trend. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "r-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Clear Plots and Data Visualisation: A scatter plot shows the relationship between two numeric variables without claiming causation",
+      "language": "r",
+      "code": "study_hours <- c(1, 2, 3, 4)\nscores <- c(50, 63, 75, 88)\nplot(study_hours, scores, xlab = \"Study hours\", ylab = \"Score\")",
+      "output": "A scatter plot shows the relationship between two numeric variables without claiming causation."
+    },
+    {
+      "id": "r-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “study_hours <- c(1, 2, 3, 4)”: Assigns the evaluated value to a named R object. Line 2 — “scores <- c(50, 63, 75, 88)”: Assigns the evaluated value to a named R object. Line 3 — “plot(study_hours, scores, xlab = \"Study hours\", ylab = \"Score\")”: Creates a visualization from the data and settings supplied to the plotting function. Expected behavior: A scatter plot shows the relationship between two numeric variables without claiming causation. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-9-quiz-2-13",
       "type": "quiz",
-      "question": "A function prints a total but another function needs to calculate with that total. What is usually required?",
+      "question": "A histogram appears to show no low scores because missing records were dropped without disclosure. What should be done?",
       "options": [
-        "Return the total as a value.",
-        "Print the total in a larger font.",
-        "Rename the variable only.",
-        "Call the function repeatedly until the output is visible."
+        "Change the bins until the desired story appears",
+        "Inspect and document missing data handling before interpreting the distribution",
+        "Assume missing scores are zero",
+        "Remove axis labels"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Inspect and document missing data handling before interpreting the distribution. Missingness can bias the observed distribution; handling should be intentional and transparent.",
+      "reasoning": "Missingness can bias the observed distribution; handling should be intentional and transparent. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Clear Plots and Data Visualisation: A histogram summarizes a numeric distribution; choose bins that make the shape readable",
+      "language": "r",
+      "code": "hist(scores, breaks = 5, xlab = \"Score\", main = \"Score distribution\")",
+      "output": "A histogram summarizes a numeric distribution; choose bins that make the shape readable."
+    },
+    {
+      "id": "r-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “hist(scores, breaks = 5, xlab = \"Score\", main = \"Score distribution\")”: Creates a visualization from the data and settings supplied to the plotting function. Expected behavior: A histogram summarizes a numeric distribution; choose bins that make the shape readable. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-9-quiz-3-16",
+      "type": "quiz",
+      "question": "A truncated axis exaggerates a small difference between two scores. What is the main issue?",
+      "options": [
+        "The scale can mislead readers about the magnitude of the difference",
+        "A chart must always use rainbow colors",
+        "Every plot needs a 3D perspective",
+        "Axis units are unnecessary"
       ],
       "correctIndex": 0,
-      "explanation": "Printing is an output side effect; returning makes the value available to the caller.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Printing is an output side effect; returning makes the value available to the caller.",
-      "incorrectFeedback": "Review the requirement again. Printing is an output side effect; returning makes the value available to the caller."
+      "explanation": "Correct answer: The scale can mislead readers about the magnitude of the difference. A scale should support honest comparison, not visually amplify a small change.",
+      "reasoning": "A scale should support honest comparison, not visually amplify a small change. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Clear Plots and Data Visualisation: applied challenge and mastery check"
+    },
+    {
+      "id": "r-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Choose a chart type that answers a specific question, label axes and units, inspect scales, and avoid visual decoration that distorts comparisons. Check missing data before interpreting a trend. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "r-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses clear plots and data visualisation. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "r-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A plot is technically correct but its meaning is unclear. What is the best next step?",
+      "options": [
+        "Add decorative shadows",
+        "Remove the legend even if colors are ambiguous",
+        "Use smaller text for all labels",
+        "Add a purposeful title, axis labels, units, and appropriate scale"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Add a purposeful title, axis labels, units, and appropriate scale. Readable labeling makes the data relationship interpretable.",
+      "reasoning": "Readable labeling makes the data relationship interpretable. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Choose a chart type that answers a specific question, label axes and units, inspect scales, and avoid visual decoration that distorts comparisons. Check missing data before interpreting a trend. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

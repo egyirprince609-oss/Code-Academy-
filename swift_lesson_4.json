@@ -2,196 +2,175 @@
   "course": "swift",
   "lessonNumber": 4,
   "lessonId": "swift-lesson-4",
-  "title": "Conditions and Control Flow",
-  "subtitle": "Make decisions using if, switch and conditional logic.",
-  "description": "Use if and switch to select behavior based on data.",
+  "title": "Optionals and Safe Conditions",
+  "subtitle": "Optionals and Safe Conditions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on optionals and safe conditions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "swift-4-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Conditions and Control Flow"
+      "text": "PAGE 1 — Optionals and Safe Conditions: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 4: Conditions and Control Flow. This lesson follows the course dashboard topic “Conditions and Control Flow”. The goal is to make decisions using if, switch and conditional logic.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "swift-4-page-1-teaching-2",
+      "type": "content",
+      "text": "Optionals and Safe Conditions is not just a syntax topic: it is a way to make the application’s intent explicit. An optional represents a value that may be absent. Unwrap it safely and choose a clear fallback or error path instead of force-unwrapping blindly. In the Code Academy dashboard, that idea matters because A tracker can represent lessons as values and model missing data and failures deliberately. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "A conditional statement lets a program select a path based on a Boolean expression. Put the most important conditions in a readable order and make the fallback behavior explicit."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-1",
+      "id": "swift-4-code-1-3",
       "type": "code",
+      "title": "Example 1 — Optionals and Safe Conditions: Optional binding unwraps only when a value exists",
       "language": "swift",
-      "title": "Sample 1: Conditions and Control Flow in practice",
-      "code": "let score = 86\nif score >= 80 { print(\"Strong result\") } else { print(\"Keep practising\") }"
+      "code": "let title: String? = \"Optional values\"\nif let title = title { print(title) } else { print(\"Untitled\") }",
+      "output": "Optional binding unwraps only when a value exists."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Make decisions using if, switch and conditional logic. Identify the input, the operation, and the result before making changes."
+      "id": "swift-4-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “let title: String? = \"Optional values\"”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “if let title = title { print(title) } else { print(\"Untitled\") }”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Optional binding unwraps only when a value exists. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "swift-l4-q-01",
+      "id": "swift-4-quiz-1-5",
       "type": "quiz",
-      "question": "A form accepts an empty username even though one is required. What should the program do?",
+      "question": "A Swift `Int(rawText)` conversion may fail. What type does it produce?",
       "options": [
-        "Treat the empty value as a valid username.",
-        "Change the button color only.",
-        "Save it and hope the database fixes it.",
-        "Check for empty or whitespace-only input and give a clear message."
-      ],
-      "correctIndex": 3,
-      "explanation": "Validation must check the actual input state and tell the user how to correct it.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Validation must check the actual input state and tell the user how to correct it.",
-      "incorrectFeedback": "Review the requirement again. Validation must check the actual input state and tell the user how to correct it."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Use if and switch to select behavior based on data.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-2",
-      "type": "code",
-      "language": "swift",
-      "title": "Sample 2: Conditions and Control Flow in practice",
-      "code": "let xp = 45\nlet level = xp >= 100 ? \"advanced\" : xp >= 40 ? \"intermediate\" : \"beginner\"\nprint(level)"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real Swift project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "swift-l4-q-02",
-      "type": "quiz",
-      "question": "A fallback branch never runs during testing. What should the developer verify?",
-      "options": [
-        "The page has a newer color palette.",
-        "The earlier conditions do not already match every possible case.",
-        "The variable was renamed to a longer word.",
-        "The program has more comments."
-      ],
-      "correctIndex": 1,
-      "explanation": "An overly broad earlier condition can make a fallback unreachable.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. An overly broad earlier condition can make a fallback unreachable.",
-      "incorrectFeedback": "Review the requirement again. An overly broad earlier condition can make a fallback unreachable."
-    },
-    {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Boundary values reveal many bugs. If a reward starts at 100 points, test 99, 100, and 101; testing only a typical value can hide an incorrect comparison operator."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-3",
-      "type": "code",
-      "language": "swift",
-      "title": "Sample 3: Conditions and Control Flow in practice",
-      "code": "let stock = 0\nprint(stock > 0 ? \"Available\" : \"Out of stock\")"
-    },
-    {
-      "id": "swift-l4-q-03",
-      "type": "quiz",
-      "question": "A reward begins at exactly 100 points, but the code awards it only when score is greater than 100. Which test exposes the bug?",
-      "options": [
-        "Test only a score of 200.",
-        "Test 99, 100, and 101.",
-        "Test a text value such as “high”.",
-        "Do not test the condition."
-      ],
-      "correctIndex": 1,
-      "explanation": "Boundary tests reveal whether the equality case follows the requirement.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Boundary tests reveal whether the equality case follows the requirement.",
-      "incorrectFeedback": "Review the requirement again. Boundary tests reveal whether the equality case follows the requirement."
-    },
-    {
-      "id": "page-3-heading",
-      "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
-    },
-    {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "Combine conditions only when the rule is clear. If the expression becomes hard to explain in one sentence, give parts of it descriptive names or split it into separate checks."
-    },
-    {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select Swift. Paste this snippet into the Swift editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l4-code-4",
-      "type": "code",
-      "language": "swift",
-      "title": "Sample 4: Conditions and Control Flow in practice",
-      "code": "let value = -3\nif value < 0 { print(\"Negative\") } else if value == 0 { print(\"Zero\") } else { print(\"Positive\") }"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Use if and switch to select behavior based on data. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "swift-l4-q-04",
-      "type": "quiz",
-      "question": "Two validation rules must both pass before submission. Which logical structure is appropriate?",
-      "options": [
-        "Use OR if either rule must pass.",
-        "Skip validation once the page looks correct.",
-        "Combine both checks with the appropriate AND condition.",
-        "Run the same check forever."
-      ],
-      "correctIndex": 2,
-      "explanation": "AND is appropriate when every required condition must be true.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. AND is appropriate when every required condition must be true.",
-      "incorrectFeedback": "Review the requirement again. AND is appropriate when every required condition must be true."
-    },
-    {
-      "id": "swift-l4-q-05",
-      "type": "quiz",
-      "question": "A program has overlapping score bands. Which approach prevents a higher score from being assigned to a lower band?",
-      "options": [
-        "Check bands in a clear order from higher threshold to lower threshold, or use non-overlapping ranges.",
-        "Use unrelated variable names.",
-        "Remove the boundary checks.",
-        "Make every branch print the same label."
+        "An optional Int (`Int?`)",
+        "A guaranteed Int regardless of input",
+        "A Boolean that says the app is online",
+        "A String containing the source text"
       ],
       "correctIndex": 0,
-      "explanation": "Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one.",
-      "incorrectFeedback": "Review the requirement again. Branch ordering and non-overlapping ranges avoid an earlier broad condition swallowing a later one."
+      "explanation": "Correct answer: An optional Int (`Int?`). Failable conversion returns nil when text cannot be parsed as an integer.",
+      "reasoning": "Failable conversion returns nil when text cannot be parsed as an integer. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-4-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Optionals and Safe Conditions: The nil-coalescing operator chooses a fallback",
+      "language": "swift",
+      "code": "let input: String? = nil\nlet label = input ?? \"No lesson selected\"\nprint(label)",
+      "output": "The nil-coalescing operator chooses a fallback."
+    },
+    {
+      "id": "swift-4-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “let input: String? = nil”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let label = input ?? \"No lesson selected\"”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “print(label)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: The nil-coalescing operator chooses a fallback. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "swift-4-quiz-2-8",
+      "type": "quiz",
+      "question": "A title is `String?` and should fall back to \"Untitled\" when nil. Which operator is suitable?",
+      "options": [
+        "Force unwrap `!` without checking",
+        "Modulo `%`",
+        "Optional binding with no else or fallback",
+        "The nil-coalescing operator `??`"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The nil-coalescing operator `??`. ?? supplies a fallback when the optional contains nil.",
+      "reasoning": "?? supplies a fallback when the optional contains nil. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-4-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Optionals and Safe Conditions: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "swift-4-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. An optional represents a value that may be absent. Unwrap it safely and choose a clear fallback or error path instead of force-unwrapping blindly. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker can represent lessons as values and model missing data and failures deliberately. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "swift-4-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Optionals and Safe Conditions: guard handles the absent path and exits early",
+      "language": "swift",
+      "code": "func display(_ title: String?) { guard let title = title else { print(\"Missing title\"); return }; print(title) }\ndisplay(nil)",
+      "output": "guard handles the absent path and exits early."
+    },
+    {
+      "id": "swift-4-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “func display(_ title: String?) { guard let title = title else { print(\"Missing title\"); return }; print(title) }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “display(nil)”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: guard handles the absent path and exits early. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "swift-4-quiz-2-13",
+      "type": "quiz",
+      "question": "When is `if let` appropriate?",
+      "options": [
+        "When a network request is guaranteed to succeed",
+        "When a numeric comparison needs rounding",
+        "When code should run only if an optional contains a value",
+        "When the value must be nil"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: When code should run only if an optional contains a value. Optional binding unwraps the value only on the non-nil path.",
+      "reasoning": "Optional binding unwraps the value only on the non-nil path. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-4-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Optionals and Safe Conditions: Int(String) returns an optional because conversion may fail",
+      "language": "swift",
+      "code": "let rawNumber = \"12\"\nlet lessonNumber = Int(rawNumber)\nprint(lessonNumber as Any)",
+      "output": "Int(String) returns an optional because conversion may fail."
+    },
+    {
+      "id": "swift-4-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “let rawNumber = \"12\"”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “let lessonNumber = Int(rawNumber)”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “print(lessonNumber as Any)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Int(String) returns an optional because conversion may fail. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "swift-4-quiz-3-16",
+      "type": "quiz",
+      "question": "What is the danger of force-unwrapping an optional that may be nil?",
+      "options": [
+        "It guarantees a recovery path",
+        "The program can terminate at runtime when the assumption is false",
+        "The optional becomes an empty string automatically",
+        "The compiler converts it to a Set"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The program can terminate at runtime when the assumption is false. Force unwrap asserts that a value exists; an incorrect assumption can cause a runtime trap.",
+      "reasoning": "Force unwrap asserts that a value exists; an incorrect assumption can cause a runtime trap. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-4-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Optionals and Safe Conditions: applied challenge and mastery check"
+    },
+    {
+      "id": "swift-4-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. An optional represents a value that may be absent. Unwrap it safely and choose a clear fallback or error path instead of force-unwrapping blindly. For the Code Academy dashboard, A tracker can represent lessons as values and model missing data and failures deliberately. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "swift-4-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses optionals and safe conditions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "swift-4-quiz-5-20",
+      "type": "quiz",
+      "question": "A value comes from user input and may be absent or malformed. What should happen?",
+      "options": [
+        "Handle absence and conversion failure explicitly before using the value",
+        "Force unwrap because the UI asks for the value",
+        "Treat nil as a valid numeric zero in every domain",
+        "Assume the optional type sanitizes content"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Handle absence and conversion failure explicitly before using the value. Optionality indicates possible absence; validation still needs to address the input’s meaning and format.",
+      "reasoning": "Optionality indicates possible absence; validation still needs to address the input’s meaning and format. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "swift-4-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: An optional represents a value that may be absent. Unwrap it safely and choose a clear fallback or error path instead of force-unwrapping blindly. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }

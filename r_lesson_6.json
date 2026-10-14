@@ -2,196 +2,175 @@
   "course": "r",
   "lessonNumber": 6,
   "lessonId": "r-lesson-6",
-  "title": "Reading and Cleaning Data",
-  "subtitle": "Importing CSV files, handling missing values, filtering data and preparing datasets.",
-  "description": "Learn how to bring real-world data into R and clean it before performing analysis.",
+  "title": "Vectorized Calculations",
+  "subtitle": "Vectorized Calculations: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on vectorized calculations, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
   "level": "Intermediate",
-  "xpReward": 25,
-  "coinsReward": 12.5,
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
   "blocks": [
     {
-      "id": "page-1-heading",
+      "id": "r-6-page-1-1",
       "type": "heading",
-      "text": "PAGE 1 — Understand Reading and Cleaning Data"
+      "text": "PAGE 1 — Vectorized Calculations: foundations and mental model"
     },
     {
-      "id": "intro",
-      "type": "sentence",
-      "text": "Welcome to Lesson 6: Reading and Cleaning Data. This lesson follows the course dashboard topic “Reading and Cleaning Data”. The goal is to importing CSV files, handling missing values, filtering data and preparing datasets.. Focus on understanding when this technique is useful, what assumptions it makes, and how you can check that it is working."
+      "id": "r-6-page-1-teaching-2",
+      "type": "content",
+      "text": "Vectorized Calculations is not just a syntax topic: it is a way to make the application’s intent explicit. Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. In the Code Academy dashboard, that idea matters because Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
     },
     {
-      "id": "concept-1",
-      "type": "sentence",
-      "text": "Real datasets often contain missing values, inconsistent labels, duplicate rows, and columns imported with the wrong type. Cleaning begins by measuring these issues rather than deleting values without understanding why they are missing."
-    },
-    {
-      "id": "practice-direction-1",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-1",
+      "id": "r-6-code-1-3",
       "type": "code",
+      "title": "Example 1 — Vectorized Calculations: Vectorized addition applies to each element",
       "language": "r",
-      "title": "Sample 1: Reading and Cleaning Data in practice",
-      "code": "data <- data.frame(score = c(80, NA, 92, 76))\nsum(is.na(data$score))"
+      "code": "scores <- c(4, 5, 3)\nscores + 2",
+      "output": "Vectorized addition applies to each element."
     },
     {
-      "id": "notice-1",
-      "type": "sentence",
-      "text": "What to notice: focus on the part of the sample that demonstrates Importing CSV files, handling missing values, filtering data and preparing datasets. Identify the input, the operation, and the result before making changes."
+      "id": "r-6-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “scores <- c(4, 5, 3)”: Assigns the evaluated value to a named R object. Line 2 — “scores + 2”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: Vectorized addition applies to each element. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
     },
     {
-      "id": "r-l6-q-01",
+      "id": "r-6-quiz-1-5",
       "type": "quiz",
-      "question": "A score column has missing values. What should happen before removing them?",
+      "question": "A calculation is intended to add 3 to the product of 4 and 5. Which expression states that rule directly?",
       "options": [
-        "Drop every row by default.",
-        "Measure and understand the missingness and define an analysis rule.",
-        "Replace all missing values with 100.",
-        "Rename the column and ignore it."
-      ],
-      "correctIndex": 1,
-      "explanation": "Missingness can have meaning; a defensible rule should be chosen before imputation or exclusion.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Missingness can have meaning; a defensible rule should be chosen before imputation or exclusion.",
-      "incorrectFeedback": "Review the requirement again. Missingness can have meaning; a defensible rule should be chosen before imputation or exclusion."
-    },
-    {
-      "id": "page-2-heading",
-      "type": "heading",
-      "text": "PAGE 2 — Build the idea step by step"
-    },
-    {
-      "id": "concept-2",
-      "type": "sentence",
-      "text": "The dashboard frames the practical purpose this way: “Learn how to bring real-world data into R and clean it before performing analysis.” Use the examples as small experiments, not as code to memorize. A strong result is one you can explain and then adapt to a slightly different requirement."
-    },
-    {
-      "id": "practice-direction-2",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-2",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 2: Reading and Cleaning Data in practice",
-      "code": "data <- data.frame(name = c(\"Ama\", \"Ama\", \"Kojo\"), score = c(80, 80, 92))\ndata[!duplicated(data), ]"
-    },
-    {
-      "id": "notice-2",
-      "type": "sentence",
-      "text": "Application tip: in a real R project, choose names and structures that reveal the reason the code exists. Do not copy a snippet into a project without checking its assumptions and adapting it to the surrounding code."
-    },
-    {
-      "id": "r-l6-q-02",
-      "type": "quiz",
-      "question": "Scores imported as text include “missing”. What is the safe next step?",
-      "options": [
-        "Treat every string as a valid numeric score.",
-        "Use the raw column as a numeric value.",
-        "Parse to numeric carefully and inspect values that fail conversion.",
-        "Replace all data with zeros."
+        "(4 + 5) * 3",
+        "4 + 5 * 3",
+        "4 * 5 + 3",
+        "4 * (5 + 3)"
       ],
       "correctIndex": 2,
-      "explanation": "Conversion should reveal malformed values rather than silently hiding them.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Conversion should reveal malformed values rather than silently hiding them.",
-      "incorrectFeedback": "Review the requirement again. Conversion should reveal malformed values rather than silently hiding them."
+      "explanation": "Correct answer: 4 * 5 + 3. Multiplication has higher precedence than addition, so 4 * 5 + 3 expresses the intended result.",
+      "reasoning": "Multiplication has higher precedence than addition, so 4 * 5 + 3 expresses the intended result. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "concept-3",
-      "type": "sentence",
-      "text": "Use explicit rules for missing data and document any rows excluded from analysis. A blank, zero, and unknown value are not interchangeable in every dataset."
-    },
-    {
-      "id": "practice-direction-3",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
-    },
-    {
-      "id": "l6-code-3",
+      "id": "r-6-code-2-6",
       "type": "code",
+      "title": "Example 2 — Vectorized Calculations: A comparison returns one logical value per element",
       "language": "r",
-      "title": "Sample 3: Reading and Cleaning Data in practice",
-      "code": "scores <- c(\"80\", \"missing\", \"92\")\nnumeric_scores <- suppressWarnings(as.numeric(scores))\nnumeric_scores"
+      "code": "scores >= 4",
+      "output": "A comparison returns one logical value per element."
     },
     {
-      "id": "r-l6-q-03",
+      "id": "r-6-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “scores >= 4”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A comparison returns one logical value per element. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-6-quiz-2-8",
       "type": "quiz",
-      "question": "The number of rows drops after cleaning. How should the result be checked?",
+      "question": "A percentage unexpectedly becomes an integer in a typed language. What should be checked first?",
       "options": [
-        "Assume the smaller dataset is better.",
-        "Delete the cleaning code.",
-        "Hide the row count.",
-        "Compare row counts, exclusion reasons, and a sample of removed records."
+        "Whether a comment appears above the expression",
+        "Whether division is using integer operands before conversion",
+        "Whether the output label has enough colors",
+        "Whether the variable name begins with a capital letter"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Whether division is using integer operands before conversion. Some languages perform integer division when both operands are integers.",
+      "reasoning": "Some languages perform integer division when both operands are integers. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-6-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Vectorized Calculations: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "r-6-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "r-6-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Vectorized Calculations: Vector arithmetic avoids a manual loop",
+      "language": "r",
+      "code": "c(4, 5, 3) * 5",
+      "output": "Vector arithmetic avoids a manual loop."
+    },
+    {
+      "id": "r-6-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “c(4, 5, 3) * 5”: Creates a vector or structured object from the supplied values. Expected behavior: Vector arithmetic avoids a manual loop. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-6-quiz-2-13",
+      "type": "quiz",
+      "question": "A remainder operation is used to decide whether an interval has been reached. What does x % 5 produce for integer x?",
+      "options": [
+        "The remainder after division by 5",
+        "The quotient rounded up",
+        "A Boolean indicating x is greater than 5",
+        "The product of x and 5"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: The remainder after division by 5. Remainder is useful for divisibility and periodic boundaries, but it is not the quotient.",
+      "reasoning": "Remainder is useful for divisibility and periodic boundaries, but it is not the quotient. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-6-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Vectorized Calculations: Missing values propagate; choose a clear NA-handling policy",
+      "language": "r",
+      "code": "c(4, NA, 3) + 1",
+      "output": "Missing values propagate; choose a clear NA-handling policy."
+    },
+    {
+      "id": "r-6-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “c(4, NA, 3) + 1”: Creates a vector or structured object from the supplied values. Expected behavior: Missing values propagate; choose a clear NA-handling policy. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-6-quiz-3-16",
+      "type": "quiz",
+      "question": "A condition must be true only when both the learner is signed in and the lesson is unlocked. Which logical operator matches that requirement?",
+      "options": [
+        "OR ( || in many C-style languages)",
+        "Remainder (%)",
+        "Assignment (=)",
+        "AND ( && in many C-style languages)"
       ],
       "correctIndex": 3,
-      "explanation": "Cleaning must be auditable so data are not silently discarded.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Cleaning must be auditable so data are not silently discarded.",
-      "incorrectFeedback": "Review the requirement again. Cleaning must be auditable so data are not silently discarded."
+      "explanation": "Correct answer: AND ( && in many C-style languages). AND requires both conditions to be true.",
+      "reasoning": "AND requires both conditions to be true. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "page-3-heading",
+      "id": "r-6-page-3-17",
       "type": "heading",
-      "text": "PAGE 3 — Apply it and check your reasoning"
+      "text": "PAGE 3 — Vectorized Calculations: applied challenge and mastery check"
     },
     {
-      "id": "concept-4",
-      "type": "sentence",
-      "text": "After cleaning, re-check row counts, types, ranges, and key relationships. A cleaning step is successful only when it makes the data more trustworthy without silently changing the question."
+      "id": "r-6-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
     },
     {
-      "id": "practice-direction-4",
-      "type": "sentence",
-      "text": "Practice direction: Open Home → Menu → Practical/Practice → select R. Paste this snippet into the R editor, run or preview it, and compare what happens. Then change one value or element and run it again so you can observe the effect. If this course is not available in the in-app runner, use a suitable compiler or interpreter for the language."
+      "id": "r-6-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses vectorized calculations. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
     },
     {
-      "id": "l6-code-4",
-      "type": "code",
-      "language": "r",
-      "title": "Sample 4: Reading and Cleaning Data in practice",
-      "code": "data <- data.frame(score = c(80, NA, 92))\ncomplete.cases(data)"
-    },
-    {
-      "id": "wrap-up",
-      "type": "sentence",
-      "text": "Before continuing, explain in your own words how this topic helps solve the dashboard goal: Learn how to bring real-world data into R and clean it before performing analysis. Try one boundary case, one normal case, and one case that should be rejected or handled differently."
-    },
-    {
-      "id": "r-l6-q-04",
+      "id": "r-6-quiz-5-20",
       "type": "quiz",
-      "question": "A file may not exist when a user starts the app. What is the best approach?",
+      "question": "A condition relies on short-circuiting to avoid reading a missing value. Why does operand order matter?",
       "options": [
-        "Assume the file always exists.",
-        "Catch every possible error and ignore it.",
-        "Check/open the file safely and report a useful recoverable error.",
-        "Pretend an empty file is always correct."
+        "Short-circuiting only changes whitespace",
+        "Boolean expressions never evaluate in sequence",
+        "The left-hand guard must stop evaluation before an unsafe right-hand expression",
+        "The compiler always rearranges conditions to match the developer’s intent"
       ],
       "correctIndex": 2,
-      "explanation": "External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. External resources can fail; communicate the problem and recover only where recovery is appropriate.",
-      "incorrectFeedback": "Review the requirement again. External resources can fail; communicate the problem and recover only where recovery is appropriate."
+      "explanation": "Correct answer: The left-hand guard must stop evaluation before an unsafe right-hand expression. In short-circuit operators, evaluation order can prevent access to a value when the guard fails.",
+      "reasoning": "In short-circuit operators, evaluation order can prevent access to a value when the guard fails. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
     },
     {
-      "id": "r-l6-q-05",
-      "type": "quiz",
-      "question": "A numeric form field contains “abc”. What should happen?",
-      "options": [
-        "Convert it silently to a meaningful value without a rule.",
-        "Parse and validate it, then show a clear error if it is invalid.",
-        "Use the string in arithmetic.",
-        "Delete the user’s whole account."
-      ],
-      "correctIndex": 1,
-      "explanation": "Parsing and validation protect calculations from malformed input.",
-      "hint": "Identify the requirement in the scenario, eliminate choices that ignore it, and choose the option that preserves correctness and maintainability.",
-      "correctFeedback": "Correct. Parsing and validation protect calculations from malformed input.",
-      "incorrectFeedback": "Review the requirement again. Parsing and validation protect calculations from malformed input."
+      "id": "r-6-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
     }
   ]
 }
