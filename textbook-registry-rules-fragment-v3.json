@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "textbookRegistryV3": {
+      ".read": true,
+      "$courseId": {
+        ".write": "auth != null && auth.token.email_verified === true && (auth.token.email === 'egyirwisemanprince@gmail.com' || auth.token.email === 'egyirpnce609@gmail.com')",
+        ".validate": "newData.hasChildren(['bookId','verificationCode','courseId','course','publisher','status','registryVersion','issuedAt','publisherUid','publisherEmail','verifyUrl']) && newData.child('courseId').val() === $courseId && newData.child('publisherUid').val() === auth.uid && newData.child('publisherEmail').val() === auth.token.email && newData.child('status').val().matches(/^(valid|revoked)$/)"
+      }
+    }
+  }
+}
