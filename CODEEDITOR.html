@@ -10,8 +10,8 @@
 <link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/CODEEDITOR.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Code Academy">
-<meta property="og:title" content="Code Academy Editor | Multi-language Coding Workspace">
-<meta property="og:description" content="A focused online coding workspace for HTML, CSS, JavaScript, Python, Java, C++, PHP, SQL, TypeScript and more. Manage projects, import ZIPs and folders, preview work, and share the editor.">
+<meta property="og:title" content="Code Academy Editor | 17 Language Workspaces">
+<meta property="og:description" content="An online workspace for HTML, CSS, JavaScript, Python, TypeScript, Java, C, C++, C#, PHP, Ruby, Go, Swift, Lua, R and SQL. Run web previews, see wide output, import projects and save work.">
 <meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/CODEEDITOR.html">
 <meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/editor-general-preview.png">
 <meta property="og:image:secure_url" content="https://egyirprince609-oss.github.io/Code-Academy-/editor-general-preview.png">
@@ -20,12 +20,12 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Code Academy Editor, a dark multi-language coding workspace">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Code Academy Editor | Multi-language Coding Workspace">
-<meta name="twitter:description" content="Write, run, preview and organize code in a focused browser workspace.">
+<meta name="twitter:title" content="Code Academy Editor | 17 Language Workspaces">
+<meta name="twitter:description" content="Write code, preview web projects, run supported languages and manage project files in one browser workspace.">
 <meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/editor-general-preview.png">
 <link rel="icon" type="image/png" sizes="512x512" href="code-academy-logo.png">
 <link rel="apple-touch-icon" href="code-academy-logo.png">
-<title>Code Academy Editor | Multi-language Coding Workspace</title>
+<title>Code Academy Editor | 17 Language Workspaces</title>
 <link rel="icon" href="logo.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.57.0/min/vs/loader.js"></script>
@@ -77,21 +77,21 @@
       <div class="editorHost" id="editorHost"><div class="editorLoading" id="editorLoading"><i class="fa-solid fa-spinner fa-spin"></i><strong>Starting Code Academy Editor</strong><span class="loadingSub">Loading language tools…</span></div><div id="monacoWrap" class="monacoWrap"></div><textarea id="fallbackEditor" class="fallbackEditor" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="Code editor fallback"></textarea></div>
       <section class="dock collapsed" id="dock"><div class="dockHead"><button class="dockTab active" data-dock="console">CONSOLE</button><button class="dockTab" data-dock="problems">PROBLEMS <span class="count" id="problemCount">0</span></button><div class="dockActions"><button class="miniBtn" id="clearConsole" title="Clear console"><i class="fa-solid fa-trash-can"></i></button><button class="miniBtn" id="stopRun" title="Stop running code"><i class="fa-solid fa-stop"></i></button><button class="miniBtn" id="collapseDock" title="Collapse panel"><i class="fa-solid fa-chevron-down"></i></button></div></div><div class="dockBody" id="consoleBody" role="log" aria-live="polite"><div class="consoleLine info">Console is quiet. Output and diagnostics will appear here when you run code or open the panel.</div></div><div class="dockBody hidden" id="problemsBody"><div class="noProblems">Loading diagnostics…</div></div></section>
     </section>
-    <section class="previewPane" id="previewPane"><div class="previewHead"><i class="fa-solid fa-display" style="color:#60a5fa"></i><strong>Preview / Output</strong><span class="previewStatus" id="previewStatus">Waiting to run</span><div class="previewActions"><button class="miniBtn" id="refreshPreview" title="Run again"><i class="fa-solid fa-rotate-right"></i></button><button class="miniBtn" id="fullPreviewBtn" title="Expand preview"><i class="fa-solid fa-expand"></i></button><button class="miniBtn" id="closePreview" title="Close preview"><i class="fa-solid fa-xmark"></i></button></div></div><div class="previewBlank" id="previewBlank"><i class="fa-solid fa-laptop-code"></i><strong>Your output appears here</strong><p>Run HTML, CSS, JavaScript or a React component to see the live preview. Python output appears in the console.</p></div><iframe id="previewFrame" class="previewFrame hidden" title="Code preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></section>
+    <section class="previewPane" id="previewPane"><div class="previewHead"><i class="fa-solid fa-display" style="color:#60a5fa"></i><strong>Preview / Output</strong><span class="previewStatus" id="previewStatus">Waiting to run</span><div class="previewActions"><button class="miniBtn" id="refreshPreview" title="Run again"><i class="fa-solid fa-rotate-right"></i></button><button class="miniBtn" id="fullPreviewBtn" title="Expand preview"><i class="fa-solid fa-expand"></i></button><button class="miniBtn" id="closePreview" title="Close preview"><i class="fa-solid fa-xmark"></i></button></div></div><div class="previewBlank" id="previewBlank"><i class="fa-solid fa-laptop-code"></i><strong>Your output appears here</strong><p>Run HTML, CSS, JavaScript or a React component to see the live preview. Python output opens in the full-width preview.</p></div><iframe id="previewFrame" class="previewFrame hidden" title="Code preview" sandbox="allow-scripts allow-forms allow-modals allow-popups"></iframe></section>
   </main>
   <footer class="statusbar"><span class="statusItem" id="cursorStatus">Ln 1, Col 1</span><span class="statusItem" id="indentStatus">Spaces: 2</span><span class="statusItem" id="encodingStatus">UTF-8</span><span class="statusItem flex" id="diagnosticStatus">Language tools ready</span><div class="statusRight"><button id="toggleExplorerFooter">Explorer</button><span class="statusHideMobile">Code Academy</span></div></footer>
 </div>
-<div class="modalBack" id="projectModalBack" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle"><div class="modal"><div class="modalHead"><div class="modalIcon"><i class="fa-solid fa-folder-plus"></i></div><div><h2 id="projectModalTitle">Create a project</h2><p>Projects are saved to your Code Academy account.</p></div></div><div class="field"><label for="newProjectName">PROJECT NAME</label><input id="newProjectName" maxlength="80" placeholder="e.g. My Portfolio" autocomplete="off"></div><div class="field"><label for="newProjectStarter">STARTER TEMPLATE</label><select id="newProjectStarter"><option value="web">Web project (HTML + CSS + JavaScript)</option><option value="react">React component project</option><option value="python">Python practice project</option><option value="empty">Empty project</option></select></div><div class="modalNote">Use short descriptive names. Your files are stored privately under your signed-in account.</div><div class="modalActions"><button class="actionBtn" id="cancelProject">Cancel</button><button class="actionBtn primary" id="confirmProject"><i class="fa-solid fa-plus"></i> Create project</button></div></div></div>
-<div class="modalBack" id="itemModalBack" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle"><div class="modal"><div class="modalHead"><div class="modalIcon"><i id="itemModalIcon" class="fa-solid fa-file-circle-plus"></i></div><div><h2 id="itemModalTitle">Create a file</h2><p id="itemModalSub">Choose a filename with its extension.</p></div></div><div class="field"><label for="newItemPath">FILE OR FOLDER PATH</label><input id="newItemPath" maxlength="180" placeholder="src/App.jsx" autocomplete="off" spellcheck="false"></div><div class="field" id="itemTemplateField"><label for="itemTemplate">STARTER TEMPLATE</label><select id="itemTemplate" class="select" style="width:100%;max-width:100%"><option value="html">HTML</option><option value="css">CSS</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="jsx">React JSX</option><option value="python">Python</option><option value="cpp">C++</option><option value="c">C</option><option value="java">Java</option><option value="csharp">C#</option><option value="php">PHP</option><option value="go">Go</option><option value="rust">Rust</option><option value="ruby">Ruby</option><option value="kotlin">Kotlin</option><option value="swift">Swift</option><option value="dart">Dart</option><option value="sql">SQL</option><option value="json">JSON</option><option value="markdown">Markdown</option><option value="shell">Shell</option><option value="yaml">YAML</option><option value="xml">XML</option></select></div><div class="modalActions"><button class="actionBtn" id="cancelItem">Cancel</button><button class="actionBtn primary" id="confirmItem"><i class="fa-solid fa-check"></i> Create</button></div></div></div>
+<div class="modalBack" id="projectModalBack" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle"><div class="modal"><div class="modalHead"><div class="modalIcon"><i class="fa-solid fa-folder-plus"></i></div><div><h2 id="projectModalTitle">Create a project</h2><p>Projects are saved to your Code Academy account.</p></div></div><div class="field"><label for="newProjectName">PROJECT NAME</label><input id="newProjectName" maxlength="80" placeholder="e.g. My Portfolio" autocomplete="off"></div><div class="field"><label for="newProjectStarter">STARTER TEMPLATE</label><select id="newProjectStarter"><option value="web">Web project (HTML + CSS + JavaScript)</option><option value="react">React component project</option><option value="python">Python practice project</option><option value="typescript">TypeScript project</option><option value="java">Java project</option><option value="cpp">C++ project</option><option value="c">C project</option><option value="csharp">C# project</option><option value="php">PHP project</option><option value="ruby">Ruby project</option><option value="go">Go project</option><option value="swift">Swift project</option><option value="lua">Lua project</option><option value="r">R project</option><option value="sql">SQL project</option><option value="empty">Empty project</option></select></div><div class="modalNote">Use short descriptive names. Your files are stored privately under your signed-in account.</div><div class="modalActions"><button class="actionBtn" id="cancelProject">Cancel</button><button class="actionBtn primary" id="confirmProject"><i class="fa-solid fa-plus"></i> Create project</button></div></div></div>
+<div class="modalBack" id="itemModalBack" role="dialog" aria-modal="true" aria-labelledby="itemModalTitle"><div class="modal"><div class="modalHead"><div class="modalIcon"><i id="itemModalIcon" class="fa-solid fa-file-circle-plus"></i></div><div><h2 id="itemModalTitle">Create a file</h2><p id="itemModalSub">Choose a filename with its extension.</p></div></div><div class="field"><label for="newItemPath">FILE OR FOLDER PATH</label><input id="newItemPath" maxlength="180" placeholder="src/App.jsx" autocomplete="off" spellcheck="false"></div><div class="field" id="itemTemplateField"><label for="itemTemplate">STARTER TEMPLATE</label><select id="itemTemplate" class="select" style="width:100%;max-width:100%"><option value="html">HTML</option><option value="css">CSS</option><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="jsx">React JSX</option><option value="python">Python</option><option value="cpp">C++</option><option value="c">C</option><option value="java">Java</option><option value="csharp">C#</option><option value="php">PHP</option><option value="go">Go</option><option value="rust">Rust</option><option value="ruby">Ruby</option><option value="kotlin">Kotlin</option><option value="swift">Swift</option><option value="dart">Dart</option><option value="lua">Lua</option><option value="r">R</option><option value="sql">SQL</option><option value="json">JSON</option><option value="markdown">Markdown</option><option value="shell">Shell</option><option value="yaml">YAML</option><option value="xml">XML</option></select></div><div class="modalActions"><button class="actionBtn" id="cancelItem">Cancel</button><button class="actionBtn primary" id="confirmItem"><i class="fa-solid fa-check"></i> Create</button></div></div></div>
 <div class="modalBack" id="helpModalBack" role="dialog" aria-modal="true" aria-labelledby="helpModalTitle"><div class="modal helpModal"><div class="modalHead"><div class="modalIcon"><i class="fa-solid fa-circle-question"></i></div><div><h2 id="helpModalTitle">Code Editor · Complete guide</h2><p>Build projects, understand the runtime, and keep your work safe.</p></div></div><div class="helpSections">
 <section class="helpBlock"><h3><i class="fa-solid fa-file-circle-plus"></i> 1. Create files and folders</h3><p>Tap either <b>+ file</b> button to open the filename dialog. Enter a name such as <code>index.html</code>, <code>style.css</code>, <code>script.js</code>, <code>main.py</code> or <code>src/App.jsx</code>. Select a starter template if you omit the extension. The extension determines syntax highlighting and the language logo. Use folder paths such as <code>src/components/Card.jsx</code> to organize a project.</p></section>
-<section class="helpBlock"><h3><i class="fa-solid fa-play"></i> 2. Run and preview</h3><p><b>HTML / CSS / JavaScript:</b> Run opens a sandboxed preview and sends console messages and browser errors to the Console tab. <b>React JSX / TSX:</b> Run uses React and Babel loaded from a CDN; it is a practice preview, not a full npm/Vite build. <b>JSON:</b> Run validates JSON and displays formatted data.</p></section>
-<section class="helpBlock"><h3><i class="fa-brands fa-python"></i> 3. Python compiler</h3><p>Python runs through Pyodide in a JavaScript module worker, keeping most computation away from the user interface. The first run downloads the runtime, so an internet connection is needed. Imported packages are loaded when Pyodide supports them; native packages that require unavailable system binaries may not work. Output and Python errors appear in the Console. Use Stop to interrupt a long-running program.</p></section>
-<section class="helpBlock"><h3><i class="fa-solid fa-code"></i> 4. Language support</h3><p>Editing and highlighting cover HTML, CSS, JavaScript, TypeScript, React JSX/TSX, Python, C, C++, Java, C#, PHP, Go, Rust, Ruby, Kotlin, Swift, Dart, SQL, JSON, Markdown, XML, YAML and Shell. C/C++/Java and server-side languages need a separately configured compiler or runtime service to execute; highlighting alone does not compile them.</p></section>
+<section class="helpBlock"><h3><i class="fa-solid fa-play"></i> 2. Run and preview</h3><p><b>HTML / CSS / JavaScript:</b> Run opens a full-width sandboxed preview; runtime errors automatically reveal Console. <b>React JSX / TSX:</b> Run uses React and Babel loaded from a CDN; it is a practice preview, not a full npm/Vite build. <b>JSON:</b> Run validates JSON and displays formatted data.</p></section>
+<section class="helpBlock"><h3><i class="fa-brands fa-python"></i> 3. Python compiler</h3><p>Python runs through Pyodide in a JavaScript module worker, keeping most computation away from the user interface. The first run downloads the runtime, so an internet connection is needed. Imported packages are loaded when Pyodide supports them; native packages that require unavailable system binaries may not work. Python stdout and returned values appear in the full-width Output preview. Exceptions and failed package imports are also written to Console. Use Stop to interrupt a long-running program.</p></section>
+<section class="helpBlock"><h3><i class="fa-solid fa-code"></i> 4. Language support</h3><p>Editing and highlighting cover HTML, CSS, JavaScript, TypeScript, React JSX/TSX, Python, C, C++, Java, C#, PHP, Go, Rust, Ruby, Lua, R, Kotlin, Swift, Dart, SQL, JSON, Markdown, XML, YAML and Shell. TypeScript is transpiled in the browser and SQL runs in a local SQLite database. Compiler-backed snippets use Wandbox after a first-run privacy confirmation; a language must be listed by that service to run.</p></section>
 <section class="helpBlock"><h3><i class="fa-solid fa-gauge-high"></i> 5. Large files and performance</h3><p>The editor does not reject a file because it crosses a fixed line-count limit. For larger documents, it automatically turns off costly wrapping, suggestions and decorations to improve responsiveness. Very large source files can still use substantial phone memory, and millions of lines cannot be promised to run instantly. Execution time depends on the program and the device. The Console keeps recent output instead of creating unlimited DOM rows.</p><p><b>Cloud-save note:</b> projects are currently stored as one Firestore document. Firestore has a strict per-document size limit, so an oversized project may stay editable locally but cannot be saved in that one document. Use <b>Export project backup</b> and keep a copy; large-project cloud storage needs a per-file storage design.</p></section>
 <section class="helpBlock"><h3><i class="fa-solid fa-cloud-arrow-up"></i> 6. Saving and shortcuts</h3><p><b>Ctrl+S</b> saves the project, <b>Ctrl+Enter</b> runs the active code, and <b>Ctrl+B</b> toggles the file explorer. Automatic saving is debounced while typing. The cloud indicator shows whether changes are pending, saved or blocked. Use Export Backup for an offline copy and Import Backup to restore a Code Academy project file.</p></section>
 <section class="helpBlock"><h3><i class="fa-solid fa-file-zipper"></i> 7. Import and export</h3><p>Use the import button for a source file, Code Academy JSON backup, or ZIP archive. Use the folder button to import supported text/code files from a directory; ZIPs are extracted in this page before files are merged into the current project. Matching paths prompt for confirmation. The exporter can create a ZIP of your text/code files. For device stability, imports are limited to 250 supported files and about 650,000 characters of source text at a time; binary assets and installed packages are not added as text source files.</p></section>
-<section class="helpBlock"><h3><i class="fa-solid fa-eye"></i> 8. Focus mode, preview and sharing</h3><p>The code editor gets most of the screen. The Console/Problems dock stays hidden until you open it; runtime errors and warnings reveal the Console automatically. Expand preview when you want it to fill the work area. Share sends an editor page link, not your private code. Every editor link has a dedicated wide preview image, title and description metadata. Visitors who are not signed in are redirected to signup before entering the workspace.</p></section>
+<section class="helpBlock"><h3><i class="fa-solid fa-eye"></i> 8. Focus mode, preview and sharing</h3><p>The code editor gets most of the screen. The Console/Problems dock stays hidden until you open it; runtime errors and warnings reveal the Console automatically. Run opens the Preview / Output pane full-width by default; use the shrink or close controls to return to editing. Share sends an editor page link, not your private code. Every editor link has a dedicated wide preview image, title and description metadata. Visitors who are not signed in are redirected to signup before entering the workspace.</p></section>
 </div><div class="modalActions"><a class="actionBtn" href="editor-help.html" target="_blank" rel="noopener" style="text-decoration:none;color:var(--text)">Full help guide</a><button class="actionBtn primary" id="closeHelp">Got it</button></div></div></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <script>
@@ -108,6 +108,11 @@ const JSZIP_URL = "https://cdn.jsdelivr.net/npm/jszip@3.10.2/dist/jszip.min.js";
 const launchLanguage = (new URLSearchParams(location.search).get("lang") || "").toLowerCase();
 const PYODIDE_ROOT = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
 const BABEL_URL = "https://unpkg.com/@babel/standalone@7.29.10/babel.min.js";
+const TYPESCRIPT_URL = "https://cdn.jsdelivr.net/npm/typescript@6.0.3/lib/typescript.js";
+const SQL_JS_URL = "https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist/sql-wasm.js";
+const SQL_JS_ROOT = "https://cdn.jsdelivr.net/npm/sql.js@1.14.2/dist/";
+const WANDBOX_ROOT = "https://wandbox.org/api/";
+let wandboxCompilersPromise = null;
 const REACT_URL = "https://unpkg.com/react@18.3.1/umd/react.development.js";
 const REACT_DOM_URL = "https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js";
 const LANG = {
@@ -126,6 +131,8 @@ const LANG = {
  go:{label:"Go",monaco:"go",ext:"go",icon:"go/go-original.svg",color:"#67e8f9"},
  rust:{label:"Rust",monaco:"rust",ext:"rs",icon:"rust/rust-original.svg",color:"#d6d3d1"},
  ruby:{label:"Ruby",monaco:"ruby",ext:"rb",icon:"ruby/ruby-original.svg",color:"#fb7185"},
+ lua:{label:"Lua",monaco:"lua",ext:"lua",icon:"lua/lua-original.svg",color:"#7dd3fc"},
+ r:{label:"R",monaco:"r",ext:"R",icon:"r/r-original.svg",color:"#60a5fa"},
  kotlin:{label:"Kotlin",monaco:"kotlin",ext:"kt",icon:"kotlin/kotlin-original.svg",color:"#c084fc"},
  swift:{label:"Swift",monaco:"swift",ext:"swift",icon:"swift/swift-original.svg",color:"#fb923c"},
  dart:{label:"Dart",monaco:"dart",ext:"dart",icon:"dart/dart-original.svg",color:"#38bdf8"},
@@ -142,7 +149,7 @@ const LANG = {
  plaintext:{label:"Plain Text",monaco:"plaintext",ext:"txt",icon:"devicon-plain/ plain.svg",color:"#94a3b8"}
 };
 const EXT = {
- html:"html",htm:"html",css:"css",scss:"sass",sass:"sass",js:"javascript",mjs:"javascript",cjs:"javascript",ts:"typescript",tsx:"tsx",jsx:"jsx",py:"python",pyw:"python",cpp:"cpp",cc:"cpp",cxx:"cpp",hpp:"cpp",h:"c",c:"c",java:"java",cs:"csharp",php:"php",go:"go",rs:"rust",rb:"ruby",kt:"kotlin",kts:"kotlin",swift:"swift",dart:"dart",sql:"sql",json:"json",md:"markdown",markdown:"markdown",xml:"xml",xhtml:"xml",yml:"yaml",yaml:"yaml",sh:"shell",bash:"shell",vue:"vue",svelte:"svelte",txt:"plaintext",toml:"plaintext",ini:"plaintext",r:"plaintext",lua:"plaintext",pl:"plaintext",ex:"plaintext",exs:"plaintext",erl:"plaintext",hs:"plaintext",elm:"plaintext",scala:"plaintext",groovy:"plaintext",gradle:"plaintext",ipynb:"json"
+ html:"html",htm:"html",css:"css",scss:"sass",sass:"sass",js:"javascript",mjs:"javascript",cjs:"javascript",ts:"typescript",tsx:"tsx",jsx:"jsx",py:"python",pyw:"python",cpp:"cpp",cc:"cpp",cxx:"cpp",hpp:"cpp",h:"c",c:"c",java:"java",cs:"csharp",php:"php",go:"go",rs:"rust",rb:"ruby",lua:"lua",r:"r",kt:"kotlin",kts:"kotlin",swift:"swift",dart:"dart",sql:"sql",json:"json",md:"markdown",markdown:"markdown",xml:"xml",xhtml:"xml",yml:"yaml",yaml:"yaml",sh:"shell",bash:"shell",vue:"vue",svelte:"svelte",txt:"plaintext",toml:"plaintext",ini:"plaintext",pl:"plaintext",ex:"plaintext",exs:"plaintext",erl:"plaintext",hs:"plaintext",elm:"plaintext",scala:"plaintext",groovy:"plaintext",gradle:"plaintext",ipynb:"json"
 };
 const STARTERS = {
  html:`<!doctype html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>My Code Academy Project</title>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n  <main class="container">\n    <h1>Hello Code Academy! 🚀</h1>\n    <p>Your project is ready to build.</p>\n    <button id="helloButton">Click me</button>\n  </main>\n  <script src="script.js"><\/script>\n</body>\n</html>`,
@@ -159,6 +166,8 @@ const STARTERS = {
  go:`package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Hello from Code Academy!")\n}`,
  rust:`fn main() {\n    let name = "Code Academy";\n    println!("Hello from {}!", name);\n}`,
  ruby:`name = "Code Academy"\nputs "Hello from #{name}!"`,
+ lua:`print("Hello from Code Academy Lua!")`,
+ r:`cat("Hello from Code Academy R!\\n")`,
  kotlin:`fun main() {\n    val name = "Code Academy"\n    println("Hello from $name!")\n}`,
  swift:`import Foundation\n\nlet name = "Code Academy"\nprint("Hello from \\(name)!")`,
  dart:`void main() {\n  const name = 'Code Academy';\n  print('Hello from $name!');\n}`,
@@ -202,7 +211,7 @@ function defaultFiles(type="web"){
  if(type==="empty")return {};
  if(type==="python")return {"main.py":{lang:"python",content:STARTERS.python}};
  if(type==="react")return {"App.jsx":{lang:"jsx",content:STARTERS.jsx},"style.css":{lang:"css",content:STARTERS.css}};
- const single={javascript:["main.js","javascript"],html:["index.html","html"],css:["style.css","css"],typescript:["main.ts","typescript"],java:["Main.java","java"],cpp:["main.cpp","cpp"],c:["main.c","c"],php:["index.php","php"],sql:["main.sql","sql"]};
+ const single={javascript:["main.js","javascript"],html:["index.html","html"],css:["style.css","css"],typescript:["main.ts","typescript"],java:["Main.java","java"],cpp:["main.cpp","cpp"],c:["main.c","c"],csharp:["Program.cs","csharp"],php:["index.php","php"],sql:["main.sql","sql"],ruby:["main.rb","ruby"],go:["main.go","go"],swift:["main.swift","swift"],lua:["main.lua","lua"],r:["main.R","r"]};
  if(single[type]){const [name,key]=single[type];return {[name]:{lang:key,content:STARTERS[key]||""}};}
  return {"index.html":{lang:"html",content:STARTERS.html},"style.css":{lang:"css",content:STARTERS.css},"script.js":{lang:"javascript",content:STARTERS.javascript}};
 }
@@ -343,7 +352,7 @@ function setupMonaco(){
    }};
    amd.config({paths:{vs:MONACO_ROOT+"/vs"}});
    amd(["vs/editor/editor.main"],function(){
-    const languageModules=["cpp","csharp","java","python","php","go","rust","ruby","kotlin","swift","dart","sql","markdown","xml","yaml","shell","scss"];
+    const languageModules=["cpp","csharp","java","python","php","go","rust","ruby","lua","r","kotlin","swift","dart","sql","markdown","xml","yaml","shell","scss"];
     Promise.all(languageModules.map(id=>new Promise(done=>{
      amd([`vs/basic-languages/${id}/${id}.contribution`],()=>done(),()=>done());
     }))).then(()=>{
@@ -499,7 +508,7 @@ async function exportProjectZip(){
  }catch(error){console.error("ZIP export failed",error);toast("Could not export ZIP: "+(error.message||"unknown error"),"error");}
 }
 async function shareEditorPage(){
- const routes={python:"python-editor.html",javascript:"javascript-editor.html",html:"html-editor.html",css:"css-editor.html",java:"java-editor.html",cpp:"cpp-editor.html",php:"php-editor.html",sql:"sql-editor.html",typescript:"typescript-editor.html"};
+ const routes={python:"python-editor.html",javascript:"javascript-editor.html",html:"html-editor.html",css:"css-editor.html",java:"java-editor.html",cpp:"cpp-editor.html",c:"c-editor.html",csharp:"csharp-editor.html",php:"php-editor.html",sql:"sql-editor.html",typescript:"typescript-editor.html",ruby:"ruby-editor.html",go:"go-editor.html",swift:"swift-editor.html",lua:"lua-editor.html",r:"r-editor.html"};
  const route=routes[launchLanguage]||(launchLanguage?"CODEEDITOR.html?lang="+encodeURIComponent(launchLanguage):"CODEEDITOR.html?lang=web");const url=new URL(route,location.href).href;const title=launchLanguage?(LANG[launchLanguage]?.label||"Code")+" Editor | Code Academy":"Code Academy Editor";
  const text="Open Code Academy's focused coding workspace. Share the editor with friends; account access is required to use the workspace.";
  try{if(navigator.share){await navigator.share({title,text,url});toast("Share sheet opened.","success");}else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(url);toast("Editor link copied. Its page metadata provides the preview image and description.","success");}else{prompt("Copy this editor link",url);}}catch(error){if(error?.name!=="AbortError")toast("Could not share the editor link. Copy the URL from the address bar.","warning");}
@@ -509,7 +518,7 @@ function toggleFullPreview(){const pane=$("previewPane");pane.classList.toggle("
 
 function formatCurrentFile(){syncCurrentText();let value=files[currentFile]?.content||"";const key=languageFor(currentFile);try{if(key==="json")value=JSON.stringify(JSON.parse(value),null,2);else if(["html","xml"].includes(key)){value=value.replace(/>\s*</g,">\n<").split("\n").map(s=>s.trim()).filter(Boolean).join("\n");}else if(key==="javascript"||key==="typescript"||key==="jsx"||key==="tsx"){if(window.monaco?.languages?.typescript?.typescriptDefaults){/* Monaco formats the document below when available. */}}else value=value.replace(/\r\n/g,"\n").replace(/[\t ]+$/gm,"");}catch(error){toast("Cannot format this file yet: "+error.message,"warning");return;}files[currentFile].content=value;if(editor&&monacoReady)editor.setValue(value);else if(useFallback)$("fallbackEditor").value=value;markDirty();toast("Safe formatting applied.","success");}
 function formatWithMonaco(){if(!editor){formatCurrentFile();return;}const action=editor.getAction("editor.action.formatDocument");if(action){action.run().then(()=>{syncCurrentText();markDirty();toast("Document formatted.","success");}).catch(()=>formatCurrentFile());}else formatCurrentFile();}
-function appendBridge(){return `<script>(function(){const TOKEN=${JSON.stringify(sessionToken)};function safe(v){try{if(typeof v==="string")return v;if(v instanceof Error)return v.stack||v.message;const s=JSON.stringify(v);return s===undefined?String(v):s;}catch(e){return String(v);}}function send(type,args){try{parent.postMessage({source:"code-academy-editor",token:TOKEN,type:type,text:Array.from(args).map(safe).join(" ")},"*")}catch(e){}}const original={log:console.log.bind(console),info:console.info.bind(console),warn:console.warn.bind(console),error:console.error.bind(console),debug:console.debug.bind(console)};["log","info","warn","error","debug"].forEach(k=>console[k]=function(){send(k,arguments);original[k](...arguments)});window.addEventListener("error",function(e){send("error",[e.message+(e.lineno?" (line "+e.lineno+")":"")]);});window.addEventListener("unhandledrejection",function(e){send("error",["Unhandled promise rejection: "+safe(e.reason)]);});window.addEventListener("load",function(){send("info",["Preview loaded."]);});})();<\/script>`;}
+function appendBridge(){return `<script>(function(){const TOKEN=${JSON.stringify(sessionToken)};function safe(v){try{if(typeof v==="string")return v;if(v instanceof Error)return v.stack||v.message;const s=JSON.stringify(v);return s===undefined?String(v):s;}catch(e){return String(v);}}function send(type,args){try{parent.postMessage({source:"code-academy-editor",token:TOKEN,type:type,text:Array.from(args).map(safe).join(" ")} ,"*")}catch(e){}}const original={log:console.log.bind(console),info:console.info.bind(console),warn:console.warn.bind(console),error:console.error.bind(console),debug:console.debug.bind(console)};function showInOutput(type,args){const host=document.getElementById("__ca_output");if(!host)return;const line=document.createElement("div");line.textContent=Array.from(args).map(safe).join(" ");line.style.cssText="white-space:pre-wrap;overflow-wrap:anywhere;margin:0 0 5px;color:"+(type==="error"?"#fda4af":type==="warn"?"#fcd34d":"#bfdbfe");host.append(line);} ["log","info","warn","error","debug"].forEach(k=>console[k]=function(){send(k,arguments);showInOutput(k,arguments);original[k](...arguments)});window.addEventListener("error",function(e){send("error",[e.message+(e.lineno?" (line "+e.lineno+")":"")]);});window.addEventListener("unhandledrejection",function(e){send("error",["Unhandled promise rejection: "+safe(e.reason)]);});window.addEventListener("load",function(){send("info",["Preview loaded."]);});})();<\/script>`;}
 function escapeScriptClose(code){return String(code??"").replace(/<\/script/gi,"<\\/script");}
 function htmlDocuments(){return Object.keys(files).filter(path=>/\.html?$/i.test(path));}
 function findCssFiles(){return Object.keys(files).filter(path=>/\.(css|scss)$/i.test(path));}
@@ -522,12 +531,105 @@ const bridge=appendBridge();if(/<head\b[^>]*>/i.test(html))html=html.replace(/<h
 if(extraCSS){if(/<\/head>/i.test(html))html=html.replace(/<\/head>/i,`<style>${extraCSS.replace(/<\/style/gi,"<\\/style")}</style></head>`);else html=`<style>${extraCSS.replace(/<\/style/gi,"<\\/style")}</style>`+html;}
 if(extraJS){if(/<\/body>/i.test(html))html=html.replace(/<\/body>/i,`<script>${escapeScriptClose(extraJS)}<\/script></body>`);else html+=`<script>${escapeScriptClose(extraJS)}<\/script>`;}
 return {html,path:htmlPath||currentFile};}
-function showPreview(){const mobile=window.matchMedia("(max-width:680px)").matches;$("previewPane").classList.add("active");if(mobile)$("app").classList.add("mobilePreviewOpen");$("previewBlank").classList.add("hidden");$("previewFrame").classList.remove("hidden");}
+function showPreview(){const mobile=window.matchMedia("(max-width:680px)").matches;$("previewPane").classList.add("active","fullscreen");$("fullPreviewBtn").innerHTML='<i class="fa-solid fa-compress"></i>';if(mobile)$("app").classList.add("mobilePreviewOpen");$("previewBlank").classList.add("hidden");$("previewFrame").classList.remove("hidden");}
 function closePreview(){ $("previewPane").classList.remove("active","fullscreen");$("app").classList.remove("mobilePreviewOpen");$("fullPreviewBtn").innerHTML='<i class="fa-solid fa-expand"></i>';if(editor)editor.layout(); }
 function receivePreviewMessage(event){if(event.source!==$("previewFrame").contentWindow)return;const d=event.data;if(!d||d.source!=="code-academy-editor"||d.token!==sessionToken)return;const type=d.type==="warning"||d.type==="warn"?"warn":d.type==="error"?"error":d.type==="info"?"info":"log";consoleLine(d.text,type);if(type==="error"||type==="warn")showDock("console");}
 function runWebProject(){syncCurrentText();clearConsole("Running project in a sandboxed preview…");$("dock").classList.add("collapsed");showPreview();$("previewStatus").textContent="Running web preview";try{const result=createWebDocument();$("previewFrame").srcdoc=result.html;consoleLine("Loaded "+(result.path||"preview")+" with local project files.","success");}catch(error){consoleLine("Preview build failed: "+error.message,"error");toast("Could not build preview.","error");}}
-function runJavascriptStandalone(code){clearConsole("Running JavaScript in the preview sandbox…");$("dock").classList.add("collapsed");showPreview();const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${appendBridge()}</head><body><pre style="font:13px ui-monospace,monospace">JavaScript console run</pre><script>${escapeScriptClose(code)}<\/script></body></html>`;$("previewFrame").srcdoc=html;$("previewStatus").textContent="JavaScript sandbox";}
+function runJavascriptStandalone(code){clearConsole("Running JavaScript in the preview sandbox…");$("dock").classList.add("collapsed");showPreview();const html=`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">${appendBridge()}</head><body style="margin:0;background:#06101f;color:#e5edf8;font:14px system-ui;padding:clamp(16px,4vw,34px)"><h1 style="font-size:clamp(20px,3vw,30px)">JavaScript output</h1><p style="color:#8fa5c2">console.log(), console.info() and return values appear below.</p><section id="__ca_output" style="padding:20px;background:#0a1628;border:1px solid #263a55;border-radius:16px;min-height:45vh;font:14px/1.8 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;color:#bde7ff"></section><script>${escapeScriptClose(code)}<\/script></body></html>`;$("previewFrame").srcdoc=html;$("previewStatus").textContent="JavaScript sandbox";}
 function loadScript(url){return new Promise((resolve,reject)=>{const existing=[...document.scripts].find(s=>s.src===url);if(existing){if(existing.dataset.loaded==="true")return resolve();existing.addEventListener("load",()=>resolve(),{once:true});existing.addEventListener("error",()=>reject(new Error("Could not load "+url)),{once:true});return;}const script=document.createElement("script");script.src=url;script.async=true;script.onload=()=>{script.dataset.loaded="true";resolve();};script.onerror=()=>reject(new Error("Could not load runtime: "+url));document.head.append(script);});}
+let pythonOutputText = "";
+function showWidePreview(){
+ showPreview();
+ const pane=$("previewPane");pane.classList.add("fullscreen");
+ $("fullPreviewBtn").innerHTML='<i class="fa-solid fa-compress"></i>';
+}
+function outputShell(title, status, body, light=false){
+ const bg=light?"#f8fafc":"#06101f", fg=light?"#0f172a":"#e5edf8", muted=light?"#526176":"#8fa5c2";
+ return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHTML(title)}</title><style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:${bg};color:${fg};font:14px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}body{padding:clamp(16px,4vw,34px)}header{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-bottom:1px solid ${light?'#dbe3ee':'#23344d'};padding-bottom:15px;margin-bottom:20px}h1{font-size:clamp(20px,3vw,30px);letter-spacing:-.035em;margin:0}small{font-size:12px;color:${muted}}.pill{margin-left:auto;border:1px solid ${light?'#cbd5e1':'#2e4562'};background:${light?'#fff':'#0c1b30'};padding:5px 10px;border-radius:999px;font-size:11px;color:${muted}}.panel{border:1px solid ${light?'#dbe3ee':'#263a55'};border-radius:16px;overflow:hidden;min-height:45vh;background:${light?'#fff':'#0a1628'}}.panel-head{padding:12px 16px;background:${light?'#edf2f8':'#0e1c31'};border-bottom:1px solid ${light?'#dbe3ee':'#263a55'};font-size:12px;font-weight:800}.output{margin:0;padding:20px;min-height:40vh;white-space:pre-wrap;overflow-wrap:anywhere;tab-size:2;font:clamp(12px,1.2vw,15px)/1.8 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:${light?'#0f172a':'#bde7ff'}}.foot{color:${muted};font-size:11px;margin-top:12px}.empty{color:${muted};font-style:italic}</style></head><body><header><div><h1>${escapeHTML(title)}</h1><small>Code Academy · Run result</small></div><span class="pill">${escapeHTML(status||'Completed')}</span></header>${body}<p class="foot">The result is displayed in this full-width preview. Open Console from the editor toolbar to inspect runtime errors.</p></body></html>`;
+}
+function showOutputPreview(title, text, status="Completed", options={}){
+ const safeText=String(text??"");
+ const body=`<section class="panel"><div class="panel-head">${escapeHTML(options.label||"Program output")}</div><pre class="output">${escapeHTML(safeText||"Program finished without writing to standard output.")}</pre></section>`;
+ showWidePreview();$("previewStatus").textContent=status;$("previewFrame").srcdoc=outputShell(title,status,body,!!options.light);
+}
+function showHTMLOutputPreview(title, content, status="Completed"){
+ showWidePreview();$("previewStatus").textContent=status;$("previewFrame").srcdoc=outputShell(title,status,content,false);
+}
+function raiseRuntimeError(title, message){
+ const text=String(message||"Unknown runtime error");
+ consoleLine(title+": "+text,"error");showDock("console");
+ showOutputPreview(title,text,"Runtime error",{label:"Error details"});
+ $("previewStatus").textContent="Runtime error";setCloud(title+" failed","error");
+}
+async function runTypeScript(){
+ const code=getCurrentText();syncCurrentText();
+ try{
+  if(!window.ts)await loadScript(TYPESCRIPT_URL);
+  if(!window.ts||typeof window.ts.transpileModule!=="function")throw new Error("The TypeScript compiler did not expose its expected API.");
+  const result=window.ts.transpileModule(code,{reportDiagnostics:true,compilerOptions:{target:window.ts.ScriptTarget.ES2022,module:window.ts.ModuleKind.None,strict:false,removeComments:false}});
+  const errors=(result.diagnostics||[]).filter(d=>d.category===window.ts.DiagnosticCategory.Error);
+  if(errors.length){const text=errors.map(d=>window.ts.flattenDiagnosticMessageText(d.messageText,"\n")).join("\n");raiseRuntimeError("TypeScript compile failed",text);return;}
+  runJavascriptStandalone(result.outputText);
+  $("previewStatus").textContent="TypeScript compiled · JavaScript preview";
+ }catch(error){raiseRuntimeError("TypeScript compile failed",error?.message||String(error));}
+}
+async function runSQL(){
+ const code=getCurrentText();syncCurrentText();
+ if(!code.trim()){toast("Add a SQL query before running.","warning");return;}
+ try{
+  if(!window.initSqlJs)await loadScript(SQL_JS_URL);
+  if(!window.initSqlJs)throw new Error("sql.js did not load. Check the network connection and try again.");
+  const SQL=await window.initSqlJs({locateFile:file=>SQL_JS_ROOT+file});
+  const db=new SQL.Database();
+  let results;try{results=db.exec(code);}finally{}
+  if(!results||!results.length){db.close();showOutputPreview("SQL results","SQL executed successfully. The statements did not return a result table.","Query completed");return;}
+  const chunks=[];
+  results.forEach((result,index)=>{
+   const thead='<thead><tr>'+result.columns.map(col=>'<th>'+escapeHTML(col)+'</th>').join('')+'</tr></thead>';
+   const tbody='<tbody>'+result.values.map(row=>'<tr>'+row.map(value=>'<td>'+escapeHTML(value===null?'NULL':String(value))+'</td>').join('')+'</tr>').join('')+'</tbody>';
+   chunks.push(`<section class="panel" style="margin-bottom:16px"><div class="panel-head">Result set ${index+1} · ${result.values.length} row(s)</div><div style="overflow:auto"><table style="width:100%;border-collapse:collapse;text-align:left;font:12px/1.6 ui-monospace,monospace"><style>th,td{border-bottom:1px solid #263a55;padding:10px 12px;white-space:pre-wrap;overflow-wrap:anywhere}th{color:#7dd3fc;background:#0e1c31}td{color:#e5edf8}</style>${thead}${tbody}</table></div></section>`);
+  });
+  db.close();showHTMLOutputPreview("SQL results",chunks.join(""),"SQLite · in-browser");
+ }catch(error){raiseRuntimeError("SQL execution failed",error?.message||String(error));}
+}
+async function getWandboxCompilers(){
+ if(!wandboxCompilersPromise){wandboxCompilersPromise=fetch(WANDBOX_ROOT+"list.json",{headers:{Accept:"application/json"},cache:"no-store",signal:AbortSignal.timeout(25000)}).then(async response=>{if(!response.ok)throw new Error("Compiler service returned HTTP "+response.status);const list=await response.json();if(!Array.isArray(list)||!list.length)throw new Error("The compiler service returned an empty compiler list.");return list;}).catch(error=>{wandboxCompilersPromise=null;throw error;});}
+ return wandboxCompilersPromise;
+}
+function wandboxLanguageNames(key){return ({c:["C"],cpp:["C++"],csharp:["C#"],java:["Java"],php:["PHP"],go:["Go"],rust:["Rust"],ruby:["Ruby"],kotlin:["Kotlin"],swift:["Swift"],dart:["Dart"],r:["R"],lua:["Lua"],shell:["Bash","Shell"],typescript:["TypeScript"],javascript:["JavaScript"],python:["Python"],sql:["SQL"]})[key]||[languageLabel(key)];
+}
+function compilerVersionScore(item){const value=String(item.version||item["display-name"]||item.name||"");const numbers=value.match(/\d+/g)||[];let score=0;for(let i=0;i<Math.min(4,numbers.length);i++)score+=Number(numbers[i])/(1000**i);return score;}
+async function runWandbox(code,key){
+ syncCurrentText();
+ if(!code.trim()){toast("Add code before running.","warning");return;}
+ let consent=false;try{consent=sessionStorage.getItem("codeAcademyExternalCompilerConsent")==="yes";}catch{}
+ if(!consent){const accepted=confirm("External compiler notice\n\nThis language runs on Wandbox, a third-party compilation service. Your code is sent to that service for compilation and execution. Do not run code that contains passwords, API keys, private information or confidential source code. Continue?");if(!accepted)return;try{sessionStorage.setItem("codeAcademyExternalCompilerConsent","yes");}catch{}}
+ showOutputPreview(languageLabel(key)+" output","Loading available compilers…","Connecting to compiler service");setCloud("Connecting compiler service…","pending");
+ try{
+  const langs=wandboxLanguageNames(key).map(x=>x.toLowerCase());
+  const list=await getWandboxCompilers();
+  let candidates=list.filter(item=>langs.includes(String(item.language||"").toLowerCase()));
+  // Some compiler catalogs label aliases differently; try display-name only as a compatibility fallback.
+  if(!candidates.length)candidates=list.filter(item=>langs.some(lang=>String(item["display-name"]||"").toLowerCase().includes(lang)));
+  if(!candidates.length)throw new Error("No compiler is currently listed for "+languageLabel(key)+" on Wandbox. Its editor remains available, but this runtime is not published by the service right now.");
+  const stable=candidates.filter(item=>!/(head|trunk|experimental|nightly)/i.test(String(item.name||"")+" "+String(item.version||"")));
+  const choices=stable.length?stable:candidates;
+  choices.sort((a,b)=>compilerVersionScore(b)-compilerVersionScore(a));
+  const compiler=choices[0];
+  $("previewStatus").textContent="Compiling with "+(compiler["display-name"]||compiler.name||languageLabel(key));
+  const response=await fetch(WANDBOX_ROOT+"compile.json",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({compiler:compiler.name,code,codes:Object.entries(files).filter(([path,item])=>path!==currentFile&&item&&typeof item.content==="string"&&({c:/\.(c|h)$/i,cpp:/\.(cc|cpp|cxx|hpp|h)$/i,csharp:/\.cs$/i,java:/\.java$/i,go:/\.go$/i,ruby:/\.rb$/i,swift:/\.swift$/i,lua:/\.lua$/i,r:/\.r$/i,php:/\.php$/i,rust:/\.rs$/i,kotlin:/\.kt$/i,dart:/\.dart$/i})[key]?.test(path)).map(([file,item])=>({file,code:item.content})),stdin:"",save:false}),signal:AbortSignal.timeout(50000)});
+  if(!response.ok)throw new Error("Compiler submission failed with HTTP "+response.status+". The public service may be busy or rate-limited.");
+  const data=await response.json();
+  const compileOut=String(data.compiler_message||[data.compiler_output,data.compiler_error].filter(v=>typeof v==="string"&&v.trim()).join("\n"));
+  const programOut=String(data.program_message||[data.program_output,data.program_error].filter(v=>typeof v==="string"&&v.trim()).join("\n"));
+  const output=[compileOut,programOut].filter(Boolean).join("\n\n");
+  const failed=!!(String(data.compiler_error||"").trim()||String(data.program_error||"").trim()||(data.status!==undefined&&String(data.status)!=="0"&&String(data.status).toLowerCase()!=="success"));
+  const version=compiler.version?" · "+compiler.version:"";
+  showOutputPreview(languageLabel(key)+" output",output||"Program completed successfully without standard output.",failed?"Compiler reported an error":"Run completed · "+(compiler["display-name"]||compiler.name)+version,{label:failed?"Compiler / runtime messages":"Program output"});
+  if(failed){consoleLine(languageLabel(key)+" compiler/runtime reported an error.","error");if(compileOut)consoleLine(compileOut,"error");if(data.program_error)consoleLine(String(data.program_error),"error");showDock("console");setCloud("Execution failed","error");}
+  else{setCloud("Execution complete","saved");}
+ }catch(error){raiseRuntimeError(languageLabel(key)+" execution failed",error?.message||String(error));}
+}
 async function runPython(){
  const code=getCurrentText();
  syncCurrentText();
@@ -535,7 +637,8 @@ async function runPython(){
   clearConsole("Python file is empty. Add some code, then press Run.");showDock("console");
   toast("Add Python code before running.","warning");return;
  }
- closePreview();showDock("console");clearConsole("Preparing the browser-based Python runtime…");
+ pythonOutputText="";clearConsole("Python run started; output is shown in the full preview.");
+ showOutputPreview("Python output","Downloading the browser-based Python runtime. The first run can take a little longer…","Preparing Python");
  $("previewStatus").textContent="Preparing Python";lastPythonCode=code;pythonRunHadError=false;
  try{
   // Stop a previous run, but keep a ready worker alive between completed runs.
@@ -606,26 +709,25 @@ self.onmessage=async(event)=>{
    pythonWorker=new Worker(pythonWorkerURL,{type:"module",name:"code-academy-python-runtime"});
    pythonWorker.onmessage=e=>{
     const d=e.data||{};
-    if(d.type==="status"){setCloud(d.text,"pending");consoleLine(d.text,"info");}
-    else if(d.type==="stdout")consoleLine(d.text,"log");
-    else if(d.type==="stderr")consoleLine(d.text,"error");
-    else if(d.type==="result")consoleLine(d.text,"success");
+    if(d.type==="status"){setCloud(d.text,"pending");$("previewStatus").textContent=d.text;}
+    else if(d.type==="stdout"){pythonOutputText+=String(d.text||"");}
+    else if(d.type==="stderr"){pythonOutputText+=String(d.text||"");}
+    else if(d.type==="result"){pythonOutputText+=(pythonOutputText?"\n":"")+String(d.text||"");}
     else if(d.type==="error"){
-     pythonRunHadError=true;consoleLine(d.text,"error");$("previewStatus").textContent="Python error";setCloud("Python error","error");
+     pythonRunHadError=true;consoleLine(d.text,"error");$("previewStatus").textContent="Python error";setCloud("Python error","error");pythonOutputText+=(pythonOutputText?"\n\n":"")+"Runtime error:\n"+String(d.text||"");showOutputPreview("Python output",pythonOutputText,"Runtime error",{label:"Python output and error"});showDock("console");
      if(d.fatal){try{pythonWorker?.terminate();}catch{}pythonWorker=null;if(pythonWorkerURL){URL.revokeObjectURL(pythonWorkerURL);pythonWorkerURL=null;}}
     }
     else if(d.type==="done"){
      pythonWorkerBusy=false;
      if(pythonTimer){clearTimeout(pythonTimer);pythonTimer=null;}
      $("previewStatus").textContent=pythonRunHadError?"Python finished with an error":"Python finished";
-     if(!pythonRunHadError)setCloud("Python run complete","saved");
-     consoleLine(pythonRunHadError?"Python run ended with an error.":"Python process finished.",pythonRunHadError?"warn":"success");
+     if(!pythonRunHadError){setCloud("Python run complete","saved");showOutputPreview("Python output",pythonOutputText,"Execution completed",{label:"Python standard output"});}
     }
    };
    pythonWorker.onerror=e=>{
     pythonRunHadError=true;pythonWorkerBusy=false;
     if(pythonTimer){clearTimeout(pythonTimer);pythonTimer=null;}
-    consoleLine("Python runtime worker failed: "+(e.message||"module worker or runtime could not load"),"error");
+    const workerError="Python runtime worker failed: "+(e.message||"module worker or runtime could not load");consoleLine(workerError,"error");showDock("console");showOutputPreview("Python output",workerError,"Runtime failed",{label:"Python runtime error"});
     setCloud("Python runtime failed","error");$("previewStatus").textContent="Python runtime failed";
     try{pythonWorker?.terminate();}catch{}pythonWorker=null;
     if(pythonWorkerURL){URL.revokeObjectURL(pythonWorkerURL);pythonWorkerURL=null;}
@@ -640,14 +742,14 @@ self.onmessage=async(event)=>{
     pythonWorker.terminate();pythonWorker=null;pythonWorkerBusy=false;
     if(pythonWorkerURL){URL.revokeObjectURL(pythonWorkerURL);pythonWorkerURL=null;}
     pythonTimer=null;pythonRunHadError=true;
-    consoleLine("Python was stopped after the 120-second safety limit. Check for an endless loop or stop the run before trying again. The editor does not reject code based on line count.","warn");
+    const timeoutMessage="Python was stopped after the 120-second safety limit. Check for an endless loop or stop the run before trying again.";consoleLine(timeoutMessage,"error");showDock("console");showOutputPreview("Python output",(pythonOutputText?pythonOutputText+"\n\n":"")+timeoutMessage,"Execution timed out",{label:"Python runtime error"});
     setCloud("Python stopped","error");$("previewStatus").textContent="Python stopped";
    }
   },120000);
  }catch(error){
   pythonWorkerBusy=false;
   if(pythonTimer){clearTimeout(pythonTimer);pythonTimer=null;}
-  consoleLine("Could not start Python: "+(error?.message||String(error)),"error");
+  const message="Could not start Python: "+(error?.message||String(error));consoleLine(message,"error");showDock("console");showOutputPreview("Python output",message,"Runtime failed",{label:"Python runtime error"});
   setCloud("Python runtime failed","error");$("previewStatus").textContent="Python runtime failed";
   try{pythonWorker?.terminate();}catch{}pythonWorker=null;
   if(pythonWorkerURL){URL.revokeObjectURL(pythonWorkerURL);pythonWorkerURL=null;}
@@ -712,11 +814,23 @@ async function runReactPreview(){
  clearConsole("Launching React preview…");$("dock").classList.add("collapsed");showPreview();$("previewStatus").textContent="React JSX preview";$("previewFrame").srcdoc=html;
  consoleLine("React JSX preview uses CDN React + Babel. Local JSX/TSX files are combined, but npm imports, npm packages and production build tools are not configured.","info");
 }
-function runJson(){try{const value=JSON.parse(getCurrentText());const pretty=JSON.stringify(value,null,2);clearConsole("Valid JSON");consoleLine("JSON syntax is valid.","success");consoleLine(pretty,"log");$("dock").classList.add("collapsed");toast("JSON is valid.","success");}catch(error){clearConsole("JSON parse error");consoleLine(error.message,"error");showDock("console");toast("JSON contains a syntax error.","error");}}
-async function runCode(){syncCurrentText();const key=languageFor(currentFile);if(key==="python"){return runPython();}if(key==="json"){return runJson();}if(key==="jsx"||key==="tsx"){return runReactPreview();}if(["cpp","c","java","csharp","php","go","rust","ruby","kotlin","swift","dart","sql","shell","yaml","markdown","xml","sass","vue","svelte"].includes(key)){showDock("console");clearConsole(`${languageLabel(key)} is supported for editing, syntax highlighting and available static diagnostics.`);consoleLine("This GitHub Pages project does not have a configured secure compiler/runtime for this language yet.","warn");consoleLine("No code was sent to a third-party compiler. A server-side compiler service must be configured before Run can execute it.","info");setCloud("Compiler service not configured","pending");return;}if(key==="typescript"){try{await loadScript(BABEL_URL);const compiled=Babel.transform(getCurrentText(),{presets:["typescript","env"]}).code;return runJavascriptStandalone(compiled);}catch(error){showDock("console");clearConsole("TypeScript compile failed");consoleLine(error.message,"error");return;}}if(key==="javascript"){if(htmlDocuments().length)return runWebProject();return runJavascriptStandalone(getCurrentText());}if(key==="html"||key==="css"||key==="sass"||key==="vue"||key==="svelte"){return runWebProject();}if(htmlDocuments().length)return runWebProject();toast("Choose a supported runtime or open a web project.","warning");}
-function safeFilename(name){return String(name).replace(/[\\/:*?"<>|]/g,"_");}
+function runJson(){try{const value=JSON.parse(getCurrentText());const pretty=JSON.stringify(value,null,2);showOutputPreview("JSON output",pretty,"Valid JSON",{label:"Formatted JSON"});setCloud("JSON validation complete","saved");}catch(error){raiseRuntimeError("JSON parse error",error.message);}}
 
-// Auth: same shared Firebase instance used by the rest of Code Academy.
+async function runCode(){
+ syncCurrentText();const key=languageFor(currentFile),code=getCurrentText();
+ try{
+  if(key==="python")return await runPython();
+  if(key==="sql")return await runSQL();
+  if(key==="typescript")return await runTypeScript();
+  if(key==="json")return runJson();
+  if(key==="jsx"||key==="tsx")return await runReactPreview();
+  if(key==="javascript"){if(htmlDocuments().length)return runWebProject();return runJavascriptStandalone(code);}
+  if(["html","css","sass","vue","svelte"].includes(key)||htmlDocuments().length)return runWebProject();
+  if(["c","cpp","java","csharp","php","go","rust","ruby","lua","r","kotlin","swift","dart","shell"].includes(key))return await runWandbox(code,key);
+  return await runWandbox(code,key);
+ }catch(error){raiseRuntimeError(languageLabel(key)+" execution failed",error?.message||String(error));}
+}
+
 onAuthStateChanged(auth,async user=>{authResolved=true;if(!user){setCloud("Sign in required","error");location.replace("signup.html?next="+encodeURIComponent(location.pathname.split("/").pop()+location.search));return;}currentUser=user;if(!user.emailVerified){setCloud("Verify email to save","error");}try{await loadProjects();await loadCurrentProject();}catch(error){console.error(error);toast(firebaseErrorMessage(error),"error");} });
 
 // Monaco loading: keep a working plain-text fallback if the CDN is unavailable.
@@ -730,7 +844,7 @@ document.addEventListener("keydown",e=>{const mac=/Mac|iPhone|iPad/.test(navigat
 window.addEventListener("beforeunload",e=>{syncCurrentText();if(dirty){saveLocalBackup();e.preventDefault();e.returnValue="";}});
 window.addEventListener("resize",()=>{if(editor)editor.layout();if(window.matchMedia("(min-width:681px)").matches){$("sidebar").classList.remove("mobileOpen");$("layout").classList.remove("sidebarShown");$("app").classList.remove("mobilePreviewOpen");}});
 
-console.info("Code Academy Editor initialized: HTML, CSS, JavaScript, TypeScript, JSX/React, Python, C, C++, Java, C#, PHP, Go, Rust, Ruby, Kotlin, Swift, Dart, SQL, JSON, Markdown, XML, YAML and Shell.");
+console.info("Code Academy Editor initialized with browser runtimes and external compiler execution for supported languages.");
 </script>
 </body>
 </html>
