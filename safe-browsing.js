@@ -186,8 +186,61 @@ function closeTab(id) {
   persistTabs(); renderTabs();
 }
 function showStartPage() {
-  clearTimeout(frameFallbackTimer); $('#startPage').hidden = false; $('#frameShell').hidden = true; $('#webFrame').src = 'about:blank';
-  $('#securityMark').textContent = '⌕'; $('#addressInput').value = ''; lastRiskReport = null;
+  clearTimeout(frameFallbackTimer);
+  $('#startPage').hidden = false;
+  $('#frameShell').hidden = true;
+  const frame = $('#webFrame'); if (frame) frame.src = 'about:blank';
+  $('#securityMark').textContent = '⌕';
+  $('#addressInput').value = '';
+  lastRiskReport = null;
+}
+function showExternalStatus(url, message, title = 'Open website in your browser') {
+  const tab = activeTab();
+  $('#startPage').hidden = true;
+  $('#frameShell').hidden = false;
+  const frame = $('#webFrame'); if (frame) frame.src = 'about:blank';
+  $('#frameFallback').hidden = false;
+  $('#frameFallbackBtn').hidden = true;
+  $('#expandFrame').hidden = true;
+  $('#currentPageLabel').textContent = hostname(url);
+  $('#currentDomain').textContent = url;
+  $('#addressInput').value = url;
+  $('#securityMark').textContent = url.startsWith('https:') ? '🔒' : '⚠';
+  $('#externalStatusTitle').textContent = title;
+  $('#externalStatusMessage').textContent = message;
+  $('#externalStatusURL').textContent = url;
+  $('#externalDirectLink').href = url;
+  $('#fallbackOpen').onclick = () => launchExternalTab(url, { force: true });
+  const status = $('#frameSafetyLabel');
+  const report = analyzeURL(url);
+  status.className = `safety-pill ${report.level === 'no-obvious-flags' ? 'safe' : report.level === 'caution' ? 'caution' : 'risk'}`;
+  status.textContent = report.level === 'no-obvious-flags' ? 'Local checks found no obvious flags' : report.level === 'caution' ? 'Review recommended' : 'Potential risk';
+  if (tab) { tab.url = url; tab.title = hostname(url); renderTabs(); persistTabs(); }
+}
+function launchExternalTab(url, { force = false } = {}) {
+  if (navigator.onLine === false && !force) {
+    showExternalStatus(url, 'Your device currently reports that it is offline. Reconnect to mobile data or Wi-Fi; you may also try opening the address anyway.', 'No internet connection detected');
+    showDialog({ title: 'Device reports no internet connection', subtitle: hostname(url), icon: '⌁', body: '<p>Your device reports that it is offline. This is the only connection state this page can reliably check before opening another site.</p><p>Check mobile data, Wi‑Fi or your connection settings. You can still attempt to open the address.</p>', actions: [{ label: 'Stay here', primary: true }, { label: 'Try opening anyway', onClick: () => launchExternalTab(url, { force: true }) }] });
+    return false;
+  }
+  let opened = null;
+  try {
+    // A top-level page is not subject to another site's iframe restrictions.
+    // Use a user-initiated new tab so the Safe Browser workspace remains available.
+    opened = window.open(url, '_blank');
+    if (opened) { try { opened.opener = null; } catch {} }
+  } catch (error) {
+    console.info('Top-level link open was refused by this browser:', error?.message || error);
+  }
+  if (opened) {
+    showExternalStatus(url, 'The destination has been handed to your device browser in a separate tab. Switch back to this tab to use Code Academy history, bookmarks, safety checks and settings. The target page loads normally, not inside a restricted frame.', 'Website opened in a browser tab');
+    toast('Website opened in a separate browser tab.', 'success');
+    notifyLocal('Website opened', `Opened ${hostname(url)} in a separate browser tab.`);
+    return true;
+  }
+  showExternalStatus(url, 'This browser did not return a new-tab handle. Pop-up handling varies by device. Tap “Open website in browser tab” or use the direct link below. If the site itself fails, the device browser will display its own connection error.', 'One more tap may be needed');
+  toast('No new-tab confirmation was returned. Use the direct link if no tab appeared.', 'warn');
+  return false;
 }
 function loadFrame(url, addVisit = true, skipWarning = false) {
   clearTimeout(frameFallbackTimer); clearBanner();
@@ -195,23 +248,36 @@ function loadFrame(url, addVisit = true, skipWarning = false) {
   let normalized;
   try { normalized = normalizeURL(url); } catch (error) { toast(error.message, 'error'); return; }
   lastRiskReport = analyzeURL(normalized);
-  $('#startPage').hidden = true; $('#frameShell').hidden = false; $('#frameFallback').hidden = true;
-  $('#addressInput').value = normalized; $('#currentPageLabel').textContent = hostname(normalized);
-  $('#currentDomain').textContent = normalized; $('#securityMark').textContent = new URL(normalized).protocol === 'https:' ? '🔒' : '⚠';
-  const status = $('#frameSafetyLabel'); status.className = `safety-pill ${lastRiskReport.level === 'no-obvious-flags' ? 'safe' : lastRiskReport.level === 'caution' ? 'caution' : 'risk'}`;
-  status.textContent = lastRiskReport.level === 'no-obvious-flags' ? 'No obvious local flags' : lastRiskReport.level === 'caution' ? 'Review recommended' : 'Potential risk';
-  if (addVisit) recordTabVisit(tab, normalized, hostname(normalized)); else { tab.url = normalized; tab.title = hostname(normalized); renderTabs(); }
-  $('#webFrame').setAttribute('loading', prefs.dataSaver ? 'lazy' : 'eager');
-  $('#webFrame').src = normalized;
-  if (!skipWarning && lastRiskReport.level !== 'no-obvious-flags' && prefs.warnRisky) showSafetyDialog(lastRiskReport, normalized, false);
-  else if (!skipWarning && new URL(normalized).protocol !== 'https:' && prefs.confirmInsecure) showSafetyDialog(lastRiskReport, normalized, false);
-  else if (lastRiskReport.findings.length) showBanner('A local link check found items to review. This is not a definitive malware scan.', 'warn');
+  if (addVisit) recordTabVisit(tab, normalized, hostname(normalized));
+  else { tab.url = normalized; tab.title = hostname(normalized); renderTabs(); persistTabs(); }
+  showExternalStatus(normalized, 'Opening this site as a normal browser page prevents the blank “refused to connect” problem caused by iframe restrictions.', 'Preparing website');
+  if (!skipWarning && lastRiskReport.level !== 'no-obvious-flags' && prefs.warnRisky) {
+    showSafetyDialog(lastRiskReport, normalized, false);
+    return;
+  }
+  if (!skipWarning && new URL(normalized).protocol !== 'https:' && prefs.confirmInsecure) {
+    showSafetyDialog(lastRiskReport, normalized, false);
+    return;
+  }
+  if (lastRiskReport.findings.length) showBanner('The local URL check found signals to review. It is not a live malware verdict.', 'warn');
+  launchExternalTab(normalized);
 }
 function navigateInput(value) {
-  const text = String(value || '').trim(); if (!text) { toast('Enter a search or web address.', 'warn'); return; }
-  if (!isLikelyURL(text)) { const url = searchURL(text); lastRiskReport = analyzeURL(url); loadFrame(url); notifyLocal('Search opened', `Searched for: ${text.slice(0, 120)}`); return; }
-  try { const url = normalizeURL(text); const report = analyzeURL(url); lastRiskReport = report; if (report.findings.length && prefs.warnRisky) showSafetyDialog(report, url, true); else loadFrame(url); }
-  catch (error) { toast(error.message, 'error'); }
+  const text = String(value || '').trim();
+  if (!text) { toast('Enter a search or web address.', 'warn'); return; }
+  if (!navigator.onLine) { toast('Your device reports that it is offline. Reconnect, then try again.', 'error'); }
+  if (!isLikelyURL(text)) {
+    const url = searchURL(text);
+    lastRiskReport = analyzeURL(url);
+    loadFrame(url, true, true);
+    notifyLocal('Search opened', `Searched for: ${text.slice(0, 120)}`);
+    return;
+  }
+  try {
+    const url = normalizeURL(text); const report = analyzeURL(url); lastRiskReport = report;
+    if (report.findings.length && prefs.warnRisky) showSafetyDialog(report, url, true);
+    else loadFrame(url);
+  } catch (error) { toast(error.message, 'error'); }
 }
 function showDialog({ title, subtitle = '', icon = 'ⓘ', body = '', actions = [] }) {
   $('#dialogTitle').textContent = title; $('#dialogSubtitle').textContent = subtitle; $('#dialogIcon').textContent = icon;
@@ -229,8 +295,8 @@ function showSafetyDialog(report, url, pendingNavigation = false) {
   const findings = report.findings.length ? `<ul class="risk-list">${report.findings.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>` : '<p>No obvious local indicators were detected. This does not mean that the website is verified safe.</p>';
   showDialog({ title: 'Check this link before continuing', subtitle: `${levelText} · ${hostname(url)}`, icon: report.level === 'high' ? '⚠' : '🛡', body: `<p><strong>${escapeHTML(url)}</strong></p><p>${report.findings.length ? 'The local address check found these signals:' : 'The local address check did not find its common warning signals.'}</p>${findings}<p><strong>Important:</strong> this is a lightweight URL heuristic, not a live threat-intelligence verdict. Never enter passwords, payment details or verification codes if you are unsure.</p><p><a href="${'https://transparencyreport.google.com/safe-browsing/search?url=' + encodeURIComponent(url)}" target="_blank" rel="noopener noreferrer">Check this address with Google Safe Browsing ↗</a></p>`, actions: [
     { label: 'Cancel / stay safe', primary: true },
-    { label: 'Open in device browser', onClick: () => { window.open(url, '_blank', 'noopener,noreferrer'); notifyLocal('Link opened externally', `Opened ${hostname(url)} in the device browser.`, 'risk'); } },
-    { label: 'Continue in this view', danger: true, onClick: () => { loadFrame(url, true, true); } }
+    { label: 'Open in device browser', onClick: () => { loadFrame(url, true, true); notifyLocal('Link opened externally', `Opened ${hostname(url)} in the device browser after the safety warning.`, 'risk'); } },
+    { label: 'Continue to website', danger: true, onClick: () => { loadFrame(url, true, true); } }
   ] });
 }
 function openPanel(title, contentBuilder) {
@@ -292,6 +358,27 @@ function settingsPanel() {
         <div class="setting-row"><label for="prefVoice"><b>Voice tools</b><small>Uses the speech tools available in your browser/device; support depends on your browser and language.</small></label><input type="checkbox" id="prefVoice"></div>
         <div class="setting-row"><label for="prefNotifications"><b>Browser notifications</b><small>Notifications work only where the browser grants permission; reliable background push requires a configured push service.</small></label><input type="checkbox" id="prefNotifications"></div>
       </section>
+      <section class="settings-section"><h3>SEARCH & OPENING PAGES</h3>
+        <div class="setting-row"><label for="prefProvider"><b>Default search provider</b><small>Applies to searches entered in the address bar.</small></label><select id="prefProvider"><option value="duckduckgo">DuckDuckGo</option><option value="google">Google</option><option value="bing">Bing</option><option value="brave">Brave Search</option></select></div>
+        <div class="setting-row"><label class="setting-label"><b>Open behavior</b><small>External websites open as ordinary pages in a new browser tab because many sites explicitly block embedding.</small></label><span class="status-pill">Top-level tab</span></div>
+      </section>
+      <section class="settings-section"><h3>DEVICE TOOLS & DIAGNOSTICS</h3>
+        <p class="settings-note">These tools run only after you tap them. Location requires your browser permission. Public IP lookup contacts an external IP service.</p>
+        <button id="settingsConnection" class="panel-action" type="button">Check connection status</button>
+        <button id="settingsIP" class="panel-action" type="button">View public IP address</button>
+        <button id="settingsLocation" class="panel-action" type="button">Request device location</button>
+        <button id="settingsSafetyCheck" class="panel-action" type="button">Check current destination safety</button>
+        <button id="settingsSharePage" class="panel-action" type="button">Share current destination</button>
+        <button id="settingsNotificationPermission" class="panel-action" type="button">Request notification permission</button>
+        <a class="panel-action settings-link" href="https://transparencyreport.google.com/safe-browsing/search" target="_blank" rel="noopener noreferrer">Google Safe Browsing site-status check ↗</a>
+        <a class="panel-action settings-link" href="https://support.google.com/android/answer/9654714" target="_blank" rel="noopener noreferrer">Android Private DNS guide ↗</a>
+      </section>
+      <section class="settings-section"><h3>PUBLIC RESEARCH SOURCES</h3>
+        <p class="settings-note">These are separate research services, not extra general-purpose search engines. Use them for domains and assets you own or are authorized to review.</p>
+        <a class="panel-action settings-link" href="https://search.censys.io/" target="_blank" rel="noopener noreferrer">Censys Search — public internet asset research ↗</a>
+        <a class="panel-action settings-link" href="https://urlscan.io/" target="_blank" rel="noopener noreferrer">urlscan.io — inspect submitted page scans ↗</a>
+        <a class="panel-action settings-link" href="https://crt.sh/" target="_blank" rel="noopener noreferrer">crt.sh — public certificate transparency search ↗</a>
+      </section>
       <section class="settings-section"><h3>SESSION</h3>
         <div class="setting-row"><label for="prefRestore"><b>Restore saved tabs next time</b><small>Restoring tabs may load websites and use mobile data.</small></label><input type="checkbox" id="prefRestore"></div>
         <button id="dnsGuideButton" class="panel-action" type="button">View DNS setup guide</button>
@@ -303,12 +390,19 @@ function settingsPanel() {
     const bindSelect = (id, key, onChange) => { const el = $(`#${id}`, parent); el.value = prefs[key]; el.addEventListener('change', () => { prefs[key] = el.value; persistPrefs(); onChange?.(el.value); }); };
     const bindCheck = (id, key, onChange) => { const el = $(`#${id}`, parent); el.checked = !!prefs[key]; el.addEventListener('change', () => { prefs[key] = el.checked; persistPrefs(); onChange?.(el.checked); }); };
     bindSelect('prefTheme', 'theme', applyTheme); bindSelect('prefDevice', 'deviceMode', applyDeviceMode); bindSelect('prefDns', 'dnsPreference', () => toast('DNS guide preference saved; the system DNS has not changed.'));
-    bindCheck('prefDataSaver', 'dataSaver', () => { document.body.classList.toggle('data-saver', !!prefs.dataSaver); $('#webFrame').setAttribute('loading', prefs.dataSaver ? 'lazy' : 'eager'); toast('Data Saver preference saved. External sites control their own network use.'); });
+    const prefProvider = $('#prefProvider', parent); if (prefProvider) { prefProvider.value = prefs.provider; prefProvider.addEventListener('change', event => { prefs.provider = event.target.value; persistPrefs(); if ($('#searchProvider')) $('#searchProvider').value = prefs.provider; toast('Default search provider saved.', 'success'); }); }
+    bindCheck('prefDataSaver', 'dataSaver', () => { document.body.classList.toggle('data-saver', !!prefs.dataSaver); toast('Data Saver preference saved. Headlines are cached longer and the home page avoids artwork preloading; external sites still control their own data use.'); });
     bindCheck('prefSafeSearch', 'safeSearch', () => toast('Safe Search preference saved for supported providers.'));
     bindCheck('prefWarnRisky', 'warnRisky'); bindCheck('prefInsecure', 'confirmInsecure'); bindCheck('prefVoice', 'voice');
     bindCheck('prefNotifications', 'notifications', async enabled => { if (!enabled) return; if (!('Notification' in window)) { prefs.notifications = false; persistPrefs(); return toast('This browser does not support web notifications.', 'warn'); } const result = await Notification.requestPermission(); prefs.notifications = result === 'granted'; persistPrefs(); $$('#prefNotifications', parent).forEach(el => el.checked = prefs.notifications); toast(prefs.notifications ? 'Browser notifications enabled.' : 'Notification permission was not granted.', prefs.notifications ? 'success' : 'warn'); });
     $('#prefRestore', parent).checked = !!prefs.restoreTabs; $('#prefRestore', parent).addEventListener('change', e => { prefs.restoreTabs = e.target.checked; persistPrefs(); });
     $('#dnsGuideButton', parent).addEventListener('click', showDNSGuide); $('#defaultGuideButton', parent).addEventListener('click', showDefaultGuide);
+    $('#settingsConnection', parent).addEventListener('click', showConnectionStatus);
+    $('#settingsIP', parent).addEventListener('click', showPublicIP);
+    $('#settingsLocation', parent).addEventListener('click', showLocation);
+    $('#settingsSafetyCheck', parent).addEventListener('click', showSafetyCheck);
+    $('#settingsSharePage', parent).addEventListener('click', shareCurrentPage);
+    $('#settingsNotificationPermission', parent).addEventListener('click', async () => { if (!('Notification' in window)) return toast('This browser does not support web notifications.', 'warn'); const result = await Notification.requestPermission(); prefs.notifications = result === 'granted'; persistPrefs(); toast(prefs.notifications ? 'Browser notifications enabled.' : 'Notification permission was not granted.', prefs.notifications ? 'success' : 'warn'); });
     $('#resetPreferences', parent).addEventListener('click', () => showDialog({ title: 'Reset browser preferences?', body: 'Theme, provider and local safety preferences will return to their defaults. History and bookmarks will remain.', actions: [{ label: 'Cancel', primary: true }, { label: 'Reset preferences', danger: true, onClick: () => { prefs = { ...DEFAULT_PREFS }; persistPrefs(); applyTheme(); applyDeviceMode(); closePanel(); toast('Preferences reset.', 'success'); } }] }));
     $('#clearBrowserData', parent).addEventListener('click', () => showDialog({ title: 'Clear local browser data?', body: 'This will remove local history, bookmarks, tab-group names and saved tab session from this device. It does not erase information kept by search engines or websites.', actions: [{ label: 'Cancel', primary: true }, { label: 'Clear local data', danger: true, onClick: () => { historyItems = []; bookmarkItems = []; tabGroups = []; writeStore(KEYS.history, historyItems); writeStore(KEYS.bookmarks, bookmarkItems); writeStore(KEYS.groups, tabGroups); localStorage.removeItem(KEYS.tabs); closePanel(); toast('Local history, bookmarks and saved tab session cleared.', 'success'); } }] }));
   });
@@ -365,7 +459,7 @@ function startVoiceSearch() {
   try {
     voiceRecognition?.stop(); voiceRecognition = new Recognition(); voiceRecognition.lang = navigator.language || 'en-US'; voiceRecognition.interimResults = false; voiceRecognition.maxAlternatives = 1;
     toast('Listening… speak a search or web address.');
-    voiceRecognition.onresult = event => { const text = event.results?.[0]?.[0]?.transcript || ''; if (text) { $('#addressInput').value = text; $('#startSearch').value = text; navigateInput(text); } };
+    voiceRecognition.onresult = event => { const text = event.results?.[0]?.[0]?.transcript || ''; if (text) { $('#addressInput').value = text; if ($('#startSearch')) $('#startSearch').value = text; navigateInput(text); } };
     voiceRecognition.onerror = event => toast(`Voice search: ${String(event.error || 'not available')}. You can type instead.`, 'warn');
     voiceRecognition.onend = () => { voiceRecognition = null; };
     voiceRecognition.start();
@@ -390,14 +484,87 @@ function exitToPreviousPage() {
 }
 function currentLinkCopy() { const url = activeTab()?.url; if (!url) return toast('There is no page address to copy.'); if (navigator.clipboard?.writeText) navigator.clipboard.writeText(url).then(() => toast('Link copied.', 'success')).catch(() => fallbackCopy(url)); else fallbackCopy(url); }
 function fallbackCopy(text) { const input = document.createElement('textarea'); input.value = text; input.style.position = 'fixed'; input.style.opacity = '0'; document.body.appendChild(input); input.select(); try { document.execCommand('copy'); toast('Link copied.', 'success'); } catch { toast(text); } input.remove(); }
-function onFrameLoad() {
-  if ($('#frameShell').hidden) return;
-  const frame = $('#webFrame'); if (!frame.src || frame.src === 'about:blank') return;
-  $('#frameFallback').hidden = true;
-  try { const frameURL = new URL(frame.src); $('#currentDomain').textContent = frameURL.origin; }
-  catch { $('#currentDomain').textContent = 'Web content'; }
-  // Reading title or scanning anchors of a cross-origin frame is restricted by the same-origin policy.
+function onFrameLoad() { /* External sites are deliberately opened top-level; this legacy frame remains about:blank. */ }
+function shareCurrentPage() {
+  const url = activeTab()?.url || location.href;
+  const data = { title: 'Code Academy Safe Browser', text: activeTab()?.url ? `Open this page: ${url}` : 'Search the web with Code Academy Safe Browser.', url };
+  if (navigator.share) {
+    navigator.share(data).then(() => toast('Share sheet opened.', 'success')).catch(error => { if (error?.name !== 'AbortError') fallbackCopy(url); });
+  } else fallbackCopy(url);
 }
+function renderTrendingStories(items, statusText = '') {
+  const feed = $('#trendingFeed'); if (!feed) return;
+  feed.replaceChildren();
+  if (!items?.length) {
+    const empty = document.createElement('div'); empty.className = 'feed-empty';
+    empty.textContent = statusText || 'Current headlines are unavailable. Try Refresh or enter a search above.';
+    feed.appendChild(empty); return;
+  }
+  items.forEach((story, index) => {
+    const card = document.createElement('article'); card.className = 'trend-card';
+    const line = document.createElement('div'); line.className = 'trend-card-top';
+    const tag = document.createElement('span'); tag.className = 'trend-number'; tag.textContent = String(index + 1).padStart(2, '0');
+    const points = document.createElement('span'); points.className = 'trend-points'; points.textContent = `${Number(story.score) || 0} points`;
+    line.append(tag, points);
+    const title = document.createElement('h3'); title.textContent = story.title || 'Untitled story';
+    const meta = document.createElement('p'); meta.className = 'trend-meta';
+    let host = 'news.ycombinator.com'; try { host = new URL(story.url || `https://news.ycombinator.com/item?id=${story.id}`).hostname.replace(/^www\./, ''); } catch {}
+    meta.textContent = `${host} · ${new Date((Number(story.time) || Math.floor(Date.now()/1000)) * 1000).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}`;
+    const actions = document.createElement('div'); actions.className = 'trend-actions';
+    const open = document.createElement('button'); open.type = 'button'; open.className = 'trend-open'; open.textContent = 'Open story ↗';
+    const targetURL = story.url || `https://news.ycombinator.com/item?id=${encodeURIComponent(story.id)}`;
+    open.addEventListener('click', () => navigateInput(targetURL));
+    const discussion = document.createElement('a'); discussion.href = `https://news.ycombinator.com/item?id=${encodeURIComponent(story.id)}`; discussion.target = '_blank'; discussion.rel = 'noopener noreferrer'; discussion.textContent = 'Discussion';
+    actions.append(open, discussion); card.append(line, title, meta, actions); feed.appendChild(card);
+  });
+  const status = $('#trendingStatus'); if (status && statusText) status.textContent = statusText;
+}
+async function loadTrendingStories(force = false) {
+  const status = $('#trendingStatus');
+  const feed = $('#trendingFeed'); if (!feed) return;
+  const cacheKey = 'ca_safe_browser_trending_v2';
+  let cached = readStore(cacheKey, null);
+  const ttl = prefs.dataSaver ? 15 * 60 * 1000 : 5 * 60 * 1000;
+  if (!force && cached?.items?.length && Date.now() - cached.at < ttl) {
+    renderTrendingStories(cached.items, `Updated ${new Date(cached.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · cached to save mobile data`);
+    return;
+  }
+  if (!navigator.onLine) {
+    if (cached?.items?.length) renderTrendingStories(cached.items, 'Offline · showing recently cached headlines');
+    else renderTrendingStories([], 'Your device reports that it is offline. Headlines will appear after connection returns.');
+    return;
+  }
+  if (status) status.textContent = 'Fetching live top stories…';
+  if (!cached?.items?.length) {
+    feed.replaceChildren(); const loading = document.createElement('div'); loading.className = 'feed-empty'; loading.textContent = 'Loading live public headlines…'; feed.appendChild(loading);
+  }
+  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 9000);
+  try {
+    const idsResponse = await fetch('https://hacker-news.firebaseio.com/v0/topstories.json', { signal: controller.signal, cache: 'no-store' });
+    if (!idsResponse.ok) throw new Error(`Headline source returned HTTP ${idsResponse.status}.`);
+    const ids = await idsResponse.json();
+    const limit = prefs.dataSaver ? 6 : 8;
+    const rows = await Promise.all((Array.isArray(ids) ? ids.slice(0, limit) : []).map(async id => {
+      const response = await fetch(`https://hacker-news.firebaseio.com/v0/item/${encodeURIComponent(id)}.json`, { signal: controller.signal, cache: 'no-store' });
+      if (!response.ok) return null;
+      const story = await response.json();
+      return story && story.type === 'story' && story.title ? { id: story.id, title: story.title, url: story.url || '', score: story.score || 0, time: story.time || 0 } : null;
+    }));
+    const items = rows.filter(Boolean);
+    if (!items.length) throw new Error('The headline source returned no stories.');
+    cached = { at: Date.now(), items }; writeStore(cacheKey, cached);
+    renderTrendingStories(items, `Live top stories · refreshed ${new Date(cached.at).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})} · Source: Hacker News`);
+  } catch (error) {
+    if (cached?.items?.length) renderTrendingStories(cached.items, `Live refresh failed (${error?.name === 'AbortError' ? 'request timed out' : 'source unavailable'}) · showing cached headlines`);
+    else renderTrendingStories([], `Live headlines could not load: ${error?.name === 'AbortError' ? 'the request timed out' : (error?.message || 'the source did not respond')}. Search still works when the network is available.`);
+    console.info('Live technology feed unavailable:', error?.message || error);
+  } finally { clearTimeout(timer); }
+}
+function showConnectionStatus() {
+  const state = navigator.onLine ? 'The browser currently reports that the device is online.' : 'The browser currently reports that the device is offline.';
+  showDialog({ title: 'Connection status', subtitle: 'Device network signal', icon: '⌁', body: `<p>${escapeHTML(state)}</p><p>This is only the browser’s online/offline signal, not a test of every website. A specific website may still fail because of DNS, TLS certificates, its own outage, a login requirement, a network filter or browser policy.</p><p>Try a lightweight live check using the headline refresh control. For errors shown after a page opens externally, use the device browser’s exact error text.</p>`, actions: [{ label: 'Refresh tech feed', primary: true, onClick: () => { hideDialog(); void loadTrendingStories(true); } }, { label: 'Close' }] });
+}
+
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('./safe-browser-sw.js').catch(error => console.info('Offline shell registration unavailable:', error?.message || error));
 }
@@ -410,31 +577,36 @@ function setInitialTabs() {
   activeTabId = browserTabs[0].id; renderTabs();
 }
 function bindUI() {
-  $('#exitBrowser').addEventListener('click', exitToPreviousPage);
-  $('#addressForm').addEventListener('submit', event => { event.preventDefault(); navigateInput($('#addressInput').value); });
-  $('#startSearchForm').addEventListener('submit', event => { event.preventDefault(); navigateInput($('#startSearch').value); });
-  $('#searchProvider').value = prefs.provider; $('#searchProvider').addEventListener('change', event => { prefs.provider = event.target.value; persistPrefs(); });
-  $('#scanAddress').addEventListener('click', () => { const value = $('#addressInput').value.trim(); if (!value) return toast('Enter a URL to scan.', 'warn'); try { const url = normalizeURL(value); const report = analyzeURL(url); lastRiskReport = report; showSafetyDialog(report, url, true); } catch (error) { toast(error.message, 'error'); } });
-  $('#newTab').addEventListener('click', () => newTab()); $('#openTabs').addEventListener('click', showTabsPanel); $('#openSettings').addEventListener('click', settingsPanel);
-  $('#goBack').addEventListener('click', () => { const tab = activeTab(); if (!tab || tab.cursor <= 0) return toast('No previous page in this tab.'); tab.cursor -= 1; const visit = tab.visits[tab.cursor]; tab.url = visit.url; tab.title = visit.title; persistTabs(); renderTabs(); loadFrame(tab.url, false); });
-  $('#goForward').addEventListener('click', () => { const tab = activeTab(); if (!tab || tab.cursor >= tab.visits.length - 1) return toast('No forward page in this tab.'); tab.cursor += 1; const visit = tab.visits[tab.cursor]; tab.url = visit.url; tab.title = visit.title; persistTabs(); renderTabs(); loadFrame(tab.url, false); });
-  $('#reloadPage').addEventListener('click', () => { const tab = activeTab(); if (!tab?.url) return toast('Open a page first.'); loadFrame(tab.url, false); });
-  $('#bookmarkCurrent').addEventListener('click', saveBookmark); $('#openExternal').addEventListener('click', () => { const url = activeTab()?.url; if (!url) return toast('Open a page first.'); window.open(url, '_blank', 'noopener,noreferrer'); notifyLocal('Page opened in device browser', hostname(url)); });
-  $('#showHistory').addEventListener('click', showHistoryPanel); $('#showBookmarks').addEventListener('click', showBookmarksPanel); $('#showGroups').addEventListener('click', showTabsPanel); $('#readPage').addEventListener('click', readPageAloud);
-  $('#voiceSearch').addEventListener('click', startVoiceSearch); $('#startVoice').addEventListener('click', startVoiceSearch);
+  const on = (selector, event, handler, root = document) => { const node = $(selector, root); if (node) node.addEventListener(event, handler); };
+  on('#exitBrowser', 'click', exitToPreviousPage);
+  on('#addressForm', 'submit', event => { event.preventDefault(); navigateInput($('#addressInput').value); });
+  on('#startSearchForm', 'submit', event => { event.preventDefault(); if ($('#startSearch')?.value) navigateInput($('#startSearch').value); });
+  const provider = $('#searchProvider'); if (provider) { provider.value = prefs.provider; provider.addEventListener('change', event => { prefs.provider = event.target.value; persistPrefs(); }); }
+  on('#scanAddress', 'click', () => { const value = $('#addressInput').value.trim(); if (!value) return toast('Enter a URL to scan.', 'warn'); try { const url = isLikelyURL(value) ? normalizeURL(value) : searchURL(value); lastRiskReport = analyzeURL(url); showSafetyDialog(lastRiskReport, url, true); } catch (error) { toast(error.message, 'error'); } });
+  on('#newTab', 'click', () => newTab()); on('#openTabs', 'click', showTabsPanel); on('#openSettings', 'click', settingsPanel);
+  on('#goBack', 'click', () => { const tab = activeTab(); if (!tab || tab.cursor <= 0) return toast('No previous destination in this Code Academy tab.'); tab.cursor -= 1; const visit = tab.visits[tab.cursor]; tab.url = visit.url; tab.title = visit.title; persistTabs(); renderTabs(); loadFrame(tab.url, false); });
+  on('#goForward', 'click', () => { const tab = activeTab(); if (!tab || tab.cursor >= tab.visits.length - 1) return toast('No next destination in this Code Academy tab.'); tab.cursor += 1; const visit = tab.visits[tab.cursor]; tab.url = visit.url; tab.title = visit.title; persistTabs(); renderTabs(); loadFrame(tab.url, false); });
+  on('#reloadPage', 'click', () => { const tab = activeTab(); if (!tab?.url) { void loadTrendingStories(true); return; } loadFrame(tab.url, false); });
+  on('#bookmarkCurrent', 'click', saveBookmark); on('#openExternal', 'click', () => { const url = activeTab()?.url; if (!url) return toast('Open a destination first.', 'warn'); launchExternalTab(url, { force: true }); });
+  on('#showHistory', 'click', showHistoryPanel); on('#showBookmarks', 'click', showBookmarksPanel); on('#showGroups', 'click', showTabsPanel); on('#readPage', 'click', readPageAloud);
+  on('#voiceSearch', 'click', startVoiceSearch); on('#startVoice', 'click', startVoiceSearch);
   $$('.shortcut').forEach(button => button.addEventListener('click', () => { const url = button.dataset.url; if (url) navigateInput(url); }));
-  $('#fallbackOpen').addEventListener('click', () => { const url = activeTab()?.url; if (url) { window.open(url, '_blank', 'noopener,noreferrer'); notifyLocal('Site opened externally', `${hostname(url)} may block embedded browsing.`); } });
-  $('#frameFallbackBtn').addEventListener('click', () => { $('#frameFallback').hidden = !$('#frameFallback').hidden; });
-  $('#checkCurrentSafety').addEventListener('click', showSafetyCheck); $('#quickSafeCheck').addEventListener('click', () => { $('#addressInput').focus(); toast('Paste or type the link, then tap Scan before opening it.'); });
-  $('#copyCurrentUrl').addEventListener('click', currentLinkCopy); $('#quickIp').addEventListener('click', showPublicIP); $('#quickLocation').addEventListener('click', showLocation);
-  $('#defaultBrowserHelp').addEventListener('click', showDefaultGuide); $('#expandFrame').addEventListener('click', () => $('#frameShell').classList.toggle('expanded'));
-  $('#closePanel').addEventListener('click', closePanel); $('#panelShade').addEventListener('click', closePanel); $('#dialogClose').addEventListener('click', hideDialog); $('#dialogShade').addEventListener('click', event => { if (event.target === $('#dialogShade')) hideDialog(); });
-  $('#webFrame').addEventListener('load', onFrameLoad);
+  // #fallbackOpen gets a URL-specific handler when the external status card is rendered.
+  on('#frameFallbackBtn', 'click', () => { const fallback = $('#frameFallback'); if (fallback) fallback.hidden = !fallback.hidden; });
+  on('#checkCurrentSafety', 'click', showSafetyCheck); on('#quickSafeCheck', 'click', () => { $('#addressInput').focus(); toast('Paste or type the link, then tap Scan before opening it.'); });
+  on('#copyCurrentUrl', 'click', currentLinkCopy); on('#quickIp', 'click', showPublicIP); on('#quickLocation', 'click', showLocation);
+  on('#defaultBrowserHelp', 'click', showDefaultGuide); on('#expandFrame', 'click', () => toast('Websites open as normal top-level pages; there is no restricted embedded view to expand.'));
+  on('#refreshTrending', 'click', () => void loadTrendingStories(true));
+  on('#closePanel', 'click', closePanel); on('#panelShade', 'click', closePanel); on('#dialogClose', 'click', hideDialog); on('#dialogShade', 'click', event => { if (event.target === $('#dialogShade')) hideDialog(); });
+  on('#webFrame', 'load', onFrameLoad);
+  window.addEventListener('online', () => { toast('Internet connection is available again.', 'success'); void loadTrendingStories(true); });
+  window.addEventListener('offline', () => { toast('Device reports no internet connection.', 'error'); });
   window.addEventListener('keydown', event => { if (event.key === 'Escape') { hideDialog(); closePanel(); } if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'l') { event.preventDefault(); $('#addressInput').focus(); $('#addressInput').select(); } if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 't') { event.preventDefault(); newTab(); } });
 }
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installPrompt = event; });
 window.addEventListener('appinstalled', () => toast('Code Academy Safe Browser was installed as a web app. It is not automatically the system default browser.', 'success'));
 applyTheme(); applyDeviceMode(); document.body.classList.toggle('data-saver', !!prefs.dataSaver); setInitialTabs(); bindUI(); initAccountSync(); registerServiceWorker();
-if (prefs.restoreTabs && activeTab()?.url) activateTab(activeTabId);
+if (prefs.restoreTabs && activeTab()?.url) showExternalStatus(activeTab().url, 'A saved tab was restored from local storage. Tap Open website in browser tab to revisit it.', 'Saved tab restored');
 else showStartPage();
-showWelcomeDialog();
+void loadTrendingStories(false);
+// Start directly on the search-focused home screen; onboarding remains available in Settings. 

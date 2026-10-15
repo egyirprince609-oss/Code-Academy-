@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#061126">
-  <meta name="description" content="Code Academy Safe Browsing — privacy-conscious search, safe-link checks, tab groups, voice input, data-saving preferences and web research tools.">
+  <meta name="description" content="Code Academy Safe Browser helps you search the web, open websites directly, review suspicious links, follow trending technology stories, and manage browsing tools with privacy-conscious controls.">
   <meta name="robots" content="index,follow,max-image-preview:large">
   <link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing.html">
   <link rel="icon" href="safe-browser-icon-192.png">
@@ -12,16 +12,18 @@
   <link rel="manifest" href="safe-browser.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Code Academy">
-  <meta property="og:title" content="Code Academy Safe Browser | Browse with more awareness">
-  <meta property="og:description" content="A streamlined Code Academy browsing workspace with web search, safe-link warnings, private settings, tab management and voice tools.">
+  <meta property="og:title" content="Code Academy Safe Browser | Search smarter. Browse safer.">
+  <meta property="og:description" content="Search the web with Code Academy Safe Browser, follow live technology headlines, open websites in your device browser, and manage link checks, tabs, privacy and voice tools.">
   <meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing.html">
   <meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing-preview.jpg">
+  <meta property="og:image:alt" content="Code Academy Safe Browser interface with a search bar, privacy controls, browser tabs and trending technology stories.">
   <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="800">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Code Academy Safe Browser">
   <meta name="twitter:description" content="Search, browse, review link risks, manage tabs and use device voice tools from Code Academy.">
   <meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing-preview.jpg">
+  <meta name="twitter:image:alt" content="Code Academy Safe Browser interface with a search bar, privacy controls, browser tabs and trending technology stories.">
   <title>Code Academy Safe Browser</title>
   <link rel="stylesheet" href="safe-browsing.css">
   <script type="module" src="safe-browsing.js"></script>
@@ -50,7 +52,7 @@
       <button id="reloadPage" class="icon-button subtle" type="button" aria-label="Reload" title="Reload">↻</button>
       <form id="addressForm" class="address-form">
         <span id="securityMark" class="security-mark" title="Connection indicator">⌕</span>
-        <input id="addressInput" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter a web address" aria-label="Search or enter a web address">
+        <input id="addressInput" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter a website address" aria-label="Search or enter a website address">
         <button id="scanAddress" class="scan-address" type="button" title="Check link before opening">Scan</button>
         <button class="go-button" type="submit" aria-label="Go">➜</button>
       </form>
@@ -81,51 +83,47 @@
     <section class="browser-area" id="browserArea">
       <div id="startPage" class="start-page">
         <div class="hero-copy">
-          <div class="eyebrow"><span class="pulse"></span> SAFE BROWSING WORKSPACE</div>
-          <h1>Search freely.<br><span>Browse thoughtfully.</span></h1>
-          <p>Find the web, check a link before opening it, and keep your browsing tools close. Data Saver avoids extra activity from this app; websites control the data their own pages use.</p>
-          <div class="hero-tags"><span>🔒 HTTPS awareness</span><span>🛡 Link checks</span><span>🎙 Voice tools</span><span>📉 Data Saver</span></div>
+          <div class="eyebrow"><span class="pulse"></span> CODE ACADEMY SAFE BROWSER</div>
+          <h1>What would you like<br><span>to explore today?</span></h1>
+          <p>Use the long address bar above to search or open a site. Search results and websites open as normal browser pages, so sites that forbid embedded frames can load correctly.</p>
+          <div class="hero-tags"><span>🛡 Link checks</span><span>🔒 HTTPS awareness</span><span>🎙 Voice search</span><span>📉 Data Saver</span></div>
         </div>
-        <div class="hero-art"><img src="safe-browsing-preview.jpg" alt="Code Academy Safe Browser security and search artwork" loading="lazy"></div>
         <form id="startSearchForm" class="start-search-form">
           <label class="visually-hidden" for="startSearch">Search the web</label>
           <span>⌕</span><input id="startSearch" type="search" placeholder="What would you like to find?" autocomplete="off">
           <button type="button" id="startVoice" class="voice-small" aria-label="Voice search">🎙</button>
           <button type="submit" class="primary-button">Search the web</button>
         </form>
+        <section class="trending-section" aria-labelledby="trendingHeading">
+          <div class="trending-heading"><div><span class="eyebrow">LIVE PUBLIC FEED</span><h2 id="trendingHeading">Trending in technology</h2></div><button id="refreshTrending" class="mini-button" type="button">↻ Refresh</button></div>
+          <p id="trendingStatus" class="trending-status" role="status" aria-live="polite">Loading current technology stories…</p>
+          <div id="trendingFeed" class="trending-grid" aria-live="polite"></div>
+          <p class="feed-source">Headlines are loaded from the public Hacker News API. Select a card to open its original source in a separate browser tab. If the feed cannot connect, search still works.</p>
+        </section>
         <div class="shortcut-grid">
           <button class="shortcut" data-url="https://www.google.com" type="button"><span class="shortcut-icon">G</span><span><b>Google</b><small>Web search</small></span></button>
           <button class="shortcut" data-url="https://duckduckgo.com" type="button"><span class="shortcut-icon purple">D</span><span><b>DuckDuckGo</b><small>Privacy-focused search</small></span></button>
           <button class="shortcut" data-url="https://search.brave.com" type="button"><span class="shortcut-icon orange">B</span><span><b>Brave Search</b><small>Independent search</small></span></button>
           <button class="shortcut" data-url="https://transparencyreport.google.com/safe-browsing/search" type="button"><span class="shortcut-icon green">✓</span><span><b>Check a site</b><small>Google Safe Browsing report</small></span></button>
         </div>
-        <div class="notice-row"><span>ⓘ</span><p><b>Know what this page can check:</b> link checks are local heuristics, not a guarantee that a site is safe. Some websites block embedded viewing; use <em>Open externally</em> when needed.</p></div>
+        <div class="notice-row"><span>ⓘ</span><p><b>Browse with awareness:</b> link checks look for common warning signals; they cannot guarantee that a site is safe. Search and website links open as ordinary browser pages so destination sites can apply their own security policies.</p></div>
       </div>
       <div id="frameShell" class="frame-shell" hidden>
         <div class="frame-topline"><span id="currentPageLabel">Browsing</span><span id="frameSafetyLabel" class="safety-pill">Link not yet checked</span><button id="frameFallbackBtn" type="button" class="mini-button">Can’t view?</button><button id="expandFrame" type="button" class="mini-button">Full view</button></div>
         <div id="deviceViewport" class="device-viewport mode-fluid">
-          <iframe id="webFrame" title="Web content viewer" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-forms allow-scripts allow-popups allow-popups-to-escape-sandbox allow-downloads" allow="clipboard-read 'none'; clipboard-write 'none'; geolocation 'none'; microphone 'none'; camera 'none'; payment 'none'; usb 'none'; serial 'none'" src="about:blank"></iframe>
-          <div id="frameFallback" class="frame-fallback" hidden>
-            <span class="fallback-icon">↗</span><h2>This site may not allow embedded viewing</h2><p>Many websites block frames for security. Your browser app cannot override that site policy.</p><button id="fallbackOpen" class="primary-button" type="button">Open in device browser</button>
+          <div id="frameFallback" class="frame-fallback external-launch-card" hidden>
+            <span class="fallback-icon">↗</span><h2 id="externalStatusTitle">Ready to open website</h2>
+            <p id="externalStatusMessage">Websites open as ordinary top-level pages. This keeps sites that prohibit embedded frames from showing a blank error panel.</p>
+            <div id="externalStatusURL" class="external-status-url"></div>
+            <div class="external-actions"><button id="fallbackOpen" class="primary-button" type="button">Open website in browser tab</button><a id="externalDirectLink" class="direct-open-link" href="https://example.com" target="_blank" rel="noopener noreferrer">Open direct link ↗</a></div>
+            <p class="external-explainer">If the destination reports a network, DNS, certificate or availability error, that error is shown by your device browser. A web page cannot read another tab's private error page or override the site's embedding policy.</p>
           </div>
         </div>
         <div class="frame-footer"><span id="currentDomain">No page opened</span><button id="checkCurrentSafety" type="button">Check site status</button><button id="copyCurrentUrl" type="button">Copy link</button></div>
       </div>
     </section>
 
-    <section class="lower-tools" aria-label="Research and privacy tools">
-      <article class="tool-card">
-        <div class="card-heading"><span class="large-icon blue">◈</span><div><h2>Privacy & safety</h2><p>Quick checks before you browse</p></div></div>
-        <div class="tool-links"><button id="quickIp" type="button"><b>View public IP</b><small>Fetched only when you ask</small></button><button id="quickLocation" type="button"><b>Share device location</b><small>Requires your permission</small></button><button id="quickSafeCheck" type="button"><b>Check a suspicious URL</b><small>Local checks + official site-status tool</small></button></div>
-      </article>
-      <article class="tool-card">
-        <div class="card-heading"><span class="large-icon violet">⌘</span><div><h2>Research tools</h2><p>For learning and authorized asset checks</p></div></div>
-        <div class="research-links"><a href="https://search.censys.io/" target="_blank" rel="noopener noreferrer">Censys Search <span>↗</span></a><a href="https://transparencyreport.google.com/safe-browsing/search" target="_blank" rel="noopener noreferrer">Google Safe Browsing site status <span>↗</span></a><a href="https://support.google.com/chrome/answer/95647" target="_blank" rel="noopener noreferrer">Chrome safety guidance <span>↗</span></a></div>
-        <p class="small-note">Censys is an internet-asset research platform, not a general web search engine. Only investigate systems you own or are authorized to assess.</p>
-      </article>
-    </section>
-
-    <footer class="app-footer"><span>Code Academy Safe Browser</span><span>Learn · Search · Check · Browse</span><button id="defaultBrowserHelp" type="button">Set up as default browser</button></footer>
+    <footer class="app-footer"><span>Code Academy Safe Browser</span><span>Search · Open · Check · Protect</span><button id="defaultBrowserHelp" type="button">Set up as default browser</button></footer>
   </main>
 
   <div id="panelShade" class="panel-shade" hidden></div>

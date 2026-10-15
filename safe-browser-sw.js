@@ -1,5 +1,5 @@
 /* Code Academy Safe Browser: cache only its own offline shell, never third-party browsing content. */
-const CACHE_NAME = 'ca-safe-browser-shell-v1';
+const CACHE_NAME = 'ca-safe-browser-v2';
 const SHELL = [
   './safe-browsing.html',
   './safe-browsing.css',
