@@ -1,0 +1,35 @@
+# SearXNG uses its built-in engine defaults, with Academy-specific privacy/safety settings.
+# JSON output is required by Academy's search adapter. The official container maps
+# SEARXNG_SECRET from the environment into server.secret_key.
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "Academy Search"
+  privacypolicy_url: false
+  donation_url: false
+  contact_url: false
+  enable_metrics: false
+
+search:
+  safe_search: 2
+  autocomplete: ""
+  default_lang: "en"
+  formats:
+    - html
+    - json
+
+server:
+  secret_key: "replace-from-SEARXNG_SECRET-environment"
+  limiter: false # Not exposed directly; Academy API applies rate limits.
+  public_instance: false
+  image_proxy: true
+  method: "GET"
+  default_http_headers:
+    X-Content-Type-Options: nosniff
+    X-Download-Options: noopen
+    X-Robots-Tag: "noindex, nofollow"
+    Referrer-Policy: no-referrer
+
+outgoing:
+  request_timeout: 5.0

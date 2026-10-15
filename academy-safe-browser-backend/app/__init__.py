@@ -1,0 +1,1 @@
+"""Academy Safe Browser backend."""
