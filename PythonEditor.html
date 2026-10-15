@@ -14,7 +14,312 @@
   <link rel="icon" href="logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
-  <script src="./python-runtime.js"></script>
+  <script>
+/* Embedded runtime: ./python-runtime.js */
+/*
+ * Code Academy Python Runtime Manager
+ * Browser CPython runtime powered by Pyodide (same pinned build as CODEEDITOR.html).
+ * - Starts warming the runtime as soon as this script is loaded.
+ * - Runs Python in a Web Worker so editor interactions remain responsive.
+ * - Auto-loads Pyodide-distributed packages used by import statements.
+ * - Offers explicit installation for additional compatible packages via micropip.
+ *
+ * NOTE: To prewarm from app launch on pages other than PythonEditor.html, include
+ * <script src="python-runtime.js"><\/script> in the shared app shell/home page too.
+ */
+(function (global) {
+  "use strict";
+
+  if (global.CodeAcademyPythonRuntime) return;
+
+  const PYODIDE_ROOT = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
+  const listeners = new Set();
+  const pending = new Map();
+  let worker = null;
+  let workerUrl = null;
+  let requestId = 0;
+  let ready = false;
+  let busy = false;
+  let warmupPromise = null;
+
+  function emit(message) {
+    for (const listener of [...listeners]) {
+      try { listener(message); } catch (error) { console.error("Python runtime listener failed", error); }
+    }
+    try { global.dispatchEvent(new CustomEvent("codeacademy:python-runtime", { detail: message })); } catch (_) {}
+  }
+
+  function workerSource() {
+    return `
+      import { loadPyodide } from ${JSON.stringify(PYODIDE_ROOT + "pyodide.mjs")};
+      const INDEX_URL = ${JSON.stringify(PYODIDE_ROOT)};
+      let pyodidePromise = null;
+      let pyodide = null;
+      let activeTask = null;
+
+      function send(type, payload = {}) {
+        self.postMessage({ type, ...payload, taskId: payload.taskId ?? activeTask });
+      }
+      function sayStatus(text, phase) { send("status", { text, phase }); }
+      function wireStreams(runtime) {
+        runtime.setStdout({ batched(text) { if (text) send("stdout", { text }); } });
+        runtime.setStderr({ batched(text) { if (text) send("stderr", { text }); } });
+      }
+      async function ensureRuntime() {
+        if (!pyodidePromise) {
+          sayStatus("Downloading the Python interpreter and standard library…", "downloading");
+          pyodidePromise = loadPyodide({ indexURL: INDEX_URL });
+        }
+        try {
+          pyodide = await pyodidePromise;
+          wireStreams(pyodide);
+          return pyodide;
+        } catch (error) {
+          pyodidePromise = null;
+          pyodide = null;
+          throw error;
+        }
+      }
+      function errorText(error) {
+        return (error && (error.stack || error.message)) ? String(error.stack || error.message) : String(error);
+      }
+      self.addEventListener("message", async (event) => {
+        const message = event.data || {};
+        const id = message.id;
+        activeTask = id ?? null;
+        try {
+          if (message.type === "warmup") {
+            await ensureRuntime();
+            send("ready", { id, text: "Python is ready. The runtime is cached by the browser when possible." });
+            return;
+          }
+          if (message.type === "run") {
+            const runtime = await ensureRuntime();
+            sayStatus("Preparing the Python project files…", "files");
+            const projectFiles = message.files && typeof message.files === "object" ? message.files : {};
+            for (const [path, item] of Object.entries(projectFiles)) {
+              const safePath = String(path || "").replace(/\\\\/g, "/");
+              if (!safePath || safePath.startsWith("/") || safePath.split("/").some(part => !part || part === "." || part === "..")) {
+                throw new Error("A project file has an invalid relative path: " + safePath);
+              }
+              const content = typeof item === "string" ? item : String((item && item.content) || "");
+              runtime.globals.set("__ca_file_path", safePath);
+              runtime.globals.set("__ca_file_content", content);
+              await runtime.runPythonAsync([
+                "from pathlib import Path as __CAPath",
+                "__ca_path = __CAPath('/home/pyodide') / __ca_file_path",
+                "__ca_path.parent.mkdir(parents=True, exist_ok=True)",
+                "__ca_path.write_text(__ca_file_content, encoding='utf-8')",
+                "del __ca_path, __CAPath"
+              ].join("\\n"));
+              runtime.globals.delete("__ca_file_path");
+              runtime.globals.delete("__ca_file_content");
+            }
+            await runtime.runPythonAsync([
+              "import os as __ca_os, sys as __ca_sys, importlib as __ca_importlib",
+              "__ca_os.chdir('/home/pyodide')",
+              "if '/home/pyodide' not in __ca_sys.path: __ca_sys.path.insert(0, '/home/pyodide')",
+              "__ca_importlib.invalidate_caches()",
+              "del __ca_os, __ca_sys, __ca_importlib"
+            ].join("\\n"));
+            runtime.globals.set("__file__", String(message.filename || "main.py"));
+            sayStatus("Checking imports and preparing required packages…", "packages");
+            if (typeof runtime.loadPackagesFromImports === "function") {
+              const allProjectSource = Object.values(projectFiles).map((item) => typeof item === "string" ? item : String((item && item.content) || "")).join("\\n");
+              await runtime.loadPackagesFromImports(allProjectSource || String(message.code || ""));
+            }
+            sayStatus("Running Python in an isolated worker…", "running");
+            const result = await runtime.runPythonAsync(String(message.code || ""));
+            let resultText = "";
+            if (result !== undefined && result !== null) {
+              try { resultText = String(result); } catch (_) { resultText = "[Python returned a value that could not be displayed]"; }
+              try { if (result && typeof result.destroy === "function") result.destroy(); } catch (_) {}
+            }
+            send("done", { id, resultText });
+            return;
+          }
+          if (message.type === "check") {
+            const runtime = await ensureRuntime();
+            const source = String(message.code || "");
+            const fileName = String(message.filename || "main.py");
+            runtime.globals.set("__ca_check_source", source);
+            runtime.globals.set("__ca_check_filename", fileName);
+            try {
+              runtime.runPython("compile(__ca_check_source, __ca_check_filename, 'exec')");
+              send("checked", { id, ok: true, text: "Python syntax looks valid." });
+            } finally {
+              try { runtime.globals.delete("__ca_check_source"); runtime.globals.delete("__ca_check_filename"); } catch (_) {}
+            }
+            return;
+          }
+          if (message.type === "install") {
+            const runtime = await ensureRuntime();
+            const packageName = String(message.packageName || "");
+            if (!/^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$/.test(packageName)) {
+              throw new Error("Enter a valid package name using letters, numbers, dots, underscores, or hyphens.");
+            }
+            sayStatus("Preparing the Python package installer…", "installing");
+            await runtime.loadPackage("micropip");
+            runtime.globals.set("__ca_package_name", packageName);
+            try {
+              await runtime.runPythonAsync("import micropip\\nawait micropip.install(__ca_package_name)\\ndel __ca_package_name");
+            } finally {
+              try { runtime.globals.delete("__ca_package_name"); } catch (_) {}
+            }
+            send("installed", { id, packageName, text: "Installed " + packageName + " for this Python runtime session." });
+            return;
+          }
+        } catch (error) {
+          send("taskError", { id, text: errorText(error), phase: message.type || "runtime" });
+        } finally {
+          activeTask = null;
+        }
+      });
+    `;
+  }
+
+  function rejectAllPending(message) {
+    for (const [id, record] of pending.entries()) {
+      clearTimeout(record.timer);
+      record.reject(new Error(message || "Python runtime was stopped."));
+      pending.delete(id);
+    }
+  }
+
+  function createWorker() {
+    if (worker) return worker;
+    const blob = new Blob([workerSource()], { type: "text/javascript" });
+    workerUrl = URL.createObjectURL(blob);
+    worker = new Worker(workerUrl, { type: "module", name: "code-academy-python-runtime" });
+    worker.addEventListener("message", (event) => {
+      const message = event.data || {};
+      emit(message);
+      const id = message.id;
+      if (message.type === "taskError" && id != null && pending.has(id)) {
+        const record = pending.get(id);
+        clearTimeout(record.timer);
+        pending.delete(id);
+        record.reject(new Error(message.text || "Python runtime error"));
+        if (record.kind === "warmup") { ready = false; warmupPromise = null; }
+        if (record.kind === "run") busy = false;
+        return;
+      }
+      if (["ready", "done", "checked", "installed"].includes(message.type) && id != null && pending.has(id)) {
+        const record = pending.get(id);
+        clearTimeout(record.timer);
+        pending.delete(id);
+        if (record.kind === "warmup") ready = true;
+        if (record.kind === "run") busy = false;
+        record.resolve(message);
+      }
+    });
+    worker.addEventListener("error", (event) => {
+      const detail = event.message || "Could not start the Python Web Worker.";
+      emit({ type: "fatal", text: detail });
+      ready = false;
+      warmupPromise = null;
+      busy = false;
+      rejectAllPending(detail);
+      try { worker.terminate(); } catch (_) {}
+      worker = null;
+      if (workerUrl) URL.revokeObjectURL(workerUrl);
+      workerUrl = null;
+    });
+    return worker;
+  }
+
+  function request(kind, payload, timeoutMs) {
+    const activeWorker = createWorker();
+    const id = ++requestId;
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        pending.delete(id);
+        if (kind === "run") busy = false;
+        if (kind === "warmup") { ready = false; warmupPromise = null; }
+        reject(new Error(kind === "run" ? "Python took too long and was stopped. Shorten the program or press Stop." : "The Python runtime request timed out."));
+        if (kind === "run") stop("Execution time limit reached.");
+      }, timeoutMs || 90000);
+      pending.set(id, { resolve, reject, timer, kind });
+      activeWorker.postMessage({ type: kind, id, ...payload });
+    });
+  }
+
+  const api = {
+    version: "Pyodide v314.0.7",
+    pyodideRoot: PYODIDE_ROOT,
+    get isReady() { return ready; },
+    get isBusy() { return busy; },
+    on(listener) {
+      if (typeof listener !== "function") return () => {};
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+    warmup() {
+      if (ready) return Promise.resolve({ type: "ready", text: "Python is ready." });
+      if (warmupPromise) return warmupPromise;
+      warmupPromise = request("warmup", {}, 120000).catch((error) => {
+        warmupPromise = null;
+        throw error;
+      });
+      return warmupPromise;
+    },
+    async run(code, options = {}) {
+      if (busy) throw new Error("Python is already running. Stop the current program first.");
+      if (!String(code || "").trim()) throw new Error("Write some Python code before running it.");
+      await this.warmup();
+      if (busy) throw new Error("Python is already running. Stop the current program first.");
+      busy = true;
+      try {
+        return await request("run", {
+          code: String(code),
+          filename: String(options.filename || "main.py"),
+          files: options.files && typeof options.files === "object" ? options.files : {}
+        }, Math.max(5000, Number(options.timeoutMs) || 60000));
+      } catch (error) {
+        busy = false;
+        throw error;
+      }
+    },
+    async check(code, filename = "main.py") {
+      return request("check", { code: String(code || ""), filename: String(filename || "main.py") }, 45000);
+    },
+    async installPackage(packageName) {
+      if (busy) throw new Error("Stop the running program before installing a package.");
+      await this.warmup();
+      if (busy) throw new Error("Stop the running program before installing a package.");
+      busy = true;
+      try {
+        return await request("install", { packageName: String(packageName || "").trim() }, 120000);
+      } finally {
+        busy = false;
+      }
+    },
+    stop(reason = "Python execution stopped.") {
+      const oldWorker = worker;
+      worker = null;
+      ready = false;
+      warmupPromise = null;
+      busy = false;
+      rejectAllPending(reason);
+      if (oldWorker) { try { oldWorker.terminate(); } catch (_) {} }
+      if (workerUrl) { URL.revokeObjectURL(workerUrl); workerUrl = null; }
+      emit({ type: "stopped", text: reason });
+      return true;
+    }
+  };
+
+  global.CodeAcademyPythonRuntime = api;
+
+  // Preload the interpreter as soon as this helper is loaded. To do this from the
+  // actual app launch/home page, include this helper there as well.
+  const startWarmup = () => api.warmup().catch((error) => {
+    emit({ type: "warmupError", text: error.message || String(error) });
+  });
+  if (global.requestIdleCallback) global.requestIdleCallback(startWarmup, { timeout: 1800 });
+  else global.setTimeout(startWarmup, 350);
+})(window);
+
+</script>
   <style>
     :root{color-scheme:dark;--bg:#020617;--surface:#0b1220;--surface2:#111b2e;--surface3:#172337;--line:#26364d;--line2:#344761;--text:#e5edf8;--muted:#8da1bd;--primary:#60a5fa;--primary2:#2563eb;--cyan:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#fb7185;--radius:12px;--top:58px;--shadow:0 18px 55px rgba(0,0,0,.36)}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}.app{height:100%;height:100dvh;display:flex;flex-direction:column;min-width:0;background:radial-gradient(ellipse at 55% -18%,rgba(37,99,235,.17),transparent 50%),var(--bg)}
@@ -26,7 +331,11 @@
     @media(max-width:980px){.brand{max-width:42px}.brandText{display:none}.cloudState{max-width:100px;overflow:hidden;text-overflow:ellipsis}.toolbarHint{display:none}.sidebar{width:232px;flex-basis:232px}}
     @media(max-width:680px){:root{--top:54px}.topbar{padding:0 7px;gap:6px}.brand{max-width:35px}.brandLogo,.brandMark{width:30px;height:30px}.projectTitle{font-size:12px}.cloudState{display:none}.topbar .actionBtn span{display:none}.topbar .actionBtn{width:35px;padding:0}.topbar .iconBtn{width:33px;height:34px}.toolrow{padding:0 7px;gap:6px}.actionBtn{font-size:11px;padding:0 9px}.sidebar{position:absolute;z-index:50;top:0;bottom:0;left:0;width:min(84vw,285px);flex-basis:min(84vw,285px);box-shadow:var(--shadow)}.sidebar.collapsed{width:0;flex-basis:0}.sidebar.mobileOpen{width:min(84vw,285px);flex-basis:min(84vw,285px)}.editorMeta{padding:0 8px}.dock{height:185px}.statusBar{gap:7px;padding:0 6px;font-size:8px}.sideBottom{grid-template-columns:1fr 1fr}}
     @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-  </style>
+  
+.caOutputScreen{position:fixed;inset:0;z-index:10000;display:none;flex-direction:column;background:#020617;color:#e5eefb;font-family:Inter,system-ui,sans-serif}
+.caOutputScreen.open{display:flex}.caOutputHead{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:12px;padding:0 16px;background:#0b1424;border-bottom:1px solid #243750}.caOutputMark{width:34px;height:34px;border:1px solid #294460;background:#12253b;border-radius:10px;display:grid;place-items:center;color:#67e8f9}.caOutputTitle{font-weight:850;font-size:14px}.caOutputSub{font-size:11px;color:#91a5c0;margin-top:3px}.caOutputGrow{flex:1}.caOutputButton{border:1px solid #304864;border-radius:10px;background:#122238;color:#e2edf9;padding:9px 12px;font-weight:750;cursor:pointer}.caOutputButton.primary{background:#047857;border-color:#10b981;color:white}.caOutputBody{flex:1;min-height:0;overflow:auto;background:#020617}.caOutputFrame{width:100%;height:100%;border:0;background:white}.caOutputText{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;padding:22px clamp(14px,4vw,42px);font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d7e5f6}.caOutputText .stderr{color:#fda4af}.caOutputText .diagnostic{color:#fcd34d}.caOutputState{padding:10px 16px;color:#9fb2cc;font-size:11px;border-bottom:1px solid #1c3048;background:#071020}
+
+</style>
 </head>
 <body>
 <div class="app" id="app">
@@ -35,7 +344,7 @@
     <div class="brand"><img class="brandLogo" id="brandLogo" src="logo.png" alt="Code Academy logo"><span class="brandMark" id="brandMark"><i class="fa-solid fa-code"></i></span><div class="brandText"><strong>Code Academy</strong><small>Python Studio</small></div></div>
     <div class="projectTitleWrap"><input id="projectNameInput" class="projectTitle" maxlength="80" value="Python Workspace" aria-label="Project name"><div class="cloudState pending" id="cloudState"><i class="fa-solid fa-circle"></i><span id="cloudText">Starting Python…</span></div></div>
     <button class="actionBtn primary" id="saveBtn" title="Save project"><i class="fa-solid fa-cloud-arrow-up"></i><span>Save</span></button>
-    <button class="iconBtn" id="projectPageBtn" title="Open saved projects" aria-label="Open saved projects"><i class="fa-solid fa-folder-open"></i></button>
+    <button class="iconBtn" id="projectPageBtn" title="Open saved projects" aria-label="Open saved projects"><i class="fa-solid fa-folder-open"></i></button><button class="iconBtn" id="editorDashboardBtn" type="button" title="All language editors" aria-label="All editors"><i class="fa-solid fa-layer-group"></i></button><button class="actionBtn ghost" id="exitEditorBtn" type="button" title="Exit to menu"><i class="fa-solid fa-right-from-bracket"></i><span>Exit</span></button>
   </header>
   <nav class="toolrow" aria-label="Python editor tools">
     <div class="toolgroup"><button class="actionBtn" id="newProjectBtn"><i class="fa-solid fa-folder-plus"></i><span>New project</span></button><button class="actionBtn" id="newFileBtn"><i class="fa-solid fa-file-circle-plus"></i><span>New .py file</span></button><button class="actionBtn" id="newFolderBtn"><i class="fa-solid fa-folder-plus"></i><span>New folder</span></button></div>
@@ -83,6 +392,39 @@ import { auth, db, onAuthStateChanged } from "./authentication.js";
 import { collection, doc, getDoc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
+
+const __caOutput = { lines: [], mode: "text", title: "Program output" };
+function __caEsc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function __caShowText(title, initial="", status="Running"){
+ const root=document.getElementById("caOutputScreen"); if(!root)return;
+ __caOutput.mode="text";__caOutput.title=title;__caOutput.lines=[];
+ document.getElementById("caOutputTitle").textContent=title;
+ document.getElementById("caOutputSub").textContent="Full-screen execution results";
+ document.getElementById("caOutputState").textContent=status;
+ document.getElementById("caOutputFrame").style.display="none";
+ document.getElementById("caOutputText").style.display="block";
+ document.getElementById("caOutputText").textContent=initial;
+ root.classList.add("open");document.body.style.overflow="hidden";
+}
+function __caAppendText(text, kind="stdout"){
+ const node=document.getElementById("caOutputText");if(!node)return;
+ const s=String(text==null?"":text);if(!s)return;
+ __caOutput.lines.push({text:s,kind});
+ node.textContent+=s;node.scrollTop=node.scrollHeight;
+}
+function __caSetOutputStatus(status){const n=document.getElementById("caOutputState");if(n)n.textContent=String(status||"");}
+function __caShowHtml(title, html, status="Preview ready"){
+ const root=document.getElementById("caOutputScreen");if(!root)return;
+ document.getElementById("caOutputTitle").textContent=title;
+ document.getElementById("caOutputSub").textContent="Sandboxed full-screen preview";
+ document.getElementById("caOutputState").textContent=status;
+ document.getElementById("caOutputText").style.display="none";
+ const frame=document.getElementById("caOutputFrame");frame.style.display="block";frame.srcdoc=String(html||"");
+ __caOutput.mode="html";__caOutput.title=title;root.classList.add("open");document.body.style.overflow="hidden";
+}
+function __caCloseOutput(){const root=document.getElementById("caOutputScreen");if(root)root.classList.remove("open");document.body.style.overflow="";}
+function __caBindOutput(runFn){document.getElementById("caOutputClose")?.addEventListener("click",__caCloseOutput);document.getElementById("caOutputRunAgain")?.addEventListener("click",()=>{__caCloseOutput();if(typeof runFn==="function")runFn();});document.addEventListener("keydown",e=>{if(e.key==="Escape")__caCloseOutput();});}
+
 const MONACO_ROOT = "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min";
 const STARTER = `"""Code Academy Python Studio — a project-ready Python starter.
 
@@ -242,8 +584,8 @@ async function saveProject(silent=false){syncCurrentText();saveLocalBackup();if(
 function appendConsole(text,type="log"){const host=$("consoleBody");const empty=host.querySelector(".consoleEmpty");if(empty)empty.remove();const line=document.createElement("div");line.className="consoleLine "+type;line.textContent=String(text);host.append(line);while(host.children.length>600)host.firstElementChild.remove();host.scrollTop=host.scrollHeight;$("consoleCount").textContent=String(host.querySelectorAll(".consoleLine").length);}
 function clearConsole(message="Console cleared."){ $("consoleBody").replaceChildren();$("consoleCount").textContent="0";if(message)appendConsole(message,"info");}
 function showDock(name){$("dock").classList.remove("collapsed");document.querySelectorAll(".dockTab").forEach(button=>button.classList.toggle("active",button.dataset.dock===name));$("consoleBody").style.display=name==="console"?"block":"none";$("dockPackages").classList.toggle("active",name==="packages");}
-function onRuntimeMessage(message){if(!message)return;switch(message.type){case"status":$("runtimeDetail").textContent=message.text||"Runtime working";$("runtimeHint").textContent=message.text||"Preparing Python";$("editorLoadingSub").textContent=message.text||"Preparing runtime";if(message.phase==="downloading")$("statusRuntime").textContent="Downloading Python";else if(message.phase==="running")$("statusRuntime").textContent="Python running";else $("statusRuntime").textContent="Runtime working";if(message.phase==="installing")showDock("packages");break;case"ready":$("statusRuntime").textContent="Python ready";$("runtimeHint").textContent="Python runtime ready";$("runtimeDetail").textContent="Interpreter loaded. Common packages will be fetched only when required.";if(!running)$("editorLoadingSub").textContent="Python runtime is ready";break;case"stdout":appendConsole(message.text,"log");break;case"stderr":appendConsole(message.text,"error");break;case"taskError":appendConsole(message.text,"error");$("statusRuntime").textContent="Python error";$("runtimeHint").textContent="Python task failed";statusMessage("Python run failed — see Console for details.");break;case"done":if(message.resultText)appendConsole(message.resultText,"success");$("statusRuntime").textContent="Run complete";statusMessage("Python run completed.");break;case"checked":appendConsole(message.text||"Syntax check complete","success");break;case"installed":$("packageDetail").textContent=message.text||"Package installed.";appendConsole(message.text||"Package installed.","success");toast(message.text||"Package installed.","success");break;case"stopped":if(running)appendConsole(message.text||"Execution stopped.","warn");$("statusRuntime").textContent="Stopped";break;case"warmupError":case"fatal":$("runtimeHint").textContent="Runtime will retry on first run";$("runtimeDetail").textContent=message.text||"Python runtime could not load";$("statusRuntime").textContent="Runtime offline";appendConsole("Runtime setup: "+(message.text||"Could not load Pyodide"),"warn");break;}}
-async function runPython(){syncCurrentText();const runtime=window.CodeAcademyPythonRuntime;if(!runtime||typeof runtime.run!=="function"){clearConsole("The Python runtime manager is not loaded. Upload python-runtime.js beside PythonEditor.html and refresh.");showDock("console");toast("Python runtime is unavailable. Check that python-runtime.js is in the repository root.","error");return;}const source=files[currentFile]?.content||"";if(!source.trim()){toast("Write some Python code before running it.","warning");return;}if(running)return;running=true;clearConsole("Preparing Python runtime and project files…");showDock("console");$("runBtn").disabled=true;$("stopBtn").disabled=false;$("statusRuntime").textContent="Starting Python";$("runtimeHint").textContent="Preparing code";try{await runtime.run(source,{filename:currentFile,files:Object.fromEntries(Object.entries(files).map(([path,item])=>[path,{content:item.content||""}])),timeoutMs:Number($("timeoutSelect").value)||60000});appendConsole("Program finished.","success");}catch(error){appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Python error";}finally{running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;}}
+function onRuntimeMessage(message){if(!message)return;switch(message.type){case"status":$("runtimeDetail").textContent=message.text||"Runtime working";$("runtimeHint").textContent=message.text||"Preparing Python";$("editorLoadingSub").textContent=message.text||"Preparing runtime";if(message.phase==="downloading")$("statusRuntime").textContent="Downloading Python";else if(message.phase==="running")$("statusRuntime").textContent="Python running";else $("statusRuntime").textContent="Runtime working";if(message.phase==="installing")showDock("packages");break;case"ready":$("statusRuntime").textContent="Python ready";$("runtimeHint").textContent="Python runtime ready";$("runtimeDetail").textContent="Interpreter loaded. Common packages will be fetched only when required.";if(!running)$("editorLoadingSub").textContent="Python runtime is ready";break;case"stdout":appendConsole(message.text,"log");__caAppendText(message.text,"stdout");break;case"stderr":appendConsole(message.text,"error");__caAppendText(message.text,"stderr");break;case"taskError":appendConsole(message.text,"error");__caAppendText(String(message.text||"Python execution failed")+"\n","stderr");__caSetOutputStatus("Python execution error");$("statusRuntime").textContent="Python error";$("runtimeHint").textContent="Python task failed";statusMessage("Python run failed — see Console for details.");break;case"done":if(message.resultText){appendConsole(message.resultText,"success");__caAppendText(String(message.resultText)+"\n","stdout");}$("statusRuntime").textContent="Run complete";statusMessage("Python run completed.");break;case"checked":appendConsole(message.text||"Syntax check complete","success");break;case"installed":$("packageDetail").textContent=message.text||"Package installed.";appendConsole(message.text||"Package installed.","success");toast(message.text||"Package installed.","success");break;case"stopped":if(running)appendConsole(message.text||"Execution stopped.","warn");$("statusRuntime").textContent="Stopped";break;case"warmupError":case"fatal":$("runtimeHint").textContent="Runtime will retry on first run";$("runtimeDetail").textContent=message.text||"Python runtime could not load";$("statusRuntime").textContent="Runtime offline";appendConsole("Runtime setup: "+(message.text||"Could not load Pyodide"),"warn");break;}}
+async function runPython(){syncCurrentText();const runtime=window.CodeAcademyPythonRuntime;if(!runtime||typeof runtime.run!=="function"){clearConsole("The Python runtime manager is not loaded. The embedded Python runtime did not initialize. Check network access and reload the page.");showDock("console");toast("Python runtime is unavailable. Check browser network access and reload the page.","error");return;}const source=files[currentFile]?.content||"";if(!source.trim()){toast("Write some Python code before running it.","warning");return;}if(running)return;running=true;__caShowText("Python output","Preparing Python runtime and project files…","Starting Python");clearConsole("Preparing Python runtime and project files…");showDock("console");$("runBtn").disabled=true;$("stopBtn").disabled=false;$("statusRuntime").textContent="Starting Python";$("runtimeHint").textContent="Preparing code";try{await runtime.run(source,{filename:currentFile,files:Object.fromEntries(Object.entries(files).map(([path,item])=>[path,{content:item.content||""}])),timeoutMs:Number($("timeoutSelect").value)||60000});appendConsole("Program finished.","success");}catch(error){appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Python error";}finally{running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;}}
 async function checkSyntax(){if(!window.CodeAcademyPythonRuntime||typeof window.CodeAcademyPythonRuntime.check!=="function"){toast("Python runtime is unavailable. Check python-runtime.js.","error");return;}if(running){toast("Stop the running program before checking syntax.","warning");return;}syncCurrentText();if(!files[currentFile])return;clearConsole("Checking Python syntax without executing the program…");showDock("console");try{await window.CodeAcademyPythonRuntime.check(files[currentFile].content||"",currentFile);}catch(error){appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Syntax error";}}
 function stopPython(){if(!running)return;if(!window.CodeAcademyPythonRuntime||typeof window.CodeAcademyPythonRuntime.stop!=="function"){running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;return;}window.CodeAcademyPythonRuntime.stop("Execution stopped by the learner.");running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;appendConsole("Python worker stopped. The next run will initialize a fresh runtime.","warn");}
 function formatCurrentFile(){syncCurrentText();const old=files[currentFile]?.content||"";const result=old.split(/\r?\n/).map(line=>line.replace(/[\t ]+$/g,"")).join("\n").replace(/\n*$/g,"")+"\n";if(result===old){toast("Formatting made no changes.","info");return;}files[currentFile].content=result;if(editor&&monacoReady)editor.getModel()?.setValue(result);else $("fallbackEditor").value=result;markDirty();toast("Trailing whitespace removed and final newline added.","success");}
@@ -269,8 +611,14 @@ if(window.CodeAcademyPythonRuntime&&typeof window.CodeAcademyPythonRuntime.on===
 // Monaco loads independently of Python's worker runtime, so editing can start promptly.
 const monacoDeadline=setTimeout(()=>{if(!monacoReady)enableFallback();},9000);
 setupMonaco().then(ok=>{clearTimeout(monacoDeadline);if(!ok)enableFallback();}).catch(error=>{console.error(error);clearTimeout(monacoDeadline);enableFallback();});
+__caBindOutput(runPython);document.getElementById("exitEditorBtn")?.addEventListener("click",()=>{location.href="menu.html";});document.getElementById("editorDashboardBtn")?.addEventListener("click",()=>{try{sessionStorage.setItem("ca-editor-dashboard-return",location.href);}catch(_){}location.href="editor-dashboard.html";});
 onAuthStateChanged(auth,async user=>{if(authStarted)return;authStarted=true;if(!user){setCloud("Sign in required","error");location.replace("login.html");return;}currentUser=user;try{await startWorkspace();}catch(error){console.error("Python workspace failed to start",error);setCloud("Workspace load failed","error");appendConsole(firebaseErrorMessage(error),"error");toast(firebaseErrorMessage(error),"error");}});
 window.addEventListener("pagehide",()=>{if(runtimeUnsubscribe)runtimeUnsubscribe();});
 </script>
+
+<div class="caOutputScreen" id="caOutputScreen" aria-modal="true" role="dialog" aria-label="Program output">
+ <header class="caOutputHead"><span class="caOutputMark"><i class="fa-solid fa-terminal"></i></span><div><div class="caOutputTitle" id="caOutputTitle">Program output</div><div class="caOutputSub" id="caOutputSub">Full-screen execution results</div></div><span class="caOutputGrow"></span><button class="caOutputButton" id="caOutputRunAgain" type="button"><i class="fa-solid fa-rotate-right"></i> Run again</button><button class="caOutputButton" id="caOutputClose" type="button"><i class="fa-solid fa-xmark"></i> Back to editor</button></header>
+ <div class="caOutputState" id="caOutputState" role="status" aria-live="polite">Waiting for output</div><div class="caOutputBody" id="caOutputBody"><pre class="caOutputText" id="caOutputText"></pre><iframe class="caOutputFrame" id="caOutputFrame" title="Program output" sandbox="allow-scripts allow-forms allow-modals"></iframe></div>
+</div>
 </body>
 </html>

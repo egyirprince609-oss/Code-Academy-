@@ -14,7 +14,288 @@
   <link rel="icon" href="logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
-  <script src="./cpp-runtime.js"></script>
+  <script>
+/* Embedded runtime: ./cpp-runtime.js */
+/* Code Academy C++ runtime manager.
+ * Uses Compiler Explorer's documented REST API for genuine GCC/Clang compilation
+ * and sandboxed execution. No API key is embedded in this public client.
+ */
+(function (global) {
+  "use strict";
+
+  const API_ROOT = "https://godbolt.org/api";
+  const REQUEST_TIMEOUT_MS = 45000;
+  let compilerCache = null;
+  let libraryCache = null;
+  let formatterCache = null;
+  const activeRequests = new Set();
+  const listeners = new Set();
+
+  function emit(type, detail) {
+    const message = Object.assign({ type }, detail || {});
+    listeners.forEach((listener) => {
+      try { listener(message); } catch (error) { console.error("C++ runtime listener failed", error); }
+    });
+  }
+
+  function safeText(value) {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "number" || typeof value === "boolean") return String(value);
+    if (Array.isArray(value)) return value.map(safeText).filter(Boolean).join("\n");
+    if (typeof value === "object") {
+      if (typeof value.text === "string") return value.text;
+      if (typeof value.message === "string") return value.message;
+      if (typeof value.stdout === "string" || typeof value.stderr === "string") {
+        return [safeText(value.stdout), safeText(value.stderr)].filter(Boolean).join("\n");
+      }
+      try { return JSON.stringify(value); } catch (_) { return ""; }
+    }
+    return "";
+  }
+
+  async function requestJSON(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const duration = Math.max(1000, Number(timeoutMs) || REQUEST_TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(new Error("Request timed out")), duration);
+    activeRequests.add(controller);
+    emit("status", { phase: "request", text: "Contacting Compiler Explorer…" });
+    try {
+      const response = await fetch(url, Object.assign({
+        method: "GET",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        headers: { "Accept": "application/json" },
+        signal: controller.signal
+      }, options || {}));
+      const text = await response.text();
+      let data;
+      try { data = text ? JSON.parse(text) : {}; }
+      catch (_) { data = { message: text.slice(0, 1000) }; }
+      if (!response.ok) {
+        const message = data && (data.message || data.error || data.stderr);
+        throw new Error("Compiler service returned HTTP " + response.status + (message ? ": " + safeText(message) : "."));
+      }
+      return data;
+    } catch (error) {
+      if (error && error.name === "AbortError") {
+        throw new Error("The compiler request was cancelled or timed out. Try again with a smaller program.");
+      }
+      if (error instanceof TypeError) {
+        throw new Error("Could not reach Compiler Explorer. Check your internet connection, browser connectivity, and the compiler service status.");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      activeRequests.delete(controller);
+    }
+  }
+
+  function versionParts(value) {
+    const match = String(value || "").match(/\d+(?:\.\d+)*/);
+    return match ? match[0].split(".").map(part => Number(part) || 0) : [0];
+  }
+
+  function compareVersions(a, b) {
+    const aa = versionParts(a.semver || a.name || a.id);
+    const bb = versionParts(b.semver || b.name || b.id);
+    for (let i = 0; i < Math.max(aa.length, bb.length); i++) {
+      const diff = (bb[i] || 0) - (aa[i] || 0);
+      if (diff) return diff;
+    }
+    return String(a.name || a.id).localeCompare(String(b.name || b.id));
+  }
+
+  function normalizeCompilers(data) {
+    const raw = Array.isArray(data) ? data : Array.isArray(data && data.compilers) ? data.compilers : [];
+    const usable = raw.filter(item => item && item.id && item.name && /(?:gcc|g\+\+|clang|llvm)/i.test(String(item.name) + " " + String(item.id)));
+    const host = usable.filter(item => /x86[-_ ]?64|amd64/i.test(String(item.name)));
+    const selectedPool = host.length ? host : usable;
+    const stable = selectedPool.filter(item => !item.releaseTrack || item.releaseTrack === "stable");
+    const pool = stable.length ? stable : selectedPool.filter(item => item.releaseTrack !== "experimental");
+    const chosenPool = pool.length ? pool : selectedPool;
+    const seen = new Set();
+    const chosen = chosenPool.filter(item => {
+      const id = String(item.id);
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+    if (!chosen.length) throw new Error("Compiler Explorer did not report any usable GCC or Clang C++ compilers.");
+    // Keep all stable versions offered by the service, not just the newest GCC/Clang.
+    // This lets learners compare older and newer compiler versions when available.
+    return chosen.sort((a, b) => {
+      const af = /clang|llvm/i.test(String(a.name) + " " + a.id) ? 1 : 0;
+      const bf = /clang|llvm/i.test(String(b.name) + " " + b.id) ? 1 : 0;
+      if (af !== bf) return af - bf;
+      return compareVersions(a, b);
+    });
+  }
+
+  async function getCompilers(options) {
+    if (options && options.force) compilerCache = null;
+    if (compilerCache) return compilerCache.slice();
+    const data = await requestJSON(API_ROOT + "/compilers/c%2B%2B?fields=id,name,semver,releaseTrack,compilerType");
+    compilerCache = normalizeCompilers(data);
+    emit("compilers", { compilers: compilerCache.slice() });
+    return compilerCache.slice();
+  }
+
+  function normalizeLibraries(data) {
+    const raw = Array.isArray(data) ? data : Array.isArray(data && data.libraries) ? data.libraries : [];
+    const result = [];
+    for (const item of raw) {
+      if (!item || typeof item !== "object") continue;
+      const id = String(item.id || item.name || "").trim();
+      const name = String(item.name || item.id || "").trim();
+      if (!id || !name) continue;
+      let versions = [];
+      const source = item.versions || item.version || item.versionId;
+      if (Array.isArray(source)) {
+        versions = source.map(value => typeof value === "string" || typeof value === "number" ? String(value) : String(value && (value.id || value.version || value.name) || "")).filter(Boolean);
+      } else if (source && typeof source === "object") {
+        versions = Object.keys(source);
+      } else if (typeof source === "string" || typeof source === "number") {
+        versions = [String(source)];
+      }
+      versions = [...new Set(versions)];
+      result.push({ id, name, description: String(item.description || item.summary || ""), versions });
+    }
+    return result.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async function getLibraries(options) {
+    if (options && options.force) libraryCache = null;
+    if (libraryCache) return libraryCache.slice();
+    const data = await requestJSON(API_ROOT + "/libraries/c%2B%2B");
+    libraryCache = normalizeLibraries(data);
+    emit("libraries", { libraries: libraryCache.slice() });
+    return libraryCache.slice();
+  }
+
+  async function getFormatters(options) {
+    if (options && options.force) formatterCache = null;
+    if (formatterCache) return formatterCache.slice();
+    const data = await requestJSON(API_ROOT + "/formats");
+    formatterCache = Array.isArray(data) ? data : Array.isArray(data && data.formats) ? data.formats : [];
+    return formatterCache.slice();
+  }
+
+  function formatOutput(data) {
+    const answer = typeof (data && data.answer) === "string" ? data.answer : "";
+    if (!answer || (data && (data.throw || Number(data.exit) !== 0))) {
+      throw new Error("The remote formatter could not format this file.");
+    }
+    return answer;
+  }
+
+  async function format(source, options) {
+    const text = String(source || "");
+    try {
+      const formatters = await getFormatters();
+      const formatter = formatters.find(item => /clang-format/i.test(String(item.name || item.type || item.exe || "")));
+      if (formatter) {
+        const body = await requestJSON(API_ROOT + "/format/" + encodeURIComponent(formatter.name || formatter.type), {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify({ source: text, base: "Google", useSpaces: true, tabWidth: 4 })
+        });
+        return formatOutput(body);
+      }
+    } catch (error) {
+      emit("status", { phase: "format-fallback", text: "Remote formatter unavailable; using safe whitespace cleanup." });
+    }
+    return text.split(/\r?\n/).map(line => line.replace(/[\t ]+$/g, "")).join("\n").replace(/\n*$/g, "") + (text.length ? "\n" : "");
+  }
+
+  function normalizeCompileResponse(data) {
+    const result = data && (data.execResult || data.executionResult || data.executeResult || data.execution || data.runResult || (data.result && (data.result.execResult || data.result.executionResult)) || null);
+    const compilerStdout = safeText(data && data.stdout);
+    const compilerStderr = safeText(data && data.stderr);
+    let executionStdout = "";
+    let executionStderr = "";
+    let executionCode = null;
+    if (result) {
+      executionStdout = safeText(result.stdout || result.output || result.out);
+      executionStderr = safeText(result.stderr || result.error || result.err);
+      const code = result.code ?? result.exitCode ?? result.returnCode;
+      if (Number.isFinite(Number(code))) executionCode = Number(code);
+    }
+    // Some service responses place executor data in a nested list/object.
+    if (!result && data && data.result && typeof data.result === "object") {
+      const nested = data.result;
+      executionStdout = safeText(nested.stdout || nested.output);
+      executionStderr = safeText(nested.stderr || nested.error);
+      const code = nested.code ?? nested.exitCode;
+      if (code !== undefined && Number.isFinite(Number(code))) executionCode = Number(code);
+    }
+    return {
+      raw: data,
+      compileCode: Number.isFinite(Number(data && data.code)) ? Number(data.code) : 0,
+      compilerStdout,
+      compilerStderr,
+      executionStdout,
+      executionStderr,
+      executionCode,
+      asm: safeText(data && data.asm)
+    };
+  }
+
+  async function compile(options) {
+    const opts = options || {};
+    const source = String(opts.source || "");
+    if (!source.trim()) throw new Error("Write some C++ code before compiling.");
+    const compilerId = String(opts.compilerId || "").trim();
+    if (!compilerId) throw new Error("Choose an available C++ compiler first.");
+    const standard = /^c\+\+(?:98|03|11|14|17|20|23)$/.test(String(opts.standard || "")) ? opts.standard : "c++20";
+    const libraries = Array.isArray(opts.libraries) ? opts.libraries.filter(item => item && item.id && item.version).map(item => ({ id: String(item.id), version: String(item.version) })) : [];
+    const files = Array.isArray(opts.files) ? opts.files.filter(item => item && item.filename && typeof item.contents === "string").map(item => ({ filename: String(item.filename), contents: item.contents })) : [];
+    const request = {
+      source,
+      lang: "c++",
+      allowStoreCodeDebug: false,
+      files,
+      options: {
+        userArguments: "-std=" + standard + " -Wall -Wextra -pedantic -fno-diagnostics-color",
+        compilerOptions: { executorRequest: opts.execute !== false, skipAsm: true, overrides: [] },
+        filters: { execute: opts.execute !== false, binary: false, binaryObject: false, commentOnly: false, demangle: true, directives: false, intel: false, labels: false, libraryCode: false, trim: true, debugCalls: false },
+        executeParameters: { args: [], stdin: String(opts.stdin || ""), runtimeTools: [] },
+        tools: [],
+        libraries
+      }
+    };
+    emit("status", { phase: opts.execute === false ? "checking" : "compiling", text: opts.execute === false ? "Checking C++ source with the selected compiler…" : "Compiling and running with the selected compiler…" });
+    const data = await requestJSON(API_ROOT + "/compiler/" + encodeURIComponent(compilerId) + "/compile", {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(request)
+    }, opts.timeoutMs || REQUEST_TIMEOUT_MS);
+    const result = normalizeCompileResponse(data);
+    emit("result", { result, requestSummary: { compilerId, standard, sourceLength: source.length, extraFileCount: files.length, libraryCount: libraries.length } });
+    return result;
+  }
+
+  function stop() {
+    for (const controller of [...activeRequests]) {
+      try { controller.abort(); } catch (_) {}
+    }
+    emit("stopped", { text: "Stopped waiting for the compiler response. A request already accepted by the remote service may finish there." });
+  }
+
+  global.CodeAcademyCppRuntime = Object.freeze({
+    apiRoot: API_ROOT,
+    on(listener) { if (typeof listener !== "function") return function () {}; listeners.add(listener); return () => listeners.delete(listener); },
+    getCompilers,
+    getLibraries,
+    getFormatters,
+    compile,
+    format,
+    stop
+  });
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
   <style>
     :root{color-scheme:dark;--bg:#020617;--surface:#0b1220;--surface2:#111b2e;--surface3:#172337;--line:#26364d;--line2:#344761;--text:#e5edf8;--muted:#8da1bd;--primary:#60a5fa;--primary2:#2563eb;--cyan:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#fb7185;--radius:12px;--top:58px;--shadow:0 18px 55px rgba(0,0,0,.36)}
     *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}.app{height:100%;height:100dvh;display:flex;flex-direction:column;min-width:0;background:radial-gradient(ellipse at 55% -18%,rgba(37,99,235,.17),transparent 50%),var(--bg)}
@@ -39,7 +320,11 @@
     .cppPanelSection .packageCard strong{word-break:break-word}
     @media(max-width:760px){.cppPanelGrid{grid-template-columns:1fr}.compilerSelect{max-width:145px}.toolbarHint{display:none}.brand{max-width:125px}.brandText small{font-size:9px}}
 
-  </style>
+  
+.caOutputScreen{position:fixed;inset:0;z-index:10000;display:none;flex-direction:column;background:#020617;color:#e5eefb;font-family:Inter,system-ui,sans-serif}
+.caOutputScreen.open{display:flex}.caOutputHead{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:12px;padding:0 16px;background:#0b1424;border-bottom:1px solid #243750}.caOutputMark{width:34px;height:34px;border:1px solid #294460;background:#12253b;border-radius:10px;display:grid;place-items:center;color:#67e8f9}.caOutputTitle{font-weight:850;font-size:14px}.caOutputSub{font-size:11px;color:#91a5c0;margin-top:3px}.caOutputGrow{flex:1}.caOutputButton{border:1px solid #304864;border-radius:10px;background:#122238;color:#e2edf9;padding:9px 12px;font-weight:750;cursor:pointer}.caOutputButton.primary{background:#047857;border-color:#10b981;color:white}.caOutputBody{flex:1;min-height:0;overflow:auto;background:#020617}.caOutputFrame{width:100%;height:100%;border:0;background:white}.caOutputText{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;padding:22px clamp(14px,4vw,42px);font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d7e5f6}.caOutputText .stderr{color:#fda4af}.caOutputText .diagnostic{color:#fcd34d}.caOutputState{padding:10px 16px;color:#9fb2cc;font-size:11px;border-bottom:1px solid #1c3048;background:#071020}
+
+</style>
 </head>
 <body>
 <div class="app" id="app">
@@ -48,7 +333,7 @@
     <div class="brand"><img class="brandLogo" id="brandLogo" src="logo.png" alt="Code Academy logo"><span class="brandMark" id="brandMark"><i class="fa-solid fa-code"></i></span><div class="brandText"><strong>Code Academy</strong><small>C++ Studio</small></div></div>
     <div class="projectTitleWrap"><input id="projectNameInput" class="projectTitle" maxlength="80" value="C++ Workspace" aria-label="Project name"><div class="cloudState pending" id="cloudState"><i class="fa-solid fa-circle"></i><span id="cloudText">Connecting to compiler…</span></div></div>
     <button class="actionBtn primary" id="saveBtn" title="Save project"><i class="fa-solid fa-cloud-arrow-up"></i><span>Save</span></button>
-    <button class="iconBtn" id="projectPageBtn" title="Open saved projects" aria-label="Open saved projects"><i class="fa-solid fa-folder-open"></i></button>
+    <button class="iconBtn" id="projectPageBtn" title="Open saved projects" aria-label="Open saved projects"><i class="fa-solid fa-folder-open"></i></button><button class="iconBtn" id="editorDashboardBtn" type="button" title="All language editors" aria-label="All editors"><i class="fa-solid fa-layer-group"></i></button><button class="actionBtn" id="exitEditorBtn" type="button" title="Exit to menu"><i class="fa-solid fa-right-from-bracket"></i><span>Exit</span></button>
   </header>
   <nav class="toolrow" aria-label="C++ editor tools">
     <div class="toolgroup"><button class="actionBtn" id="newProjectBtn"><i class="fa-solid fa-folder-plus"></i><span>New project</span></button><button class="actionBtn" id="newFileBtn"><i class="fa-solid fa-file-circle-plus"></i><span>New file</span></button><button class="actionBtn" id="newFolderBtn"><i class="fa-solid fa-folder-plus"></i><span>New folder</span></button></div>
@@ -90,6 +375,39 @@ import { auth, db, onAuthStateChanged } from "./authentication.js";
 import { collection, doc, getDoc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
+
+const __caOutput = { lines: [], mode: "text", title: "Program output" };
+function __caEsc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function __caShowText(title, initial="", status="Running"){
+ const root=document.getElementById("caOutputScreen"); if(!root)return;
+ __caOutput.mode="text";__caOutput.title=title;__caOutput.lines=[];
+ document.getElementById("caOutputTitle").textContent=title;
+ document.getElementById("caOutputSub").textContent="Full-screen execution results";
+ document.getElementById("caOutputState").textContent=status;
+ document.getElementById("caOutputFrame").style.display="none";
+ document.getElementById("caOutputText").style.display="block";
+ document.getElementById("caOutputText").textContent=initial;
+ root.classList.add("open");document.body.style.overflow="hidden";
+}
+function __caAppendText(text, kind="stdout"){
+ const node=document.getElementById("caOutputText");if(!node)return;
+ const s=String(text==null?"":text);if(!s)return;
+ __caOutput.lines.push({text:s,kind});
+ node.textContent+=s;node.scrollTop=node.scrollHeight;
+}
+function __caSetOutputStatus(status){const n=document.getElementById("caOutputState");if(n)n.textContent=String(status||"");}
+function __caShowHtml(title, html, status="Preview ready"){
+ const root=document.getElementById("caOutputScreen");if(!root)return;
+ document.getElementById("caOutputTitle").textContent=title;
+ document.getElementById("caOutputSub").textContent="Sandboxed full-screen preview";
+ document.getElementById("caOutputState").textContent=status;
+ document.getElementById("caOutputText").style.display="none";
+ const frame=document.getElementById("caOutputFrame");frame.style.display="block";frame.srcdoc=String(html||"");
+ __caOutput.mode="html";__caOutput.title=title;root.classList.add("open");document.body.style.overflow="hidden";
+}
+function __caCloseOutput(){const root=document.getElementById("caOutputScreen");if(root)root.classList.remove("open");document.body.style.overflow="";}
+function __caBindOutput(runFn){document.getElementById("caOutputClose")?.addEventListener("click",__caCloseOutput);document.getElementById("caOutputRunAgain")?.addEventListener("click",()=>{__caCloseOutput();if(typeof runFn==="function")runFn();});document.addEventListener("keydown",e=>{if(e.key==="Escape")__caCloseOutput();});}
+
 const MONACO_ROOT = "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min";
 const STARTER = `#include <iostream>
 #include <string>
@@ -181,8 +499,8 @@ function insertHeader(header){syncCurrentText();if(!files[currentFile])return;co
 function renderHeaderShelf(){const host=$("headerShelf");host.replaceChildren();for(const header of HEADER_SHELF){const button=document.createElement("button");button.type="button";button.className="packageCard";button.innerHTML='<i class="fa-solid fa-file-code"></i><span><strong>&lt;'+$escape(header)+'&gt;</strong><small>Insert standard header</small></span>';button.addEventListener("click",()=>insertHeader(header));host.append(button);}}
 function addLibraryCatalog(){const runtime=window.CodeAcademyCppRuntime;if(!runtime)return;$("runtimeDetail").textContent="Loading real C++ compilers and external libraries…";Promise.allSettled([runtime.getCompilers(),runtime.getLibraries()]).then(results=>{let failed=false;for(let i=0;i<results.length;i++){const result=results[i];if(result.status==="rejected"){failed=true;console.warn("C++ service catalog failed",result.reason);}}if(!compilers.length&&failed){$("runtimeDetail").textContent="Could not reach compiler catalog. Editing and local backups still work; Run requires the compiler service and internet.";$("statusRuntime").textContent="Compiler offline";$("runtimeHint").textContent="Compiler service offline";}else if(failed){$("runtimeDetail").textContent="Some library catalog data is unavailable. Standard C++ headers remain part of the compiler toolchain.";}});}
 function sourceBundle(){syncCurrentText();let main=currentFile;if(!SOURCE_EXT.test(main)){main=sourcePaths()[0]||"";}if(!main||!files[main])throw new Error("Create or select a .cpp, .cc, .cxx, or .c source file before running.");const additional=[];for(const [path,item] of Object.entries(files)){if(path===main)continue;if(CODE_EXT.test(path)&&typeof item.content==="string")additional.push({filename:path,contents:item.content});}return {main,source:files[main].content||"",files:additional};}
-async function runCpp(){if(running)return;const runtime=window.CodeAcademyCppRuntime;if(!runtime||typeof runtime.compile!=="function"){toast("C++ runtime manager is missing. Upload cpp-runtime.js beside CppEditor.html.","error");return;}let bundle;try{bundle=sourceBundle();}catch(error){toast(error.message,"warning");return;}const runId=++runSequence;running=true;clearConsole("Compiling and executing "+bundle.main+"…");showDock("console");$("runBtn").disabled=true;$("stopBtn").disabled=false;$("statusRuntime").textContent="Compiling";$("runtimeHint").textContent="Sending code to Compiler Explorer";if(dirty&&currentUser?.emailVerified)await saveProject(true);try{const result=await runtime.compile({source:bundle.source,files:bundle.files,compilerId:$("compilerSelect").value,standard:$("standardSelect").value,stdin:$("stdinInput").value,libraries:Object.values(selectedLibraries),execute:true,timeoutMs:45000});if(runId!==runSequence)return;if(result.compilerStdout)appendConsole(result.compilerStdout,"info");if(result.compilerStderr)appendConsole(result.compilerStderr,result.compileCode===0?"warn":"error");if(result.compileCode!==0){appendConsole("Compilation failed with exit code "+result.compileCode+".","error");$("statusRuntime").textContent="Compile failed";setCloud("Compilation failed","error");statusMessage("C++ compilation failed — see Console.");return;}if(result.executionStdout)appendConsole(result.executionStdout,"log");if(result.executionStderr)appendConsole(result.executionStderr,"error");if(!result.executionStdout&&!result.executionStderr){appendConsole("Compiler accepted the program. The service did not return a separate execution-output field for this request.","warn");if(!result.raw?.execResult&&!result.raw?.executionResult&&!result.raw?.executeResult&&!result.raw?.execution&&!result.raw?.result)appendConsole("Tip: open Compiler & libraries to check service connectivity, or try Run again.","info");}if(result.executionCode!==null&&result.executionCode!==0)appendConsole("Program exited with code "+result.executionCode+".","warn");else appendConsole("Compilation and execution request completed.","success");$("statusRuntime").textContent="Run complete";setCloud("C++ run complete","saved");statusMessage("C++ run completed.");}catch(error){if(runId!==runSequence)return;appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Compiler error";setCloud("Compiler service error","error");statusMessage("C++ run failed — see Console for details.");}finally{if(runId===runSequence){running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;}}}
-async function checkSyntax(){const runtime=window.CodeAcademyCppRuntime;if(!runtime||typeof runtime.compile!=="function"){toast("C++ runtime manager is missing. Check cpp-runtime.js.","error");return;}if(running){toast("Stop the current request before checking syntax.","warning");return;}let bundle;try{bundle=sourceBundle();}catch(error){toast(error.message,"warning");return;}clearConsole("Checking "+bundle.main+" with the selected C++ compiler…");showDock("console");try{const result=await runtime.compile({source:bundle.source,files:bundle.files,compilerId:$("compilerSelect").value,standard:$("standardSelect").value,libraries:Object.values(selectedLibraries),execute:false,timeoutMs:45000});if(result.compilerStdout)appendConsole(result.compilerStdout,"info");if(result.compilerStderr)appendConsole(result.compilerStderr,result.compileCode===0?"warn":"error");if(result.compileCode===0){appendConsole("Compiler check completed successfully.","success");$("statusRuntime").textContent="Compile check passed";}else{appendConsole("Compilation failed with exit code "+result.compileCode+".","error");$("statusRuntime").textContent="Compile check failed";}}catch(error){appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Compiler error";}}
+async function runCpp(){if(running)return;const runtime=window.CodeAcademyCppRuntime;if(!runtime||typeof runtime.compile!=="function"){toast("C++ runtime manager failed to initialize. Check the browser console and network connection, then reload the page.","error");return;}let bundle;try{bundle=sourceBundle();}catch(error){toast(error.message,"warning");return;}const runId=++runSequence;running=true;__caShowText("C++ program output","Submitting source to the selected C++ compiler…","Compiling and running");clearConsole("Compiling and executing "+bundle.main+"…");showDock("console");$("runBtn").disabled=true;$("stopBtn").disabled=false;$("statusRuntime").textContent="Compiling";$("runtimeHint").textContent="Sending code to Compiler Explorer";if(dirty&&currentUser?.emailVerified)await saveProject(true);try{const result=await runtime.compile({source:bundle.source,files:bundle.files,compilerId:$("compilerSelect").value,standard:$("standardSelect").value,stdin:$("stdinInput").value,libraries:Object.values(selectedLibraries),execute:true,timeoutMs:45000});if(runId!==runSequence)return;if(result.compilerStdout){appendConsole(result.compilerStdout,"info");__caAppendText("COMPILER OUTPUT\n"+result.compilerStdout+"\n","diagnostic");}if(result.compilerStderr){appendConsole(result.compilerStderr,result.compileCode===0?"warn":"error");__caAppendText("COMPILER DIAGNOSTICS\n"+result.compilerStderr+"\n","diagnostic");}if(result.compileCode!==0){appendConsole("Compilation failed with exit code "+result.compileCode+".","error");__caAppendText("Compilation failed with exit code "+result.compileCode+".\n","stderr");__caSetOutputStatus("Compilation failed");$("statusRuntime").textContent="Compile failed";setCloud("Compilation failed","error");statusMessage("C++ compilation failed — see Console.");return;}if(result.executionStdout){appendConsole(result.executionStdout,"log");__caAppendText(result.executionStdout,"stdout");}if(result.executionStderr){appendConsole(result.executionStderr,"error");__caAppendText("\nSTDERR\n"+result.executionStderr,"stderr");}if(!result.executionStdout&&!result.executionStderr){appendConsole("Compiler accepted the program. The service did not return a separate execution-output field for this request.","warn");if(!result.raw?.execResult&&!result.raw?.executionResult&&!result.raw?.executeResult&&!result.raw?.execution&&!result.raw?.result)appendConsole("Tip: open Compiler & libraries to check service connectivity, or try Run again.","info");}if(result.executionCode!==null&&result.executionCode!==0){appendConsole("Program exited with code "+result.executionCode+".","warn");__caAppendText("\nProgram exited with code "+result.executionCode+".\n","stderr");__caSetOutputStatus("Program exited with code "+result.executionCode);}else{appendConsole("Compilation and execution request completed.","success");__caSetOutputStatus("Compilation and execution completed");}if(!result.executionStdout&&!result.executionStderr)__caAppendText("(Program produced no standard output.)\n","stdout");$("statusRuntime").textContent="Run complete";setCloud("C++ run complete","saved");statusMessage("C++ run completed.");}catch(error){if(runId!==runSequence)return;appendConsole(error.message||String(error),"error");__caAppendText("\nERROR\n"+(error.message||String(error)),"stderr");__caSetOutputStatus("Compiler service error");$("statusRuntime").textContent="Compiler error";setCloud("Compiler service error","error");statusMessage("C++ run failed — see Console for details.");}finally{if(runId===runSequence){running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;}}}
+async function checkSyntax(){const runtime=window.CodeAcademyCppRuntime;if(!runtime||typeof runtime.compile!=="function"){toast("C++ runtime manager failed to initialize. Check the browser console and network connection, then reload the page.","error");return;}if(running){toast("Stop the current request before checking syntax.","warning");return;}let bundle;try{bundle=sourceBundle();}catch(error){toast(error.message,"warning");return;}clearConsole("Checking "+bundle.main+" with the selected C++ compiler…");showDock("console");try{const result=await runtime.compile({source:bundle.source,files:bundle.files,compilerId:$("compilerSelect").value,standard:$("standardSelect").value,libraries:Object.values(selectedLibraries),execute:false,timeoutMs:45000});if(result.compilerStdout)appendConsole(result.compilerStdout,"info");if(result.compilerStderr)appendConsole(result.compilerStderr,result.compileCode===0?"warn":"error");if(result.compileCode===0){appendConsole("Compiler check completed successfully.","success");$("statusRuntime").textContent="Compile check passed";}else{appendConsole("Compilation failed with exit code "+result.compileCode+".","error");$("statusRuntime").textContent="Compile check failed";}}catch(error){appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Compiler error";}}
 function stopCpp(){if(!running)return;runSequence++;window.CodeAcademyCppRuntime?.stop?.();running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;$("statusRuntime").textContent="Stopped";}
 async function formatCurrentFile(){syncCurrentText();if(!files[currentFile])return;const old=files[currentFile].content||"";try{const formatted=window.CodeAcademyCppRuntime?await window.CodeAcademyCppRuntime.format(old):old.split(/\r?\n/).map(line=>line.replace(/[\t ]+$/g,"")).join("\n").replace(/\n*$/g,"")+"\n";if(formatted===old){toast("Formatting made no changes.","info");return;}files[currentFile].content=formatted;if(editor&&monacoReady)editor.getModel()?.setValue(formatted);else $("fallbackEditor").value=formatted;markDirty();toast("C++ source formatted.","success");}catch(error){toast(error.message||"Could not format this file.","error");}}
 function downloadCurrentFile(){syncCurrentText();if(!files[currentFile])return;downloadBlob(currentFile.split("/").pop(),files[currentFile].content||"","text/plain;charset=utf-8");toast("Downloaded "+currentFile,"success");}
@@ -201,6 +519,7 @@ function bindUI(){
 }
 
 bindUI();
+__caBindOutput(runCpp);document.getElementById("exitEditorBtn")?.addEventListener("click",()=>{location.href="menu.html";});document.getElementById("editorDashboardBtn")?.addEventListener("click",()=>{try{sessionStorage.setItem("ca-editor-dashboard-return",location.href);}catch(_){}location.href="editor-dashboard.html";});
 renderHeaderShelf();
 if(window.CodeAcademyCppRuntime&&typeof window.CodeAcademyCppRuntime.on==="function"){runtimeUnsubscribe=window.CodeAcademyCppRuntime.on(onRuntimeMessage);}else{appendConsole("C++ runtime manager is missing. Ensure cpp-runtime.js is in the repository root beside CppEditor.html.","error");$("statusRuntime").textContent="Runtime unavailable";$("runtimeDetail").textContent="cpp-runtime.js was not found or failed to load.";}
 const monacoDeadline=setTimeout(()=>{if(!monacoReady)enableFallback();},9000);setupMonaco().then(ok=>{clearTimeout(monacoDeadline);if(!ok)enableFallback();}).catch(error=>{console.error(error);clearTimeout(monacoDeadline);enableFallback();});
@@ -208,5 +527,10 @@ onAuthStateChanged(auth,async user=>{if(authStarted)return;authStarted=true;if(!
 addLibraryCatalog();
 window.addEventListener("pagehide",()=>{if(runtimeUnsubscribe)runtimeUnsubscribe();});
 </script>
+
+<div class="caOutputScreen" id="caOutputScreen" aria-modal="true" role="dialog" aria-label="Program output">
+ <header class="caOutputHead"><span class="caOutputMark"><i class="fa-solid fa-terminal"></i></span><div><div class="caOutputTitle" id="caOutputTitle">Program output</div><div class="caOutputSub" id="caOutputSub">Full-screen execution results</div></div><span class="caOutputGrow"></span><button class="caOutputButton" id="caOutputRunAgain" type="button"><i class="fa-solid fa-rotate-right"></i> Run again</button><button class="caOutputButton" id="caOutputClose" type="button"><i class="fa-solid fa-xmark"></i> Back to editor</button></header>
+ <div class="caOutputState" id="caOutputState" role="status" aria-live="polite">Waiting for output</div><div class="caOutputBody" id="caOutputBody"><pre class="caOutputText" id="caOutputText"></pre><iframe class="caOutputFrame" id="caOutputFrame" title="Program output" sandbox="allow-scripts allow-forms allow-modals"></iframe></div>
+</div>
 </body>
 </html>
