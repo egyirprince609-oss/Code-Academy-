@@ -105,7 +105,9 @@ import { collection, doc, getDoc, getDocs, setDoc, deleteDoc, query, orderBy, se
 const $ = id => document.getElementById(id);
 const MONACO_ROOT = "https://cdn.jsdelivr.net/npm/monaco-editor@0.57.0/min";
 const JSZIP_URL = "https://cdn.jsdelivr.net/npm/jszip@3.10.2/dist/jszip.min.js";
-const launchLanguage = (new URLSearchParams(location.search).get("lang") || "").toLowerCase();
+const initialParams = new URLSearchParams(location.search);
+const launchLanguage = (initialParams.get("lang") || "").toLowerCase();
+const readyLaunchToken = initialParams.get("ready") || "";
 const PYODIDE_ROOT = "https://cdn.jsdelivr.net/pyodide/v314.0.7/full/";
 const BABEL_URL = "https://unpkg.com/@babel/standalone@7.29.10/babel.min.js";
 const TYPESCRIPT_URL = "https://cdn.jsdelivr.net/npm/typescript@6.0.3/lib/typescript.js";
@@ -178,7 +180,7 @@ const STARTERS = {
  yaml:`project: Code Academy\nlanguage: YAML\nready: true\ntopics:\n  - syntax\n  - structure\n  - practice`,
  xml:`<?xml version="1.0" encoding="UTF-8"?>\n<project name="Code Academy">\n  <language>XML</language>\n  <ready>true</ready>\n</project>`
 };
-let currentUser=null, projectId=new URLSearchParams(location.search).get("id")||(launchLanguage?"starter_"+launchLanguage:"default"), currentFile="index.html", files={}, folders={}, allProjects=[], editor=null, monacoReady=false, useFallback=false, dirty=false, editVersion=0, saveTimer=null, toastTimer=null, cloudSaving=false, pendingSave=false, loadingProject=false, switchingFile=false, currentDock="console", pythonWorker=null, pythonWorkerURL=null, pythonTimer=null, lastPythonCode="", activeMarkers=[], sessionToken=(crypto?.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()), authResolved=false, lastSaveError="", initialProjectCreated=false, creatingType="file", dirtyFlushTimer=null, pythonWorkerBusy=false, pythonRunHadError=false, largeDocumentActive=false;
+let currentUser=null, projectId=initialParams.get("id")||(readyLaunchToken?"ready_"+readyLaunchToken:(launchLanguage?"starter_"+launchLanguage:"default")), currentFile="index.html", files={}, folders={}, allProjects=[], editor=null, monacoReady=false, useFallback=false, dirty=false, editVersion=0, saveTimer=null, toastTimer=null, cloudSaving=false, pendingSave=false, loadingProject=false, switchingFile=false, currentDock="console", pythonWorker=null, pythonWorkerURL=null, pythonTimer=null, lastPythonCode="", activeMarkers=[], sessionToken=(crypto?.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()), authResolved=false, lastSaveError="", initialProjectCreated=false, creatingType="file", dirtyFlushTimer=null, pythonWorkerBusy=false, pythonRunHadError=false, largeDocumentActive=false;
 const modelCache=new Map();
 function toast(message,type="info"){clearTimeout(toastTimer);const el=$("toast");el.textContent=String(message);el.className="toast show "+type;toastTimer=setTimeout(()=>el.className="toast",4200);}
 function setCloud(text,state=""){const el=$("cloudState");el.className="cloudState "+state;el.replaceChildren();const i=document.createElement("i");i.className="fa-solid fa-circle";const span=document.createElement("span");span.textContent=text;el.append(i,span);}
@@ -305,7 +307,33 @@ function firebaseErrorMessage(error){const code=error?.code||"";if(code.includes
 async function loadProjects(){if(!currentUser)return;$("projectsList").innerHTML='<div class="treeEmpty"><i class="fa-solid fa-spinner fa-spin"></i> Loading projects…</div>';try{const ref=collection(db,"users",currentUser.uid,"projects");let snap;try{snap=await getDocs(query(ref,orderBy("updatedAt","desc")));}catch{snap=await getDocs(ref);}allProjects=[];snap.forEach(d=>allProjects.push({id:d.id,...d.data()}));allProjects.sort((a,b)=>timestamp(b.updatedAt)-timestamp(a.updatedAt));renderProjects();}catch(error){console.error("Could not load projects",error);$("projectsList").innerHTML='<div class="treeEmpty">Could not load projects.<br><button id="retryProjects" class="actionBtn" style="margin-top:8px">Retry</button></div>';$("retryProjects")?.addEventListener("click",loadProjects);}}
 function renderProjects(){const host=$("projectsList");host.replaceChildren();const visible=allProjects.filter(p=>p.id!=="default"||p.id===projectId);if(!visible.length){const empty=document.createElement("div");empty.className="treeEmpty";empty.textContent="No saved projects yet. Create one to get started.";host.append(empty);return;}for(const p of visible){const row=document.createElement("div");row.className="projectRow"+(p.id===projectId?" active":"");const ico=document.createElement("i");ico.className="fa-solid fa-folder";ico.style.color=p.id===projectId?"#60a5fa":"#8197b4";const title=document.createElement("span");title.className="projectNameTiny";title.textContent=p.name||p.title||"Untitled Project";title.title=title.textContent;row.append(ico,title);row.addEventListener("click",()=>switchProject(p.id));host.append(row);}}
 async function switchProject(id){if(id===projectId){closeExplorer();return;}if(dirty&&!confirm("There are unsaved changes. Switch projects? Your current local backup will be kept."))return;syncCurrentText();if(dirty)saveLocalBackup();location.href="CODEEDITOR.html?id="+encodeURIComponent(id);}
-async function loadCurrentProject(){if(!currentUser||loadingProject)return;loadingProject=true;setCloud("Loading project…","pending");try{const ref=doc(db,"users",currentUser.uid,"projects",projectId);let snap=await getDoc(ref);let data;if(snap.exists()){data=snap.data();$("projectNameInput").value=data.name||data.title||"Untitled Project";files=normalizeFiles(data.files);folders=data.folders&&typeof data.folders==="object"?data.folders:{};if(!Object.keys(files).length)files=defaultFiles("web");if(data.files==null){await setDoc(ref,{files,folders,ownerId:currentUser.uid,name:$("projectNameInput").value,title:$("projectNameInput").value,updatedAt:serverTimestamp()},{merge:true});}}else if(projectId==="default"){
+async function loadCurrentProject(){if(!currentUser||loadingProject)return;loadingProject=true;setCloud("Loading project…","pending");try{const ref=doc(db,"users",currentUser.uid,"projects",projectId);let snap=await getDoc(ref);let data;if(snap.exists()){data=snap.data();$("projectNameInput").value=data.name||data.title||"Untitled Project";files=normalizeFiles(data.files);folders=data.folders&&typeof data.folders==="object"?data.folders:{};if(!Object.keys(files).length)files=defaultFiles("web");if(data.files==null){await setDoc(ref,{files,folders,ownerId:currentUser.uid,name:$("projectNameInput").value,title:$("projectNameInput").value,updatedAt:serverTimestamp()},{merge:true});}}else if(readyLaunchToken && projectId === "ready_" + readyLaunchToken){
+ const launchKey = "ca_ready_project_launch_v1_" + readyLaunchToken;
+ let starterPacket = null;
+ try { starterPacket = JSON.parse(localStorage.getItem(launchKey) || "null"); } catch(error) { console.warn("Ready project packet could not be parsed", error); }
+ if(!starterPacket || starterPacket.token !== readyLaunchToken || !starterPacket.files || typeof starterPacket.files !== "object"){
+   toast("This ready-project handoff is missing or expired. Choose the sample project again.","error");
+   location.replace("ready-projects.html"); return;
+ }
+ files = normalizeFiles(starterPacket.files);
+ folders = starterPacket.folders && typeof starterPacket.folders === "object" ? starterPacket.folders : {};
+ currentFile = starterPacket.entryFile && files[starterPacket.entryFile] ? starterPacket.entryFile : (Object.keys(files)[0] || "index.html");
+ $("projectNameInput").value = String(starterPacket.name || "Ready-to-Do Project").slice(0,120);
+ const launchPayload = projectPayload(true);
+ if(currentUser.emailVerified){
+   const payload = { ...launchPayload, name: $("projectNameInput").value, title: $("projectNameInput").value, description: String(starterPacket.description || "Ready-to-Do learning project"), tags: Array.isArray(starterPacket.tags) ? starterPacket.tags : [], ownerId: currentUser.uid, createdAt: serverTimestamp(), updatedAt: serverTimestamp() };
+   await setDoc(ref, payload);
+   allProjects = allProjects.filter(item => item.id !== projectId);
+   allProjects.push({ id: projectId, ...payload, updatedAt: { toMillis: () => Date.now() } });
+   localStorage.removeItem(launchKey);
+   renderProjects(); setCloud("Ready project saved to your account","saved");
+   toast("Ready-to-Do project opened and saved as its own project.","success");
+ } else {
+   toast("Project opened locally. Verify your email, then use Save to sync it to your account.","warning");
+   setCloud("Local starter · verify email to save","pending");
+ }
+ initialProjectCreated = true;
+}else if(projectId==="default"){
  if(currentUser.emailVerified){
   const all=await getDocs(collection(db,"users",currentUser.uid,"projects"));
   const candidates=[];all.forEach(d=>{if(d.id!=="default")candidates.push({id:d.id,...d.data()});});
