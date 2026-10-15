@@ -1,0 +1,205 @@
+{
+  "course": "cybersecurity",
+  "lessonNumber": 8,
+  "lessonId": "cybersecurity-lesson-8",
+  "title": "Secure web applications and OWASP risks",
+  "subtitle": "Protect web requests, authorization, sessions, data queries, output and dependencies.",
+  "description": "Protect web requests, authorization, sessions, data queries, output and dependencies. Guided explanations, six original visual diagrams, safe practice, trusted resource links, worked examples and a randomized quiz.",
+  "estimatedMinutes": 35,
+  "level": "Professional",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "randomizeQuizOrder": true,
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "Lesson 8 — Secure web applications and OWASP risks"
+    },
+    {
+      "type": "content",
+      "text": "LEARNING OUTCOME\nProtect web requests, authorization, sessions, data queries, output and dependencies.\n\nSafety rule: work only with devices, accounts and training applications you own or have explicit written permission to assess. Use synthetic information. A public system or a suspicious person is not permission."
+    },
+    {
+      "type": "heading",
+      "text": "1. Follow the request lifecycle"
+    },
+    {
+      "type": "content",
+      "text": "A web app receives input, authenticates the caller, authorizes the action, applies business rules, accesses data and returns a response. Security belongs at every stage. Client-side checks improve experience but can be bypassed, so validate on the server with expected formats and limits."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_8_diagram_1.svg",
+      "alt": "Request flow diagram",
+      "caption": "Visual 1/6 — Request flow. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_8_diagram_2.svg",
+      "alt": "Validate input diagram",
+      "caption": "Visual 2/6 — Validate input. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "2. Enforce access per action"
+    },
+    {
+      "type": "content",
+      "text": "Check permissions on every sensitive request and scope each data query to the signed-in identity or approved role. Use secure session settings, rotate session IDs after sign-in, set appropriate Secure, HttpOnly and SameSite cookie attributes, and avoid exposing tokens in URLs."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_8_diagram_3.svg",
+      "alt": "Authorize action diagram",
+      "caption": "Visual 3/6 — Authorize action. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_8_diagram_4.svg",
+      "alt": "Secure session diagram",
+      "caption": "Visual 4/6 — Secure session. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "3. Use secure implementation patterns"
+    },
+    {
+      "type": "content",
+      "text": "Encode untrusted output for its context, use parameterized database queries, apply CSRF protection where relevant, keep dependencies updated and avoid verbose production errors. Use code review, threat modeling and testing before launch; use monitoring after deployment."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_8_diagram_5.svg",
+      "alt": "Encode output diagram",
+      "caption": "Visual 5/6 — Encode output. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_8_diagram_6.svg",
+      "alt": "Test and fix diagram",
+      "caption": "Visual 6/6 — Test and fix. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "Guided practice — learn by doing"
+    },
+    {
+      "type": "content",
+      "text": "Practice checklist: (1) read the lab rules, (2) use fabricated data or an isolated training target, (3) predict what the control should do, (4) test one small condition, (5) save only minimal evidence, and (6) explain the defensive follow-up. Stop and ask the owner if any target or action is outside the approved scope."
+    },
+    {
+      "type": "code",
+      "language": "javascript",
+      "code": "function validRole(role) { return [\"reader\", \"editor\"].includes(role); }\nconsole.log(validRole(\"reader\"));",
+      "output": "Toy validation only; never use a client-side check as the only authorization."
+    },
+    {
+      "type": "heading",
+      "text": "Five trusted resources and practice links"
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Top 10",
+      "url": "https://owasp.org/projects/top-ten",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "PortSwigger Web Security Academy",
+      "url": "https://portswigger.net/web-security",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "MITRE CWE",
+      "url": "https://cwe.mitre.org/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Web Security Testing Guide",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "heading",
+      "text": "Knowledge check — five questions"
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l8-q1",
+      "question": "Why is client-side validation not enough?",
+      "options": [
+        "Browsers cannot display forms",
+        "It automatically encrypts databases",
+        "A client can be changed or bypassed, so the server must validate too",
+        "It replaces authorization"
+      ],
+      "correctIndex": 2,
+      "explanation": "The server is the trusted enforcement point for input and permissions.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l8-q2",
+      "question": "What prevents a user from accessing another user’s record?",
+      "options": [
+        "A hidden button alone",
+        "A client-side color change",
+        "A longer page title",
+        "Server-side authorization on each protected request"
+      ],
+      "correctIndex": 3,
+      "explanation": "Permissions must be enforced on the server for each sensitive action.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l8-q3",
+      "question": "Which approach better protects private information?",
+      "options": [
+        "Copy all customer records for convenience",
+        "Save secrets in screenshots",
+        "Share reports on social media",
+        "Use synthetic data and collect only necessary, authorized evidence"
+      ],
+      "correctIndex": 3,
+      "explanation": "Data minimization and redaction reduce privacy and exposure risks.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l8-q4",
+      "question": "What is a sound step after applying a fix?",
+      "options": [
+        "Retest the same authorized condition and document the result",
+        "Remove the original ticket",
+        "Expand the scope",
+        "Assume the fix works"
+      ],
+      "correctIndex": 0,
+      "explanation": "Retesting verifies the correction and preserves a useful record.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l8-q5",
+      "question": "What should happen when a target is outside scope?",
+      "options": [
+        "Hide the test",
+        "Continue if it looks related",
+        "Try another identity",
+        "Stop and ask the owner to clarify permission"
+      ],
+      "correctIndex": 3,
+      "explanation": "Scope is a boundary; do not proceed without permission.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    }
+  ]
+}
