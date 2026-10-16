@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#060817">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Premium Payment Review | Code Academy</title>
+  <link rel="stylesheet" href="./premium.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <meta name="payment-api-base" content="">
+  <style>
+    .admin-shell{width:min(980px,calc(100% - 28px));margin:38px auto 60px}.admin-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:24px}.admin-head h1{font-size:clamp(30px,5vw,47px);margin:10px 0}.admin-head p{max-width:650px;color:var(--muted);font-size:12px;line-height:1.8}.admin-box{padding:18px;border-radius:17px;border:1px solid var(--line);background:rgba(12,18,37,.85);margin-bottom:17px}.admin-box h2{font:700 17px var(--display);margin-bottom:10px}.uid-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.uid-value{color:var(--cyan);font:12px ui-monospace,monospace;overflow-wrap:anywhere}.admin-btn{border:1px solid rgba(103,232,249,.25);background:rgba(103,232,249,.07);color:#b9f7ff;padding:10px 13px;border-radius:10px;font-weight:800;font-size:10px;cursor:pointer}.admin-notice{padding:13px 14px;background:rgba(8,145,178,.08);border:1px solid rgba(103,232,249,.2);border-radius:12px;color:#d3fbff;font-size:11px;line-height:1.7;overflow-wrap:anywhere;margin:12px 0}.admin-notice.bad{background:rgba(127,29,29,.16);border-color:rgba(252,165,165,.25);color:#fecaca}.order-list{display:grid;gap:12px}.order-card{border:1px solid rgba(160,180,225,.16);border-radius:14px;padding:15px;background:rgba(255,255,255,.02)}.order-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px}.order-top h3{margin:0 0 5px;font-size:13px}.order-top small{color:var(--muted);font-size:10px}.amount{color:var(--cyan);font-weight:900;font-size:18px}.details-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.detail{padding:10px;background:rgba(2,6,23,.35);border-radius:9px;min-width:0}.detail span,.detail strong{display:block}.detail span{font-size:9px;color:var(--muted);margin-bottom:5px}.detail strong{font-size:11px;overflow-wrap:anywhere;line-height:1.5}.order-actions{display:flex;gap:8px;margin-top:12px}.order-actions button{flex:1}.approve-btn{background:linear-gradient(105deg,#a7f3d0,#67e8f9);color:#06111a;border:0}.reject-btn{background:rgba(127,29,29,.2);color:#fecaca;border:1px solid rgba(252,165,165,.22)}.empty-state{padding:24px;text-align:center;color:var(--muted);font-size:12px;border:1px dashed var(--line);border-radius:13px}@media(max-width:520px){.details-grid{grid-template-columns:1fr}.order-actions{flex-direction:column}.admin-shell{margin-top:25px}}
+  </style>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="./premium.html"><span class="brand-mark">CA<span>✦</span></span><span><strong>Code Academy</strong><small>Premium payment review</small></span></a><div class="top-actions"><span id="adminAuthState" class="account-state"><i></i> Checking sign-in…</span><a class="back-link" href="./premium.html">Premium page ↗</a></div></header>
+  <main class="admin-shell">
+    <div class="admin-head"><div><div class="section-kicker">AUTHORIZED REVIEW PANEL</div><h1>Payment review</h1><p>This page only shows manually submitted payment references. Before approving, compare the payer, exact amount, date and transaction ID with the actual receiving wallet's transaction history. Never approve based on a screenshot alone.</p></div><button id="refreshOrders" class="admin-btn">↻ Refresh orders</button></div>
+    <section class="admin-box"><h2>Current Firebase account UID</h2><p style="font-size:11px;color:var(--muted);line-height:1.7">Add this UID to the backend environment variable <code>ADMIN_UIDS</code> from the server host. Only allowlist an adult or authorized operator who is permitted to review incoming payments.</p><div class="uid-row"><span id="adminUid" class="uid-value">Sign in to display UID</span><button id="copyUid" class="admin-btn">Copy UID</button></div></section>
+    <div id="adminNotice" class="admin-notice" role="status">Connecting to the secure backend…</div>
+    <section class="admin-box"><h2>Payments waiting for verification</h2><div id="orderList" class="order-list"><div class="empty-state">Loading manual payment reviews…</div></div></section>
+  </main>
+  <script type="module" src="./premium-admin.js"></script>
+</body>
+</html>
