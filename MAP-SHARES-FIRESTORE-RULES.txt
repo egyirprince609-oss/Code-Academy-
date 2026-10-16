@@ -1,0 +1,54 @@
+// Add this match block inside your EXISTING Firestore rules service cloud.firestore
+// Keep your current rules. Do not replace the full ruleset with this fragment.
+// Collection: mapShares/{shareId}
+match /mapShares/{shareId} {
+  // The owner can read their own share. A recipient with the unguessable 48-hex
+  // link token can GET the active share until its expiry; clients cannot list shares.
+  allow get: if (request.auth != null && resource.data.ownerUid == request.auth.uid)
+    || (resource.data.active == true && resource.data.expiresAt is timestamp
+        && resource.data.expiresAt > request.time);
+  allow list: if false;
+
+  allow create: if request.auth != null
+    && request.resource.data.keys().hasOnly([
+      'ownerUid','ownerName','lat','lng','accuracy','active','shareLabel',
+      'createdAt','updatedAt','expiresAt','schemaVersion'
+    ])
+    && request.resource.data.keys().hasAll([
+      'ownerUid','ownerName','lat','lng','active','createdAt','updatedAt','expiresAt','schemaVersion'
+    ])
+    && request.resource.data.ownerUid == request.auth.uid
+    && request.resource.data.active == true
+    && request.resource.data.lat is number
+    && request.resource.data.lat >= -90 && request.resource.data.lat <= 90
+    && request.resource.data.lng is number
+    && request.resource.data.lng >= -180 && request.resource.data.lng <= 180
+    && request.resource.data.ownerName is string
+    && request.resource.data.ownerName.size() <= 60
+    && request.resource.data.createdAt == request.time
+    && request.resource.data.updatedAt == request.time
+    && request.resource.data.expiresAt is timestamp
+    && request.resource.data.expiresAt > request.time
+    && request.resource.data.expiresAt <= request.time + duration.value(24, 'h')
+    && request.resource.data.schemaVersion == 1;
+
+  allow update: if request.auth != null
+    && resource.data.ownerUid == request.auth.uid
+    && request.resource.data.ownerUid == resource.data.ownerUid
+    && request.resource.data.keys().hasOnly([
+      'ownerUid','ownerName','lat','lng','accuracy','active','shareLabel',
+      'createdAt','updatedAt','expiresAt','schemaVersion'
+    ])
+    && request.resource.data.lat is number
+    && request.resource.data.lat >= -90 && request.resource.data.lat <= 90
+    && request.resource.data.lng is number
+    && request.resource.data.lng >= -180 && request.resource.data.lng <= 180
+    && request.resource.data.updatedAt == request.time
+    && (request.resource.data.active == false
+        || (request.resource.data.active == true
+            && request.resource.data.expiresAt is timestamp
+            && request.resource.data.expiresAt > request.time
+            && request.resource.data.expiresAt <= request.time + duration.value(24, 'h')));
+
+  allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+}

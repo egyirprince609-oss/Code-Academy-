@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050816">
+<meta name="application-name" content="Code Academy">
+<meta name="author" content="Code Academy">
+<meta name="description" content="Explore interactive maps, 3D buildings, saved places, and consent-based live location sharing with Code Academy.">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/live-map.html">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./logo.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Code Academy">
+<meta property="og:title" content="Code Academy Live Map | Explore & Share">
+<meta property="og:description" content="Explore interactive maps and share your live location with people you trust. Sharing is consent-based and expires automatically.">
+<meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/live-map.html">
+<meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+<meta property="og:image:alt" content="Code Academy — We Learn, We Code, We Succeed">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Code Academy Live Map">
+<meta name="twitter:description" content="Interactive maps and consent-based live location sharing.">
+<meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+<title>Code Academy | Live Map</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#050816;--panel:#0b1326;--panel2:#0f1b32;--line:rgba(148,163,184,.16);--txt:#edf5ff;--muted:#9aabc5;--cyan:#38bdf8;--blue:#2563eb;--purple:#818cf8;--green:#34d399;--red:#fb7185;--radius:20px}
+:root[data-theme="light"]{color-scheme:light;--bg:#f2f6fc;--panel:#fff;--panel2:#edf3fb;--line:rgba(15,23,42,.12);--txt:#101a2b;--muted:#52647e;--cyan:#0284c7;--blue:#2563eb;--purple:#6366f1;--green:#059669;--red:#e11d48}
+*{box-sizing:border-box}html{min-height:100%;background:var(--bg)}body{margin:0;min-height:100vh;color:var(--txt);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 15% -10%,rgba(37,99,235,.2),transparent 38%),radial-gradient(ellipse at 95% 0%,rgba(129,140,248,.12),transparent 34%),var(--bg)}button,input,select{font:inherit}button,a{touch-action:manipulation}button{cursor:pointer}a{color:inherit;text-decoration:none}.shell{max-width:1440px;margin:auto;padding:clamp(12px,2vw,26px);padding-bottom:36px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}.brand{display:flex;align-items:center;gap:12px;min-width:0}.brand img{width:45px;height:45px;object-fit:contain;border-radius:14px;background:#0b1730;border:1px solid var(--line)}.brand h1{font-size:clamp(18px,2vw,25px);line-height:1.1;margin:0;font-weight:900;letter-spacing:-.04em}.brand p{font-size:11px;color:var(--muted);margin:5px 0 0}.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:42px;padding:10px 13px;border-radius:13px;border:1px solid var(--line);background:var(--panel2);color:var(--txt);font-weight:800;font-size:12px;transition:transform .15s,border-color .15s,background .15s}.btn:hover{transform:translateY(-1px);border-color:rgba(56,189,248,.5)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.btn-primary{background:linear-gradient(120deg,#0284c7,#4f46e5);border-color:transparent;color:white}.btn-danger{border-color:rgba(251,113,133,.35);background:rgba(190,24,93,.1);color:var(--red)}.btn-quiet{background:transparent}.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:10px 0 18px}.eyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.16em;color:var(--cyan);font-weight:900}.hero h2{font-size:clamp(24px,3.4vw,40px);letter-spacing:-.055em;line-height:1.06;margin:7px 0 9px}.hero p{max-width:700px;color:var(--muted);font-size:13px;line-height:1.65;margin:0}.live-chip{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);padding:9px 12px;font-weight:800;font-size:11px}.dot{width:8px;height:8px;border-radius:50%;background:#64748b}.dot.active{background:var(--green);box-shadow:0 0 0 4px #34d39920}.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.8fr);gap:16px;align-items:stretch}.panel{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:linear-gradient(150deg,color-mix(in srgb,var(--panel) 94%,transparent),color-mix(in srgb,var(--panel2) 94%,transparent));box-shadow:0 20px 60px #00000013;min-width:0}.map-panel{display:flex;flex-direction:column;min-height:590px}.map-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 16px;border-bottom:1px solid var(--line)}.map-head strong{display:block;font-size:13px}.map-head small{display:block;font-size:10px;color:var(--muted);margin-top:4px}.map-head-actions{display:flex;gap:7px;flex-wrap:wrap}.map-stage{position:relative;flex:1;min-height:470px;background:linear-gradient(135deg,#0d2340,#071120)}#map{position:absolute;inset:0}.map-placeholder{position:absolute;inset:0;display:grid;place-items:center;padding:28px;text-align:center;color:#dbeafe;background:radial-gradient(ellipse at 50% 45%,#123b60,#071120 70%)}.map-placeholder .orb{width:76px;height:76px;margin:0 auto 16px;display:grid;place-items:center;border-radius:25px;background:#0ea5e91a;border:1px solid #38bdf855;color:#7dd3fc;font-size:30px;box-shadow:0 0 50px #0ea5e91a}.map-placeholder h3{margin:0 0 8px;font-size:17px}.map-placeholder p{max-width:390px;margin:0 auto;color:#a8bfd8;font-size:12px;line-height:1.7}.map-error{display:none;margin-top:14px;color:#fecdd3;font-size:12px;line-height:1.6;border:1px solid #fb718544;background:#88133730;border-radius:12px;padding:11px}.map-error.show{display:block}.map-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 15px;border-top:1px solid var(--line);font-size:10px;color:var(--muted);flex-wrap:wrap}.coordinates{font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.side{display:grid;align-content:start;gap:14px}.section-head{padding:15px 16px 0}.section-head h3{font-size:14px;letter-spacing:-.02em;margin:0;display:flex;align-items:center;gap:9px}.section-head h3 i{color:var(--cyan)}.section-head p{color:var(--muted);font-size:11px;line-height:1.6;margin:7px 0 0}.panel-body{padding:14px 16px 16px}.search-row{display:flex;gap:7px}.input{min-width:0;width:100%;height:42px;padding:0 12px;background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:12px;outline:none}.input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #38bdf81c}.search-results{display:grid;gap:6px;margin-top:8px}.result-btn{width:100%;display:flex;align-items:center;gap:10px;text-align:left;padding:10px;border:1px solid var(--line);border-radius:11px;background:var(--panel2);color:var(--txt);font-size:11px}.result-btn i{color:var(--cyan)}.result-btn span{overflow-wrap:anywhere}.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}.tool-button{min-height:74px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;text-align:left;padding:12px;border:1px solid var(--line);border-radius:13px;background:var(--panel2);color:var(--txt);font-size:11px;font-weight:800}.tool-button i{font-size:17px;color:var(--cyan)}.tool-button span small{display:block;font-size:9px;color:var(--muted);font-weight:600;margin-top:4px}.share-status{display:flex;align-items:flex-start;gap:10px;padding:11px;border-radius:13px;background:var(--panel2);border:1px solid var(--line);margin-bottom:12px}.share-status i{font-size:16px;color:var(--cyan);margin-top:2px}.share-status strong{font-size:11px;display:block}.share-status p{font-size:10px;color:var(--muted);line-height:1.6;margin:4px 0 0}.share-controls{display:grid;gap:9px}.field-label{font-size:10px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.share-url{font-size:10px;line-height:1.55;overflow-wrap:anywhere;background:var(--bg);border:1px solid var(--line);padding:10px;border-radius:10px;color:var(--muted);display:none}.share-url.show{display:block}.warning{font-size:10px;line-height:1.65;color:var(--muted);padding:10px 11px;border-radius:12px;border:1px solid rgba(245,158,11,.22);background:rgba(245,158,11,.06);margin-top:11px}.warning i{color:#fbbf24;margin-right:5px}.stat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}.stat{padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--panel2);min-width:0}.stat strong{font-size:13px;display:block;overflow-wrap:anywhere}.stat span{font-size:9px;color:var(--muted);display:block;margin-top:4px}.divider{height:1px;background:var(--line);margin:14px 0}.status-line{min-height:17px;margin-top:9px;font-size:10px;color:var(--muted);line-height:1.5}.status-line.good{color:var(--green)}.status-line.bad{color:var(--red)}.footnote{color:var(--muted);font-size:10px;line-height:1.7;margin-top:18px}.footnote a{color:var(--cyan);text-decoration:underline;text-underline-offset:3px}.mapboxgl-ctrl-group{background:var(--panel)!important;border:1px solid var(--line)!important;box-shadow:0 8px 24px #0002!important}.mapboxgl-ctrl button .mapboxgl-ctrl-icon{filter:none}.mapboxgl-ctrl button{width:32px!important;height:32px!important}.mapboxgl-ctrl-attrib{font-size:9px!important}.custom-marker{width:19px;height:19px;border-radius:50%;border:3px solid white;background:#0ea5e9;box-shadow:0 0 0 7px #0ea5e933,0 0 25px #0ea5e9a8}.custom-marker.shared{background:#f43f5e;box-shadow:0 0 0 7px #f43f5e33,0 0 25px #f43f5ea8}.viewer-banner{display:none;margin-bottom:14px;padding:13px 15px;border:1px solid #38bdf83d;border-radius:15px;background:#0ea5e90d}.viewer-banner.show{display:block}.viewer-banner strong{display:block;font-size:13px}.viewer-banner p{font-size:11px;color:var(--muted);line-height:1.6;margin:5px 0 0}.viewer-banner .btn{margin-top:10px}.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:980px){.layout{grid-template-columns:minmax(0,1fr)}.map-panel{min-height:0}.map-stage{height:min(60vh,600px);min-height:340px;flex:unset}.side{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.side>section:first-child{grid-column:1/-1}}@media(max-width:620px){.shell{padding:11px;padding-bottom:26px}.topbar{align-items:flex-start}.brand img{width:39px;height:39px}.brand p{font-size:9px}.top-actions .btn{min-height:37px;padding:8px 10px}.top-actions .btn .long-label{display:none}.hero{display:block}.hero h2{font-size:28px}.live-chip{margin-top:13px}.side{grid-template-columns:minmax(0,1fr)}.side>section:first-child{grid-column:auto}.map-head{align-items:flex-start;flex-direction:column}.map-head-actions{width:100%}.map-head-actions .btn{flex:1}.map-stage{height:52vh;min-height:320px}.map-footer{align-items:flex-start;flex-direction:column}.two{grid-template-columns:minmax(0,1fr)}.stat-row{grid-template-columns:repeat(3,minmax(0,1fr))}.stat{padding:9px 7px}.stat strong{font-size:11px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="./menu.html" aria-label="Back to Code Academy menu"><img src="./logo.png" alt="Code Academy"><span><h1>Code Academy</h1><p>LIVE MAP · LOCATION SERVICES</p></span></a>
+    <div class="top-actions"><button class="btn btn-quiet" id="themeBtn" type="button" title="Switch theme"><i class="fa-solid fa-sun"></i><span class="long-label"> Theme</span></button><button class="btn" id="installBtn" type="button"><i class="fa-solid fa-download"></i><span class="long-label"> Install</span></button><a class="btn btn-primary" href="./menu.html"><i class="fa-solid fa-graduation-cap"></i><span class="long-label"> Menu</span></a></div>
+  </header>
+  <section class="hero"><div><div class="eyebrow">Explore the world · Share only by choice</div><h2>Live Map <span style="color:var(--cyan)">Explorer</span></h2><p>Explore the map, search places, switch to satellite view, inspect 3D buildings where map data supports them, and share a live location with someone you trust. Location access is requested only after you choose it.</p></div><div class="live-chip"><span id="liveDot" class="dot"></span><span id="liveState">Location not active</span></div></section>
+  <div id="viewerBanner" class="viewer-banner" role="status" aria-live="polite"><strong id="viewerTitle"><i class="fa-solid fa-location-dot"></i> Shared live location</strong><p id="viewerCopy">Loading the shared location…</p><button class="btn" id="focusSharedBtn" type="button"><i class="fa-solid fa-crosshairs"></i> Focus shared location</button></div>
+  <main class="layout">
+    <section class="panel map-panel" aria-label="Interactive map">
+      <div class="map-head"><div><strong><i class="fa-solid fa-earth-africa" style="color:var(--cyan);margin-right:7px"></i>Interactive map</strong><small id="mapSubtitle">Choose Locate me to center the map on your device.</small></div><div class="map-head-actions"><button class="btn" id="streetsBtn" type="button" aria-pressed="true"><i class="fa-solid fa-road"></i> Streets</button><button class="btn" id="satelliteBtn" type="button" aria-pressed="false"><i class="fa-solid fa-satellite"></i> Satellite</button><button class="btn" id="threeDBtn" type="button" aria-pressed="false"><i class="fa-solid fa-cubes-stacked"></i> 3D</button></div></div>
+      <div class="map-stage"><div id="map" aria-label="Mapbox map"></div><div id="mapPlaceholder" class="map-placeholder"><div><div class="orb"><i class="fa-solid fa-earth-africa"></i></div><h3>Prepare your map</h3><p>Loading Current Location</p></div></div></div>
+      <div class="map-footer"><span id="mapStatus" role="status" aria-live="polite">Map setup required: add your public access token.</span><span class="coordinates" id="coordinateReadout">No location selected</span></div>
+    </section>
+    <aside class="side">
+      <section class="panel">
+        <div class="section-head"><h3><i class="fa-solid fa-magnifying-glass-location"></i> Find a place</h3><p>Search for a town, district, road, or street address.</p></div>
+        <div class="panel-body"><form class="search-row" id="searchForm"><label class="visually-hidden" for="placeSearch">Search locations</label><input class="input" id="placeSearch" maxlength="160" placeholder="e.g. Accra, Ghana" autocomplete="off"><button class="btn btn-primary" id="searchBtn" type="submit" aria-label="Search places"><i class="fa-solid fa-magnifying-glass"></i></button></form><div class="search-results" id="searchResults"></div><div class="tool-grid"><button class="tool-button" type="button" id="locateBtn"><i class="fa-solid fa-location-crosshairs"></i><span>Locate me<small>Ask for device location</small></span></button><button class="tool-button" type="button" id="copyCoordsBtn" disabled><i class="fa-solid fa-copy"></i><span>Copy coordinates<small>Copy selected point</small></span></button><button class="tool-button" type="button" id="resetViewBtn"><i class="fa-solid fa-earth-africa"></i><span>Reset map<small>Return to world view</small></span></button><button class="tool-button" type="button" id="shareAppBtn"><i class="fa-solid fa-share-nodes"></i><span>Share Code Academy<small>Send the map page</small></span></button></div><div id="searchStatus" class="status-line" aria-live="polite"></div></div>
+      </section>
+      <section class="panel" id="sharingPanel">
+        <div class="section-head"><h3><i class="fa-solid fa-location-arrow"></i> Live location sharing</h3><p>Create a private link so a trusted person can open Code Academy and see your latest location.</p></div>
+        <div class="panel-body"><div class="share-status"><i class="fa-solid fa-user-shield"></i><div><strong id="shareStatusTitle">Sharing is off</strong><p id="shareStatusCopy">Nothing is shared until you press Start sharing and approve location access.</p></div></div>
+          <div class="share-controls"><div><label class="field-label" for="shareDuration">Link expiry</label><select class="input" id="shareDuration"><option value="15">15 minutes</option><option value="60" selected>1 hour</option><option value="480">8 hours</option><option value="1440">24 hours</option></select></div><button class="btn btn-primary" id="startShareBtn" type="button"><i class="fa-solid fa-location-dot"></i> Start sharing my location</button><div id="shareUrlBox" class="share-url" aria-live="polite"></div><div class="two"><button class="btn" id="copyShareBtn" type="button" disabled><i class="fa-solid fa-copy"></i> Copy link</button><button class="btn" id="nativeShareBtn" type="button" disabled><i class="fa-solid fa-share"></i> Share link</button></div><button class="btn btn-danger" id="stopShareBtn" type="button" hidden><i class="fa-solid fa-stop"></i> Stop sharing now</button></div>
+          <div class="warning"><i class="fa-solid fa-triangle-exclamation"></i> Anyone who has your private link can view your live location until you stop sharing or the link expires. Only share it with people you trust. No location is shared until you approve the request.</div><div id="shareStatus" class="status-line" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+      <section class="panel"><div class="section-head"><h3><i class="fa-solid fa-gauge-high"></i> Location details</h3><p>Coordinates and accuracy are supplied by your device, not guessed by the map.</p></div><div class="panel-body"><div class="stat-row"><div class="stat"><strong id="statLat">—</strong><span>Latitude</span></div><div class="stat"><strong id="statLng">—</strong><span>Longitude</span></div><div class="stat"><strong id="statAccuracy">—</strong><span>Accuracy</span></div></div><div id="locationDetailsStatus" class="status-line">No GPS reading available.</div><div class="divider"></div><button class="btn" id="privacyBtn" type="button"><i class="fa-solid fa-shield-halved"></i> Location privacy guide</button><div id="privacyGuide" class="warning" hidden>Location permission is controlled by your browser or Android settings. Stop sharing before leaving this page. A static website cannot guarantee continued tracking when the app/browser is closed or suspended. Reliable closed-app sharing needs a native Android foreground location service with its persistent system notification and permission flow.</div></div></section>
+    </aside>
+  </main>
+  <p class="footnote">Map data and imagery are provided by <a href="https://www.mapbox.com/" target="_blank" rel="noopener">Mapbox</a>. Location sharing uses Code Academy’s Firebase project and requires the map-sharing Firestore rules supplied with this file. The location link is a private bearer link; anyone it is forwarded to may be able to view the shared location until it expires. <a href="./privacy.html">Privacy</a> · <a href="./menu.html">Back to menu</a></p>
+</div>
+<script type="module">
+import { auth, db, onAuthStateChanged } from './authentication.js';
+import { doc, getDoc, setDoc, updateDoc, onSnapshot, Timestamp, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+import { sendNotification } from './notification-engine.js';
+
+/* ==============================================================
+   MAPBOX TOKEN SETUP
+   Paste your Mapbox PUBLIC token (starts with pk.) between quotes
+   below. Never place a secret token starting with sk. in this file.
+   Public tokens are visible to users; restrict the token to your
+   website domain and only the public scopes your map requires.
+============================================================== */
+const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoid2lpc3NlZSIsImEiOiJjbXVrYjBoMzMxc2Q2MnpzZWF2c2QzbG9kIn0.hoiIEQTzbDCLBxwA8HLC2Q';
+const APP_BASE_URL = 'https://egyirprince609-oss.github.io/Code-Academy-/';
+const PUBLIC_SITE_HOST = 'egyirprince609-oss.github.io';
+const STATE_KEY = 'ca_live_map_owner_share_v1';
+const $ = id => document.getElementById(id);
+let currentUser = null;
+let map = null;
+let mapReady = false;
+let currentStyle = 'streets';
+let threeDEnabled = false;
+let ownWatchId = null;
+let shareExpiryTimer = null;
+let ownShareId = null;
+let ownShareURL = '';
+let ownShareRef = null;
+let ownLastWrite = 0;
+let ownMarker = null;
+let viewerMarker = null;
+let currentPosition = null;
+let chosenPoint = null;
+let sharedPosition = null;
+let shareUnsubscribe = null;
+let installPrompt = null;
+let geocodeAbort = null;
+
+function setStatus(id, message, tone='') { const el=$(id); if(!el)return; el.textContent=message; el.className='status-line'+(tone?' '+tone:''); }
+function mapStatus(message) { $('mapStatus').textContent=message; }
+function showMapError(message) { const el=$('mapError'); if(el){el.textContent=message;el.classList.add('show');} else mapStatus(message); }
+function setLiveState(label, active=false) { $('liveState').textContent=label; $('liveDot').classList.toggle('active',active); }
+function safeText(v,max=160){return String(v??'').replace(/[<>\u0000-\u001f]/g,' ').trim().slice(0,max)}
+function validPoint(lat,lng){return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;}
+function formatCoord(value){return Number.isFinite(value)?value.toFixed(6):'—';}
+function getBaseURL(){return new URL('.',location.href).href;}
+function showCoordinates(lat,lng,accuracy=null){
+  $('coordinateReadout').textContent=`${formatCoord(lat)}, ${formatCoord(lng)}`;
+  $('statLat').textContent=formatCoord(lat); $('statLng').textContent=formatCoord(lng);
+  $('statAccuracy').textContent=Number.isFinite(accuracy)?`${Math.round(accuracy)} m`:'—';
+  $('copyCoordsBtn').disabled=false;
+}
+function updateLocalLocation(position){
+  const lat=position.coords.latitude, lng=position.coords.longitude, accuracy=position.coords.accuracy;
+  if(!validPoint(lat,lng)) throw new Error('The device returned coordinates outside the valid range.');
+  currentPosition={lat,lng,accuracy:Number.isFinite(accuracy)?accuracy:null,timestamp:position.timestamp||Date.now()};
+  chosenPoint={lat,lng}; showCoordinates(lat,lng,currentPosition.accuracy);
+  $('locationDetailsStatus').textContent=`Location reading updated ${new Date(currentPosition.timestamp).toLocaleTimeString()}. GPS accuracy is an estimate.`;
+  setLiveState(ownShareId?'Live sharing active':'Location available',!!ownShareId);
+  placeOwnMarker(lat,lng);
+}
+function placeOwnMarker(lat,lng){ if(!mapReady)return; const point=[lng,lat]; if(!ownMarker){const node=document.createElement('div');node.className='custom-marker';node.setAttribute('aria-label','Your current location');ownMarker=new mapboxgl.Marker({element:node}).setLngLat(point).addTo(map);}else ownMarker.setLngLat(point); }
+function placeViewerMarker(lat,lng){ if(!mapReady)return; const point=[lng,lat]; if(!viewerMarker){const node=document.createElement('div');node.className='custom-marker shared';node.setAttribute('aria-label','Shared location');viewerMarker=new mapboxgl.Marker({element:node}).setLngLat(point).addTo(map);}else viewerMarker.setLngLat(point); }
+function flyTo(lat,lng,zoom=15){if(mapReady&&validPoint(lat,lng))map.flyTo({center:[lng,lat],zoom,essential:true});}
+function add3DBuildings(){
+  if(!mapReady||!threeDEnabled)return;
+  if(map.getLayer('ca-3d-buildings'))return;
+  try{
+    if(!map.getSource('composite'))return;
+    const labelLayer=map.getStyle().layers?.find(layer=>/label/i.test(layer.id)&&layer.type==='symbol');
+    map.addLayer({id:'ca-3d-buildings',source:'composite','source-layer':'building',type:'fill-extrusion',minzoom:14,filter:['==',['get','extrude'],'true'],paint:{'fill-extrusion-color':['case',['boolean',['feature-state','selected'],false],'#38bdf8','#8ba6bf'],'fill-extrusion-height':['coalesce',['get','height'],0],'fill-extrusion-base':['coalesce',['get','min_height'],0],'fill-extrusion-opacity':0.82}},labelLayer?.id);
+  }catch(error){console.warn('3D building layer is not available in this style:',error);mapStatus('This map style has limited 3D building data.');}
+}
+function setStyle(style){
+  if(!mapReady)return; currentStyle=style;
+  const styles={streets:'mapbox://styles/mapbox/streets-v12',satellite:'mapbox://styles/mapbox/satellite-streets-v12',dark:'mapbox://styles/mapbox/dark-v11'};
+  map.setStyle(styles[style]||styles.streets);
+  map.once('style.load',()=>{if(threeDEnabled)add3DBuildings();mapStatus(style==='satellite'?'Satellite imagery selected.':style==='dark'?'Dark map selected.':'Street map selected.');});
+  $('streetsBtn').setAttribute('aria-pressed',String(style==='streets'));
+  $('satelliteBtn').setAttribute('aria-pressed',String(style==='satellite'));
+}
+function initMap(){
+  const placeholder=$('mapPlaceholder');
+  if(!MAPBOX_ACCESS_TOKEN||MAPBOX_ACCESS_TOKEN==='PASTE_YOUR_MAPBOX_PUBLIC_TOKEN_HERE'||!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){
+    placeholder.hidden=false; mapStatus('Paste a valid Mapbox public token in live-map.html.');
+    $('searchBtn').disabled=true; $('streetsBtn').disabled=true; $('satelliteBtn').disabled=true; $('threeDBtn').disabled=true;
+    return;
+  }
+  if(!window.mapboxgl){mapStatus('Mapbox could not load. Check your connection and content blockers.');return;}
+  try{
+    mapboxgl.accessToken=MAPBOX_ACCESS_TOKEN;
+    map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/streets-v12',center:[-1.0232,7.9465],zoom:5.2,attributionControl:true,cooperativeGestures:true,projection:'mercator'});
+    map.addControl(new mapboxgl.NavigationControl({showCompass:true,visualizePitch:true}),'top-right');
+    map.addControl(new mapboxgl.GeolocateControl({positionOptions:{enableHighAccuracy:true,timeout:12000,maximumAge:5000},trackUserLocation:false,showUserHeading:true,showAccuracyCircle:true}),'top-right');
+    map.on('load',()=>{mapReady=true;placeholder.hidden=true;mapStatus('Map loaded. Choose Locate me to use your current device location.');$('mapSubtitle').textContent='Search, zoom, switch layers, and optionally share your location.';if(threeDEnabled)add3DBuildings();if(sharedPosition)placeViewerMarker(sharedPosition.lat,sharedPosition.lng);if(currentPosition)placeOwnMarker(currentPosition.lat,currentPosition.lng);});
+    map.on('error',e=>{console.warn('Mapbox map error:',e?.error||e);const message=e?.error?.message||'';if(/token|unauthori|forbidden|access/i.test(message))mapStatus('Mapbox rejected the token. Check it is a public pk. token and verify its allowed URL settings.');});
+  }catch(error){console.error(error);mapStatus('Unable to initialize the map. Check the token and reload the page.');}
+}
+function getCurrentPosition(){
+  return new Promise((resolve,reject)=>{
+    if(!navigator.geolocation){reject(new Error('This browser does not support location services.'));return;}
+    navigator.geolocation.getCurrentPosition(resolve,error=>{const messages={1:'Location permission was denied. Allow location in your browser or device settings.',2:'Your current location is unavailable. Check GPS/location services.',3:'The location request timed out. Try again in an area with better GPS reception.'};reject(new Error(messages[error.code]||'Unable to read device location.'));},{enableHighAccuracy:true,timeout:18000,maximumAge:5000});
+  });
+}
+async function locateMe(){
+  setStatus('searchStatus','Requesting your location permission…');
+  try{const position=await getCurrentPosition();updateLocalLocation(position);flyTo(currentPosition.lat,currentPosition.lng,16);setStatus('searchStatus','Your device location is shown on the map.','good');setStatus('shareStatus','Location available. Sharing remains off until you start it.');}
+  catch(error){setStatus('searchStatus',error.message,'bad');$('locationDetailsStatus').textContent=error.message;}
+}
+async function searchPlaces(text){
+  text=safeText(text,160);if(text.length<2){setStatus('searchStatus','Enter at least two characters to search.');return;}
+  if(!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){setStatus('searchStatus','Add your Mapbox public token first.','bad');return;}
+  geocodeAbort?.abort();geocodeAbort=new AbortController();$('searchResults').replaceChildren();setStatus('searchStatus','Searching Mapbox places…');$('searchBtn').disabled=true;
+  try{
+    const url=`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(text)}&access_token=${encodeURIComponent(MAPBOX_ACCESS_TOKEN)}&limit=5&autocomplete=true&types=country,region,postcode,district,place,locality,neighborhood,street,address`;
+    const response=await fetch(url,{signal:geocodeAbort.signal});if(!response.ok)throw new Error(response.status===401||response.status===403?'Mapbox rejected the token or this token lacks Geocoding access.':'Place search failed. Please retry.');
+    const data=await response.json();const features=Array.isArray(data.features)?data.features:[];
+    if(!features.length){setStatus('searchStatus','No places found. Try a nearby town or shorter search.');return;}
+    for(const feature of features){const properties=feature.properties||{};const coordinates=feature.geometry?.coordinates;const lng=Number(coordinates?.[0]??properties.coordinates?.longitude);const lat=Number(coordinates?.[1]??properties.coordinates?.latitude);if(!validPoint(lat,lng))continue;const placeName=properties.full_address||[properties.name,properties.place_formatted].filter(Boolean).join(', ')||'Map result';const featureType=properties.feature_type||'';const button=document.createElement('button');button.type='button';button.className='result-btn';const icon=document.createElement('i');icon.className='fa-solid fa-location-dot';const label=document.createElement('span');label.textContent=placeName;button.append(icon,label);button.addEventListener('click',()=>{chosenPoint={lat,lng};showCoordinates(lat,lng,null);flyTo(lat,lng,featureType==='address'||featureType==='street'?16:13);setStatus('searchStatus','Showing '+safeText(placeName)+'.','good');$('searchResults').replaceChildren();});$('searchResults').append(button);}
+    setStatus('searchStatus',`${features.length} result${features.length===1?'':'s'} found. Select one to view it.`,'good');
+  }catch(error){if(error.name!=='AbortError')setStatus('searchStatus',error.message||'Place search failed.','bad');}
+  finally{$('searchBtn').disabled=false;}
+}
+function createShareId(){const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');}
+function storeOwnerState(id,url){try{localStorage.setItem(STATE_KEY,JSON.stringify({id,url,savedAt:Date.now()}));}catch{}}
+function clearOwnerState(){try{localStorage.removeItem(STATE_KEY);}catch{}}
+function getOwnerState(){try{const state=JSON.parse(localStorage.getItem(STATE_KEY)||'null');if(state&&typeof state.id==='string'&&/^[a-f0-9]{48}$/.test(state.id))return state;}catch{}return null;}
+async function notifyAccount(title,message,type='info'){
+  try{if(currentUser)await sendNotification({title,message,type,icon:'🗺️',link:'live-map.html'});}catch(error){console.warn('Could not record account notification:',error);}
+}
+function sharePageUrl(id){const url=new URL('live-map.html',APP_BASE_URL);if(id)url.searchParams.set('share',id);return url.href;}
+async function copyText(text){if(!text)return false;try{await navigator.clipboard.writeText(text);return true;}catch{try{const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();return ok;}catch{return false;}}}
+async function startSharing(){
+  if(!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){setStatus('shareStatus','Paste your Mapbox public token into live-map.html first so the recipient can view the location on the map.','bad');return;}
+  if(!currentUser){setStatus('shareStatus','Please sign in to Code Academy before sharing a live location.','bad');return;}
+  if(!navigator.geolocation){setStatus('shareStatus','This browser does not support geolocation.','bad');return;}
+  if(!confirm('Start live location sharing? Your current and updated location will be visible to anyone who has the private link until you stop sharing or the chosen expiry time is reached. Continue only if you agree.'))return;
+  $('startShareBtn').disabled=true;setStatus('shareStatus','Requesting location permission and creating your private link…');
+  try{
+    const position=await getCurrentPosition();updateLocalLocation(position);
+    const id=createShareId();const ref=doc(db,'mapShares',id);const expiryMinutes=Math.max(15,Math.min(1440,Number($('shareDuration').value)||60));const expiresAt=Date.now()+expiryMinutes*60*1000;
+    const ownerName=safeText(currentUser.displayName||'Code Academy learner',60)||'Code Academy learner';
+    await setDoc(ref,{ownerUid:currentUser.uid,ownerName,lat:currentPosition.lat,lng:currentPosition.lng,accuracy:currentPosition.accuracy??null,active:true,shareLabel:'Live location',createdAt:serverTimestamp(),updatedAt:serverTimestamp(),expiresAt:Timestamp.fromMillis(expiresAt),schemaVersion:1});
+    ownShareId=id;ownShareRef=ref;ownShareURL=sharePageUrl(id);ownLastWrite=Date.now();storeOwnerState(id,ownShareURL);if(shareExpiryTimer)clearTimeout(shareExpiryTimer);shareExpiryTimer=setTimeout(()=>{if(ownShareId===id)stopSharing('The location link expired. Live updates have been stopped.');},expiryMinutes*60*1000);
+    $('shareUrlBox').textContent=ownShareURL;$('shareUrlBox').classList.add('show');$('copyShareBtn').disabled=false;$('nativeShareBtn').disabled=false;$('stopShareBtn').hidden=false;$('startShareBtn').innerHTML='<i class="fa-solid fa-link"></i> Create a new link';$('shareStatusTitle').textContent='Your location is being shared';$('shareStatusCopy').textContent=`Private link active for ${expiryMinutes>=60?(expiryMinutes/60)+' hour'+(expiryMinutes>60?'s':''):expiryMinutes+' minutes'}. Stop it at any time.`;setLiveState('Live sharing active',true);
+    ownWatchId=navigator.geolocation.watchPosition(async pos=>{
+      try{
+        updateLocalLocation(pos);if(!ownShareRef||!ownShareId)return;
+        const now=Date.now();if(now-ownLastWrite<5000)return;ownLastWrite=now;
+        await updateDoc(ownShareRef,{lat:currentPosition.lat,lng:currentPosition.lng,accuracy:currentPosition.accuracy??null,updatedAt:serverTimestamp()});
+      }catch(error){console.warn('Live location update failed:',error);setStatus('shareStatus','Live tracking is active, but a location update failed. Check your connection.','bad');}
+    },error=>{const message=error.code===1?'Location permission was revoked. Stop sharing or allow location again.':'Live location update stopped by the device. Keep this page open to continue sharing.';setStatus('shareStatus',message,'bad');},{enableHighAccuracy:true,maximumAge:4000,timeout:18000});
+    setStatus('shareStatus','Live link created. The map page must remain active for reliable web tracking.','good');await notifyAccount('Live location sharing started',`You created a private live location link that expires in ${expiryMinutes} minutes. Stop sharing any time.`, 'info');
+    try{if(navigator.share)await navigator.share({title:'My live location — Code Academy',text:'I am sharing my live location with you through Code Academy. This link expires automatically.',url:ownShareURL});else{const ok=await copyText(ownShareURL);setStatus('shareStatus',ok?'Link copied. Send it only to the person you trust.':'Your link is ready below. Copy it to share.','good');}}catch(error){if(error.name!=='AbortError')console.warn('System share sheet was unavailable:',error);}
+  }catch(error){console.error('Could not start location sharing:',error);setStatus('shareStatus',error.code==='permission-denied'?'Firebase blocked this action. Merge the supplied mapShares Firestore rules and try again.':(error.message||'Unable to start sharing. Check connection and location permission.'),'bad');}
+  finally{$('startShareBtn').disabled=false;}
+}
+async function stopSharing(reason='You stopped live location sharing.'){
+  if(!ownShareId)return;
+  const id=ownShareId;try{if(ownWatchId!==null)navigator.geolocation.clearWatch(ownWatchId);}catch{}ownWatchId=null;if(shareExpiryTimer)clearTimeout(shareExpiryTimer);shareExpiryTimer=null;
+  try{if(ownShareRef)await updateDoc(ownShareRef,{active:false,updatedAt:serverTimestamp()});}catch(error){console.warn('Could not mark share link inactive:',error);setStatus('shareStatus','Tracking stopped on this page, but the server could not confirm link revocation. Check your internet connection.','bad');}
+  ownShareId=null;ownShareRef=null;ownShareURL='';clearOwnerState();$('stopShareBtn').hidden=true;$('startShareBtn').innerHTML='<i class="fa-solid fa-location-dot"></i> Start sharing my location';$('copyShareBtn').disabled=true;$('nativeShareBtn').disabled=true;$('shareUrlBox').classList.remove('show');$('shareUrlBox').textContent='';$('shareStatusTitle').textContent='Sharing is off';$('shareStatusCopy').textContent='Your location is no longer being updated by this page.';setLiveState(currentPosition?'Location available':'Location not active',false);setStatus('shareStatus',reason,'good');await notifyAccount('Live location sharing stopped','You stopped updating a live location link.','info');
+}
+function startViewingShare(id){
+  if(!/^[a-f0-9]{48}$/.test(id)){showViewer('Invalid location link','This Code Academy location link is not valid. Ask the sender for a fresh link.');return;}
+  $('viewerBanner').classList.add('show');showViewer('Opening shared location','Checking whether the sender is still sharing…');
+  const ref=doc(db,'mapShares',id);
+  shareUnsubscribe=onSnapshot(ref,snap=>{
+    if(!snap.exists()){showViewer('Location link unavailable','This link may have expired, been revoked, or never existed. Ask the sender for a new link.');return;}
+    const data=snap.data();if(data.active!==true){showViewer('Sharing has stopped','The sender stopped sharing this location.');return;}
+    const expiry=data.expiresAt?.toMillis?.();if(!expiry||expiry<=Date.now()){showViewer('Location link expired','This private link has expired. Ask the sender to create a new one.');return;}
+    const lat=Number(data.lat),lng=Number(data.lng);if(!validPoint(lat,lng)){showViewer('Location temporarily unavailable','The shared location data is not valid.');return;}
+    sharedPosition={lat,lng,accuracy:Number.isFinite(data.accuracy)?data.accuracy:null,updatedAt:data.updatedAt?.toDate?.()||null,ownerName:safeText(data.ownerName||'Code Academy learner',60),expiresAt:expiry};
+    $('viewerTitle').textContent=`Live location shared by ${sharedPosition.ownerName}`;
+    const time=sharedPosition.updatedAt?sharedPosition.updatedAt.toLocaleTimeString():'just now';$('viewerCopy').textContent=`Last location update: ${time}. Link expires ${new Date(expiry).toLocaleString()}. Updates appear while the sender's sharing session is running.`;
+    showCoordinates(lat,lng,sharedPosition.accuracy);placeViewerMarker(lat,lng);if(mapReady&&viewerMarker)flyTo(lat,lng,16);setLiveState('Viewing shared location',true);mapStatus('Viewing a consent-based shared location.');
+  },error=>{console.warn('Shared map subscription error:',error);showViewer('Cannot access this location','The link is invalid, expired, or sharing permission is unavailable. Ask the sender to check the link.');});
+}
+function showViewer(title,copy){$('viewerBanner').classList.add('show');$('viewerTitle').textContent=title;$('viewerCopy').textContent=copy;setLiveState(title.includes('Live location')||title.includes('Viewing')?'Viewing shared location':'Share unavailable',false);}
+function configureInstall(){
+  if(window.matchMedia?.('(display-mode: standalone)').matches||window.navigator.standalone===true){$('installBtn').hidden=true;return;}
+  window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();installPrompt=event;$('installBtn').hidden=false;});
+  window.addEventListener('appinstalled',()=>{$('installBtn').hidden=true;installPrompt=null;});
+  $('installBtn').addEventListener('click',async()=>{if(installPrompt){installPrompt.prompt();try{await installPrompt.userChoice;}finally{installPrompt=null;}}else alert(/iphone|ipad|ipod/i.test(navigator.userAgent)?'In Safari, tap Share and choose Add to Home Screen.':'Use your browser menu and choose Install app or Add to Home screen.');});
+}
+
+onAuthStateChanged(auth,user=>{currentUser=user||null;if(!user&&!new URLSearchParams(location.search).has('share'))setStatus('shareStatus','Sign in to Code Academy to create a live location link.','');if(user){const previous=getOwnerState();if(previous?.id&&!ownShareId){(async()=>{try{const previousRef=doc(db,'mapShares',previous.id);const previousSnap=await getDoc(previousRef);if(previousSnap.exists()&&previousSnap.data().ownerUid===user.uid&&previousSnap.data().active===true)await updateDoc(previousRef,{active:false,updatedAt:serverTimestamp()});}catch(error){console.warn('Could not automatically revoke the previous location session:',error);}finally{clearOwnerState();}})();}}});
+$('themeBtn').addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=next;try{localStorage.setItem('ca_live_map_theme_v1',next);}catch{}$('themeBtn').innerHTML=next==='light'?'<i class="fa-solid fa-moon"></i><span class="long-label"> Theme</span>':'<i class="fa-solid fa-sun"></i><span class="long-label"> Theme</span>';});
+try{const savedTheme=localStorage.getItem('ca_live_map_theme_v1');if(savedTheme==='light'){document.documentElement.dataset.theme='light';$('themeBtn').innerHTML='<i class="fa-solid fa-moon"></i><span class="long-label"> Theme</span>';}}catch{}
+$('searchForm').addEventListener('submit',event=>{event.preventDefault();searchPlaces($('placeSearch').value);});
+$('locateBtn').addEventListener('click',locateMe);
+$('copyCoordsBtn').addEventListener('click',async()=>{if(!chosenPoint)return;const text=`${chosenPoint.lat.toFixed(6)}, ${chosenPoint.lng.toFixed(6)}`;setStatus('searchStatus',await copyText(text)?'Coordinates copied.':'Could not copy coordinates.','good');});
+$('resetViewBtn').addEventListener('click',()=>{if(mapReady)map.flyTo({center:[-1.0232,7.9465],zoom:5.2,essential:true});chosenPoint=null;$('coordinateReadout').textContent='No location selected';});
+$('streetsBtn').addEventListener('click',()=>setStyle('streets'));
+$('satelliteBtn').addEventListener('click',()=>setStyle('satellite'));
+$('threeDBtn').addEventListener('click',()=>{threeDEnabled=!threeDEnabled;$('threeDBtn').setAttribute('aria-pressed',String(threeDEnabled));if(threeDEnabled){if(currentStyle==='satellite')setStyle('streets');if(mapReady){map.once('style.load',add3DBuildings);if(map.isStyleLoaded())add3DBuildings();map.easeTo({pitch:55,bearing:-18,duration:650});}mapStatus('3D building view enabled where map data supports it.');}else{try{if(mapReady&&map.getLayer('ca-3d-buildings'))map.removeLayer('ca-3d-buildings');if(mapReady)map.easeTo({pitch:0,bearing:0,duration:450});}catch{}mapStatus('3D building layer disabled.');}});
+$('startShareBtn').addEventListener('click',()=>{if(ownShareId){const url=ownShareURL;copyText(url).then(ok=>setStatus('shareStatus',ok?'Your active private link was copied.':'Your active private link is shown above.','good'));return;}startSharing();});
+$('stopShareBtn').addEventListener('click',()=>{if(confirm('Stop sharing and revoke access to this live location link now?'))stopSharing();});
+$('copyShareBtn').addEventListener('click',async()=>setStatus('shareStatus',await copyText(ownShareURL)?'Private location link copied. Share it only with your trusted recipient.':'Could not copy link. You can select the link text above.','good'));
+$('nativeShareBtn').addEventListener('click',async()=>{if(!ownShareURL)return;try{if(navigator.share)await navigator.share({title:'My live location — Code Academy',text:'My current live location. This private link expires automatically.',url:ownShareURL});else setStatus('shareStatus',await copyText(ownShareURL)?'Link copied.':'Copy the link shown above.','good');}catch(error){if(error.name!=='AbortError')setStatus('shareStatus','The share sheet could not open. Copy the link instead.','bad');}});
+$('shareAppBtn').addEventListener('click',async()=>{const url=new URL('live-map.html',APP_BASE_URL).href;try{if(navigator.share)await navigator.share({title:'Code Academy Live Map',text:'Explore maps and share your live location with trusted people using Code Academy.',url});else alert(await copyText(url)?'Code Academy Live Map link copied.':'Share link: '+url);}catch(error){if(error.name!=='AbortError')setStatus('searchStatus','Sharing is not available in this browser.','bad');}});
+$('focusSharedBtn').addEventListener('click',()=>{if(sharedPosition)flyTo(sharedPosition.lat,sharedPosition.lng,16);});
+$('privacyBtn').addEventListener('click',()=>{$('privacyGuide').hidden=!$('privacyGuide').hidden;});
+window.addEventListener('pagehide',()=>{if(shareUnsubscribe)shareUnsubscribe();if(ownWatchId!==null){try{navigator.geolocation.clearWatch(ownWatchId);}catch{}ownWatchId=null;}if(ownShareRef&&ownShareId){const refToStop=ownShareRef;updateDoc(refToStop,{active:false,updatedAt:serverTimestamp()}).catch(error=>console.warn('Best-effort page-exit revocation failed; link will still expire:',error));}});
+configureInstall();
+initMap();
+const requestedShare=new URLSearchParams(location.search).get('share');if(requestedShare)startViewingShare(requestedShare);
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service worker registration failed:',error)));
+</script>
+</body>
+</html>
