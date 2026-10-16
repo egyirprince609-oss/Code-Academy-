@@ -29,12 +29,15 @@ match /mapShares/{shareId} {
     && request.resource.data.updatedAt == request.time
     && request.resource.data.expiresAt is timestamp
     && request.resource.data.expiresAt > request.time
-    && request.resource.data.expiresAt <= request.time + duration.value(24, 'h')
+    && request.resource.data.expiresAt <= request.time + duration.value(2, 'h')
     && request.resource.data.schemaVersion == 1;
 
   allow update: if request.auth != null
     && resource.data.ownerUid == request.auth.uid
     && request.resource.data.ownerUid == resource.data.ownerUid
+    // A share cannot be extended or have its original creation time changed by an update.
+    && request.resource.data.expiresAt == resource.data.expiresAt
+    && request.resource.data.createdAt == resource.data.createdAt
     && request.resource.data.keys().hasOnly([
       'ownerUid','ownerName','lat','lng','accuracy','active','shareLabel',
       'createdAt','updatedAt','expiresAt','schemaVersion'
@@ -48,7 +51,7 @@ match /mapShares/{shareId} {
         || (request.resource.data.active == true
             && request.resource.data.expiresAt is timestamp
             && request.resource.data.expiresAt > request.time
-            && request.resource.data.expiresAt <= request.time + duration.value(24, 'h')));
+            && request.resource.data.expiresAt <= request.time + duration.value(2, 'h')));
 
   allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
 }

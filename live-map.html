@@ -16,12 +16,15 @@
 <meta property="og:title" content="Code Academy Live Map | Explore & Share">
 <meta property="og:description" content="Explore interactive maps and share your live location with people you trust. Sharing is consent-based and expires automatically.">
 <meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/live-map.html">
-<meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
-<meta property="og:image:alt" content="Code Academy — We Learn, We Code, We Succeed">
+<meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-live-map.jpg">
+<meta property="og:image:alt" content="Code Academy Live Map — Interactive maps and trusted location sharing">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/jpeg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Code Academy Live Map">
 <meta name="twitter:description" content="Interactive maps and consent-based live location sharing.">
-<meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+<meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-live-map.jpg">
 <title>Code Academy | Live Map</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.css" rel="stylesheet">
@@ -43,7 +46,7 @@
   <main class="layout">
     <section class="panel map-panel" aria-label="Interactive map">
       <div class="map-head"><div><strong><i class="fa-solid fa-earth-africa" style="color:var(--cyan);margin-right:7px"></i>Interactive map</strong><small id="mapSubtitle">Choose Locate me to center the map on your device.</small></div><div class="map-head-actions"><button class="btn" id="streetsBtn" type="button" aria-pressed="true"><i class="fa-solid fa-road"></i> Streets</button><button class="btn" id="satelliteBtn" type="button" aria-pressed="false"><i class="fa-solid fa-satellite"></i> Satellite</button><button class="btn" id="threeDBtn" type="button" aria-pressed="false"><i class="fa-solid fa-cubes-stacked"></i> 3D</button></div></div>
-      <div class="map-stage"><div id="map" aria-label="Mapbox map"></div><div id="mapPlaceholder" class="map-placeholder"><div><div class="orb"><i class="fa-solid fa-earth-africa"></i></div><h3>Prepare your map</h3><p>Loading Current Location</p></div></div></div>
+      <div class="map-stage"><div id="map" aria-label="Mapbox map"></div><div id="mapPlaceholder" class="map-placeholder"><div><div class="orb"><i class="fa-solid fa-earth-africa"></i></div><h3>Prepare your map</h3><p>Paste your Mapbox public token into <b>live-map.html</b> where marked, then reload this page. Your token is built into the app so users will not be asked to enter one.</p></div></div></div>
       <div class="map-footer"><span id="mapStatus" role="status" aria-live="polite">Map setup required: add your public access token.</span><span class="coordinates" id="coordinateReadout">No location selected</span></div>
     </section>
     <aside class="side">
@@ -54,7 +57,7 @@
       <section class="panel" id="sharingPanel">
         <div class="section-head"><h3><i class="fa-solid fa-location-arrow"></i> Live location sharing</h3><p>Create a private link so a trusted person can open Code Academy and see your latest location.</p></div>
         <div class="panel-body"><div class="share-status"><i class="fa-solid fa-user-shield"></i><div><strong id="shareStatusTitle">Sharing is off</strong><p id="shareStatusCopy">Nothing is shared until you press Start sharing and approve location access.</p></div></div>
-          <div class="share-controls"><div><label class="field-label" for="shareDuration">Link expiry</label><select class="input" id="shareDuration"><option value="15">15 minutes</option><option value="60" selected>1 hour</option><option value="480">8 hours</option><option value="1440">24 hours</option></select></div><button class="btn btn-primary" id="startShareBtn" type="button"><i class="fa-solid fa-location-dot"></i> Start sharing my location</button><div id="shareUrlBox" class="share-url" aria-live="polite"></div><div class="two"><button class="btn" id="copyShareBtn" type="button" disabled><i class="fa-solid fa-copy"></i> Copy link</button><button class="btn" id="nativeShareBtn" type="button" disabled><i class="fa-solid fa-share"></i> Share link</button></div><button class="btn btn-danger" id="stopShareBtn" type="button" hidden><i class="fa-solid fa-stop"></i> Stop sharing now</button></div>
+          <div class="share-controls"><div><span class="field-label">Automatic expiry</span><div class="input" id="shareDuration" role="status" aria-label="Location link expires after two hours" style="display:flex;align-items:center;gap:8px;color:var(--cyan);font-weight:900">⏱ 2 hours from start</div></div><button class="btn btn-primary" id="startShareBtn" type="button"><i class="fa-solid fa-location-dot"></i> Start sharing my location</button><div id="shareUrlBox" class="share-url" aria-live="polite"></div><div class="two"><button class="btn" id="copyShareBtn" type="button" disabled><i class="fa-solid fa-copy"></i> Copy link</button><button class="btn" id="nativeShareBtn" type="button" disabled><i class="fa-solid fa-share"></i> Share link</button></div><button class="btn btn-danger" id="stopShareBtn" type="button" hidden><i class="fa-solid fa-stop"></i> Stop sharing now</button></div>
           <div class="warning"><i class="fa-solid fa-triangle-exclamation"></i> Anyone who has your private link can view your live location until you stop sharing or the link expires. Only share it with people you trust. No location is shared until you approve the request.</div><div id="shareStatus" class="status-line" role="status" aria-live="polite"></div>
         </div>
       </section>
@@ -69,15 +72,20 @@ import { doc, getDoc, setDoc, updateDoc, onSnapshot, Timestamp, serverTimestamp 
 import { sendNotification } from './notification-engine.js';
 
 /* ==============================================================
-   MAPBOX TOKEN SETUP
-   Paste your Mapbox PUBLIC token (starts with pk.) between quotes
-   below. Never place a secret token starting with sk. in this file.
-   Public tokens are visible to users; restrict the token to your
-   website domain and only the public scopes your map requires.
+   MAPBOX / RENDER CONFIGURATION
+   Deploy server.js on Render, then replace this single URL with
+   your Render service URL. Put MAPBOX_PUBLIC_TOKEN and (optionally)
+   MAPBOX_SECRET_TOKEN in Render Environment, never in this file.
+   The API returns only the pk. public token to this page. The sk.
+   secret token stays server-side and is used only for geocoding.
 ============================================================== */
-const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1Ijoid2lpc3NlZSIsImEiOiJjbXVrYjBoMzMxc2Q2MnpzZWF2c2QzbG9kIn0.hoiIEQTzbDCLBxwA8HLC2Q';
+const RENDER_API_BASE_URL = 'https://YOUR-RENDER-SERVICE.onrender.com';
+let MAPBOX_ACCESS_TOKEN = '';
+let mapConfigReady = false;
 const APP_BASE_URL = 'https://egyirprince609-oss.github.io/Code-Academy-/';
 const PUBLIC_SITE_HOST = 'egyirprince609-oss.github.io';
+const SHORTCUT_ACTION = new URLSearchParams(location.search).get('action') || '';
+let shortcutActionHandled = false;
 const STATE_KEY = 'ca_live_map_owner_share_v1';
 const $ = id => document.getElementById(id);
 let currentUser = null;
@@ -97,6 +105,8 @@ let currentPosition = null;
 let chosenPoint = null;
 let sharedPosition = null;
 let shareUnsubscribe = null;
+let viewerExpiryTimer = null;
+let locationLabel = '';
 let installPrompt = null;
 let geocodeAbort = null;
 
@@ -108,6 +118,36 @@ function safeText(v,max=160){return String(v??'').replace(/[<>\u0000-\u001f]/g,'
 function validPoint(lat,lng){return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180;}
 function formatCoord(value){return Number.isFinite(value)?value.toFixed(6):'—';}
 function getBaseURL(){return new URL('.',location.href).href;}
+function renderApiUrl(path){return RENDER_API_BASE_URL.replace(/\/$/,'')+path;}
+function renderApiConfigured(){return /^https:\/\/[^/]+\.onrender\.com$/i.test(RENDER_API_BASE_URL)&&!RENDER_API_BASE_URL.includes('YOUR-RENDER-SERVICE');}
+async function loadMapConfig(){
+  if(!renderApiConfigured()){
+    $('mapPlaceholder').hidden=false;$('mapPlaceholder').querySelector('h3').textContent='Connect the Render map service';
+    $('mapPlaceholder').querySelector('p').textContent='Deploy the included server.js on Render, add MAPBOX_PUBLIC_TOKEN in Render Environment, then set RENDER_API_BASE_URL in this page to your real Render URL.';
+    mapStatus('Map service URL not configured.');return false;
+  }
+  try{
+    const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),18000);
+    let response;try{response=await fetch(renderApiUrl('/api/map-config'),{method:'GET',headers:{'Accept':'application/json'},cache:'no-store',signal:controller.signal});}finally{clearTimeout(timer);}
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok)throw new Error(data.error||'Render did not return the map configuration. Check MAPBOX_PUBLIC_TOKEN.');
+    if(typeof data.mapboxPublicToken!=='string'||!data.mapboxPublicToken.startsWith('pk.'))throw new Error('Render did not return a valid public Mapbox token. Add a pk. token to MAPBOX_PUBLIC_TOKEN in Render.');
+    MAPBOX_ACCESS_TOKEN=data.mapboxPublicToken;mapConfigReady=true;return true;
+  }catch(error){
+    console.error('Could not load Mapbox configuration:',error);$('mapPlaceholder').hidden=false;
+    $('mapPlaceholder').querySelector('h3').textContent='Map service unavailable';
+    $('mapPlaceholder').querySelector('p').textContent=error.name==='AbortError'?'The Render service took too long to respond. Open the service once, then reload this page.':(error.message||'Could not connect to the Render API. Check its URL and allowed origins.');
+    mapStatus('Unable to load map configuration from Render.');return false;
+  }
+}
+function tryRunShortcutAction(){
+  if(shortcutActionHandled||!mapReady)return;
+  if(SHORTCUT_ACTION==='locate'){
+    shortcutActionHandled=true;locateMe();
+  }else if(SHORTCUT_ACTION==='share'&&currentUser){
+    shortcutActionHandled=true;startSharing();
+  }
+}
 function showCoordinates(lat,lng,accuracy=null){
   $('coordinateReadout').textContent=`${formatCoord(lat)}, ${formatCoord(lng)}`;
   $('statLat').textContent=formatCoord(lat); $('statLng').textContent=formatCoord(lng);
@@ -145,8 +185,8 @@ function setStyle(style){
 }
 function initMap(){
   const placeholder=$('mapPlaceholder');
-  if(!MAPBOX_ACCESS_TOKEN||MAPBOX_ACCESS_TOKEN==='PASTE_YOUR_MAPBOX_PUBLIC_TOKEN_HERE'||!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){
-    placeholder.hidden=false; mapStatus('Paste a valid Mapbox public token in live-map.html.');
+  if(!mapConfigReady||!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){
+    placeholder.hidden=false; mapStatus('Waiting for the Render Mapbox configuration.');
     $('searchBtn').disabled=true; $('streetsBtn').disabled=true; $('satelliteBtn').disabled=true; $('threeDBtn').disabled=true;
     return;
   }
@@ -156,7 +196,7 @@ function initMap(){
     map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/streets-v12',center:[-1.0232,7.9465],zoom:5.2,attributionControl:true,cooperativeGestures:true,projection:'mercator'});
     map.addControl(new mapboxgl.NavigationControl({showCompass:true,visualizePitch:true}),'top-right');
     map.addControl(new mapboxgl.GeolocateControl({positionOptions:{enableHighAccuracy:true,timeout:12000,maximumAge:5000},trackUserLocation:false,showUserHeading:true,showAccuracyCircle:true}),'top-right');
-    map.on('load',()=>{mapReady=true;placeholder.hidden=true;mapStatus('Map loaded. Choose Locate me to use your current device location.');$('mapSubtitle').textContent='Search, zoom, switch layers, and optionally share your location.';if(threeDEnabled)add3DBuildings();if(sharedPosition)placeViewerMarker(sharedPosition.lat,sharedPosition.lng);if(currentPosition)placeOwnMarker(currentPosition.lat,currentPosition.lng);});
+    map.on('load',()=>{mapReady=true;placeholder.hidden=true;mapStatus('Map loaded. Choose Locate me to use your current device location.');$('mapSubtitle').textContent='Search, switch map layers, and optionally share your location.';if(threeDEnabled)add3DBuildings();if(currentPosition)placeOwnMarker(currentPosition.lat,currentPosition.lng);if(sharedPosition){placeViewerMarker(sharedPosition.lat,sharedPosition.lng);flyTo(sharedPosition.lat,sharedPosition.lng,16);}tryRunShortcutAction();});
     map.on('error',e=>{console.warn('Mapbox map error:',e?.error||e);const message=e?.error?.message||'';if(/token|unauthori|forbidden|access/i.test(message))mapStatus('Mapbox rejected the token. Check it is a public pk. token and verify its allowed URL settings.');});
   }catch(error){console.error(error);mapStatus('Unable to initialize the map. Check the token and reload the page.');}
 }
@@ -173,17 +213,21 @@ async function locateMe(){
 }
 async function searchPlaces(text){
   text=safeText(text,160);if(text.length<2){setStatus('searchStatus','Enter at least two characters to search.');return;}
-  if(!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){setStatus('searchStatus','Add your Mapbox public token first.','bad');return;}
-  geocodeAbort?.abort();geocodeAbort=new AbortController();$('searchResults').replaceChildren();setStatus('searchStatus','Searching Mapbox places…');$('searchBtn').disabled=true;
+  if(!mapConfigReady){setStatus('searchStatus','The Render map service is not configured yet.','bad');return;}
+  geocodeAbort?.abort();geocodeAbort=new AbortController();$('searchResults').replaceChildren();setStatus('searchStatus','Searching nearby places…');$('searchBtn').disabled=true;
   try{
-    const url=`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(text)}&access_token=${encodeURIComponent(MAPBOX_ACCESS_TOKEN)}&limit=5&autocomplete=true&types=country,region,postcode,district,place,locality,neighborhood,street,address`;
-    const response=await fetch(url,{signal:geocodeAbort.signal});if(!response.ok)throw new Error(response.status===401||response.status===403?'Mapbox rejected the token or this token lacks Geocoding access.':'Place search failed. Please retry.');
+    const url=renderApiUrl(`/api/geocode?q=${encodeURIComponent(text)}`);
+    const response=await fetch(url,{headers:{'Accept':'application/json'},signal:geocodeAbort.signal});if(!response.ok){const errorData=await response.json().catch(()=>({}));throw new Error(errorData.error||'Place search failed. Check the Render service and Mapbox geocoding permission.');}
     const data=await response.json();const features=Array.isArray(data.features)?data.features:[];
     if(!features.length){setStatus('searchStatus','No places found. Try a nearby town or shorter search.');return;}
     for(const feature of features){const properties=feature.properties||{};const coordinates=feature.geometry?.coordinates;const lng=Number(coordinates?.[0]??properties.coordinates?.longitude);const lat=Number(coordinates?.[1]??properties.coordinates?.latitude);if(!validPoint(lat,lng))continue;const placeName=properties.full_address||[properties.name,properties.place_formatted].filter(Boolean).join(', ')||'Map result';const featureType=properties.feature_type||'';const button=document.createElement('button');button.type='button';button.className='result-btn';const icon=document.createElement('i');icon.className='fa-solid fa-location-dot';const label=document.createElement('span');label.textContent=placeName;button.append(icon,label);button.addEventListener('click',()=>{chosenPoint={lat,lng};showCoordinates(lat,lng,null);flyTo(lat,lng,featureType==='address'||featureType==='street'?16:13);setStatus('searchStatus','Showing '+safeText(placeName)+'.','good');$('searchResults').replaceChildren();});$('searchResults').append(button);}
     setStatus('searchStatus',`${features.length} result${features.length===1?'':'s'} found. Select one to view it.`,'good');
   }catch(error){if(error.name!=='AbortError')setStatus('searchStatus',error.message||'Place search failed.','bad');}
   finally{$('searchBtn').disabled=false;}
+}
+async function reverseGeocodeLabel(lat,lng){
+  if(!renderApiConfigured())return '';
+  try{const response=await fetch(renderApiUrl(`/api/reverse-geocode?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`),{headers:{'Accept':'application/json'}});if(!response.ok)return '';const data=await response.json();return safeText(data.label||'',180);}catch(error){console.warn('Reverse geocoding unavailable:',error);return '';}
 }
 function createShareId(){const bytes=new Uint8Array(24);crypto.getRandomValues(bytes);return Array.from(bytes,b=>b.toString(16).padStart(2,'0')).join('');}
 function storeOwnerState(id,url){try{localStorage.setItem(STATE_KEY,JSON.stringify({id,url,savedAt:Date.now()}));}catch{}}
@@ -195,18 +239,19 @@ async function notifyAccount(title,message,type='info'){
 function sharePageUrl(id){const url=new URL('live-map.html',APP_BASE_URL);if(id)url.searchParams.set('share',id);return url.href;}
 async function copyText(text){if(!text)return false;try{await navigator.clipboard.writeText(text);return true;}catch{try{const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.append(area);area.select();const ok=document.execCommand('copy');area.remove();return ok;}catch{return false;}}}
 async function startSharing(){
-  if(!MAPBOX_ACCESS_TOKEN.startsWith('pk.')){setStatus('shareStatus','Paste your Mapbox public token into live-map.html first so the recipient can view the location on the map.','bad');return;}
+  if(!mapConfigReady||!mapReady){setStatus('shareStatus','The map service is not ready. Please wait for the map to load, then try again.','bad');return;}
   if(!currentUser){setStatus('shareStatus','Please sign in to Code Academy before sharing a live location.','bad');return;}
   if(!navigator.geolocation){setStatus('shareStatus','This browser does not support geolocation.','bad');return;}
   if(!confirm('Start live location sharing? Your current and updated location will be visible to anyone who has the private link until you stop sharing or the chosen expiry time is reached. Continue only if you agree.'))return;
   $('startShareBtn').disabled=true;setStatus('shareStatus','Requesting location permission and creating your private link…');
   try{
     const position=await getCurrentPosition();updateLocalLocation(position);
-    const id=createShareId();const ref=doc(db,'mapShares',id);const expiryMinutes=Math.max(15,Math.min(1440,Number($('shareDuration').value)||60));const expiresAt=Date.now()+expiryMinutes*60*1000;
+    const id=createShareId();const ref=doc(db,'mapShares',id);const expiryMinutes=120;const expiresAt=Date.now()+2*60*60*1000;
     const ownerName=safeText(currentUser.displayName||'Code Academy learner',60)||'Code Academy learner';
+    locationLabel=await reverseGeocodeLabel(currentPosition.lat,currentPosition.lng);
     await setDoc(ref,{ownerUid:currentUser.uid,ownerName,lat:currentPosition.lat,lng:currentPosition.lng,accuracy:currentPosition.accuracy??null,active:true,shareLabel:'Live location',createdAt:serverTimestamp(),updatedAt:serverTimestamp(),expiresAt:Timestamp.fromMillis(expiresAt),schemaVersion:1});
     ownShareId=id;ownShareRef=ref;ownShareURL=sharePageUrl(id);ownLastWrite=Date.now();storeOwnerState(id,ownShareURL);if(shareExpiryTimer)clearTimeout(shareExpiryTimer);shareExpiryTimer=setTimeout(()=>{if(ownShareId===id)stopSharing('The location link expired. Live updates have been stopped.');},expiryMinutes*60*1000);
-    $('shareUrlBox').textContent=ownShareURL;$('shareUrlBox').classList.add('show');$('copyShareBtn').disabled=false;$('nativeShareBtn').disabled=false;$('stopShareBtn').hidden=false;$('startShareBtn').innerHTML='<i class="fa-solid fa-link"></i> Create a new link';$('shareStatusTitle').textContent='Your location is being shared';$('shareStatusCopy').textContent=`Private link active for ${expiryMinutes>=60?(expiryMinutes/60)+' hour'+(expiryMinutes>60?'s':''):expiryMinutes+' minutes'}. Stop it at any time.`;setLiveState('Live sharing active',true);
+    $('shareUrlBox').textContent=ownShareURL;$('shareUrlBox').classList.add('show');$('copyShareBtn').disabled=false;$('nativeShareBtn').disabled=false;$('stopShareBtn').hidden=false;$('startShareBtn').innerHTML='<i class="fa-solid fa-link"></i> Create a new link';$('shareStatusTitle').textContent='Your location is being shared';$('shareStatusCopy').textContent='Private link active for 2 hours from start. Stop it at any time.';setLiveState('Live sharing active',true);
     ownWatchId=navigator.geolocation.watchPosition(async pos=>{
       try{
         updateLocalLocation(pos);if(!ownShareRef||!ownShareId)return;
@@ -214,8 +259,9 @@ async function startSharing(){
         await updateDoc(ownShareRef,{lat:currentPosition.lat,lng:currentPosition.lng,accuracy:currentPosition.accuracy??null,updatedAt:serverTimestamp()});
       }catch(error){console.warn('Live location update failed:',error);setStatus('shareStatus','Live tracking is active, but a location update failed. Check your connection.','bad');}
     },error=>{const message=error.code===1?'Location permission was revoked. Stop sharing or allow location again.':'Live location update stopped by the device. Keep this page open to continue sharing.';setStatus('shareStatus',message,'bad');},{enableHighAccuracy:true,maximumAge:4000,timeout:18000});
-    setStatus('shareStatus','Live link created. The map page must remain active for reliable web tracking.','good');await notifyAccount('Live location sharing started',`You created a private live location link that expires in ${expiryMinutes} minutes. Stop sharing any time.`, 'info');
-    try{if(navigator.share)await navigator.share({title:'My live location — Code Academy',text:'I am sharing my live location with you through Code Academy. This link expires automatically.',url:ownShareURL});else{const ok=await copyText(ownShareURL);setStatus('shareStatus',ok?'Link copied. Send it only to the person you trust.':'Your link is ready below. Copy it to share.','good');}}catch(error){if(error.name!=='AbortError')console.warn('System share sheet was unavailable:',error);}
+    setStatus('shareStatus','Live link created. Keep this page active for reliable web tracking. It expires automatically after exactly 2 hours.','good');await notifyAccount('Live location sharing started','You created a private live location link that expires automatically after 2 hours. Stop sharing any time.','info');
+    const shareText=[`Live location shared by ${ownerName} using Code Academy.`,locationLabel?`Nearby location: ${locationLabel}.`:'The live map will show the latest GPS position when opened.',`Access expires automatically at ${new Date(expiresAt).toLocaleString()} (two hours after sharing started).`,`Anyone with this private link can view the location until expiry. Please do not forward it.`,`Open Code Academy Live Map: ${ownShareURL}`].join('\n');
+    try{if(navigator.share)await navigator.share({title:`${ownerName} shared a live location`,text:shareText,url:ownShareURL});else{const ok=await copyText(shareText);setStatus('shareStatus',ok?'Location details and private link copied. Share them only with the intended person.':'Your private link is ready below. Copy it to share.','good');}}catch(error){if(error.name!=='AbortError')console.warn('System share sheet was unavailable:',error);}
   }catch(error){console.error('Could not start location sharing:',error);setStatus('shareStatus',error.code==='permission-denied'?'Firebase blocked this action. Merge the supplied mapShares Firestore rules and try again.':(error.message||'Unable to start sharing. Check connection and location permission.'),'bad');}
   finally{$('startShareBtn').disabled=false;}
 }
@@ -225,20 +271,23 @@ async function stopSharing(reason='You stopped live location sharing.'){
   try{if(ownShareRef)await updateDoc(ownShareRef,{active:false,updatedAt:serverTimestamp()});}catch(error){console.warn('Could not mark share link inactive:',error);setStatus('shareStatus','Tracking stopped on this page, but the server could not confirm link revocation. Check your internet connection.','bad');}
   ownShareId=null;ownShareRef=null;ownShareURL='';clearOwnerState();$('stopShareBtn').hidden=true;$('startShareBtn').innerHTML='<i class="fa-solid fa-location-dot"></i> Start sharing my location';$('copyShareBtn').disabled=true;$('nativeShareBtn').disabled=true;$('shareUrlBox').classList.remove('show');$('shareUrlBox').textContent='';$('shareStatusTitle').textContent='Sharing is off';$('shareStatusCopy').textContent='Your location is no longer being updated by this page.';setLiveState(currentPosition?'Location available':'Location not active',false);setStatus('shareStatus',reason,'good');await notifyAccount('Live location sharing stopped','You stopped updating a live location link.','info');
 }
+function clearViewerExpiry(){if(viewerExpiryTimer)clearTimeout(viewerExpiryTimer);viewerExpiryTimer=null;}
+function removeViewerMarker(){if(viewerMarker){try{viewerMarker.remove();}catch{}viewerMarker=null;}}
 function startViewingShare(id){
   if(!/^[a-f0-9]{48}$/.test(id)){showViewer('Invalid location link','This Code Academy location link is not valid. Ask the sender for a fresh link.');return;}
   $('viewerBanner').classList.add('show');showViewer('Opening shared location','Checking whether the sender is still sharing…');
   const ref=doc(db,'mapShares',id);
   shareUnsubscribe=onSnapshot(ref,snap=>{
-    if(!snap.exists()){showViewer('Location link unavailable','This link may have expired, been revoked, or never existed. Ask the sender for a new link.');return;}
-    const data=snap.data();if(data.active!==true){showViewer('Sharing has stopped','The sender stopped sharing this location.');return;}
-    const expiry=data.expiresAt?.toMillis?.();if(!expiry||expiry<=Date.now()){showViewer('Location link expired','This private link has expired. Ask the sender to create a new one.');return;}
+    if(!snap.exists()){clearViewerExpiry();removeViewerMarker();showViewer('Location link not found','This location link may have been deleted or is invalid. Ask the sender for a new one.');return;}
+    const data=snap.data();if(data.active!==true){clearViewerExpiry();removeViewerMarker();sharedPosition=null;showViewer('Sharing has stopped','The sender stopped sharing this location.');return;}
+    const expiry=data.expiresAt?.toMillis?.();if(!expiry||expiry<=Date.now()){clearViewerExpiry();removeViewerMarker();sharedPosition=null;showViewer('Location link expired','This private link has expired. Ask the sender to create a new one.');return;}
     const lat=Number(data.lat),lng=Number(data.lng);if(!validPoint(lat,lng)){showViewer('Location temporarily unavailable','The shared location data is not valid.');return;}
     sharedPosition={lat,lng,accuracy:Number.isFinite(data.accuracy)?data.accuracy:null,updatedAt:data.updatedAt?.toDate?.()||null,ownerName:safeText(data.ownerName||'Code Academy learner',60),expiresAt:expiry};
+    clearViewerExpiry();viewerExpiryTimer=setTimeout(()=>{removeViewerMarker();sharedPosition=null;showViewer('Location link expired','This private link has reached its two-hour expiry. Ask the sender to share a new location.');setLiveState('Share expired',false);},Math.max(0,expiry-Date.now()));
     $('viewerTitle').textContent=`Live location shared by ${sharedPosition.ownerName}`;
-    const time=sharedPosition.updatedAt?sharedPosition.updatedAt.toLocaleTimeString():'just now';$('viewerCopy').textContent=`Last location update: ${time}. Link expires ${new Date(expiry).toLocaleString()}. Updates appear while the sender's sharing session is running.`;
-    showCoordinates(lat,lng,sharedPosition.accuracy);placeViewerMarker(lat,lng);if(mapReady&&viewerMarker)flyTo(lat,lng,16);setLiveState('Viewing shared location',true);mapStatus('Viewing a consent-based shared location.');
-  },error=>{console.warn('Shared map subscription error:',error);showViewer('Cannot access this location','The link is invalid, expired, or sharing permission is unavailable. Ask the sender to check the link.');});
+    const time=sharedPosition.updatedAt?sharedPosition.updatedAt.toLocaleTimeString():'just now';$('viewerCopy').textContent=`Last location update: ${time}. Access expires ${new Date(expiry).toLocaleString()}. The location refreshes while the sender's sharing session is active.`;
+    showCoordinates(lat,lng,sharedPosition.accuracy);placeViewerMarker(lat,lng);if(mapReady)flyTo(lat,lng,16);setLiveState('Viewing shared location',true);mapStatus('Viewing a consent-based shared location.');
+  },error=>{console.warn('Shared map subscription error:',error);clearViewerExpiry();removeViewerMarker();sharedPosition=null;showViewer('Cannot access this location','The link is invalid, expired, or sharing permission is unavailable. Ask the sender to check the link.');});
 }
 function showViewer(title,copy){$('viewerBanner').classList.add('show');$('viewerTitle').textContent=title;$('viewerCopy').textContent=copy;setLiveState(title.includes('Live location')||title.includes('Viewing')?'Viewing shared location':'Share unavailable',false);}
 function configureInstall(){
@@ -248,7 +297,7 @@ function configureInstall(){
   $('installBtn').addEventListener('click',async()=>{if(installPrompt){installPrompt.prompt();try{await installPrompt.userChoice;}finally{installPrompt=null;}}else alert(/iphone|ipad|ipod/i.test(navigator.userAgent)?'In Safari, tap Share and choose Add to Home Screen.':'Use your browser menu and choose Install app or Add to Home screen.');});
 }
 
-onAuthStateChanged(auth,user=>{currentUser=user||null;if(!user&&!new URLSearchParams(location.search).has('share'))setStatus('shareStatus','Sign in to Code Academy to create a live location link.','');if(user){const previous=getOwnerState();if(previous?.id&&!ownShareId){(async()=>{try{const previousRef=doc(db,'mapShares',previous.id);const previousSnap=await getDoc(previousRef);if(previousSnap.exists()&&previousSnap.data().ownerUid===user.uid&&previousSnap.data().active===true)await updateDoc(previousRef,{active:false,updatedAt:serverTimestamp()});}catch(error){console.warn('Could not automatically revoke the previous location session:',error);}finally{clearOwnerState();}})();}}});
+onAuthStateChanged(auth,user=>{currentUser=user||null;if(!user&&!new URLSearchParams(location.search).has('share'))setStatus('shareStatus','Sign in to Code Academy to create a live location link.','');tryRunShortcutAction();if(user){const previous=getOwnerState();if(previous?.id&&!ownShareId){(async()=>{try{const previousRef=doc(db,'mapShares',previous.id);const previousSnap=await getDoc(previousRef);if(previousSnap.exists()&&previousSnap.data().ownerUid===user.uid&&previousSnap.data().active===true)await updateDoc(previousRef,{active:false,updatedAt:serverTimestamp()});}catch(error){console.warn('Could not automatically revoke the previous location session:',error);}finally{clearOwnerState();}})();}}});
 $('themeBtn').addEventListener('click',()=>{const next=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=next;try{localStorage.setItem('ca_live_map_theme_v1',next);}catch{}$('themeBtn').innerHTML=next==='light'?'<i class="fa-solid fa-moon"></i><span class="long-label"> Theme</span>':'<i class="fa-solid fa-sun"></i><span class="long-label"> Theme</span>';});
 try{const savedTheme=localStorage.getItem('ca_live_map_theme_v1');if(savedTheme==='light'){document.documentElement.dataset.theme='light';$('themeBtn').innerHTML='<i class="fa-solid fa-moon"></i><span class="long-label"> Theme</span>';}}catch{}
 $('searchForm').addEventListener('submit',event=>{event.preventDefault();searchPlaces($('placeSearch').value);});
@@ -267,8 +316,8 @@ $('focusSharedBtn').addEventListener('click',()=>{if(sharedPosition)flyTo(shared
 $('privacyBtn').addEventListener('click',()=>{$('privacyGuide').hidden=!$('privacyGuide').hidden;});
 window.addEventListener('pagehide',()=>{if(shareUnsubscribe)shareUnsubscribe();if(ownWatchId!==null){try{navigator.geolocation.clearWatch(ownWatchId);}catch{}ownWatchId=null;}if(ownShareRef&&ownShareId){const refToStop=ownShareRef;updateDoc(refToStop,{active:false,updatedAt:serverTimestamp()}).catch(error=>console.warn('Best-effort page-exit revocation failed; link will still expire:',error));}});
 configureInstall();
-initMap();
 const requestedShare=new URLSearchParams(location.search).get('share');if(requestedShare)startViewingShare(requestedShare);
+(async()=>{const ready=await loadMapConfig();if(ready){$('searchBtn').disabled=false;$('streetsBtn').disabled=false;$('satelliteBtn').disabled=false;$('threeDBtn').disabled=false;initMap();}else{$('searchBtn').disabled=true;$('streetsBtn').disabled=true;$('satelliteBtn').disabled=true;$('threeDBtn').disabled=true;}})();
 if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service worker registration failed:',error)));
 </script>
 </body>
