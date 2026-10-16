@@ -1,29 +1,46 @@
-# Code Academy Live Map — Production correction
+# Code Academy Live Map — Production package
 
-This patch updates the root website files and connects the page to the already-deployed Render map API.
+This release replaces the Live Map page and updates the required root website files, the Render map API, private-share rules, and sign-in continuation for authenticated share links.
 
-## Files
+## Website files included
 
-- `live-map.html` — corrected map loading, GPS centering, 2D/satellite/3D controls, full-screen mode, account status, settings dialog, private live sharing, video sharing through the device share sheet, and optional consent-based IP/network estimate.
-- `menu.html` — adds Live Map to the Code Academy account/services menu.
-- `sw.js` — includes `live-map.html` in the PWA cache and increments the cache version.
-- `MAP-SHARES-FIRESTORE-RULES.txt` — Firestore rules block required by location sharing.
+- `live-map.html` — Mapbox-first renderer with a visible 2D fallback, device-location centering/marker, follow mode, streets/satellite layers, 3D buildings when the Mapbox style supports them, half/full map sizing, fullscreen mode, address details, settings, optional network-based estimate, private location links, view-event records, and video sharing through the device share sheet.
+- `menu.html` — Code Academy navigation with the Live Map entry.
+- `login.html` and `email-verification.html` — preserve an allowed Live Map share-link destination through sign-in/email verification.
+- `sw.js` and `manifest.json` — refresh the PWA cache version and add the Live Map launch shortcut/social preview to the cache.
+- `share-preview-live-map.jpg` — social preview image used by the page metadata.
 
-## Deployment
+## Render API
 
-1. Upload/replace `live-map.html`, `menu.html`, and `sw.js` at the existing Code Academy website root. Keep the existing `authentication.js`, `notification-engine.js`, `manifest.json`, `logo.png`, and other application assets in place.
-2. Add the `match /mapShares/{shareId}` block from `MAP-SHARES-FIRESTORE-RULES.txt` inside the existing Firestore document rules, then publish the rules. Do not replace other collection rules.
-3. The page is configured to use `https://code-academy-map-backend.onrender.com`. The backend should continue to have `MAPBOX_PUBLIC_TOKEN` configured in Render, and the `/health` endpoint should report `hasPublicMapToken: true`.
-4. After deploying the page, open `live-map.html`, wait for the map to load, select **Locate me**, and approve device location. Sign in to create a share link. Test the link in a separate browser/private window.
+The page uses `https://code-academy-map-backend.onrender.com`.
+
+The Render service must run `npm install` and `npm start` (Node 20+). `MAPBOX_PUBLIC_TOKEN` is required in Render Environment and must be a valid public `pk.` token with the style permissions needed by the Mapbox GL map. The API returns only the public token to the browser. Do not place an `sk.` secret token in the website files. For server-side geocoding, set a server-only `MAPBOX_SECRET_TOKEN` with the necessary Mapbox search/geocoding access; if it is not configured or lacks access, the map can still work while search/address detail availability may be reduced.
+
+Set `ALLOWED_ORIGINS` to a comma-separated list of the exact website origins that are permitted to call the API. For the current GitHub Pages site, the origin is `https://egyirprince609-oss.github.io` (the repository path is not part of the origin). Add any other production domains only if they are genuinely used by the app.
+
+## Firebase rules
+
+Merge the `match /mapShares/{shareId}` block from `MAP-SHARES-FIRESTORE-RULES.txt` into the existing `service cloud.firestore` rules and publish the merged rules. Do not overwrite rules for users, learning progress, profiles, notifications, games, referrals, or other collections. Sharing creation/view alerts will remain blocked until these rules are published. The existing `users/{uid}/notifications` rules must continue to let an authenticated user create/read only their own notification records through the existing `notification-engine.js`.
+
+A viewer must be signed in with a non-anonymous Code Academy account. A private link expires after two hours and may be revoked sooner. Each successful viewer access writes a view event that only the share owner can read.
+
+## Deploying the static site
+
+1. Unzip `Code-Academy-Full-Project-Live-Map-v2.zip` and upload its root files/folders to the existing repository, or replace only the named root files in the current repository. Preserve the existing `authentication.js`, `notification-engine.js`, `logo.png`, icons, learning pages, and other assets.
+2. Commit and publish the files on GitHub Pages.
+3. Deploy the included `server.js`, `package.json`, and `render.yaml` to the existing Render service (or replace the Render service files and redeploy). Keep the current Render environment variables set there.
+4. Merge and publish the Firestore rules block.
+5. Open the live site over HTTPS, choose **Locate me**, and grant the browser/device location permission. The marker should center on the map. If Mapbox cannot render, the page should automatically switch to an interactive 2D tile map rather than leaving the loading overlay in place.
+6. For sharing, sign in with a non-anonymous account, choose **Start sharing my location**, confirm the consent dialog, and use **Share link** to send the generated private link. Test the link using a separate signed-in account. Confirm the owner receives the view alert and that **Stop sharing now** revokes access.
 
 ## Privacy and platform limits
 
-- GPS access and live sharing are opt-in. A private share link can reveal the selected location to anyone who receives the link. Sharing expires after two hours, and the owner can stop it sooner.
-- Settings are stored on the current device. Approximate mode rounds shared coordinates; display-name sharing is off by default; system notifications are opt-in.
-- The optional network estimate sends the connection IP to a third-party geolocation provider only after confirmation. It is approximate, may be wrong, and is not a GPS replacement. The app does not save the IP address from that feature.
-- Video sharing hands a selected local video to the browser/device share sheet where supported. The video is not uploaded to Code Academy by this feature.
-- Browser pages cannot guarantee uninterrupted tracking after being closed or suspended. Continuous background GPS requires a native platform implementation with the correct operating-system permissions and ongoing notification.
+- GPS and network location are separate. Device GPS is the best available browser-provided position; the accuracy figure is an estimate reported by the device. A reverse-geocoded street/city/region is map data, not a guarantee of an exact postal address.
+- The network estimate is requested only after confirmation; it sends the connection's public IP to a third-party approximate geolocation provider. The result can be wrong and must not be presented as GPS or as suitable for emergency response.
+- Approximate sharing rounds coordinates; address detail, accuracy, profile name, browser alerts and view alerts are configurable in settings. The app does not upload a selected video; it hands a local file to the device share sheet where supported.
+- The owner page requests location only after user action and shares only after explicit confirmation. Keep the page open for regular live GPS updates. Closing or suspending a browser tab may interrupt updates; background GPS cannot be guaranteed by a normal web page. Page-exit revocation and its account alert are best effort because browsers can terminate network work during navigation.
+- Account/in-app alerts are written through the existing notification engine. Browser notifications require opt-in. True device push delivery when all pages are closed requires a separate configured push delivery service; this package does not claim to create that service.
 
-## Validation
+## QA report
 
-The map page uses the project's existing `authentication.js` Firebase Auth/Firestore initialization and `notification-engine.js`. The front-end source has been syntax-checked. Firebase rules still need to be published in the Firebase Console before share creation can succeed.
+See `LIVE-MAP-QA-REPORT.md` for the checks performed and the limits of simulated browser testing.

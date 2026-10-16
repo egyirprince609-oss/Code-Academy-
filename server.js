@@ -73,7 +73,27 @@ function setNoStore(res) {
 function getFirstFeatureLabel(feature) {
   const p = feature && feature.properties ? feature.properties : {};
   // Prefer a readable area/place label. Never log or store a user's coordinates here.
-  return String(p.full_address || p.place_formatted || p.name || '').trim().slice(0, 180);
+  return String(p.full_address || p.place_formatted || p.name || '').trim().slice(0, 220);
+}
+function getContextName(context, key) {
+  const value = context && context[key];
+  return String(value && value.name || '').trim().slice(0, 100);
+}
+function getLocationDetails(feature) {
+  const p = feature && feature.properties ? feature.properties : {};
+  const c = p.context && typeof p.context === 'object' ? p.context : {};
+  const label = getFirstFeatureLabel(feature);
+  return {
+    label,
+    address: String(c.address && c.address.name || c.street && c.street.name || (p.feature_type === 'address' ? p.name : '') || '').trim().slice(0, 220),
+    neighborhood: getContextName(c, 'neighborhood'),
+    city: getContextName(c, 'place') || getContextName(c, 'locality'),
+    district: getContextName(c, 'district'),
+    region: getContextName(c, 'region'),
+    country: getContextName(c, 'country'),
+    countryCode: String(c.country && (c.country.country_code || c.country.country_code_alpha_3) || '').trim().slice(0, 8),
+    postcode: getContextName(c, 'postcode')
+  };
 }
 async function fetchMapbox(url, token) {
   const requestUrl = new URL(url);
@@ -155,7 +175,7 @@ app.get('/api/reverse-geocode', searchLimiter, async (req, res, next) => {
     const data = await fetchMapbox(url.toString(), token);
     const feature = Array.isArray(data.features) ? data.features[0] : null;
     res.set('Cache-Control', 'no-store');
-    return res.json({ label: feature ? getFirstFeatureLabel(feature) : '' });
+    return res.json({ label: feature ? getFirstFeatureLabel(feature) : '', location: feature ? getLocationDetails(feature) : null });
   } catch (error) { return next(error); }
 });
 
