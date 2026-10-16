@@ -1,30 +1,62 @@
-// Add this match block inside your EXISTING Firestore rules service cloud.firestore
-// Keep your current rules. Do not replace the full ruleset with this fragment.
-// Collection: mapShares/{shareId}
+CODE ACADEMY LIVE MAP — FIRESTORE RULES PATCH
+
+IMPORTANT
+Add this match block INSIDE the existing Firestore rules document, under:
+service cloud.firestore {
+  match /databases/{database}/documents {
+    ...
+  }
+}
+
+Do not replace or delete the site's existing authentication, course, profile,
+notification, progress, referral, or other collection rules. Firestore rules are
+server-side and must be published in the Firebase Console before location
+sharing can create a link.
+
+RULES BLOCK
+
 match /mapShares/{shareId} {
-  // The owner can read their own share. A recipient with the unguessable 48-hex
-  // link token can GET the active share until its expiry; clients cannot list shares.
-  allow get: if (request.auth != null && resource.data.ownerUid == request.auth.uid)
-    || (resource.data.active == true && resource.data.expiresAt is timestamp
-        && resource.data.expiresAt > request.time);
+  // Only direct document reads are allowed; share links cannot list all shares.
+  // A 48-character random ID acts as a private bearer link for an active share.
+  allow get: if (
+      request.auth != null && resource.data.ownerUid == request.auth.uid
+    ) || (
+      resource.data.active == true
+      && resource.data.expiresAt is timestamp
+      && resource.data.expiresAt > request.time
+    );
   allow list: if false;
 
   allow create: if request.auth != null
-    && request.resource.data.keys().hasOnly([
-      'ownerUid','ownerName','lat','lng','accuracy','active','shareLabel',
-      'createdAt','updatedAt','expiresAt','schemaVersion'
-    ])
+    && shareId.matches('^[a-f0-9]{48}$')
     && request.resource.data.keys().hasAll([
-      'ownerUid','ownerName','lat','lng','active','createdAt','updatedAt','expiresAt','schemaVersion'
+      'ownerUid', 'ownerName', 'lat', 'lng', 'accuracy', 'active',
+      'shareLabel', 'createdAt', 'updatedAt', 'expiresAt', 'schemaVersion'
+    ])
+    && request.resource.data.keys().hasOnly([
+      'ownerUid', 'ownerName', 'lat', 'lng', 'accuracy', 'active',
+      'shareLabel', 'createdAt', 'updatedAt', 'expiresAt', 'schemaVersion'
     ])
     && request.resource.data.ownerUid == request.auth.uid
-    && request.resource.data.active == true
-    && request.resource.data.lat is number
-    && request.resource.data.lat >= -90 && request.resource.data.lat <= 90
-    && request.resource.data.lng is number
-    && request.resource.data.lng >= -180 && request.resource.data.lng <= 180
     && request.resource.data.ownerName is string
     && request.resource.data.ownerName.size() <= 60
+    && request.resource.data.lat is number
+    && request.resource.data.lat >= -90
+    && request.resource.data.lat <= 90
+    && request.resource.data.lng is number
+    && request.resource.data.lng >= -180
+    && request.resource.data.lng <= 180
+    && (
+      request.resource.data.accuracy == null
+      || (
+        request.resource.data.accuracy is number
+        && request.resource.data.accuracy >= 0
+        && request.resource.data.accuracy <= 100000
+      )
+    )
+    && request.resource.data.active == true
+    && request.resource.data.shareLabel is string
+    && request.resource.data.shareLabel.size() <= 40
     && request.resource.data.createdAt == request.time
     && request.resource.data.updatedAt == request.time
     && request.resource.data.expiresAt is timestamp
@@ -35,23 +67,52 @@ match /mapShares/{shareId} {
   allow update: if request.auth != null
     && resource.data.ownerUid == request.auth.uid
     && request.resource.data.ownerUid == resource.data.ownerUid
-    // A share cannot be extended or have its original creation time changed by an update.
-    && request.resource.data.expiresAt == resource.data.expiresAt
     && request.resource.data.createdAt == resource.data.createdAt
+    && request.resource.data.expiresAt == resource.data.expiresAt
+    && request.resource.data.keys().hasAll([
+      'ownerUid', 'ownerName', 'lat', 'lng', 'accuracy', 'active',
+      'shareLabel', 'createdAt', 'updatedAt', 'expiresAt', 'schemaVersion'
+    ])
     && request.resource.data.keys().hasOnly([
-      'ownerUid','ownerName','lat','lng','accuracy','active','shareLabel',
-      'createdAt','updatedAt','expiresAt','schemaVersion'
+      'ownerUid', 'ownerName', 'lat', 'lng', 'accuracy', 'active',
+      'shareLabel', 'createdAt', 'updatedAt', 'expiresAt', 'schemaVersion'
     ])
     && request.resource.data.lat is number
-    && request.resource.data.lat >= -90 && request.resource.data.lat <= 90
+    && request.resource.data.lat >= -90
+    && request.resource.data.lat <= 90
     && request.resource.data.lng is number
-    && request.resource.data.lng >= -180 && request.resource.data.lng <= 180
+    && request.resource.data.lng >= -180
+    && request.resource.data.lng <= 180
+    && (
+      request.resource.data.accuracy == null
+      || (
+        request.resource.data.accuracy is number
+        && request.resource.data.accuracy >= 0
+        && request.resource.data.accuracy <= 100000
+      )
+    )
+    && request.resource.data.active is bool
     && request.resource.data.updatedAt == request.time
-    && (request.resource.data.active == false
-        || (request.resource.data.active == true
-            && request.resource.data.expiresAt is timestamp
-            && request.resource.data.expiresAt > request.time
-            && request.resource.data.expiresAt <= request.time + duration.value(2, 'h')));
+    && (
+      request.resource.data.active == false
+      || (
+        request.resource.data.expiresAt is timestamp
+        && request.resource.data.expiresAt > request.time
+        && request.resource.data.expiresAt <= request.time + duration.value(2, 'h')
+      )
+    );
 
-  allow delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+  allow delete: if request.auth != null
+    && resource.data.ownerUid == request.auth.uid;
 }
+
+SECURITY NOTES
+- This rule permits an active, unexpired share to be read by anyone who has its
+  unguessable link. Treat the link as private and do not publish it openly.
+- Public visitors cannot list documents or create, update, or delete shares.
+- Only the authenticated owner can update or revoke their share.
+- Expired links cannot be read by recipients; links automatically expire within
+  two hours of creation and cannot be extended by updates.
+- The web page needs to remain open for regular GPS updates. Browser background
+  behavior varies and is not a replacement for a native foreground location
+  service.
