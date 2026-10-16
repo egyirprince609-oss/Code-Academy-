@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050914">
+  <meta name="description" content="Code Academy VPN Force — connect through a trusted WireGuard VPN profile, manage your connection, and view clear device status.">
+  <meta property="og:title" content="Code Academy VPN Force">
+  <meta property="og:description" content="A clear, native Android VPN dashboard for trusted WireGuard connections, persistent status, and user-controlled privacy settings.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/vpn-force-og-preview.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <title>VPN Force | Code Academy</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+  <div class="app-shell">
+    <aside class="side-rail">
+      <div class="brand-lockup">
+        <img src="logo.png" alt="Code Academy logo" class="brand-logo">
+        <div><div class="brand-name">CODE ACADEMY</div><div class="brand-product">VPN FORCE</div></div>
+      </div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <button class="nav-item active" data-page="home"><span class="nav-icon">◈</span><span>Overview</span></button>
+        <button class="nav-item" data-page="settings"><span class="nav-icon">⚙</span><span>Settings</span></button>
+        <button class="nav-item" data-page="account"><span class="nav-icon">◎</span><span>Account</span></button>
+      </nav>
+      <div class="rail-bottom"><span class="tiny-dot"></span><span>Native Android VPN</span><span class="version">v1.0</span></div>
+    </aside>
+
+    <div class="main-column">
+      <header class="topbar">
+        <div class="mobile-brand"><img src="logo.png" alt="" class="brand-logo"><div><strong>VPN FORCE</strong><small>by Code Academy</small></div></div>
+        <div class="topbar-label"><span class="topbar-pulse"></span><span>CONNECTION CONTROL CENTER</span></div>
+        <button class="account-chip" id="openAccount"><span class="account-avatar">CA</span><span><strong>Code Academy</strong><small>Account & profile</small></span><span class="chevron">↗</span></button>
+      </header>
+
+      <main>
+        <section class="page-view active" id="page-home">
+          <div class="welcome-row">
+            <div><p class="eyebrow">SECURE ROUTING / USER CONTROL</p><h1>Your connection,<br><span>under control.</span></h1><p class="welcome-copy">Connect through a trusted VPN profile and keep your tunnel status visible while it runs.</p></div>
+            <div class="live-pill" id="livePill"><span class="tiny-dot"></span><span id="livePillText">NOT CONNECTED</span></div>
+          </div>
+
+          <section class="hero-panel">
+            <div class="hero-grid"></div><div class="hero-glow"></div>
+            <div class="hero-copy"><div class="overline"><span class="overline-line"></span> CODE ACADEMY VPN</div><h2 id="heroTitle">A clearer path<br>to your network.</h2><p id="heroSubtitle">A VPN changes how traffic is routed. Actual speed depends on the Wi‑Fi or mobile network and the VPN server.</p>
+              <div class="hero-status"><span class="status-icon" id="heroStatusIcon">⛨</span><div><strong id="heroStatusTitle">Tunnel is off</strong><small id="heroStatusText">Import a WireGuard profile to begin.</small></div></div>
+            </div>
+            <div class="orbital" id="orbital"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div><div class="orbit-core"><div class="shield">⛨</div><span id="orbitalState">READY</span></div><div class="orbit-pip pip-one"></div><div class="orbit-pip pip-two"></div></div>
+            <button id="connectButton" class="connect-button"><span class="connect-button-icon" id="connectButtonIcon">⏻</span><span id="connectButtonText">Connect VPN</span><span class="button-arrow">↗</span></button>
+            <div class="hero-foot"><span><i class="secure-dot"></i> User-approved connection</span><span id="configStatus">No profile imported</span></div>
+          </section>
+
+          <div class="section-heading"><div><p class="eyebrow">LIVE DEVICE STATUS</p><h2>Network overview</h2></div><button class="refresh-btn" id="refreshButton" title="Refresh network status"><span>↻</span> Refresh</button></div>
+          <div class="status-grid">
+            <article class="status-card"><div class="status-card-top"><span class="status-card-icon blue">⌁</span><span class="micro-label">UPSTREAM</span></div><div class="status-value" id="networkType">Checking…</div><div class="status-description" id="networkCaption">Wi‑Fi or mobile data</div><div class="mini-track"><span id="networkTrack"></span></div></article>
+            <article class="status-card"><div class="status-card-top"><span class="status-card-icon purple">◈</span><span class="micro-label">VPN TUNNEL</span></div><div class="status-value" id="tunnelState">Disconnected</div><div class="status-description" id="tunnelCaption">A valid profile is required</div><div class="status-foot"><span class="state-dot off" id="tunnelDot"></span><span id="tunnelFoot">Waiting for setup</span></div></article>
+            <article class="status-card"><div class="status-card-top"><span class="status-card-icon cyan">⌑</span><span class="micro-label">SYSTEM NOTICE</span></div><div class="status-value" id="notificationState">Permission needed</div><div class="status-description" id="notificationCaption">Android connection notification</div><button class="text-action" id="enableNotifications">Manage notifications <span>↗</span></button></article>
+          </div>
+
+          <section class="info-strip"><span class="info-icon">i</span><div><strong>Performance depends on the route.</strong><p>A VPN does not amplify signal strength or guarantee faster internet. Choose a trusted, nearby server and keep your device’s Wi‑Fi or mobile data enabled.</p></div></section>
+          <div class="bottom-actions"><button class="secondary-button" id="importFromHome"><span>⇧</span> Import VPN profile</button><button class="secondary-button" id="shareButton"><span>↗</span> Share VPN Force</button></div>
+        </section>
+
+        <section class="page-view" id="page-settings">
+          <div class="page-intro"><p class="eyebrow">PERSONAL CONNECTION CONTROLS</p><h1>VPN <span>settings.</span></h1><p>Choose how Code Academy VPN Force behaves on this device. Android keeps control of VPN permission and system-level blocking.</p></div>
+          <div class="settings-group">
+            <div class="settings-group-title"><span class="group-icon">◈</span><div><h2>VPN profile</h2><p>Securely store a configuration in the app's private storage.</p></div></div>
+            <div class="settings-row profile-row"><div class="setting-symbol">⇧</div><div class="setting-copy"><strong>WireGuard configuration</strong><span id="settingsProfileStatus">No profile imported yet</span></div><button class="small-button" id="importSetting">Import .conf</button><button class="small-button danger-button" id="removeProfileButton">Remove</button></div>
+            <div class="settings-row"><div class="setting-symbol">⌁</div><div class="setting-copy"><strong>Connection method</strong><span>WireGuard tunnel · encrypted transport</span></div><span class="fixed-value">WIREGUARD</span></div>
+          </div>
+          <div class="settings-group">
+            <div class="settings-group-title"><span class="group-icon">⚙</span><div><h2>Automation & notices</h2><p>Background behaviour remains visible and user-controlled.</p></div></div>
+            <label class="settings-row toggle-row"><span class="setting-symbol">⟳</span><span class="setting-copy"><strong>Reconnect when the app opens</strong><span>Uses the saved profile after VPN approval. Does not start a new connection on boot.</span></span><input type="checkbox" class="switch" id="autoConnectToggle"><span class="switch-ui"></span></label>
+            <label class="settings-row toggle-row"><span class="setting-symbol">♧</span><span class="setting-copy"><strong>Android VPN notification</strong><span>Show the Code Academy status in the notification shade when allowed by Android.</span></span><input type="checkbox" class="switch" id="notificationToggle"><span class="switch-ui"></span></label>
+          </div>
+          <div class="settings-group">
+            <div class="settings-group-title"><span class="group-icon">⛨</span><div><h2>Traffic protection</h2><p>Controls that affect all apps on the device.</p></div></div>
+            <label class="settings-row toggle-row"><span class="setting-symbol">⛨</span><span class="setting-copy"><strong>Block traffic outside the VPN</strong><span>Checked only when Android reports this app's Always-on VPN and lockdown controls are enabled. Turn it on in Android VPN settings.</span></span><input type="checkbox" class="switch" id="strictRoutingToggle"><span class="switch-ui"></span></label>
+            <div class="settings-row"><div class="setting-symbol">⌘</div><div class="setting-copy"><strong>DNS and route rules</strong><span>DNS and allowed traffic routes are supplied by the imported VPN profile. Only use profiles from a provider you trust.</span></div></div>
+          </div>
+          <div class="settings-group diagnostics-group">
+            <div class="settings-group-title"><span class="group-icon">⌁</span><div><h2>Diagnostics</h2><p>Read the Android network state without inventing speed estimates.</p></div></div>
+            <div class="diagnostic-grid"><div><span>Underlying network</span><strong id="settingsNetwork">Checking…</strong></div><div><span>Internet validation</span><strong id="settingsInternet">Checking…</strong></div><div><span>VPN profile</span><strong id="settingsConfig">Not configured</strong></div></div>
+            <button class="secondary-button full-button" id="settingsRefresh">Refresh diagnostics <span>↻</span></button>
+          </div>
+          <div class="settings-note"><span>i</span><p>Code Academy VPN Force will only report an active tunnel after Android accepts the VPN permission and the WireGuard engine starts. A valid server profile is still required for internet traffic to reach its destination.</p></div>
+        </section>
+
+        <section class="page-view" id="page-account">
+          <div class="page-intro"><p class="eyebrow">YOUR LEARNING ACCOUNT</p><h1>Account <span>& profile.</span></h1><p>Use your existing Code Academy account to manage the learning profile associated with your app.</p></div>
+          <div class="account-panel"><div class="account-art"><div class="account-ring"><img src="logo.png" alt="Code Academy logo"></div><span class="account-spark spark-a"></span><span class="account-spark spark-b"></span></div><div class="account-content"><span class="account-label">CODE ACADEMY MEMBER AREA</span><h2>One account. Your learning journey.</h2><p>Sign in to view the Code Academy profile page, account details, and connected learning services. Account authentication is handled by the existing Code Academy website.</p><button class="primary-button" id="signInButton">Open sign-in & profile <span>↗</span></button><button class="secondary-button" id="openProfileButton">View profile page</button></div></div>
+          <div class="account-help"><span class="info-icon">i</span><div><strong>Keep your account protected</strong><p>Only enter account credentials on the official Code Academy website. VPN settings and account sign-in are separate controls.</p></div></div>
+          <button class="secondary-button" id="accountShareButton"><span>↗</span> Share Code Academy VPN Force</button>
+        </section>
+      </main>
+
+      <footer class="app-footer"><span>CODE ACADEMY VPN FORCE</span><span>Connection status is reported by Android.</span></footer>
+    </div>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Bottom navigation"><button class="nav-item active" data-page="home"><span>◈</span><small>Home</small></button><button class="nav-item" data-page="settings"><span>⚙</span><small>Settings</small></button><button class="nav-item" data-page="account"><span>◎</span><small>Account</small></button></nav>
+
+  <div class="modal-backdrop" id="consentModal" aria-hidden="true"><section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal-symbol">⛨</div><button class="modal-close" id="closeModal" aria-label="Close">×</button><p class="eyebrow">BEFORE CONNECTING</p><h2 id="modalTitle">Review your VPN connection.</h2><p>Code Academy VPN Force uses the WireGuard profile you import to route traffic through a VPN server. Android will ask you to approve the VPN connection.</p><div class="modal-bullet"><span>01</span><span>Use a profile from a VPN provider you trust.</span></div><div class="modal-bullet"><span>02</span><span>The VPN may improve or reduce performance depending on your network and server.</span></div><div class="modal-bullet"><span>03</span><span>When active, Android may show a VPN key icon and an ongoing connection notification.</span></div><button class="primary-button modal-primary" id="confirmConnect">Continue to connection approval <span>→</span></button><button class="modal-secondary" id="cancelConnect">Cancel</button></section></div>
+  <div id="toastRegion" class="toast-region" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
