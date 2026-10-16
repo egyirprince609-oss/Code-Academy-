@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050816">
+  <meta name="author" content="Code Academy">
+  <meta name="application-name" content="Code Academy Live Map">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="description" content="Explore a live interactive map from the globe to local streets. Search mapped places, open directions, view GPS coordinates, available altitude, compass direction, roads, mapped places, and 3D buildings where map data supports them. Your location is private until you choose to share it.">
+  <meta name="keywords" content="live map, GPS location, 3D map, satellite map, latitude, longitude, location sharing, navigation, Code Academy Ghana">
+  <link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/gps-map.html">
+  <link rel="icon" type="image/png" href="https://egyirprince609-oss.github.io/Code-Academy-/logo.png">
+  <link rel="apple-touch-icon" href="https://egyirprince609-oss.github.io/Code-Academy-/apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.json">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Code Academy">
+  <meta property="og:title" content="Code Academy Live Map | Explore in 2D and 3D">
+  <meta property="og:description" content="Explore from continent to street with an interactive map, mapped-place search, optional precise GPS, 2D and 3D views, roads, buildings, location details and consent-based sharing. The map shows available geographic imagery—not a live camera feed. You control when your location is accessed or shared.">
+  <meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/gps-map.html">
+  <meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-map.png">
+  <meta property="og:image:secure_url" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-map.png">
+  <meta property="og:image:alt" content="Code Academy Live Map: a futuristic illustrative globe and 3D city map interface with location, map mode and privacy controls">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Code Academy Live Map | Explore in 2D and 3D">
+  <meta name="twitter:description" content="Explore the globe, streets, terrain and available 3D buildings. View your GPS details and share your location only when you choose.">
+  <meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-map.png">
+  <title>Live Map | Code Academy</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.css">
+  <style>
+    :root{--bg:#050816;--panel:#0a1020;--panel2:#0d172a;--panel3:#111e35;--line:rgba(148,163,184,.16);--text:#f2f7ff;--muted:#93a6c0;--cyan:#22d3ee;--blue:#38bdf8;--violet:#8b5cf6;--green:#34d399;--amber:#fbbf24;--red:#fb7185;--radius:18px;--safe-bottom:env(safe-area-inset-bottom,0px)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{min-height:100%;background:var(--bg);scroll-behavior:smooth}body{margin:0;min-height:100vh;color:var(--text);background:radial-gradient(ellipse at 12% 0%,rgba(37,99,235,.14),transparent 34%),radial-gradient(ellipse at 95% 8%,rgba(139,92,246,.12),transparent 30%),var(--bg);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.app{width:min(1600px,100%);margin:auto;padding:14px 16px calc(18px + var(--safe-bottom))}.topbar{display:flex;align-items:center;gap:12px;min-height:58px;margin-bottom:14px}.back-btn,.icon-btn,.primary-btn,.soft-btn,.danger-btn,.mode-btn,.mini-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);color:var(--text);background:rgba(15,23,42,.84);border-radius:12px;padding:10px 13px;min-height:42px;transition:transform .18s,border-color .18s,background .18s}.back-btn:hover,.icon-btn:hover,.soft-btn:hover,.mode-btn:hover,.mini-btn:hover{border-color:rgba(34,211,238,.44);background:#101e35}.back-btn:active,.primary-btn:active,.soft-btn:active{transform:scale(.98)}.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#06b6d4,#2563eb 58%,#7c3aed);box-shadow:0 8px 25px rgba(14,165,233,.2);font-size:18px}.brand-title{min-width:0;flex:1}.brand-title h1{font-size:clamp(16px,2vw,22px);letter-spacing:-.035em;margin:0;font-weight:850}.brand-title p{color:var(--muted);font-size:11px;margin:4px 0 0;line-height:1.4}.top-actions{display:flex;align-items:center;gap:7px}.language-select{max-width:170px;min-height:40px;color:#e5eefc;background:#0b1426;border:1px solid var(--line);border-radius:12px;padding:0 9px;font-size:12px}.icon-btn{width:42px;padding:0}.voice-on{border-color:rgba(52,211,153,.44);color:#a7f3d0}.intro{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin:5px 0 14px}.eyebrow{display:inline-flex;align-items:center;gap:7px;color:#67e8f9;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.eyebrow i{font-size:9px}.intro h2{font-size:clamp(22px,3vw,35px);line-height:1.08;letter-spacing:-.045em;margin:7px 0 8px}.intro p{max-width:790px;color:var(--muted);line-height:1.62;font-size:12px;margin:0}.live-status{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;border:1px solid rgba(52,211,153,.2);color:#a7f3d0;background:rgba(16,185,129,.075);border-radius:999px;padding:9px 12px;font-size:10px;font-weight:800}.pulse{width:7px;height:7px;display:inline-block;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(52,211,153,.1)}.layout{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.8fr);gap:14px;align-items:stretch}.map-card,.panel{min-width:0;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(12,20,37,.96),rgba(7,13,27,.98));box-shadow:0 18px 55px rgba(0,0,0,.2);overflow:hidden}.map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;border-bottom:1px solid var(--line);flex-wrap:wrap}.map-head-label{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:850}.map-head-label i{color:var(--cyan)}.map-head-small{color:var(--muted);font-size:10px;font-weight:500;margin-top:3px}.mode-switch{display:flex;gap:4px;padding:4px;border-radius:13px;background:#050b17;border:1px solid var(--line)}.mode-btn{min-height:32px;border:0;padding:7px 10px;border-radius:9px;background:transparent;color:#91a4be;font-size:10px;font-weight:850}.mode-btn.active{color:#e6fbff;background:linear-gradient(135deg,#0369a1,#4f46e5);box-shadow:0 4px 15px rgba(37,99,235,.22)}.map-search-row{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding:10px 12px;border-bottom:1px solid var(--line);background:rgba(5,12,25,.7)}.map-search-input{display:flex;align-items:center;gap:8px;flex:1 1 260px;min-width:150px;min-height:38px;padding:0 10px;border-radius:11px;border:1px solid rgba(148,163,184,.18);background:#070f1e;color:#7dd3fc}.map-search-input input{width:100%;min-width:0;border:0;outline:none;background:transparent;color:var(--text);font-size:11px}.map-search-input input::placeholder{color:#60758e}.search-clear{border:0;background:transparent;color:#7086a2;padding:4px 2px}.search-clear:hover{color:#e0f2fe}.search-action{min-height:38px;padding:8px 10px;font-size:10px;white-space:nowrap}.search-status{flex:1 0 100%;font-size:9px;color:#8096b2;line-height:1.4;padding-left:3px}.map-canvas-wrap{position:relative;min-height:400px;height:clamp(410px,57vh,700px);background:#071428;isolation:isolate}.map-canvas{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}.mapboxgl-canvas,.leaflet-container{font-family:inherit}.mapboxgl-ctrl-logo,.mapboxgl-ctrl-attrib,.leaflet-control-attribution{opacity:.88}.map-overlay{position:absolute;z-index:500;pointer-events:none}.map-overlay>*{pointer-events:auto}.map-location-pill{top:12px;left:12px;max-width:min(72%,440px);display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:14px;background:rgba(3,9,23,.84);border:1px solid rgba(148,163,184,.2);backdrop-filter:blur(14px);box-shadow:0 8px 30px #0004}.map-location-pill .pin{width:30px;height:30px;display:grid;place-items:center;flex:0 0 30px;border-radius:10px;background:rgba(6,182,212,.14);color:#67e8f9}.map-location-pill strong{display:block;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.map-location-pill span{display:block;font-size:9px;color:#9fb2cb;margin-top:2px}.map-actions{top:12px;right:12px;display:grid;gap:7px}.map-actions button{width:38px;height:38px;border-radius:12px;border:1px solid rgba(148,163,184,.2);background:rgba(4,10,23,.86);color:#e5f4ff;box-shadow:0 6px 20px #0003;backdrop-filter:blur(14px)}.map-actions button:hover{color:var(--cyan);border-color:#22d3ee66}.map-bottom-info{left:12px;right:12px;bottom:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}.map-helper{max-width:490px;border:1px solid rgba(148,163,184,.18);background:rgba(3,9,23,.84);backdrop-filter:blur(14px);border-radius:13px;padding:10px 12px;color:#bfd0e7;font-size:10px;line-height:1.5}.map-helper strong{color:#f1f8ff}.map-attribution-note{border-radius:9px;padding:7px 9px;background:rgba(3,9,23,.78);color:#dbeafe;font-size:9px;white-space:nowrap}.map-notice{position:absolute;z-index:600;top:50%;left:50%;transform:translate(-50%,-50%);width:min(350px,calc(100% - 30px));padding:19px 18px;border-radius:18px;border:1px solid rgba(56,189,248,.32);background:rgba(3,10,25,.93);box-shadow:0 20px 55px #0008;backdrop-filter:blur(18px);text-align:center}.map-notice[hidden]{display:none}.notice-icon{width:48px;height:48px;display:grid;place-items:center;margin:0 auto 11px;border-radius:15px;color:#67e8f9;background:rgba(6,182,212,.13);font-size:19px}.map-notice h3{font-size:16px;margin:0 0 8px}.map-notice p{font-size:11px;color:#a8bbd4;line-height:1.6;margin:0 0 13px}.primary-btn{border:0;background:linear-gradient(135deg,#0891b2,#2563eb 58%,#6d28d9);color:#fff;font-weight:850;box-shadow:0 9px 25px #1d4ed833}.primary-btn:hover{filter:brightness(1.1)}.soft-btn{background:rgba(30,41,59,.56);font-weight:750}.mini-btn{min-height:32px;padding:7px 10px;font-size:10px}.map-foot{padding:11px 13px;display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;border-top:1px solid var(--line)}.foot-note{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:10px;line-height:1.5}.foot-note i{color:#67e8f9}.map-foot-actions{display:flex;gap:7px;flex-wrap:wrap}.side-stack{display:flex;flex-direction:column;gap:14px}.panel{padding:15px}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}.panel-title{font-size:12px;font-weight:900;display:flex;align-items:center;gap:8px}.panel-title i{color:var(--cyan)}.panel-hint{color:#7186a2;font-size:9px}.location-summary{background:radial-gradient(ellipse at 100% 0%,rgba(37,99,235,.14),transparent 52%),rgba(8,15,29,.8)}.place-label{display:flex;align-items:flex-start;gap:11px;padding:12px;border:1px solid rgba(56,189,248,.18);border-radius:14px;background:rgba(14,25,45,.66);margin-bottom:12px}.place-icon{width:38px;height:38px;display:grid;place-items:center;flex:0 0 38px;background:linear-gradient(145deg,#083344,#1d4ed8);border-radius:12px;color:#b8fbff}.place-label strong{font-size:12px;display:block;line-height:1.4}.place-label span{display:block;color:var(--muted);font-size:10px;line-height:1.45;margin-top:3px}.data-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.data-cell{padding:10px;border-radius:12px;border:1px solid rgba(148,163,184,.1);background:rgba(15,23,42,.63);min-width:0}.data-cell .label{font-size:9px;letter-spacing:.07em;color:#8397b3;text-transform:uppercase;display:flex;align-items:center;gap:6px;margin-bottom:6px}.data-cell .label i{color:#4dd3e4}.data-cell .value{font-size:12px;font-weight:800;line-height:1.45;word-break:break-word;overflow-wrap:anywhere;color:#eff7ff}.data-cell .detail{margin-top:4px;color:#788da9;font-size:9px;line-height:1.4}.data-cell.full{grid-column:1/-1}.progress-track{height:5px;border-radius:999px;background:#111f35;overflow:hidden;margin-top:8px}.progress-track span{height:100%;display:block;width:0;background:linear-gradient(90deg,#22d3ee,#6366f1);border-radius:inherit;transition:width .3s}.action-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.action-tile{display:flex;align-items:center;text-align:left;gap:10px;min-width:0;padding:11px;border-radius:13px;border:1px solid var(--line);background:#0b1426;color:var(--text)}.action-tile:hover{background:#101e35;border-color:rgba(34,211,238,.35)}.action-tile .tile-icon{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;background:rgba(14,165,233,.13);color:#67e8f9;border-radius:10px}.action-tile strong{display:block;font-size:10px}.action-tile small{display:block;color:var(--muted);font-size:9px;margin-top:4px;line-height:1.4}.privacy-note{display:flex;gap:9px;border:1px solid rgba(52,211,153,.18);background:rgba(16,185,129,.055);border-radius:12px;padding:11px;color:#a6c8c1;font-size:10px;line-height:1.6;margin-top:12px}.privacy-note i{color:#6ee7b7;padding-top:1px}.permission-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(148,163,184,.1)}.permission-row:last-child{border-bottom:0;padding-bottom:0}.permission-row:first-of-type{padding-top:0}.permission-row strong{display:block;font-size:11px}.permission-row small{display:block;color:var(--muted);font-size:9px;line-height:1.45;margin-top:4px;max-width:250px}.state-tag{display:inline-flex;align-items:center;gap:5px;color:#91a4be;font-size:9px;white-space:nowrap}.state-tag.ok{color:#86efac}.state-tag.warn{color:#fcd34d}.token-panel{margin-top:11px;padding:12px;border-radius:13px;background:#060d1c;border:1px solid rgba(251,191,36,.2)}.token-panel[hidden]{display:none}.token-panel p{font-size:10px;color:#a8bad1;line-height:1.55;margin:0 0 10px}.token-form{display:flex;gap:6px}.token-form input{width:100%;min-width:0;background:#0b172a;border:1px solid #263650;border-radius:9px;color:#e5f3ff;padding:9px;font-size:10px}.footer{color:#60748f;font-size:9px;line-height:1.6;text-align:center;padding:18px 8px 2px}.footer a{color:#7dd3fc;text-decoration:none}.toast-stack{position:fixed;z-index:9999;bottom:calc(16px + var(--safe-bottom));left:50%;transform:translateX(-50%);width:min(420px,calc(100vw - 26px));display:grid;gap:7px;pointer-events:none}.toast{padding:12px 14px;border:1px solid rgba(56,189,248,.28);border-radius:13px;background:rgba(7,16,32,.97);box-shadow:0 15px 40px #0006;color:#e6f7ff;font-size:11px;line-height:1.5;animation:toastIn .22s ease}@keyframes toastIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}button:disabled{opacity:.45;cursor:not-allowed}
+    @media(min-width:1300px){.app{padding:18px 24px 22px}.map-canvas-wrap{height:min(66vh,790px)}}
+    @media(max-width:1050px){.layout{grid-template-columns:minmax(0,1fr)}.side-stack{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}.map-canvas-wrap{height:clamp(420px,60vh,670px)}.side-stack .location-summary{grid-row:span 2}}
+    @media(max-width:680px){.app{padding:10px 10px calc(12px + var(--safe-bottom))}.topbar{gap:8px;margin-bottom:12px}.back-btn{min-height:39px;padding:0 11px}.brand-mark{width:38px;height:38px;border-radius:12px}.brand-title h1{font-size:15px}.brand-title p{font-size:9px}.top-actions{gap:5px}.top-actions .icon-btn{width:37px;min-height:37px}.language-select{width:94px;max-width:94px;min-height:37px;font-size:10px}.top-actions #settingsBtn{display:none}.intro{display:block}.intro h2{font-size:25px}.intro p{font-size:11px}.live-status{margin-top:10px}.map-head{padding:10px}.map-head-label{font-size:11px}.map-search-row{padding:8px;gap:6px}.map-search-input{flex-basis:100%;min-width:0}.search-action{flex:1;justify-content:center;padding:8px 7px;font-size:9px}.search-status{flex-basis:100%}.mode-switch{width:100%;justify-content:space-between}.mode-btn{flex:1;padding:7px 3px;font-size:9px}.map-canvas-wrap{height:56vh;min-height:365px;max-height:570px}.map-location-pill{top:8px;left:8px;max-width:calc(100% - 70px);padding:8px}.map-location-pill strong{font-size:10px}.map-location-pill span{font-size:8px}.map-actions{top:8px;right:8px;gap:5px}.map-actions button{width:34px;height:34px}.map-bottom-info{left:8px;right:8px;bottom:8px;align-items:stretch}.map-helper{font-size:9px;padding:8px 9px}.map-attribution-note{display:none}.map-foot{padding:9px 10px}.foot-note{font-size:9px;flex:1}.map-foot-actions{width:100%}.map-foot-actions button{flex:1;min-width:0;padding:8px 7px;font-size:9px}.side-stack{display:flex;gap:10px}.panel{padding:12px}.data-cell .value{font-size:11px}.data-cell{padding:9px}.action-grid{gap:7px}.action-tile{padding:9px;gap:8px}.action-tile .tile-icon{width:31px;height:31px;flex-basis:31px}.permission-row small{max-width:215px}.token-form{flex-direction:column}.footer{font-size:8px}}
+    @media(max-width:360px){.top-actions .voice-label{display:none}.back-btn .back-label{display:none}.intro h2{font-size:22px}.map-canvas-wrap{min-height:340px}.map-mode-btn{font-size:8px}.data-grid{gap:6px}.data-cell .value{font-size:10px}.action-tile strong{font-size:9px}.action-tile small{font-size:8px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <button class="back-btn" id="backBtn" type="button" aria-label="Go back"><i class="fa-solid fa-arrow-left"></i><span class="back-label" data-i18n="Back">Back</span></button>
+      <div class="brand-mark" aria-hidden="true"><i class="fa-solid fa-location-crosshairs"></i></div>
+      <div class="brand-title"><h1>Live Map <span style="color:#67e8f9">/ 2D + 3D</span></h1><p data-i18n="Live location, mapped places and terrain">Live location, mapped places and terrain</p></div>
+      <div class="top-actions">
+        <label class="sr-only" for="languageSelect">Interface language</label><select id="languageSelect" class="language-select" title="Page language"></select>
+        <button class="icon-btn voice-on" id="voiceBtn" type="button" aria-label="Toggle AI voice" title="AI voice on"><i class="fa-solid fa-volume-high"></i></button>
+        <button class="icon-btn" id="settingsBtn" type="button" aria-label="3D map settings" title="3D map settings"><i class="fa-solid fa-sliders"></i></button>
+      </div>
+    </header>
+
+    <section class="intro" aria-labelledby="pageHeading">
+      <div><div class="eyebrow"><i class="fa-solid fa-satellite-dish"></i><span data-i18n="LOCATION INTELLIGENCE">LOCATION INTELLIGENCE</span></div><h2 id="pageHeading" data-i18n="Explore the world. Understand where you are.">Explore the world. Understand where you are.</h2><p data-i18n="Zoom from a global globe into mapped cities and streets. With permission, see your device location, coordinates, accuracy and available altitude. Switch between 2D, 3D terrain and satellite views, then share your position only when you decide.">Zoom from a global globe into mapped cities and streets. With permission, see your device location, coordinates, accuracy and available altitude. Switch between 2D, 3D terrain and satellite views, then share your position only when you decide.</p></div>
+      <div class="live-status"><span class="pulse"></span><span id="liveStatusText" data-i18n="GPS waiting for permission">GPS waiting for permission</span></div>
+    </section>
+
+    <section class="layout">
+      <section class="map-card" aria-label="Interactive map">
+        <div class="map-head"><div class="map-head-label"><i class="fa-solid fa-earth-africa"></i><div><div data-i18n="Interactive world map">Interactive world map</div><div class="map-head-small" id="mapSubhead" data-i18n="Global view · zoom to local streets">Global view · zoom to local streets</div></div></div>
+          <div class="mode-switch" role="group" aria-label="Map mode"><button class="mode-btn" data-mode="2d" type="button"><i class="fa-regular fa-map"></i> 2D</button><button class="mode-btn active" data-mode="3d" type="button"><i class="fa-solid fa-cube"></i> 3D</button><button class="mode-btn" data-mode="satellite" type="button"><i class="fa-solid fa-satellite"></i> <span data-i18n="Satellite">Satellite</span></button><button class="mode-btn" data-mode="globe" type="button"><i class="fa-solid fa-earth-americas"></i> <span data-i18n="Globe">Globe</span></button></div>
+        </div>
+        <div class="map-search-row">
+          <label class="sr-only" for="placeSearchInput" data-i18n="Search a place">Search a place</label>
+          <div class="map-search-input"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input id="placeSearchInput" type="search" autocomplete="off" data-i18n-placeholder="Search continent, country, city, street or landmark" placeholder="Search continent, country, city, street or landmark" aria-label="Search for a place"><button id="clearPlaceSearchBtn" type="button" class="search-clear" aria-label="Clear place search" title="Clear search"><i class="fa-solid fa-xmark"></i></button></div>
+          <button id="findPlaceBtn" class="soft-btn search-action" type="button"><i class="fa-solid fa-location-crosshairs"></i><span data-i18n="Find place">Find place</span></button>
+          <button id="routeSearchBtn" class="primary-btn search-action" type="button"><i class="fa-solid fa-route"></i><span data-i18n="Route">Route</span></button>
+          <span id="placeSearchStatus" class="search-status" aria-live="polite" data-i18n="Search any mapped place">Search any mapped place</span>
+        </div>
+        <div class="map-canvas-wrap">
+          <div id="map" class="map-canvas" role="application" aria-label="Pan, zoom and explore the map"></div>
+          <div class="map-overlay map-location-pill"><div class="pin"><i class="fa-solid fa-location-dot"></i></div><div style="min-width:0"><strong id="mapPlaceName" data-i18n="Location not requested">Location not requested</strong><span id="mapPlaceMeta" data-i18n="Tap Locate Me to request GPS">Tap Locate Me to request GPS</span></div></div>
+          <div class="map-overlay map-actions"><button id="zoomInBtn" type="button" aria-label="Zoom in" title="Zoom in"><i class="fa-solid fa-plus"></i></button><button id="zoomOutBtn" type="button" aria-label="Zoom out" title="Zoom out"><i class="fa-solid fa-minus"></i></button><button id="northBtn" type="button" aria-label="Reset north" title="Reset north"><i class="fa-regular fa-compass"></i></button><button id="fullscreenBtn" type="button" aria-label="Toggle map fullscreen" title="Toggle map fullscreen"><i class="fa-solid fa-expand"></i></button></div>
+          <div class="map-overlay map-bottom-info"><div class="map-helper"><strong><i class="fa-solid fa-circle-info" style="color:#67e8f9"></i> <span data-i18n="Map coverage varies by area">Map coverage varies by area</span></strong><br><span data-i18n="Buildings, road names, terrain and satellite imagery depend on the provider's available data. Imagery is not a live camera view.">Buildings, road names, terrain and satellite imagery depend on the provider's available data. Imagery is not a live camera view.</span></div><div class="map-attribution-note" id="mapModeLabel">3D • buildings when available</div></div>
+          <div class="map-notice" id="mapNotice" hidden><div class="notice-icon"><i class="fa-solid fa-cube"></i></div><h3 id="noticeTitle">Enable enhanced 3D maps</h3><p id="noticeBody">A Mapbox public access token is needed for 3D buildings and terrain. The 2D map can still work without one.</p><button class="primary-btn" id="configureMapBtn" type="button"><i class="fa-solid fa-key"></i><span data-i18n="Configure 3D map">Configure 3D map</span></button></div>
+        </div>
+        <div class="map-foot"><div class="foot-note"><i class="fa-solid fa-shield-halved"></i><span data-i18n="Exact location links are shared only after you confirm; map providers may receive coordinates needed to render or label the map.">Exact location links are shared only after you confirm; map providers may receive coordinates needed to render or label the map.</span></div><div class="map-foot-actions"><button class="primary-btn" id="locateBtn" type="button"><i class="fa-solid fa-location-crosshairs"></i><span data-i18n="Locate me">Locate me</span></button><button class="soft-btn" id="liveBtn" type="button"><i class="fa-solid fa-tower-broadcast"></i><span data-i18n="Start live GPS">Start live GPS</span></button><button class="soft-btn" id="shareLocationBtn" type="button"><i class="fa-solid fa-share-nodes"></i><span data-i18n="Share location">Share location</span></button></div></div>
+      </section>
+
+      <aside class="side-stack" aria-label="Location details and permissions">
+        <section class="panel location-summary"><div class="panel-head"><div class="panel-title"><i class="fa-solid fa-crosshairs"></i><span data-i18n="Location snapshot">Location snapshot</span></div><span class="panel-hint" id="fixAge">Waiting for GPS</span></div>
+          <div class="place-label"><div class="place-icon"><i class="fa-solid fa-location-dot"></i></div><div style="min-width:0"><strong id="resolvedPlace" data-i18n="No position yet">No position yet</strong><span id="resolvedContext" data-i18n="Allow location to identify your area">Allow location to identify your area</span></div></div>
+          <div class="data-grid">
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-arrows-left-right-to-line"></i><span data-i18n="Latitude">Latitude</span></div><div class="value" id="latValue">—</div><div class="detail">GPS / WGS84</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-arrows-up-down-left-right"></i><span data-i18n="Longitude">Longitude</span></div><div class="value" id="lonValue">—</div><div class="detail">GPS / WGS84</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-bullseye"></i><span data-i18n="Accuracy radius">Accuracy radius</span></div><div class="value" id="accuracyValue">—</div><div class="detail" data-i18n="Estimated horizontal error">Estimated horizontal error</div><div class="progress-track"><span id="accuracyBar"></span></div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-mountain-sun"></i><span data-i18n="GPS altitude">GPS altitude</span></div><div class="value" id="altitudeValue">—</div><div class="detail" data-i18n="If the device provides it">If the device provides it</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-regular fa-compass"></i><span data-i18n="Direction">Direction</span></div><div class="value" id="headingValue">—</div><div class="detail" id="headingMeta" data-i18n="Enable compass if supported">Enable compass if supported</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-person-walking"></i><span data-i18n="Speed">Speed</span></div><div class="value" id="speedValue">—</div><div class="detail" data-i18n="GPS motion estimate">GPS motion estimate</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-layer-group"></i><span data-i18n="Terrain elevation">Terrain elevation</span></div><div class="value" id="terrainValue">—</div><div class="detail" data-i18n="If map elevation data is available">If map elevation data is available</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-globe"></i><span data-i18n="Continent">Continent</span></div><div class="value" id="continentValue">—</div><div class="detail" data-i18n="From mapped place context">From mapped place context</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-flag"></i><span data-i18n="Country">Country</span></div><div class="value" id="countryValue">—</div><div class="detail" id="countryCode">—</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-map-location-dot"></i><span data-i18n="Region / state">Region / state</span></div><div class="value" id="regionValue">—</div><div class="detail" data-i18n="Based on provider data">Based on provider data</div></div>
+            <div class="data-cell"><div class="label"><i class="fa-solid fa-city"></i><span data-i18n="City / town">City / town</span></div><div class="value" id="cityValue">—</div><div class="detail" data-i18n="May be unavailable in remote areas">May be unavailable in remote areas</div></div>
+            <div class="data-cell full"><div class="label"><i class="fa-solid fa-road"></i><span data-i18n="Street / nearby place">Street / nearby place</span></div><div class="value" id="streetValue" data-i18n="Not resolved yet">Not resolved yet</div><div class="detail" id="positionTimestamp">—</div></div>
+          </div>
+          <div class="map-foot-actions" style="margin-top:12px"><button class="soft-btn" id="copyCoordsBtn" type="button"><i class="fa-regular fa-copy"></i><span data-i18n="Copy GPS details">Copy GPS details</span></button><button class="soft-btn" id="readLocationBtn" type="button"><i class="fa-solid fa-volume-high"></i><span data-i18n="Read summary aloud">Read summary aloud</span></button></div>
+        </section>
+
+        <section class="panel"><div class="panel-head"><div class="panel-title"><i class="fa-solid fa-bolt"></i><span data-i18n="Quick actions">Quick actions</span></div><span class="panel-hint" data-i18n="You stay in control">You stay in control</span></div>
+          <div class="action-grid">
+            <button class="action-tile" id="enableNotificationsBtn" type="button"><span class="tile-icon"><i class="fa-regular fa-bell"></i></span><span><strong data-i18n="Device notifications">Device notifications</strong><small data-i18n="Request notification permission">Request notification permission</small></span></button>
+            <button class="action-tile" id="compassBtn" type="button"><span class="tile-icon"><i class="fa-regular fa-compass"></i></span><span><strong data-i18n="Enable compass">Enable compass</strong><small data-i18n="Sensor support varies by device">Sensor support varies by device</small></span></button>
+            <button class="action-tile" id="sharePageBtn" type="button"><span class="tile-icon"><i class="fa-solid fa-user-plus"></i></span><span><strong data-i18n="Share / invite">Share / invite</strong><small data-i18n="Uses your Code Academy referral code">Uses your Code Academy referral code</small></span></button>
+            <button class="action-tile" id="openDirectionsBtn" type="button"><span class="tile-icon"><i class="fa-solid fa-route"></i></span><span><strong data-i18n="Open directions">Open directions</strong><small data-i18n="Continue in a maps app">Continue in a maps app</small></span></button>
+          </div>
+          <div class="privacy-note"><i class="fa-solid fa-shield-heart"></i><div><strong data-i18n="Privacy-first location">Privacy-first location</strong><br><span data-i18n="GPS starts only after you ask. Live GPS stops when you turn it off or leave this page. Nothing here silently tracks in the background. Exact location links require your action; precise coordinates stay out of account history unless you opt in below. Device notification previews may show location details on your lock screen.">GPS starts only after you ask. Live GPS stops when you turn it off or leave this page. Nothing here silently tracks in the background. Exact location links require your action; precise coordinates stay out of account history unless you opt in below. Device notification previews may show location details on your lock screen.</span></div></div>
+        </section>
+
+        <section class="panel"><div class="panel-head"><div class="panel-title"><i class="fa-solid fa-sliders"></i><span data-i18n="Permissions & map setup">Permissions & map setup</span></div><span class="panel-hint" data-i18n="Optional">Optional</span></div>
+          <div class="permission-row"><div><strong data-i18n="Precise device location">Precise device location</strong><small data-i18n="Requested only when you tap Locate me or Start live GPS.">Requested only when you tap Locate me or Start live GPS.</small></div><span class="state-tag" id="locationPermissionState">● <span data-i18n="Not requested">Not requested</span></span></div>
+          <div class="permission-row"><div><strong data-i18n="Device notifications">Device notifications</strong><small data-i18n="Allows location summaries while this page is active.">Allows location summaries while this page is active.</small></div><span class="state-tag" id="notificationPermissionState">● <span data-i18n="Not requested">Not requested</span></span></div>
+          <div class="permission-row"><div><strong data-i18n="3D building & terrain layer">3D building & terrain layer</strong><small data-i18n="Requires your site's Mapbox public token; mapped coverage varies.">Requires your site's Mapbox public token; mapped coverage varies.</small></div><span class="state-tag" id="mapPermissionState">● <span data-i18n="2D fallback">2D fallback</span></span></div>
+          <div class="permission-row"><div><strong data-i18n="Precise location in account history">Precise location in account history</strong><small data-i18n="Optional. When enabled, location-view notifications may include exact coordinates. Off by default.">Optional. When enabled, location-view notifications may include exact coordinates. Off by default.</small></div><label style="display:flex;align-items:center;gap:7px;color:#93a6c0;font-size:10px"><input id="savePreciseHistory" type="checkbox" style="accent-color:#22d3ee;width:17px;height:17px"><span data-i18n="Include coordinates">Include coordinates</span></label></div>
+          <div class="token-panel" id="tokenPanel" hidden><p><strong data-i18n="Set up 3D maps">Set up 3D maps</strong><br><span data-i18n="For production, set MAPBOX_ACCESS_TOKEN in gps-map.html and restrict the token to your GitHub Pages origin in Mapbox. A public browser token is visible by design; do not paste a secret server token.">For production, set MAPBOX_ACCESS_TOKEN in gps-map.html and restrict the token to your GitHub Pages origin in Mapbox. A public browser token is visible by design; do not paste a secret server token.</span></p><div class="token-form"><input id="mapTokenInput" type="password" autocomplete="off" placeholder="Mapbox public token (pk.…)"><button class="primary-btn" id="saveMapTokenBtn" type="button"><i class="fa-solid fa-check"></i><span data-i18n="Apply">Apply</span></button></div><div style="margin-top:9px;display:flex;gap:7px;flex-wrap:wrap"><button class="mini-btn" id="clearMapTokenBtn" type="button"><i class="fa-solid fa-trash"></i><span data-i18n="Clear saved token">Clear saved token</span></button><a href="https://docs.mapbox.com/mapbox-gl-js/guides/" target="_blank" rel="noopener noreferrer" style="align-self:center;color:#7dd3fc;font-size:10px" data-i18n="Map setup guide">Map setup guide</a></div></div>
+        </section>
+      </aside>
+    </section>
+    <footer class="footer"><span data-i18n="Code Academy Live Map · Explore freely, share carefully.">Code Academy Live Map · Explore freely, share carefully.</span> · <a href="privacy.html" data-i18n="Privacy">Privacy</a> · <a href="menu.html" data-i18n="Dashboard">Dashboard</a><br><span data-i18n="Map data and imagery are supplied by third parties and may be dated, approximate or incomplete. GPS accuracy depends on device sensors, signal and environment. This map is not an emergency-dispatch service.">Map data and imagery are supplied by third parties and may be dated, approximate or incomplete. GPS accuracy depends on device sensors, signal and environment. This map is not an emergency-dispatch service.</span></footer>
+  </main>
+  <div class="toast-stack" id="toastStack" role="status" aria-live="polite"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.33.0/mapbox-gl.js"></script>
+  <script type="module">
+    import { auth, db, doc, getDoc, onAuthStateChanged, rememberReferral } from './authentication.js';
+    import { sendNotification } from './notification-engine.js';
+
+    /* Production setup: paste your Mapbox PUBLIC token below, then restrict its URL origins in Mapbox.
+       You can also enter a public token through Settings during local testing. */
+    const MAPBOX_ACCESS_TOKEN = 'YOUR_MAPBOX_PUBLIC_ACCESS_TOKEN';
+    const TOKEN_STORAGE_KEY = 'code_academy_mapbox_public_token_v1';
+    const LANGUAGE_STORAGE_KEY = 'code_academy_preferred_language_v1';
+    const VOICE_STORAGE_KEY = 'code_academy_live_map_voice_v1';
+    const APP_BASE = 'https://egyirprince609-oss.github.io/Code-Academy-/';
+    let currentUser = null;
+    let userReferralCode = '';
+    let currentMap = null;
+    let leafletMap = null;
+    let currentMarker = null;
+    let destinationMarker = null;
+    let currentDestination = null;
+    let accuracyCircle = null;
+    let currentMapEngine = 'leaflet';
+    let currentMapMode = '3d';
+    let currentStyleUrl = '';
+    let liveWatchId = null;
+    let currentPosition = null;
+    let lastReverseGeocodeAt = 0;
+    let lastReverseGeocodeCoords = null;
+    let locationViewPendingNotification = false;
+    let lastDeviceHeading = null;
+    let compassOn = false;
+    let voiceOn = readVoicePreference();
+    let notificationBusy = false;
+    let currentContinent = '';
+    let currentPlace = { country: '', countryCode: '', region: '', city: '', street: '', neighborhood: '', postcode: '' };
+
+    const CA_SUPPORTED_LANGUAGES=[{"code":"en","name":"English"},{"code":"af","name":"Afrikaans"},{"code":"sq","name":"Albanian"},{"code":"am","name":"Amharic"},{"code":"ar","name":"Arabic"},{"code":"hy","name":"Armenian"},{"code":"az","name":"Azerbaijani"},{"code":"eu","name":"Basque"},{"code":"be","name":"Belarusian"},{"code":"bn","name":"Bengali"},{"code":"bs","name":"Bosnian"},{"code":"bg","name":"Bulgarian"},{"code":"my","name":"Burmese"},{"code":"ca","name":"Catalan"},{"code":"ceb","name":"Cebuano"},{"code":"zh-CN","name":"Chinese (Simplified)"},{"code":"zh-TW","name":"Chinese (Traditional)"},{"code":"co","name":"Corsican"},{"code":"hr","name":"Croatian"},{"code":"cs","name":"Czech"},{"code":"da","name":"Danish"},{"code":"nl","name":"Dutch"},{"code":"eo","name":"Esperanto"},{"code":"et","name":"Estonian"},{"code":"tl","name":"Filipino"},{"code":"fi","name":"Finnish"},{"code":"fr","name":"French"},{"code":"fy","name":"Frisian"},{"code":"gl","name":"Galician"},{"code":"ka","name":"Georgian"},{"code":"de","name":"German"},{"code":"el","name":"Greek"},{"code":"gu","name":"Gujarati"},{"code":"ht","name":"Haitian Creole"},{"code":"ha","name":"Hausa"},{"code":"haw","name":"Hawaiian"},{"code":"he","name":"Hebrew"},{"code":"hi","name":"Hindi"},{"code":"hmn","name":"Hmong"},{"code":"hu","name":"Hungarian"},{"code":"is","name":"Icelandic"},{"code":"ig","name":"Igbo"},{"code":"id","name":"Indonesian"},{"code":"ga","name":"Irish"},{"code":"it","name":"Italian"},{"code":"ja","name":"Japanese"},{"code":"jw","name":"Javanese"},{"code":"kn","name":"Kannada"},{"code":"kk","name":"Kazakh"},{"code":"km","name":"Khmer"},{"code":"rw","name":"Kinyarwanda"},{"code":"ko","name":"Korean"},{"code":"ku","name":"Kurdish"},{"code":"ky","name":"Kyrgyz"},{"code":"lo","name":"Lao"},{"code":"la","name":"Latin"},{"code":"lv","name":"Latvian"},{"code":"lt","name":"Lithuanian"},{"code":"lb","name":"Luxembourgish"},{"code":"mk","name":"Macedonian"},{"code":"mg","name":"Malagasy"},{"code":"ms","name":"Malay"},{"code":"ml","name":"Malayalam"},{"code":"mt","name":"Maltese"},{"code":"mi","name":"Maori"},{"code":"mr","name":"Marathi"},{"code":"mn","name":"Mongolian"},{"code":"ne","name":"Nepali"},{"code":"no","name":"Norwegian"},{"code":"ny","name":"Nyanja"},{"code":"or","name":"Odia"},{"code":"ps","name":"Pashto"},{"code":"fa","name":"Persian"},{"code":"pl","name":"Polish"},{"code":"pt","name":"Portuguese"},{"code":"pa","name":"Punjabi"},{"code":"ro","name":"Romanian"},{"code":"ru","name":"Russian"},{"code":"sm","name":"Samoan"},{"code":"gd","name":"Scots Gaelic"},{"code":"sr","name":"Serbian"},{"code":"st","name":"Sesotho"},{"code":"sn","name":"Shona"},{"code":"sd","name":"Sindhi"},{"code":"si","name":"Sinhala"},{"code":"sk","name":"Slovak"},{"code":"sl","name":"Slovenian"},{"code":"so","name":"Somali"},{"code":"es","name":"Spanish"},{"code":"su","name":"Sundanese"},{"code":"sw","name":"Swahili"},{"code":"sv","name":"Swedish"},{"code":"tg","name":"Tajik"},{"code":"ta","name":"Tamil"},{"code":"tt","name":"Tatar"},{"code":"te","name":"Telugu"},{"code":"th","name":"Thai"},{"code":"tr","name":"Turkish"},{"code":"uk","name":"Ukrainian"},{"code":"ur","name":"Urdu"},{"code":"uz","name":"Uzbek"},{"code":"vi","name":"Vietnamese"},{"code":"cy","name":"Welsh"},{"code":"xh","name":"Xhosa"},{"code":"yi","name":"Yiddish"},{"code":"yo","name":"Yoruba"},{"code":"zu","name":"Zulu"}];
+    const LANGUAGE_NAMES = Object.fromEntries(CA_SUPPORTED_LANGUAGES.map(item=>[item.code,item.name]));
+    const $ = id => document.getElementById(id);
+    const tokenInput = $('mapTokenInput');
+    const MAP_STYLES = {
+      standard: 'mapbox://styles/mapbox/standard',
+      satellite: 'mapbox://styles/mapbox/satellite-streets-v12'
+    };
+    const CONTINENT_BY_COUNTRY = {
+      Africa: 'GH NG ZA KE UG TZ RW ET EG MA DZ TN LY SD SS SN CI CM GH BW NA ZM ZW MW MZ AO CD CG GA GQ ST CV GM GN GW LR SL BF ML NE TG BJ GH LR MR TD CF ER DJ SO MG MU SC KM SZ LS BI SYR',
+      Europe: 'GB IE FR DE ES PT IT CH AT BE NL LU MC AD SM VA MT PL CZ SK HU SI HR BA RS ME XK AL MK GR BG RO MD UA BY LT LV EE FI SE NO DK IS CY TR RU GE AM AZ',
+      Asia: 'CN JP KR KP IN PK BD LK NP BT MV AF IR IQ SA AE QA KW BH OM YE JO IL PS LB SY TR KZ UZ TM KG TJ MN TW HK MO TH VN LA KH MM MY SG ID BN PH TL',
+      'North America': 'US CA MX GT BZ SV HN NI CR PA CU JM HT DO BS BB TT GD LC VC AG DM KN PR GL BM KY AW CW SX',
+      'South America': 'BR AR CL UY PY BO PE EC CO VE GY SR GF',
+      Oceania: 'AU NZ PG FJ SB VU NC PF WS TO KI TV NR FM MH PW',
+      Antarctica: 'AQ'
+    };
+
+    function readVoicePreference(){ try { return localStorage.getItem(VOICE_STORAGE_KEY) !== 'off'; } catch { return true; } }
+    function getMapboxToken(){
+      let saved = '';
+      try { saved = localStorage.getItem(TOKEN_STORAGE_KEY) || ''; } catch {}
+      if (saved.startsWith('pk.')) return saved.trim();
+      return MAPBOX_ACCESS_TOKEN.startsWith('pk.') ? MAPBOX_ACCESS_TOKEN.trim() : '';
+    }
+    function escapeHTML(value){ return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char])); }
+    function toast(message){ const el=document.createElement('div');el.className='toast';el.textContent=message;$('toastStack').appendChild(el);setTimeout(()=>el.remove(),5000); }
+    function setLiveStatus(message, tone='normal'){
+      $('liveStatusText').textContent=message;
+      const status=$('liveStatusText').parentElement;
+      status.style.color=tone==='ok'?'#a7f3d0':tone==='warn'?'#fde68a':'';
+      const pulse=status.querySelector('.pulse'); pulse.style.background=tone==='warn'?'#fbbf24':tone==='ok'?'#34d399':'#38bdf8';
+    }
+    function setTag(id, message, tone='normal'){
+      const el=$(id); if(!el)return;el.className='state-tag'+(tone==='ok'?' ok':tone==='warn'?' warn':'');el.textContent='● '+message;
+    }
+    function readLanguage(){ try { return localStorage.getItem(LANGUAGE_STORAGE_KEY) || 'en'; } catch { return 'en'; } }
+    function speechLang(code){ const special={'zh-CN':'zh-CN','zh-TW':'zh-TW','pt':'pt-BR','ha':'ha-NG','yo':'yo-NG','ig':'ig-NG','sw':'sw-KE','af':'af-ZA','en':'en-US'};return special[code] || code || 'en-US'; }
+    async function translateText(text, target){
+      if(!target || target==='en' || !String(text).trim()) return String(text);
+      try{
+        const cacheKey='ca_gps_map_translation_'+target+'_'+btoa(unescape(encodeURIComponent(String(text)))).slice(0,90);
+        const cached=localStorage.getItem(cacheKey);if(cached)return cached;
+        const response=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl='+encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(text));
+        if(!response.ok)throw new Error('Translation unavailable');
+        const data=await response.json();const translated=Array.isArray(data?.[0])?data[0].map(part=>part?.[0]||'').join(''):'';
+        if(!translated)throw new Error('Empty translation');try{localStorage.setItem(cacheKey,translated);}catch{}return translated;
+      }catch(error){console.warn('Live Map translation was unavailable; using English:',error);return String(text);}
+    }
+    let translationRun=0;
+    async function applyLanguage(code){
+      const run=++translationRun;document.documentElement.lang=code||'en';
+      const nodes=[...document.querySelectorAll('[data-i18n]')];
+      const placeholders=[...document.querySelectorAll('[data-i18n-placeholder]')];
+      if(!code||code==='en'){nodes.forEach(node=>{node.textContent=node.dataset.i18n;});placeholders.forEach(node=>{node.placeholder=node.dataset.i18nPlaceholder;});return;}
+      toast('Loading '+(LANGUAGE_NAMES[code]||code)+' interface…');
+      // Small sequential groups are gentler on public translation endpoints than one request per element.
+      for(let start=0;start<nodes.length;start+=6){
+        if(run!==translationRun)return;
+        const batch=nodes.slice(start,start+6);
+        let values;
+        try{values=await translateBatch(batch.map(node=>node.dataset.i18n),code);}
+        catch(error){console.warn('Packed UI translation failed, retrying labels individually:',error);values=await Promise.all(batch.map(node=>translateText(node.dataset.i18n,code)));}
+        if(run!==translationRun)return;
+        batch.forEach((node,index)=>{node.textContent=values[index]||node.dataset.i18n;});
+      }
+      for(const node of placeholders){if(run!==translationRun)return;node.placeholder=await translateText(node.dataset.i18nPlaceholder,code);}
+      if(run===translationRun)toast('Interface language applied. Map place names remain in the map provider’s language.');
+    }
+    async function translateBatch(texts,target){
+      if(!texts.length||!target||target==='en')return texts;
+      const tokens=texts.map((_,index)=>`ZXQMAPG${index}QXZ`);
+      const packed=texts.map((value,index)=>`${tokens[index]} ${value}`).join('\n');
+      const response=await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl='+encodeURIComponent(target)+'&dt=t&q='+encodeURIComponent(packed));
+      if(!response.ok)throw new Error('Packed translation request failed');
+      const data=await response.json();const translated=Array.isArray(data?.[0])?data[0].map(part=>part?.[0]||'').join(''):'';
+      const matches=[...translated.matchAll(/ZXQMAPG(\d+)QXZ/g)];
+      if(matches.length!==texts.length)throw new Error('Translation markers were not preserved');
+      const output=[];
+      for(let index=0;index<matches.length;index++){
+        const start=matches[index].index+matches[index][0].length;
+        const finish=index+1<matches.length?matches[index+1].index:translated.length;
+        const value=translated.slice(start,finish).trim().replace(/^[-:：\s]+/,'').replace(/[\s]+$/,'');
+        if(!value)throw new Error('Empty translated label');output.push(value);
+        try{const cacheKey='ca_gps_map_translation_'+target+'_'+btoa(unescape(encodeURIComponent(texts[index]))).slice(0,90);localStorage.setItem(cacheKey,value);}catch{}
+      }
+      return output;
+    }
+    function setupLanguageSelector(){
+      const select=$('languageSelect');
+      select.innerHTML='';
+      CA_SUPPORTED_LANGUAGES.forEach(item=>{const option=document.createElement('option');option.value=item.code;option.textContent=item.name;select.appendChild(option);});
+      const saved=readLanguage();select.value=CA_SUPPORTED_LANGUAGES.some(x=>x.code===saved)?saved:'en';
+      if(!select.value)select.value='en';
+      applyLanguage(select.value);
+      select.addEventListener('change',()=>{const code=select.value;try{localStorage.setItem(LANGUAGE_STORAGE_KEY,code);}catch{}applyLanguage(code);});
+    }
+
+    function setMapNotice(show, title, body){
+      $('mapNotice').hidden=!show;
+      if(title)$('noticeTitle').textContent=title;
+      if(body)$('noticeBody').textContent=body;
+    }
+    function getStartingToken(){ return getMapboxToken(); }
+    function initMap(){
+      const token=getStartingToken();
+      if(token && window.mapboxgl){ initMapbox(token); }
+      else { initLeaflet(); setMapNotice(true,'Enable enhanced 3D maps','The 2D map is ready. A restricted Mapbox public token enables 3D buildings, terrain and satellite styling; GPS details work without it.'); setTag('mapPermissionState','2D fallback','warn'); $('mapModeLabel').textContent='2D map • add token for 3D'; }
+    }
+    function destroyCurrentMap(){
+      if(currentMap && currentMapEngine==='mapbox'){try{currentMap.remove();}catch{}}
+      if(leafletMap){try{leafletMap.remove();}catch{}}
+      currentMap=null;leafletMap=null;currentMarker=null;destinationMarker=null;accuracyCircle=null;
+    }
+    function initLeaflet(){
+      destroyCurrentMap();currentMapEngine='leaflet';
+      const map=L.map('map',{zoomControl:false,worldCopyJump:true,preferCanvas:true}).setView([18,0],2);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>'}).addTo(map);
+      leafletMap=map;currentMap=map;setMapNotice(false);
+      $('mapSubhead').textContent='Global view · OpenStreetMap 2D';
+      if(currentPosition)renderPositionOnMap(currentPosition);
+      setTag('mapPermissionState','2D fallback','warn');
+      if(currentMapMode==='3d'||currentMapMode==='satellite')$('mapModeLabel').textContent='2D fallback • configure Mapbox for 3D';
+      else $('mapModeLabel').textContent='2D map • OpenStreetMap';
+      setTimeout(()=>map.invalidateSize(),150);
+    }
+    function initMapbox(token){
+      if(!window.mapboxgl){initLeaflet();toast('Map renderer could not load. Using the 2D fallback.');return;}
+      destroyCurrentMap();currentMapEngine='mapbox';mapboxgl.accessToken=token;
+      const map=new mapboxgl.Map({container:'map',style:MAP_STYLES.standard,center:[0,20],zoom:1.5,projection:{name:'mercator'},pitch:12,antialias:true,cooperativeGestures:true,attributionControl:true});
+      currentMap=map;currentStyleUrl=MAP_STYLES.standard;
+      map.on('load',()=>{
+        if(!currentMap||currentMap!==map)return;
+        setMapNotice(false);setTag('mapPermissionState','3D available','ok');$('mapSubhead').textContent='Mapbox · globe, terrain and 3D buildings where available';
+        if(currentMapMode==='globe'){map.setProjection({name:'globe'});map.setPitch(0);ensureMapTerrainAndBuildings();}
+        else if(currentMapMode==='2d'){map.setProjection({name:'mercator'});map.setPitch(0);map.setTerrain(null);}
+        else if(currentMapMode==='satellite'){applyMapMode('satellite');}
+        else {map.setProjection({name:'mercator'});map.setPitch(12);ensureMapTerrainAndBuildings();}
+        if(currentPosition)renderPositionOnMap(currentPosition);
+      });
+      map.on('error',event=>{console.warn('Mapbox map error:',event?.error||event);if(String(event?.error?.message||'').toLowerCase().includes('token')){setMapNotice(true,'Map token needs attention','Check the public Mapbox token and allowed URL origins. The GPS receiver can still work without the 3D map.');}});
+      setTimeout(()=>{try{map.resize()}catch{}},250);
+    }
+    function ensureMapTerrainAndBuildings(){
+      if(currentMapEngine!=='mapbox'||!currentMap)return;
+      try{
+        if(currentMapMode==='globe'){
+          currentMap.setTerrain(null);
+          try{currentMap.setConfigProperty('basemap','show3dObjects',true);}catch{}
+          return;
+        }
+        if(!currentMap.getSource('ca-mapbox-dem'))currentMap.addSource('ca-mapbox-dem',{type:'raster-dem',url:'mapbox://mapbox.mapbox-terrain-dem-v1',tileSize:512,maxzoom:14});
+        currentMap.setTerrain({source:'ca-mapbox-dem',exaggeration:1.05});
+        if(currentStyleUrl===MAP_STYLES.standard){try{currentMap.setConfigProperty('basemap','show3dObjects',true);}catch{}}
+        else if(currentMap.getSource('composite')&&!currentMap.getLayer('ca-3d-buildings')){
+          const labels=(currentMap.getStyle().layers||[]).filter(layer=>layer.type==='symbol'&&layer.layout&&layer.layout['text-field']);
+          const before=labels.length?labels[0].id:undefined;
+          currentMap.addLayer({id:'ca-3d-buildings',source:'composite','source-layer':'building',type:'fill-extrusion',minzoom:14,filter:['==',['get','extrude'],'true'],paint:{'fill-extrusion-color':['interpolate',['linear'],['get','height'],0,'#64748b',25,'#647fb0',80,'#9db6d8'],'fill-extrusion-height':['coalesce',['get','height'],5],'fill-extrusion-base':['coalesce',['get','min_height'],0],'fill-extrusion-opacity':0.86}},before);
+        }
+      }catch(error){console.warn('3D terrain/building layer was not available at this zoom/style:',error);}
+      updateTerrainReadout();
+    }
+    function ensureStyle(styleUrl, callback){
+      if(currentMapEngine!=='mapbox'||!currentMap)return;
+      if(currentStyleUrl===styleUrl){callback();return;}
+      currentStyleUrl=styleUrl;currentMap.setStyle(styleUrl);
+      currentMap.once('style.load',()=>{if(currentMap)callback();});
+    }
+    function applyMapMode(mode){
+      currentMapMode=mode;
+      document.querySelectorAll('[data-mode]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mode===mode));
+      recordActivity('Live Map view changed',`You selected the ${mode.toUpperCase()} map view. 3D details depend on provider coverage and your map token.`, 'map', '🗺️').catch(()=>{});
+      const token=getMapboxToken();
+      if(currentMapEngine!=='mapbox'||!token){
+        $('mapModeLabel').textContent=mode==='2d'?'2D map • OpenStreetMap':'2D fallback • configure Mapbox for '+(mode==='satellite'?'satellite imagery':'3D view');
+        if(mode!=='2d')setMapNotice(true,'Enhanced map view needs a public token','Your location features still work in 2D. Add a restricted Mapbox public token to enable provider-backed 3D terrain, 3D buildings and satellite styling.');
+        else setMapNotice(false);
+        if(currentMapEngine==='leaflet'&&currentPosition)renderPositionOnMap(currentPosition);
+        if(mode==='3d'||mode==='satellite')toast('Add a Mapbox public token to enable this view.');
+        return;
+      }
+      const desiredStyle=mode==='satellite'?MAP_STYLES.satellite:MAP_STYLES.standard;
+      ensureStyle(desiredStyle,()=>{
+        try{
+          if(mode==='globe'){
+            currentMap.setProjection({name:'globe'});currentMap.setPitch(0);currentMap.setZoom(Math.min(currentMap.getZoom(),2.2));currentMap.setTerrain(null);
+          }else if(mode==='2d'){
+            currentMap.setProjection({name:'mercator'});currentMap.setTerrain(null);currentMap.easeTo({pitch:0,duration:450});
+          }else if(mode==='3d'){
+            currentMap.setProjection({name:'mercator'});currentMap.easeTo({pitch:62,bearing:currentMap.getBearing(),duration:500});ensureMapTerrainAndBuildings();
+          }else{
+            currentMap.setProjection({name:'mercator'});currentMap.easeTo({pitch:58,duration:500});ensureMapTerrainAndBuildings();
+          }
+        }catch(error){console.warn('Map mode switch issue:',error);}
+        $('mapModeLabel').textContent=mode==='satellite'?'Satellite imagery • terrain/buildings where available':mode==='globe'?'3D globe • global geography':mode==='2d'?'2D streets • labels where available':'3D terrain • buildings where available';
+        setMapNotice(false);setTimeout(()=>{try{currentMap.resize()}catch{}},200);
+      });
+    }
+    function renderPositionOnMap(position){
+      if(!position)return;
+      const lat=position.coords.latitude,lon=position.coords.longitude;
+      if(currentMapEngine==='mapbox'&&currentMap){
+        if(!currentMap.isStyleLoaded()){currentMap.once('idle',()=>{if(currentMap&&currentMapEngine==='mapbox')renderPositionOnMap(position);});return;}
+        if(!currentMarker){
+          const node=document.createElement('div');node.style.cssText='width:24px;height:24px;border:3px solid #fff;border-radius:50%;background:#06b6d4;box-shadow:0 0 0 7px #22d3ee38,0 0 28px #22d3ee99;';
+          currentMarker=new mapboxgl.Marker({element:node,anchor:'center'}).setLngLat([lon,lat]).addTo(currentMap);
+        }else currentMarker.setLngLat([lon,lat]);
+        if(Number.isFinite(position.coords.accuracy)&&position.coords.accuracy>0){
+          const radiusKm=position.coords.accuracy/1000;
+          if(!currentMap.getSource('ca-location-accuracy'))currentMap.addSource('ca-location-accuracy',{type:'geojson',data:circleGeoJSON(lon,lat,radiusKm)});
+          else currentMap.getSource('ca-location-accuracy').setData(circleGeoJSON(lon,lat,radiusKm));
+          if(!currentMap.getLayer('ca-location-accuracy-fill'))currentMap.addLayer({id:'ca-location-accuracy-fill',type:'fill',source:'ca-location-accuracy',paint:{'fill-color':'#22d3ee','fill-opacity':0.12}});
+          if(!currentMap.getLayer('ca-location-accuracy-line'))currentMap.addLayer({id:'ca-location-accuracy-line',type:'line',source:'ca-location-accuracy',paint:{'line-color':'#67e8f9','line-width':1.5,'line-opacity':0.75}});
+        }
+        if(currentMap.getZoom()<15)currentMap.flyTo({center:[lon,lat],zoom:17.2,pitch:currentMapMode==='2d'?0:currentMapMode==='globe'?0:60,duration:1500});
+        else currentMap.easeTo({center:[lon,lat],duration:750});
+      }else if(leafletMap){
+        if(!currentMarker){currentMarker=L.marker([lat,lon]).addTo(leafletMap).bindPopup('Your device location');}
+        else currentMarker.setLatLng([lat,lon]);
+        if(Number.isFinite(position.coords.accuracy)&&position.coords.accuracy>0){if(!accuracyCircle)accuracyCircle=L.circle([lat,lon],{radius:position.coords.accuracy,color:'#22d3ee',fillColor:'#22d3ee',fillOpacity:.12,weight:1.5}).addTo(leafletMap);else accuracyCircle.setLatLng([lat,lon]).setRadius(position.coords.accuracy);}
+        leafletMap.flyTo([lat,lon],16,{duration:1.1});
+      }
+      updateTerrainReadout();
+    }
+    function circleGeoJSON(lon,lat,radiusKm){
+      const coordinates=[];const points=64;const earthRadius=6371;
+      for(let i=0;i<=points;i++){const angle=i/points*2*Math.PI;const lat1=lat*Math.PI/180,lon1=lon*Math.PI/180,d=radiusKm/earthRadius;const lat2=Math.asin(Math.sin(lat1)*Math.cos(d)+Math.cos(lat1)*Math.sin(d)*Math.cos(angle));const lon2=lon1+Math.atan2(Math.sin(angle)*Math.sin(d)*Math.cos(lat1),Math.cos(d)-Math.sin(lat1)*Math.sin(lat2));coordinates.push([lon2*180/Math.PI,lat2*180/Math.PI]);}
+      return {type:'Feature',properties:{},geometry:{type:'Polygon',coordinates:[coordinates]}};
+    }
+    function updateTerrainReadout(){
+      if(currentMapEngine==='mapbox'&&currentMap&&currentPosition&&typeof currentMap.queryTerrainElevation==='function'&&currentMapMode!=='globe'){
+        try{const elevation=currentMap.queryTerrainElevation([currentPosition.coords.longitude,currentPosition.coords.latitude]);$('terrainValue').textContent=Number.isFinite(elevation)?Math.round(elevation)+' m':'Unavailable';}catch{$('terrainValue').textContent='Unavailable';}
+      }else if(currentMapMode==='globe')$('terrainValue').textContent='Switch to 3D';else $('terrainValue').textContent='Needs 3D map';
+    }
+
+    function formatCoordinate(value, positive, negative){if(!Number.isFinite(value))return '—';return `${Math.abs(value).toFixed(6)}° ${value>=0?positive:negative}`;}
+    function formatNumber(value,digits=1){return Number.isFinite(value)?Number(value).toFixed(digits):'—';}
+    function formatTimestamp(value){try{return new Intl.DateTimeFormat(readLanguage(),{dateStyle:'medium',timeStyle:'medium'}).format(value);}catch{return value.toLocaleString();}}
+    function updatePositionUI(position){
+      const coords=position.coords;currentPosition=position;
+      $('latValue').textContent=formatCoordinate(coords.latitude,'N','S');$('lonValue').textContent=formatCoordinate(coords.longitude,'E','W');
+      const accuracy=Number.isFinite(coords.accuracy)?coords.accuracy:null;
+      $('accuracyValue').textContent=accuracy===null?'Unavailable':`±${Math.round(accuracy)} m`;
+      $('accuracyBar').style.width=accuracy===null?'0%':Math.max(5,Math.min(100,100-(Math.log10(Math.max(accuracy,1))*24)))+'%';
+      $('altitudeValue').textContent=Number.isFinite(coords.altitude)?`${Math.round(coords.altitude)} m`:'Unavailable';
+      if(Number.isFinite(lastDeviceHeading)){$('headingValue').textContent=`${Math.round(lastDeviceHeading)}°`; $('headingMeta').textContent='Device compass (approx.)';}
+      else if(Number.isFinite(coords.heading)){$('headingValue').textContent=`${Math.round(coords.heading)}°`; $('headingMeta').textContent='Direction of movement';}
+      else{$('headingValue').textContent='Unavailable';$('headingMeta').textContent='No compass / movement heading';}
+      $('speedValue').textContent=Number.isFinite(coords.speed)?`${(coords.speed*3.6).toFixed(1)} km/h`:'Unavailable';
+      $('positionTimestamp').textContent=`Updated ${formatTimestamp(new Date(position.timestamp||Date.now()))} · GPS coordinates are device-reported`;
+      $('fixAge').textContent='GPS fix received';$('mapPlaceMeta').textContent=`${coords.latitude.toFixed(5)}, ${coords.longitude.toFixed(5)} · ±${accuracy===null?'?':Math.round(accuracy)+'m'}`;
+      $('mapPlaceName').textContent=currentPlace.city||currentPlace.neighborhood||currentPlace.region||'Current device position';
+      $('resolvedPlace').textContent=currentPlace.street||currentPlace.neighborhood||currentPlace.city||'Coordinates acquired';
+      $('resolvedContext').textContent=[currentPlace.city,currentPlace.region,currentPlace.country].filter(Boolean).join(', ')||'Reverse address not available; coordinates remain available';
+      $('continentValue').textContent=currentContinent||'Not resolved';$('countryValue').textContent=currentPlace.country||'Not resolved';$('countryCode').textContent=currentPlace.countryCode||'Geographic context';$('regionValue').textContent=currentPlace.region||'Not resolved';$('cityValue').textContent=currentPlace.city||'Not resolved';$('streetValue').textContent=[currentPlace.street,currentPlace.neighborhood,currentPlace.postcode].filter(Boolean).join(' · ')||'No street / address in provider data';
+      renderPositionOnMap(position);setLiveStatus(liveWatchId!==null?'Live GPS tracking active':'GPS location received','ok');
+      const locationBtn=$('locateBtn');locationBtn.innerHTML='<i class="fa-solid fa-location-crosshairs"></i><span>'+translateLabel('Update location')+'</span>';
+      const notifyThisView=locationViewPendingNotification;
+      if(notifyThisView)locationViewPendingNotification=false;
+      const placePromise=maybeReverseGeocode(position);
+      if(notifyThisView)Promise.resolve(placePromise).finally(()=>notifyLocationViewed(position)).catch(error=>console.warn('Location notification could not be sent:',error));
+      return Promise.resolve(placePromise);
+    }
+    function translateLabel(english){
+      const node=[...document.querySelectorAll('[data-i18n]')].find(n=>n.dataset.i18n===english);return node?node.textContent:english;
+    }
+    function requestCurrentPosition(){
+      if(!navigator.geolocation){toast('This device/browser does not provide GPS location.');setLiveStatus('GPS unavailable','warn');return;}
+      if(!window.isSecureContext){toast('Location access requires HTTPS. Open the secure GitHub Pages URL.');setLiveStatus('HTTPS required','warn');return;}
+      locationViewPendingNotification=true;setLiveStatus('Requesting precise GPS…');setTag('locationPermissionState','Requesting','warn');
+      $('locateBtn').disabled=true;
+      navigator.geolocation.getCurrentPosition(position=>{
+        $('locateBtn').disabled=false;setTag('locationPermissionState','Granted','ok');
+        Promise.resolve(updatePositionUI(position)).finally(()=>{if(voiceOn)speakText(buildLocationSummary(position));});
+        toast(`Location acquired (reported accuracy ±${Math.round(position.coords.accuracy||0)} m).`);
+      },error=>{
+        $('locateBtn').disabled=false;locationViewPendingNotification=false;
+        const messages={1:'Location permission was denied. Enable it in your device/browser settings if you want to use GPS.',2:'Location is unavailable. Move to a place with better GPS/network reception and try again.',3:'GPS request timed out. Try again outdoors or check device location settings.'};
+        const message=messages[error.code]||'Could not read location. Check device permissions and try again.';
+        setLiveStatus('GPS not available','warn');setTag('locationPermissionState',error.code===1?'Denied':'Unavailable','warn');toast(message);
+      },{enableHighAccuracy:true,timeout:25000,maximumAge:0});
+    }
+    function startLiveGPS(){
+      if(liveWatchId!==null){navigator.geolocation.clearWatch(liveWatchId);liveWatchId=null;$('liveBtn').innerHTML='<i class="fa-solid fa-tower-broadcast"></i><span>'+translateLabel('Start live GPS')+'</span>';setLiveStatus(currentPosition?'GPS location received':'GPS stopped',currentPosition?'ok':'normal');toast('Live GPS stopped.');recordActivity('Live GPS stopped','You stopped continuous GPS updates on this page.','location','⏹️').catch(()=>{});return;}
+      if(!navigator.geolocation){toast('GPS is not available in this browser.');return;}
+      if(!window.isSecureContext){toast('GPS requires HTTPS.');return;}
+      locationViewPendingNotification=true;setLiveStatus('Starting live GPS…');
+      liveWatchId=navigator.geolocation.watchPosition(position=>{setTag('locationPermissionState','Granted','ok');updatePositionUI(position);$('liveBtn').innerHTML='<i class="fa-solid fa-stop"></i><span>'+translateLabel('Stop live GPS')+'</span>';},error=>{if(error.code===1)setTag('locationPermissionState','Denied','warn');toast(error.code===1?'Location permission denied.':'GPS update failed.');setLiveStatus('Live GPS unavailable','warn');if(liveWatchId!==null){navigator.geolocation.clearWatch(liveWatchId);liveWatchId=null;}},{enableHighAccuracy:true,maximumAge:1000,timeout:25000});
+      toast('Live GPS is on while this page stays active. It stops when you turn it off or leave the page.');recordActivity('Live GPS started','You enabled live GPS updates while this page remains active. No background tracking is performed.','location','📡').catch(()=>{});
+    }
+    function continentFromCountry(code){if(!code)return '';const c=code.toUpperCase();for(const [continent,list] of Object.entries(CONTINENT_BY_COUNTRY)){if(list.split(/\s+/).includes(c))return continent;}return '';}
+    async function maybeReverseGeocode(position){
+      const now=Date.now();const lat=position.coords.latitude,lon=position.coords.longitude;
+      if(now-lastReverseGeocodeAt<12000&&lastReverseGeocodeCoords&&Math.abs(lastReverseGeocodeCoords.lat-lat)<0.0005&&Math.abs(lastReverseGeocodeCoords.lon-lon)<0.0005)return;
+      const token=getMapboxToken();
+      lastReverseGeocodeAt=now;lastReverseGeocodeCoords={lat,lon};
+      try{
+        if(!token){
+          // One user-initiated reverse lookup is made per position update window; OpenStreetMap data can be incomplete.
+          const response=await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&addressdetails=1&zoom=18&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}`,{headers:{Accept:'application/json'}});
+          if(!response.ok)throw new Error('OpenStreetMap reverse geocoding HTTP '+response.status);
+          const data=await response.json();const a=data.address||{};
+          const country=a.country||'';const countryCode=String(a.country_code||'').toUpperCase();
+          const city=a.city||a.town||a.village||a.municipality||a.hamlet||a.county||'';const region=a.state||a.region||a.state_district||'';const neighborhood=a.neighbourhood||a.suburb||a.quarter||'';const street=[a.house_number,a.road].filter(Boolean).join(' ');
+          currentPlace={country,countryCode,region,city,neighborhood,street,postcode:a.postcode||''};currentContinent=continentFromCountry(countryCode);
+          const full=data.display_name||[street,neighborhood,city,region,country].filter(Boolean).join(', ');
+          $('resolvedPlace').textContent=full||'Location context found';$('resolvedContext').textContent=[city,region,country].filter(Boolean).join(', ')||'Place details available';$('mapPlaceName').textContent=city||neighborhood||region||country||'Current device position';$('continentValue').textContent=currentContinent||'Not provided by map data';$('countryValue').textContent=country||'Not resolved';$('countryCode').textContent=countryCode||'Country code unavailable';$('regionValue').textContent=region||'Not resolved';$('cityValue').textContent=city||'Not resolved';$('streetValue').textContent=[street,neighborhood,a.postcode].filter(Boolean).join(' · ')||'No street / address in provider data';
+          return;
+        }
+        const url=`https://api.mapbox.com/search/geocode/v6/reverse?longitude=${encodeURIComponent(lon)}&latitude=${encodeURIComponent(lat)}&types=address,street,neighborhood,locality,place,district,region,country&limit=1&access_token=${encodeURIComponent(token)}`;
+        const response=await fetch(url,{headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Reverse geocoding HTTP '+response.status);
+        const data=await response.json();const f=data.features?.[0];if(!f)return;
+        const p=f.properties||{};const context=p.context||{};const types=[p.feature_type||f.place_type?.[0]||''];
+        const named=(key)=>context[key]?.name||'';
+        const country=named('country');const countryCode=(context.country?.country_code||context.country?.country_code_alpha_3||'').toUpperCase();
+        const region=named('region')||named('district');const city=named('place')||named('locality')||named('municipality');const neighborhood=named('neighborhood');
+        const street=p.name||'';const full=p.full_address||p.place_formatted||'';
+        currentPlace={country,countryCode,region,city,neighborhood,street:types.includes('address')||types.includes('street')?street:'',postcode:named('postcode')};
+        if(!currentPlace.street&&types.includes('street'))currentPlace.street=p.name||'';
+        currentContinent=continentFromCountry(countryCode);
+        $('resolvedPlace').textContent=full||[neighborhood,city,region,country].filter(Boolean).join(', ')||'Location context found';$('resolvedContext').textContent=[city,region,country].filter(Boolean).join(', ')||'Place details available';
+        $('mapPlaceName').textContent=city||neighborhood||region||country||'Current device position';$('continentValue').textContent=currentContinent||'Not provided by map provider';$('countryValue').textContent=country||'Not resolved';$('countryCode').textContent=countryCode||'Country code unavailable';$('regionValue').textContent=region||'Not resolved';$('cityValue').textContent=city||'Not resolved';$('streetValue').textContent=[currentPlace.street,neighborhood,currentPlace.postcode].filter(Boolean).join(' · ')||'No street / address in provider data';
+      }catch(error){console.warn('Reverse geocoding failed:',error);}
+    }
+    function buildLocationSummary(position=currentPosition){
+      if(!position)return 'No GPS location has been received yet. Open Live Map and tap Locate me to request your device location.';
+      const c=position.coords;const where=[currentPlace.street,currentPlace.neighborhood,currentPlace.city,currentPlace.region,currentPlace.country].filter(Boolean).join(', ')||'Address not resolved';
+      const altitude=Number.isFinite(c.altitude)?`${Math.round(c.altitude)} metres (device-reported altitude)`:'altitude unavailable from this device';
+      const heading=Number.isFinite(lastDeviceHeading)?`${Math.round(lastDeviceHeading)} degrees compass heading`:Number.isFinite(c.heading)?`${Math.round(c.heading)} degrees direction of movement`:'direction unavailable';
+      return `Current device location. ${where}. Latitude ${c.latitude.toFixed(6)} degrees. Longitude ${c.longitude.toFixed(6)} degrees. Accuracy radius plus or minus ${Math.round(c.accuracy||0)} metres. ${altitude}. ${heading}. Speed ${Number.isFinite(c.speed)?(c.speed*3.6).toFixed(1)+' kilometres per hour':'unavailable'}. Continent ${currentContinent||'not resolved'}. This position can change; check the update time before using it for navigation or safety.`;
+    }
+    async function recordActivity(title,message,type='location',icon='🗺️'){
+      if(currentUser){try{await sendNotification({title,message,type,icon,link:'gps-map.html'});}catch(error){console.warn('Activity notification could not be saved:',error);}}
+      if('Notification' in window&&Notification.permission==='granted'){
+        try{let registration=null;if('serviceWorker' in navigator)registration=await navigator.serviceWorker.ready;const options={body:String(message).slice(0,260),icon:'./web-app-manifest-192x192.png',badge:'./web-app-manifest-192x192.png',tag:'ca-map-activity-'+String(type),renotify:false,data:{url:APP_BASE+'gps-map.html'}};if(registration?.showNotification)await registration.showNotification(title,options);else new Notification(title,options);}catch(error){console.warn('Device activity notification could not be shown:',error);}
+      }
+    }
+    async function notifyLocationViewed(position){
+      if(notificationBusy)return;notificationBusy=true;
+      try{
+        const c=position.coords;
+        const altitude=Number.isFinite(c.altitude)?`${Math.round(c.altitude)} m`:'unavailable';
+        const speed=Number.isFinite(c.speed)?`${(c.speed*3.6).toFixed(1)} km/h`:'unavailable';
+        const heading=Number.isFinite(lastDeviceHeading)?`${Math.round(lastDeviceHeading)}° compass`:Number.isFinite(c.heading)?`${Math.round(c.heading)}° moving heading`:'unavailable';
+        const place=[currentPlace.street,currentPlace.neighborhood,currentPlace.city,currentPlace.region,currentPlace.country].filter(Boolean).join(', ')||'not resolved';
+        const compact=`Lat ${c.latitude.toFixed(6)}, lon ${c.longitude.toFixed(6)}; accuracy ±${Math.round(c.accuracy||0)} m; altitude ${altitude}; speed ${speed}; direction ${heading}; place ${place}.`;
+        // The shared Code Academy feed gets an activity record. Exact coordinates are stored in that feed only if the user opts in below.
+        if(currentUser){
+          const historyMessage=$('savePreciseHistory').checked
+            ? `You viewed the current device location. ${compact} This exact reading was included because you opted in to precise account history.`
+            : `You viewed the current device location. Reported GPS accuracy ±${Math.round(c.accuracy||0)} m; area ${[currentPlace.city,currentPlace.region,currentPlace.country].filter(Boolean).join(', ')||'not resolved'}. Exact coordinates were not stored in this account notification. Open Live Map for the on-device reading.`;
+          try{await sendNotification({title:'Live Map: location viewed',message:historyMessage,type:'location',icon:'📍',link:'gps-map.html'});}catch(error){console.warn('Account notification save failed; continuing with local device notification:',error);}
+        }
+        // Device notifications are local and only shown after a user has explicitly granted permission.
+        if('Notification' in window&&Notification.permission==='granted'){
+          let registration=null;try{if('serviceWorker' in navigator)registration=await navigator.serviceWorker.ready;}catch{}
+          const body=`${compact} ${currentContinent?'Continent '+currentContinent+'. ':''}Updated ${new Date(position.timestamp||Date.now()).toLocaleTimeString()}.`;
+          if(registration?.showNotification)await registration.showNotification('Live Map • Location viewed',{body,icon:'./web-app-manifest-192x192.png',badge:'./web-app-manifest-192x192.png',tag:'ca-live-map-location',renotify:false,data:{url:APP_BASE+'gps-map.html'}});
+          else new Notification('Live Map • Location viewed',{body,icon:'./web-app-manifest-192x192.png'});
+        }
+      }catch(error){console.warn('Location notification failed:',error);}
+      finally{notificationBusy=false;}
+    }
+    async function enableDeviceNotifications(){
+      if(!('Notification' in window)){toast('This browser does not support device notifications.');return;}
+      try{
+        if(Notification.permission==='granted'){setTag('notificationPermissionState','Granted','ok');toast('Device notifications are already enabled.');return;}
+        if(Notification.permission==='denied'){setTag('notificationPermissionState','Blocked','warn');toast('Notifications are blocked in browser/device settings.');return;}
+        const result=await Notification.requestPermission();
+        setTag('notificationPermissionState',result==='granted'?'Granted':result==='denied'?'Blocked':'Not granted',result==='granted'?'ok':'warn');
+        if(result==='granted'){toast('Device notifications enabled. Location summaries will appear after GPS updates while this page is active.');if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service worker registration unavailable:',error));}
+        else toast('Notifications were not enabled. You can still use the map.');
+      }catch(error){toast('Could not request notifications: '+(error.message||'permission unavailable'));}
+    }
+    async function ensureNotificationPermissionStatus(){
+      if(!('Notification' in window)){setTag('notificationPermissionState','Unsupported','warn');return;}
+      if(Notification.permission==='granted')setTag('notificationPermissionState','Granted','ok');else if(Notification.permission==='denied')setTag('notificationPermissionState','Blocked','warn');else setTag('notificationPermissionState','Not requested');
+      if('permissions' in navigator&&navigator.permissions?.query){try{const status=await navigator.permissions.query({name:'geolocation'});const label=status.state==='granted'?'Granted':status.state==='denied'?'Denied':'Not requested';setTag('locationPermissionState',label,status.state==='granted'?'ok':status.state==='denied'?'warn':'normal');status.onchange=()=>{const v=status.state==='granted'?'Granted':status.state==='denied'?'Denied':'Not requested';setTag('locationPermissionState',v,status.state==='granted'?'ok':status.state==='denied'?'warn':'normal');};}catch{}}
+    }
+    async function enableCompass(){
+      if(compassOn){window.removeEventListener('deviceorientation',handleOrientation);window.removeEventListener('deviceorientationabsolute',handleOrientation);compassOn=false;$('compassBtn').querySelector('strong').textContent='Enable compass';$('headingMeta').textContent='Enable compass if supported';toast('Compass sensor stopped.');recordActivity('Device compass stopped','You stopped reading the device orientation sensor.','location','🧭').catch(()=>{});return;}
+      try{
+        if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+          const permission=await DeviceOrientationEvent.requestPermission();if(permission!=='granted'){toast('Compass permission was not granted.');return;}
+        }
+        window.addEventListener('deviceorientation',handleOrientation,true);window.addEventListener('deviceorientationabsolute',handleOrientation,true);compassOn=true;$('compassBtn').querySelector('strong').textContent='Disable compass';toast('Compass listener enabled when the device supports orientation sensors.');recordActivity('Device compass enabled','You enabled the device-orientation sensor. Compass readings are approximate and depend on hardware support.','location','🧭').catch(()=>{});
+      }catch(error){toast('Compass sensors are not available or permitted on this device.');}
+    }
+    function handleOrientation(event){
+      let heading=Number.isFinite(event.webkitCompassHeading)?event.webkitCompassHeading:Number.isFinite(event.alpha)?(360-event.alpha)%360:null;
+      if(!Number.isFinite(heading))return;lastDeviceHeading=(heading+360)%360;$('headingValue').textContent=`${Math.round(lastDeviceHeading)}°`;$('headingMeta').textContent='Device compass (approx.)';
+    }
+    function speakText(text){
+      if(!voiceOn||!('speechSynthesis' in window)||!text)return;
+      window.speechSynthesis.cancel();const code=readLanguage();
+      translateText(text,code).then(translated=>{const utterance=new SpeechSynthesisUtterance(translated);utterance.lang=speechLang(code);utterance.rate=.94;utterance.pitch=1.02;utterance.volume=1;window.speechSynthesis.speak(utterance);}).catch(()=>{const utterance=new SpeechSynthesisUtterance(text);utterance.lang='en-US';window.speechSynthesis.speak(utterance);});
+    }
+    async function copyLocationDetails(){
+      const summary=buildLocationSummary();try{await navigator.clipboard.writeText(summary);toast('GPS details copied to clipboard.');recordActivity('GPS details copied','You copied your current GPS summary to the device clipboard.','location','📋').catch(()=>{});}catch{fallbackCopy(summary);recordActivity('GPS details copy attempted','You attempted to copy the current GPS summary.','location','📋').catch(()=>{});}
+    }
+    function fallbackCopy(text){const input=document.createElement('textarea');input.value=text;input.style.position='fixed';input.style.opacity='0';document.body.appendChild(input);input.select();let success=false;try{success=document.execCommand('copy');}catch{}input.remove();toast(success?'GPS details copied.':'Copy is unavailable in this browser.');}
+    async function shareCurrentLocation(){
+      if(!currentPosition){toast('Tap Locate me first, then choose to share the position.');return;}
+      const c=currentPosition.coords;const mapsUrl=`https://www.google.com/maps?q=${encodeURIComponent(c.latitude+','+c.longitude)}`;
+      const allowed=window.confirm(`Share this precise device location now?\n\nLatitude: ${c.latitude.toFixed(6)}\nLongitude: ${c.longitude.toFixed(6)}\nAccuracy: ±${Math.round(c.accuracy||0)} m\n\nThe recipient will receive a map link. Share only with someone you trust.`);
+      if(!allowed)return;
+      const text=`My current map location (device-reported): ${[currentPlace.street,currentPlace.city,currentPlace.region,currentPlace.country].filter(Boolean).join(', ')||'location coordinates'}\nLatitude: ${c.latitude.toFixed(6)}\nLongitude: ${c.longitude.toFixed(6)}\nReported accuracy: ±${Math.round(c.accuracy||0)} metres\nMap: ${mapsUrl}`;
+      try{if(navigator.share){await navigator.share({title:'My shared location',text,url:mapsUrl});}else{await navigator.clipboard.writeText(text);toast('Location link copied. You can now paste it into a trusted chat.');}}
+      catch(error){if(error?.name==='AbortError')return;fallbackCopy(text);}
+      recordActivity('Live Map location share confirmed','You confirmed sharing a map link to your current location. The recipient may be able to see your precise position.','location','📤').catch(()=>{});
+    }
+    async function sharePage(){
+      let url=APP_BASE+'gps-map.html';if(userReferralCode)url+='?ref='+encodeURIComponent(userReferralCode);
+      const shareData={title:'Code Academy Live Map — Explore in 2D and 3D',text:'Explore from the globe to local streets with an interactive map, optional GPS location, 2D and 3D views, mapped roads and buildings, location details and consent-based sharing. GPS starts only after permission, and you choose whether to share your location.',url};
+      try{if(navigator.share)await navigator.share(shareData);else{await navigator.clipboard.writeText(`${shareData.text}\n${url}`);toast('Invite link copied, including your referral code where available.');}}
+      catch(error){if(error?.name==='AbortError')return;fallbackCopy(`${shareData.text}\n${url}`);}
+      recordActivity('Live Map invite shared','You opened the Code Academy Live Map sharing flow. Your referral link was included where your account has a referral code.','referral','🔗').catch(()=>{});
+    }
+    async function searchPlaceOnMap(){
+      const query=$('placeSearchInput').value.trim();if(!query){toast('Enter a continent, country, city, street or landmark first.');$('placeSearchInput').focus();return;}
+      $('findPlaceBtn').disabled=true;$('placeSearchStatus').textContent='Searching mapped places…';
+      try{
+        let lat=null,lon=null,label=query,targetZoom=13;
+        const token=getMapboxToken();
+        if(token){
+          const response=await fetch(`https://api.mapbox.com/search/geocode/v6/forward?q=${encodeURIComponent(query)}&limit=1&access_token=${encodeURIComponent(token)}`,{headers:{Accept:'application/json'}});
+          if(!response.ok)throw new Error('Mapbox search HTTP '+response.status);
+          const data=await response.json();const feature=data.features?.[0];if(!feature)throw new Error('No mapped results found');
+          const coordinates=feature.geometry?.coordinates||[];lon=coordinates[0];lat=coordinates[1];label=feature.properties?.full_address||feature.properties?.name||query;
+          const type=feature.properties?.feature_type||'';targetZoom=({country:4,region:7,district:9,place:12,locality:13,neighborhood:14,street:16,address:17})[type]||13;
+        }else{
+          const response=await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`,{headers:{Accept:'application/json'}});
+          if(!response.ok)throw new Error('OpenStreetMap search HTTP '+response.status);
+          const results=await response.json();const feature=results[0];if(!feature)throw new Error('No mapped results found');lat=Number(feature.lat);lon=Number(feature.lon);label=feature.display_name||query;
+          const type=feature.addresstype||feature.type||'';targetZoom=({continent:3,country:4,state:7,region:7,county:9,city:12,town:12,village:13,municipality:12,suburb:14,neighbourhood:14,road:16,house:17})[type]||13;
+        }
+        if(!Number.isFinite(lat)||!Number.isFinite(lon))throw new Error('The selected result did not include usable coordinates');
+        currentDestination={lat,lon,label,targetZoom};
+        if(currentMapEngine==='mapbox'&&currentMap){
+          if(destinationMarker)destinationMarker.remove();destinationMarker=new mapboxgl.Marker({color:'#f59e0b'}).setLngLat([lon,lat]).setPopup(new mapboxgl.Popup({offset:24}).setText(label)).addTo(currentMap);
+          currentMap.flyTo({center:[lon,lat],zoom:targetZoom,pitch:currentMapMode==='2d'||currentMapMode==='globe'?0:Math.min(58,targetZoom*3.5),duration:1400});
+        }else if(leafletMap){
+          if(destinationMarker)destinationMarker.remove();const popupText=document.createTextNode('Place: '+label);destinationMarker=L.marker([lat,lon]).addTo(leafletMap).bindPopup(popupText);leafletMap.flyTo([lat,lon],targetZoom,{duration:1.1});
+        }
+        $('placeSearchStatus').textContent=`Found: ${label}`;toast('Map moved to '+label+'.');
+        recordActivity('Place search used','You searched for a mapped place and moved the map to its location. Search text is not saved in the account notification.','map','🔎').catch(()=>{});
+      }catch(error){$('placeSearchStatus').textContent='No result or map search is unavailable. Try a shorter place name.';toast(error.message||'Place search failed. Check your connection and try again.');}
+      finally{$('findPlaceBtn').disabled=false;}
+    }
+    function routeToSearch(){
+      const destination=$('placeSearchInput').value.trim()||currentDestination?.label||'';
+      if(!destination){toast('Search for a place or enter a destination before opening directions.');$('placeSearchInput').focus();return;}
+      let url=`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`;
+      let originIncluded=false;
+      if(currentPosition&&window.confirm('Use your current GPS coordinates as the route origin in Google Maps? Your current coordinates will be sent to Google Maps.')){const c=currentPosition.coords;url+=`&origin=${encodeURIComponent(c.latitude+','+c.longitude)}`;originIncluded=true;}
+      window.open(url,'_blank','noopener,noreferrer');recordActivity('Directions opened',originIncluded?'You opened external directions and confirmed sending your current GPS coordinates to Google Maps as the route origin.':'You opened external directions to a destination without attaching this page’s GPS coordinates.','location','🧭').catch(()=>{});
+    }
+    function openDirections(){routeToSearch();} 
+    async function loadReferralCode(user){
+      try{const snapshot=await getDoc(doc(db,'users',user.uid));userReferralCode=snapshot.exists()?String(snapshot.data().referralCode||'').trim():'';}catch(error){console.warn('Referral code could not be loaded:',error);userReferralCode='';}
+    }
+    function configureMapToken(){
+      $('tokenPanel').hidden=!$('tokenPanel').hidden;
+      if(!$('tokenPanel').hidden){$('mapTokenInput').value=getMapboxToken();$('mapTokenInput').focus();}
+    }
+    function saveMapToken(){
+      const token=$('mapTokenInput').value.trim();
+      if(!token.startsWith('pk.')){toast('Enter a Mapbox public access token that starts with pk.');return;}
+      try{localStorage.setItem(TOKEN_STORAGE_KEY,token);}catch{toast('Could not save the token in this browser. Set it in the code instead.');return;}
+      $('tokenPanel').hidden=true;initMap();toast("Map token saved on this device. Restrict the token to your site's URL in the provider dashboard.");
+    }
+    function clearMapToken(){try{localStorage.removeItem(TOKEN_STORAGE_KEY);}catch{}$('mapTokenInput').value='';$('tokenPanel').hidden=true;initMap();applyMapMode('2d');toast('Saved map token cleared. The map will use the 2D fallback.');}
+    function toggleFullscreen(){const card=document.querySelector('.map-card');if(!document.fullscreenElement){card.requestFullscreen?.().catch(()=>toast('Fullscreen is not available here.'));}else document.exitFullscreen?.();}
+    function attachEvents(){
+      $('backBtn').addEventListener('click',()=>{try{const ref=document.referrer?new URL(document.referrer):null;if(ref&&ref.origin===location.origin&&ref.pathname.includes('/Code-Academy-/')){history.back();return;}}catch{}location.href='menu.html';});
+      $('locateBtn').addEventListener('click',requestCurrentPosition);$('liveBtn').addEventListener('click',startLiveGPS);$('shareLocationBtn').addEventListener('click',shareCurrentLocation);
+      document.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>applyMapMode(btn.dataset.mode)));
+      $('findPlaceBtn').addEventListener('click',searchPlaceOnMap);$('routeSearchBtn').addEventListener('click',routeToSearch);$('placeSearchInput').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();searchPlaceOnMap();}});$('clearPlaceSearchBtn').addEventListener('click',()=>{$('placeSearchInput').value='';$('placeSearchStatus').textContent='Search any mapped place';currentDestination=null;$('placeSearchInput').focus();});
+      $('zoomInBtn').addEventListener('click',()=>{if(currentMapEngine==='mapbox'&&currentMap)currentMap.zoomIn();else if(leafletMap)leafletMap.zoomIn();});
+      $('zoomOutBtn').addEventListener('click',()=>{if(currentMapEngine==='mapbox'&&currentMap)currentMap.zoomOut();else if(leafletMap)leafletMap.zoomOut();});
+      $('northBtn').addEventListener('click',()=>{if(currentMapEngine==='mapbox'&&currentMap)currentMap.easeTo({bearing:0,pitch:currentMapMode==='3d'||currentMapMode==='satellite'?60:0,duration:300});else if(leafletMap)leafletMap.setView(leafletMap.getCenter(),leafletMap.getZoom());});
+      $('fullscreenBtn').addEventListener('click',toggleFullscreen);$('settingsBtn').addEventListener('click',configureMapToken);$('configureMapBtn').addEventListener('click',()=>{if($('tokenPanel')){$('tokenPanel').hidden=false;$('mapTokenInput').focus();}else configureMapToken();document.querySelector('.side-stack .panel:last-child')?.scrollIntoView({behavior:'smooth',block:'center'});});
+      $('saveMapTokenBtn').addEventListener('click',saveMapToken);$('clearMapTokenBtn').addEventListener('click',clearMapToken);
+      $('enableNotificationsBtn').addEventListener('click',enableDeviceNotifications);$('compassBtn').addEventListener('click',enableCompass);$('sharePageBtn').addEventListener('click',sharePage);$('openDirectionsBtn').addEventListener('click',openDirections);
+      $('copyCoordsBtn').addEventListener('click',copyLocationDetails);$('readLocationBtn').addEventListener('click',()=>speakText(buildLocationSummary()));
+      $('voiceBtn').addEventListener('click',()=>{voiceOn=!voiceOn;try{localStorage.setItem(VOICE_STORAGE_KEY,voiceOn?'on':'off');}catch{}$('voiceBtn').classList.toggle('voice-on',voiceOn);$('voiceBtn').innerHTML=voiceOn?'<i class="fa-solid fa-volume-high"></i>':'<i class="fa-solid fa-volume-xmark"></i>'; $('voiceBtn').title=voiceOn?'AI voice on':'AI voice off';if(!voiceOn&&'speechSynthesis'in window)window.speechSynthesis.cancel();else if(voiceOn)speakText('AI voice is on. Tap Locate me to hear a summary of your current GPS reading.');});
+    }
+    async function initializePage(){
+      setupLanguageSelector();attachEvents();$('voiceBtn').classList.toggle('voice-on',voiceOn);$('voiceBtn').innerHTML=voiceOn?'<i class="fa-solid fa-volume-high"></i>':'<i class="fa-solid fa-volume-xmark"></i>';ensureNotificationPermissionStatus();initMap();
+      if('serviceWorker' in navigator && window.isSecureContext){navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service worker registration failed:',error));}
+      try{rememberReferral();}catch(error){console.warn('Referral engine could not remember the incoming code:',error);}
+      onAuthStateChanged(auth,async user=>{
+        if(!user){location.href='login.html?next='+encodeURIComponent('gps-map.html');return;}
+        currentUser=user;
+        await loadReferralCode(user);
+      });
+      window.addEventListener('beforeunload',()=>{if(liveWatchId!==null&&navigator.geolocation)navigator.geolocation.clearWatch(liveWatchId);if(compassOn){window.removeEventListener('deviceorientation',handleOrientation);window.removeEventListener('deviceorientationabsolute',handleOrientation);}if('speechSynthesis'in window)window.speechSynthesis.cancel();});
+      document.addEventListener('visibilitychange',()=>{if(document.hidden&&liveWatchId!==null){navigator.geolocation.clearWatch(liveWatchId);liveWatchId=null;$('liveBtn').innerHTML='<i class="fa-solid fa-tower-broadcast"></i><span>'+translateLabel('Start live GPS')+'</span>';setLiveStatus('Live GPS paused while page hidden','warn');toast('Live GPS paused because this page is in the background. Re-enable it when you return.');}});
+      // Menu language is shared with lesson.html through the same localStorage key.
+      window.addEventListener('storage',event=>{if(event.key===LANGUAGE_STORAGE_KEY){const code=readLanguage();$('languageSelect').value=code;applyLanguage(code);}});
+    }
+    initializePage().catch(error=>{console.error('Live Map initialization error:',error);toast('A map component could not start. Refresh the page or check the console.');});
+  </script>
+</body>
+</html>

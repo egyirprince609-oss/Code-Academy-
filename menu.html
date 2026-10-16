@@ -2359,19 +2359,6 @@ body { min-height: 0; }
 
                 </button>
 
-
-                <a
-                    class="quickBtn secondary"
-                    href="security-center.html"
-                    style="text-decoration:none"
-                >
-
-                    <i class="fa-solid fa-shield-halved"></i>
-
-                    Security Center
-
-                </a>
-
             </div>
 
         </div>
@@ -3033,12 +3020,15 @@ body { min-height: 0; }
     <div class="menuGrid">
 
         <a
-            href="security-center.html"
+            href="gps-map.html"
             class="menuLink"
         >
-            <i class="fa-solid fa-shield-halved"></i>
-            Security Center
+
+            <i class="fa-solid fa-map-location-dot"></i>
+            Live Map · 2D / 3D
+
         </a>
+
 
         <a
             href="profile.html"
@@ -3945,10 +3935,7 @@ function getNotificationIcon(type){
             "fa-trophy",
 
         system:
-            "fa-bell",
-
-        security:
-            "fa-shield-halved"
+            "fa-bell"
 
     };
 
@@ -4123,23 +4110,6 @@ function startNotificationListener(uid){
                         )
                 );
 
-                // Make an unread Shield warning visible without requiring the user
-                // to discover the category tab first.
-                const hasUnreadSecurityAlert = notifications.some(item =>
-                    item.read !== true && (
-                        String(item.type || "").toLowerCase() === "security" ||
-                        /security|suspicious link|message review warning/i.test(String(item.title || ""))
-                    )
-                );
-                if (hasUnreadSecurityAlert && activeNotificationFilter !== "academy") {
-                    activeNotificationFilter = "academy";
-                    notificationFilterButtons.forEach(button => {
-                        const active = button.dataset.notificationFilter === "academy";
-                        button.classList.toggle("active", active);
-                        button.setAttribute("aria-selected", String(active));
-                    });
-                    updateNotificationOrigin();
-                }
 
                 renderNotifications(
                     notifications
