@@ -15,17 +15,42 @@ function formatDate(value) {
   const date = new Date(value);
   return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString();
 }
-async function api(path, options = {}) {
+async function api(path, options = {}, forceTokenRefresh = false) {
   if (!API_BASE) throw Object.assign(new Error("Set the payment-api-base meta tag to the HTTPS backend URL in premium-admin.html."), { code: "PAYMENT_API_URL_NOT_CONFIGURED" });
-  if (!signedInUser) throw Object.assign(new Error("Sign in with an authorized Code Academy account."), { code: "AUTH_REQUIRED" });
-  const headers = { Authorization: `Bearer ${await signedInUser.getIdToken()}`, Accept: "application/json" };
+  if (!signedInUser) throw Object.assign(new Error("No Firebase user is signed in on this page. Open Code Academy login, sign in, then reopen this admin page in the same browser."), { code: "AUTH_REQUIRED" });
+
+  let token;
+  try {
+    // If Firebase's existing ID token is rejected, retry once after refreshing it
+    // through the Firebase SDK's persisted sign-in session.
+    token = await signedInUser.getIdToken(forceTokenRefresh);
+  } catch (error) {
+    throw Object.assign(new Error(`Firebase could not refresh this sign-in session: ${error?.message || "unknown Firebase error"}`), { code: error?.code || "FIREBASE_TOKEN_REFRESH_FAILED" });
+  }
+
+  const headers = { Authorization: `Bearer ${token}`, Accept: "application/json" };
   if (options.body) headers["Content-Type"] = "application/json";
   let response;
-  try { response = await fetch(`${API_BASE}${path}`, { ...options, headers, body: options.body ? JSON.stringify(options.body) : undefined, cache: "no-store" }); }
-  catch (e) { throw Object.assign(new Error(`Cannot connect to secure backend: ${e?.message || "network error"}`), { code: "PAYMENT_API_UNREACHABLE" }); }
+  try {
+    response = await fetch(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      cache: "no-store"
+    });
+  } catch (e) {
+    throw Object.assign(new Error(`Cannot connect to secure backend: ${e?.message || "network error"}`), { code: "PAYMENT_API_UNREACHABLE" });
+  }
+
   const text = await response.text();
   let data = {};
   try { data = text ? JSON.parse(text) : {}; } catch { data = {}; }
+
+  // One automatic retry with a freshly issued token avoids needless manual sign-in
+  // when the browser's cached ID token has expired. Other errors are not retried.
+  if (!response.ok && response.status === 401 && data?.error?.code === "INVALID_SESSION" && !forceTokenRefresh) {
+    return api(path, options, true);
+  }
   if (!response.ok) throw Object.assign(new Error(data?.error?.message || `HTTP ${response.status}`), { code: data?.error?.code || `HTTP_${response.status}` });
   return data;
 }
@@ -113,5 +138,6 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
   byId("adminUid").textContent = user.uid;
+  report("Firebase account detected. Refreshing the sign-in token and checking reviewer access…");
   await loadOrders();
 });

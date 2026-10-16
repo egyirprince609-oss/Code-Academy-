@@ -131,19 +131,39 @@ def _ensure_firebase() -> bool:
     try:
         if service_json:
             from firebase_admin import credentials
-            credential = credentials.Certificate(json.loads(service_json))
+            service_info = json.loads(service_json)
+            credential_project = str(service_info.get("project_id", "")).strip()
+            if credential_project and credential_project != PROJECT_ID:
+                logger.error(
+                    "Firebase service-account project mismatch: credential project_id=%s, FIREBASE_PROJECT_ID=%s",
+                    credential_project, PROJECT_ID,
+                )
+                return False
+            credential = credentials.Certificate(service_info)
             firebase_admin.initialize_app(credential, {"projectId": PROJECT_ID})
+            logger.info("Firebase Admin initialized for project %s (service-account project checked)", PROJECT_ID)
             return True
         if service_path:
             from firebase_admin import credentials
-            credential = credentials.Certificate(service_path)
+            with open(service_path, "r", encoding="utf-8") as handle:
+                service_info = json.load(handle)
+            credential_project = str(service_info.get("project_id", "")).strip()
+            if credential_project and credential_project != PROJECT_ID:
+                logger.error(
+                    "Firebase service-account project mismatch: credential project_id=%s, FIREBASE_PROJECT_ID=%s",
+                    credential_project, PROJECT_ID,
+                )
+                return False
+            credential = credentials.Certificate(service_info)
             firebase_admin.initialize_app(credential, {"projectId": PROJECT_ID})
+            logger.info("Firebase Admin initialized for project %s (service-account project checked)", PROJECT_ID)
             return True
         # On managed Google Cloud hosting, Application Default Credentials may exist.
         firebase_admin.initialize_app(options={"projectId": PROJECT_ID})
+        logger.info("Firebase Admin initialized with application-default credentials for project %s", PROJECT_ID)
         return True
     except Exception as exc:
-        logger.error("Firebase Admin is not configured: %s", str(exc))
+        logger.error("Firebase Admin initialization failed (%s): %s", type(exc).__name__, str(exc))
         return False
 
 
@@ -168,8 +188,22 @@ def _current_user() -> dict:
         g.user_claims = decoded
         return decoded
     except Exception as exc:
-        logger.info("Firebase token rejected: %s", type(exc).__name__)
-        raise ApiError(401, "INVALID_SESSION", "Your Code Academy session is expired or invalid. Sign in again.") from exc
+        # Log the SDK's diagnostic on the server only. Never log the bearer token.
+        error_type = type(exc).__name__
+        error_text = str(exc)
+        logger.error("Firebase ID-token verification failed (%s): %s", error_type, error_text)
+        lowered = error_text.lower()
+        if error_type == "ExpiredIdTokenError":
+            raise ApiError(401, "TOKEN_EXPIRED", "Your Firebase sign-in token expired. Refresh the page or sign in again.") from exc
+        if error_type == "RevokedIdTokenError":
+            raise ApiError(401, "TOKEN_REVOKED", "This Firebase session was revoked. Sign out and sign in again.") from exc
+        if error_type == "UserDisabledError":
+            raise ApiError(401, "FIREBASE_USER_DISABLED", "This Firebase account is disabled. Contact the project administrator.") from exc
+        if "incorrect 'aud'" in lowered or "incorrect 'iss'" in lowered or "audience" in lowered and "project" in lowered or "issuer" in lowered and "project" in lowered:
+            raise ApiError(401, "FIREBASE_PROJECT_MISMATCH", "The Firebase token and backend are using different Firebase project settings. Check that the website and Render both use project ID codeacademybywm and that the service-account JSON belongs to the same project.") from exc
+        if error_type in {"CertificateFetchError", "UnavailableError", "DeadlineExceededError", "PermissionDeniedError"}:
+            raise ApiError(503, "FIREBASE_TOKEN_VERIFICATION_FAILED", "The backend could not complete Firebase token verification. Check the Render logs and confirm the service account has access to the codeacademybywm Firebase project.") from exc
+        raise ApiError(401, "INVALID_SESSION", "Firebase rejected the session token. The backend logs now include the specific verification reason. Refresh the admin page; if this repeats, inspect Render logs for 'Firebase ID-token verification failed'.") from exc
 
 
 def login_required(fn):
