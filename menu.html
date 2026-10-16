@@ -2359,6 +2359,19 @@ body { min-height: 0; }
 
                 </button>
 
+
+                <a
+                    class="quickBtn secondary"
+                    href="security-center.html"
+                    style="text-decoration:none"
+                >
+
+                    <i class="fa-solid fa-shield-halved"></i>
+
+                    Security Center
+
+                </a>
+
             </div>
 
         </div>
@@ -2834,16 +2847,7 @@ body { min-height: 0; }
 
     </aside>
 
-
-<section id="securityPremiumTracks" aria-label="Premium cybersecurity courses" style="width:min(1180px,94%);margin:20px auto 28px;padding:clamp(16px,3vw,26px);border:1px solid rgba(56,189,248,.28);border-radius:22px;background:radial-gradient(circle at 0% 0%,rgba(14,165,233,.15),transparent 35%),linear-gradient(135deg,#071226,#0c1429 65%,#171231);color:#eef6ff;box-shadow:0 20px 55px #0003">
- <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><div><div style="font-size:9px;font-weight:900;letter-spacing:.18em;color:#67e8f9">NEW · SPECIAL PREMIUM FEATURE</div><h2 style="font-size:clamp(21px,3vw,30px);margin:9px 0 6px">Cybersecurity & Ethical Hacking</h2><p style="font-size:12px;line-height:1.7;color:#a9bdd8;max-width:700px;margin:0">Learn how to protect information, configure defensive controls, investigate security events, and perform authorized assessments in safe training labs. Includes 20 lessons, 120 visual diagrams, guided practice and a separate certificate system.</p></div><a href="cybersecurity certificate.html" style="display:inline-flex;gap:8px;align-items:center;justify-content:center;min-height:40px;padding:0 14px;border:1px solid #355477;border-radius:11px;background:#101f37;color:#dbeafe;font-size:11px;font-weight:850;text-decoration:none"><i class="fa-solid fa-award"></i> Certificates</a></div>
- <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;margin-top:17px">
-  <a href="cybersecurity dashboard.html" style="display:block;overflow:hidden;border:1px solid #234a6a;border-radius:16px;background:#081427;text-decoration:none;color:#eff6ff"><img src="cybersecurity-hero.png" alt="Cybersecurity course preview" style="width:100%;height:150px;display:block;object-fit:cover"><div style="padding:13px 15px"><div style="font-size:9px;color:#67e8f9;letter-spacing:.15em;font-weight:900">DEFEND · DETECT · RECOVER</div><h3 style="font-size:15px;margin:7px 0">Cybersecurity</h3><p style="font-size:11px;line-height:1.6;color:#9eb0c9;margin:0 0 12px">CIA triad, risk, identity, firewalls, data protection, monitoring, web security and cloud controls.</p><span style="font-size:10px;color:#7dd3fc;font-weight:850">Open 10-lesson track <i class="fa-solid fa-arrow-right"></i></span></div></a>
-  <a href="ethical hacking dashboard.html" style="display:block;overflow:hidden;border:1px solid #4a3370;border-radius:16px;background:#081427;text-decoration:none;color:#eff6ff"><img src="ethical-hacking-hero.png" alt="Ethical hacking training-lab course preview" style="width:100%;height:150px;display:block;object-fit:cover"><div style="padding:13px 15px"><div style="font-size:9px;color:#c4b5fd;letter-spacing:.15em;font-weight:900">AUTHORIZED LABS ONLY</div><h3 style="font-size:15px;margin:7px 0">Ethical Hacking</h3><p style="font-size:11px;line-height:1.6;color:#9eb0c9;margin:0 0 12px">Permission, lab setup, safe assessment, finding validation, remediation, reporting and retesting.</p><span style="font-size:10px;color:#c4b5fd;font-weight:850">Open 10-lesson track <i class="fa-solid fa-arrow-right"></i></span></div></a>
- </div><p style="margin:13px 0 0;color:#94a8c3;font-size:10px;line-height:1.6"><i class="fa-solid fa-shield-halved" style="color:#34d399"></i> Practice only on systems you own or are explicitly authorized to test. Lessons never ask you to collect another person’s private information or credentials.</p>
-</section>
-
-<div style="max-width:1200px;margin:16px auto;padding:0 16px"><a href="ready-projects.html" style="display:flex;align-items:center;gap:12px;padding:16px;border:1px solid #334155;border-radius:14px;background:#0b1628;color:#e2e8f0;text-decoration:none;font-weight:800"><span style="font-size:22px;color:#60a5fa">✦</span><span>Ready-to-Do Projects<small style="display:block;color:#94a3b8;font-weight:500;margin-top:4px">255 commented projects across 17 editors</small></span><span style="margin-left:auto">Open →</span></a></div></main>
+</main>
 
 </div>
 
@@ -3027,6 +3031,14 @@ body { min-height: 0; }
 
 
     <div class="menuGrid">
+
+        <a
+            href="security-center.html"
+            class="menuLink"
+        >
+            <i class="fa-solid fa-shield-halved"></i>
+            Security Center
+        </a>
 
         <a
             href="profile.html"
@@ -3933,7 +3945,10 @@ function getNotificationIcon(type){
             "fa-trophy",
 
         system:
-            "fa-bell"
+            "fa-bell",
+
+        security:
+            "fa-shield-halved"
 
     };
 
@@ -4108,6 +4123,23 @@ function startNotificationListener(uid){
                         )
                 );
 
+                // Make an unread Shield warning visible without requiring the user
+                // to discover the category tab first.
+                const hasUnreadSecurityAlert = notifications.some(item =>
+                    item.read !== true && (
+                        String(item.type || "").toLowerCase() === "security" ||
+                        /security|suspicious link|message review warning/i.test(String(item.title || ""))
+                    )
+                );
+                if (hasUnreadSecurityAlert && activeNotificationFilter !== "academy") {
+                    activeNotificationFilter = "academy";
+                    notificationFilterButtons.forEach(button => {
+                        const active = button.dataset.notificationFilter === "academy";
+                        button.classList.toggle("active", active);
+                        button.setAttribute("aria-selected", String(active));
+                    });
+                    updateNotificationOrigin();
+                }
 
                 renderNotifications(
                     notifications

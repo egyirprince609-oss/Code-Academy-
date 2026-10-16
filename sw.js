@@ -1,9 +1,9 @@
 /* Code Academy PWA service worker. Bump CACHE_VERSION when releasing a new static bundle. */
 'use strict';
-const CACHE_VERSION='code-academy-shell-v3';
+const CACHE_VERSION='code-academy-shell-v4';
 const BASE=new URL('./',self.registration.scope);
 const CORE=[
- 'index.html','home.html','menu.html','games_dash.html','manifest.json','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
+ 'index.html','home.html','menu.html','security-center.html','security-engine.js','games_dash.html','manifest.json','security-preview.jpg','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
  'authentication.js','game-platform.js','notification-engine.js','pwa.js','lesson.html','signup.html','login.html','verify-email.html','privacy.html','terms.html','aboutus.html','contactus.html',
  'digital_vault.html','detective_man.html','mind_palace.html','civilization.html','truth_protocol.html','code_breaker.html','cybermission.html','code_racer.html','algorithm_defender.html','code_quest.html',
  'digital_vault_questions.json','detective_man_questions.json','mind_palace_questions.json','civilization_questions.json','truth_protocol_questions.json','code_breaker_questions.json','cybermission_questions.json','code_racer_challenges.json','algorithm_defender_questions.json','code_quest_questions.json',
