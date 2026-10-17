@@ -1,0 +1,59 @@
+CODE ACADEMY BROWSER — INSTALL & BACKEND SETUP
+==============================================
+
+FILES (ALL ADDED TO THE REPOSITORY ROOT)
+- browser.html                  Main focused browsing interface
+- browser.css                   Responsive browser styling
+- browser.js                    Browser UI, tabs, searches, local file handling, Firebase sync
+- browser-settings.html         Four-section settings page
+- browser-settings.css          Settings page layout
+- browser-settings.js           Settings and DNS diagnostics
+- browser-manifest.json         Separate install manifest for the browser PWA
+- browser-search-worker.js      Optional Cloudflare Worker search backend source
+- browser-share-preview.jpg    Browser-specific Open Graph/Twitter image
+- browser-icon-192.png / browser-icon-512.png   Browser-specific PWA icons
+
+INTEGRATION
+- browser.html and browser-settings.html use the existing ./authentication.js Firebase session.
+- Browser searches create account notifications at users/{uid}/notifications, which is the collection menu.html already listens to.
+- Saved tabs and history use users/{uid}/browserTabs and users/{uid}/browserHistory.
+- Preferences use users/{uid}/browserSettings/preferences when permitted; they are also stored on the current device.
+- Imported file bytes are stored locally in IndexedDB. Account history stores file metadata only.
+- sw.js was upgraded to cache the new root files and uses a new cache version.
+- menu.html now includes Code Academy Browser in the workspace menu.
+
+IMPORTANT: FIRESTORE RULES
+Your current Firestore rules must allow an authenticated user to read/write their own browserTabs, browserHistory, browserSettings subcollections, and notifications subcollection. Do not make these collections publicly writable. If a write is denied, the browser shows the actual Firestore error and local device storage continues where supported. Add or merge narrowly scoped owner-only rules matching your existing rules style; do not replace all rules with a public catch-all. A merge-ready owner-only snippet is included in BROWSER-FIRESTORE-RULES-ADDON.txt.
+
+GENERAL WEB SEARCH BACKEND (OPTIONAL, RECOMMENDED)
+GitHub Pages serves static files only and cannot execute a backend worker. This package includes browser-search-worker.js as a Cloudflare Worker source file. Deploy it separately as a Cloudflare Worker, then:
+1. Keep the exported default fetch handler as the Worker entry point.
+2. Deploy and copy the Worker HTTPS URL, for example https://your-worker-name.your-account.workers.dev.
+3. Open Code Academy Browser > Settings > Search Worker URL.
+4. Paste the HTTPS base URL and press Save settings.
+5. Test the deployed URL by opening /health, then test /search?q=paypal&category=web.
+
+The Worker is a focused search service only. It asks DuckDuckGo for search results and returns parsed result cards. It does not fetch/proxy arbitrary target websites, strip security headers, or bypass site restrictions. Search provider markup or rate limiting may change and the browser reports the true service error rather than inserting fake results. Without a Worker URL, the browser uses available direct sources: DuckDuckGo Instant Answers when reachable, Wikipedia search fallback, Wikimedia Commons image search, Open Library book search, and OpenStreetMap place search. A full general-purpose web results index requires an operating search provider/backend.
+
+WEBSITE EMBEDDING LIMITS
+This is a Progressive Web App, not a replacement for Chrome's native web engine. The viewer uses an iframe. A destination may prohibit framing via X-Frame-Options or Content-Security-Policy frame-ancestors; the PWA cannot override these response headers. Some sites, including login/payment services, may render blank or block sign-in when embedded. The browser provides an explicit “Open in full browser” option in those cases. A native Android APK can provide a WebView, but WebView is subject to site policy too; full desktop-browser parity requires a licensed/maintained native browser engine or site-approved integration.
+
+PRIVACY & PLATFORM LIMITS
+- Device notification permission can be requested by the settings page. This only allows visible notifications while the page/runtime is active; true background push requires Firebase Cloud Messaging (or another push provider), VAPID/configuration, and a trusted sender backend.
+- Speech recognition requires browser/device support and microphone permission; the page does not include or send microphone recordings to Code Academy.
+- DNS tests use a DNS-over-HTTPS endpoint. Switching this setting changes the resolver used by that diagnostic only; a website cannot change Android/mobile-carrier/Wi-Fi DNS settings.
+- Third-party cookies and cookies belonging to another origin cannot be read/cleared by ordinary page JavaScript. Users manage those through their browser/device privacy settings.
+- Imported file bytes are local to that browser profile and can be removed by storage cleanup; the Firestore history stores only file names, size/type metadata and event records.
+- Uploading an image currently imports it into local browser storage and enables related image search from its filename/query. Provider-backed reverse-image matching needs a dedicated reverse-image provider or server-side API.
+
+TEST CHECKLIST
+- Sign into Code Academy, open menu.html, then choose Code Academy Browser.
+- Search a phrase and check the menu notification bell for a “Browser search” entry.
+- Test a direct address such as https://www.wikipedia.org; if a site blocks its iframe, use “Open in full browser”.
+- Test All results, Images, Videos, News, Documents, Maps and Books. Web/video/news/document broad result coverage improves after configuring the Worker.
+- Open/close/switch tabs and check history; tab storage and history are capped to 1,000 recent records each.
+- Import an image, open Files, and export it again. Check the Files drawer if browser storage is supported.
+- Test DNS resolver selection, light/dark theme, voice input and notification permission on a supported device.
+- Install from the in-app Install action where supported, or use the device browser menu. Installed display and APK behavior depend on the PWA host/container.
+
+No APK was rebuilt by this static-site update. The existing APK/AAB artifacts were kept unchanged. Rebuild the Android package using the project's existing workflow after committing these files if you want the new browser page included in the APK.

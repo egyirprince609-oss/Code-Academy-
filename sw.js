@@ -1,13 +1,13 @@
 /* Code Academy PWA service worker. Bump CACHE_VERSION when releasing a new static bundle. */
 'use strict';
-const CACHE_VERSION='code-academy-shell-v5';
+const CACHE_VERSION='code-academy-shell-v4';
 const BASE=new URL('./',self.registration.scope);
 const CORE=[
- 'index.html','home.html','menu.html','games_dash.html','manifest.json','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
- 'authentication.js','notification-engine.js','live-map.html','security-center.html','game-platform.js','pwa.js','lesson.html','signup.html','login.html','verify-email.html','privacy.html','terms.html','aboutus.html','contactus.html',
+ 'index.html','home.html','menu.html','games_dash.html','manifest.json','browser.html','browser.css','browser.js','browser-settings.html','browser-settings.css','browser-settings.js','browser-manifest.json','browser-search-worker.js','browser-share-preview.jpg','browser-icon-192.png','browser-icon-512.png','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
+ 'authentication.js','game-platform.js','notification-engine.js','pwa.js','lesson.html','signup.html','login.html','verify-email.html','privacy.html','terms.html','aboutus.html','contactus.html',
  'digital_vault.html','detective_man.html','mind_palace.html','civilization.html','truth_protocol.html','code_breaker.html','cybermission.html','code_racer.html','algorithm_defender.html','code_quest.html',
  'digital_vault_questions.json','detective_man_questions.json','mind_palace_questions.json','civilization_questions.json','truth_protocol_questions.json','code_breaker_questions.json','cybermission_questions.json','code_racer_challenges.json','algorithm_defender_questions.json','code_quest_questions.json',
- 'share-preview.jpg','share-preview.png','share-preview-login.jpg','share-preview-signup.jpg','share-preview-verify.jpg','share-preview-live-map.jpg'
+ 'share-preview.jpg','share-preview.png','share-preview-login.jpg','share-preview-signup.jpg','share-preview-verify.jpg'
 ];
 const absolute=path=>new URL(path,BASE).toString();
 self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE_VERSION);await Promise.allSettled(CORE.map(async path=>{try{const request=new Request(absolute(path),{cache:'reload'});const response=await fetch(request);if(response.ok)await cache.put(request,response);}catch(_){}}));await self.skipWaiting();})());});

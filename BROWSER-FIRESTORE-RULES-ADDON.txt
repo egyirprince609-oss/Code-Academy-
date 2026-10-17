@@ -1,0 +1,25 @@
+CODE ACADEMY BROWSER — FIRESTORE RULES ADD-ON
+============================================
+Merge the following match blocks into the project's existing Firestore rules. Do not replace your current rules with this fragment and do not add a global allow rule. Firebase rules are additive across matching allow expressions, so review any broader existing matches before deploying.
+
+match /users/{uid}/browserTabs/{tabId} {
+  allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+}
+
+match /users/{uid}/browserHistory/{entryId} {
+  allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+}
+
+match /users/{uid}/browserSettings/{settingsId} {
+  allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+}
+
+match /users/{uid}/notifications/{notificationId} {
+  allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+}
+
+SECURITY NOTES
+- These conditions enforce that a signed-in account can access only its own user subcollections.
+- The notifications match may overlap an existing notifications rule. Keep or merge it with the existing owner-only notifications policy rather than broadening access.
+- Firestore evaluates matching allow rules additively; an existing permissive wildcard may still grant access even if these blocks are narrow.
+- Test reads and writes while signed in, then test that an authenticated account cannot read another UID's browser history.
