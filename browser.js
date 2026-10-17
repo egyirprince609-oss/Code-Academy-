@@ -17,6 +17,7 @@ const HISTORY_LIMIT = 1000;
 const CATEGORIES = ['web', 'images', 'videos', 'news', 'documents', 'maps', 'books'];
 const ui = {
   app: $('#browserApp'), tabList: $('#tabList'), address: $('#addressInput'), addressForm: $('#addressForm'),
+  addressSuggestions: $('#addressSuggestions'),
   heroSearch: $('#heroSearchInput'), heroSearchForm: $('#heroSearchForm'), welcome: $('#welcomeView'),
   searchView: $('#searchView'), websiteView: $('#websiteView'), emptyView: $('#emptyView'), focus: $('#focusViewport'),
   results: $('#resultsList'), answer: $('#answerCard'), heading: $('#resultsHeading'), meta: $('#resultsMeta'),
@@ -46,12 +47,31 @@ let currentImageResult = null;
 let frameNavigation = 0;
 let frameTimer = null;
 let inMemoryFiles = new Map();
+let historyMode = 'all';
+let homeFeedItems = [];
+let homeFeedSource = '';
+let homeFeedUpdatedAt = 0;
+let homeFeedLoading = false;
+let newsRefreshTimer = null;
+
+// Capture installability before Firebase authentication finishes so the one-shot install event is not missed.
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault(); deferredInstallPrompt = event;
+  if (ui.installHelp) ui.installHelp.textContent = 'Your browser supports the install prompt. Select Install browser.';
+});
+window.addEventListener('appinstalled', () => {
+  if (ui.installDialog) ui.installDialog.hidden = true;
+  showToast('Code Academy Browser was installed.');
+});
 
 function defaultPreferences() {
   return {
-    theme: 'dark', desktopMode: false, searchEndpoint: '', safeSearch: true,
+    theme: 'dark', accent: 'cyan', textScale: '100', reducedMotion: false, startPage: 'home',
+    desktopMode: false, searchEndpoint: '', safeSearch: true, defaultCategory: 'web',
+    liveNews: true, newsRefresh: '15', showThumbnails: true, suggestionsEnabled: true,
     voiceEnabled: true, notificationsEnabled: false, confirmDownloads: true,
-    siteWarning: true, dnsProvider: 'google'
+    siteWarning: true, dnsProvider: 'google', saveHistory: true, privateSession: false,
+    clearHistoryOnExit: false, accountSync: true
   };
 }
 function readJSON(key, fallback) {
@@ -88,7 +108,7 @@ function showError(error, label = 'Browser error') {
 function setStatus(text) { ui.status.textContent = text; }
 function getActiveTab() { return tabs.find(tab => tab.id === activeTabId) || null; }
 function isValidHttpUrl(value) {
-  try { const parsed = new URL(value); return ['http:', 'https:'].includes(parsed.protocol); }
+  try { const parsed = new URL(value); return ['http:', 'https:'].includes(parsed.protocol) && !parsed.username && !parsed.password; }
   catch { return false; }
 }
 function normalizeUrl(input) {
@@ -98,6 +118,7 @@ function normalizeUrl(input) {
   const candidate = /^[a-z][a-z\d+.-]*:\/\//i.test(raw) ? raw : `https://${raw}`;
   const parsed = new URL(candidate);
   if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error(`Unsupported URL protocol: ${parsed.protocol}`);
+  if (parsed.username || parsed.password) throw new Error('For security, enter a website address without embedded username or password credentials.');
   if (!parsed.hostname || !parsed.hostname.includes('.')) throw new Error(`That does not look like a website address: ${raw}`);
   return parsed.href;
 }
@@ -107,11 +128,19 @@ function looksLikeWebsite(value) {
   return /^(https?:\/\/|www\.)/i.test(text) || /^(localhost(?::\d+)?|(?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#].*)?)$/i.test(text);
 }
 function currentBaseUrl() { return new URL('./', location.href).href; }
-function safeExternalUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) ? url.href : ''; } catch { return ''; } }
+function safeExternalUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password ? url.href : ''; } catch { return ''; } }
 
 function applyPreferences() {
   ui.app.classList.toggle('light', preferences.theme === 'light');
+  ui.app.classList.toggle('reduce-motion', Boolean(preferences.reducedMotion));
+  ui.app.classList.toggle('hide-thumbnails', !preferences.showThumbnails);
+  const accents = { cyan: '#45d4df', blue: '#4388ff', violet: '#9675ff', green: '#31c99a', rose: '#ff739b' };
+  ui.app.style.setProperty('--browser-accent', accents[preferences.accent] || accents.cyan);
+  const textScale = Number(preferences.textScale || 100);
+  ui.app.style.setProperty('--browser-text-scale', String(Math.min(1.25, Math.max(0.9, textScale / 100))));
   desktopMode = Boolean(preferences.desktopMode);
+  const feed = $('#homeFeed');
+  if (feed) feed.hidden = !preferences.liveNews;
   if (preferences.siteWarning) {
     ui.privacyNotice.hidden = false;
     ui.privacyNotice.textContent = 'External websites have their own security policies. Sites that block iframe embedding may not render here; the browser cannot override their restrictions.';
@@ -140,13 +169,16 @@ function makeTab({ title = 'New tab', kind = 'home', url = '', queryText = '', c
   const initialView = { kind, title: String(title), url: String(url), query: String(queryText), category };
   return { id: id(), ...initialView, navHistory: [initialView], historyIndex: 0, openedAt: now(), updatedAt: now() };
 }
-function localTabs() { return readJSON(STORAGE.tabs, []); }
-function persistLocalTabs() { writeJSON(STORAGE.tabs, tabs.slice(-TAB_LIMIT)); writeJSON(STORAGE.active, activeTabId); }
+function localTabs() { return preferences.privateSession ? [] : readJSON(STORAGE.tabs, []); }
+function persistLocalTabs() {
+  if (preferences.privateSession) return;
+  writeJSON(STORAGE.tabs, tabs.slice(-TAB_LIMIT)); writeJSON(STORAGE.active, activeTabId);
+}
 function localHistory() { return readJSON(STORAGE.history, []); }
 function localFiles() { return readJSON(STORAGE.files, []); }
 
 async function saveTabRemote(tab) {
-  if (!currentUser) return;
+  if (!currentUser || !preferences.accountSync || preferences.privateSession) return;
   try {
     await setDoc(doc(db, 'users', currentUser.uid, 'browserTabs', tab.id), {
       id: tab.id, title: tab.title, kind: tab.kind, url: tab.url || '', query: tab.query || '', category: tab.category || 'web',
@@ -167,35 +199,36 @@ async function saveTabRemote(tab) {
   }
 }
 async function deleteTabRemote(tabId) {
-  if (!currentUser) return;
+  if (!currentUser || !preferences.accountSync || preferences.privateSession) return;
   try { await deleteDoc(doc(db, 'users', currentUser.uid, 'browserTabs', tabId)); }
   catch (error) { console.warn('[Code Academy Browser] Could not delete saved tab:', error); }
 }
 async function loadSavedTabs() {
   const local = localTabs().filter(item => item && item.id && ['home', 'site', 'search'].includes(item.kind));
-  try {
-    const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'browserTabs'), orderBy('openedAt', 'desc'), limit(TAB_LIMIT)));
-    const remote = snap.docs.map(item => ({ id: item.id, ...item.data() })).filter(item => item.id && ['home', 'site', 'search'].includes(item.kind));
-    if (remote.length) {
-      const merged = new Map();
-      [...local, ...remote].forEach(item => merged.set(item.id, { ...(merged.get(item.id) || {}), ...item }));
-      tabs = Array.from(merged.values()).sort((a, b) => Number(a.openedAt || 0) - Number(b.openedAt || 0)).slice(-TAB_LIMIT);
-    } else tabs = local.slice(-TAB_LIMIT);
-  } catch (error) {
-    console.warn('[Code Academy Browser] Loading account tabs failed; using device-saved tabs:', error);
-    tabs = local.slice(-TAB_LIMIT);
-  }
-  activeTabId = readJSON(STORAGE.active, null);
+  if (currentUser && preferences.accountSync && !preferences.privateSession) {
+    try {
+      const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'browserTabs'), orderBy('openedAt', 'desc'), limit(TAB_LIMIT)));
+      const remote = snap.docs.map(item => ({ id: item.id, ...item.data() })).filter(item => item.id && ['home', 'site', 'search'].includes(item.kind));
+      if (remote.length) {
+        const merged = new Map();
+        [...local, ...remote].forEach(item => merged.set(item.id, { ...(merged.get(item.id) || {}), ...item }));
+        tabs = Array.from(merged.values()).sort((a, b) => Number(a.openedAt || 0) - Number(b.openedAt || 0)).slice(-TAB_LIMIT);
+      } else tabs = local.slice(-TAB_LIMIT);
+    } catch (error) {
+      console.warn('[Code Academy Browser] Loading account tabs failed; using device-saved tabs:', error);
+      tabs = local.slice(-TAB_LIMIT);
+    }
+  } else tabs = local.slice(-TAB_LIMIT);
+  activeTabId = preferences.privateSession ? null : readJSON(STORAGE.active, null);
   if (!tabs.some(tab => tab.id === activeTabId)) activeTabId = tabs[tabs.length - 1]?.id || null;
   persistLocalTabs();
   if (!tabs.length) {
     const tab = makeTab({ title: 'New tab', kind: 'home' });
-    tabs = [tab]; activeTabId = tab.id; persistLocalTabs();
-    saveTabRemote(tab);
+    tabs = [tab]; activeTabId = tab.id; persistLocalTabs(); await saveTabRemote(tab);
   }
-  renderTabs(); await renderActiveTab();
+  renderTabs();
+  await renderActiveTab();
 }
-
 function renderTabs() {
   ui.tabList.replaceChildren();
   const visibleTabs = tabs.slice(-TAB_LIMIT);
@@ -234,9 +267,15 @@ async function renderActiveTab() {
   ui.answer.hidden = true;
   if (!tab) { ui.emptyView.hidden = false; return; }
   if (tab.kind === 'home') {
-    ui.welcome.hidden = false; ui.address.value = ''; setStatus('Ready for a new search'); ui.footerStatus.textContent = 'Search, type a website address, or open a saved tab.';
+    ui.welcome.hidden = false; ui.address.value = ''; setStatus('Ready for a new search'); ui.footerStatus.textContent = preferences.privateSession ? 'Private session: tabs and history are not saved to this device or account.' : 'Search, type a website address, or open a saved tab.';
+    $$('.primary-nav-item').forEach(item => item.classList.toggle('active', item.id === 'homeButton'));
+    if (preferences.liveNews) {
+      loadHomeFeed().catch(error => console.warn('[Code Academy Browser] Home feed unavailable:', error));
+      if (preferences.startPage === 'news') window.setTimeout(() => $('#homeFeed')?.scrollIntoView({ block: 'start', behavior: preferences.reducedMotion ? 'auto' : 'smooth' }), 80);
+    }
     return;
   }
+  $$('.primary-nav-item').forEach(item => item.classList.toggle('active', false));
   if (tab.kind === 'search') {
     ui.searchView.hidden = false; ui.address.value = tab.query || tab.title || ''; ui.heroSearch.value = tab.query || '';
     setSelectedCategory(tab.category || 'web');
@@ -310,9 +349,10 @@ async function saveHistoryEntry(entry) {
     category: String(entry.category || 'web'), kind: String(entry.kind || 'site'), type: String(entry.type || entry.kind || 'site'),
     fileName: String(entry.fileName || ''), assetId: String(entry.assetId || ''), createdAt: Number(entry.createdAt || now())
   };
+  if (preferences.privateSession || !preferences.saveHistory) return record;
   historyEntries = [record, ...historyEntries.filter(item => item.id !== record.id)].slice(0, HISTORY_LIMIT);
   writeJSON(STORAGE.history, historyEntries);
-  if (!currentUser) return record;
+  if (!currentUser || !preferences.accountSync) return record;
   try {
     await setDoc(doc(db, 'users', currentUser.uid, 'browserHistory', record.id), record, { merge: true });
     const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'browserHistory'), orderBy('createdAt', 'desc'), limit(HISTORY_LIMIT + 1)));
@@ -322,24 +362,28 @@ async function saveHistoryEntry(entry) {
   return record;
 }
 async function loadHistory() {
-  const local = localHistory();
-  try {
-    const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'browserHistory'), orderBy('createdAt', 'desc'), limit(HISTORY_LIMIT)));
-    const remote = snap.docs.map(item => ({ id: item.id, ...item.data() }));
-    const merged = new Map(); [...local, ...remote].forEach(item => merged.set(item.id, { ...(merged.get(item.id) || {}), ...item }));
-    historyEntries = Array.from(merged.values()).sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0)).slice(0, HISTORY_LIMIT);
-  } catch (error) { historyEntries = local.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0)).slice(0, HISTORY_LIMIT); }
-  writeJSON(STORAGE.history, historyEntries); renderHistory();
+  const local = (preferences.privateSession || !preferences.saveHistory) ? [] : localHistory();
+  if (currentUser && preferences.accountSync && !preferences.privateSession && preferences.saveHistory) {
+    try {
+      const snap = await getDocs(query(collection(db, 'users', currentUser.uid, 'browserHistory'), orderBy('createdAt', 'desc'), limit(HISTORY_LIMIT)));
+      const remote = snap.docs.map(item => ({ id: item.id, ...item.data() }));
+      const merged = new Map(); [...local, ...remote].forEach(item => merged.set(item.id, { ...(merged.get(item.id) || {}), ...item }));
+      historyEntries = Array.from(merged.values()).sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0)).slice(0, HISTORY_LIMIT);
+    } catch (error) { historyEntries = local.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0)).slice(0, HISTORY_LIMIT); }
+  } else historyEntries = local.sort((a, b) => Number(b.createdAt || 0) - Number(a.createdAt || 0)).slice(0, HISTORY_LIMIT);
+  if (!preferences.privateSession && preferences.saveHistory) writeJSON(STORAGE.history, historyEntries);
+  renderHistory();
 }
 async function clearHistory() {
-  const confirmed = window.confirm('Clear up to 1,000 saved browser history entries on this device and account? Your open tabs will remain.');
+  const target = currentUser && preferences.accountSync && !preferences.privateSession ? 'this device and your synced account' : 'this device';
+  const confirmed = window.confirm(`Clear up to 1,000 saved browser history entries on ${target}? Your open tabs will remain.`);
   if (!confirmed) return;
   const records = [...historyEntries]; historyEntries = []; writeJSON(STORAGE.history, []); renderHistory();
-  if (currentUser) {
+  if (currentUser && preferences.accountSync && !preferences.privateSession) {
     try { await Promise.allSettled(records.map(item => deleteDoc(doc(db, 'users', currentUser.uid, 'browserHistory', item.id)))); }
     catch (error) { showError(error, 'History clear failed'); }
   }
-  showToast('Browsing history cleared.');
+  showToast('Browsing history cleared from the selected storage.');
 }
 function formatDate(value) {
   const time = Number(value || 0); if (!time) return 'Time unavailable';
@@ -347,9 +391,10 @@ function formatDate(value) {
 }
 function renderHistory() {
   const filter = String(ui.historyFilter.value || '').trim().toLowerCase();
-  const items = historyEntries.filter(item => `${item.title} ${item.url} ${item.query} ${item.fileName}`.toLowerCase().includes(filter));
+  const modeItems = historyMode === 'search' ? historyEntries.filter(item => item.kind === 'search' || Boolean(item.query)) : historyEntries;
+  const items = modeItems.filter(item => `${item.title} ${item.url} ${item.query} ${item.fileName}`.toLowerCase().includes(filter));
   ui.historyList.replaceChildren();
-  if (!items.length) { const empty = document.createElement('div'); empty.className = 'drawer-empty'; empty.textContent = filter ? 'No history entries match that filter.' : 'No recent history is saved yet.'; ui.historyList.append(empty); return; }
+  if (!items.length) { const empty = document.createElement('div'); empty.className = 'drawer-empty'; empty.textContent = filter ? 'No history entries match that filter.' : historyMode === 'search' ? 'No saved search history is available yet.' : 'No recent history is saved yet.'; ui.historyList.append(empty); return; }
   items.forEach(item => {
     const row = document.createElement('div'); row.className = 'history-item';
     const favicon = document.createElement('span'); favicon.className = 'history-favicon'; favicon.textContent = item.kind === 'file-import' ? '⇧' : item.kind === 'file-export' ? '⇩' : item.kind === 'search' ? '⌕' : hostInitial(item.url);
@@ -369,12 +414,19 @@ function renderHistory() {
   });
 }
 
-function openDrawer(name) {
+function openDrawer(name, mode = 'all') {
   ui.moreMenu.hidden = true; ui.backdrop.hidden = false;
   const drawer = name === 'history' ? ui.historyDrawer : ui.filesDrawer;
   drawer.classList.add('open'); drawer.setAttribute('aria-hidden', 'false');
-  if (name === 'history') { loadHistory(); ui.historyFilter.focus({ preventScroll: true }); }
-  if (name === 'files') { loadFiles(); }
+  if (name === 'history') {
+    historyMode = mode === 'search' ? 'search' : 'all';
+    const heading = ui.historyDrawer.querySelector('.drawer-head h2');
+    if (heading) heading.textContent = historyMode === 'search' ? 'Search history' : 'Browsing history';
+    ui.historyFilter.value = '';
+    loadHistory().catch(error => showError(error, 'History load failed'));
+    ui.historyFilter.focus({ preventScroll: true });
+  }
+  if (name === 'files') loadFiles();
 }
 function closeDrawers() {
   [ui.historyDrawer, ui.filesDrawer].forEach(drawer => { drawer.classList.remove('open'); drawer.setAttribute('aria-hidden', 'true'); });
@@ -500,6 +552,156 @@ async function getSearchResults(queryText, category) {
     throw error;
   }
 }
+function searchWorkerRoot() {
+  let root = searchEndpoint();
+  if (root.endsWith('/search')) root = root.slice(0, -7);
+  return root.replace(/\/+$/, '');
+}
+function formatFeedDate(value) {
+  if (!value) return 'Latest';
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'Latest';
+  const age = Math.max(0, Date.now() - parsed.getTime());
+  if (age < 3600000) return `${Math.max(1, Math.round(age / 60000))} min ago`;
+  if (age < 86400000) return `${Math.round(age / 3600000)} hr ago`;
+  return parsed.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+function normalizeHeadline(item, source = '') {
+  const url = safeExternalUrl(item.url || item.link || item.guid || '');
+  const title = String(item.title || '').replace(/\s+/g, ' ').trim();
+  if (!url || !title) return null;
+  let domain = '';
+  try { domain = new URL(url).hostname.replace(/^www\./, ''); } catch {}
+  return {
+    title: title.slice(0, 220), url,
+    snippet: stripHtml(item.snippet || item.description || item.content || '').slice(0, 360),
+    source: String(item.source || source || domain || 'News feed').slice(0, 80),
+    published: item.published || item.pubDate || item.date || '',
+    image: safeExternalUrl(item.image || item.thumbnail || item.enclosure?.link || '')
+  };
+}
+async function fetchLiveHeadlines() {
+  const root = searchWorkerRoot();
+  if (root) {
+    try {
+      const response = await fetchWithTimeout(`${root}/headlines?limit=6`, { headers: { Accept: 'application/json' } }, 12000);
+      const data = await response.json();
+      const items = (Array.isArray(data.items) ? data.items : Array.isArray(data.results) ? data.results : [])
+        .map(item => normalizeHeadline(item, item.source || data.source || 'Live news'))
+        .filter(Boolean).slice(0, 6);
+      if (response.ok && items.length) return { items, source: data.source || 'Configured news feed' };
+    } catch (error) {
+      console.info('[Code Academy Browser] Search Worker headline route unavailable; trying public RSS feeds:', getErrorText(error));
+    }
+  }
+  const rssFeeds = [
+    { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', source: 'BBC News' },
+    { url: 'https://www.theguardian.com/world/rss', source: 'The Guardian' }
+  ];
+  const failures = [];
+  for (const feed of rssFeeds) {
+    try {
+      const api = new URL('https://api.rss2json.com/v1/api.json');
+      api.searchParams.set('rss_url', feed.url);
+      const response = await fetchWithTimeout(api.href, { headers: { Accept: 'application/json' } }, 10000);
+      const payload = await response.json();
+      if (!response.ok || payload.status !== 'ok' || !Array.isArray(payload.items)) throw new Error(payload.message || `RSS conversion returned HTTP ${response.status}`);
+      const items = payload.items.map(item => normalizeHeadline(item, feed.source)).filter(Boolean).slice(0, 6);
+      if (items.length) return { items, source: `${feed.source} RSS` };
+    } catch (error) { failures.push(`${feed.source}: ${getErrorText(error)}`); }
+  }
+  throw new Error(failures.join(' · ') || 'No public news feed responded.');
+}
+function renderHomeFeed(items, source = '', error = '') {
+  const grid = $('#homeFeedGrid');
+  const status = $('#homeFeedStatus');
+  if (!grid || !status) return;
+  grid.replaceChildren();
+  if (items.length) {
+    status.textContent = `${source || 'Live news'} · updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    items.slice(0, 6).forEach(item => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'home-news-card';
+      const imageUrl = safeExternalUrl(item.image || '');
+      if (imageUrl && preferences.showThumbnails) {
+        const image = document.createElement('img'); image.className = 'home-news-image'; image.src = imageUrl; image.alt = ''; image.loading = 'lazy'; image.referrerPolicy = 'no-referrer';
+        image.addEventListener('error', () => image.remove(), { once: true }); button.append(image);
+      } else {
+        const mark = document.createElement('span'); mark.className = 'home-news-mark'; mark.textContent = (item.source || 'N').charAt(0).toUpperCase(); button.append(mark);
+      }
+      const body = document.createElement('span'); body.className = 'home-news-copy';
+      const meta = document.createElement('small'); meta.textContent = `${item.source || 'News'} · ${formatFeedDate(item.published)}`;
+      const title = document.createElement('strong'); title.textContent = item.title;
+      const snippet = document.createElement('span'); snippet.className = 'home-news-snippet'; snippet.textContent = item.snippet || 'Open the publisher to read the full story.';
+      body.append(meta, title, snippet); button.append(body);
+      button.addEventListener('click', () => openAddress(item.url, { createTab: false, title: item.title }).catch(err => showError(err, 'Could not open news story'));
+      grid.append(button);
+    });
+  } else {
+    status.textContent = 'Live headlines could not be reached right now.';
+    const notice = document.createElement('div'); notice.className = 'feed-error';
+    const title = document.createElement('strong'); title.textContent = 'News feeds are temporarily unavailable';
+    const detail = document.createElement('p'); detail.textContent = 'Check your connection or add your deployed Search Worker URL in Browser Settings. Search results are still available.';
+    const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'quiet-btn'; retry.textContent = 'Try again'; retry.addEventListener('click', () => loadHomeFeed({ force: true }));
+    const news = document.createElement('a'); news.href = 'https://news.google.com/'; news.target = '_blank'; news.rel = 'noopener noreferrer'; news.textContent = 'Open Google News ↗';
+    notice.append(title, detail, retry, news); grid.append(notice);
+    if (error) console.info('[Code Academy Browser] Live news feed error:', error);
+  }
+}
+async function loadHomeFeed({ force = false } = {}) {
+  if (!preferences.liveNews) { const feed = $('#homeFeed'); if (feed) feed.hidden = true; return; }
+  const feed = $('#homeFeed'); if (feed) feed.hidden = false;
+  const refreshMs = preferences.newsRefresh === 'never' ? Infinity : Math.max(5, Number(preferences.newsRefresh || 15)) * 60000;
+  if (!force && homeFeedItems.length && Date.now() - homeFeedUpdatedAt < refreshMs) {
+    renderHomeFeed(homeFeedItems, homeFeedSource); return;
+  }
+  if (homeFeedLoading) return;
+  homeFeedLoading = true;
+  const status = $('#homeFeedStatus'); if (status) status.textContent = 'Connecting to current news feeds…';
+  try {
+    const payload = await fetchLiveHeadlines();
+    homeFeedItems = payload.items; homeFeedSource = payload.source; homeFeedUpdatedAt = Date.now();
+    renderHomeFeed(homeFeedItems, homeFeedSource);
+  } catch (error) {
+    renderHomeFeed([], '', getErrorText(error));
+  } finally { homeFeedLoading = false; }
+}
+function scheduleNewsRefresh() {
+  if (newsRefreshTimer) window.clearInterval(newsRefreshTimer);
+  const minutes = preferences.newsRefresh === 'never' ? 0 : Number(preferences.newsRefresh || 15);
+  if (preferences.liveNews && minutes >= 5) {
+    newsRefreshTimer = window.setInterval(() => {
+      if (!document.hidden && getActiveTab()?.kind === 'home') loadHomeFeed({ force: true });
+    }, minutes * 60000);
+  }
+}
+function renderAddressSuggestions(raw = '') {
+  const container = ui.addressSuggestions;
+  if (!container || !preferences.suggestionsEnabled) { if (container) container.hidden = true; return; }
+  const queryText = String(raw || '').trim().toLowerCase();
+  const recent = historyEntries.slice().filter(item => item.url || item.query).slice(0, 20).map(item => ({ label: item.title || item.query || item.url, value: item.query || item.url, kind: item.kind === 'search' || item.query ? 'Recent search' : 'Recent site' }));
+  const quick = [
+    { label: 'Google Search', value: 'https://www.google.com', kind: 'Quick link' },
+    { label: 'DuckDuckGo Search', value: 'https://duckduckgo.com', kind: 'Quick link' },
+    { label: 'Wikipedia', value: 'https://www.wikipedia.org', kind: 'Quick link' },
+    { label: 'Current news', value: 'latest world news today', kind: 'Search suggestion' }
+  ];
+  let candidates = queryText ? [...recent, ...quick].filter(item => `${item.label} ${item.value}`.toLowerCase().includes(queryText)) : [...recent, ...quick];
+  if (queryText && !looksLikeWebsite(raw) && !candidates.some(item => item.value.toLowerCase() === queryText)) candidates.unshift({ label: `Search for “${String(raw).trim()}”`, value: String(raw).trim(), kind: 'Search suggestion' });
+  const unique = new Set(); candidates = candidates.filter(item => item.value && !unique.has(item.value) && unique.add(item.value)).slice(0, 6);
+  container.replaceChildren();
+  if (!unique.size) { container.hidden = true; return; }
+  candidates.forEach(item => {
+    const button = document.createElement('button'); button.type = 'button'; button.className = 'suggestion-item'; button.setAttribute('role', 'option');
+    const mark = document.createElement('span'); mark.className = 'suggestion-mark'; mark.textContent = item.kind === 'Recent site' ? '↗' : '⌕';
+    const copy = document.createElement('span'); copy.className = 'suggestion-copy';
+    const title = document.createElement('strong'); title.textContent = item.label;
+    const kind = document.createElement('small'); kind.textContent = item.kind; copy.append(title, kind); button.append(mark, copy);
+    button.addEventListener('click', () => { ui.address.value = item.value; ui.addressSuggestions.hidden = true; submitAddress(item.value).catch(err => showError(err, 'Suggestion navigation failed')); });
+    container.append(button);
+  });
+  container.hidden = false;
+}
+
 function categoryLabel(category) { return ({ web: 'Web', images: 'Image', videos: 'Video', news: 'News', documents: 'Document', maps: 'Map', books: 'Book' })[category] || 'Web'; }
 function renderSearchResults(queryText, category, payload, cachedAnswer = null) {
   ui.results.replaceChildren(); ui.answer.replaceChildren(); ui.answer.hidden = true;
@@ -555,13 +757,19 @@ async function performSearch(rawQuery, category = activeCategory, options = {}) 
   searchBusy = true; lastSearchQuery = queryText; setSelectedCategory(category); ui.address.value = queryText; ui.heroSearch.value = queryText;
   hideViews(); ui.searchView.hidden = false; ui.heading.textContent = `Searching for “${queryText}”`; ui.meta.textContent = `Contacting ${categoryLabel(category).toLowerCase()} search sources…`;
   ui.results.replaceChildren(); const loading = document.createElement('div'); loading.className = 'no-results'; loading.textContent = `Searching ${categoryLabel(category).toLowerCase()} sources for “${queryText}”…`; ui.results.append(loading);
-  ui.googleFallback.href = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`; ui.duckFallback.href = `https://duckduckgo.com/?q=${encodeURIComponent(queryText)}`;
+  ui.googleFallback.href = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`;
+  ui.duckFallback.href = `https://duckduckgo.com/?q=${encodeURIComponent(queryText)}`;
+  $('#censysFallback').href = `https://search.censys.io/search?resource=hosts&q=${encodeURIComponent(queryText)}`;
+  const fofaQuery = looksLikeWebsite(queryText) ? `domain="${queryText.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split(/[/?#]/)[0]}"` : queryText;
+  let fofaEncoded = '';
+  try { fofaEncoded = btoa(String.fromCharCode(...new TextEncoder().encode(fofaQuery))); } catch { fofaEncoded = btoa(fofaQuery.replace(/[^\x00-\x7F]/g, '')); }
+  $('#fofaFallback').href = `https://fofa.info/result?qbase64=${encodeURIComponent(fofaEncoded)}`;
   ui.footerStatus.textContent = `Searching: ${queryText}`; setStatus('Searching…');
   let tab = getActiveTab();
   if (!options.silent) {
     tab = await navigateTabView({ title: shorten(queryText, 30), kind: 'search', url: `browser.html?q=${encodeURIComponent(queryText)}&category=${encodeURIComponent(category)}`, query: queryText, category });
     // Log every user-initiated search attempt even when the search provider later fails.
-    await sendBrowserNotification(queryText, category);
+    if (preferences.notificationsEnabled && preferences.accountSync && !preferences.privateSession) await sendBrowserNotification(queryText, category);
   }
   try {
     const payload = await getSearchResults(queryText, category);
@@ -569,7 +777,7 @@ async function performSearch(rawQuery, category = activeCategory, options = {}) 
     if (!options.silent) {
       const entry = await saveHistoryEntry({ title: `Search: ${queryText}`, kind: 'search', query: queryText, category, url: `browser.html?q=${encodeURIComponent(queryText)}&category=${encodeURIComponent(category)}` });
       await saveTabRemote(getActiveTab() || tab || entry);
-      if (preferences.notificationsEnabled && 'Notification' in window && Notification.permission === 'granted') {
+      if (preferences.notificationsEnabled && !preferences.privateSession && 'Notification' in window && Notification.permission === 'granted') {
         try { new Notification('Code Academy Browser', { body: `Search completed: ${queryText}`, icon: './browser-icon-192.png', tag: `browser-search-${Date.now()}` }); } catch (error) { console.warn('[Code Academy Browser] Device notification failed:', error); }
       }
     }
@@ -666,17 +874,48 @@ async function installBrowser() {
     ui.installHelp.textContent = 'No automatic install prompt is currently available. Use the browser’s menu → Install app or Add to Home screen. The browser decides when this option is supported.';
   }
 }
-async function shareCurrentTab() {
-  const tab = getActiveTab(); if (!tab) { showToast('There is no active tab to share.', 'warn'); return; }
-  const url = tab.url && safeExternalUrl(tab.url) ? tab.url : new URL('browser.html', currentBaseUrl()).href;
-  const title = tab.title || 'Code Academy Browser tab';
-  const text = tab.kind === 'search' ? `Search results for ${tab.query} in Code Academy Browser.` : `Open this tab in Code Academy Browser: ${title}`;
-  const payload = { title, text, url };
+function openShareDialog() {
+  const dialog = $('#shareDialog'); if (!dialog) return;
+  $('#shareDialogStatus').textContent = '';
+  dialog.hidden = false;
+}
+function closeShareDialog() { const dialog = $('#shareDialog'); if (dialog) dialog.hidden = true; }
+async function sendSharePayload(payload, fallbackText = '') {
   try {
-    if (navigator.share) await navigator.share(payload);
-    else if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(`${title}\n${text}\n${url}`); showToast('Tab details copied to clipboard.'); }
-    else throw new Error('This device does not offer native share or clipboard access.');
-  } catch (error) { if (error?.name === 'AbortError') return; showError(error, 'Share tab failed'); }
+    if (navigator.share) { await navigator.share(payload); closeShareDialog(); return; }
+    const text = fallbackText || `${payload.title || ''}\n${payload.text || ''}\n${payload.url || ''}`;
+    if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); closeShareDialog(); showToast('Share details copied. Paste them into your messaging app.'); return; }
+    $('#shareDialogStatus').textContent = 'Native sharing and clipboard access are unavailable. Copy the URL from the address bar instead.';
+  } catch (error) {
+    if (error?.name === 'AbortError') return;
+    $('#shareDialogStatus').textContent = `Sharing failed: ${getErrorText(error)}`;
+  }
+}
+async function shareApplication() {
+  const url = new URL('index.html', currentBaseUrl()).href;
+  const title = 'Code Academy App';
+  const text = 'Explore Code Academy, your learning workspace with an integrated browser for web search, live news, images, documents, focused tabs and privacy settings. Open the app and continue learning from one place.';
+  await sendSharePayload({ title, text, url }, `${title}\n${text}\n${url}`);
+}
+async function shareCurrentTab() {
+  const tab = getActiveTab(); if (!tab) { $('#shareDialogStatus').textContent = 'There is no active tab to share.'; return; }
+  const targetUrl = tab.url && safeExternalUrl(tab.url) ? tab.url : new URL('browser.html', currentBaseUrl()).href;
+  const title = tab.title || (tab.kind === 'search' ? tab.query : '') || 'Code Academy Browser';
+  const description = tab.kind === 'search'
+    ? `Search for “${tab.query}” in Code Academy Browser. Explore categorized results, then open the destination in your focused browser tab.`
+    : `I’m viewing ${title} with Code Academy Browser. Open the site, explore its original content, and try the browser’s search, tabs, history and privacy tools.`;
+  let shareUrl = targetUrl;
+  const root = searchWorkerRoot();
+  if (root) {
+    try {
+      const metadata = new URL(`${root}/share-preview`);
+      metadata.searchParams.set('url', targetUrl);
+      metadata.searchParams.set('title', title);
+      metadata.searchParams.set('description', description);
+      shareUrl = metadata.href;
+    } catch { shareUrl = targetUrl; }
+  }
+  await sendSharePayload({ title: `${title} · Code Academy Browser`, text: `${description}\n\nShared with Code Academy Browser.`, url: shareUrl }, `${title} · Code Academy Browser\n${description}\n${shareUrl}\n\nOriginal site: ${targetUrl}`);
 }
 async function downloadCurrent() {
   const tab = getActiveTab(); if (!tab) { showToast('There is no active tab to download.', 'warn'); return; }
@@ -837,9 +1076,24 @@ function startVoiceSearch() {
 }
 
 function attachEvents() {
-  ui.addressForm.addEventListener('submit', event => { event.preventDefault(); submitAddress(ui.address.value).catch(error => showError(error, 'Search or navigation failed')); });
-  ui.heroSearchForm.addEventListener('submit', event => { event.preventDefault(); const query = ui.heroSearch.value.trim(); if (query) submitAddress(query).catch(error => showError(error, 'Search failed')); });
+  ui.addressForm.addEventListener('submit', event => { event.preventDefault(); ui.addressSuggestions.hidden = true; submitAddress(ui.address.value).catch(error => showError(error, 'Search or navigation failed')); });
+  ui.heroSearchForm.addEventListener('submit', event => { event.preventDefault(); const query = ui.heroSearch.value.trim(); if (query) { ui.addressSuggestions.hidden = true; submitAddress(query).catch(error => showError(error, 'Search failed')); } });
   $('#voiceButton').addEventListener('click', startVoiceSearch);
+  $('#homeButton').addEventListener('click', async () => {
+    const tab = getActiveTab();
+    if (!tab) await createNewTab();
+    else await navigateTabView({ kind: 'home', title: 'New tab', url: '', query: '', category: 'web' });
+    ui.addressSuggestions.hidden = true;
+    await renderActiveTab();
+  });
+  $('#navHistoryButton').addEventListener('click', () => openDrawer('history', 'all'));
+  $('#searchHistoryButton').addEventListener('click', () => openDrawer('history', 'search'));
+  $('#navRefreshButton').addEventListener('click', () => $('#reloadButton').click());
+  $('#refreshNewsButton').addEventListener('click', () => loadHomeFeed({ force: true }));
+  ui.address.addEventListener('focus', () => renderAddressSuggestions(ui.address.value));
+  ui.address.addEventListener('input', () => renderAddressSuggestions(ui.address.value));
+  ui.address.addEventListener('keydown', event => { if (event.key === 'Escape') ui.addressSuggestions.hidden = true; });
+  document.addEventListener('click', event => { if (!event.target.closest('.address-form')) ui.addressSuggestions.hidden = true; });
   $('#newTabButton').addEventListener('click', () => createNewTab().catch(error => showError(error, 'New tab failed')));
   $('#emptyNewTab').addEventListener('click', () => createNewTab().catch(error => showError(error, 'New tab failed')));
   $('#backButton').addEventListener('click', () => backForward(-1)); $('#forwardButton').addEventListener('click', () => backForward(1));
@@ -855,7 +1109,7 @@ function attachEvents() {
   }));
   $$('.quick-link[data-open-url]').forEach(button => button.addEventListener('click', () => openAddress(button.dataset.openUrl, { createTab: false }).catch(error => showError(error, 'Open site failed'))));
   $('#importImageQuick').addEventListener('click', () => { ui.filePicker.accept = 'image/*'; ui.filePicker.click(); });
-  $('#historyButton').addEventListener('click', () => openDrawer('history')); $('#filesButton').addEventListener('click', () => openDrawer('files'));
+  $('#historyButton').addEventListener('click', () => openDrawer('history', 'all')); $('#filesButton').addEventListener('click', () => openDrawer('files'));
   $('#importFileButton').addEventListener('click', () => { ui.filePicker.accept = 'image/*,.pdf,.txt,.json,.csv,.html,.css,.js,.zip'; ui.filePicker.click(); });
   $('#filePicker').addEventListener('change', async event => {
     const files = Array.from(event.target.files || []); for (const file of files) { try { await storeLocalAsset(file); } catch (error) { showError(error, `Import failed for ${file.name}`); } }
@@ -873,15 +1127,19 @@ function attachEvents() {
       case 'files': openDrawer('files'); break;
       case 'desktop': preferences.desktopMode = !preferences.desktopMode; writeJSON(STORAGE.prefs, preferences); applyPreferences(); showToast(`Desktop layout ${preferences.desktopMode ? 'enabled' : 'disabled'}.`); break;
       case 'install': openInstallDialog(); break;
-      case 'share': await shareCurrentTab(); break;
+      case 'share': openShareDialog(); break;
       case 'settings': location.href = './browser-settings.html'; break;
     }
     ui.moreMenu.hidden = true;
   });
   document.addEventListener('click', event => { if (!ui.moreMenu.hidden && !ui.moreMenu.contains(event.target) && event.target !== $('#moreButton')) ui.moreMenu.hidden = true; });
   $('#installButton').addEventListener('click', openInstallDialog); $('#confirmInstallButton').addEventListener('click', installBrowser);
-  $('#closeInstallDialog').addEventListener('click', () => { ui.installDialog.hidden = true; }); $('#dismissInstallDialog').addEventListener('click', () => { ui.installDialog.hidden = true; });
-  $('#shareCurrentButton').addEventListener('click', shareCurrentTab); $('#downloadCurrentButton').addEventListener('click', () => downloadCurrent().catch(error => showError(error, 'Download failed')));
+  const dismissInstall = () => { ui.installDialog.hidden = true; try { localStorage.setItem('ca_browser_install_prompt_dismissed_v1', '1'); } catch {} };
+  $('#closeInstallDialog').addEventListener('click', dismissInstall); $('#dismissInstallDialog').addEventListener('click', dismissInstall);
+  $('#shareCurrentButton').addEventListener('click', openShareDialog);
+  $('#closeShareDialog').addEventListener('click', closeShareDialog); $('#dismissShareDialog').addEventListener('click', closeShareDialog);
+  $('#shareAppButton').addEventListener('click', shareApplication); $('#shareCurrentSiteButton').addEventListener('click', shareCurrentTab);
+  $('#downloadCurrentButton').addEventListener('click', () => downloadCurrent().catch(error => showError(error, 'Download failed')));
   $('#dismissSiteHint').addEventListener('click', () => { ui.siteHint.hidden = true; });
   const openFullBrowser = () => { const tab = getActiveTab(); if (tab?.url) window.open(tab.url, '_blank', 'noopener,noreferrer'); else showToast('There is no external website open in this tab.'); };
   $('#openFullBrowserButton').addEventListener('click', openFullBrowser);
@@ -890,18 +1148,26 @@ function attachEvents() {
   $('#saveSearchButton').addEventListener('click', async () => { if (!lastSearchQuery) return; await saveHistoryEntry({ title: `Saved search: ${lastSearchQuery}`, query: lastSearchQuery, kind: 'search', category: activeCategory }); showToast('Search saved to history.'); });
   $('#googleFallback').addEventListener('click', event => { event.preventDefault(); openAddress(event.currentTarget.href, { createTab: false, title: 'Google search' }).catch(error => showError(error, 'Open Google search failed')); });
   $('#duckFallback').addEventListener('click', event => { event.preventDefault(); openAddress(event.currentTarget.href, { createTab: false, title: 'DuckDuckGo search' }).catch(error => showError(error, 'Open DuckDuckGo search failed')); });
-  window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); deferredInstallPrompt = event; ui.installHelp.textContent = 'Your browser supports the install prompt. Select Install browser.'; });
-  window.addEventListener('appinstalled', () => { ui.installDialog.hidden = true; showToast('Code Academy Browser was installed.'); });
+  $('#censysFallback').addEventListener('click', event => { event.preventDefault(); openAddress(event.currentTarget.href, { createTab: false, title: 'Censys host search' }).catch(error => showError(error, 'Open Censys search failed')); });
+  $('#fofaFallback').addEventListener('click', event => { event.preventDefault(); openAddress(event.currentTarget.href, { createTab: false, title: 'FOFA asset search' }).catch(error => showError(error, 'Open FOFA search failed')); });
   window.addEventListener('resize', applyDesktopMode);
-  window.addEventListener('keydown', event => { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); createNewTab(); } if (event.key === 'Escape') { closeDrawers(); ui.installDialog.hidden = true; ui.moreMenu.hidden = true; } });
+  window.addEventListener('keydown', event => { if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); createNewTab(); } if (event.key === 'Escape') { closeDrawers(); ui.installDialog.hidden = true; closeShareDialog(); ui.moreMenu.hidden = true; ui.addressSuggestions.hidden = true; } });
+  window.addEventListener('storage', event => {
+    if (event.key !== STORAGE.prefs) return;
+    preferences = { ...defaultPreferences(), ...readJSON(STORAGE.prefs, {}) };
+    if (preferences.privateSession) { historyEntries = []; try { localStorage.setItem(STORAGE.history, '[]'); } catch {} }
+    applyPreferences(); setSelectedCategory(preferences.defaultCategory || 'web'); scheduleNewsRefresh();
+    if (getActiveTab()?.kind === 'home' && preferences.liveNews) loadHomeFeed({ force: true });
+  });
   window.addEventListener('online', () => setStatus('Online')); window.addEventListener('offline', () => setStatus('Offline — cached pages may still open'));
 }
 
 async function initializeBrowser(user) {
   currentUser = user;
   preferences = { ...defaultPreferences(), ...readJSON(STORAGE.prefs, {}) };
-  const local = localHistory(); historyEntries = Array.isArray(local) ? local.slice(0, HISTORY_LIMIT) : [];
+  const local = (preferences.privateSession || !preferences.saveHistory) ? [] : localHistory(); historyEntries = Array.isArray(local) ? local.slice(0, HISTORY_LIMIT) : [];
   fileEntries = localFiles().slice(0, HISTORY_LIMIT); applyPreferences();
+  setSelectedCategory(preferences.defaultCategory || 'web');
   attachEvents();
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js', { scope: new URL('./', location.href).pathname }).catch(error => {
@@ -910,13 +1176,23 @@ async function initializeBrowser(user) {
     });
   }
   await loadSavedTabs();
+  scheduleNewsRefresh();
+  if (preferences.liveNews) loadHomeFeed().catch(error => console.info('[Code Academy Browser] Home feed startup request did not complete:', getErrorText(error)));
   try {
     const params = new URLSearchParams(location.search);
     const queryText = params.get('q'); const cat = params.get('category') || 'web';
     if (params.get('newtab') === '1') await createNewTab();
     if (queryText) await performSearch(queryText, CATEGORIES.includes(cat) ? cat : 'web', { silent: false });
     if (params.get('files') === '1') openDrawer('files');
+    const installed = window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
+    let installDismissed = false; try { installDismissed = localStorage.getItem('ca_browser_install_prompt_dismissed_v1') === '1'; } catch {}
+    if (!installed && !installDismissed) window.setTimeout(() => { if (!ui.installDialog.hidden) return; openInstallDialog(); }, 1700);
   } catch (error) { showError(error, 'Browser startup error'); }
+  window.addEventListener('pagehide', () => {
+    if (preferences.clearHistoryOnExit && !preferences.privateSession) {
+      try { localStorage.setItem(STORAGE.history, '[]'); } catch {}
+    }
+  });
 }
 
 let browserInitialized = false;

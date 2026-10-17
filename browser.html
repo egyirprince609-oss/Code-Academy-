@@ -7,7 +7,7 @@
 <meta name="application-name" content="Code Academy Browser">
 <meta name="author" content="Code Academy">
 <meta name="robots" content="index,follow,max-image-preview:large">
-<meta name="description" content="Browse the web without losing your place in Code Academy. Search the web, explore images, open websites in focused tabs, save browsing history, import and export files, and install the browser as its own Progressive Web App.">
+<meta name="description" content="Code Academy Browser brings real web search, categorized image and document results, focused website tabs, live news previews, saved history, downloads, privacy controls, DNS diagnostics and an installable offline workspace into one place.">
 <link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/browser.html">
 <link rel="icon" type="image/png" href="./browser-icon-192.png">
 <link rel="apple-touch-icon" href="./browser-icon-192.png">
@@ -19,16 +19,17 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Code Academy Browser">
 <meta property="og:title" content="Code Academy Browser — Search. Browse. Stay focused.">
-<meta property="og:description" content="A focused browsing workspace inside Code Academy. Search the web, explore images, open sites in tabs, keep your history, manage downloads, and install the browser as its own app on supported devices.">
+<meta property="og:description" content="Code Academy Browser brings real web search, categorized image and document results, focused website tabs, live news previews, saved history, downloads, privacy controls, DNS diagnostics and an installable offline workspace into one place.">
 <meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/browser.html">
-<meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/browser-share-preview.jpg">
-<meta property="og:image:alt" content="Code Academy Browser — Search, Browse, Stay focused">
+<meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/browser_image_preview.png">
+<meta property="og:image:alt" content="Code Academy Browser — Search, browse, discover and stay focused">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Code Academy Browser — Search. Browse. Stay focused.">
-<meta name="twitter:description" content="A focused browsing workspace inside Code Academy. Search the web, browse images, manage tabs and history, and install the browser as its own app.">
-<meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/browser-share-preview.jpg">
+<meta name="twitter:description" content="Code Academy Browser brings real web search, categorized image and document results, focused website tabs, live news previews, saved history, downloads, privacy controls, DNS diagnostics and an installable offline workspace into one place.">
+<meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/browser_image_preview.png">
 <title>Code Academy Browser</title>
 </head>
 <body>
@@ -47,6 +48,14 @@
     </div>
   </header>
 
+  <nav class="browser-primary-nav" aria-label="Browser navigation">
+    <button type="button" id="homeButton" class="primary-nav-item active" aria-label="Home"><span aria-hidden="true">⌂</span><span>Home</span></button>
+    <button type="button" id="navHistoryButton" class="primary-nav-item" aria-label="Browsing history"><span aria-hidden="true">◷</span><span>History</span></button>
+    <button type="button" id="searchHistoryButton" class="primary-nav-item" aria-label="Search history"><span aria-hidden="true">⌕</span><span>Search history</span></button>
+    <a class="primary-nav-item" href="./browser-settings.html" aria-label="Browser settings"><span aria-hidden="true">⚙</span><span>Settings</span></a>
+    <button type="button" id="navRefreshButton" class="primary-nav-item" aria-label="Refresh current page"><span aria-hidden="true">⟳</span><span>Refresh</span></button>
+  </nav>
+
   <div class="tab-bar" aria-label="Open tabs" id="tabBar">
     <div class="tab-list" id="tabList"></div>
     <button class="new-tab-btn" id="newTabButton" aria-label="Open new tab" title="New tab">＋</button>
@@ -62,6 +71,7 @@
       <form class="address-form" id="addressForm" autocomplete="off">
         <span class="address-lock" id="addressIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
         <input type="search" id="addressInput" aria-label="Search the web or enter a website" placeholder="Search the web or enter a website…" spellcheck="false" enterkeyhint="search">
+        <div class="address-suggestions" id="addressSuggestions" hidden role="listbox" aria-label="Search suggestions"></div>
         <button class="voice-btn" id="voiceButton" type="button" title="Voice search" aria-label="Voice search"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg></button>
         <button class="go-btn" type="submit" aria-label="Search or go"><svg viewBox="0 0 24 24"><path d="m5 12 14 0M13 5l7 7-7 7"/></svg></button>
       </form>
@@ -83,6 +93,7 @@
       <div class="welcome-view" id="welcomeView">
         <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
         <div class="welcome-content">
+          <div class="home-hero-main">
           <div class="hero-symbol"><img src="./browser-icon-192.png" alt="Code Academy Browser"></div>
           <div class="eyebrow"><span class="status-dot"></span> YOUR WEB, IN ONE WORKSPACE</div>
           <h1>Explore beyond<br><em>the next click.</em></h1>
@@ -96,12 +107,18 @@
             <button id="importImageQuick" class="quick-link"><span class="quick-icon media">▧</span><span>Import image</span></button>
           </div>
           <div class="hero-foot"><span><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.8 3.2 7.7 7.5 9.5 4.3-1.8 7.5-4.7 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>Focused browsing workspace</span><span>Tabs saved to your account when allowed</span></div>
+          </div>
+          <section class="home-feed" id="homeFeed" aria-labelledby="homeFeedTitle">
+            <div class="home-feed-heading"><div><p class="kicker">LIVE DISCOVERY</p><h2 id="homeFeedTitle">What's happening now</h2><p id="homeFeedStatus" class="home-feed-status" aria-live="polite">Loading current headlines…</p></div><button type="button" id="refreshNewsButton" class="quiet-btn" aria-label="Refresh current headlines">↻ Refresh</button></div>
+            <div class="home-feed-grid" id="homeFeedGrid" aria-live="polite"><div class="feed-loading"><span class="feed-pulse"></span>Loading recent headlines from online news feeds…</div></div>
+            <div class="home-feed-bottom"><span>News items link to their original publishers.</span><a href="https://news.google.com/" id="allNewsLink" target="_blank" rel="noopener noreferrer">Browse more news ↗</a></div>
+          </section>
         </div>
       </div>
       <div class="search-view" id="searchView" hidden>
         <div class="search-summary"><div><p class="kicker" id="searchKicker">SEARCH RESULTS</p><h2 id="resultsHeading">Results</h2><p id="resultsMeta">Connecting to search…</p></div><button class="quiet-btn" id="saveSearchButton" type="button">＋ Save search</button></div>
         <div class="answer-card" id="answerCard" hidden></div>
-        <div class="result-layout"><div class="results-list" id="resultsList" aria-live="polite"></div><aside class="results-side" id="resultsSide"><div class="side-card"><span class="side-icon">✦</span><h3>Search stays here</h3><p>Results open inside this browser workspace. Some destination sites may restrict being embedded.</p><a href="./browser-settings.html">Review browser settings →</a></div><div class="side-card compact-side"><strong>Quick search</strong><a id="googleFallback" target="_blank" rel="noopener noreferrer">Google results ↗</a><a id="duckFallback" target="_blank" rel="noopener noreferrer">DuckDuckGo results ↗</a></div></aside></div>
+        <div class="result-layout"><div class="results-list" id="resultsList" aria-live="polite"></div><aside class="results-side" id="resultsSide"><div class="side-card"><span class="side-icon">✦</span><h3>Search stays here</h3><p>Results open inside this browser workspace. Some destination sites may restrict being embedded.</p><a href="./browser-settings.html">Review browser settings →</a></div><div class="side-card compact-side"><strong>Search in another engine</strong><a id="googleFallback" target="_blank" rel="noopener noreferrer">Google results ↗</a><a id="duckFallback" target="_blank" rel="noopener noreferrer">DuckDuckGo results ↗</a><a id="censysFallback" target="_blank" rel="noopener noreferrer">Censys host search ↗</a><a id="fofaFallback" target="_blank" rel="noopener noreferrer">FOFA asset search ↗</a><small class="engine-note">Censys and FOFA may require an account and their own query syntax. Use them only for systems you are authorized to research.</small></div></aside></div>
       </div>
       <div class="website-view" id="websiteView" hidden>
         <div class="site-progress" id="siteProgress"><span></span></div>
@@ -139,8 +156,10 @@
 </aside>
 <input id="filePicker" type="file" accept="image/*,.pdf,.txt,.json,.csv,.html,.css,.js,.zip" hidden multiple>
 <div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
-<div class="install-dialog" id="installDialog" hidden><div class="install-card"><button class="icon-btn install-close" id="closeInstallDialog" aria-label="Close install dialog">×</button><img src="./browser-icon-192.png" alt="Code Academy Browser"><p class="kicker">MAKE IT YOUR OWN</p><h2>Install Code Academy Browser</h2><p>Open your browser workspace from your home screen with a dedicated app window, saved tabs and one-tap access.</p><button class="primary-btn full" id="confirmInstallButton">Install browser</button><p class="install-help" id="installHelp">Install options depend on the browser and device.</p><button class="text-btn" id="dismissInstallDialog">Maybe later</button></div></div>
+<div class="install-dialog" id="installDialog" hidden><div class="install-card"><button class="icon-btn install-close" id="closeInstallDialog" aria-label="Close install dialog">×</button><img src="./browser-icon-192.png" alt="Code Academy Browser"><p class="kicker">MAKE IT YOUR OWN</p><h2>Install Code Academy Browser</h2><p>Keep Code Academy Browser on your home screen with its own app window, quick access, saved tabs and offline-ready interface on supported devices.</p><button class="primary-btn full" id="confirmInstallButton">Install browser</button><p class="install-help" id="installHelp">This installs the web app (PWA) when supported; it does not download a standalone .apk file. A separate Android package must be built and signed through the Android workflow.</p><button class="text-btn" id="dismissInstallDialog">Maybe later</button></div></div>
 
+
+<div class="share-dialog" id="shareDialog" hidden role="dialog" aria-modal="true" aria-labelledby="shareDialogTitle"><div class="share-card"><button class="icon-btn share-close" id="closeShareDialog" type="button" aria-label="Close share options">×</button><img src="./browser-icon-192.png" alt="" class="share-brand-icon"><p class="kicker">SHARE WITH YOUR PEOPLE</p><h2 id="shareDialogTitle">Share Code Academy Browser</h2><p>Choose whether to share the browser app itself or the site currently open in this tab.</p><button type="button" class="share-choice" id="shareAppButton"><span class="share-choice-icon">◈</span><span><strong>Share Code Academy App</strong><small>Invite someone to search, browse and learn with Code Academy.</small></span><span aria-hidden="true">↗</span></button><button type="button" class="share-choice" id="shareCurrentSiteButton"><span class="share-choice-icon">↗</span><span><strong>Share Current Site View</strong><small>Share the active website or search with Code Academy Browser details.</small></span><span aria-hidden="true">↗</span></button><p id="shareDialogStatus" class="share-dialog-status" role="status" aria-live="polite"></p><button type="button" class="text-btn" id="dismissShareDialog">Maybe later</button></div></div>
 <script type="module" src="./browser.js"></script>
 </body>
 </html>

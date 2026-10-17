@@ -1,9 +1,9 @@
 /* Code Academy PWA service worker. Bump CACHE_VERSION when releasing a new static bundle. */
 'use strict';
-const CACHE_VERSION='code-academy-shell-v4';
+const CACHE_VERSION='code-academy-shell-v5';
 const BASE=new URL('./',self.registration.scope);
 const CORE=[
- 'index.html','home.html','menu.html','games_dash.html','manifest.json','browser.html','browser.css','browser.js','browser-settings.html','browser-settings.css','browser-settings.js','browser-manifest.json','browser-search-worker.js','browser-share-preview.jpg','browser-icon-192.png','browser-icon-512.png','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
+ 'index.html','home.html','menu.html','games_dash.html','manifest.json','browser.html','browser.css','browser.js','browser-settings.html','browser-settings.css','browser-settings.js','browser-manifest.json','browser-search-worker.js','browser-share-preview.jpg','browser_image_preview.png','browser-icon-192.png','browser-icon-512.png','logo.png','web-app-manifest-192x192.png','web-app-manifest-512x512.png',
  'authentication.js','game-platform.js','notification-engine.js','pwa.js','lesson.html','signup.html','login.html','verify-email.html','privacy.html','terms.html','aboutus.html','contactus.html',
  'digital_vault.html','detective_man.html','mind_palace.html','civilization.html','truth_protocol.html','code_breaker.html','cybermission.html','code_racer.html','algorithm_defender.html','code_quest.html',
  'digital_vault_questions.json','detective_man_questions.json','mind_palace_questions.json','civilization_questions.json','truth_protocol_questions.json','code_breaker_questions.json','cybermission_questions.json','code_racer_challenges.json','algorithm_defender_questions.json','code_quest_questions.json',
@@ -14,7 +14,7 @@ self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=a
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(key=>key.startsWith('code-academy-')&&key!==CACHE_VERSION).map(key=>caches.delete(key)));await self.clients.claim();})());});
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();if(event.data?.type==='CLEAR_APP_CACHE')event.waitUntil(caches.delete(CACHE_VERSION));});
 self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);if(url.origin!==self.location.origin||!url.href.startsWith(BASE.href))return;
- if(req.mode==='navigate'){event.respondWith((async()=>{try{const fresh=await fetch(req);if(fresh.ok){const cache=await caches.open(CACHE_VERSION);cache.put(req,fresh.clone()).catch(()=>{});}return fresh;}catch(_){const cache=await caches.open(CACHE_VERSION);return await cache.match(req)||await cache.match(absolute('index.html'))||new Response('Code Academy is offline. Reconnect to try again.',{status:503,headers:{'Content-Type':'text/plain;charset=utf-8'}});}})());return;}
+ if(req.mode==='navigate'){event.respondWith((async()=>{try{const fresh=await fetch(req);if(fresh.ok){const cache=await caches.open(CACHE_VERSION);cache.put(req,fresh.clone()).catch(()=>{});}return fresh;}catch(_){const cache=await caches.open(CACHE_VERSION);return await cache.match(req,{ignoreSearch:true})||await cache.match(absolute('index.html'))||new Response('Code Academy is offline. Reconnect to try again.',{status:503,headers:{'Content-Type':'text/plain;charset=utf-8'}});}})());return;}
  const isData=/\.json(?:$|\?)/i.test(url.pathname),isStatic=/\.(?:js|css|png|jpg|jpeg|webp|svg|woff2?|json)$/i.test(url.pathname);
  if(isData||isStatic){event.respondWith((async()=>{const cache=await caches.open(CACHE_VERSION);const cached=await cache.match(req);const update=fetch(req).then(res=>{if(res.ok)cache.put(req,res.clone()).catch(()=>{});return res;}).catch(()=>null);if(cached){event.waitUntil(update);return cached;}return await update||new Response('{}',{status:503,headers:{'Content-Type':'application/json'}});})());}
 });
