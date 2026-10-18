@@ -1,6 +1,5 @@
-import { auth, db, onAuthStateChanged } from './authentication.js';
-import { doc, getDoc, setDoc, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
+// Account sync is optional; keep local settings usable if Firebase cannot load.
+let auth = null, db = null, doc, getDoc, setDoc, serverTimestamp;
 'use strict';
 const $ = selector => document.querySelector(selector);
 const PREFS_KEY = 'ca_browser_preferences_v1';
@@ -46,6 +45,7 @@ function loadControls() {
   $('#dnsProvider').value = ['google', 'cloudflare', 'adguard'].includes(prefs.dnsProvider) ? prefs.dnsProvider : 'google';
   $$('#themeChoices button').forEach(button => button.classList.toggle('selected', button.dataset.theme === prefs.theme));
   applyTheme(); updateNotificationStatus();
+  if (window.CodeAcademyNative?.setNotificationsEnabled) window.CodeAcademyNative.setNotificationsEnabled(Boolean(prefs.notificationsEnabled));
 }
 function $$(selector) { return Array.from(document.querySelectorAll(selector)); }
 function applyTheme() {
@@ -90,6 +90,7 @@ async function saveSettings() {
   try {
     prefs = captureControls();
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+    if (window.CodeAcademyNative?.setNotificationsEnabled) window.CodeAcademyNative.setNotificationsEnabled(Boolean(prefs.notificationsEnabled));
     applyTheme();
     $('#saveStatus').textContent = 'Saved on this device.';
     if (user && prefs.accountSync) {
@@ -127,6 +128,10 @@ function updateNotificationStatus() {
   if (enabled && 'Notification' in window && Notification.permission !== 'granted') status.textContent += ' Permission must be granted before device notifications can appear.';
 }
 async function askNotificationPermission() {
+  if (window.CodeAcademyNative?.requestNotificationPermission) {
+    try { window.CodeAcademyNative.requestNotificationPermission(); $('#notificationStatus').textContent = 'Android permission dialog requested. Choose Allow in the system prompt. The result will appear here.'; return; }
+    catch (error) { displayError(error, 'Android notification permission request failed'); return; }
+  }
   if (!('Notification' in window)) { toast('This browser does not support device notifications.', true); updateNotificationStatus(); return; }
   try {
     const result = await Notification.requestPermission();
@@ -236,6 +241,32 @@ function resetSettings() {
   prefs = { ...defaults }; loadControls(); $('#saveStatus').textContent = 'Defaults restored in this page. Press Save settings to keep them.';
 }
 function openBrowserFiles() { location.href = './browser.html?files=1'; }
+async function testSearchEndpoint() {
+  const status = $('#searchConnectionStatus');
+  const raw = $('#searchEndpoint').value.trim().replace(/\/+$/, '');
+  if (!raw) { status.textContent = 'No search API is configured. Basic public APIs still work; full ranked web results need a deployed search backend.'; return; }
+  let parsed;
+  try { parsed = new URL(raw); } catch { status.textContent = 'Invalid address. Paste an HTTPS Search Worker URL or an Academy API URL ending in /api/search.'; return; }
+  if (parsed.protocol !== 'https:' && parsed.hostname !== 'localhost') { status.textContent = 'Search service must use HTTPS.'; return; }
+  let health;
+  if (/\/api\/search$/i.test(parsed.pathname)) health = raw.replace(/\/api\/search$/i, '/api/health');
+  else if (/\/search$/i.test(parsed.pathname)) health = raw.replace(/\/search$/i, '/health');
+  else if (/\/api$/i.test(parsed.pathname)) health = `${raw}/health`;
+  else health = `${raw}/health`;
+  status.textContent = 'Testing search service…';
+  $('#testSearchEndpointButton').disabled = true;
+  const controller = new AbortController(); const timer = setTimeout(() => controller.abort(), 5000);
+  try {
+    const response = await fetch(health, { method: 'GET', headers: { Accept: 'application/json' }, credentials: 'omit', signal: controller.signal });
+    let payload = {}; try { payload = await response.json(); } catch {}
+    if (!response.ok || payload.ok === false) throw new Error(payload.error || payload.message || `Health check returned HTTP ${response.status}`);
+    status.textContent = `Connected to ${payload.service || payload.name || 'search service'}${payload.version ? ` · v${payload.version}` : ''}. Now press Save settings to keep this endpoint.`;
+  } catch (error) {
+    const detail = error?.name === 'AbortError' ? 'Timed out after 5 seconds.' : (error instanceof Error ? `${error.name}: ${error.message}` : String(error));
+    status.textContent = `Connection test failed: ${detail}. Check deployment, HTTPS, CORS and the exact endpoint path.`;
+  } finally { clearTimeout(timer); $('#testSearchEndpointButton').disabled = false; }
+}
+
 function bindEvents() {
   $$('#themeChoices button').forEach(button => button.addEventListener('click', () => { prefs.theme = button.dataset.theme === 'light' ? 'light' : 'dark'; applyTheme(); }));
   $('#settingsThemeButton').addEventListener('click', () => { prefs.theme = prefs.theme === 'dark' ? 'light' : 'dark'; applyTheme(); });
@@ -245,6 +276,7 @@ function bindEvents() {
   $('#notificationsEnabled').addEventListener('change', () => { if ($('#notificationsEnabled').checked) askNotificationPermission(); else updateNotificationStatus(); });
   $('#testVoiceButton').addEventListener('click', testVoiceInput);
   $('#runDnsButton').addEventListener('click', checkDns);
+  $('#testSearchEndpointButton')?.addEventListener('click', testSearchEndpoint);
   $('#dnsDomain').addEventListener('keydown', event => { if (event.key === 'Enter') checkDns(); });
   $('#openFilesButton').addEventListener('click', openBrowserFiles);
   $('#requestLocationButton').addEventListener('click', requestLocationAccess);
@@ -258,13 +290,43 @@ function bindEvents() {
 }
 
 bindEvents();
-onAuthStateChanged(auth, async authenticatedUser => {
-  if (!authenticatedUser) {
-    $('#settingsAccountStatus').textContent = 'Sign-in is required to synchronize browser preferences.';
-    const login = new URL('./login.html', location.href); login.searchParams.set('returnUrl', 'browser-settings.html'); location.replace(login.href); return;
+loadRemoteSettings().catch(error => displayError(error, 'Local settings load failed'));
+
+async function connectSettingsAccount() {
+  try {
+    const [authentication, firestore] = await Promise.all([
+      import('./authentication.js'),
+      import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js')
+    ]);
+    auth = authentication.auth; db = authentication.db;
+    ({ doc, getDoc, setDoc, serverTimestamp } = firestore);
+    authentication.onAuthStateChanged(auth, async authenticatedUser => {
+      user = authenticatedUser || null;
+      if (!user) {
+        $('#settingsAccountStatus').textContent = 'Guest mode · preferences stay on this device until you sign in.';
+        return;
+      }
+      $('#settingsAccountStatus').textContent = `Signed in · ${user.email || 'Code Academy account'}`;
+      await loadRemoteSettings();
+    }, error => {
+      $('#settingsAccountStatus').textContent = `Account sync unavailable: ${error instanceof Error ? error.message : String(error)}`;
+    });
+  } catch (error) {
+    user = null;
+    $('#settingsAccountStatus').textContent = 'Device-only settings · account service could not be reached.';
+    console.info('[Code Academy Browser] Firebase unavailable on settings page; local preferences remain usable:', error);
   }
-  user = authenticatedUser;
-  $('#settingsAccountStatus').textContent = `Signed in · ${authenticatedUser.email || 'Code Academy account'}`;
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js', { scope: new URL('./', location.href).pathname }).catch(error => console.warn('[Code Academy Browser] Service worker registration failed:', error));
-  await loadRemoteSettings();
-});
+}
+if ('serviceWorker' in navigator && !window.CodeAcademyNative) {
+  navigator.serviceWorker.register('./sw.js', { scope: new URL('./', location.href).pathname }).catch(error => console.warn('[Code Academy Browser] Service worker registration failed:', error));
+}
+connectSettingsAccount();
+
+window.CodeAcademySettings = {
+  onNativeNotificationPermission: result => {
+    const granted = String(result || '') === 'granted';
+    $('#notificationsEnabled').checked = granted;
+    $('#notificationStatus').textContent = `Android notification permission: ${String(result || 'unknown')}.`;
+    updateNotificationStatus();
+  }
+};

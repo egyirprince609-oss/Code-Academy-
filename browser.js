@@ -1,9 +1,7 @@
-import { auth, db, onAuthStateChanged } from "./authentication.js";
-import {
-  collection, addDoc, doc, setDoc, getDocs, getDoc, deleteDoc,
-  query, orderBy, limit, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+// Firebase is an optional account-sync layer. The browser core must still start
+// if a Firebase CDN request or authentication service is unavailable.
+let auth = null, db = null;
+let collection, addDoc, doc, setDoc, getDocs, getDoc, deleteDoc, query, orderBy, limit, serverTimestamp;
 'use strict';
 
 const $ = (selector, root = document) => root.querySelector(selector);
@@ -16,7 +14,7 @@ const TAB_LIMIT = 1000;
 const HISTORY_LIMIT = 1000;
 const CATEGORIES = ['web', 'images', 'videos', 'news', 'documents', 'maps', 'books'];
 const ui = {
-  app: $('#browserApp'), tabList: $('#tabList'), address: $('#addressInput'), addressForm: $('#addressForm'),
+  app: $('#browserApp'), tabList: $('#tabList'), tabBar: $('#tabBar'), categoryRow: $('#categoryRow'), browserProgress: $('#browserProgress'), address: $('#addressInput'), addressForm: $('#addressForm'),
   addressSuggestions: $('#addressSuggestions'),
   heroSearch: $('#heroSearchInput'), heroSearchForm: $('#heroSearchForm'), welcome: $('#welcomeView'),
   searchView: $('#searchView'), websiteView: $('#websiteView'), emptyView: $('#emptyView'), focus: $('#focusViewport'),
@@ -32,6 +30,10 @@ const ui = {
 };
 
 let currentUser = null;
+let browserInitialized = false;
+let browserHadUserActivity = false;
+let nativeActiveUrl = '';
+const progressTasks = new Set();
 let tabs = [];
 let activeTabId = null;
 let historyEntries = [];
@@ -105,7 +107,17 @@ function showError(error, label = 'Browser error') {
   showToast(detail, 'error');
   ui.footerStatus.textContent = detail;
 }
-function setStatus(text) { ui.status.textContent = text; }
+function setStatus(text) { if (ui.status) ui.status.textContent = text; }
+function setProgressTask(name, active) {
+  if (active) progressTasks.add(name); else progressTasks.delete(name);
+  const bar = ui.browserProgress;
+  if (!bar) return;
+  const busy = progressTasks.size > 0;
+  bar.hidden = !busy;
+  bar.setAttribute('aria-valuetext', busy ? Array.from(progressTasks).join(', ') : 'Idle');
+  bar.setAttribute('aria-label', busy ? Array.from(progressTasks).join(', ') : 'No active request');
+  bar.classList.toggle('is-active', busy);
+}
 function getActiveTab() { return tabs.find(tab => tab.id === activeTabId) || null; }
 function isValidHttpUrl(value) {
   try { const parsed = new URL(value); return ['http:', 'https:'].includes(parsed.protocol) && !parsed.username && !parsed.password; }
@@ -127,7 +139,7 @@ function looksLikeWebsite(value) {
   if (!text || /\s/.test(text)) return false;
   return /^(https?:\/\/|www\.)/i.test(text) || /^(localhost(?::\d+)?|(?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#].*)?)$/i.test(text);
 }
-function currentBaseUrl() { return new URL('./', location.href).href; }
+function currentBaseUrl() { return window.CodeAcademyNative ? 'https://egyirprince609-oss.github.io/Code-Academy-/' : new URL('./', location.href).href; }
 function safeExternalUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password ? url.href : ''; } catch { return ''; } }
 
 function applyPreferences() {
@@ -231,6 +243,7 @@ async function loadSavedTabs() {
 }
 function renderTabs() {
   ui.tabList.replaceChildren();
+  if (ui.tabBar) ui.tabBar.classList.toggle('has-multiple-tabs', tabs.length > 1);
   const visibleTabs = tabs.slice(-TAB_LIMIT);
   visibleTabs.forEach(tab => {
     const button = document.createElement('button');
@@ -252,9 +265,10 @@ function renderTabs() {
   $('#forwardButton').disabled = navIndex < 0 || navIndex >= navStack.length - 1;
 }
 function hostInitial(url) { try { return new URL(url).hostname.replace(/^www\./, '').charAt(0).toUpperCase() || '◉'; } catch { return '◉'; } }
-function hideViews() { [ui.welcome, ui.searchView, ui.websiteView, ui.emptyView].forEach(el => { el.hidden = true; }); }
+function hideViews() { [ui.welcome, ui.searchView, ui.websiteView, ui.emptyView].forEach(el => { if (el) el.hidden = true; }); }
 function setSelectedCategory(category) {
   activeCategory = CATEGORIES.includes(category) ? category : 'web';
+  if (ui.categoryRow) ui.categoryRow.hidden = false;
   $$('.category-chip').forEach(button => {
     const selected = button.dataset.category === activeCategory;
     button.classList.toggle('active', selected); button.setAttribute('aria-selected', String(selected));
@@ -267,7 +281,8 @@ async function renderActiveTab() {
   ui.answer.hidden = true;
   if (!tab) { ui.emptyView.hidden = false; return; }
   if (tab.kind === 'home') {
-    ui.welcome.hidden = false; ui.address.value = ''; setStatus('Ready for a new search'); ui.footerStatus.textContent = preferences.privateSession ? 'Private session: tabs and history are not saved to this device or account.' : 'Search, type a website address, or open a saved tab.';
+    if (ui.categoryRow) ui.categoryRow.hidden = true;
+    ui.welcome.hidden = false; ui.address.value = ''; nativeActiveUrl = ''; setStatus('Ready for a new search'); ui.footerStatus.textContent = preferences.privateSession ? 'Private session: tabs and history are not saved to this device or account.' : 'Search, type a website address, or open a saved tab.';
     $$('.primary-nav-item').forEach(item => item.classList.toggle('active', item.id === 'homeButton'));
     if (preferences.liveNews) {
       loadHomeFeed().catch(error => console.warn('[Code Academy Browser] Home feed unavailable:', error));
@@ -277,14 +292,26 @@ async function renderActiveTab() {
   }
   $$('.primary-nav-item').forEach(item => item.classList.toggle('active', false));
   if (tab.kind === 'search') {
+    if (ui.categoryRow) ui.categoryRow.hidden = false;
     ui.searchView.hidden = false; ui.address.value = tab.query || tab.title || ''; ui.heroSearch.value = tab.query || '';
     setSelectedCategory(tab.category || 'web');
     await performSearch(tab.query || tab.title, tab.category || 'web', { silent: true, existingTab: true });
     return;
   }
   if (tab.kind === 'site' && safeExternalUrl(tab.url)) {
-    ui.websiteView.hidden = false; ui.address.value = tab.url; setStatus('Website tab');
-    startFrameLoad(tab.url, false); return;
+    if (ui.categoryRow) ui.categoryRow.hidden = true;
+    ui.address.value = tab.url; setStatus(`Loading ${safeDomain(tab.url)}…`);
+    // In the native APK, open the destination as a real top-level WebView page.
+    // On the web version, keep the conservative embedded viewer and its policy notice.
+    if (window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function') {
+      ui.websiteView.hidden = true;
+      if (nativeActiveUrl !== tab.url) {
+        nativeActiveUrl = tab.url;
+        window.CodeAcademyNative.openUrl(tab.url, tab.title || safeDomain(tab.url));
+      }
+      return;
+    }
+    ui.websiteView.hidden = false; startFrameLoad(tab.url, false); return;
   }
   ui.emptyView.hidden = false;
 }
@@ -319,6 +346,7 @@ async function navigateTabView(view, { recordHistory = true } = {}) {
 }
 
 async function createNewTab({ focus = true, persist = true } = {}) {
+  browserHadUserActivity = true;
   if (tabs.length >= TAB_LIMIT) {
     const oldest = tabs.shift();
     if (oldest) await deleteTabRemote(oldest.id);
@@ -328,6 +356,7 @@ async function createNewTab({ focus = true, persist = true } = {}) {
   persistLocalTabs(); renderTabs();
   if (persist) await saveTabRemote(tab);
   if (focus) await renderActiveTab();
+  if (focus && preferences.notificationsEnabled && window.CodeAcademyNative?.onNewTabOpened) window.CodeAcademyNative.onNewTabOpened();
   return tab;
 }
 async function closeTab(tabId) {
@@ -442,20 +471,35 @@ async function fetchWithTimeout(url, options = {}, timeout = 12000) {
 async function fetchWorkerResults(queryText, category) {
   const endpoint = searchEndpoint();
   if (!endpoint) return null;
-  const base = endpoint.endsWith('/search') ? endpoint : `${endpoint}/search`;
-  const url = new URL(base);
-  url.searchParams.set('q', queryText); url.searchParams.set('category', category);
-  if (preferences.safeSearch) url.searchParams.set('safe', '1');
-  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 15000);
-  const body = await response.json();
-  if (!response.ok || body.ok === false) throw new Error(body.error || `Search service returned HTTP ${response.status}`);
-  return (Array.isArray(body.results) ? body.results : []).map((item, index) => normalizeSearchResult(item, index)).filter(Boolean);
+  const isAcademyApi = /\/api\/search$/i.test(endpoint);
+  let response;
+  if (isAcademyApi) {
+    const mode = category === 'documents' ? 'files' : category;
+    response = await fetchWithTimeout(endpoint, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ query: queryText, mode, page: 1, safe_search: Boolean(preferences.safeSearch), language: (navigator.language || 'en').split('-')[0] })
+    }, 6500);
+  } else {
+    const base = endpoint.endsWith('/search') ? endpoint : `${endpoint}/search`;
+    const url = new URL(base);
+    url.searchParams.set('q', queryText); url.searchParams.set('category', category);
+    if (preferences.safeSearch) url.searchParams.set('safe', '1');
+    response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 6500);
+  }
+  let body;
+  try { body = await response.json(); }
+  catch (error) { throw new Error(`Search service returned invalid JSON: ${getErrorText(error)}`); }
+  if (!response.ok || body.ok === false) throw new Error(body.error || body.message || `Search service returned HTTP ${response.status}`);
+  const normalized = (Array.isArray(body.results) ? body.results : []).map((item, index) => normalizeSearchResult(item, index)).filter(Boolean);
+  const engines = Array.isArray(body.engines) ? body.engines.join(' + ') : (body.provider || body.source || (isAcademyApi ? 'Academy Search API' : 'Configured search Worker'));
+  return { results: normalized, provider: engines, note: body.note || (body.warnings?.length ? `Some sources were unavailable: ${body.warnings.join(', ')}` : '') };
 }
 function normalizeSearchResult(item, index) {
   const url = safeExternalUrl(item.url || item.link || item.href || '');
   const title = String(item.title || item.name || '').trim();
   if (!url || !title) return null;
-  return { id: String(item.id || `${index}-${url}`), title, url, snippet: String(item.snippet || item.description || '').trim(), domain: String(item.domain || (() => { try { return new URL(url).hostname; } catch { return ''; } })()), thumbnail: safeExternalUrl(item.thumbnail || item.thumbUrl || ''), imageUrl: safeExternalUrl(item.imageUrl || item.image || ''), source: String(item.source || '') };
+  return { id: String(item.id || `${index}-${url}`), title, url, snippet: String(item.snippet || item.description || '').trim(), domain: String(item.domain || (() => { try { return new URL(url).hostname; } catch { return ''; } })()), thumbnail: safeExternalUrl(item.thumbnail || item.thumbUrl || item.thumbnail_url || ''), imageUrl: safeExternalUrl(item.imageUrl || item.image_url || item.image || ''), source: String(item.source || item.engine || item.provider || '') };
 }
 async function searchDuckDuckGoInstant(queryText) {
   const url = new URL('https://api.duckduckgo.com/');
@@ -485,7 +529,7 @@ async function searchWikipedia(queryText, category) {
 async function searchImages(queryText) {
   const url = new URL('https://commons.wikimedia.org/w/api.php');
   url.search = new URLSearchParams({ action: 'query', generator: 'search', gsrsearch: queryText, gsrnamespace: '6', gsrlimit: '30', prop: 'imageinfo', iiprop: 'url|extmetadata', iiurlwidth: '520', format: 'json', origin: '*' }).toString();
-  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 15000);
+  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 6500);
   if (!response.ok) throw new Error(`Wikimedia Commons image search returned HTTP ${response.status}`);
   const data = await response.json();
   return Object.values(data.query?.pages || {}).map(page => {
@@ -499,7 +543,7 @@ async function searchImages(queryText) {
 }
 async function searchBooks(queryText) {
   const url = new URL('https://openlibrary.org/search.json'); url.searchParams.set('q', queryText); url.searchParams.set('limit', '15');
-  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 12000);
+  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 6500);
   if (!response.ok) throw new Error(`Open Library search returned HTTP ${response.status}`);
   const data = await response.json();
   return (data.docs || []).map(item => ({
@@ -510,7 +554,7 @@ async function searchBooks(queryText) {
 }
 async function searchMaps(queryText) {
   const url = new URL('https://nominatim.openstreetmap.org/search'); url.search = new URLSearchParams({ q: queryText, format: 'jsonv2', limit: '15', addressdetails: '1' }).toString();
-  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 12000);
+  const response = await fetchWithTimeout(url.href, { headers: { 'Accept': 'application/json' } }, 6500);
   if (!response.ok) throw new Error(`OpenStreetMap place search returned HTTP ${response.status}`);
   const data = await response.json();
   return data.map(item => ({ title: item.name || item.display_name, url: `https://www.openstreetmap.org/?mlat=${encodeURIComponent(item.lat)}&mlon=${encodeURIComponent(item.lon)}#map=15/${encodeURIComponent(item.lat)}/${encodeURIComponent(item.lon)}`, snippet: item.display_name || `${item.type || 'Place'} · ${item.lat}, ${item.lon}`, domain: 'openstreetmap.org' }));
@@ -526,31 +570,96 @@ function stripHtml(input) {
   const doc = new DOMParser().parseFromString(String(input), 'text/html');
   return (doc.body.textContent || '').replace(/\s+/g, ' ').trim();
 }
+async function searchGoogleNewsRss(queryText) {
+  const feedUrl = new URL('https://news.google.com/rss/search');
+  feedUrl.search = new URLSearchParams({ q: queryText, hl: navigator.language || 'en', gl: (navigator.language || 'en-US').split('-').pop().toUpperCase() || 'US', ceid: `${(navigator.language || 'en-US').split('-').pop().toUpperCase() || 'US'}:en` }).toString();
+  const converter = new URL('https://api.rss2json.com/v1/api.json'); converter.searchParams.set('rss_url', feedUrl.href);
+  const response = await fetchWithTimeout(converter.href, { headers: { Accept: 'application/json' } }, 5200);
+  const payload = await response.json();
+  if (!response.ok || payload.status !== 'ok' || !Array.isArray(payload.items)) throw new Error(payload.message || `Google News RSS returned HTTP ${response.status}`);
+  return payload.items.map(item => ({ title: item.title, url: item.link, snippet: stripHtml(item.description || item.content || '').slice(0, 360), domain: (() => { try { return new URL(item.link).hostname; } catch { return 'news.google.com'; } })(), source: 'Google News RSS', published: item.pubDate || '', thumbnail: safeExternalUrl(item.thumbnail || '') })).map((item, index) => normalizeSearchResult(item, index)).filter(Boolean);
+}
+function searchSourceError(category, failures) {
+  const detail = failures.filter(Boolean).slice(0, 5).join(' | ') || 'No search provider returned usable results.';
+  const online = navigator.onLine;
+  if (!online) return new Error(`Internet connection unavailable. The device reports offline status. ${detail}`);
+  return new Error(`${categoryLabel(category)} search returned no usable results. Providers may be unavailable, rate-limited, blocked by CORS, or need backend configuration. ${detail}`);
+}
 async function getSearchResults(queryText, category) {
-  if (category === 'images') return { results: await searchImages(queryText), provider: 'Wikimedia Commons image index', note: 'Image results come from Wikimedia Commons. Availability and reuse rights vary by individual file; open the source details before reusing an image.' };
-  if (category === 'books') return { results: dedupeResults(await searchBooks(queryText)), provider: 'Open Library', note: 'Book search is provided by Open Library. Availability, editions and borrowing terms depend on each listing.' };
-  if (category === 'maps') return { results: dedupeResults(await searchMaps(queryText)), provider: 'OpenStreetMap place search', note: 'Place results use OpenStreetMap geocoding. Select a result to view it in a map tab.' };
-  const workerError = null;
-  if (searchEndpoint()) {
-    try { return { results: dedupeResults(await fetchWorkerResults(queryText, category)), provider: 'Connected search service', note: '' }; }
-    catch (error) { throw new Error(`Search backend could not complete the request. ${getErrorText(error)}`); }
-  }
-  if (category === 'web') {
+  const failures = [];
+  // Specialized public APIs provide real data for these types; requests are bounded.
+  if (category === 'images') {
+    const imageFailures = [];
+    if (searchEndpoint()) {
+      try {
+        const connected = await fetchWorkerResults(queryText, category);
+        if (connected?.results?.length) return { ...connected, results: dedupeResults(connected.results), note: connected.note || 'Image results come from the configured search provider. Check source licensing before reuse.' };
+        imageFailures.push('Configured image index returned no results.');
+      } catch (error) { imageFailures.push(`Configured image index: ${getErrorText(error)}`); }
+    }
     try {
-      const instant = await searchDuckDuckGoInstant(queryText);
-      if (instant.length) return { results: instant, provider: 'DuckDuckGo instant answers', note: 'To receive full web-index search result lists and category-specific results, deploy browser-search-worker.js and add its URL in Browser Settings.' };
-    } catch (error) { console.info('[Code Academy Browser] DuckDuckGo instant answer fallback unavailable:', getErrorText(error)); }
+      const results = await searchImages(queryText);
+      return { results, provider: 'Wikimedia Commons image index', note: `Images link to their original Wikimedia Commons page. Check each license and attribution before reuse.${imageFailures.length ? ` Backend fallback: ${imageFailures.join(' ')}` : ''}` };
+    } catch (error) { throw new Error(`Image search failed: ${getErrorText(error)}. ${imageFailures.join(' ')}`); }
   }
-  try {
-    const results = dedupeResults(await searchWikipedia(queryText, category));
-    const note = ['videos', 'news', 'documents'].includes(category)
-      ? `${categoryLabel(category)}-specific broad web results need the optional search backend. These are live Wikipedia fallback results, not a full ${category} index.`
-      : 'These are live Wikipedia fallback results. Connect the search backend in Browser Settings for broad web-index results.';
-    return { results, provider: 'Wikipedia search fallback', note };
-  } catch (error) {
-    if (category === 'web') throw new Error(`No search source responded. ${getErrorText(error)}. Configure a Search Worker URL in Browser Settings for broad web results.`);
-    throw error;
+  if (category === 'books') {
+    try { return { results: dedupeResults(await searchBooks(queryText)), provider: 'Open Library', note: 'Book data comes from Open Library; borrowing and edition availability vary by item.' }; }
+    catch (error) { throw new Error(`Book search failed: ${getErrorText(error)}`); }
   }
+  if (category === 'maps') {
+    try { return { results: dedupeResults(await searchMaps(queryText)), provider: 'OpenStreetMap', note: 'Map matches are place/geocoding results from OpenStreetMap.' }; }
+    catch (error) { throw new Error(`Map search failed: ${getErrorText(error)}`); }
+  }
+
+  // Query the configured full-web backend alongside bounded public fallbacks.
+  // A slow or unconfigured primary does not block the usable sources.
+  const tasks = [];
+  if (searchEndpoint()) tasks.push({ name: 'configured search service', run: () => fetchWorkerResults(queryText, category) });
+  if (category === 'news') tasks.push({ name: 'Google News RSS', run: () => searchGoogleNewsRss(queryText) });
+  if (category === 'web') tasks.push({ name: 'DuckDuckGo instant answers', run: () => searchDuckDuckGoInstantBounded(queryText) });
+  tasks.push({ name: 'Wikipedia API', run: () => searchWikipediaBounded(queryText, category) });
+
+  const settled = await Promise.allSettled(tasks.map(task => task.run()));
+  const successful = [];
+  settled.forEach((result, index) => {
+    const sourceName = tasks[index].name;
+    if (result.status === 'rejected') { failures.push(`${sourceName}: ${getErrorText(result.reason)}`); return; }
+    if (Array.isArray(result.value)) {
+      if (result.value.length) successful.push({ results: result.value, provider: sourceName });
+      else failures.push(`${sourceName}: no matching results returned`);
+    } else if (result.value && Array.isArray(result.value.results)) {
+      if (result.value.results.length) successful.push(result.value);
+      else failures.push(`${sourceName}: no matching results returned`);
+    }
+  });
+
+  if (!successful.length) throw searchSourceError(category, failures);
+  // Keep the configured backend first (its index is broadest); merge direct fallbacks
+  // only when useful, deduplicating URLs and making source limitations explicit.
+  const rank = (item) => item.provider === 'Connected search service' || /Academy Search API|SearXNG|Brave|DuckDuckGo|search Worker/i.test(item.provider || '') ? 0 : 1;
+  successful.sort((a, b) => rank(a) - rank(b));
+  const merged = dedupeResults(successful.flatMap(item => item.results || [])).slice(0, 18);
+  const primary = successful[0];
+  let provider = primary.provider || primary.source || 'Live search sources';
+  let note = primary.note || '';
+  if (!searchEndpoint() && category === 'web') note = 'Live fallback results from public answer and encyclopedia APIs. For broad ranked web results, deploy the included search Worker or Academy Search API; no fake results are shown.';
+  else if (!searchEndpoint() && category === 'news') note = 'Live Google News RSS results. RSS coverage and freshness depend on the feed.';
+  else if (searchEndpoint() && rank(primary) !== 0) note = `The configured backend was unavailable; showing live fallback results instead. ${failures.join(' | ')}`;
+  else if (successful.length > 1 && merged.length > (primary.results || []).length) note = [note, 'Additional live fallback sources were merged.'].filter(Boolean).join(' ');
+  if (['videos', 'documents'].includes(category) && rank(primary) !== 0) note = `${categoryLabel(category)}-specific broad search may need the configured search backend. ${note}`;
+  return { results: merged, provider, note };
+}
+async function searchDuckDuckGoInstantBounded(queryText) {
+  return await Promise.race([
+    searchDuckDuckGoInstant(queryText),
+    new Promise((_, reject) => setTimeout(() => reject(new DOMException('DuckDuckGo instant answers timed out after 4 seconds.', 'TimeoutError')), 4000))
+  ]);
+}
+async function searchWikipediaBounded(queryText, category) {
+  return await Promise.race([
+    searchWikipedia(queryText, category),
+    new Promise((_, reject) => setTimeout(() => reject(new DOMException('Wikipedia search timed out after 4.5 seconds.', 'TimeoutError')), 4500))
+  ]);
 }
 function searchWorkerRoot() {
   let root = searchEndpoint();
@@ -581,36 +690,36 @@ function normalizeHeadline(item, source = '') {
   };
 }
 async function fetchLiveHeadlines() {
+  const tasks = [];
+  const failures = [];
   const root = searchWorkerRoot();
-  if (root) {
-    try {
-      const response = await fetchWithTimeout(`${root}/headlines?limit=6`, { headers: { Accept: 'application/json' } }, 12000);
-      const data = await response.json();
-      const items = (Array.isArray(data.items) ? data.items : Array.isArray(data.results) ? data.results : [])
-        .map(item => normalizeHeadline(item, item.source || data.source || 'Live news'))
-        .filter(Boolean).slice(0, 6);
-      if (response.ok && items.length) return { items, source: data.source || 'Configured news feed' };
-    } catch (error) {
-      console.info('[Code Academy Browser] Search Worker headline route unavailable; trying public RSS feeds:', getErrorText(error));
-    }
-  }
+  if (root) tasks.push((async () => {
+    const response = await fetchWithTimeout(`${root}/headlines?limit=6`, { headers: { Accept: 'application/json' } }, 5200);
+    let data = {}; try { data = await response.json(); } catch {}
+    const items = (Array.isArray(data.items) ? data.items : Array.isArray(data.results) ? data.results : [])
+      .map(item => normalizeHeadline(item, item.source || data.source || 'Live news')).filter(Boolean).slice(0, 6);
+    if (!response.ok || !items.length) throw new Error(data.error || data.message || `News service returned HTTP ${response.status} with no parseable headlines`);
+    return { items, source: data.source || 'Configured news feed' };
+  })());
   const rssFeeds = [
     { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', source: 'BBC News' },
+    { url: 'https://feeds.bbci.co.uk/news/technology/rss.xml', source: 'BBC Technology' },
     { url: 'https://www.theguardian.com/world/rss', source: 'The Guardian' }
   ];
-  const failures = [];
-  for (const feed of rssFeeds) {
-    try {
-      const api = new URL('https://api.rss2json.com/v1/api.json');
-      api.searchParams.set('rss_url', feed.url);
-      const response = await fetchWithTimeout(api.href, { headers: { Accept: 'application/json' } }, 10000);
-      const payload = await response.json();
-      if (!response.ok || payload.status !== 'ok' || !Array.isArray(payload.items)) throw new Error(payload.message || `RSS conversion returned HTTP ${response.status}`);
-      const items = payload.items.map(item => normalizeHeadline(item, feed.source)).filter(Boolean).slice(0, 6);
-      if (items.length) return { items, source: `${feed.source} RSS` };
-    } catch (error) { failures.push(`${feed.source}: ${getErrorText(error)}`); }
+  for (const feed of rssFeeds) tasks.push((async () => {
+    const api = new URL('https://api.rss2json.com/v1/api.json'); api.searchParams.set('rss_url', feed.url);
+    const response = await fetchWithTimeout(api.href, { headers: { Accept: 'application/json' } }, 5200);
+    let payload = {}; try { payload = await response.json(); } catch {}
+    if (!response.ok || payload.status !== 'ok' || !Array.isArray(payload.items)) throw new Error(payload.message || `${feed.source} RSS conversion returned HTTP ${response.status}`);
+    const items = payload.items.map(item => normalizeHeadline(item, feed.source)).filter(Boolean).slice(0, 6);
+    if (!items.length) throw new Error(`${feed.source} returned no parseable headlines`);
+    return { items, source: `${feed.source} RSS` };
+  })());
+  try { return await Promise.any(tasks); }
+  catch (error) {
+    const reasons = error instanceof AggregateError ? error.errors.map(getErrorText) : [getErrorText(error)];
+    throw new Error(`All live news sources failed. ${reasons.join(' | ')}`);
   }
-  throw new Error(failures.join(' · ') || 'No public news feed responded.');
 }
 function renderHomeFeed(items, source = '', error = '') {
   const grid = $('#homeFeedGrid');
@@ -633,17 +742,18 @@ function renderHomeFeed(items, source = '', error = '') {
       const title = document.createElement('strong'); title.textContent = item.title;
       const snippet = document.createElement('span'); snippet.className = 'home-news-snippet'; snippet.textContent = item.snippet || 'Open the publisher to read the full story.';
       body.append(meta, title, snippet); button.append(body);
-      button.addEventListener('click', () => openAddress(item.url, { createTab: false, title: item.title }).catch(err => showError(err, 'Could not open news story'));
+      button.addEventListener('click', () => openAddress(item.url, { createTab: false, title: item.title }).catch(err => showError(err, 'Could not open news story')));
       grid.append(button);
     });
   } else {
     status.textContent = 'Live headlines could not be reached right now.';
     const notice = document.createElement('div'); notice.className = 'feed-error';
-    const title = document.createElement('strong'); title.textContent = 'News feeds are temporarily unavailable';
-    const detail = document.createElement('p'); detail.textContent = 'Check your connection or add your deployed Search Worker URL in Browser Settings. Search results are still available.';
+    const title = document.createElement('strong'); title.textContent = 'Live headlines are temporarily unavailable';
+    const detail = document.createElement('p'); detail.textContent = 'Check your connection or configure the Search Worker / Academy API in Browser Settings. Search results may still work through other sources.';
+    const exact = document.createElement('small'); exact.className = 'feed-error-detail'; exact.textContent = error ? `Exact source error: ${String(error).slice(0, 900)}` : 'No source returned a parseable feed.';
     const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'quiet-btn'; retry.textContent = 'Try again'; retry.addEventListener('click', () => loadHomeFeed({ force: true }));
     const news = document.createElement('a'); news.href = 'https://news.google.com/'; news.target = '_blank'; news.rel = 'noopener noreferrer'; news.textContent = 'Open Google News ↗';
-    notice.append(title, detail, retry, news); grid.append(notice);
+    notice.append(title, detail, exact, retry, news); grid.append(notice);
     if (error) console.info('[Code Academy Browser] Live news feed error:', error);
   }
 }
@@ -656,6 +766,7 @@ async function loadHomeFeed({ force = false } = {}) {
   }
   if (homeFeedLoading) return;
   homeFeedLoading = true;
+  setProgressTask('Live headlines', true);
   const status = $('#homeFeedStatus'); if (status) status.textContent = 'Connecting to current news feeds…';
   try {
     const payload = await fetchLiveHeadlines();
@@ -663,7 +774,7 @@ async function loadHomeFeed({ force = false } = {}) {
     renderHomeFeed(homeFeedItems, homeFeedSource);
   } catch (error) {
     renderHomeFeed([], '', getErrorText(error));
-  } finally { homeFeedLoading = false; }
+  } finally { homeFeedLoading = false; setProgressTask('Live headlines', false); }
 }
 function scheduleNewsRefresh() {
   if (newsRefreshTimer) window.clearInterval(newsRefreshTimer);
@@ -746,6 +857,7 @@ function renderSearchResults(queryText, category, payload, cachedAnswer = null) 
 function safeDomain(url) { try { return new URL(url).hostname; } catch { return ''; } }
 
 async function performSearch(rawQuery, category = activeCategory, options = {}) {
+  if (!options.silent) browserHadUserActivity = true;
   const queryText = String(rawQuery || '').trim();
   if (!queryText) { showToast('Enter a search phrase or website address.', 'warn'); return; }
   if (searchBusy) return;
@@ -754,7 +866,7 @@ async function performSearch(rawQuery, category = activeCategory, options = {}) 
     catch (error) { showError(error, 'Website address error'); }
     return;
   }
-  searchBusy = true; lastSearchQuery = queryText; setSelectedCategory(category); ui.address.value = queryText; ui.heroSearch.value = queryText;
+  searchBusy = true; lastSearchQuery = queryText; setSelectedCategory(category); if (ui.categoryRow) ui.categoryRow.hidden = false; ui.address.value = queryText; if (ui.heroSearch) ui.heroSearch.value = queryText; setProgressTask('Search', true);
   hideViews(); ui.searchView.hidden = false; ui.heading.textContent = `Searching for “${queryText}”`; ui.meta.textContent = `Contacting ${categoryLabel(category).toLowerCase()} search sources…`;
   ui.results.replaceChildren(); const loading = document.createElement('div'); loading.className = 'no-results'; loading.textContent = `Searching ${categoryLabel(category).toLowerCase()} sources for “${queryText}”…`; ui.results.append(loading);
   ui.googleFallback.href = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`;
@@ -786,7 +898,7 @@ async function performSearch(rawQuery, category = activeCategory, options = {}) 
   } catch (error) {
     ui.results.replaceChildren(); const box = document.createElement('div'); box.className = 'error-box'; box.textContent = `Search failed: ${getErrorText(error)}`; ui.results.append(box);
     ui.heading.textContent = 'Search could not be completed'; ui.meta.textContent = `The exact error is shown below.`; showError(error, 'Search error'); setStatus('Search error');
-  } finally { searchBusy = false; }
+  } finally { searchBusy = false; setProgressTask('Search', false); }
 }
 async function sendBrowserNotification(queryText, category) {
   if (!currentUser) return;
@@ -811,19 +923,19 @@ function startFrameLoad(url, forceReload = true) {
   const safeUrl = safeExternalUrl(url);
   if (!safeUrl) { showToast('Only HTTP and HTTPS websites can open here.', 'warn'); return; }
   hideViews(); ui.websiteView.hidden = false; ui.blocked.hidden = true;
-  ui.progress.classList.add('loading'); ui.address.value = safeUrl; setStatus(`Loading ${safeDomain(safeUrl)}…`);
+  ui.progress.classList.add('loading'); setProgressTask('Website', true); ui.address.value = safeUrl; setStatus(`Loading ${safeDomain(safeUrl)}…`);
   ui.siteHint.hidden = !preferences.siteWarning;
   frameNavigation += 1; const requestNumber = frameNavigation;
   if (frameTimer) clearTimeout(frameTimer);
   frameTimer = setTimeout(() => {
     if (requestNumber === frameNavigation) {
-      ui.progress.classList.remove('loading');
+      ui.progress.classList.remove('loading'); setProgressTask('Website', false);
       setStatus('Website response may be restricted');
     }
   }, 12000);
   ui.frame.onload = () => {
     if (requestNumber !== frameNavigation) return;
-    clearTimeout(frameTimer); ui.progress.classList.remove('loading'); setStatus(safeDomain(safeUrl));
+    clearTimeout(frameTimer); ui.progress.classList.remove('loading'); setProgressTask('Website', false); setStatus(safeDomain(safeUrl));
     ui.footerStatus.textContent = `Viewing ${safeDomain(safeUrl)}. Some destinations may block frame embedding or their sign-in/payment flows.`;
     applyDesktopMode();
   };
@@ -835,7 +947,11 @@ async function openAddress(url, options = {}) {
   if (options.createTab || !tab) tab = await createNewTab({ focus: true });
   tab = await navigateTabView({ title: shorten(options.title || safeDomain(safeUrl), 34), kind: 'site', url: safeUrl, query: '', category: 'web' });
   ui.address.value = safeUrl; await saveHistoryEntry({ title: options.title || safeDomain(safeUrl), kind: 'site', url: safeUrl, category: 'web' });
-  renderTabs(); startFrameLoad(safeUrl, true);
+  renderTabs();
+  if (window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function') {
+    nativeActiveUrl = safeUrl;
+    window.CodeAcademyNative.openUrl(safeUrl, options.title || safeDomain(safeUrl));
+  } else startFrameLoad(safeUrl, true);
   return tab;
 }
 async function submitAddress(raw) {
@@ -858,9 +974,15 @@ async function backForward(direction) {
 }
 function retryCurrentFrame() { const tab = getActiveTab(); if (tab?.url) startFrameLoad(tab.url, true); }
 function openInstallDialog() {
-  ui.moreMenu.hidden = true; ui.installDialog.hidden = false;
-  if (deferredInstallPrompt) ui.installHelp.textContent = 'Your browser has offered an install prompt. Tap Install browser to continue.';
-  else ui.installHelp.textContent = 'If no prompt appears, open your browser menu and choose “Install app” or “Add to Home screen”. Availability depends on your browser and device.';
+  if (!ui.moreMenu.hidden) ui.moreMenu.hidden = true;
+  ui.installDialog.hidden = false;
+  if (window.CodeAcademyNative) {
+    ui.installHelp.textContent = 'You are using the native Android browser app. Native APK installation happens through Android’s package installer or the app store; a webpage cannot reinstall itself.';
+  } else if (deferredInstallPrompt) {
+    ui.installHelp.textContent = 'Your browser has offered a web-app install prompt. This installs the web app, not a standalone APK file.';
+  } else {
+    ui.installHelp.textContent = 'No web-app install prompt is available right now. A normal webpage cannot silently install an APK. Build and distribute the native Android package separately, then install it through Android or Google Play.';
+  }
 }
 async function installBrowser() {
   if (deferredInstallPrompt) {
@@ -871,7 +993,7 @@ async function installBrowser() {
     } catch (error) { showError(error, 'Install prompt failed'); }
     finally { deferredInstallPrompt = null; }
   } else {
-    ui.installHelp.textContent = 'No automatic install prompt is currently available. Use the browser’s menu → Install app or Add to Home screen. The browser decides when this option is supported.';
+    ui.installHelp.textContent = window.CodeAcademyNative ? 'This app is already installed as a native Android package.' : 'No browser-managed web install prompt is available. A native APK must be installed through Android’s package installer or Google Play; this web page cannot install it directly.';
   }
 }
 function openShareDialog() {
@@ -882,6 +1004,7 @@ function openShareDialog() {
 function closeShareDialog() { const dialog = $('#shareDialog'); if (dialog) dialog.hidden = true; }
 async function sendSharePayload(payload, fallbackText = '') {
   try {
+    if (window.CodeAcademyNative?.share) { window.CodeAcademyNative.share(String(payload.title || ''), String(payload.text || fallbackText || ''), String(payload.url || '')); closeShareDialog(); return; }
     if (navigator.share) { await navigator.share(payload); closeShareDialog(); return; }
     const text = fallbackText || `${payload.title || ''}\n${payload.text || ''}\n${payload.url || ''}`;
     if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(text); closeShareDialog(); showToast('Share details copied. Paste them into your messaging app.'); return; }
@@ -904,7 +1027,13 @@ async function shareCurrentTab() {
   const description = tab.kind === 'search'
     ? `Search for “${tab.query}” in Code Academy Browser. Explore categorized results, then open the destination in your focused browser tab.`
     : `I’m viewing ${title} with Code Academy Browser. Open the site, explore its original content, and try the browser’s search, tabs, history and privacy tools.`;
-  let shareUrl = targetUrl;
+  let shareUrl;
+  try {
+    const branded = new URL('browser.html', currentBaseUrl());
+    branded.searchParams.set('shared_url', targetUrl);
+    branded.searchParams.set('shared_title', title);
+    shareUrl = branded.href;
+  } catch { shareUrl = targetUrl; }
   const root = searchWorkerRoot();
   if (root) {
     try {
@@ -913,9 +1042,10 @@ async function shareCurrentTab() {
       metadata.searchParams.set('title', title);
       metadata.searchParams.set('description', description);
       shareUrl = metadata.href;
-    } catch { shareUrl = targetUrl; }
+    } catch { /* keep the static branded preview fallback */ }
   }
-  await sendSharePayload({ title: `${title} · Code Academy Browser`, text: `${description}\n\nShared with Code Academy Browser.`, url: shareUrl }, `${title} · Code Academy Browser\n${description}\n${shareUrl}\n\nOriginal site: ${targetUrl}`);
+  const shareText = `${description}\n\nOriginal site: ${targetUrl}\nShared with Code Academy Browser by Code Academy — fast search, current news and secure browsing in one focused workspace.`;
+  await sendSharePayload({ title: `${title} · Code Academy Browser`, text: shareText, url: shareUrl }, `${title} · Code Academy Browser\n${shareText}\n\nPreview: ${shareUrl}`);
 }
 async function downloadCurrent() {
   const tab = getActiveTab(); if (!tab) { showToast('There is no active tab to download.', 'warn'); return; }
@@ -1079,7 +1209,8 @@ function attachEvents() {
   ui.addressForm.addEventListener('submit', event => { event.preventDefault(); ui.addressSuggestions.hidden = true; submitAddress(ui.address.value).catch(error => showError(error, 'Search or navigation failed')); });
   ui.heroSearchForm.addEventListener('submit', event => { event.preventDefault(); const query = ui.heroSearch.value.trim(); if (query) { ui.addressSuggestions.hidden = true; submitAddress(query).catch(error => showError(error, 'Search failed')); } });
   $('#voiceButton').addEventListener('click', startVoiceSearch);
-  $('#homeButton').addEventListener('click', async () => {
+  const homeButton = $('#homeButton');
+  if (homeButton && homeButton.tagName !== 'A') homeButton.addEventListener('click', async () => {
     const tab = getActiveTab();
     if (!tab) await createNewTab();
     else await navigateTabView({ kind: 'home', title: 'New tab', url: '', query: '', category: 'web' });
@@ -1127,6 +1258,7 @@ function attachEvents() {
       case 'files': openDrawer('files'); break;
       case 'desktop': preferences.desktopMode = !preferences.desktopMode; writeJSON(STORAGE.prefs, preferences); applyPreferences(); showToast(`Desktop layout ${preferences.desktopMode ? 'enabled' : 'disabled'}.`); break;
       case 'install': openInstallDialog(); break;
+      case 'download': downloadCurrent().catch(error => showError(error, 'Download failed')); break;
       case 'share': openShareDialog(); break;
       case 'settings': location.href = './browser-settings.html'; break;
     }
@@ -1134,7 +1266,7 @@ function attachEvents() {
   });
   document.addEventListener('click', event => { if (!ui.moreMenu.hidden && !ui.moreMenu.contains(event.target) && event.target !== $('#moreButton')) ui.moreMenu.hidden = true; });
   $('#installButton').addEventListener('click', openInstallDialog); $('#confirmInstallButton').addEventListener('click', installBrowser);
-  const dismissInstall = () => { ui.installDialog.hidden = true; try { localStorage.setItem('ca_browser_install_prompt_dismissed_v1', '1'); } catch {} };
+  const dismissInstall = () => { ui.installDialog.hidden = true; try { localStorage.setItem('ca_browser_install_prompt_dismissed_v2', '1'); } catch {} };
   $('#closeInstallDialog').addEventListener('click', dismissInstall); $('#dismissInstallDialog').addEventListener('click', dismissInstall);
   $('#shareCurrentButton').addEventListener('click', openShareDialog);
   $('#closeShareDialog').addEventListener('click', closeShareDialog); $('#dismissShareDialog').addEventListener('click', closeShareDialog);
@@ -1169,7 +1301,7 @@ async function initializeBrowser(user) {
   fileEntries = localFiles().slice(0, HISTORY_LIMIT); applyPreferences();
   setSelectedCategory(preferences.defaultCategory || 'web');
   attachEvents();
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator && !window.CodeAcademyNative) {
     navigator.serviceWorker.register('./sw.js', { scope: new URL('./', location.href).pathname }).catch(error => {
       console.warn('[Code Academy Browser] Service worker registration failed:', error);
       ui.footerStatus.textContent = `Offline/PWA service worker could not register: ${getErrorText(error)}`;
@@ -1180,12 +1312,14 @@ async function initializeBrowser(user) {
   if (preferences.liveNews) loadHomeFeed().catch(error => console.info('[Code Academy Browser] Home feed startup request did not complete:', getErrorText(error)));
   try {
     const params = new URLSearchParams(location.search);
+    const sharedUrl = params.get('shared_url'); const sharedTitle = params.get('shared_title') || '';
     const queryText = params.get('q'); const cat = params.get('category') || 'web';
     if (params.get('newtab') === '1') await createNewTab();
-    if (queryText) await performSearch(queryText, CATEGORIES.includes(cat) ? cat : 'web', { silent: false });
+    if (sharedUrl) { const safeShared = safeExternalUrl(sharedUrl); if (safeShared) await openAddress(safeShared, { createTab: false, title: sharedTitle || safeDomain(safeShared) }); else showError(new Error('Shared URL is not a valid HTTP/HTTPS destination.'), 'Invalid shared link'); }
+    else if (queryText) await performSearch(queryText, CATEGORIES.includes(cat) ? cat : 'web', { silent: false });
     if (params.get('files') === '1') openDrawer('files');
-    const installed = window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
-    let installDismissed = false; try { installDismissed = localStorage.getItem('ca_browser_install_prompt_dismissed_v1') === '1'; } catch {}
+    const installed = Boolean(window.CodeAcademyNative) || window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
+    let installDismissed = false; try { installDismissed = localStorage.getItem('ca_browser_install_prompt_dismissed_v2') === '1'; } catch {}
     if (!installed && !installDismissed) window.setTimeout(() => { if (!ui.installDialog.hidden) return; openInstallDialog(); }, 1700);
   } catch (error) { showError(error, 'Browser startup error'); }
   window.addEventListener('pagehide', () => {
@@ -1195,16 +1329,84 @@ async function initializeBrowser(user) {
   });
 }
 
-let browserInitialized = false;
-onAuthStateChanged(auth, user => {
-  if (!user) {
+async function connectOptionalAccountSync() {
+  try {
+    const [authentication, firestore] = await Promise.all([
+      import('./authentication.js'),
+      import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js')
+    ]);
+    auth = authentication.auth; db = authentication.db;
+    ({ collection, addDoc, doc, setDoc, getDocs, getDoc, deleteDoc, query, orderBy, limit, serverTimestamp } = firestore);
+    authentication.onAuthStateChanged(auth, async user => {
+      const newlySignedIn = Boolean(user && (!currentUser || currentUser.uid !== user.uid));
+      currentUser = user || null;
+      if (!user) {
+        setStatus(navigator.onLine ? 'Guest browsing' : 'Offline');
+        if (ui.footerStatus) ui.footerStatus.textContent = 'Guest mode: browsing, search and local history work without signing in. Account sync becomes available after sign-in.';
+        return;
+      }
+      setStatus('Signed in');
+      if (newlySignedIn && preferences.accountSync && !preferences.privateSession && !browserHadUserActivity) {
+        try {
+          const remotePrefs = await getDoc(doc(db, 'users', user.uid, 'browserSettings', 'preferences'));
+          if (remotePrefs.exists()) {
+            preferences = { ...preferences, ...remotePrefs.data() };
+            writeJSON(STORAGE.prefs, preferences); applyPreferences(); setSelectedCategory(preferences.defaultCategory || 'web');
+          }
+          await loadSavedTabs();
+          await loadHistory();
+          await renderActiveTab();
+        } catch (error) { console.info('[Code Academy Browser] Account sync initialization failed; local data remains available:', getErrorText(error)); }
+      }
+      if (ui.footerStatus) ui.footerStatus.textContent = preferences.accountSync && !preferences.privateSession ? 'Signed in. Account sync is available when your Code Academy database rules allow it.' : 'Signed in. Browser history and preferences are stored locally according to your settings.';
+    }, error => {
+      console.warn('[Code Academy Browser] Authentication status unavailable; browser remains usable:', error);
+      setStatus('Guest browsing');
+    });
+  } catch (error) {
     currentUser = null;
-    const target = new URL('./login.html', location.href); target.searchParams.set('returnUrl', 'browser.html');
-    location.replace(target.href); return;
+    console.info('[Code Academy Browser] Firebase account sync could not be loaded. Continuing in device-only mode:', getErrorText(error));
+    setStatus(navigator.onLine ? 'Guest browsing' : 'Offline');
+    if (ui.footerStatus) ui.footerStatus.textContent = 'Device-only mode: account sync is unavailable, but local tabs, search controls and browsing remain available.';
   }
-  currentUser = user;
-  if (!browserInitialized) {
-    browserInitialized = true;
-    initializeBrowser(user).catch(error => showError(error, 'Browser initialization failed'));
-  }
-}, error => showError(error, 'Authentication check failed'));
+}
+
+async function bootBrowser() {
+  if (browserInitialized) return;
+  browserInitialized = true;
+  try { await initializeBrowser(null); }
+  catch (error) { showError(error, 'Browser initialization failed'); }
+  // Never block local UI/search setup behind remote account initialization.
+  connectOptionalAccountSync();
+}
+
+// Native APK bridge entry points. These keep the browser state/history in the page
+// while the Android Activity displays the destination in a top-level WebView.
+window.CodeAcademyBrowser = {
+  submitAddress: value => submitAddress(String(value || '')).catch(error => showError(error, 'Native address bar failed')),
+  returnToHome: async () => {
+    nativeActiveUrl = '';
+    const active = getActiveTab();
+    if (active && active.kind === 'home') await renderActiveTab();
+    else await createNewTab({ focus: true });
+  },
+  openTabSwitcher: () => {
+    nativeActiveUrl = '';
+    const tab = getActiveTab();
+    if (tab && tab.kind !== 'home') return createNewTab({ focus: true });
+    return renderActiveTab();
+  },
+  refresh: () => {
+    const tab = getActiveTab();
+    if (tab?.kind === 'search') performSearch(tab.query, tab.category, { silent: true });
+    else if (preferences.liveNews) loadHomeFeed({ force: true });
+    else location.reload();
+  },
+  nativePageStatus: (url, title) => {
+    nativeActiveUrl = String(url || '');
+    setStatus(title || safeDomain(url) || 'Website open');
+  },
+  openSettings: () => { location.href = window.CodeAcademyNative ? 'https://egyirprince609-oss.github.io/Code-Academy-/browser-settings.html' : './browser-settings.html'; }
+};
+
+bootBrowser();

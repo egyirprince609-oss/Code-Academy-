@@ -1,0 +1,49 @@
+name: Build Code Academy Browser APK
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'browser-android/**'
+      - 'browser.html'
+      - 'browser.css'
+      - 'browser.js'
+      - 'browser-settings.html'
+      - 'browser-settings.css'
+      - 'browser-settings.js'
+      - 'browser-manifest.json'
+      - 'browser_image_preview.png'
+      - '.github/workflows/build-browser-apk.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+      - name: Install Android build components
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'platform-tools'
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+      - name: Copy latest browser assets into Android package
+        run: python3 browser-android/scripts/copy-assets.py
+      - name: Build debug and unsigned release APKs
+        run: gradle -p browser-android :app:assembleDebug :app:assembleRelease
+      - name: Upload APK artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-academy-browser-android-apks
+          path: |
+            browser-android/app/build/outputs/apk/debug/app-debug.apk
+            browser-android/app/build/outputs/apk/release/app-release-unsigned.apk
+          if-no-files-found: error
+          retention-days: 14
