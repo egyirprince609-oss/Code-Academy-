@@ -1,49 +1,30 @@
-# Code Academy — Course Home Redesign
+# Code Academy Course Home & Route Fix
 
-## What changed
+## Preservation boundary
+- The original `course.html` catalogue's layout, CSS, external course-logo URLs, search behavior, user profile/XP rendering, loading spinner, Firestore profile read, and authentication redirect were preserved.
+- The only changes made inside `course.html` are the 20 values used by the catalogue's `file` destinations. Those values now go to new course-home files.
+- `Courses.html` is a same-content, exact-case compatibility copy of the updated `course.html` for callers that use that spelling.
+- Existing lesson dashboards, `lesson.html`, lesson JSON, coding editors, `authentication.js`, `notification-engine.js`, `menu.html`, settings, messages, and progress pages were not overwritten.
 
-- Rebuilt `course.html` as a responsive, searchable course catalogue showing **22 tracks**. This includes the 20 language/web/data tracks already listed and the existing Cybersecurity and Ethical Hacking tracks.
-- Rebuilt the five original course overview files: `HTML.html`, `CSS.html`, `JavaScript.html`, `Python.html`, and `React.html`.
-- Added 17 root-level course home pages for the other tracks. No new application folders were created.
-- Added the shared root-level `course-home.css` and `course-home.js` assets for responsive layouts, course-specific imagery/theme, animated hero panels, course actions, authentication, profile stats, and notifications.
-- Added `course-resource.html`, a working course-aware page for roadmaps, cheat sheets, mini-project prompts, practice challenges, study plans, concepts, and short quizzes. Added `courses.html` as a root-level compatibility redirect because five preserved legacy dashboard pages link to that filename while the canonical catalogue is `course.html`.
+## New root-level pages
+- 22 course home pages, including the two separate security tracks (not inserted into the 20-card catalogue).
+- 440 unique course-specific destination pages: 20 per track.
+- One shared `share-code-academy.html` page, using native mobile sharing with clipboard fallback.
+- 22 course-specific 1200×630 Open Graph preview images (`og-*.png`). Every generated home and resource page includes Open Graph and Twitter large-image metadata; each course description is at least 163 characters.
 
-## Course-home routes and preserved lesson dashboards
+## Navigation and connections
+- Every home has 20 route cards with a distinct, existing root-level destination page.
+- The prominent `Start Lesson` buttons lead to the project's existing course lesson dashboards/pages.
+- The editor route cards land on course-specific resource pages whose launch actions target the actual editor/workspace already present in the project; no fake editor implementation was added.
+- Home/resource pages use the existing `authentication.js` Firebase auth and profile documents. They read the existing per-user notifications at `users/{uid}/notifications`, display unread counts and current notification content, and mark a notification read before following its in-app link where possible.
+- The new course pages include working routes to the current dashboard, account progress, quiz/challenge tools, project workspace, AI Mentor, messages/notes and settings pages.
+- Every course home uses a fixed-height `100dvh` layout with page-level overflow disabled and responsive compact layouts. Small notification panels can scroll internally; the page itself does not.
 
-| Course home | Start Lesson destination |
-|---|---|
-| `HTML.html` | `html_dashboard.html` |
-| `CSS.html` | `css_dashboard.html` |
-| `JavaScript.html` | `javascript_dashboard.html` |
-| `Python.html` | `python_dashboard.html` |
-| `React.html` | `react_dashboard.html` |
-| `java-home.html` | `Java.html` |
-| `c-home.html` | `C.html` |
-| `cplusplus-home.html` | `CPlusPlus.html` |
-| `csharp-home.html` | `CSharp.html` |
-| `php-home.html` | `PHP.html` |
-| `typescript-home.html` | `TypeScript.html` |
-| `go-home.html` | `Go.html` |
-| `rust-home.html` | `Rust.html` |
-| `kotlin-home.html` | `Kotlin.html` |
-| `swift-home.html` | `Swift.html` |
-| `dart-home.html` | `Dart.html` |
-| `ruby-home.html` | `Ruby.html` |
-| `sql-home.html` | `SQL.html` |
-| `r-home.html` | `R.html` |
-| `lua-home.html` | `Lua.html` |
-| `cybersecurity-home.html` | `cybersecurity dashboard.html` |
-| `ethical-hacking-home.html` | `ethical hacking dashboard.html` |
+## File-count arithmetic
+The requested structure of 22 homes + 20 extra destination pages per course is 22 × 21 = 462 course-specific pages, not 421. Adding the `Courses.html` compatibility copy and the common share page means **464 new HTML files**, plus the modified original `course.html`, 22 preview images and this report.
 
-Every home page has **21 course action cards** plus the hero navigation buttons. Dedicated existing editors are linked where available; Rust, Kotlin, and Dart use the existing multi-language `CODEEDITOR.html` workspace. The security tracks use their existing security tools rather than pretending to offer a language-specific code editor.
-
-## Authentication and notifications
-
-The new pages use the existing `authentication.js` module. Authenticated profile data is read from the existing `users/{uid}` document. The notification drawer listens to `users/{uid}/notifications`, shows unread counts, opens notification destinations, and supports marking one or all notifications as read. Password-provider accounts that still require email verification are routed to the existing verification flow.
-
-## Preservation and checks
-
-- The existing `menu.html`, `lesson.html`, `authentication.js`, `notification-engine.js`, all 22 original lesson-dashboard destinations listed above, and their lesson content were left unchanged.
-- Static validation found 22 course configurations, verified every configured home/lesson/editor destination exists, and confirmed 21 launchpad actions per course.
-- The protected dashboard/authentication files were compared byte-for-byte with the originally uploaded ZIP and are unchanged.
-- Live Firebase sign-in, Firestore security-rule permissions, and a real authenticated browser session were not available for end-to-end verification in this environment; those should still be checked after deployment.
+## Testing notes
+- All 22 course-home files, all 440 action destination files, and all 22 preview images are present at the project root.
+- Local links from the new course homes/resources to generated pages and existing root files were checked.
+- Python syntax-level generation checks and ZIP integrity checks passed.
+- A real signed-in Firebase browser session is not available in this packaging environment. Live auth permissions, Firestore notification rules, and share-menu behavior should therefore receive a final smoke test after deployment.

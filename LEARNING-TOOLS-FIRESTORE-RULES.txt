@@ -1,0 +1,20 @@
+CODE ACADEMY — FIRESTORE RULE ADDITION FOR LEARNING TOOLS
+
+Add this match block INSIDE your existing:
+match /databases/{database}/documents { ... }
+
+match /users/{uid}/learningTools/{toolId} {
+  allow read, write:
+    if request.auth != null && request.auth.uid == uid;
+}
+
+What this grants:
+- A signed-in user can read/write only their own learning-tool documents.
+- These tools currently use the document IDs: learningRoadmap, practiceReview, and mistakeNotebook.
+- All records are below users/{uid}/learningTools/; no page reads another learner's saved notebook or practice schedule through these paths.
+
+IMPORTANT:
+- Do not replace your full Firestore rules with this snippet.
+- Merge it into the deployed rules while preserving the existing rules for user profiles, lesson progress, notifications, certificates, projects, games, premium features, and other collections.
+- If your current rules already contain an owner-authorized wildcard that covers this path, review that rule before adding a duplicate block.
+- Publishing this text file does NOT deploy rules. The rules must be added and published in the Firebase Console or your rules deployment workflow.
