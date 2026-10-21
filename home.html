@@ -1,0 +1,532 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050817">
+  <meta name="description" content="Code Academy is restoring your secure learning session.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="icon" href="./logo.png">
+  <title>Welcome to Code Academy</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050817;
+      --panel: rgba(10, 18, 39, .78);
+      --panel-2: rgba(12, 25, 51, .72);
+      --line: rgba(131, 167, 222, .18);
+      --text: #f3f7ff;
+      --muted: #97a9c8;
+      --cyan: #59e5ff;
+      --blue: #5e8cff;
+      --violet: #a78bfa;
+      --green: #5ff0be;
+      --radius: 26px;
+      --glow-opacity: 1;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    * { box-sizing: border-box; }
+    html { min-height: 100%; background: var(--bg); }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      overflow-x: hidden;
+      position: relative;
+      isolation: isolate;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 50% -10%, rgba(43, 92, 185, .25), transparent 48%),
+        radial-gradient(ellipse at 5% 85%, rgba(13, 148, 136, .12), transparent 38%),
+        radial-gradient(ellipse at 100% 65%, rgba(124, 58, 237, .13), transparent 40%),
+        var(--bg);
+    }
+    body[data-lights="off"] { --glow-opacity: 0; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; }
+    a { color: inherit; }
+    .grid-bg {
+      position: fixed; inset: 0; z-index: -3; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(114, 157, 216, .075) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(114, 157, 216, .075) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.7), transparent 95%);
+    }
+    .aurora {
+      position: fixed; z-index: -2; width: min(78vw, 720px); aspect-ratio: 1;
+      border-radius: 50%; filter: blur(70px); opacity: calc(.14 * var(--glow-opacity));
+      pointer-events: none; animation: drift 12s ease-in-out infinite alternate;
+    }
+    .aurora.a { background: #2563eb; top: -34%; left: -25%; }
+    .aurora.b { background: #7c3aed; bottom: -42%; right: -20%; animation-delay: -5s; }
+    .scanline {
+      position: fixed; inset: 0 0 auto; height: 1px; z-index: -1;
+      background: linear-gradient(90deg, transparent, rgba(89,229,255,.42), transparent);
+      box-shadow: 0 0 22px rgba(89,229,255,.45); opacity: calc(.72 * var(--glow-opacity));
+      animation: scan 8s linear infinite; pointer-events: none;
+    }
+    .shell { width: min(1120px, 100%); min-height: 100svh; margin: 0 auto; padding: max(18px, env(safe-area-inset-top)) clamp(16px, 4vw, 34px) max(18px, env(safe-area-inset-bottom)); display: flex; flex-direction: column; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; }
+    .brand { display: flex; gap: 10px; align-items: center; min-width: 0; text-decoration: none; }
+    .brand img { width: 43px; height: 43px; object-fit: contain; filter: drop-shadow(0 0 15px rgba(89,229,255,.22)); flex-shrink: 0; }
+    .brand-copy { min-width: 0; }
+    .brand-name { display: block; font-size: 14px; font-weight: 850; letter-spacing: .035em; line-height: 1.2; }
+    .brand-tag { display: block; margin-top: 4px; font-size: 9px; text-transform: uppercase; letter-spacing: .19em; color: #8da6cb; }
+    .tools { display: flex; align-items: center; gap: 7px; }
+    .tool-btn { display: inline-flex; gap: 7px; justify-content: center; align-items: center; min-height: 38px; padding: 0 11px; border: 1px solid var(--line); border-radius: 12px; background: rgba(9, 18, 37, .76); color: #c6d5ef; font-size: 10px; font-weight: 800; letter-spacing: .045em; cursor: pointer; transition: border-color .2s ease, background .2s ease, transform .2s ease; }
+    .tool-btn:hover { border-color: rgba(89,229,255,.48); background: rgba(16, 35, 65, .92); }
+    .tool-btn:active { transform: scale(.97); }
+    .tool-btn:focus-visible, a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .tool-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .secure-state { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid rgba(95,240,190,.2); border-radius: 999px; color: #a6f5d7; background: rgba(16, 80, 72, .16); font-size: 9px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; white-space: nowrap; }
+    .pulse { width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%; background: var(--green); box-shadow: 0 0 13px rgba(95,240,190,.8); animation: pulse 1.7s ease-in-out infinite; }
+    main { flex: 1; display: grid; align-items: center; padding: clamp(28px, 5.2vh, 56px) 0 30px; }
+    .hero { width: 100%; display: grid; grid-template-columns: minmax(0, 1.07fr) minmax(290px, .93fr); gap: clamp(26px, 5vw, 65px); align-items: center; }
+    .hero-copy { padding: 4px 0; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; margin: 0 0 19px; font-size: 10px; color: #85e8ff; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; display: block; width: 24px; height: 1px; background: linear-gradient(90deg, var(--cyan), transparent); box-shadow: 0 0 10px rgba(89,229,255,.5); }
+    h1 { max-width: 650px; margin: 0; font-size: clamp(37px, 6.3vw, 72px); font-weight: 860; line-height: .99; letter-spacing: -.065em; }
+    .gradient-text { display: block; padding: .07em 0 .12em; background: linear-gradient(100deg, #f8fbff 4%, #a6f2ff 44%, #a9a8ff 83%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .intro { max-width: 450px; color: var(--muted); font-size: clamp(13px, 1.4vw, 15px); line-height: 1.8; margin: 17px 0 25px; }
+    .promise-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 30px; }
+    .promise { display: inline-flex; gap: 7px; align-items: center; padding: 8px 10px; border: 1px solid rgba(131,167,222,.14); border-radius: 10px; color: #c0cfea; background: rgba(11,22,43,.56); font-size: 10px; font-weight: 750; }
+    .promise svg { width: 13px; height: 13px; color: var(--cyan); }
+    .status-card { max-width: 520px; border: 1px solid rgba(128,168,226,.22); border-radius: 17px; padding: 17px; background: linear-gradient(145deg, rgba(13,27,53,.86), rgba(7,14,30,.86)); box-shadow: 0 17px 60px rgba(0,0,0,.2), inset 0 1px rgba(255,255,255,.035); position: relative; overflow: hidden; }
+    .status-card::before { content: ""; position: absolute; width: 130px; height: 130px; right: -80px; top: -80px; border-radius: 50%; background: rgba(89,229,255,.11); filter: blur(20px); pointer-events: none; }
+    .status-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 13px; }
+    .status-label { display: flex; align-items: center; gap: 8px; color: #b9cdeb; font-size: 10px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .status-label svg { width: 14px; height: 14px; color: var(--cyan); }
+    .live-tag { color: #75e9c1; font-size: 9px; font-weight: 850; letter-spacing: .11em; white-space: nowrap; }
+    .status-title { margin: 0; font-size: 15px; font-weight: 800; letter-spacing: -.015em; }
+    .status-detail { min-height: 36px; margin: 6px 0 15px; color: #91a6c7; font-size: 11px; line-height: 1.7; }
+    .progress-track { width: 100%; height: 4px; overflow: hidden; border-radius: 999px; background: rgba(134,163,207,.15); }
+    .progress-bar { display: block; height: 100%; width: 38%; border-radius: inherit; background: linear-gradient(90deg, #5e8cff, #59e5ff, #a78bfa); box-shadow: 0 0 16px rgba(89,229,255,.4); animation: progress 2.1s cubic-bezier(.4,0,.2,1) infinite; }
+    .system-meta { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 12px; color: #60799f; font: 9px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .05em; }
+    .system-meta span:last-child { color: #70daba; }
+    .fallback { display: none; margin-top: 13px; padding-top: 13px; border-top: 1px solid var(--line); }
+    .fallback.show { display: block; }
+    .fallback p { margin: 0 0 10px; font-size: 11px; line-height: 1.6; color: #f5dca3; }
+    .fallback-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .fallback-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 38px; padding: 0 12px; border-radius: 10px; background: rgba(25,42,71,.8); border: 1px solid rgba(135,166,215,.24); color: #e9f2ff; font-size: 11px; font-weight: 800; text-decoration: none; }
+    .fallback-links button { min-height: 38px; padding: 0 12px; border-radius: 10px; border: 1px solid rgba(89,229,255,.28); background: rgba(8,64,84,.45); color: #aaf3ff; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .member-link { margin: 13px 0 0; color: #7e93b5; font-size: 11px; line-height: 1.6; }
+    .member-link a { color: #a8dfff; font-weight: 800; text-decoration: none; text-underline-offset: 4px; }
+    .member-link a:hover { text-decoration: underline; }
+    .visual { position: relative; width: 100%; max-width: 470px; justify-self: end; aspect-ratio: .91; min-height: 380px; display: grid; place-items: center; }
+    .visual::before { content: ""; position: absolute; width: 80%; aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(98,179,250,.17); box-shadow: 0 0 0 20px rgba(54,107,194,.025), 0 0 0 50px rgba(54,107,194,.018), 0 0 55px rgba(89,229,255,calc(.10 * var(--glow-opacity))); }
+    .orbit { position: absolute; width: 91%; aspect-ratio: 1; border: 1px dashed rgba(128,173,234,.21); border-radius: 50%; animation: orbit 32s linear infinite; }
+    .orbit::after { content: ""; position: absolute; width: 8px; height: 8px; top: 14%; left: 13%; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 16px var(--cyan), 0 0 30px rgba(89,229,255,.55); }
+    .orbit.orbit-two { width: 69%; border-style: solid; border-color: rgba(167,139,250,.13); animation-direction: reverse; animation-duration: 24s; }
+    .orbit.orbit-two::after { width: 6px; height: 6px; top: 78%; left: 7%; background: var(--violet); box-shadow: 0 0 14px var(--violet); }
+    .core-glow { position: absolute; width: 59%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, rgba(47,132,235,calc(.22 * var(--glow-opacity))), rgba(54,86,204,calc(.08 * var(--glow-opacity))) 42%, transparent 73%); filter: blur(6px); }
+    .terminal { position: relative; z-index: 1; width: min(100%, 365px); border: 1px solid rgba(137,171,230,.27); border-radius: 20px; background: linear-gradient(145deg, rgba(13,24,47,.91), rgba(5,12,27,.95)); overflow: hidden; box-shadow: 0 28px 90px rgba(0,0,0,.36), 0 0 55px rgba(51,128,225,calc(.08 * var(--glow-opacity))), inset 0 1px rgba(255,255,255,.05); transform: perspective(900px) rotateY(-4deg) rotateX(2deg); animation: terminal-float 6s ease-in-out infinite; }
+    .terminal-head { display: flex; align-items: center; gap: 6px; height: 43px; padding: 0 14px; border-bottom: 1px solid rgba(137,171,230,.13); background: rgba(255,255,255,.018); }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: #ff7988; }
+    .dot:nth-child(2) { background: #ffd36d; } .dot:nth-child(3) { background: #6be8b5; }
+    .terminal-title { margin-left: 7px; color: #7e94b8; font: 10px ui-monospace, monospace; }
+    .terminal-body { padding: 19px clamp(14px, 3vw, 22px) 22px; }
+    .terminal-kicker { margin: 0 0 12px; color: #88a1c9; font: 9px ui-monospace, monospace; letter-spacing: .1em; }
+    .code-line { display: flex; gap: 12px; min-height: 27px; align-items: baseline; color: #b2c5e1; font: clamp(10px, 1.1vw, 12px)/1.7 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+    .ln { width: 12px; text-align: right; color: #536b90; flex: 0 0 auto; }
+    .blue { color: #81baff; } .purple { color: #c3a8ff; } .mint { color: #81efcb; } .gold { color: #ffdb8c; }
+    .cursor { display: inline-block; width: 6px; height: 13px; vertical-align: -2px; margin-left: 3px; background: var(--cyan); animation: blink 1.05s step-end infinite; }
+    .terminal-foot { margin-top: 14px; padding-top: 13px; display: flex; justify-content: space-between; gap: 8px; border-top: 1px solid rgba(137,171,230,.12); color: #6b84a9; font: 9px ui-monospace, monospace; }
+    .terminal-foot span:last-child { color: #73e2bd; }
+    .float-chip { position: absolute; z-index: 2; display: flex; align-items: center; gap: 9px; padding: 10px 12px; border: 1px solid rgba(137,171,230,.22); border-radius: 13px; background: rgba(8,17,36,.86); box-shadow: 0 14px 35px rgba(0,0,0,.22); backdrop-filter: blur(12px); animation: chip-float 5s ease-in-out infinite; }
+    .chip-icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 9px; background: rgba(21,89,126,.32); color: #83edff; }
+    .chip-icon svg { width: 15px; height: 15px; }
+    .chip-label { display: block; color: #7891b7; font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+    .chip-value { display: block; margin-top: 3px; color: #e0ebff; font-size: 10px; font-weight: 800; }
+    .chip-one { top: 13%; right: -1%; }
+    .chip-two { left: -2%; bottom: 17%; animation-delay: -2.5s; }
+    .chip-two .chip-icon { background: rgba(61,44,126,.36); color: #c1a9ff; }
+    .footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 15px; border-top: 1px solid rgba(131,167,222,.11); color: #7186a8; font-size: 10px; }
+    .footer strong { color: #b9cbea; font-weight: 800; }
+    .footer-right { display: flex; align-items: center; gap: 8px; text-align: right; }
+    .footer-mark { width: 5px; height: 5px; border-radius: 50%; background: #5dddb4; box-shadow: 0 0 10px rgba(93,221,180,.6); }
+    [hidden] { display: none !important; }
+    @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .55; transform: scale(.78); } }
+    @keyframes progress { 0% { transform: translateX(-115%); } 100% { transform: translateX(285%); } }
+    @keyframes scan { from { transform: translateY(-2px); opacity: 0; } 12% { opacity: .8; } 85% { opacity: .8; } to { transform: translateY(100svh); opacity: 0; } }
+    @keyframes drift { from { transform: translate3d(-3%, 0, 0) scale(.9); } to { transform: translate3d(8%, 7%, 0) scale(1.1); } }
+    @keyframes orbit { to { transform: rotate(360deg); } }
+    @keyframes terminal-float { 0%,100% { transform: perspective(900px) rotateY(-4deg) rotateX(2deg) translateY(0); } 50% { transform: perspective(900px) rotateY(-2deg) rotateX(1deg) translateY(-8px); } }
+    @keyframes chip-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+    @keyframes blink { 50% { opacity: 0; } }
+    @media (max-width: 820px) {
+      .shell { padding-left: 20px; padding-right: 20px; }
+      main { padding-top: 34px; }
+      .hero { grid-template-columns: minmax(0,1fr) minmax(240px,.78fr); gap: 20px; }
+      .visual { min-height: 325px; }
+      .chip-one { right: -3%; }
+      .chip-two { left: -1%; bottom: 10%; }
+      .secure-state { display: none; }
+    }
+    @media (max-width: 620px) {
+      .shell { padding: max(13px, env(safe-area-inset-top)) 16px max(14px, env(safe-area-inset-bottom)); }
+      .topbar { gap: 8px; }
+      .brand img { width: 37px; height: 37px; }
+      .brand-name { font-size: 12px; }
+      .brand-tag { font-size: 8px; letter-spacing: .13em; }
+      .tools { gap: 6px; }
+      .tool-btn { min-width: 38px; width: 38px; padding: 0; border-radius: 12px; font-size: 0; gap: 0; }
+      .tool-btn svg { width: 16px; height: 16px; }
+      main { display: block; padding: 38px 0 28px; }
+      .hero { display: flex; flex-direction: column; align-items: stretch; gap: 18px; }
+      .hero-copy { padding: 0; }
+      .eyebrow { font-size: 9px; margin-bottom: 15px; }
+      h1 { font-size: clamp(39px, 12vw, 59px); max-width: 470px; }
+      .intro { margin: 13px 0 19px; font-size: 13px; line-height: 1.7; }
+      .promise-row { gap: 6px; margin-bottom: 18px; }
+      .promise { padding: 7px 8px; font-size: 9px; }
+      .status-card { padding: 14px; border-radius: 15px; }
+      .status-title { font-size: 14px; }
+      .status-detail { min-height: 0; margin-bottom: 13px; }
+      .visual { order: 2; align-self: center; width: min(100%, 360px); min-height: unset; aspect-ratio: 1.02; margin-top: 1px; }
+      .visual::before { width: 77%; }
+      .orbit { width: 88%; }
+      .terminal { width: min(88%, 325px); border-radius: 16px; }
+      .terminal-head { height: 36px; }
+      .terminal-body { padding: 14px 13px 16px; }
+      .code-line { min-height: 23px; font-size: 10px; gap: 9px; }
+      .terminal-foot { margin-top: 10px; }
+      .float-chip { padding: 8px 9px; gap: 7px; }
+      .chip-icon { width: 25px; height: 25px; }
+      .chip-label { font-size: 7px; }
+      .chip-value { font-size: 9px; }
+      .chip-one { top: 9%; right: -1%; }
+      .chip-two { left: -1%; bottom: 9%; }
+      .footer { margin-top: auto; align-items: flex-start; font-size: 9px; }
+      .footer-right { max-width: 48%; }
+    }
+    @media (max-width: 360px) {
+      .brand-tag { display: none; }
+      h1 { font-size: 37px; }
+      .intro { font-size: 12px; }
+      .promise { font-size: 8px; }
+      .chip-one { right: -2%; }
+      .chip-two { left: -2%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+    }
+  </style>
+</head>
+<body data-lights="on">
+  <div class="grid-bg" aria-hidden="true"></div>
+  <div class="aurora a" aria-hidden="true"></div>
+  <div class="aurora b" aria-hidden="true"></div>
+  <div class="scanline" aria-hidden="true"></div>
+
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="./home.html" aria-label="Code Academy home">
+        <img src="./logo.png" alt="" width="43" height="43">
+        <span class="brand-copy"><span class="brand-name">CODE ACADEMY</span><span class="brand-tag">We learn. We code. We succeed.</span></span>
+      </a>
+      <div class="tools" aria-label="Display and voice controls">
+        <span class="secure-state"><span class="pulse" aria-hidden="true"></span> Secure session check</span>
+        <button class="tool-btn" id="voiceButton" type="button" aria-label="Play or stop the welcome voice" title="Play or stop the welcome voice">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+          <span id="voiceLabel">Voice welcome</span>
+        </button>
+        <button class="tool-btn" id="lightsButton" type="button" aria-label="Turn ambient light effects off" aria-pressed="true" title="Toggle ambient light effects">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>
+          <span id="lightsLabel">Light FX</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="welcomeTitle">
+        <div class="hero-copy">
+          <p class="eyebrow">Your learning journey starts here</p>
+          <h1 id="welcomeTitle">Welcome to <span class="gradient-text">Code Academy.</span></h1>
+          <p class="intro">Your ideas deserve to become real projects. We’re preparing your learning space, restoring your secure session, and getting you ready to build something amazing.</p>
+          <div class="promise-row" aria-label="Code Academy highlights">
+            <span class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 5-6 7 6 7M16 5l6 7-6 7M14 3l-4 18"/></svg> Learn by coding</span>
+            <span class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.64 5.64l2.12 2.12m8.48 8.48 2.12 2.12m0-12.72-2.12 2.12m-8.48 8.48-2.12 2.12"/><circle cx="12" cy="12" r="4"/></svg> AI-powered help</span>
+            <span class="promise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 19 6v5c0 4.5-3 7.5-7 10-4-2.5-7-5.5-7-10V6z"/><path d="m9 12 2 2 4-4"/></svg> Secure progress</span>
+          </div>
+
+          <section class="status-card" aria-live="polite" aria-atomic="false" aria-label="Authentication progress">
+            <div class="status-head">
+              <div class="status-label">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v3"/></svg>
+                Authentication engine
+              </div>
+              <span class="live-tag" id="liveTag">● INITIALIZING</span>
+            </div>
+            <h2 class="status-title" id="statusTitle">Restoring your secure session…</h2>
+            <p class="status-detail" id="statusDetail"> Please keep this page open.</p>
+            <div class="progress-track" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100"><span class="progress-bar"></span></div>
+            <div class="system-meta"><span id="sessionMeta">SESSION / RESTORE</span><span id="statusCode">AUTH CHECK PENDING</span></div>
+            <div class="fallback" id="fallbackPanel">
+              <p id="fallbackMessage">The secure session check is taking longer than expected. Choose a sign-in route or retry; the dashboard will not be opened without an authenticated session.</p>
+              <div class="fallback-links">
+                <button id="retryButton" type="button">Retry check</button>
+                <a href="./signup.html">Create account</a>
+                <a href="./login.html">Sign in</a>
+              </div>
+            </div>
+          </section>
+          <p class="member-link">Already have a Code Academy account? <a href="./login.html">Sign in instead</a></p>
+        </div>
+
+        <div class="visual" aria-hidden="true">
+          <div class="core-glow"></div>
+          <div class="orbit"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="terminal">
+            <div class="terminal-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="terminal-title">code-academy / welcome.js</span></div>
+            <div class="terminal-body">
+              <p class="terminal-kicker">// YOUR NEXT CHAPTER STARTS NOW</p>
+              <div class="code-line"><span class="ln">01</span><span><span class="purple">const</span> learner = <span class="gold">"you"</span>;</span></div>
+              <div class="code-line"><span class="ln">02</span><span><span class="purple">const</span> mindset = <span class="mint">"keep building"</span>;</span></div>
+              <div class="code-line"><span class="ln">03</span><span class="blue">async function</span> <span class="gold">startJourney</span>() {</div>
+              <div class="code-line"><span class="ln">04</span><span>&nbsp;&nbsp;<span class="purple">await</span> learnSomethingNew();</span></div>
+              <div class="code-line"><span class="ln">05</span><span>&nbsp;&nbsp;<span class="purple">return</span> <span class="mint">buildYourFuture</span>();</span></div>
+              <div class="code-line"><span class="ln">06</span><span>}</span></div>
+              <div class="code-line"><span class="ln">07</span><span class="blue">startJourney</span>()<span class="cursor"></span></div>
+              <div class="terminal-foot"><span>AI LEARNING SYSTEM</span><span>● READY TO LEARN</span></div>
+            </div>
+          </div>
+          <div class="float-chip chip-one">
+            <span class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 14.5 9.5 21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg></span>
+            <span><span class="chip-label">Learning mode</span><span class="chip-value">Curiosity: ON</span></span>
+          </div>
+          <div class="float-chip chip-two">
+            <span class="chip-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18m9-9H3"/><circle cx="12" cy="12" r="8"/></svg></span>
+            <span><span class="chip-label">One step at a time</span><span class="chip-value">Ideas → Skills → Projects</span></span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span><strong>CODE ACADEMY</strong> <span aria-hidden="true">·</span> Build skills that move you forward.</span>
+      <span class="footer-right"><span class="footer-mark" aria-hidden="true"></span><span>Session Protection Active</span></span>
+    </footer>
+  </div>
+
+  <script type="module">
+    const $ = (id) => document.getElementById(id);
+    const params = new URLSearchParams(window.location.search);
+    const intent = params.get('intent') === 'login' ? 'login' : 'signup';
+    const startedAt = Date.now();
+    const voiceButton = $('voiceButton');
+    const lightsButton = $('lightsButton');
+    const voiceLabel = $('voiceLabel');
+    const lightsLabel = $('lightsLabel');
+    const fallbackPanel = $('fallbackPanel');
+    let voiceAllowed = true;
+    let voiceActive = false;
+    let voiceFailed = false;
+    let navigationTarget = '';
+    let navigating = false;
+    let authResolved = false;
+    let authUnsubscribe = null;
+    let routeTimer = null;
+    let authTimeoutTimer = null;
+    let welcomeUtterance = null;
+
+    try {
+      voiceAllowed = localStorage.getItem('codeAcademyHomeVoice') !== 'off';
+      if (localStorage.getItem('codeAcademyHomeLights') === 'off') document.body.dataset.lights = 'off';
+    } catch (_) { /* Private browsing can restrict local storage; defaults still work. */ }
+
+    function setStatus(title, detail, tag = '● CHECKING', code = 'AUTH CHECK RUNNING') {
+      $('statusTitle').textContent = title;
+      $('statusDetail').textContent = detail;
+      $('liveTag').textContent = tag;
+      $('statusCode').textContent = code;
+    }
+
+    function updateVoiceButton() {
+      if (voiceActive) {
+        voiceLabel.textContent = 'Stop voice';
+        voiceButton.setAttribute('aria-label', 'Stop the welcome voice');
+        voiceButton.title = 'Stop the welcome voice';
+      } else if (voiceAllowed) {
+        voiceLabel.textContent = 'Voice welcome';
+        voiceButton.setAttribute('aria-label', 'Replay the welcome voice');
+        voiceButton.title = 'Replay the welcome voice';
+      } else {
+        voiceLabel.textContent = 'Enable voice';
+        voiceButton.setAttribute('aria-label', 'Enable the welcome voice');
+        voiceButton.title = 'Enable the welcome voice';
+      }
+    }
+
+    function speakWelcome(fromUser = false) {
+      if (!('speechSynthesis' in window) || !('SpeechSynthesisUtterance' in window)) {
+        voiceFailed = true;
+        $('statusDetail').textContent = 'Your browser does not support spoken welcome audio. The secure account check will continue normally.';
+        voiceLabel.textContent = 'Voice unavailable';
+        voiceButton.disabled = true;
+        voiceButton.setAttribute('aria-label', 'Voice welcome is not supported by this browser');
+        return;
+      }
+      if (!voiceAllowed && !fromUser) return;
+      try {
+        window.speechSynthesis.cancel();
+        welcomeUtterance = new SpeechSynthesisUtterance('Welcome to Code Academy. We learn, we code, we succeed. Your learning journey is getting ready.');
+        welcomeUtterance.lang = 'en-GB';
+        welcomeUtterance.rate = 0.94;
+        welcomeUtterance.pitch = 1.04;
+        welcomeUtterance.volume = 0.88;
+        const voices = window.speechSynthesis.getVoices();
+        const preferredVoice = voices.find((v) => /^en-GB/i.test(v.lang)) || voices.find((v) => /^en/i.test(v.lang));
+        if (preferredVoice) welcomeUtterance.voice = preferredVoice;
+        welcomeUtterance.onstart = () => {
+          voiceActive = true;
+          voiceFailed = false;
+          updateVoiceButton();
+          if (!navigationTarget) $('statusDetail').textContent = 'The Code Academy welcome voice is active while Firebase restores your secure sign-in state.';
+        };
+        welcomeUtterance.onend = () => {
+          voiceActive = false;
+          updateVoiceButton();
+        };
+        welcomeUtterance.onerror = (event) => {
+          voiceActive = false;
+          if (event && event.error !== 'canceled' && event.error !== 'interrupted') voiceFailed = true;
+          updateVoiceButton();
+        };
+        window.speechSynthesis.speak(welcomeUtterance);
+      } catch (error) {
+        voiceActive = false;
+        voiceFailed = true;
+        updateVoiceButton();
+        console.warn('Welcome voice could not start:', error);
+      }
+      updateVoiceButton();
+    }
+
+    voiceButton.addEventListener('click', () => {
+      if (voiceActive && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        voiceActive = false;
+        voiceAllowed = false;
+        try { localStorage.setItem('codeAcademyHomeVoice', 'off'); } catch (_) {}
+        updateVoiceButton();
+        return;
+      }
+      voiceAllowed = true;
+      try { localStorage.setItem('codeAcademyHomeVoice', 'on'); } catch (_) {}
+      speakWelcome(true);
+    });
+
+    function setLights(enabled) {
+      document.body.dataset.lights = enabled ? 'on' : 'off';
+      lightsButton.setAttribute('aria-pressed', String(enabled));
+      lightsButton.setAttribute('aria-label', enabled ? 'Turn ambient light effects off' : 'Turn ambient light effects on');
+      lightsButton.title = enabled ? 'Turn ambient light effects off' : 'Turn ambient light effects on';
+      lightsLabel.textContent = enabled ? 'Light FX' : 'Glow off';
+      try { localStorage.setItem('codeAcademyHomeLights', enabled ? 'on' : 'off'); } catch (_) {}
+    }
+    lightsButton.addEventListener('click', () => setLights(document.body.dataset.lights !== 'on'));
+    setLights(document.body.dataset.lights !== 'off');
+    updateVoiceButton();
+
+    function showFallback(message) {
+      fallbackPanel.classList.add('show');
+      if (message) $('fallbackMessage').textContent = message;
+    }
+
+    function navigateAfterWelcome(target) {
+      if (navigating || navigationTarget) return;
+      navigationTarget = target;
+      const isVoiceOn = voiceAllowed;
+      $('sessionMeta').textContent = target.includes('menu.html') ? 'SESSION / MEMBER FOUND' : target.includes('email-verification.html') ? 'SESSION / VERIFICATION REQUIRED' : target.includes('login.html') ? 'SESSION / SIGN IN' : 'SESSION / ACCOUNT SETUP';
+      $('statusCode').textContent = target.includes('menu.html') ? 'MEMBER SESSION CONFIRMED' : target.includes('email-verification.html') ? 'EMAIL VERIFICATION REQUIRED' : target.includes('login.html') ? 'SIGN-IN REQUIRED' : 'NO ACTIVE SESSION';
+      const destinationIsDashboard = target.includes('menu.html');
+      if (destinationIsDashboard) setStatus('Welcome back. Your account is confirmed.', 'Firebase found your signed-in member session. Opening your learning dashboard…', '● MEMBER FOUND', 'MEMBER SESSION CONFIRMED');
+      else if (target.includes('email-verification.html')) setStatus('One quick security step remains.', 'This email/password account must be verified before the learning dashboard opens. Taking you to the existing verification page…', '● VERIFY EMAIL', 'VERIFICATION REQUIRED');
+      else if (target.includes('login.html')) setStatus('Ready when you are.', 'No active member session was found. Opening sign-in for a returning learner…', '● SIGN-IN NEXT', 'SIGN-IN REQUIRED');
+      else setStatus('Let’s create your learning space.', 'No active member session was found. Opening Code Academy account setup…', '● SETTING UP', 'ACCOUNT SETUP NEXT');
+      const minimumDwell = isVoiceOn ? 4050 : 1650;
+      const remaining = Math.max(280, minimumDwell - (Date.now() - startedAt));
+      clearTimeout(routeTimer);
+      routeTimer = setTimeout(() => {
+        if (navigating) return;
+        navigating = true;
+        if ('speechSynthesis' in window) {
+          try { window.speechSynthesis.cancel(); } catch (_) {}
+        }
+        window.location.replace(target);
+      }, remaining);
+    }
+
+    $('retryButton').addEventListener('click', () => window.location.reload());
+
+    async function startAuthenticationCheck() {
+      setStatus('Restoring your secure session…', 'Connecting to your existing Firebase Authentication setup. The next page is chosen from the verified sign-in state.', '● CONNECTING', 'AUTH CHECK PENDING');
+      try {
+        const module = await import('./authentication.js');
+        if (typeof module.rememberReferral === 'function') {
+          try { module.rememberReferral(); } catch (error) { console.warn('Referral tracking could not be remembered:', error); }
+        }
+        if (!module.auth || typeof module.onAuthStateChanged !== 'function') {
+          throw new Error('The shared authentication module did not expose Firebase Auth.');
+        }
+        $('statusCode').textContent = 'FIREBASE AUTH CONNECTED';
+        authTimeoutTimer = setTimeout(() => {
+          if (authResolved || navigationTarget) return;
+          setStatus('The secure check is taking longer than expected.', 'Your session has not been confirmed yet. You can retry or continue to sign-in/account setup. The dashboard will not open until Firebase confirms a signed-in member.', '● ACTION NEEDED', 'AUTH CHECK TIMEOUT');
+          showFallback();
+        }, 8500);
+
+        authUnsubscribe = module.onAuthStateChanged(module.auth, (user) => {
+          if (authResolved || navigationTarget) return;
+          authResolved = true;
+          clearTimeout(authTimeoutTimer);
+          if (user && !user.isAnonymous) {
+            const hasPasswordProvider = (user.providerData || []).some((provider) => provider.providerId === 'password');
+            if (hasPasswordProvider && user.email && !user.emailVerified) {
+              navigateAfterWelcome('./email-verification.html?required=1');
+              return;
+            }
+            navigateAfterWelcome('./menu.html');
+          } else {
+            navigateAfterWelcome(intent === 'login' ? './login.html' : './signup.html');
+          }
+        }, (error) => {
+          if (authResolved || navigationTarget) return;
+          authResolved = true;
+          clearTimeout(authTimeoutTimer);
+          console.error('Firebase authentication state could not be confirmed:', error);
+          setStatus('We could not confirm your session.', 'The authentication check returned an error. Retry when your connection is ready or continue to sign-in/account setup. No dashboard access is being assumed.', '● CHECK FAILED', 'AUTH CHECK ERROR');
+          showFallback('Firebase could not confirm your session. Check your internet connection and retry, or open sign-in/account setup. This page will not bypass authentication.');
+        });
+      } catch (error) {
+        clearTimeout(authTimeoutTimer);
+        console.error('Code Academy authentication initialization failed:', error);
+        setStatus('Secure sign-in could not start.', 'The shared authentication module did not load. ', '● MODULE ERROR', 'AUTH MODULE ERROR');
+        showFallback('Authentication could not start. You can open sign-in or account setup while troubleshooting.');
+      }
+    }
+
+    // Attempt spoken welcome on load. If a mobile browser requires a user gesture,
+    // the visible voice button lets the learner start it explicitly.
+    if (voiceAllowed) setTimeout(() => speakWelcome(false), 320);
+    startAuthenticationCheck();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
+
+    window.addEventListener('pagehide', () => {
+      clearTimeout(routeTimer);
+      clearTimeout(authTimeoutTimer);
+      if (typeof authUnsubscribe === 'function') authUnsubscribe();
+      if ('speechSynthesis' in window) {
+        try { window.speechSynthesis.cancel(); } catch (_) {}
+      }
+    }, { once: true });
+  </script>
+</body>
+</html>
