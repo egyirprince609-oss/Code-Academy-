@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050917">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Opening your Code Academy learning workspace.">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" href="./logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <title>Code Academy · Loading</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050917;
+      --text: #f1f6ff;
+      --muted: #9baac4;
+      --cyan: #67e8f9;
+      --violet: #a78bfa;
+      --line: rgba(171, 197, 232, .16);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; min-height: 100%; }
+    body {
+      margin: 0;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: max(20px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom));
+      overflow-x: hidden;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(30, 90, 151, .27), transparent 43%),
+        radial-gradient(ellipse at 85% 82%, rgba(91, 56, 173, .16), transparent 35%),
+        radial-gradient(ellipse at 8% 82%, rgba(8, 145, 178, .12), transparent 32%),
+        var(--bg);
+      color: var(--text);
+      font-family: "DM Sans", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .23;
+      background-image: linear-gradient(rgba(148, 163, 184, .045) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(148, 163, 184, .045) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: radial-gradient(ellipse at center, #000 10%, transparent 78%);
+    }
+
+    .stage {
+      position: relative;
+      width: min(100%, 410px);
+      isolation: isolate;
+      text-align: center;
+      padding: 34px 26px 25px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: linear-gradient(155deg, rgba(16, 29, 52, .91), rgba(7, 13, 28, .94) 72%);
+      box-shadow: 0 28px 90px rgba(0, 0, 0, .42), inset 0 1px rgba(255,255,255,.045);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      animation: stage-in .65s cubic-bezier(.2,.75,.3,1) both;
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      top: -1px;
+      left: 16%;
+      right: 16%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(103, 232, 249, .85), rgba(167, 139, 250, .7), transparent);
+    }
+
+    .brand-mark {
+      width: 104px;
+      height: 104px;
+      margin: 0 auto 22px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      border-radius: 29px;
+      border: 1px solid rgba(125, 211, 252, .22);
+      background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.015));
+      box-shadow: 0 16px 36px rgba(8, 145, 178, .12), inset 0 1px rgba(255,255,255,.06);
+      animation: mark-float 3s ease-in-out infinite;
+    }
+
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border: 1px solid rgba(103, 232, 249, .09);
+      border-radius: 35px;
+    }
+
+    .brand-mark img {
+      width: 80px;
+      height: 80px;
+      display: block;
+      object-fit: contain;
+      border-radius: 19px;
+      filter: drop-shadow(0 7px 16px rgba(34, 211, 238, .14));
+    }
+
+    .eyebrow {
+      margin: 0 0 11px;
+      color: var(--cyan);
+      font-size: 10px;
+      line-height: 1.4;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font: 700 clamp(28px, 7vw, 34px)/1.12 "Space Grotesk", "DM Sans", sans-serif;
+      letter-spacing: -.055em;
+    }
+
+    .motto {
+      margin: 11px 0 0;
+      color: #a9b8d1;
+      font-size: 13px;
+      line-height: 1.65;
+      letter-spacing: .01em;
+    }
+
+    .loader-wrap { margin: 31px 0 15px; }
+    .loader-track {
+      position: relative;
+      height: 4px;
+      overflow: hidden;
+      border-radius: 100px;
+      background: rgba(129, 153, 190, .16);
+    }
+
+    .loader-bar {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -42%;
+      width: 42%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), #60a5fa 52%, var(--violet));
+      box-shadow: 0 0 17px rgba(103, 232, 249, .42);
+      animation: loading 1.45s cubic-bezier(.65,0,.35,1) infinite;
+    }
+
+    .status-row {
+      min-height: 21px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .015em;
+    }
+
+    .status-dot {
+      flex: 0 0 auto;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 0 4px rgba(52, 211, 153, .1);
+      animation: dot-pulse 1.7s ease-in-out infinite;
+    }
+
+    .rule { height: 1px; margin: 25px 0 15px; background: linear-gradient(90deg, transparent, rgba(148,163,184,.18), transparent); }
+    .footnote { margin: 0; color: #7486a3; font-size: 10px; letter-spacing: .035em; }
+
+    .fallback {
+      display: none;
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(148, 163, 184, .14);
+    }
+    .fallback.is-visible { display: block; animation: stage-in .25s ease both; }
+    .fallback-copy { margin: 0 0 12px; color: #b6c5dc; font-size: 12px; line-height: 1.6; }
+    .fallback-actions { display: flex; justify-content: center; gap: 9px; flex-wrap: wrap; }
+    .fallback a {
+      min-height: 39px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 13px;
+      color: #effaff;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      border: 1px solid rgba(148, 163, 184, .22);
+      border-radius: 12px;
+      background: rgba(23, 39, 64, .72);
+      transition: border-color .18s, transform .18s, background .18s;
+    }
+    .fallback a.primary { border-color: transparent; background: linear-gradient(110deg, #0891b2, #4f46e5); }
+    .fallback a:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+    .fallback a:hover { transform: translateY(-1px); border-color: rgba(103, 232, 249, .5); }
+
+    @keyframes loading { from { transform: translateX(0); } to { transform: translateX(340%); } }
+    @keyframes mark-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes dot-pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+    @keyframes stage-in { from { opacity: 0; transform: translateY(9px) scale(.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    @media (max-width: 360px) {
+      .stage { padding: 29px 20px 22px; border-radius: 25px; }
+      .brand-mark { width: 88px; height: 88px; border-radius: 25px; margin-bottom: 19px; }
+      .brand-mark img { width: 68px; height: 68px; }
+      .loader-wrap { margin-top: 25px; }
+    }
+    @media (max-height: 620px) and (min-width: 361px) {
+      .stage { padding-top: 23px; padding-bottom: 19px; }
+      .brand-mark { width: 78px; height: 78px; margin-bottom: 15px; border-radius: 23px; }
+      .brand-mark img { width: 62px; height: 62px; }
+      .loader-wrap { margin-top: 22px; }
+      .rule { margin: 18px 0 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-labelledby="app-title">
+    <div class="brand-mark">
+      <img src="./logo.png" alt="Code Academy logo" width="80" height="80" fetchpriority="high">
+    </div>
+
+    <p class="eyebrow">Code · Create · Grow</p>
+    <h1 id="app-title">Code Academy</h1>
+    <p class="motto">We Learn. We Code. We Succeed.</p>
+
+    <div class="loader-wrap" aria-hidden="true">
+      <div class="loader-track"><span class="loader-bar"></span></div>
+    </div>
+
+    <div class="status-row" role="status" aria-live="polite">
+      <span class="status-dot" id="status-dot" aria-hidden="true"></span>
+      <span id="status">Preparing your learning space…</span>
+    </div>
+
+    <div class="rule"></div>
+    <p class="footnote">Your next idea starts with one line of code.</p>
+
+    <section class="fallback" id="fallback" aria-label="Continue to Code Academy">
+      <p class="fallback-copy" id="fallback-copy">We are taking longer than expected to connect. Choose how you would like to continue.</p>
+      <div class="fallback-actions">
+        <a class="primary" href="./signup.html">Create account</a>
+        <a href="./login.html">Sign in</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    const statusText = document.getElementById('status');
+    const fallback = document.getElementById('fallback');
+    const fallbackCopy = document.getElementById('fallback-copy');
+    const statusDot = document.getElementById('status-dot');
+    const params = new URLSearchParams(window.location.search);
+    const intent = params.get('intent') === 'login' ? 'login' : 'signup';
+
+    let navigationStarted = false;
+    let fallbackTimer = null;
+    let navigationTimer = null;
+
+    function showFallback(message) {
+      if (message) fallbackCopy.textContent = message;
+      fallback.classList.add('is-visible');
+      statusDot.style.background = '#fbbf24';
+      statusDot.style.boxShadow = '0 0 0 4px rgba(251, 191, 36, .1)';
+    }
+
+    function navigateSafely(user) {
+      if (navigationStarted) return;
+      navigationStarted = true;
+      window.clearTimeout(fallbackTimer);
+
+      let destination;
+      if (!user) {
+        destination = intent === 'login' ? './login.html' : './signup.html';
+        statusText.textContent = intent === 'login' ? 'Opening secure sign-in…' : 'Getting your account ready…';
+      } else {
+        const hasPasswordProvider = (user.providerData || []).some(provider => provider.providerId === 'password');
+        const needsEmailVerification = hasPasswordProvider && !user.emailVerified;
+        destination = needsEmailVerification ? './verify-email.html' : './menu.html';
+        statusText.textContent = needsEmailVerification
+          ? 'One last step: verify your email…'
+          : 'Welcome back. Opening your learning hub…';
+      }
+
+      navigationTimer = window.setTimeout(() => window.location.replace(destination), 850);
+    }
+
+    // If the user chooses a visible fallback link, do not let a late auth callback
+    // unexpectedly send them somewhere else afterwards.
+    fallback.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navigationStarted = true;
+        window.clearTimeout(fallbackTimer);
+        window.clearTimeout(navigationTimer);
+      });
+    });
+
+    // Keep the screen useful if Firebase or the network is slow or unavailable.
+    fallbackTimer = window.setTimeout(() => {
+      if (!navigationStarted) {
+        statusText.textContent = 'Still connecting securely…';
+        showFallback('Connection is taking longer than expected. You can retry by reloading or continue to sign in or create an account.');
+      }
+    }, 7000);
+
+    try {
+      const { auth, onAuthStateChanged, rememberReferral } = await import('./authentication.js');
+      try { if (typeof rememberReferral === 'function') rememberReferral(); } catch (error) {
+        console.warn('Referral link could not be remembered:', error);
+      }
+
+      onAuthStateChanged(
+        auth,
+        user => navigateSafely(user),
+        error => {
+          console.error('Unable to confirm Code Academy authentication state:', error);
+          window.clearTimeout(fallbackTimer);
+          statusText.textContent = 'We could not confirm your sign-in state.';
+          showFallback('Check your internet connection, then reload this page. You can also open sign-in or create an account below.');
+        }
+      );
+    } catch (error) {
+      console.error('Code Academy authentication module could not load:', error);
+      window.clearTimeout(fallbackTimer);
+      statusText.textContent = 'Secure connection could not be started.';
+      showFallback('The authentication service did not load. Check your connection and confirm that authentication.js is uploaded beside this page.');
+    }
+  </script>
+</body>
+</html>
