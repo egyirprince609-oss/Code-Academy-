@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050816">
+  <meta name="description" content="Learn responsive web design with Code Academy's interactive CSS lab, mobile-first examples, live previews, breakpoint guide and knowledge check.">
+  <title>Responsive Design Lab | Code Academy</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050816;
+      --bg-soft: #081225;
+      --panel: rgba(13, 26, 47, .88);
+      --panel-2: rgba(8, 18, 35, .94);
+      --border: rgba(148, 163, 184, .16);
+      --border-cyan: rgba(56, 189, 248, .3);
+      --cyan: #38bdf8;
+      --cyan-2: #0ea5e9;
+      --purple: #8b5cf6;
+      --green: #34d399;
+      --yellow: #fbbf24;
+      --red: #fb7185;
+      --text: #f8fafc;
+      --muted: #a7b4c7;
+      --dim: #728198;
+      --radius-xl: 26px;
+      --shadow: 0 22px 64px rgba(0, 0, 0, .25);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 95px; }
+    body {
+      margin: 0;
+      min-width: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      background:
+        radial-gradient(circle at 5% 0%, rgba(14, 165, 233, .15), transparent 28rem),
+        radial-gradient(circle at 96% 18%, rgba(139, 92, 246, .14), transparent 28rem),
+        linear-gradient(145deg, #020617, #071326 52%, #080b1d);
+    }
+    button, textarea, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; }
+    a { color: inherit; }
+    button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible {
+      outline: 3px solid rgba(56, 189, 248, .88);
+      outline-offset: 3px;
+    }
+    img { display: block; max-width: 100%; }
+    [hidden] { display: none !important; }
+    .page-width { width: min(1240px, calc(100% - 36px)); margin-inline: auto; }
+
+    /* Authentication loading screen */
+    .auth-loading {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      text-align: center;
+    }
+    .loading-card {
+      width: min(100%, 390px);
+      padding: 34px 24px;
+      border: 1px solid var(--border-cyan);
+      border-radius: 24px;
+      background: rgba(9, 20, 38, .88);
+      box-shadow: var(--shadow);
+    }
+    .loading-card img { width: 66px; height: 66px; object-fit: contain; margin: 0 auto 15px; }
+    .spinner {
+      width: 27px; height: 27px; margin: 18px auto 0;
+      border: 3px solid rgba(148, 163, 184, .25);
+      border-top-color: var(--cyan); border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Top navigation */
+    .topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(3, 8, 22, .86);
+      border-bottom: 1px solid rgba(148, 163, 184, .12);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .topbar-inner {
+      width: min(1320px, calc(100% - 30px));
+      min-height: 76px; margin-inline: auto;
+      display: flex; align-items: center; flex-wrap: wrap; gap: 12px;
+      padding: 10px 0;
+    }
+    .back-btn, .icon-btn, .nav-btn, .primary-btn, .secondary-btn, .tiny-btn {
+      min-height: 44px;
+      border-radius: 13px;
+      border: 1px solid var(--border);
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+      padding: 10px 14px;
+      text-decoration: none; font-weight: 750; line-height: 1.2;
+      cursor: pointer; transition: border-color .18s ease, background .18s ease, transform .18s ease;
+    }
+    .back-btn, .secondary-btn, .icon-btn, .nav-btn, .tiny-btn { background: rgba(15, 27, 47, .82); }
+    .back-btn:hover, .secondary-btn:hover, .icon-btn:hover, .nav-btn:hover, .tiny-btn:hover { border-color: var(--cyan); background: rgba(14, 165, 233, .12); }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; flex: 1 1 210px; }
+    .brand img { width: 43px; height: 43px; object-fit: contain; flex: 0 0 auto; }
+    .brand-copy { min-width: 0; }
+    .brand-copy strong { display: block; font-size: 16px; font-weight: 900; line-height: 1.25; letter-spacing: -.35px; }
+    .brand-copy span { display: block; color: var(--muted); font-size: 11px; line-height: 1.4; margin-top: 3px; }
+    .top-actions { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 8px; }
+    .xp-pill, .account-pill {
+      min-height: 42px; padding: 7px 11px; border: 1px solid var(--border);
+      border-radius: 13px; display: flex; align-items: center; gap: 8px;
+      background: rgba(13, 26, 47, .86); white-space: nowrap;
+    }
+    .xp-pill { color: #fde68a; font-size: 13px; font-weight: 850; }
+    .account-pill { max-width: 220px; }
+    .account-avatar {
+      width: 29px; height: 29px; display: grid; place-items: center; flex: 0 0 auto;
+      border-radius: 10px; color: #fff; font-size: 12px; font-weight: 900;
+      background: linear-gradient(135deg, var(--cyan-2), var(--purple));
+    }
+    .account-text { min-width: 0; }
+    .account-text strong { display: block; max-width: 145px; overflow: hidden; text-overflow: ellipsis; font-size: 12px; line-height: 1.35; }
+    .account-text small { display: block; max-width: 145px; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: 10px; line-height: 1.35; }
+    .logout-btn { min-width: 44px; padding-inline: 12px; }
+
+    /* Main layout */
+    main { padding: 28px 0 48px; }
+    .hero {
+      position: relative; isolation: isolate; overflow: hidden;
+      padding: clamp(25px, 5vw, 50px);
+      border-radius: var(--radius-xl); border: 1px solid var(--border-cyan);
+      background: linear-gradient(120deg, rgba(14, 165, 233, .15), rgba(10, 20, 40, .96) 54%, rgba(139, 92, 246, .16));
+      box-shadow: var(--shadow); margin-bottom: 22px;
+    }
+    .hero::after {
+      content: ""; position: absolute; z-index: -1; width: 380px; height: 380px;
+      border-radius: 50%; right: -170px; top: -210px;
+      background: radial-gradient(circle, rgba(56, 189, 248, .24), transparent 67%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: #a5e5ff; font-size: 12px; text-transform: uppercase;
+      letter-spacing: 1.5px; font-weight: 850; margin-bottom: 13px;
+    }
+    .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 14px rgba(52, 211, 153, .7); }
+    .hero-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(210px, 280px); align-items: center; gap: 26px; }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    .hero h1 { max-width: 780px; margin-bottom: 13px; font-size: clamp(2.05rem, 4.5vw, 3.7rem); line-height: 1.09; letter-spacing: -1.7px; font-weight: 900; }
+    .gradient-text { color: var(--cyan); background: linear-gradient(95deg, #7dd3fc, #c4b5fd 68%, #6ee7b7); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero-description { max-width: 710px; color: #c4d0e0; font-size: clamp(15px, 1.6vw, 18px); margin-bottom: 21px; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+    .primary-btn { color: #061020; border-color: transparent; background: linear-gradient(110deg, #7dd3fc, #38bdf8 55%, #a78bfa); box-shadow: 0 10px 27px rgba(14, 165, 233, .18); }
+    .primary-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(14, 165, 233, .26); }
+    .primary-btn:disabled { cursor: not-allowed; opacity: .48; transform: none; box-shadow: none; }
+    .hero-art {
+      min-height: 190px; padding: 20px; border: 1px solid rgba(148, 163, 184, .19); border-radius: 22px;
+      background: rgba(2, 6, 23, .48); display: flex; flex-direction: column; justify-content: center; gap: 13px;
+    }
+    .art-window { overflow: hidden; border: 1px solid rgba(148, 163, 184, .18); border-radius: 13px; background: #091426; }
+    .art-window-head { height: 25px; padding: 0 10px; display: flex; align-items: center; gap: 4px; background: #111f35; }
+    .art-window-head span { width: 6px; height: 6px; border-radius: 50%; background: #5d728f; }
+    .art-window-body { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+    .art-block { height: 36px; border-radius: 7px; background: linear-gradient(115deg, rgba(56, 189, 248, .7), rgba(139, 92, 246, .5)); }
+    .art-block:first-child { grid-column: 1 / -1; height: 47px; background: linear-gradient(100deg, rgba(14, 165, 233, .9), rgba(139, 92, 246, .85)); }
+    .art-caption { color: var(--muted); font-size: 12px; text-align: center; margin: 0; }
+    .hero-metrics { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 23px; }
+    .metric { display: flex; align-items: center; gap: 8px; border: 1px solid var(--border); border-radius: 12px; padding: 9px 12px; background: rgba(2, 6, 23, .34); color: #dce7f6; font-size: 12px; font-weight: 750; }
+    .metric i { color: var(--cyan); }
+
+    .section { margin-top: 28px; }
+    .section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 15px; margin-bottom: 15px; }
+    .section-heading h2 { margin-bottom: 3px; font-size: clamp(1.25rem, 2.5vw, 1.75rem); letter-spacing: -.5px; line-height: 1.25; }
+    .section-heading p { color: var(--muted); font-size: 14px; margin: 0; }
+    .section-kicker { color: var(--cyan); font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; font-weight: 850; margin-bottom: 5px; }
+    .panel { min-width: 0; border: 1px solid var(--border); border-radius: 22px; background: var(--panel); box-shadow: 0 14px 42px rgba(0, 0, 0, .13); }
+    .panel-head { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .panel-head h3 { margin: 0; font-size: 15px; }
+    .panel-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+    .panel-body { padding: 20px; min-width: 0; }
+    .pill-label { display: inline-flex; align-items: center; gap: 7px; padding: 6px 9px; border: 1px solid var(--border); border-radius: 999px; background: rgba(2, 6, 23, .4); color: #c5d2e2; font-size: 11px; font-weight: 800; }
+    .pill-label i { color: var(--green); }
+
+    /* Live playground */
+    .playground-grid { display: grid; grid-template-columns: minmax(0, .94fr) minmax(0, 1.06fr); gap: 16px; align-items: stretch; }
+    .editor-panel, .preview-panel { min-width: 0; overflow: hidden; }
+    .editor-toolbar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 9px; margin-bottom: 11px; }
+    .editor-toolbar .hint { color: var(--muted); font-size: 12px; }
+    .toolbar-buttons { display: flex; flex-wrap: wrap; gap: 7px; }
+    .tiny-btn { min-height: 38px; border-radius: 10px; padding: 8px 11px; font-size: 12px; }
+    .tiny-btn i { color: var(--cyan); }
+    .code-editor {
+      display: block; width: 100%; min-height: 315px; resize: vertical;
+      padding: 16px; border: 1px solid rgba(56, 189, 248, .23); border-radius: 14px;
+      outline: none; color: #d9f0ff; background: #050b17;
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+      font-size: 14px; line-height: 1.7; tab-size: 2; white-space: pre; overflow: auto;
+    }
+    .code-editor:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(56, 189, 248, .1); }
+    .editor-help { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+    .toggle-line { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 650; }
+    .toggle-line input { accent-color: var(--cyan); width: 17px; height: 17px; }
+    .device-tabs { display: flex; flex-wrap: wrap; gap: 7px; }
+    .device-tab { border: 1px solid var(--border); border-radius: 11px; min-height: 39px; padding: 8px 11px; background: rgba(2, 6, 23, .45); color: #bccbdd; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .device-tab:hover, .device-tab.active { color: #e8f9ff; border-color: var(--cyan); background: rgba(14, 165, 233, .17); }
+    .preview-details { display: flex; justify-content: space-between; align-items: center; gap: 9px; margin: 13px 0 10px; flex-wrap: wrap; }
+    .preview-details strong { font-size: 12px; }
+    .preview-details span { color: var(--muted); font-size: 11px; }
+    .preview-viewport {
+      min-width: 0; min-height: 455px; max-width: 100%; padding: 12px;
+      border: 1px dashed rgba(56, 189, 248, .32); border-radius: 14px;
+      background: rgba(2, 6, 23, .47); overflow: auto; overscroll-behavior-x: contain;
+    }
+    .preview-frame {
+      display: block; width: 100%; min-width: 280px; max-width: none; height: 420px;
+      margin: 0 auto; border: 1px solid rgba(148, 163, 184, .26); border-radius: 13px;
+      background: #fff; transition: width .2s ease;
+    }
+    .preview-hint { margin: 10px 0 0; color: var(--muted); font-size: 11px; }
+
+    /* Breakpoints */
+    .current-width-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px; border: 1px solid var(--border-cyan); border-radius: 20px; background: linear-gradient(115deg, rgba(14, 165, 233, .11), rgba(15, 23, 42, .75)); margin-bottom: 14px; }
+    .width-label { color: var(--muted); font-size: 12px; font-weight: 700; }
+    .width-number { color: #a5e5ff; font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -1px; font-weight: 900; line-height: 1.2; }
+    .width-number small { color: var(--muted); font-size: 14px; letter-spacing: 0; }
+    .device-class { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(56, 189, 248, .22); border-radius: 999px; padding: 9px 12px; background: rgba(2, 6, 23, .45); font-size: 12px; font-weight: 850; }
+    .device-class i { color: var(--cyan); }
+    .breakpoint-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .breakpoint-card { min-width: 0; padding: 18px; border: 1px solid var(--border); border-radius: 18px; background: rgba(9, 20, 38, .82); transition: border-color .18s ease, background .18s ease; }
+    .breakpoint-card.current { border-color: rgba(56, 189, 248, .73); background: rgba(14, 165, 233, .12); box-shadow: inset 0 0 0 1px rgba(56, 189, 248, .08); }
+    .bp-top { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .bp-icon { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 12px; background: rgba(56, 189, 248, .12); color: var(--cyan); font-size: 17px; }
+    .bp-top h3 { font-size: 14px; margin: 0; line-height: 1.35; }
+    .bp-range { color: #a5e5ff; font-size: 12px; font-weight: 850; margin-bottom: 6px; }
+    .bp-copy { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+    .bp-try { width: 100%; min-height: 40px; padding: 8px 10px; background: rgba(2, 6, 23, .45); border: 1px solid var(--border); border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; }
+    .bp-try:hover { border-color: var(--cyan); color: #c8f1ff; }
+
+    /* Example library */
+    .pattern-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .pattern-card { min-width: 0; overflow: hidden; border: 1px solid var(--border); border-radius: 18px; background: rgba(10, 21, 40, .88); }
+    .pattern-card:hover { border-color: rgba(56, 189, 248, .38); }
+    .pattern-top { min-height: 70px; padding: 15px 16px 12px; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); }
+    .pattern-top h3 { margin: 0 0 4px; font-size: 14px; line-height: 1.35; }
+    .pattern-top p { margin: 0; color: var(--muted); font-size: 12px; }
+    .pattern-number { color: var(--cyan); font-size: 11px; font-weight: 900; letter-spacing: .6px; white-space: nowrap; }
+    .pattern-code { min-width: 0; padding: 14px; background: rgba(2, 6, 23, .58); }
+    .pattern-code pre { max-width: 100%; margin: 0; color: #dbeafe; font: 13px/1.65 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre; overflow-x: auto; tab-size: 2; }
+    .pattern-bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 14px; border-top: 1px solid var(--border); }
+    .pattern-bottom span { color: var(--dim); font-size: 11px; }
+
+    /* Quiz */
+    .quiz-intro { padding: 18px 20px; border-bottom: 1px solid var(--border); background: rgba(14, 165, 233, .055); }
+    .quiz-intro p { color: var(--muted); margin: 4px 0 0; font-size: 13px; }
+    .quiz-questions { display: grid; gap: 12px; }
+    .question-card { min-width: 0; border: 1px solid var(--border); border-radius: 16px; padding: 17px; background: rgba(2, 6, 23, .28); }
+    .question-title { margin-bottom: 12px; font-size: 14px; font-weight: 800; }
+    .question-count { color: var(--cyan); font-size: 11px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+    .answer-list { display: grid; gap: 8px; }
+    .answer-option { display: flex; align-items: flex-start; gap: 10px; min-height: 44px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 11px; background: rgba(15, 23, 42, .56); cursor: pointer; font-size: 13px; }
+    .answer-option:hover { border-color: rgba(56, 189, 248, .45); }
+    .answer-option input { margin-top: 4px; flex: 0 0 auto; accent-color: var(--cyan); }
+    .answer-option.correct { border-color: rgba(52, 211, 153, .7); background: rgba(16, 185, 129, .12); }
+    .answer-option.wrong { border-color: rgba(251, 113, 133, .65); background: rgba(244, 63, 94, .1); }
+    .question-feedback { min-height: 0; margin: 9px 0 0; color: var(--muted); font-size: 12px; }
+    .question-feedback.good { color: #86efac; }
+    .question-feedback.bad { color: #fda4af; }
+    .quiz-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 18px 20px; margin-top: 14px; border-top: 1px solid var(--border); }
+    .quiz-result { flex: 1 1 230px; min-height: 24px; margin: 0; color: var(--muted); font-size: 13px; }
+    .quiz-result.pass { color: #86efac; font-weight: 800; }
+    .quiz-result.fail { color: #fda4af; }
+    .complete-status { display: flex; align-items: flex-start; gap: 12px; padding: 15px; margin-top: 14px; border: 1px solid rgba(52, 211, 153, .25); border-radius: 15px; background: rgba(16, 185, 129, .075); }
+    .complete-status i { margin-top: 3px; color: var(--green); font-size: 18px; }
+    .complete-status strong { display: block; font-size: 13px; }
+    .complete-status p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+
+    .tip-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .tip-card { padding: 18px; border-radius: 17px; border: 1px solid var(--border); background: rgba(8, 18, 35, .82); }
+    .tip-card i { display: grid; place-items: center; width: 38px; height: 38px; margin-bottom: 12px; border-radius: 12px; color: var(--cyan); background: rgba(56, 189, 248, .11); }
+    .tip-card h3 { margin-bottom: 5px; font-size: 14px; }
+    .tip-card p { margin: 0; color: var(--muted); font-size: 12px; }
+
+    footer { padding: 27px 0 35px; margin-top: 35px; border-top: 1px solid rgba(148, 163, 184, .1); color: var(--muted); font-size: 12px; }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 15px; }
+    .footer-links a { color: #bdcce0; text-decoration: none; }
+    .footer-links a:hover { color: var(--cyan); }
+    .toast {
+      position: fixed; z-index: 1000; bottom: max(18px, env(safe-area-inset-bottom)); left: 50%;
+      width: max-content; max-width: calc(100% - 28px); padding: 13px 17px;
+      color: #eaf6ff; background: #11223a; border: 1px solid var(--border-cyan); border-radius: 14px;
+      box-shadow: 0 15px 45px rgba(0, 0, 0, .38); font-size: 13px; font-weight: 700;
+      transform: translate(-50%, 16px); opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.error { border-color: rgba(251, 113, 133, .55); }
+    .toast.success { border-color: rgba(52, 211, 153, .45); }
+
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: minmax(0, 1fr) 220px; }
+      .playground-grid { grid-template-columns: 1fr; }
+      .breakpoint-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tip-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 640px) {
+      .page-width { width: calc(100% - 24px); }
+      .topbar-inner { width: calc(100% - 20px); min-height: 66px; gap: 8px; }
+      .back-btn { min-height: 42px; padding: 9px 10px; font-size: 12px; gap: 6px; }
+      .brand { flex-basis: 145px; gap: 7px; }
+      .brand img { width: 35px; height: 35px; }
+      .brand-copy strong { font-size: 13px; }
+      .brand-copy span { display: none; }
+      .top-actions { gap: 6px; }
+      .xp-pill { min-height: 38px; padding: 7px 8px; font-size: 11px; gap: 5px; }
+      .account-pill { display: none; }
+      .logout-btn { min-height: 38px; min-width: 39px; padding: 8px; }
+      main { padding-top: 16px; }
+      .hero { padding: 24px 18px; border-radius: 21px; }
+      .hero-grid { display: block; }
+      .hero h1 { font-size: clamp(2rem, 9.7vw, 2.65rem); letter-spacing: -1.1px; }
+      .hero-description { font-size: 15px; }
+      .hero-art { display: none; }
+      .hero-buttons { display: grid; grid-template-columns: 1fr; }
+      .hero-buttons .primary-btn, .hero-buttons .secondary-btn { width: 100%; }
+      .hero-metrics { gap: 7px; margin-top: 19px; }
+      .metric { flex: 1 1 42%; padding: 8px 9px; font-size: 11px; }
+      .section { margin-top: 24px; }
+      .section-heading { display: block; }
+      .section-heading p { font-size: 13px; margin-top: 5px; }
+      .panel { border-radius: 18px; }
+      .panel-head { padding: 15px; align-items: flex-start; }
+      .panel-body { padding: 14px; }
+      .code-editor { min-height: 275px; padding: 12px; font-size: 13px; }
+      .editor-toolbar { align-items: flex-start; }
+      .toolbar-buttons { width: 100%; }
+      .toolbar-buttons .tiny-btn { flex: 1 1 auto; }
+      .preview-viewport { min-height: 360px; padding: 8px; }
+      .preview-frame { height: 340px; }
+      .current-width-card { padding: 15px; align-items: flex-start; flex-direction: column; gap: 9px; }
+      .breakpoint-grid, .pattern-grid, .tip-grid { grid-template-columns: 1fr; }
+      .breakpoint-card { padding: 16px; }
+      .pattern-code pre { font-size: 12px; }
+      .quiz-actions { padding: 15px; }
+      .quiz-actions .primary-btn, .quiz-actions .secondary-btn { width: 100%; }
+      .question-card { padding: 14px; }
+      .footer-inner { display: block; }
+      .footer-links { margin-top: 10px; }
+    }
+    @media (max-width: 360px) {
+      .topbar-inner { gap: 6px; }
+      .back-btn { font-size: 0; width: 40px; padding: 0; gap: 0; }
+      .back-btn i { font-size: 14px; }
+      .brand { flex-basis: 120px; }
+      .brand img { width: 30px; height: 30px; }
+      .brand-copy strong { font-size: 12px; }
+      .xp-pill { font-size: 10px; padding-inline: 7px; }
+      .metric { flex-basis: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <section class="auth-loading" id="authLoading" aria-live="polite">
+    <div class="loading-card">
+      <img src="logo.png" alt="Code Academy logo" onerror="this.style.display='none'">
+      <strong>Connecting to Code Academy</strong>
+      <p style="color:var(--muted);margin:7px 0 0;font-size:13px">Checking your secure learning session…</p>
+      <div class="spinner" aria-hidden="true"></div>
+    </div>
+  </section>
+
+  <div id="app" hidden>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <button class="back-btn" id="backBtn" type="button"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i><span>Back to CSS</span></button>
+        <a class="brand" href="menu.html" aria-label="Code Academy learning hub">
+          <img src="logo.png" alt="">
+          <span class="brand-copy"><strong>Code Academy</strong><span>We Learn, We Code, We Succeed</span></span>
+        </a>
+        <div class="top-actions">
+          <div class="xp-pill" title="Your current experience points"><i class="fa-solid fa-bolt" aria-hidden="true"></i><span id="xpValue">0 XP</span></div>
+          <div class="account-pill" title="Signed-in account">
+            <div class="account-avatar" id="accountAvatar">C</div>
+            <div class="account-text"><strong id="learnerName">Learner</strong><small id="learnerEmail">Signed in</small></div>
+          </div>
+          <button class="icon-btn logout-btn" id="logoutBtn" type="button" aria-label="Sign out" title="Sign out"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i></button>
+        </div>
+      </div>
+    </header>
+
+    <main class="page-width">
+      <section class="hero" aria-labelledby="pageTitle">
+        <div class="hero-grid">
+          <div>
+            <div class="eyebrow"><span class="dot" aria-hidden="true"></span> CSS learning lab · Interactive practice</div>
+            <h1 id="pageTitle">Build layouts that look great on <span class="gradient-text">every screen.</span></h1>
+            <p class="hero-description">Learn responsive design by testing real CSS. Edit the rules, preview phone and desktop layouts, copy professional patterns, and check your understanding when you are ready.</p>
+            <div class="hero-buttons">
+              <a class="primary-btn" href="#playground"><i class="fa-solid fa-code" aria-hidden="true"></i> Open the live playground</a>
+              <a class="secondary-btn" href="#knowledgeCheck"><i class="fa-solid fa-circle-question" aria-hidden="true"></i> Take the 5-question quiz</a>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-window">
+              <div class="art-window-head"><span></span><span></span><span></span></div>
+              <div class="art-window-body"><div class="art-block"></div><div class="art-block"></div><div class="art-block"></div></div>
+            </div>
+            <p class="art-caption">One layout. Phone, tablet, laptop.</p>
+          </div>
+        </div>
+        <div class="hero-metrics" aria-label="Module features">
+          <div class="metric"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i> Device-size preview</div>
+          <div class="metric"><i class="fa-solid fa-copy" aria-hidden="true"></i> 10 copy-ready patterns</div>
+          <div class="metric"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Account-linked learning</div>
+          <div class="metric"><i class="fa-solid fa-award" aria-hidden="true"></i> +20 XP after passing</div>
+        </div>
+      </section>
+
+      <section class="section" id="playground" aria-labelledby="playgroundTitle">
+        <div class="section-heading">
+          <div><div class="section-kicker">01 · Learn by doing</div><h2 id="playgroundTitle">Responsive CSS playground</h2><p>Change the CSS on the left and see how the isolated preview responds on the right.</p></div>
+          <span class="pill-label"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Safe, sandboxed preview</span>
+        </div>
+        <div class="playground-grid">
+          <section class="panel editor-panel" aria-labelledby="editorTitle">
+            <div class="panel-head">
+              <div><h3 id="editorTitle"><i class="fa-solid fa-terminal" style="color:var(--cyan);margin-right:7px" aria-hidden="true"></i> Your CSS</h3><p>Mobile-first styles with a tablet breakpoint</p></div>
+              <span class="pill-label">style.css</span>
+            </div>
+            <div class="panel-body">
+              <div class="editor-toolbar">
+                <span class="hint">Edit the code, then apply it.</span>
+                <label class="toggle-line"><input type="checkbox" id="liveUpdate" checked> Live update</label>
+              </div>
+              <textarea class="code-editor" id="cssEditor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Editable CSS code">.demo-page {
+  color: #122033;
+  background: #f4f8ff;
+  padding: 18px;
+  font-family: Arial, sans-serif;
+}
+
+.demo-header {
+  background: #075985;
+  color: white;
+  padding: 18px;
+  border-radius: 14px;
+}
+
+.demo-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.demo-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 5px 16px #0f172a14;
+}
+
+.demo-card h3 { margin-top: 0; }
+.demo-card p { line-height: 1.6; }
+
+/* Tablet and larger */
+@media (min-width: 640px) {
+  .demo-page { padding: 28px; }
+  .demo-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Wide screens */
+@media (min-width: 980px) {
+  .demo-page { max-width: 1100px; margin: auto; }
+  .demo-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}</textarea>
+              <div class="toolbar-buttons" style="margin-top:12px">
+                <button class="primary-btn" id="applyCssBtn" type="button"><i class="fa-solid fa-play" aria-hidden="true"></i> Apply CSS</button>
+                <button class="tiny-btn" id="resetCssBtn" type="button"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Reset</button>
+                <button class="tiny-btn" id="copyEditorBtn" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy CSS</button>
+                <button class="tiny-btn" id="downloadCssBtn" type="button"><i class="fa-solid fa-download" aria-hidden="true"></i> Export .css</button>
+              </div>
+              <p class="editor-help">Tip: change <code>grid-template-columns</code>, spacing, colors, or the <code>min-width</code> values in the media queries.</p>
+            </div>
+          </section>
+
+          <section class="panel preview-panel" aria-labelledby="previewTitle">
+            <div class="panel-head">
+              <div><h3 id="previewTitle"><i class="fa-solid fa-display" style="color:var(--cyan);margin-right:7px" aria-hidden="true"></i> Live preview</h3><p>Switch the simulated viewport width.</p></div>
+              <span class="pill-label" id="previewWidthBadge">390px wide</span>
+            </div>
+            <div class="panel-body">
+              <div class="device-tabs" role="group" aria-label="Preview device size">
+                <button class="device-tab active" type="button" data-preview-width="390"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i> Phone</button>
+                <button class="device-tab" type="button" data-preview-width="768"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i> Tablet</button>
+                <button class="device-tab" type="button" data-preview-width="1200"><i class="fa-solid fa-laptop" aria-hidden="true"></i> Laptop</button>
+                <button class="device-tab" type="button" data-preview-width="fluid"><i class="fa-solid fa-arrows-left-right" aria-hidden="true"></i> Fit here</button>
+              </div>
+              <div class="preview-details"><strong id="previewDeviceName">Phone preview</strong><span id="previewMediaHint">1-column layout expected</span></div>
+              <div class="preview-viewport" id="previewViewport">
+                <iframe class="preview-frame" id="previewFrame" title="CSS responsive design preview" sandbox="" referrerpolicy="no-referrer"></iframe>
+              </div>
+              <p class="preview-hint">A wider device can be scrolled inside this preview on a small phone; the rest of this page will stay within your screen.</p>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section" id="breakpoints" aria-labelledby="breakpointsTitle">
+        <div class="section-heading">
+          <div><div class="section-kicker">02 · Understand screen sizes</div><h2 id="breakpointsTitle">Breakpoint guide</h2><p>The highlighted range reflects your actual browser width. Try another size to compare the preview.</p></div>
+        </div>
+        <div class="current-width-card">
+          <div><div class="width-label">YOUR CURRENT VIEWPORT</div><div class="width-number"><span id="currentWidth">0</span><small> px</small></div></div>
+          <div class="device-class"><i class="fa-solid fa-mobile-screen-button" id="currentDeviceIcon" aria-hidden="true"></i><span id="currentDevice">Detecting device…</span></div>
+        </div>
+        <div class="breakpoint-grid" id="breakpointGrid">
+          <article class="breakpoint-card" data-min="0" data-max="479">
+            <div class="bp-top"><div class="bp-icon"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i></div><h3>Small phones</h3></div>
+            <div class="bp-range">Under 480px</div><p class="bp-copy">Prioritize one-column layouts, readable text, and easy-to-tap controls.</p>
+            <button class="bp-try" type="button" data-preview-width="390">Try 390px preview</button>
+          </article>
+          <article class="breakpoint-card" data-min="480" data-max="767">
+            <div class="bp-top"><div class="bp-icon"><i class="fa-solid fa-mobile-screen" aria-hidden="true"></i></div><h3>Large phones</h3></div>
+            <div class="bp-range">480–767px</div><p class="bp-copy">Add breathing room while keeping navigation and content easy to scan.</p>
+            <button class="bp-try" type="button" data-preview-width="600">Try 600px preview</button>
+          </article>
+          <article class="breakpoint-card" data-min="768" data-max="1023">
+            <div class="bp-top"><div class="bp-icon"><i class="fa-solid fa-tablet-screen-button" aria-hidden="true"></i></div><h3>Tablets</h3></div>
+            <div class="bp-range">768–1023px</div><p class="bp-copy">Two-column content, larger cards, and more flexible navigation often fit well.</p>
+            <button class="bp-try" type="button" data-preview-width="768">Try 768px preview</button>
+          </article>
+          <article class="breakpoint-card" data-min="1024" data-max="1279">
+            <div class="bp-top"><div class="bp-icon"><i class="fa-solid fa-laptop" aria-hidden="true"></i></div><h3>Compact laptops</h3></div>
+            <div class="bp-range">1024–1279px</div><p class="bp-copy">Use columns where they improve reading, not simply because space is available.</p>
+            <button class="bp-try" type="button" data-preview-width="1100">Try 1100px preview</button>
+          </article>
+          <article class="breakpoint-card" data-min="1280" data-max="1599">
+            <div class="bp-top"><div class="bp-icon"><i class="fa-solid fa-desktop" aria-hidden="true"></i></div><h3>Desktop screens</h3></div>
+            <div class="bp-range">1280–1599px</div><p class="bp-copy">Keep long lines comfortable with a max-width container and balanced whitespace.</p>
+            <button class="bp-try" type="button" data-preview-width="1280">Try 1280px preview</button>
+          </article>
+          <article class="breakpoint-card" data-min="1600" data-max="99999">
+            <div class="bp-top"><div class="bp-icon"><i class="fa-solid fa-expand" aria-hidden="true"></i></div><h3>Wide screens</h3></div>
+            <div class="bp-range">1600px and wider</div><p class="bp-copy">Avoid stretching paragraphs and cards across the entire monitor.</p>
+            <button class="bp-try" type="button" data-preview-width="1600">Try 1600px preview</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="patterns" aria-labelledby="patternsTitle">
+        <div class="section-heading">
+          <div><div class="section-kicker">03 · Keep these close</div><h2 id="patternsTitle">10 responsive CSS patterns</h2><p>Copy a pattern, paste it into the playground, and test it at different widths.</p></div>
+          <button class="secondary-btn" id="copyAllPatternsBtn" type="button"><i class="fa-regular fa-copy" aria-hidden="true"></i> Copy all patterns</button>
+        </div>
+        <div class="pattern-grid" id="patternGrid" aria-live="polite"></div>
+      </section>
+
+      <section class="section" id="principles" aria-labelledby="principlesTitle">
+        <div class="section-heading"><div><div class="section-kicker">04 · Think like a developer</div><h2 id="principlesTitle">A reliable responsive-design checklist</h2><p>Use these checks before you call a layout finished.</p></div></div>
+        <div class="tip-grid">
+          <article class="tip-card"><i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i><h3>Start mobile-first</h3><p>Write the simplest small-screen layout first, then add complexity with <code>min-width</code> media queries.</p></article>
+          <article class="tip-card"><i class="fa-solid fa-text-height" aria-hidden="true"></i><h3>Scale smoothly</h3><p>Use relative units and <code>clamp()</code> for text that grows within sensible minimum and maximum sizes.</p></article>
+          <article class="tip-card"><i class="fa-solid fa-table-cells-large" aria-hidden="true"></i><h3>Let content choose columns</h3><p>Use flexible Grid or Flexbox layouts and test where the content starts to feel cramped.</p></article>
+          <article class="tip-card"><i class="fa-solid fa-image" aria-hidden="true"></i><h3>Protect media</h3><p>Images should fit their containers, and video frames should keep their proportions.</p></article>
+          <article class="tip-card"><i class="fa-solid fa-hand-pointer" aria-hidden="true"></i><h3>Design for touch</h3><p>Make taps comfortable, space controls apart, and ensure keyboard focus remains visible.</p></article>
+          <article class="tip-card"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><h3>Test real widths</h3><p>Check small Android phones, tablets, zoomed text, landscape mode, and a wide desktop.</p></article>
+        </div>
+      </section>
+
+      <section class="section" id="knowledgeCheck" aria-labelledby="quizTitle">
+        <div class="section-heading"><div><div class="section-kicker">05 · Check your understanding</div><h2 id="quizTitle">Responsive design mini-quiz</h2><p>Answer at least 4 of 5 questions correctly to complete this module and earn the XP reward once.</p></div><span class="pill-label"><i class="fa-solid fa-bolt" aria-hidden="true"></i> +20 XP</span></div>
+        <div class="panel">
+          <div class="quiz-intro"><strong>Five questions · One best answer per question</strong><p>Your quiz answers stay on this page. Completion status and the XP reward are saved to your signed-in Code Academy profile.</p></div>
+          <form id="quizForm" novalidate>
+            <div class="panel-body"><div class="quiz-questions" id="quizQuestions"></div></div>
+            <div class="quiz-actions">
+              <p class="quiz-result" id="quizResult" aria-live="polite">Choose your answers, then check your score.</p>
+              <button class="primary-btn" id="gradeQuizBtn" type="submit"><i class="fa-solid fa-check" aria-hidden="true"></i> Check answers</button>
+              <button class="secondary-btn" id="completeBtn" type="button" disabled><i class="fa-solid fa-award" aria-hidden="true"></i> Complete module</button>
+            </div>
+          </form>
+        </div>
+        <div class="complete-status" id="completeStatus" hidden role="status">
+          <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+          <div><strong id="completeStatusTitle">Module completed</strong><p id="completeStatusText">Your result is saved to your Code Academy account.</p></div>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Next steps">
+        <div class="hero" style="padding:24px 22px;margin:0">
+          <div class="section-kicker">Keep building</div>
+          <h2 style="font-size:clamp(1.35rem,3vw,2rem);margin-bottom:7px">Ready to use CSS in a real project?</h2>
+          <p style="color:var(--muted);margin-bottom:16px">Take your ideas into the Code Academy editor, or return to the CSS learning hub for more topics.</p>
+          <div class="hero-buttons">
+            <a class="primary-btn" href="htmleditor.html"><i class="fa-solid fa-code" aria-hidden="true"></i> Open Code Editor</a>
+            <a class="secondary-btn" href="CSS.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> CSS Learning Hub</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="page-width footer-inner">
+        <div>© <span id="yearNow"></span> Code Academy · We Learn, We Code, We Succeed</div>
+        <div class="footer-links"><a href="CSS.html">CSS Hub</a><a href="menu.html">Learning Hub</a><a href="#pageTitle">Back to top ↑</a></div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import { auth, db, logOut, onAuthStateChanged } from './authentication.js';
+    import { doc, getDoc, runTransaction } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const $ = (id) => document.getElementById(id);
+    const app = $('app');
+    const authLoading = $('authLoading');
+    const cssEditor = $('cssEditor');
+    const previewFrame = $('previewFrame');
+    const previewViewport = $('previewViewport');
+    const DEFAULT_CSS = cssEditor.value;
+    const MODULE_KEY = 'css_design_masterclass';
+    const XP_REWARD = 20;
+    const PASS_MARK = 4;
+    let currentUser = null;
+    let quizPassed = false;
+    let quizChecked = false;
+    let moduleAlreadyComplete = false;
+    let toastTimer = null;
+    let previewWidthMode = '390';
+    let updateFrameTimer = null;
+
+    const patterns = [
+      { title: 'Mobile-first media query', note: 'Add wider-screen improvements after your default mobile rules.', code: `/* Base styles target small screens */\n.container { width: 100%; padding: 16px; }\n\n@media (min-width: 768px) {\n  .container { max-width: 720px; margin-inline: auto; }\n}` },
+      { title: 'Fluid typography with clamp()', note: 'Keep text responsive without letting it become too tiny or too large.', code: `h1 {\n  font-size: clamp(2rem, 5vw, 4rem);\n  line-height: 1.1;\n}\n\np { font-size: clamp(1rem, 2vw, 1.2rem); }` },
+      { title: 'A flexible CSS Grid', note: 'Cards wrap automatically as the available space changes.', code: `.card-grid {\n  display: grid;\n  grid-template-columns: repeat(\n    auto-fit, minmax(min(100%, 240px), 1fr)\n  );\n  gap: 1rem;\n}` },
+      { title: 'Responsive images', note: 'Stop images from overflowing their parent container.', code: `img, video, canvas {\n  display: block;\n  max-width: 100%;\n}\n\nimg { height: auto; }` },
+      { title: 'Container queries', note: 'Let a component react to its own container width.', code: `.card-list {\n  container-type: inline-size;\n}\n\n@container (min-width: 440px) {\n  .card { display: flex; gap: 1rem; }\n}` },
+      { title: 'Safer viewport sizing', note: 'Prefer modern small or dynamic viewport units for full-height mobile panels.', code: `.hero {\n  min-height: 100svh;\n  padding: clamp(1rem, 4vw, 3rem);\n}\n\n/* Use 100dvh when a dynamic browser bar matters. */` },
+      { title: 'Show and hide with care', note: 'Keep essential content available; don’t hide important controls only on mobile.', code: `.desktop-links { display: flex; }\n.mobile-menu-button { display: none; }\n\n@media (max-width: 720px) {\n  .desktop-links { display: none; }\n  .mobile-menu-button { display: inline-flex; }\n}` },
+      { title: 'Flexbox that wraps', note: 'Flex items can move to another row when there is not enough room.', code: `.toolbar {\n  display: flex;\n  flex-wrap: wrap;\n  align-items: center;\n  gap: 0.75rem;\n}\n\n.toolbar > * { flex: 1 1 220px; }` },
+      { title: 'Keep media proportions', note: 'Use aspect-ratio for predictable video and thumbnail shapes.', code: `.video-frame {\n  width: 100%;\n  aspect-ratio: 16 / 9;\n  overflow: hidden;\n  border-radius: 1rem;\n}\n\n.video-frame iframe { width: 100%; height: 100%; }` },
+      { title: 'Comfortable touch targets', note: 'Make interactive controls easier to use with fingers and keyboard.', code: `button, a.button {\n  min-height: 44px;\n  padding: 0.7rem 1rem;\n}\n\nbutton + button { margin-inline-start: 0.4rem; }\n:focus-visible { outline: 3px solid #38bdf8; }` }
+    ];
+
+    const questions = [
+      { question: 'What does the viewport meta tag help control on mobile browsers?', options: ['The CSS color palette', 'The layout viewport and initial scale', 'The Firebase login session', 'The page source language'], answer: 1, explanation: 'The viewport meta tag helps the page use the device width and expected initial scale.' },
+      { question: 'In a mobile-first stylesheet, which media query commonly adds styles for wider screens?', options: ['@media (min-width: 768px)', '@media (color: purple)', '@media (max-height: 10px)', '@media (orientation: speech)'], answer: 0, explanation: 'Mobile-first CSS starts with the small layout, then often layers on styles using min-width queries.' },
+      { question: 'Which CSS function can set a fluid value with a minimum and maximum?', options: ['repeat()', 'aspect-ratio()', 'clamp()', 'flex-wrap()'], answer: 2, explanation: 'clamp(minimum, preferred value, maximum) keeps a property within a useful range.' },
+      { question: 'What is a good way to make a Grid layout use fewer columns on small screens?', options: ['Force a fixed width larger than the phone', 'Use a suitable media query or flexible minmax() tracks', 'Turn off box-sizing', 'Make every card position: absolute'], answer: 1, explanation: 'Flexible Grid tracks or an intentional media query help columns adapt to the available space.' },
+      { question: 'Which rule is a useful baseline for responsive images?', options: ['width: 900px on every screen', 'max-width: 100%; height: auto', 'position: fixed', 'white-space: nowrap'], answer: 1, explanation: 'max-width: 100% lets an image shrink to its container, while height: auto keeps its aspect ratio.' }
+    ];
+
+    function showToast(message, type = 'success') {
+      const toast = $('toast');
+      toast.textContent = message;
+      toast.className = `toast show ${type}`;
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.className = 'toast'; }, 2800);
+    }
+
+    function authDestination() {
+      return location.pathname + location.search + location.hash;
+    }
+
+    function redirectToLogin() {
+      location.replace(`login.html?next=${encodeURIComponent(authDestination())}`);
+    }
+
+    function setLearner(user, data = {}) {
+      const name = user.displayName || data.displayName || (user.email ? user.email.split('@')[0] : 'Learner');
+      $('learnerName').textContent = name;
+      $('learnerEmail').textContent = user.email || user.phoneNumber || 'Code Academy learner';
+      $('accountAvatar').textContent = name.trim().charAt(0).toUpperCase() || 'C';
+      const xp = Number(data.xp ?? data.profile?.xp ?? 0);
+      $('xpValue').textContent = `${xp.toLocaleString()} XP`;
+    }
+
+    function markModuleComplete(awarded = false, xpValue = null) {
+      moduleAlreadyComplete = true;
+      $('completeStatus').style.borderColor = '';
+      $('completeBtn').disabled = true;
+      $('completeBtn').innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Module completed';
+      $('completeStatus').hidden = false;
+      $('completeStatusTitle').textContent = awarded ? 'Module completed — XP earned!' : 'Module already completed';
+      $('completeStatusText').textContent = awarded
+        ? `You earned ${XP_REWARD} XP. Your progress is saved to your Code Academy account.`
+        : 'This module has already been recorded on your account, so the XP reward will not be issued twice.';
+      if (xpValue !== null) $('xpValue').textContent = `${Number(xpValue).toLocaleString()} XP`;
+    }
+
+    async function loadAccount(user) {
+      setLearner(user);
+      try {
+        const profileRef = doc(db, 'users', user.uid);
+        const snapshot = await getDoc(profileRef);
+        if (snapshot.exists()) {
+          const data = snapshot.data();
+          setLearner(user, data);
+          const completed = Array.isArray(data.completedLessons) ? data.completedLessons : [];
+          if (completed.includes(MODULE_KEY)) {
+            markModuleComplete(false, Number(data.xp ?? data.profile?.xp ?? 0));
+          }
+        } else {
+          showToast('Your sign-in is active, but your profile is still syncing.', 'error');
+        }
+      } catch (error) {
+        console.error('Could not load the Code Academy learner profile:', error);
+        showToast('Connected to your account, but stats could not load right now.', 'error');
+      }
+    }
+
+    function makePreviewDocument(css) {
+      const safeCss = String(css || '').replace(/<\/style/gi, '<\\/style');
+      return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0;min-height:100%;}body{font-family:Arial,sans-serif}.demo-page{min-height:100vh}.demo-card{min-width:0;overflow-wrap:anywhere}.demo-card p{margin-bottom:0} ${safeCss}</style></head><body><main class="demo-page"><header class="demo-header"><strong>Responsive starter page</strong><div style="font-size:.9rem;margin-top:6px">Resize the preview or edit your CSS rules.</div></header><section class="demo-grid"><article class="demo-card"><h3>Flexible layouts</h3><p>Cards can rearrange when the available width changes.</p></article><article class="demo-card"><h3>Readable content</h3><p>Use comfortable line lengths, spacing, and text sizes.</p></article><article class="demo-card"><h3>Built for every screen</h3><p>Start small, test often, and add breakpoints only when useful.</p></article></section></main></body></html>`;
+    }
+
+    function renderPreview() {
+      if (!previewFrame) return;
+      previewFrame.srcdoc = makePreviewDocument(cssEditor.value);
+      updatePreviewLabels();
+    }
+
+    function updatePreviewLabels() {
+      const stageWidth = Math.max(280, previewViewport.clientWidth - 2);
+      let width;
+      if (previewWidthMode === 'fluid') width = Math.min(1100, stageWidth - 24);
+      else width = Number(previewWidthMode);
+      width = Math.max(280, width || 390);
+      previewFrame.style.width = `${width}px`;
+      $('previewWidthBadge').textContent = `${width}px wide`;
+      let name = 'Phone preview';
+      let hint = '1-column layout expected';
+      if (width >= 980) { name = 'Laptop preview'; hint = '3-column layout expected'; }
+      else if (width >= 640) { name = 'Tablet preview'; hint = '2-column layout expected'; }
+      if (previewWidthMode === 'fluid') name = 'Fit-to-panel preview';
+      $('previewDeviceName').textContent = name;
+      $('previewMediaHint').textContent = hint;
+    }
+
+    function selectPreviewWidth(value) {
+      previewWidthMode = String(value);
+      document.querySelectorAll('[data-preview-width]').forEach((button) => {
+        if (button.classList.contains('device-tab')) {
+          button.classList.toggle('active', button.dataset.previewWidth === previewWidthMode);
+          button.setAttribute('aria-pressed', String(button.dataset.previewWidth === previewWidthMode));
+        }
+      });
+      updatePreviewLabels();
+      if (previewWidthMode === 'fluid') previewViewport.scrollLeft = 0;
+      else if (Number(previewWidthMode) <= previewViewport.clientWidth) previewViewport.scrollLeft = 0;
+    }
+
+    function classifyWidth(width) {
+      if (width < 480) return { label: 'Small phone', icon: 'fa-mobile-screen-button' };
+      if (width < 768) return { label: 'Large phone', icon: 'fa-mobile-screen' };
+      if (width < 1024) return { label: 'Tablet', icon: 'fa-tablet-screen-button' };
+      if (width < 1280) return { label: 'Compact laptop', icon: 'fa-laptop' };
+      if (width < 1600) return { label: 'Desktop', icon: 'fa-desktop' };
+      return { label: 'Wide screen', icon: 'fa-expand' };
+    }
+
+    function updateCurrentViewport() {
+      const width = window.innerWidth;
+      const device = classifyWidth(width);
+      $('currentWidth').textContent = width.toLocaleString();
+      $('currentDevice').textContent = device.label;
+      $('currentDeviceIcon').className = `fa-solid ${device.icon}`;
+      document.querySelectorAll('.breakpoint-card').forEach((card) => {
+        const min = Number(card.dataset.min || 0);
+        const max = Number(card.dataset.max || 99999);
+        card.classList.toggle('current', width >= min && width <= max);
+      });
+      if (previewWidthMode === 'fluid') updatePreviewLabels();
+    }
+
+    async function copyText(text, button = null) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const helper = document.createElement('textarea');
+          helper.value = text; helper.setAttribute('readonly', '');
+          helper.style.position = 'fixed'; helper.style.opacity = '0';
+          document.body.appendChild(helper); helper.select();
+          const copied = document.execCommand('copy'); helper.remove();
+          if (!copied) throw new Error('Clipboard copy was not available in this browser.');
+        }
+        if (button) {
+          const previous = button.innerHTML;
+          button.innerHTML = '<i class="fa-solid fa-check" aria-hidden="true"></i> Copied';
+          setTimeout(() => { if (button.isConnected) button.innerHTML = previous; }, 1700);
+        }
+        showToast('Copied to clipboard.');
+      } catch (error) {
+        console.error('Clipboard copy failed:', error);
+        showToast('Copy was blocked by the browser. Select the code and copy it manually.', 'error');
+      }
+    }
+
+    function renderPatterns() {
+      const grid = $('patternGrid');
+      grid.replaceChildren();
+      patterns.forEach((pattern, index) => {
+        const card = document.createElement('article');
+        card.className = 'pattern-card';
+        const top = document.createElement('div'); top.className = 'pattern-top';
+        const titleWrap = document.createElement('div');
+        const heading = document.createElement('h3'); heading.textContent = pattern.title;
+        const note = document.createElement('p'); note.textContent = pattern.note;
+        titleWrap.append(heading, note);
+        const number = document.createElement('span'); number.className = 'pattern-number'; number.textContent = `${String(index + 1).padStart(2, '0')} / 10`;
+        top.append(titleWrap, number);
+        const codeWrap = document.createElement('div'); codeWrap.className = 'pattern-code';
+        const pre = document.createElement('pre'); const code = document.createElement('code'); code.textContent = pattern.code; pre.appendChild(code); codeWrap.appendChild(pre);
+        const bottom = document.createElement('div'); bottom.className = 'pattern-bottom';
+        const tag = document.createElement('span'); tag.textContent = 'CSS pattern';
+        const copyButton = document.createElement('button'); copyButton.type = 'button'; copyButton.className = 'tiny-btn'; copyButton.innerHTML = '<i class="fa-regular fa-copy" aria-hidden="true"></i> Copy code';
+        copyButton.addEventListener('click', () => copyText(pattern.code, copyButton));
+        bottom.append(tag, copyButton);
+        card.append(top, codeWrap, bottom);
+        grid.appendChild(card);
+      });
+    }
+
+    function renderQuiz() {
+      const list = $('quizQuestions');
+      list.replaceChildren();
+      questions.forEach((question, index) => {
+        const card = document.createElement('fieldset'); card.className = 'question-card'; card.style.margin = '0'; card.style.minInlineSize = '0';
+        const count = document.createElement('div'); count.className = 'question-count'; count.textContent = `Question ${index + 1} of ${questions.length}`;
+        const legend = document.createElement('legend'); legend.className = 'question-title'; legend.textContent = question.question;
+        const answers = document.createElement('div'); answers.className = 'answer-list';
+        question.options.forEach((option, optionIndex) => {
+          const label = document.createElement('label'); label.className = 'answer-option';
+          const input = document.createElement('input'); input.type = 'radio'; input.name = `question-${index}`; input.value = String(optionIndex); input.setAttribute('aria-label', option);
+          input.addEventListener('change', () => {
+            quizChecked = false; quizPassed = false;
+            $('quizResult').className = 'quiz-result'; $('quizResult').textContent = 'Answer selected. Check your answers when you are ready.';
+            document.querySelectorAll('.question-feedback').forEach((item) => { item.textContent = ''; item.className = 'question-feedback'; });
+            document.querySelectorAll('.answer-option').forEach((item) => item.classList.remove('correct', 'wrong'));
+            if (!moduleAlreadyComplete) $('completeBtn').disabled = true;
+          });
+          const text = document.createElement('span'); text.textContent = option;
+          label.append(input, text); answers.appendChild(label);
+        });
+        const feedback = document.createElement('p'); feedback.className = 'question-feedback'; feedback.id = `feedback-${index}`;
+        card.append(count, legend, answers, feedback);
+        list.appendChild(card);
+      });
+    }
+
+    function gradeQuiz() {
+      let score = 0;
+      let unanswered = 0;
+      questions.forEach((question, index) => {
+        const card = $('quizQuestions').children[index];
+        const selected = card.querySelector(`input[name="question-${index}"]:checked`);
+        const feedback = card.querySelector('.question-feedback');
+        const labels = [...card.querySelectorAll('.answer-option')];
+        labels.forEach((label) => label.classList.remove('correct', 'wrong'));
+        if (!selected) unanswered++;
+        const correct = selected && Number(selected.value) === question.answer;
+        if (correct) score++;
+        labels[question.answer].classList.add('correct');
+        if (selected && !correct) labels[Number(selected.value)].classList.add('wrong');
+        feedback.className = `question-feedback ${correct ? 'good' : 'bad'}`;
+        feedback.textContent = correct ? `Correct. ${question.explanation}` : `Review: ${question.explanation}`;
+      });
+      quizChecked = true;
+      quizPassed = score >= PASS_MARK;
+      const result = $('quizResult');
+      if (quizPassed) {
+        result.className = 'quiz-result pass';
+        result.textContent = `You scored ${score}/${questions.length}. Great work — you passed!`;
+        if (!moduleAlreadyComplete) $('completeBtn').disabled = false;
+        showToast(moduleAlreadyComplete ? 'Quiz passed. Your module was already completed.' : 'Quiz passed. Complete the module to save your progress.');
+      } else {
+        result.className = 'quiz-result fail';
+        result.textContent = `You scored ${score}/${questions.length}. You need at least ${PASS_MARK}/${questions.length} to pass${unanswered ? `; ${unanswered} question(s) were unanswered` : ''}. Review the explanations and try again.`;
+        if (!moduleAlreadyComplete) $('completeBtn').disabled = true;
+      }
+    }
+
+    async function completeModule() {
+      if (!currentUser) { redirectToLogin(); return; }
+      if (moduleAlreadyComplete) { showToast('This module is already recorded on your account.'); return; }
+      if (!quizChecked || !quizPassed) { showToast('Pass the mini-quiz first to complete this module.', 'error'); return; }
+      const button = $('completeBtn');
+      button.disabled = true; button.innerHTML = '<i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Saving progress…';
+      try {
+        const profileRef = doc(db, 'users', currentUser.uid);
+        const result = await runTransaction(db, async (transaction) => {
+          const snapshot = await transaction.get(profileRef);
+          if (!snapshot.exists()) throw new Error('Your Code Academy profile could not be found. Sign in again and retry.');
+          const data = snapshot.data();
+          const completed = Array.isArray(data.completedLessons) ? data.completedLessons : [];
+          const currentXP = Number(data.xp ?? data.profile?.xp ?? 0);
+          if (completed.includes(MODULE_KEY)) return { awarded: false, xp: currentXP };
+          transaction.update(profileRef, {
+            completedLessons: [...completed, MODULE_KEY],
+            xp: currentXP + XP_REWARD
+          });
+          return { awarded: true, xp: currentXP + XP_REWARD };
+        });
+        markModuleComplete(result.awarded, result.xp);
+        showToast(result.awarded ? `Module completed. +${XP_REWARD} XP saved!` : 'This module was already completed. No duplicate XP was added.');
+      } catch (error) {
+        console.error('Could not save module completion:', error);
+        button.disabled = false;
+        button.innerHTML = '<i class="fa-solid fa-award" aria-hidden="true"></i> Complete module';
+        $('completeStatus').hidden = false;
+        $('completeStatusTitle').textContent = 'Progress could not be saved';
+        $('completeStatusText').textContent = error?.message || 'Check your connection and try again. Your quiz score is still available on this page.';
+        $('completeStatus').style.borderColor = 'rgba(251, 113, 133, .45)';
+        showToast('Could not save progress. Check your connection and try again.', 'error');
+      }
+    }
+
+    $('backBtn').addEventListener('click', () => {
+      try {
+        if (document.referrer && new URL(document.referrer).origin === location.origin) history.back();
+        else location.href = 'CSS.html';
+      } catch { location.href = 'CSS.html'; }
+    });
+
+    $('logoutBtn').addEventListener('click', async () => {
+      const button = $('logoutBtn'); button.disabled = true;
+      try { await logOut(); location.replace('login.html'); }
+      catch (error) { console.error('Sign-out failed:', error); button.disabled = false; showToast('Could not sign out. Check your connection and try again.', 'error'); }
+    });
+
+    $('applyCssBtn').addEventListener('click', () => { renderPreview(); showToast('CSS applied to the sandbox preview.'); });
+    $('resetCssBtn').addEventListener('click', () => { cssEditor.value = DEFAULT_CSS; renderPreview(); showToast('Starter CSS restored.'); });
+    $('copyEditorBtn').addEventListener('click', (event) => copyText(cssEditor.value, event.currentTarget));
+    $('downloadCssBtn').addEventListener('click', () => {
+      try {
+        const file = new Blob([cssEditor.value], { type: 'text/css;charset=utf-8' });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement('a'); link.href = url; link.download = 'responsive-design.css';
+        document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+        showToast('CSS file exported.');
+      } catch (error) { console.error(error); showToast('The browser could not export the CSS file.', 'error'); }
+    });
+    $('copyAllPatternsBtn').addEventListener('click', (event) => copyText(patterns.map((pattern, index) => `/* ${index + 1}. ${pattern.title} */\n${pattern.code}`).join('\n\n\n'), event.currentTarget));
+    document.querySelectorAll('[data-preview-width]').forEach((button) => {
+      if (button.classList.contains('device-tab')) {
+        button.addEventListener('click', () => selectPreviewWidth(button.dataset.previewWidth));
+      } else {
+        button.addEventListener('click', () => {
+          selectPreviewWidth(button.dataset.previewWidth);
+          $('playground').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    });
+    $('liveUpdate').addEventListener('change', () => { if ($('liveUpdate').checked) renderPreview(); });
+    cssEditor.addEventListener('input', () => {
+      if (!$('liveUpdate').checked) return;
+      if (updateFrameTimer) clearTimeout(updateFrameTimer);
+      updateFrameTimer = setTimeout(renderPreview, 280);
+    });
+    previewFrame.addEventListener('load', () => { /* A sandboxed preview is intentionally isolated from this page. */ });
+    $('quizForm').addEventListener('submit', (event) => { event.preventDefault(); gradeQuiz(); });
+    $('completeBtn').addEventListener('click', completeModule);
+    $('yearNow').textContent = String(new Date().getFullYear());
+
+    renderPatterns();
+    renderQuiz();
+    renderPreview();
+    updateCurrentViewport();
+    window.addEventListener('resize', updateCurrentViewport, { passive: true });
+    window.addEventListener('resize', () => { if (previewWidthMode === 'fluid') updatePreviewLabels(); }, { passive: true });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user || user.isAnonymous) { redirectToLogin(); return; }
+      if (user.email && !user.emailVerified) {
+        location.replace(`email-verification.html?required=1&next=${encodeURIComponent(authDestination())}`);
+        return;
+      }
+      currentUser = user;
+      await loadAccount(user);
+      authLoading.hidden = true;
+      app.hidden = false;
+    });
+  </script>
+</body>
+</html>
