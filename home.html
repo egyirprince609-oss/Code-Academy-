@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#050816">
+<title>CODE ACADEMY // SYSTEM BOOT</title>
+<link rel="icon" href="logo.png">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--bg:#050816;--cyan:#38bdf8;--purple:#8b5cf6;--green:#22c55e;--text:#f8fafc;--muted:#7d8ca3;--line:rgba(148,163,184,.14)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#050816}
+body{font-family:'JetBrains Mono',Consolas,monospace;color:var(--text);display:flex;align-items:center;justify-content:center;position:relative}
+
+/* CANVAS LIGHTNING */
+#lightningCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+#gridCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.15}
+
+/* GRID + SCAN */
+.scanline{position:fixed;top:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);box-shadow:0 0 20px var(--cyan);z-index:5;animation:scan 3.2s linear infinite}
+@keyframes scan{0%{top:0}100%{top:100%}}
+.vignette{position:fixed;inset:0;background:radial-gradient(circle at center, transparent 60%, rgba(0,0,0,.7) 100%);z-index:2;pointer-events:none}
+
+/* MAIN HUD */
+.hud{position:relative;z-index:10;width:94%;max-width:520px;height:92vh;max-height:820px;display:grid;grid-template-rows:auto 1fr auto;gap:12px}
+
+/* TOP HEADER */
+.hudHeader{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:linear-gradient(145deg,rgba(13,22,42,.9),rgba(9,15,32,.9));border:1px solid var(--line);border-radius:14px;backdrop-filter:blur(20px)}
+.hudHeaderLeft{display:flex;align-items:center;gap:10px}
+.logoBox{width:42px;height:42px;border-radius:10px;background:#0e1a33;border:1px solid rgba(56,189,248,.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 20px rgba(56,189,248,.15)}
+.logoBox img{width:28px;height:28px;border-radius:6px}
+.live{display:flex;align-items:center;gap:6px;font-size:8px;letter-spacing:1.5px;color:#86efac;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.15);padding:5px 10px;border-radius:20px}
+.liveDot{width:6px;height:6px;background:#22c55e;border-radius:50%;box-shadow:0 0 8px #22c55e;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.timeBox{text-align:right}
+.timeBox strong{display:block;font-size:13px;letter-spacing:.5px}
+.timeBox span{display:block;font-size:7px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+
+/* CENTER CORE */
+.core{position:relative;background:linear-gradient(160deg,rgba(13,22,42,.92),rgba(8,14,28,.96));border:1px solid rgba(56,189,248,.18);border-radius:24px;padding:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.6), inset 0 0 0 1px rgba(56,189,248,.06)}
+
+/* RADAR */
+.radarWrap{position:absolute;right:-40px;top:-40px;width:220px;height:220px;opacity:.18;pointer-events:none}
+.radar{width:100%;height:100%;border:1px solid rgba(56,189,248,.3);border-radius:50%;position:relative}
+.radar::before,.radar::after{content:"";position:absolute;inset:20%;border:1px solid rgba(56,189,248,.15);border-radius:50%}
+.radar::after{inset:40%}
+.radarLine{position:absolute;left:50%;top:50%;width:50%;height:1px;background:linear-gradient(90deg,var(--cyan),transparent);transform-origin:left;animation:rotate 3s linear infinite}
+@keyframes rotate{to{transform:rotate(360deg)}}
+
+.coreTop{display:flex;gap:14px;align-items:center;position:relative;z-index:2}
+.coreLogo{width:68px;height:68px;border-radius:18px;background:radial-gradient(circle at 30% 30%, rgba(56,189,248,.25), rgba(139,92,246,.15));border:1px solid rgba(56,189,248,.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(56,189,248,.2);animation:corePulse 2s infinite alternate}
+.coreLogo img{width:46px;height:46px;border-radius:12px}
+@keyframes corePulse{0%{box-shadow:0 0 20px rgba(56,189,248,.15);transform:scale(1)}100%{box-shadow:0 0 50px rgba(56,189,248,.3);transform:scale(1.03)}}
+.coreTitle h1{font-size:22px;letter-spacing:.5px;line-height:1.1}
+.coreTitle h1 span{color:var(--cyan);text-shadow:0 0 20px rgba(56,189,248,.5)}
+.coreTitle p{font-size:8px;letter-spacing:2.5px;color:var(--muted);margin-top:5px}
+
+/* TICKER SENTENCES MOVING WITH TIME */
+.ticker{margin-top:16px;position:relative;height:28px;overflow:hidden;background:#070d1b;border:1px solid rgba(148,163,184,.08);border-radius:10px;z-index:2}
+.tickerTrack{display:flex;flex-direction:column;animation:tickerMove 18s linear infinite}
+.tickerTrack span{height:28px;display:flex;align-items:center;padding:0 12px;font-size:9px;letter-spacing:.5px;color:#a7b6cb;white-space:nowrap}
+.tickerTrack span b{color:var(--cyan);margin-right:6px}
+@keyframes tickerMove{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
+
+/* TERMINAL LOGS */
+.terminal{margin-top:12px;background:#060a16;border:1px solid rgba(148,163,184,.08);border-radius:12px;padding:10px 12px;height:118px;overflow:hidden;position:relative;z-index:2}
+.termLine{font-size:8.5px;line-height:1.7;color:#7b8aa3;display:flex;gap:8px;opacity:0;transform:translateX(-10px);animation:termIn .3s forwards}
+.termLine.show{opacity:1;transform:translateX(0)}
+.termLine .t{color:#475569;min-width:48px}
+.termLine .ok{color:#4ade80}
+.termLine .warn{color:var(--cyan)}
+.termLine .err{color:#fb7185}
+@keyframes termIn{to{opacity:1;transform:translateX(0)}}
+
+/* PROGRESS HUD */
+.progressHud{margin-top:12px;position:relative;z-index:2}
+.progressMeta{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:6px}
+.bar{width:100%;height:6px;background:#0a1224;border-radius:10px;overflow:hidden;border:1px solid var(--line);position:relative}
+.barFill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple),var(--cyan));background-size:200% 100%;border-radius:10px;box-shadow:0 0 15px var(--cyan);animation:barGlow 1.5s linear infinite;transition:width .4s cubic-bezier(.4,0,.2,1)}
+@keyframes barGlow{0%{background-position:0% 0%}100%{background-position:200% 0%}}
+
+/* FOOTER */
+.hudFooter{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.statBox{background:linear-gradient(145deg,rgba(13,22,42,.9),rgba(9,15,32,.9));border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.statBox i{width:28px;height:28px;border-radius:8px;background:#111d32;display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:11px}
+.statBox strong{display:block;font-size:11px}
+.statBox span{display:block;font-size:7px;color:var(--muted);margin-top:1px}
+</style>
+</head>
+<body>
+<canvas id="lightningCanvas"></canvas>
+<canvas id="gridCanvas"></canvas>
+<div class="scanline"></div>
+<div class="vignette"></div>
+
+<div class="hud">
+  <div class="hudHeader">
+    <div class="hudHeaderLeft">
+      <div class="logoBox"><img src="logo.png" alt=""></div>
+      <div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:.5px">CODE ACADEMY OS</div>
+        <div style="font-size:7px;color:var(--muted);letter-spacing:1.2px;margin-top:2px">GHANA • SECURE NODE</div>
+      </div>
+      <div class="live"><div class="liveDot"></div>LIVE</div>
+    </div>
+    <div class="timeBox">
+      <strong id="clock">00:00:00</strong>
+      <span id="date">BOOTING...</span>
+    </div>
+  </div>
+
+  <div class="core">
+    <div class="radarWrap"><div class="radar"><div class="radarLine"></div></div></div>
+    
+    <div class="coreTop">
+      <div class="coreLogo"><img src="logo.png"></div>
+      <div class="coreTitle">
+        <h1>CODE <span>ACADEMY</span></h1>
+        <p id="greeting">WE LEARN. WE CODE. WE SUCCEED.</p>
+      </div>
+    </div>
+
+    <div class="ticker">
+      <div class="tickerTrack" id="tickerTrack">
+        <span><b>.</b> Good Morning Coder — New algorithms waiting for you</span>
+        <span><b>.</b> Afternoon Grind — Build 1 project before sunset</span>
+        <span><b>[18:00]</b> Evening Debug — Review your streak & XP tonight</span>
+        <span><b>.</b> 12,500+ Developers • 120+ Lessons • Certificates Live</span>
+        <span><b>.</b> Secure Auth • Real-time Progress • </span>
+        <span><b>.m</b> Good Morning Coder — New algorithms waiting for you</span>
+        <span><b>[12:00]</b> Afternoon Grind — Build 1 project before sunset</span>
+        <span><b>[18:00]</b> Evening Debug — Review your streak & XP tonight</span>
+      </div>
+    </div>
+
+    <div class="terminal" id="terminal"></div>
+
+    <div class="progressHud">
+      <div class="progressMeta"><span id="statusText">INITIALIZING QUANTUM CORE...</span><span id="percent">0%</span></div>
+      <div class="bar"><div class="barFill" id="barFill"></div></div>
+    </div>
+  </div>
+
+  <div class="hudFooter">
+    <div class="statBox"><i class="fa-solid fa-shield-halved"></i><div><strong id="authStatus">AUTH: CHECK</strong><span>Firebase Secure</span></div></div>
+    <div class="statBox"><i class="fa-solid fa-bolt"></i><div><strong>PWA • TWA • APK</strong><span>Install Ready</span></div></div>
+  </div>
+</div>
+
+<script type="module">
+import { auth, onAuthStateChanged, getUserProfile } from "./firebase-auth.js";
+
+// CLOCK + TIME GREETING
+const clockEl = document.getElementById('clock');
+const dateEl = document.getElementById('date');
+const greetEl = document.getElementById('greeting');
+function updateClock(){
+  const now = new Date();
+  clockEl.textContent = now.toLocaleTimeString('en-GB',{hour12:false});
+  dateEl.textContent = now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}).toUpperCase();
+  const h = now.getHours();
+  if(h<12){ greetEl.textContent = "GOOD MORNING, CODER — READY TO BUILD?"; }
+  else if(h<17){ greetEl.textContent = "GOOD AFTERNOON — LET'S SHIP CODE"; }
+  else { greetEl.textContent = "GOOD EVENING — TIME TO DEBUG & GROW"; }
+}
+setInterval(updateClock,1000); updateClock();
+
+// LIGHTNING CANVAS
+const lCanvas = document.getElementById('lightningCanvas');
+const lCtx = lCanvas.getContext('2d');
+function resize(){ lCanvas.width=innerWidth; lCanvas.height=innerHeight; document.getElementById('gridCanvas').width=innerWidth; document.getElementById('gridCanvas').height=innerHeight; }
+resize(); window.addEventListener('resize',resize);
+function lightning(){
+  if(Math.random()>0.04) return;
+  lCtx.clearRect(0,0,lCanvas.width,lCanvas.height);
+  lCtx.strokeStyle = `rgba(56,189,248,${0.15+Math.random()*0.3})`;
+  lCtx.lineWidth = 0.6+Math.random()*1.2;
+  lCtx.shadowBlur=15; lCtx.shadowColor='#38bdf8';
+  let x = Math.random()*lCanvas.width;
+  let y=0;
+  lCtx.beginPath(); lCtx.moveTo(x,y);
+  while(y<lCanvas.height){ x+= (Math.random()-0.5)*40; y+= 20+Math.random()*40; lCtx.lineTo(x,y); }
+  lCtx.stroke();
+  setTimeout(()=>lCtx.clearRect(0,0,lCanvas.width,lCanvas.height),120);
+}
+setInterval(lightning, 180);
+
+// GRID CANVAS
+const gCanvas = document.getElementById('gridCanvas');
+const gCtx = gCanvas.getContext('2d');
+function drawGrid(){
+  gCtx.clearRect(0,0,gCanvas.width,gCanvas.height);
+  gCtx.strokeStyle='rgba(148,163,184,0.04)';
+  gCtx.lineWidth=1;
+  for(let i=0;i<gCanvas.width;i+=40){ gCtx.beginPath(); gCtx.moveTo(i,0); gCtx.lineTo(i,gCanvas.height); gCtx.stroke(); }
+  for(let i=0;i<gCanvas.height;i+=40){ gCtx.beginPath(); gCtx.moveTo(0,i); gCtx.lineTo(gCanvas.width,i); gCtx.stroke(); }
+}
+drawGrid();
+
+// SOUND + VOICE
+function playSound(freq=600, vol=0.04){
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(); const g=ctx.createGain();
+    o.frequency.value=freq; o.type='sine'; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(vol,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.18);
+    o.start(); o.stop(ctx.currentTime+0.18);
+  }catch(e){}
+}
+function speak(text){
+  try{
+    if(!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.rate=0.92; u.pitch=1.05; u.volume=0.8;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+// TERMINAL LOGS + PROGRESS
+const terminal = document.getElementById('terminal');
+const statusText = document.getElementById('statusText');
+const percent = document.getElementById('percent');
+const barFill = document.getElementById('barFill');
+const authStatus = document.getElementById('authStatus');
+
+function log(time,type,text){
+  const div=document.createElement('div');
+  div.className='termLine';
+  div.innerHTML=`<span class="t">${time}</span><span class="${type}">${text}</span>`;
+  terminal.appendChild(div);
+  setTimeout(()=>div.classList.add('show'),10);
+  if(terminal.children.length>6){ terminal.removeChild(terminal.firstChild); }
+  playSound(500+Math.random()*400,0.03);
+}
+function setProgress(p,text){
+  barFill.style.width=p+'%'; percent.textContent=p+'%';
+  if(text) statusText.textContent=text;
+}
+
+let step=0;
+const steps=[
+  ()=>{ log('00:01','warn','> INITIALIZING CODE ACADEMY OS v2.5'); setProgress(8,'BOOTING KERNEL...'); },
+  ()=>{ log('00:02','ok','> FIREBASE CORE CONNECTED'); setProgress(22,'LINKING AUTH...'); authStatus.textContent='AUTH: LINKED'; },
+  ()=>{ log('00:03','ok','> SECURE STORAGE MOUNTED'); setProgress(38,'SCANNING USER...'); speak('Initializing Code Academy'); },
+  ()=>{ log('00:04','warn','> PWA MANIFEST VERIFIED'); setProgress(55,'CHECKING SESSION...'); },
+  ()=>{ log('00:05','ok','> LIGHTNING ENGINE ONLINE'); setProgress(70,'SYNCING PROFILE...'); },
+];
+
+steps.forEach((fn,i)=>{ setTimeout(fn,i*600); });
+
+// AUTH LOGIC
+let checked=false;
+function go(url){
+  if(checked) return; checked=true;
+  setProgress(100,'REDIRECTING...');
+  log('00:06','ok',`> REDIRECT -> ${url.toUpperCase()}`);
+  playSound(880,0.06);
+  setTimeout(()=>window.location.replace(url),900);
+}
+
+setTimeout(()=>{
+  onAuthStateChanged(auth, async (user)=>{
+    if(checked) return;
+    if(user){
+      try{
+        const p = await getUserProfile(user.uid);
+        log('AUTH','ok',`> USER: ${(p?.displayName||user.email||'CODER').toUpperCase()} VERIFIED`);
+        authStatus.textContent='AUTH: VERIFIED';
+        setProgress(88,`WELCOME ${ (p?.displayName||'BACK').toUpperCase() }`);
+        go('menu.html');
+      }catch(e){ go('menu.html'); }
+    } else {
+      log('AUTH','err','> NO SESSION FOUND');
+      authStatus.textContent='AUTH: NEW USER';
+      setProgress(80,'NEW USER DETECTED');
+      setTimeout(()=>go('signup.html'),1200);
+    }
+  });
+
+  // Fail-safe
+  setTimeout(()=>{ if(!checked) go('signup.html'); },6000);
+}, 3000);
+</script>
+</body>
+</html>
