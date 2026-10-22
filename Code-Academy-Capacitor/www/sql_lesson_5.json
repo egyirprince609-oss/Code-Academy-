@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 5,
+  "lessonId": "sql-lesson-5",
+  "title": "GROUP BY and HAVING",
+  "subtitle": "GROUP BY and HAVING: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on group by and having, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Intermediate",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-5-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — GROUP BY and HAVING: foundations and mental model"
+    },
+    {
+      "id": "sql-5-page-1-teaching-2",
+      "type": "content",
+      "text": "GROUP BY and HAVING is not just a syntax topic: it is a way to make the application’s intent explicit. GROUP BY creates groups; HAVING filters aggregate results, while WHERE filters input rows before grouping. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-5-code-1-3",
+      "type": "code",
+      "title": "Example 1 — GROUP BY and HAVING: Groups rows by course",
+      "language": "sql",
+      "code": "SELECT course, COUNT(*) FROM lessons GROUP BY course;",
+      "output": "Groups rows by course."
+    },
+    {
+      "id": "sql-5-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT course, COUNT(*) FROM lessons GROUP BY course;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Groups rows by course. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-5-quiz-1-5",
+      "type": "quiz",
+      "question": "A report shows the number of lessons per course. Which clause is needed?",
+      "options": [
+        "ORDER BY course only",
+        "HAVING course before grouping",
+        "LIMIT course",
+        "GROUP BY course"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: GROUP BY course. Grouping combines rows by the selected grouping key before aggregation.",
+      "reasoning": "Grouping combines rows by the selected grouping key before aggregation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-5-code-2-6",
+      "type": "code",
+      "title": "Example 2 — GROUP BY and HAVING: Filters groups by aggregate count",
+      "language": "sql",
+      "code": "SELECT course, COUNT(*) AS n FROM lessons GROUP BY course HAVING COUNT(*) >= 10;",
+      "output": "Filters groups by aggregate count."
+    },
+    {
+      "id": "sql-5-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT course, COUNT(*) AS n FROM lessons GROUP BY course HAVING COUNT(*) >= 10;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Filters groups by aggregate count. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-5-quiz-2-8",
+      "type": "quiz",
+      "question": "A report should show only courses with at least ten lessons. Where is the aggregate-count condition placed?",
+      "options": [
+        "ORDER BY COUNT(*) >= 10",
+        "LIMIT COUNT(*) >= 10",
+        "HAVING COUNT(*) >= 10",
+        "WHERE COUNT(*) >= 10 in a standard grouped query"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: HAVING COUNT(*) >= 10. HAVING filters groups based on aggregate values after grouping.",
+      "reasoning": "HAVING filters groups based on aggregate values after grouping. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-5-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — GROUP BY and HAVING: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-5-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. GROUP BY creates groups; HAVING filters aggregate results, while WHERE filters input rows before grouping. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-5-code-3-11",
+      "type": "code",
+      "title": "Example 3 — GROUP BY and HAVING: Filters records before aggregating",
+      "language": "sql",
+      "code": "SELECT learner_id, AVG(score) FROM attempts WHERE submitted = TRUE GROUP BY learner_id;",
+      "output": "Filters records before aggregating."
+    },
+    {
+      "id": "sql-5-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT learner_id, AVG(score) FROM attempts WHERE submitted = TRUE GROUP BY learner_id;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Filters records before aggregating. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-5-quiz-2-13",
+      "type": "quiz",
+      "question": "You want only published lessons counted per course. What happens first?",
+      "options": [
+        "JOIN makes grouping unnecessary",
+        "WHERE filters published rows, then GROUP BY aggregates the remaining rows",
+        "HAVING runs before WHERE in every query",
+        "ORDER BY filters the source rows"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: WHERE filters published rows, then GROUP BY aggregates the remaining rows. Filtering input rows and filtering aggregate groups are distinct phases.",
+      "reasoning": "Filtering input rows and filtering aggregate groups are distinct phases. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-5-code-4-14",
+      "type": "code",
+      "title": "Example 4 — GROUP BY and HAVING: Finds each course’s largest lesson number",
+      "language": "sql",
+      "code": "SELECT course, MAX(lesson_number) FROM lessons GROUP BY course;",
+      "output": "Finds each course’s largest lesson number."
+    },
+    {
+      "id": "sql-5-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT course, MAX(lesson_number) FROM lessons GROUP BY course;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Finds each course’s largest lesson number. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-5-quiz-3-16",
+      "type": "quiz",
+      "question": "A grouped query selects course and COUNT(*) but groups only by a non-key title that duplicates across courses. What can happen?",
+      "options": [
+        "Different courses with the same title may be merged incorrectly",
+        "Every row becomes unique automatically",
+        "COUNT changes into AVG",
+        "The database sorts rows by XP"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Different courses with the same title may be merged incorrectly. The grouping key must represent the intended groups, not just a convenient label.",
+      "reasoning": "The grouping key must represent the intended groups, not just a convenient label. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-5-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — GROUP BY and HAVING: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-5-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. GROUP BY creates groups; HAVING filters aggregate results, while WHERE filters input rows before grouping. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-5-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses group by and having. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-5-quiz-5-20",
+      "type": "quiz",
+      "question": "A query needs groups based on learner and course together. What should GROUP BY contain?",
+      "options": [
+        "Only the output alias of the count",
+        "No grouping column",
+        "A WHERE clause on the aggregate",
+        "Both learner_id and course_id"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Both learner_id and course_id. A composite grouping key preserves the learner-course relationship.",
+      "reasoning": "A composite grouping key preserves the learner-course relationship. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-5-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: GROUP BY creates groups; HAVING filters aggregate results, while WHERE filters input rows before grouping. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

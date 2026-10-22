@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#030815">
+  <title>Account security | Code Academy</title>
+  <link rel="icon" type="image/png" href="logo.png">
+  <style>
+    :root{color-scheme:dark;--bg:#030815;--panel:#0b172b;--line:#1c3858;--text:#f1f7ff;--muted:#a5b7d0;--cyan:#67e8f9;--violet:#a78bfa;--bad:#fca5a5;--good:#86efac}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;padding:22px;background:radial-gradient(ellipse at 12% 0%,#06304a 0,transparent 38%),radial-gradient(ellipse at 100% 20%,#241044 0,transparent 34%),var(--bg);font:15px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--text)}
+    .wrap{width:min(490px,100%)}.brand{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:18px}.brand img{width:48px;height:48px;object-fit:contain}.brand strong{display:block;letter-spacing:.08em;font-size:.88rem}.brand span{display:block;font-size:.7rem;color:var(--muted)}
+    .card{border:1px solid var(--line);border-radius:24px;background:linear-gradient(150deg,#0b1a31f7,#071020f7);padding:clamp(22px,5vw,32px);box-shadow:0 28px 85px #0008}.icon{width:58px;height:58px;display:grid;place-items:center;border-radius:17px;background:#102d43;border:1px solid #2e6a87;color:var(--cyan);font-size:1.65rem;margin-bottom:18px}.eyebrow{font-size:.73rem;text-transform:uppercase;letter-spacing:.15em;font-weight:850;color:var(--cyan)}h1{font-size:clamp(1.6rem,6vw,2.1rem);line-height:1.15;letter-spacing:-.035em;margin:9px 0 12px}p{color:var(--muted);margin:0 0 14px}.status{padding:12px 13px;border:1px solid #2b4765;border-radius:12px;background:#09162a;color:#d9e7fa;font-size:.91rem;margin:18px 0;white-space:pre-wrap}.status.success{border-color:#1a6b54;color:var(--good)}.status.error{border-color:#7f343a;color:var(--bad)}.field{display:grid;gap:7px;margin:14px 0}.field label{font-size:.83rem;font-weight:750}.field input{width:100%;padding:13px 14px;border-radius:11px;border:1px solid #2a4769;background:#050d1c;color:var(--text);font:inherit;outline:none}.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #67e8f91c}.actions{display:grid;gap:10px;margin-top:17px}.btn{border:1px solid #294765;border-radius:12px;background:#102541;color:var(--text);padding:12px 15px;text-align:center;font-weight:850;font:inherit;cursor:pointer;text-decoration:none}.btn.primary{border:0;background:linear-gradient(110deg,var(--cyan),var(--violet));color:#07101e}.btn:disabled{opacity:.55;cursor:wait}.small{font-size:.8rem;margin-top:14px}.hidden{display:none!important}a{color:var(--cyan)}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header class="brand"><img src="logo.png" alt="Code Academy logo"><div><strong>CODE ACADEMY</strong><span>We Learn, We Code, We Succeed</span></div></header>
+    <section class="card" aria-live="polite">
+      <div class="icon" id="stateIcon" aria-hidden="true">✦</div>
+      <div class="eyebrow">Account security</div>
+      <h1 id="stateTitle">Checking your secure link…</h1>
+      <p id="stateDescription">Code Academy is validating this one-time Firebase action link. Please keep this page open.</p>
+      <div id="stateMessage" class="status">Connecting securely…</div>
+
+      <form id="resetForm" class="hidden" autocomplete="on">
+        <p id="resetEmailLabel"></p>
+        <div class="field"><label for="newPassword">New password</label><input id="newPassword" type="password" minlength="8" autocomplete="new-password" required></div>
+        <div class="field"><label for="confirmPassword">Confirm new password</label><input id="confirmPassword" type="password" minlength="8" autocomplete="new-password" required></div>
+        <div class="actions"><button id="resetSubmit" class="btn primary" type="submit">Save new password</button></div>
+      </form>
+
+      <div id="pendingActions" class="actions hidden">
+        <button class="btn primary" id="resendButton" type="button">Resend verification email</button>
+        <button class="btn" id="checkButton" type="button">I have verified my email</button>
+      </div>
+      <div id="finalActions" class="actions hidden">
+        <a id="continueButton" class="btn primary" href="login.html">Continue</a>
+        <a class="btn" href="signup.html">Create an account</a>
+      </div>
+      <p class="small">Never share a verification or password-reset link with anyone. Code Academy will not ask you to send us your password.</p>
+    </section>
+  </main>
+
+  <script type="module">
+    import {
+      auth,
+      applyActionCode,
+      checkActionCode,
+      verifyPasswordResetCode,
+      confirmPasswordReset,
+      reload,
+      needsEmailVerification,
+      resendVerificationEmail,
+      processPendingReferral,
+      getFriendlyAuthError
+    } from "./authentication.js";
+
+    const $ = id => document.getElementById(id);
+    const params = new URLSearchParams(location.search);
+    const mode = params.get("mode") || "";
+    const actionCode = params.get("oobCode") || "";
+    let resetEmail = "";
+
+    function setState(title, description, message, kind = "") {
+      $("stateTitle").textContent = title;
+      $("stateDescription").textContent = description;
+      const stateMessage = $("stateMessage");
+      stateMessage.className = "status" + (kind ? " " + kind : "");
+      stateMessage.textContent = message;
+    }
+    function showFinalActions(href = "login.html", label = "Continue to login") {
+      $("continueButton").href = href;
+      $("continueButton").textContent = label;
+      $("finalActions").classList.remove("hidden");
+    }
+    function safeLoginLink(verified = false) {
+      return verified ? "login.html?verified=1" : "login.html";
+    }
+    function showFriendlyError(error, context = "verification") {
+      console.warn("Account action did not complete:", error?.code || error);
+      setState("This link could not be completed", getFriendlyAuthError(error, context), "Request a new link if this one has expired or has already been used.", "error");
+      $("pendingActions").classList.add("hidden");
+      $("resetForm").classList.add("hidden");
+      showFinalActions(safeLoginLink(false), "Return to login");
+    }
+
+    async function handleVerification() {
+      if (!actionCode) throw Object.assign(new Error("Missing verification code"), { code: "auth/invalid-action-code" });
+      // Check the one-time code first so we can avoid redirecting a session for
+      // a different email address than the one this link verifies.
+      const actionInfo = await checkActionCode(auth, actionCode);
+      const actionEmail = String(actionInfo?.data?.email || "").toLowerCase();
+      await applyActionCode(auth, actionCode);
+      const activeUser = auth.currentUser;
+
+      if (activeUser) {
+        await reload(activeUser);
+        const activeEmail = String(activeUser.email || "").toLowerCase();
+        if (activeUser.emailVerified && (!actionEmail || activeEmail === actionEmail)) {
+          await processPendingReferral(activeUser);
+          setState("Email verified successfully", "Your Code Academy account is now verified.", "Verification confirmed by Firebase. Opening your dashboard…", "success");
+          $("stateIcon").textContent = "✓";
+          setTimeout(() => location.replace("menu.html?verified=1"), 700);
+          return;
+        }
+        setState("Email verified", "The link was valid, but this browser is signed in to a different account. Sign in using the email address you just verified.", "Your email was verified; we did not switch accounts automatically.", "success");
+        showFinalActions(safeLoginLink(true), "Continue to login");
+        return;
+      }
+
+      // An email-verification link proves control of the email, but is not an
+      // authentication session by itself. Do not pretend a UID is a login token.
+      setState("Email verified successfully", "Your email address is confirmed. Sign in to open the account on this browser.", "The email link verifies the account but does not sign you in on a browser that has no active session.", "success");
+      $("stateIcon").textContent = "✓";
+      showFinalActions(safeLoginLink(true), "Sign in to Code Academy");
+    }
+
+    async function preparePasswordReset() {
+      if (!actionCode) throw Object.assign(new Error("Missing reset code"), { code: "auth/expired-action-code" });
+      resetEmail = await verifyPasswordResetCode(auth, actionCode);
+      $("resetEmailLabel").textContent = `Set a new password for ${resetEmail}.`;
+      $("resetForm").classList.remove("hidden");
+      $("finalActions").classList.add("hidden");
+      setState("Create a new password", "Choose a password you have not used on another account.", "The password-reset link is valid and ready to use.", "success");
+      $("stateIcon").textContent = "↻";
+      $("newPassword").focus();
+    }
+
+    $("resetForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const password = $("newPassword").value;
+      const confirmPassword = $("confirmPassword").value;
+      if (password.length < 8) {
+        setState("Choose a stronger password", "Use at least eight characters.", "The new password is too short.", "error"); return;
+      }
+      if (password !== confirmPassword) {
+        setState("Passwords do not match", "Enter the same new password in both fields.", "Please check the confirmation field.", "error"); return;
+      }
+      const button = $("resetSubmit");
+      button.disabled = true;
+      button.textContent = "Saving password…";
+      try {
+        await confirmPasswordReset(auth, actionCode, password);
+        $("resetForm").classList.add("hidden");
+        setState("Password changed successfully", "Your new password is ready. Return to Code Academy and sign in.", `Password updated for ${resetEmail}.`, "success");
+        $("stateIcon").textContent = "✓";
+        showFinalActions("login.html?passwordReset=success", "Log in with your new password");
+      } catch (error) {
+        showFriendlyError(error, "reset");
+      } finally {
+        button.disabled = false;
+        button.textContent = "Save new password";
+      }
+    });
+
+    async function showPendingVerification() {
+      const user = auth.currentUser;
+      if (!user) {
+        setState("Verify your email", "Open the verification link we sent to your inbox. If that link was opened in a different browser, you may need to log in after verification.", "No signed-in account is available in this browser. Use login to continue after verification.");
+        showFinalActions("login.html", "Go to login");
+        return;
+      }
+      await reload(user);
+      if (!needsEmailVerification(user)) {
+        setState("Your email is already verified", "Your Code Academy account is ready.", "Opening your dashboard…", "success");
+        setTimeout(() => location.replace("menu.html?verified=1"), 500);
+        return;
+      }
+      setState("Verify your email to continue", `A verification link is needed for ${user.email || "your email address"}.`, "Open the newest verification email and tap its secure link. You can resend it below.");
+      $("pendingActions").classList.remove("hidden");
+      $("resendButton").addEventListener("click", async () => {
+        const button = $("resendButton");
+        button.disabled = true;
+        button.textContent = "Sending…";
+        try {
+          const result = await resendVerificationEmail(user);
+          if (result.alreadyVerified) {
+            location.replace("menu.html?verified=1");
+            return;
+          }
+          setState("Verification email sent", `A fresh link was sent to ${user.email}. Check your inbox and spam folder.`, "Use the newest message if you have requested more than one.", "success");
+        } catch (error) {
+          setState("Could not resend the email", getFriendlyAuthError(error, "verification"), "Please try again later.", "error");
+        } finally {
+          button.disabled = false;
+          button.textContent = "Resend verification email";
+        }
+      });
+      $("checkButton").addEventListener("click", async () => {
+        const button = $("checkButton");
+        button.disabled = true;
+        try {
+          await reload(user);
+          if (!needsEmailVerification(user)) {
+            await processPendingReferral(user);
+            location.replace("menu.html?verified=1");
+          } else {
+            setState("Verification not detected yet", "Open the verification message and tap the link first.", "Firebase has not confirmed the email address yet.");
+          }
+        } catch (error) {
+          setState("Could not check verification", getFriendlyAuthError(error, "verification"), "Try again when your connection is stable.", "error");
+        } finally {
+          button.disabled = false;
+        }
+      });
+    }
+
+    async function handleEmailAction() {
+      if (mode === "verifyEmail") {
+        try { await handleVerification(); }
+        catch (error) { showFriendlyError(error, "verification"); }
+        return;
+      }
+      if (mode === "resetPassword") {
+        try { await preparePasswordReset(); }
+        catch (error) { showFriendlyError(error, "reset"); }
+        return;
+      }
+      if (mode === "recoverEmail") {
+        try {
+          if (!actionCode) throw Object.assign(new Error("Missing recovery code"), { code: "auth/invalid-action-code" });
+          await applyActionCode(auth, actionCode);
+          setState("Email address recovered", "The requested email recovery action was completed.", "Sign in again to check your account.", "success");
+          showFinalActions("login.html", "Return to login");
+        } catch (error) { showFriendlyError(error, "verification"); }
+        return;
+      }
+      if (params.get("pending") === "1") {
+        try { await showPendingVerification(); }
+        catch (error) { showFriendlyError(error, "verification"); }
+        return;
+      }
+      setState("This account link is incomplete", "Open the complete verification or password-reset link from the email sent by Code Academy.", "No valid email action was found in this page URL.", "error");
+      showFinalActions("login.html", "Go to login");
+    }
+
+    handleEmailAction();
+  </script>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

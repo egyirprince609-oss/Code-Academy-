@@ -1,0 +1,176 @@
+{
+  "course": "r",
+  "lessonNumber": 8,
+  "lessonId": "r-lesson-8",
+  "title": "Apply Patterns and List Processing",
+  "subtitle": "Apply Patterns and List Processing: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on apply patterns and list processing, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "r-8-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Apply Patterns and List Processing: foundations and mental model"
+    },
+    {
+      "id": "r-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Apply Patterns and List Processing is not just a syntax topic: it is a way to make the application’s intent explicit. Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. In the Code Academy dashboard, that idea matters because Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "r-8-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Apply Patterns and List Processing: The loop visits each integer in the sequence",
+      "language": "r",
+      "code": "for (lesson in 1:4) print(lesson)",
+      "output": "The loop visits each integer in the sequence."
+    },
+    {
+      "id": "r-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “for (lesson in 1:4) print(lesson)”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Expected behavior: The loop visits each integer in the sequence. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-8-quiz-1-5",
+      "type": "quiz",
+      "question": "A loop must print lesson numbers 1 through 10 exactly once. Which boundary rule includes lesson 10?",
+      "options": [
+        "Start at 1 and continue while the counter is <= 10",
+        "Start at 1 and continue while the counter is < 1",
+        "Start at 0 and continue only while the counter is > 10",
+        "Increment the counter only when the loop finishes"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Start at 1 and continue while the counter is <= 10. The inclusive upper-bound test includes 10; the counter must advance every iteration.",
+      "reasoning": "The inclusive upper-bound test includes 10; the counter must advance every iteration. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-8-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Apply Patterns and List Processing: lapply applies a function to each list element",
+      "language": "r",
+      "code": "lapply(list(1:3, 4:6), sum)",
+      "output": "lapply applies a function to each list element."
+    },
+    {
+      "id": "r-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “lapply(list(1:3, 4:6), sum)”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: lapply applies a function to each list element. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-8-quiz-2-8",
+      "type": "quiz",
+      "question": "A `while remaining > 0` loop never finishes. Which defect is most likely?",
+      "options": [
+        "The output includes a newline",
+        "The variable has a descriptive name",
+        "The condition is evaluated before the body",
+        "The loop body never reduces or otherwise changes remaining toward the stop condition"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The loop body never reduces or otherwise changes remaining toward the stop condition. A terminating loop must make progress toward a condition that eventually becomes false.",
+      "reasoning": "A terminating loop must make progress toward a condition that eventually becomes false. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-8-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Apply Patterns and List Processing: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "r-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "r-8-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Apply Patterns and List Processing: vapply requests a specific result type",
+      "language": "r",
+      "code": "scores <- c(4, 5, 3)\nresult <- vapply(scores, function(x) x * 5, numeric(1))",
+      "output": "vapply requests a specific result type."
+    },
+    {
+      "id": "r-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “scores <- c(4, 5, 3)”: Assigns the evaluated value to a named R object. Line 2 — “result <- vapply(scores, function(x) x * 5, numeric(1))”: Assigns the evaluated value to a named R object. Expected behavior: vapply requests a specific result type. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-8-quiz-2-13",
+      "type": "quiz",
+      "question": "An array has three elements. Which index-based condition avoids an out-of-range access?",
+      "options": [
+        "i < 0",
+        "i == array.length + 1",
+        "i < array.length",
+        "i <= array.length"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: i < array.length. The last valid index is length minus one, so the loop condition must stay strictly below length.",
+      "reasoning": "The last valid index is length minus one, so the loop condition must stay strictly below length. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Apply Patterns and List Processing: Unlists simple logical values before summing",
+      "language": "r",
+      "code": "attempts <- list(TRUE, FALSE, TRUE)\ncorrect <- sum(unlist(attempts))",
+      "output": "Unlists simple logical values before summing."
+    },
+    {
+      "id": "r-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “attempts <- list(TRUE, FALSE, TRUE)”: Assigns the evaluated value to a named R object. Line 2 — “correct <- sum(unlist(attempts))”: Assigns the evaluated value to a named R object. Expected behavior: Unlists simple logical values before summing. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "r-8-quiz-3-16",
+      "type": "quiz",
+      "question": "A loop should skip low scores but keep processing later scores. Which action fits?",
+      "options": [
+        "Reset the index to zero",
+        "Continue the current iteration",
+        "Break out of the entire loop",
+        "Return from the whole function"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Continue the current iteration. Continue skips the current iteration, while break exits the loop.",
+      "reasoning": "Continue skips the current iteration, while break exits the loop. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Apply Patterns and List Processing: applied challenge and mastery check"
+    },
+    {
+      "id": "r-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. For the Code Academy dashboard, Lesson attempts and scores can be analyzed with vectors and data frames while handling missing values explicitly. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "r-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses apply patterns and list processing. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "r-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A list can change size during iteration. What should the implementation do?",
+      "options": [
+        "Use a deliberate iteration strategy and account for how changes affect indexes or iterators",
+        "Assume every index remains valid after any mutation",
+        "Ignore the collection’s size",
+        "Increment a counter without checking bounds"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Use a deliberate iteration strategy and account for how changes affect indexes or iterators. Mutating a collection can invalidate indexes or iterators and can cause missed or repeated items.",
+      "reasoning": "Mutating a collection can invalidate indexes or iterators and can cause missed or repeated items. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "r-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 1,
+  "lessonId": "sql-lesson-1",
+  "title": "SELECT: Read the Data You Need",
+  "subtitle": "SELECT: Read the Data You Need: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on select: read the data you need, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-1-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — SELECT: Read the Data You Need: foundations and mental model"
+    },
+    {
+      "id": "sql-1-page-1-teaching-2",
+      "type": "content",
+      "text": "SELECT: Read the Data You Need is not just a syntax topic: it is a way to make the application’s intent explicit. Select only the columns required by the caller. Explicit column lists make a query easier to review and protect against unrelated schema changes. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-1-code-1-3",
+      "type": "code",
+      "title": "Example 1 — SELECT: Read the Data You Need: Returns only the requested columns",
+      "language": "sql",
+      "code": "SELECT title, lesson_number FROM lessons;",
+      "output": "Returns only the requested columns."
+    },
+    {
+      "id": "sql-1-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT title, lesson_number FROM lessons;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Returns only the requested columns. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-1-quiz-1-5",
+      "type": "quiz",
+      "question": "A dashboard query needs a lesson ID and title. Which SELECT list is most maintainable?",
+      "options": [
+        "SELECT * for every production query by habit",
+        "SELECT only a constant without the needed data",
+        "Omit the FROM clause for a normal table query",
+        "SELECT lesson_id, title ..."
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: SELECT lesson_id, title .... Explicit columns document the result contract and avoid pulling unnecessary fields.",
+      "reasoning": "Explicit columns document the result contract and avoid pulling unnecessary fields. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-1-code-2-6",
+      "type": "code",
+      "title": "Example 2 — SELECT: Read the Data You Need: Counts lessons per course",
+      "language": "sql",
+      "code": "SELECT course, COUNT(*) AS lesson_count FROM lessons GROUP BY course;",
+      "output": "Counts lessons per course."
+    },
+    {
+      "id": "sql-1-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT course, COUNT(*) AS lesson_count FROM lessons GROUP BY course;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Counts lessons per course. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-1-quiz-2-8",
+      "type": "quiz",
+      "question": "A table later gains a sensitive field. What is a risk of `SELECT *` in a query feeding an API?",
+      "options": [
+        "The rows become sorted automatically",
+        "The sensitive column is deleted",
+        "The API may unexpectedly include a field it was not designed to expose",
+        "The query becomes a transaction"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The API may unexpectedly include a field it was not designed to expose. Explicit projection limits accidental coupling to schema changes.",
+      "reasoning": "Explicit projection limits accidental coupling to schema changes. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-1-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — SELECT: Read the Data You Need: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-1-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Select only the columns required by the caller. Explicit column lists make a query easier to review and protect against unrelated schema changes. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-1-code-3-11",
+      "type": "code",
+      "title": "Example 3 — SELECT: Read the Data You Need: Uses an alias to clarify a result column",
+      "language": "sql",
+      "code": "SELECT title AS lesson_title FROM lessons;",
+      "output": "Uses an alias to clarify a result column."
+    },
+    {
+      "id": "sql-1-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT title AS lesson_title FROM lessons;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Uses an alias to clarify a result column. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-1-quiz-2-13",
+      "type": "quiz",
+      "question": "A query returns five rows during testing but order matters to the UI. What should be added?",
+      "options": [
+        "Remove the selected columns",
+        "ORDER BY with a stable tie-breaker",
+        "Assume the physical table order is guaranteed",
+        "Use a display CSS rule inside SQL"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: ORDER BY with a stable tie-breaker. Selection alone does not guarantee result order.",
+      "reasoning": "Selection alone does not guarantee result order. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-1-code-4-14",
+      "type": "code",
+      "title": "Example 4 — SELECT: Read the Data You Need: Keeps the result limited to published lessons",
+      "language": "sql",
+      "code": "SELECT lesson_id, title FROM lessons WHERE published = TRUE;",
+      "output": "Keeps the result limited to published lessons."
+    },
+    {
+      "id": "sql-1-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT lesson_id, title FROM lessons WHERE published = TRUE;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Keeps the result limited to published lessons. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-1-quiz-3-16",
+      "type": "quiz",
+      "question": "The caller only needs a count of attempts. Which expression is appropriate?",
+      "options": [
+        "COUNT(*) for the number of rows",
+        "SELECT * and count visible rows manually",
+        "SUM(title)",
+        "AVG(learner_name)"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: COUNT(*) for the number of rows. COUNT(*) counts matching rows without transferring all columns.",
+      "reasoning": "COUNT(*) counts matching rows without transferring all columns. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-1-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — SELECT: Read the Data You Need: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-1-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Select only the columns required by the caller. Explicit column lists make a query easier to review and protect against unrelated schema changes. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-1-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses select: read the data you need. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-1-quiz-5-20",
+      "type": "quiz",
+      "question": "A user-provided filter controls the query. What protects query structure from injected values?",
+      "options": [
+        "Concatenate raw input into SQL",
+        "Hide the input field",
+        "Escape the value for HTML only",
+        "Use a parameterized predicate for the filter value"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Use a parameterized predicate for the filter value. Parameters keep untrusted values separate from SQL syntax.",
+      "reasoning": "Parameters keep untrusted values separate from SQL syntax. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-1-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Select only the columns required by the caller. Explicit column lists make a query easier to review and protect against unrelated schema changes. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

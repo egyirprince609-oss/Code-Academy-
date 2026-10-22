@@ -1,0 +1,3040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+>
+
+<title>Logic Vault | Code Academy</title>
+
+<style>
+:root{
+    --bg:#050816;
+    --panel:#0a1020;
+    --panel2:#0d1628;
+    --neon:#00ffff;
+    --neon-soft:rgba(0,255,255,.20);
+    --neon-dim:rgba(0,255,255,.10);
+    --text:#e2e8f0;
+    --muted:#7f8ea3;
+    --danger:#ff315d;
+    --success:#00ff88;
+    --warning:#ffaa00;
+    --purple:#a855f7;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    min-height:100%;
+    overflow:hidden;
+    background:
+        linear-gradient(rgba(0,255,255,.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,255,255,.045) 1px,transparent 1px),
+        var(--bg);
+    background-size:32px 32px;
+    color:var(--text);
+    font-family:'Courier New',monospace;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+}
+
+button,
+input{
+    font-family:inherit;
+}
+
+button{
+    user-select:none;
+    touch-action:manipulation;
+}
+
+/* =========================================================
+   APP
+========================================================= */
+
+.app{
+    width:100%;
+    max-width:520px;
+    height:100dvh;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    padding:
+        max(8px,env(safe-area-inset-top))
+        10px
+        max(8px,env(safe-area-inset-bottom));
+    gap:7px;
+    overflow:hidden;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.header{
+    flex:0 0 42px;
+    height:42px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:7px;
+}
+
+.back-btn{
+    height:32px;
+    padding:0 10px;
+    border-radius:8px;
+    border:1px solid rgba(255,49,93,.55);
+    background:rgba(255,49,93,.10);
+    color:var(--danger);
+    font-size:10px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.logo{
+    text-align:center;
+    color:var(--neon);
+    font-size:14px;
+    font-weight:900;
+    letter-spacing:.5px;
+    text-shadow:0 0 15px rgba(0,255,255,.7);
+    white-space:nowrap;
+}
+
+.header-actions{
+    display:flex;
+    gap:5px;
+}
+
+.small-btn{
+    height:30px;
+    padding:0 8px;
+    border-radius:7px;
+    border:1px solid;
+    background:rgba(255,255,255,.03);
+    font-size:9px;
+    font-weight:900;
+    cursor:pointer;
+}
+
+.guide-btn{
+    color:var(--neon);
+    border-color:rgba(0,255,255,.5);
+}
+
+.pause-btn{
+    color:var(--warning);
+    border-color:rgba(255,170,0,.5);
+}
+
+/* =========================================================
+   CONNECTION
+========================================================= */
+
+.connection{
+    position:fixed;
+    top:6px;
+    right:7px;
+    z-index:20;
+    font-size:8px;
+    padding:4px 7px;
+    border-radius:20px;
+    background:rgba(0,0,0,.65);
+    border:1px solid rgba(255,255,255,.1);
+    color:var(--muted);
+    opacity:.75;
+}
+
+.connection.online{
+    color:var(--success);
+    border-color:rgba(0,255,136,.35);
+}
+
+.connection.offline{
+    color:var(--warning);
+}
+
+/* =========================================================
+   WELCOME
+========================================================= */
+
+.welcome{
+    flex:1;
+    min-height:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    text-align:center;
+    overflow:hidden;
+}
+
+.vault-icon{
+    width:64px;
+    height:64px;
+    border:2px solid var(--neon);
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+    box-shadow:
+        0 0 20px rgba(0,255,255,.2),
+        inset 0 0 20px rgba(0,255,255,.08);
+}
+
+.welcome-title{
+    font-size:28px;
+    line-height:1;
+    font-weight:900;
+    color:var(--neon);
+    text-shadow:0 0 25px rgba(0,255,255,.7);
+}
+
+.welcome-subtitle{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.rules-box{
+    width:100%;
+    max-width:440px;
+    background:rgba(10,16,32,.88);
+    border:1px solid rgba(0,255,255,.25);
+    border-radius:12px;
+    padding:12px 14px;
+    text-align:left;
+    font-size:10px;
+    line-height:1.65;
+}
+
+.rules-title{
+    color:var(--neon);
+    font-size:11px;
+    margin-bottom:4px;
+}
+
+.reward-preview{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+}
+
+.reward-chip{
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:9px;
+    font-weight:900;
+    background:rgba(0,255,255,.07);
+    border:1px solid rgba(0,255,255,.2);
+}
+
+.name-input{
+    width:100%;
+    max-width:440px;
+    height:42px;
+    background:#050816;
+    border:1px solid rgba(0,255,255,.3);
+    border-radius:9px;
+    color:var(--neon);
+    text-align:center;
+    font-size:13px;
+    font-weight:900;
+    outline:none;
+}
+
+.name-input:focus{
+    border-color:var(--neon);
+    box-shadow:0 0 18px rgba(0,255,255,.2);
+}
+
+.start-btn{
+    width:100%;
+    max-width:440px;
+    height:43px;
+    border:none;
+    border-radius:9px;
+    background:linear-gradient(135deg,#00ffff,#00b7ff);
+    color:#031018;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(0,255,255,.14);
+}
+
+/* =========================================================
+   GAME
+========================================================= */
+
+.game{
+    display:none;
+    flex:1;
+    min-height:0;
+    flex-direction:column;
+    gap:7px;
+    overflow:hidden;
+}
+
+.game.active{
+    display:flex;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.stats{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:5px;
+}
+
+.stat{
+    min-width:0;
+    background:rgba(10,16,32,.85);
+    border:1px solid rgba(0,255,255,.16);
+    border-radius:8px;
+    padding:5px 3px;
+    text-align:center;
+}
+
+.stat-label{
+    font-size:7px;
+    color:var(--muted);
+    text-transform:uppercase;
+}
+
+.stat-val{
+    margin-top:2px;
+    color:var(--neon);
+    font-size:14px;
+    font-weight:900;
+}
+
+/* =========================================================
+   PROGRESS
+========================================================= */
+
+.progress-wrap{
+    flex:0 0 auto;
+}
+
+.progress-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:3px;
+    font-size:8px;
+    color:var(--muted);
+}
+
+.progress-bar{
+    height:4px;
+    background:rgba(255,255,255,.06);
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg,var(--neon),#00ff88);
+    box-shadow:0 0 8px rgba(0,255,255,.5);
+    transition:width .3s ease;
+}
+
+/* =========================================================
+   CLUES
+========================================================= */
+
+.clues-box{
+    flex:1 1 auto;
+    min-height:70px;
+    max-height:120px;
+    background:rgba(10,16,32,.8);
+    border:1px solid rgba(0,255,255,.16);
+    border-radius:9px;
+    padding:7px 9px;
+    overflow:hidden;
+}
+
+.box-title{
+    color:var(--neon);
+    font-size:8px;
+    margin-bottom:5px;
+    font-weight:900;
+}
+
+.clues{
+    height:calc(100% - 15px);
+    overflow-y:auto;
+    scrollbar-width:none;
+}
+
+.clues::-webkit-scrollbar{
+    display:none;
+}
+
+.clue{
+    padding:4px 7px;
+    margin-bottom:3px;
+    border-left:2px solid var(--neon);
+    border-radius:4px;
+    background:rgba(0,255,255,.045);
+    font-size:9px;
+    line-height:1.3;
+}
+
+.clue.success{
+    border-left-color:var(--success);
+    background:rgba(0,255,136,.07);
+}
+
+.clue.warning{
+    border-left-color:var(--warning);
+}
+
+/* =========================================================
+   CODE DISPLAY
+========================================================= */
+
+.code-section{
+    flex:0 0 auto;
+    text-align:center;
+}
+
+.code-title{
+    color:var(--muted);
+    font-size:8px;
+    margin-bottom:5px;
+}
+
+.code-display{
+    display:flex;
+    justify-content:center;
+    gap:7px;
+}
+
+.digit{
+    width:52px;
+    height:48px;
+    border:2px solid rgba(0,255,255,.25);
+    border-radius:9px;
+    background:#050816;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--neon);
+    font-size:23px;
+    font-weight:900;
+    transition:.15s;
+}
+
+.digit.filled{
+    border-color:var(--neon);
+    background:rgba(0,255,255,.09);
+    box-shadow:0 0 15px rgba(0,255,255,.25);
+}
+
+/* =========================================================
+   KEYPAD
+========================================================= */
+
+.keypad{
+    flex:0 0 auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:5px;
+}
+
+.key{
+    height:40px;
+    border:1px solid rgba(0,255,255,.18);
+    border-radius:8px;
+    background:#050816;
+    color:var(--text);
+    font-size:17px;
+    font-weight:900;
+    cursor:pointer;
+    transition:.12s;
+}
+
+.key:active{
+    transform:scale(.94);
+    border-color:var(--neon);
+}
+
+.key.highlight{
+    border-color:var(--warning);
+    color:var(--warning);
+    background:rgba(255,170,0,.18);
+    box-shadow:0 0 18px rgba(255,170,0,.35);
+    animation:pulseHint .8s infinite;
+}
+
+.key.action{
+    color:var(--success);
+    border-color:rgba(0,255,136,.35);
+    background:rgba(0,255,136,.07);
+}
+
+.key.clear{
+    color:var(--danger);
+    border-color:rgba(255,49,93,.3);
+    background:rgba(255,49,93,.06);
+}
+
+@keyframes pulseHint{
+    50%{transform:scale(1.06)}
+}
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+.msg{
+    position:fixed;
+    left:50%;
+    top:52px;
+    transform:translateX(-50%) translateY(-20px);
+    width:calc(100% - 30px);
+    max-width:400px;
+    padding:10px 14px;
+    border-radius:9px;
+    text-align:center;
+    font-size:10px;
+    font-weight:900;
+    z-index:1000;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+}
+
+.msg.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+.msg.success{
+    color:#001b10;
+    background:rgba(0,255,136,.95);
+}
+
+.msg.error{
+    color:#fff;
+    background:rgba(255,49,93,.95);
+}
+
+.msg.warning{
+    color:#211500;
+    background:rgba(255,170,0,.95);
+}
+
+/* =========================================================
+   REWARD
+========================================================= */
+
+.reward-pop{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:900;
+    background:rgba(0,0,0,.55);
+    backdrop-filter:blur(5px);
+}
+
+.reward-pop.show{
+    display:flex;
+}
+
+.reward-card{
+    width:min(88%,320px);
+    padding:25px 18px;
+    border-radius:18px;
+    text-align:center;
+    background:#081221;
+    border:1px solid var(--success);
+    box-shadow:0 0 45px rgba(0,255,136,.2);
+    animation:rewardIn .35s ease;
+}
+
+.reward-icon{
+    font-size:40px;
+    margin-bottom:8px;
+}
+
+.reward-card h2{
+    color:var(--success);
+    font-size:18px;
+}
+
+.reward-values{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:14px 0;
+}
+
+.reward-value{
+    padding:8px 12px;
+    border-radius:9px;
+    background:rgba(255,255,255,.04);
+    font-size:12px;
+    font-weight:900;
+}
+
+.reward-note{
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.5;
+}
+
+@keyframes rewardIn{
+    from{
+        transform:scale(.75);
+        opacity:0;
+    }
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+.pause-overlay{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(7px);
+    z-index:800;
+}
+
+.pause-overlay.show{
+    display:flex;
+}
+
+.pause-card{
+    width:min(88%,300px);
+    background:#081221;
+    border:1px solid var(--warning);
+    border-radius:15px;
+    padding:22px;
+    text-align:center;
+}
+
+.pause-card h2{
+    color:var(--warning);
+    font-size:20px;
+    margin-bottom:7px;
+}
+
+.pause-card p{
+    color:var(--muted);
+    font-size:10px;
+    margin-bottom:15px;
+}
+
+.resume-btn{
+    width:100%;
+    height:38px;
+    border:none;
+    border-radius:8px;
+    background:var(--warning);
+    color:#1b1200;
+    font-weight:900;
+}
+
+/* =========================================================
+   MOBILE OPTIMIZATION
+========================================================= */
+
+@media(max-height:650px){
+
+    .app{
+        gap:5px;
+        padding-left:8px;
+        padding-right:8px;
+    }
+
+    .header{
+        flex-basis:36px;
+        height:36px;
+    }
+
+    .back-btn{
+        height:28px;
+        padding:0 7px;
+        font-size:9px;
+    }
+
+    .small-btn{
+        height:27px;
+        padding:0 6px;
+        font-size:8px;
+    }
+
+    .logo{
+        font-size:12px;
+    }
+
+    .stat{
+        padding:3px 2px;
+    }
+
+    .stat-val{
+        font-size:12px;
+    }
+
+    .clues-box{
+        max-height:92px;
+        min-height:55px;
+    }
+
+    .digit{
+        width:46px;
+        height:42px;
+        font-size:20px;
+    }
+
+    .key{
+        height:35px;
+        font-size:15px;
+    }
+
+    .welcome{
+        gap:8px;
+    }
+
+    .vault-icon{
+        width:50px;
+        height:50px;
+        font-size:24px;
+    }
+
+    .welcome-title{
+        font-size:23px;
+    }
+
+    .rules-box{
+        padding:9px 11px;
+        font-size:9px;
+        line-height:1.45;
+    }
+
+    .name-input{
+        height:36px;
+    }
+
+    .start-btn{
+        height:37px;
+    }
+}
+
+@media(max-width:360px){
+
+    .header-actions{
+        gap:2px;
+    }
+
+    .small-btn{
+        padding:0 5px;
+    }
+
+    .logo{
+        font-size:11px;
+    }
+
+    .stats{
+        gap:3px;
+    }
+
+    .stat-label{
+        font-size:6px;
+    }
+
+    .stat-val{
+        font-size:11px;
+    }
+
+    .digit{
+        width:42px;
+        height:39px;
+    }
+
+    .key{
+        height:33px;
+    }
+}
+</style>
+<script id="ca-english-voice-bridge">(function(){if(window.__caEnglishVoiceBridgeInstalled||!window.SpeechSynthesisUtterance)return;try{const Native=window.SpeechSynthesisUtterance;window.SpeechSynthesisUtterance=new Proxy(Native,{construct(target,args){const utter=Reflect.construct(target,args,target);utter.lang='en-US';try{const voices=window.speechSynthesis?.getVoices?.()||[];const voice=voices.find(v=>/^en(-|_)/i.test(v.lang))||voices.find(v=>String(v.lang||'').toLowerCase().startsWith('en'));if(voice){utter.voice=voice;utter.lang=voice.lang;}}catch(e){}return utter;}});window.__caEnglishVoiceBridgeInstalled=true;}catch(e){console.warn('English speech voice selection is unavailable in this browser.',e);}})();</script>
+<link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#020617"><meta name="robots" content="index,follow"><meta name="description" content="Play Logic Vault on Code Academy. Practise with 200 curated challenges, responsive controls, progress tracking and language-aware guidance."><meta property="og:type" content="website"><meta property="og:site_name" content="Code Academy"><meta property="og:title" content="Logic Vault | Code Academy Games"><meta property="og:description" content="A responsive learning game with a 200-item practice bank, explanations and device-saved progress."><meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/digital_vault.html"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.png"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-login.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-signup.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Logic Vault | Code Academy"><meta name="twitter:description" content="Practise, learn from feedback, and keep your progress on Code Academy."><meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+</head>
+
+<body>
+
+<div class="connection" id="connection">● Connecting</div>
+
+<div class="msg" id="msg"></div>
+
+<!-- ======================================================
+     REWARD POPUP
+====================================================== -->
+
+<div class="reward-pop" id="rewardPop">
+
+    <div class="reward-card">
+
+        <div class="reward-icon">🏆</div>
+
+        <h2>VAULT UNLOCKED</h2>
+
+        <div class="reward-values">
+
+            <div class="reward-value">
+                ⭐ +10 XP
+            </div>
+
+            <div class="reward-value">
+                🪙 +5 Coins
+            </div>
+
+        </div>
+
+        <div class="reward-note">
+            Excellent work! You completed this floor successfully.
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ======================================================
+     PAUSE
+====================================================== -->
+
+<div class="pause-overlay" id="pauseOverlay">
+
+    <div class="pause-card">
+
+        <h2>GAME PAUSED</h2>
+
+        <p>
+            Your current floor and timer have been preserved.
+        </p>
+
+        <button
+            class="resume-btn"
+            id="resumeBtn"
+        >
+            ▶ RESUME
+        </button>
+
+    </div>
+
+</div>
+
+<div class="app">
+
+    <!-- ==================================================
+         HEADER
+    ================================================== -->
+
+    <div class="header">
+
+        <button
+            class="back-btn"
+            id="backBtn"
+        >
+            ← Back
+        </button>
+
+        <div class="logo">
+            🔐 LOGIC VAULT
+        </div>
+
+        <div class="header-actions">
+
+            <button
+                class="small-btn guide-btn"
+                id="guideBtn"
+            >
+                🔊 Guide
+            </button>
+
+            <button
+                class="small-btn pause-btn"
+                id="pauseBtn"
+            >
+                ⏸
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ==================================================
+         WELCOME
+    ================================================== -->
+
+    <section
+        class="welcome"
+        id="welcomePage"
+    >
+
+        <div class="vault-icon">
+            🔐
+        </div>
+
+        <div class="welcome-title">
+            DIGITAL VAULT
+        </div>
+
+        <div class="welcome-subtitle">
+            Think fast. Crack the code. Earn XP.
+        </div>
+
+        <div class="rules-box">
+
+            <div class="rules-title">
+                📋 HOW TO PLAY
+            </div>
+
+            1. Crack the secret 3-digit code.<br>
+            2. You have 7 attempts per floor.<br>
+            3. Green feedback means a digit is correct.<br>
+            4. Yellow feedback means a digit is in the wrong position.<br>
+            5. Use the hint once per floor for 10 XP.<br>
+            6. Complete the floor to receive your reward.
+            <br>
+            7. Every successful floor gives <b>10 XP + 5 Coins</b>.
+
+        </div>
+
+        <div class="reward-preview">
+
+            <div class="reward-chip">
+                ⭐ 10 XP
+            </div>
+
+            <div class="reward-chip">
+                🪙 5 Coins
+            </div>
+
+        </div>
+
+        <input
+            class="name-input"
+            id="playerName"
+            type="text"
+            maxlength="20"
+            placeholder="Enter your name"
+            autocomplete="off"
+        >
+
+        <button
+            class="start-btn"
+            id="startBtn"
+        >
+            ▶ START VAULT
+        </button>
+
+    </section>
+
+    <!-- ==================================================
+         GAME
+    ================================================== -->
+
+    <section
+        class="game"
+        id="gamePage"
+    >
+
+        <div class="stats">
+
+            <div class="stat">
+                <div class="stat-label">Floor</div>
+                <div
+                    class="stat-val"
+                    id="floor"
+                >
+                    1
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Attempts</div>
+                <div
+                    class="stat-val"
+                    id="attempts"
+                >
+                    7
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Time</div>
+                <div
+                    class="stat-val"
+                    id="timer"
+                >
+                    00:00
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">XP</div>
+                <div
+                    class="stat-val"
+                    id="xp"
+                >
+                    0
+                </div>
+            </div>
+
+            <div class="stat">
+                <div class="stat-label">Coins</div>
+                <div
+                    class="stat-val"
+                    id="coins"
+                >
+                    0
+                </div>
+            </div>
+
+        </div>
+
+        <div class="progress-wrap">
+
+            <div class="progress-top">
+
+                <span>
+                    VAULT PROGRESS
+                </span>
+
+                <span id="floorProgress">
+                    Floor 1
+                </span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div
+                    class="progress-fill"
+                    id="progressFill"
+                ></div>
+
+            </div>
+
+        </div>
+
+        <div class="clues-box">
+
+            <div class="box-title">
+                CLUES & FEEDBACK
+            </div>
+
+            <div
+                class="clues"
+                id="clues"
+            >
+                <div
+                    style="
+                    opacity:.45;
+                    text-align:center;
+                    padding-top:12px;
+                    "
+                >
+                    Use the keypad to begin.
+                </div>
+            </div>
+
+        </div>
+
+        <div class="code-section">
+
+            <div class="code-title">
+                ENTER 3-DIGIT CODE
+            </div>
+
+            <div
+                class="code-display"
+                id="codeDisplay"
+            ></div>
+
+        </div>
+
+        <div
+            class="keypad"
+            id="keypad"
+        ></div>
+
+    </section>
+
+</div>
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE / CODE ACADEMY CONNECTION
+========================================================= */
+
+import {
+    auth,
+    addXP,
+    addCoins,
+    getUserProfile,
+    onAuthStateChanged
+} from "./authentication.js";
+
+
+/* =========================================================
+   GAME CONFIGURATION
+========================================================= */
+
+const REWARD_XP = 10;
+const REWARD_COINS = REWARD_XP / 2;
+
+const MAX_ATTEMPTS = 7;
+
+const HINT_COST = 10;
+
+const BASE_DIGITS = 3;
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let currentUser = null;
+
+let code = "";
+
+let input = [];
+
+let attempts = MAX_ATTEMPTS;
+
+let floor = 1;
+
+let xp = 0;
+
+let coins = 0;
+
+let playerName = "";
+
+let timer = null;
+
+let startTime = null;
+
+let pausedTime = 0;
+
+let isPaused = false;
+
+let isPlaying = false;
+
+let hintUsed = false;
+
+let floorRewardGranted = false;
+
+let speechQueue = [];
+
+let isSpeaking = false;
+
+let bestFloor = Number(
+    localStorage.getItem("logicVaultBestFloor") || "1"
+);
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const welcomePage =
+    document.getElementById("welcomePage");
+
+const gamePage =
+    document.getElementById("gamePage");
+
+const playerNameInput =
+    document.getElementById("playerName");
+
+const startBtn =
+    document.getElementById("startBtn");
+
+const backBtn =
+    document.getElementById("backBtn");
+
+const guideBtn =
+    document.getElementById("guideBtn");
+
+const pauseBtn =
+    document.getElementById("pauseBtn");
+
+const resumeBtn =
+    document.getElementById("resumeBtn");
+
+const pauseOverlay =
+    document.getElementById("pauseOverlay");
+
+const floorEl =
+    document.getElementById("floor");
+
+const attemptsEl =
+    document.getElementById("attempts");
+
+const timerEl =
+    document.getElementById("timer");
+
+const xpEl =
+    document.getElementById("xp");
+
+const coinsEl =
+    document.getElementById("coins");
+
+const floorProgress =
+    document.getElementById("floorProgress");
+
+const progressFill =
+    document.getElementById("progressFill");
+
+const clues =
+    document.getElementById("clues");
+
+const codeDisplay =
+    document.getElementById("codeDisplay");
+
+const keypad =
+    document.getElementById("keypad");
+
+const msg =
+    document.getElementById("msg");
+
+const rewardPop =
+    document.getElementById("rewardPop");
+
+const connection =
+    document.getElementById("connection");
+
+
+/* =========================================================
+   FIREBASE AUTH STATE
+========================================================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+    currentUser = user || null;
+
+    if(!user){
+
+        connection.textContent =
+            "● Guest mode";
+
+        connection.classList.add("offline");
+
+        /*
+         * The game can still technically run,
+         * but Firebase rewards cannot be saved.
+         */
+
+        playerNameInput.placeholder =
+            "Enter your name";
+
+        return;
+    }
+
+    connection.textContent =
+        "● Account connected";
+
+    connection.classList.add("online");
+
+    try{
+
+        const profile =
+            await getUserProfile(user.uid);
+
+        if(profile){
+
+            xp =
+                Number(profile.xp || 0);
+
+            coins =
+                Number(profile.coins || 0);
+
+            xpEl.textContent = xp;
+
+            coinsEl.textContent = coins;
+
+            playerNameInput.value =
+                profile.displayName ||
+                user.displayName ||
+                "";
+
+            playerName =
+                profile.displayName ||
+                user.displayName ||
+                "Player";
+
+        }else{
+
+            playerName =
+                user.displayName ||
+                "Player";
+
+            playerNameInput.value =
+                playerName;
+        }
+
+    }catch(error){
+
+        console.error(
+            "Could not load player profile:",
+            error
+        );
+
+        playerName =
+            user.displayName ||
+            "Player";
+    }
+
+});
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+startBtn.addEventListener(
+    "click",
+    startGame
+);
+
+
+function startGame(){
+
+    const enteredName =
+        playerNameInput.value.trim();
+
+    if(enteredName){
+
+        playerName =
+            enteredName;
+
+    }else if(currentUser){
+
+        playerName =
+            currentUser.displayName ||
+            "Player";
+
+    }else{
+
+        playerName =
+            "Player";
+    }
+
+
+    welcomePage.style.display =
+        "none";
+
+    gamePage.classList.add(
+        "active"
+    );
+
+
+    floor = Math.max(
+        1,
+        floor
+    );
+
+    beginFloor();
+
+}
+
+
+/* =========================================================
+   BEGIN FLOOR
+========================================================= */
+
+function beginFloor(){
+
+    isPlaying = true;
+
+    isPaused = false;
+
+    attempts =
+        MAX_ATTEMPTS;
+
+    input = [];
+
+    hintUsed = false;
+
+    floorRewardGranted = false;
+
+    pausedTime = 0;
+
+    generateCode();
+
+    createCodeDisplay();
+
+    createKeypad();
+
+    resetClues();
+
+    updateUI();
+
+    startClock();
+
+    showMsg(
+        `Floor ${floor} started.`,
+        "success"
+    );
+
+}
+
+
+/* =========================================================
+   GENERATE CODE
+========================================================= */
+
+function generateCode(){
+
+    /*
+     * Difficulty increases naturally.
+     *
+     * Early floors:
+     * repeated digits allowed.
+     *
+     * Later floors:
+     * unique digits become more common.
+     */
+
+    let digits = "";
+
+    const requireUnique =
+        floor >= 4;
+
+    while(digits.length < BASE_DIGITS){
+
+        const digit =
+            Math.floor(
+                Math.random() * 10
+            ).toString();
+
+        if(
+            requireUnique &&
+            digits.includes(digit)
+        ){
+            continue;
+        }
+
+        if(
+            digits.length === 0 &&
+            digit === "0"
+        ){
+            /*
+             * Avoid a leading zero so
+             * the code remains intuitive.
+             */
+            continue;
+        }
+
+        digits += digit;
+    }
+
+    code = digits;
+
+    console.log(
+        `Logic Vault Floor ${floor} code:`,
+        code
+    );
+}
+
+
+/* =========================================================
+   CODE DISPLAY
+========================================================= */
+
+function createCodeDisplay(){
+
+    codeDisplay.innerHTML = "";
+
+    for(
+        let i = 0;
+        i < BASE_DIGITS;
+        i++
+    ){
+
+        const box =
+            document.createElement("div");
+
+        box.className =
+            "digit";
+
+        box.id =
+            `digit${i}`;
+
+        codeDisplay.appendChild(
+            box
+        );
+    }
+
+    updateDisplay();
+}
+
+
+function updateDisplay(){
+
+    for(
+        let i = 0;
+        i < BASE_DIGITS;
+        i++
+    ){
+
+        const box =
+            document.getElementById(
+                `digit${i}`
+            );
+
+        if(!box) continue;
+
+        box.textContent =
+            input[i] || "";
+
+        box.classList.toggle(
+            "filled",
+            input[i] !== undefined
+        );
+    }
+}
+
+
+/* =========================================================
+   KEYPAD
+========================================================= */
+
+function createKeypad(){
+
+    keypad.innerHTML = "";
+
+
+    /*
+     * 1 - 9
+     */
+
+    for(
+        let i = 1;
+        i <= 9;
+        i++
+    ){
+
+        const button =
+            document.createElement(
+                "button"
+            );
+
+        button.className =
+            "key";
+
+        button.id =
+            `key${i}`;
+
+        button.textContent =
+            i;
+
+        button.addEventListener(
+            "click",
+            () => addDigit(i)
+        );
+
+        keypad.appendChild(
+            button
+        );
+    }
+
+
+    /*
+     * Clear
+     */
+
+    const clear =
+        document.createElement(
+            "button"
+        );
+
+    clear.className =
+        "key clear";
+
+    clear.textContent =
+        "CLR";
+
+    clear.addEventListener(
+        "click",
+        clearCode
+    );
+
+    keypad.appendChild(
+        clear
+    );
+
+
+    /*
+     * Zero
+     */
+
+    const zero =
+        document.createElement(
+            "button"
+        );
+
+    zero.className =
+        "key";
+
+    zero.id =
+        "key0";
+
+    zero.textContent =
+        "0";
+
+    zero.addEventListener(
+        "click",
+        () => addDigit(0)
+    );
+
+    keypad.appendChild(
+        zero
+    );
+
+
+    /*
+     * GO
+     */
+
+    const go =
+        document.createElement(
+            "button"
+        );
+
+    go.className =
+        "key action";
+
+    go.textContent =
+        "GO";
+
+    go.addEventListener(
+        "click",
+        submitGuess
+    );
+
+    keypad.appendChild(
+        go
+    );
+}
+
+
+/* =========================================================
+   ADD DIGIT
+========================================================= */
+
+function addDigit(num){
+
+    if(!isPlaying || isPaused)
+        return;
+
+    if(input.length >= BASE_DIGITS)
+        return;
+
+    input.push(
+        String(num)
+    );
+
+    updateDisplay();
+
+}
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+function clearCode(){
+
+    if(!isPlaying || isPaused)
+        return;
+
+    input = [];
+
+    updateDisplay();
+}
+
+
+/* =========================================================
+   CHECK GUESS
+========================================================= */
+
+function checkGuess(guess){
+
+    let correct = 0;
+
+    let misplaced = 0;
+
+    const secret =
+        code.split("");
+
+    const guessed =
+        guess.split("");
+
+    /*
+     * IMPORTANT:
+     * Arrays must have length 3.
+     * Your previous engine accidentally
+     * created arrays with only 2 items.
+     */
+
+    const usedSecret =
+        new Array(BASE_DIGITS).fill(false);
+
+    const usedGuess =
+        new Array(BASE_DIGITS).fill(false);
+
+
+    /*
+     * Exact positions
+     */
+
+    for(
+        let i = 0;
+        i < BASE_DIGITS;
+        i++
+    ){
+
+        if(
+            guessed[i] === secret[i]
+        ){
+
+            correct++;
+
+            usedSecret[i] = true;
+
+            usedGuess[i] = true;
+        }
+    }
+
+
+    /*
+     * Misplaced positions
+     */
+
+    for(
+        let i = 0;
+        i < BASE_DIGITS;
+        i++
+    ){
+
+        if(usedGuess[i])
+            continue;
+
+        for(
+            let j = 0;
+            j < BASE_DIGITS;
+            j++
+        ){
+
+            if(
+                !usedSecret[j] &&
+                guessed[i] === secret[j]
+            ){
+
+                misplaced++;
+
+                usedSecret[j] = true;
+
+                break;
+            }
+        }
+    }
+
+    return {
+        correct,
+        misplaced
+    };
+}
+
+
+/* =========================================================
+   SUBMIT GUESS
+========================================================= */
+
+function submitGuess(){
+
+    if(!isPlaying || isPaused)
+        return;
+
+    if(input.length < BASE_DIGITS){
+
+        showMsg(
+            "Enter all 3 digits first.",
+            "warning"
+        );
+
+        return;
+    }
+
+
+    const guess =
+        input.join("");
+
+    const result =
+        checkGuess(guess);
+
+    attempts--;
+
+    addClue(
+        guess,
+        result
+    );
+
+
+    /*
+     * SUCCESS
+     */
+
+    if(result.correct === BASE_DIGITS){
+
+        winFloor();
+
+        return;
+    }
+
+
+    /*
+     * GAME OVER
+     */
+
+    if(attempts <= 0){
+
+        endFloor();
+
+        return;
+    }
+
+
+    input = [];
+
+    updateDisplay();
+
+    updateUI();
+
+}
+
+
+/* =========================================================
+   ADD CLUE
+========================================================= */
+
+function addClue(
+    guess,
+    result
+){
+
+    const clue =
+        document.createElement(
+            "div"
+        );
+
+    clue.className =
+        "clue";
+
+
+    let text = "";
+
+
+    if(
+        result.correct > 0 &&
+        result.misplaced > 0
+    ){
+
+        text =
+            `${result.correct} correct • ${result.misplaced} misplaced`;
+
+        clue.classList.add(
+            "warning"
+        );
+
+    }else if(
+        result.correct > 0
+    ){
+
+        text =
+            `${result.correct} correct position`;
+
+        clue.classList.add(
+            "success"
+        );
+
+    }else if(
+        result.misplaced > 0
+    ){
+
+        text =
+            `${result.misplaced} wrong position`;
+
+        clue.classList.add(
+            "warning"
+        );
+
+    }else{
+
+        text =
+            "No matching digits";
+    }
+
+
+    clue.innerHTML =
+        `<strong>${guess}</strong> — ${text}`;
+
+
+    clues.insertBefore(
+        clue,
+        clues.firstChild
+    );
+
+
+    showMsg(
+        text,
+        result.correct > 0
+            ? "warning"
+            : "error"
+    );
+}
+
+
+/* =========================================================
+   RESET CLUES
+========================================================= */
+
+function resetClues(){
+
+    clues.innerHTML = `
+        <div
+            style="
+            opacity:.45;
+            text-align:center;
+            padding-top:12px;
+            "
+        >
+            Crack the code in 7 attempts.
+        </div>
+    `;
+}
+
+
+/* =========================================================
+   WIN FLOOR
+========================================================= */
+
+async function winFloor(){
+
+    if(floorRewardGranted)
+        return;
+
+    floorRewardGranted = true;
+
+    isPlaying = false;
+
+    stopClock();
+
+
+    /*
+     * The exact reward:
+     *
+     * 10 XP
+     * 5 Coins
+     */
+
+    const earnedXP =
+        REWARD_XP;
+
+    const earnedCoins =
+        REWARD_COINS;
+
+
+    /*
+     * Update local state immediately
+     */
+
+    xp += earnedXP;
+
+    coins += earnedCoins;
+
+    updateUI();
+
+
+    /*
+     * Save reward to Firebase
+     */
+
+    if(currentUser){
+
+        try{
+
+            /*
+             * These functions already belong
+             * to your Code Academy auth engine.
+             */
+
+            await addXP(
+                currentUser.uid,
+                earnedXP
+            );
+
+            await addCoins(
+                currentUser.uid,
+                earnedCoins
+            );
+
+
+            connection.textContent =
+                "● Reward saved";
+
+            connection.classList.add(
+                "online"
+            );
+
+        }catch(error){
+
+            console.error(
+                "Reward save failed:",
+                error
+            );
+
+            /*
+             * We do not erase the local
+             * reward from the UI.
+             */
+
+            showMsg(
+                "Reward earned, but Firebase sync failed.",
+                "warning"
+            );
+        }
+
+    }else{
+
+        showMsg(
+            "Guest reward only. Sign in to save XP and coins.",
+            "warning"
+        );
+    }
+
+
+    /*
+     * Update best floor
+     */
+
+    if(floor >= bestFloor){
+
+        bestFloor =
+            floor + 1;
+
+        localStorage.setItem(
+            "logicVaultBestFloor",
+            bestFloor
+        );
+    }
+
+
+    /*
+     * Show reward
+     */
+
+    showReward(
+        earnedXP,
+        earnedCoins
+    );
+
+
+    /*
+     * Voice
+     */
+
+    speak(
+        `Excellent work ${playerName}. Floor ${floor} unlocked. You earned ${earnedXP} XP and ${earnedCoins} coins.`
+    );
+
+
+    /*
+     * Move to next floor
+     */
+
+    floor++;
+
+    setTimeout(
+        () => {
+
+            hideReward();
+
+            beginFloor();
+
+        },
+        2800
+    );
+}
+
+
+/* =========================================================
+   SHOW REWARD
+========================================================= */
+
+function showReward(
+    earnedXP,
+    earnedCoins
+){
+
+    rewardPop.innerHTML = `
+
+        <div class="reward-card">
+
+            <div class="reward-icon">
+                🏆
+            </div>
+
+            <h2>
+                VAULT UNLOCKED
+            </h2>
+
+            <div class="reward-values">
+
+                <div class="reward-value">
+                    ⭐ +${earnedXP} XP
+                </div>
+
+                <div class="reward-value">
+                    🪙 +${earnedCoins} Coins
+                </div>
+
+            </div>
+
+            <div class="reward-note">
+                Floor completed successfully.<br>
+                Next floor loading...
+            </div>
+
+        </div>
+
+    `;
+
+    rewardPop.classList.add(
+        "show"
+    );
+}
+
+
+function hideReward(){
+
+    rewardPop.classList.remove(
+        "show"
+    );
+}
+
+
+/* =========================================================
+   GAME OVER
+========================================================= */
+
+function endFloor(){
+
+    isPlaying = false;
+
+    stopClock();
+
+    showMsg(
+        `Vault locked. Code was ${code}.`,
+        "error"
+    );
+
+    speak(
+        `Game over. The code was ${code.split("").join(" ")}.`
+    );
+
+
+    setTimeout(
+        () => {
+
+            /*
+             * Retry the same floor.
+             */
+
+            beginFloor();
+
+        },
+        2800
+    );
+}
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startClock(){
+
+    stopClock();
+
+    startTime =
+        Date.now();
+
+    timer =
+        setInterval(
+            updateTimer,
+            1000
+        );
+
+    updateTimer();
+}
+
+
+function stopClock(){
+
+    if(timer){
+
+        clearInterval(
+            timer
+        );
+
+        timer = null;
+    }
+}
+
+
+function updateTimer(){
+
+    if(
+        !startTime ||
+        isPaused
+    ){
+        return;
+    }
+
+    const elapsed =
+        Math.floor(
+            (Date.now() - startTime) / 1000
+        );
+
+
+    const minutes =
+        String(
+            Math.floor(
+                elapsed / 60
+            )
+        ).padStart(2,"0");
+
+
+    const seconds =
+        String(
+            elapsed % 60
+        ).padStart(2,"0");
+
+
+    timerEl.textContent =
+        `${minutes}:${seconds}`;
+}
+
+
+/* =========================================================
+   HINT
+========================================================= */
+
+function useHint(){
+
+    if(!isPlaying || isPaused)
+        return;
+
+
+    if(hintUsed){
+
+        showMsg(
+            "Hint already used on this floor.",
+            "warning"
+        );
+
+        return;
+    }
+
+
+    if(xp < HINT_COST){
+
+        showMsg(
+            "You need 10 XP to use a hint.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /*
+     * Deduct 10 XP locally.
+     */
+
+    xp -= HINT_COST;
+
+    hintUsed = true;
+
+
+    /*
+     * Save deduction to Firebase.
+     */
+
+    if(currentUser){
+
+        addXP(
+            currentUser.uid,
+            -HINT_COST
+        ).catch(
+            error =>
+                console.error(
+                    "Hint XP deduction failed:",
+                    error
+                )
+        );
+    }
+
+
+    /*
+     * Select random position.
+     */
+
+    const position =
+        Math.floor(
+            Math.random() * BASE_DIGITS
+        );
+
+    const digit =
+        code[position];
+
+
+    /*
+     * Highlight the correct keypad key.
+     */
+
+    document
+        .querySelectorAll(".key")
+        .forEach(
+            button =>
+                button.classList.remove(
+                    "highlight"
+                )
+        );
+
+
+    const key =
+        document.getElementById(
+            `key${digit}`
+        );
+
+
+    if(key){
+
+        key.classList.add(
+            "highlight"
+        );
+    }
+
+
+    showMsg(
+        `Hint: position ${position + 1} is ${digit}`,
+        "success"
+    );
+
+
+    speak(
+        `Hint. Position ${position + 1} is ${digit}.`
+    );
+
+
+    setTimeout(
+        () => {
+
+            document
+                .querySelectorAll(".key")
+                .forEach(
+                    button =>
+                        button.classList.remove(
+                            "highlight"
+                        )
+                );
+
+        },
+        5000
+    );
+
+
+    updateUI();
+}
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI(){
+
+    floorEl.textContent =
+        floor;
+
+    attemptsEl.textContent =
+        attempts;
+
+    xpEl.textContent =
+        xp;
+
+    coinsEl.textContent =
+        coins;
+
+    floorProgress.textContent =
+        `Floor ${floor}`;
+
+    /*
+     * Attempts progress.
+     */
+
+    const used =
+        MAX_ATTEMPTS - attempts;
+
+    const percentage =
+        Math.min(
+            100,
+            (used / MAX_ATTEMPTS) * 100
+        );
+
+    progressFill.style.width =
+        `${percentage}%`;
+}
+
+
+/* =========================================================
+   GUIDE
+========================================================= */
+
+guideBtn.addEventListener(
+    "click",
+    playGuide
+);
+
+
+function playGuide(){
+
+    /*
+     * Clicking Guide again stops speech.
+     */
+
+    if(isSpeaking){
+
+        stopSpeech();
+
+        return;
+    }
+
+
+    if(!isPlaying){
+
+        speak(
+            "Welcome to Logic Vault. Start the game, then enter a three digit code. You have seven attempts."
+        );
+
+        return;
+    }
+
+
+    const message =
+        `
+        Welcome ${playerName}.
+        Floor ${floor}.
+        You have ${attempts} attempts remaining.
+        Enter three digits and press go.
+        If a digit is correct and in the right position, it is correct.
+        If a digit belongs to the code but is in another position, it is misplaced.
+        Complete the floor to earn 10 XP and 5 coins.
+        `;
+
+
+    speak(
+        message
+    );
+
+    showMsg(
+        "AI Guide playing...",
+        "warning"
+    );
+}
+
+
+/* =========================================================
+   SPEECH ENGINE
+========================================================= */
+
+function speak(text){
+
+    if(
+        !("speechSynthesis" in window)
+    ){
+        return;
+    }
+
+    speechQueue.push(
+        text
+    );
+
+    if(!isSpeaking){
+
+        processSpeech();
+    }
+}
+
+
+function processSpeech(){
+
+    if(
+        speechQueue.length === 0
+    ){
+
+        isSpeaking = false;
+
+        return;
+    }
+
+
+    isSpeaking = true;
+
+
+    const text =
+        speechQueue.shift();
+
+
+    speechSynthesis.cancel();
+
+
+    const utter =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    utter.rate =
+        0.9;
+
+    utter.pitch =
+        1.03;
+
+    utter.volume =
+        1;
+
+
+    utter.onend =
+        () => {
+
+            setTimeout(
+                processSpeech,
+                250
+            );
+        };
+
+
+    utter.onerror =
+        () => {
+
+            isSpeaking = false;
+        };
+
+
+    speechSynthesis.speak(
+        utter
+    );
+}
+
+
+function stopSpeech(){
+
+    speechQueue = [];
+
+    if(
+        "speechSynthesis" in window
+    ){
+
+        speechSynthesis.cancel();
+    }
+
+    isSpeaking = false;
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+pauseBtn.addEventListener(
+    "click",
+    togglePause
+);
+
+resumeBtn.addEventListener(
+    "click",
+    togglePause
+);
+
+
+function togglePause(){
+
+    if(!isPlaying)
+        return;
+
+
+    if(!isPaused){
+
+        isPaused = true;
+
+        pauseOverlay.classList.add(
+            "show"
+        );
+
+        pauseBtn.textContent =
+            "▶";
+
+        stopSpeech();
+
+    }else{
+
+        isPaused = false;
+
+        pauseOverlay.classList.remove(
+            "show"
+        );
+
+        pauseBtn.textContent =
+            "⏸";
+
+        /*
+         * Reset the timer reference so
+         * paused time is not counted.
+         */
+
+        startTime =
+            Date.now();
+
+        startClock();
+    }
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+backBtn.addEventListener(
+    "click",
+    () => {
+
+        stopClock();
+
+        stopSpeech();
+
+        /*
+         * If game is active, return to
+         * welcome screen instead of
+         * unexpectedly leaving.
+         */
+
+        if(
+            gamePage.classList.contains(
+                "active"
+            )
+        ){
+
+            gamePage.classList.remove(
+                "active"
+            );
+
+            welcomePage.style.display =
+                "flex";
+
+            isPlaying = false;
+
+            return;
+        }
+
+
+        if(
+            window.history.length > 1
+        ){
+
+            history.back();
+
+        }else{
+
+            window.location.href =
+                "menu.html";
+        }
+
+    }
+);
+
+
+/* =========================================================
+   KEYBOARD SUPPORT
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(!isPlaying || isPaused)
+            return;
+
+
+        /*
+         * Number keys
+         */
+
+        if(
+            /^[0-9]$/.test(
+                event.key
+            )
+        ){
+
+            addDigit(
+                Number(event.key)
+            );
+
+            return;
+        }
+
+
+        /*
+         * Backspace
+         */
+
+        if(
+            event.key === "Backspace"
+        ){
+
+            input.pop();
+
+            updateDisplay();
+
+            return;
+        }
+
+
+        /*
+         * Enter
+         */
+
+        if(
+            event.key === "Enter"
+        ){
+
+            submitGuess();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+let messageTimer = null;
+
+
+function showMsg(
+    text,
+    type = "success"
+){
+
+    msg.textContent =
+        text;
+
+    msg.className =
+        `msg ${type}`;
+
+    clearTimeout(
+        messageTimer
+    );
+
+
+    requestAnimationFrame(
+        () => {
+
+            msg.classList.add(
+                "show"
+            );
+
+        }
+    );
+
+
+    messageTimer =
+        setTimeout(
+            () => {
+
+                msg.classList.remove(
+                    "show"
+                );
+
+            },
+            2500
+        );
+}
+
+
+/* =========================================================
+   HINT BUTTON
+=========================================================
+
+   The user originally had a Hint button
+   in the top controls.
+
+   We create it here so the header remains
+   compact while the hint still exists.
+========================================================= */
+
+const hintButton =
+    document.createElement(
+        "button"
+    );
+
+hintButton.className =
+    "small-btn";
+
+hintButton.textContent =
+    "💡 Hint";
+
+hintButton.style.color =
+    "var(--warning)";
+
+hintButton.style.borderColor =
+    "rgba(255,170,0,.5)";
+
+hintButton.addEventListener(
+    "click",
+    useHint
+);
+
+document
+    .querySelector(".header-actions")
+    .appendChild(
+        hintButton
+    );
+
+
+/* =========================================================
+   INITIAL UI
+========================================================= */
+
+updateUI();
+
+
+/* =========================================================
+   PREVENT ACCIDENTAL SCROLL / ZOOM
+========================================================= */
+
+document.addEventListener(
+    "gesturestart",
+    event =>
+        event.preventDefault()
+);
+
+document.addEventListener(
+    "gesturechange",
+    event =>
+        event.preventDefault()
+);
+
+document.addEventListener(
+    "gestureend",
+    event =>
+        event.preventDefault()
+);
+
+
+/* =========================================================
+   VISIBILITY / PAUSE SAFETY
+========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if(
+            document.hidden &&
+            isPlaying &&
+            !isPaused
+        ){
+
+            /*
+             * Automatically pause when
+             * user leaves the app/browser.
+             */
+
+            isPaused = true;
+
+            pauseOverlay.classList.add(
+                "show"
+            );
+
+            pauseBtn.textContent =
+                "▶";
+        }
+
+    }
+);
+
+</script>
+
+
+<style id="ca-bank-style">
+#caBankLaunch{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:500000;border:1px solid rgba(103,232,249,.5);border-radius:999px;background:linear-gradient(135deg,#0e7490,#4338ca);color:#fff;padding:12px 16px;font:700 13px/1.2 system-ui,sans-serif;box-shadow:0 12px 35px #0008;cursor:pointer;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 28px)}
+#caBankLaunch:focus-visible,#caBank button:focus-visible,#caBank select:focus-visible,#caBank textarea:focus-visible{outline:3px solid #fbbf24;outline-offset:3px}
+#caBank{position:fixed;inset:0;z-index:500001;display:none;background:rgba(2,6,23,.82);backdrop-filter:blur(9px);padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));overflow:auto;font-family:Inter,system-ui,sans-serif;color:#eaf2ff}
+#caBank.open{display:flex;align-items:center;justify-content:center}
+#caBank .cab-card{width:min(760px,100%);max-height:100%;overflow:auto;border:1px solid #334766;background:linear-gradient(145deg,#0b162a,#101b34 70%,#1a1742);border-radius:22px;box-shadow:0 24px 80px #0009;padding:clamp(15px,3vw,25px)}
+#caBank .cab-top{display:flex;align-items:flex-start;gap:12px;justify-content:space-between}#caBank .cab-kicker{color:#67e8f9;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}#caBank h2{font-size:clamp(20px,4vw,29px);margin:5px 0 3px;line-height:1.15}#caBank .cab-sub{color:#9aabc7;font-size:13px;margin:0}#caBank .cab-close{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:11px;padding:8px 12px;font-size:18px;cursor:pointer}
+#caBank .cab-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:17px 0}#caBank .cab-toolbar label{font-size:12px;color:#b9c7df}#caBank select,#caBank textarea{width:100%;background:#07101f;color:#f8fafc;border:1px solid #3c516f;border-radius:10px;padding:10px;font:inherit}#caBank select{width:auto;max-width:100%;font-size:13px}#caBank .cab-progress{height:6px;background:#27354d;border-radius:99px;overflow:hidden;flex:1;min-width:100px}#caBank .cab-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#a78bfa);transition:width .2s}
+#caBank .cab-meta{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}#caBank .cab-chip{font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;border:1px solid #344968;background:#14223a;color:#b9d3ff}#caBank .cab-question{font-size:clamp(16px,2.7vw,20px);line-height:1.5;font-weight:700;margin:12px 0}#caBank .cab-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#030712;border:1px solid #293b55;border-radius:12px;padding:12px;font:13px/1.5 ui-monospace,monospace;color:#a5f3fc;margin:10px 0}#caBank .cab-options{display:grid;gap:9px;margin:14px 0}#caBank .cab-option{width:100%;text-align:left;background:#101d31;color:#e8f1ff;border:1px solid #334862;border-radius:12px;padding:12px 13px;cursor:pointer;font:600 14px/1.45 system-ui,sans-serif;overflow-wrap:anywhere}#caBank .cab-option:hover:not(:disabled){background:#182d47;border-color:#67e8f9}#caBank .cab-option:disabled{cursor:default;opacity:.92}#caBank .cab-option.correct{border-color:#34d399;background:#064e3b80}#caBank .cab-option.wrong{border-color:#fb7185;background:#88133750}
+#caBank .cab-feedback{display:none;border-radius:12px;padding:12px;background:#101d31;border:1px solid #334862;font-size:14px;line-height:1.5}#caBank .cab-feedback.show{display:block}#caBank .cab-feedback.good{border-color:#059669}#caBank .cab-feedback.bad{border-color:#be123c}#caBank .cab-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}#caBank .cab-btn{border:1px solid #3d5272;background:#17243a;color:#eef6ff;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer;font-size:13px}#caBank .cab-btn.primary{background:linear-gradient(135deg,#0891b2,#4f46e5);border-color:transparent}#caBank .cab-btn:disabled{opacity:.38;cursor:not-allowed}#caBank .cab-stats{margin-left:auto;color:#9fb3d2;font-size:12px}#caBank .cab-textarea{min-height:100px;resize:vertical;margin:8px 0}#caBank .cab-note{font-size:12px;color:#a7b8d3;line-height:1.45;margin-top:10px}#caBank .cab-footer{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#8194b4;font-size:11px}
+@media(max-width:480px){#caBankLaunch{padding:11px 13px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom))}#caBank .cab-card{border-radius:17px;padding:14px}#caBank .cab-toolbar{align-items:stretch}#caBank .cab-toolbar select{flex:1}#caBank .cab-stats{margin-left:0;width:100%}}
+
+/* Code Academy responsive game guardrails */
+html{scroll-behavior:smooth}img,canvas,video,svg{max-width:100%}button,a,input,select,textarea{touch-action:manipulation}body{overflow-wrap:anywhere} @media(max-width:600px),(max-height:520px){html,body{height:auto!important;min-height:100svh!important;overflow-x:hidden!important;overflow-y:auto!important}main,.container,.game-container,.game-wrapper,.app,.screen,.game-screen,#app{max-height:none;overflow-y:visible!important}} @media(max-width:520px){button{max-width:100%}pre,code{white-space:pre-wrap;overflow-wrap:anywhere}} @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+
+<button type="button" id="caBankLaunch" aria-haspopup="dialog" aria-controls="caBank"><span aria-hidden="true">✦</span> Practice Bank</button>
+<section id="caBank" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cabTitle">
+ <div class="cab-card"><div class="cab-top"><div><div class="cab-kicker">CODE ACADEMY • BONUS PRACTICE</div><h2 id="cabTitle">Challenge Bank</h2><p class="cab-sub" id="cabSubtitle">Learn at your own pace. Your progress is saved on this device.</p></div><button class="cab-close" type="button" id="cabClose" aria-label="Close practice bank">×</button></div>
+ <div class="cab-toolbar"><label for="cabLanguage">Preferred language</label><select id="cabLanguage"><option value="en">English</option><option value="fr">French</option><option value="es">Spanish</option><option value="pt">Portuguese</option><option value="de">German</option><option value="it">Italian</option><option value="nl">Dutch</option><option value="sv">Swedish</option><option value="no">Norwegian</option><option value="da">Danish</option><option value="fi">Finnish</option><option value="pl">Polish</option><option value="cs">Czech</option><option value="sk">Slovak</option><option value="hu">Hungarian</option><option value="ro">Romanian</option><option value="bg">Bulgarian</option><option value="el">Greek</option><option value="tr">Turkish</option><option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="ar">Arabic</option><option value="he">Hebrew</option><option value="fa">Persian</option><option value="hi">Hindi</option><option value="bn">Bengali</option><option value="ur">Urdu</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="vi">Vietnamese</option><option value="th">Thai</option><option value="id">Indonesian</option><option value="ms">Malay</option><option value="sw">Swahili</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="ak">Twi / Akan</option><option value="ee">Ewe</option><option value="am">Amharic</option><option value="zu">Zulu</option><option value="af">Afrikaans</option><option value="sr">Serbian</option><option value="hr">Croatian</option><option value="sl">Slovenian</option><option value="lt">Lithuanian</option><option value="lv">Latvian</option><option value="et">Estonian</option><option value="is">Icelandic</option><option value="ca">Catalan</option><option value="eu">Basque</option><option value="gl">Galician</option><option value="az">Azerbaijani</option><option value="kk">Kazakh</option><option value="uz">Uzbek</option><option value="mn">Mongolian</option><option value="my">Burmese</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="ne">Nepali</option><option value="si">Sinhala</option><option value="ps">Pashto</option><option value="ku">Kurdish</option><option value="sq">Albanian</option><option value="mk">Macedonian</option><option value="bs">Bosnian</option><option value="lb">Luxembourgish</option><option value="ga">Irish</option><option value="cy">Welsh</option><option value="gd">Scottish Gaelic</option><option value="mt">Maltese</option><option value="hy">Armenian</option><option value="ka">Georgian</option><option value="yi">Yiddish</option><option value="jv">Javanese</option><option value="su">Sundanese</option><option value="fil">Filipino</option><option value="ceb">Cebuano</option><option value="la">Latin</option><option value="eo">Esperanto</option><option value="be">Belarusian</option><option value="tk">Turkmen</option><option value="tg">Tajik</option><option value="ky">Kyrgyz</option><option value="or">Odia</option><option value="pa">Punjabi</option><option value="as">Assamese</option><option value="sa">Sanskrit</option><option value="rw">Kinyarwanda</option><option value="sn">Shona</option><option value="xh">Xhosa</option><option value="st">Sesotho</option><option value="tn">Tswana</option><option value="ny">Chichewa</option><option value="mg">Malagasy</option><option value="so">Somali</option><option value="ti">Tigrinya</option><option value="ln">Lingala</option></select><button class="cab-btn" id="cabListen" type="button">🔊 Listen</button><div class="cab-progress" aria-label="Progress"><span id="cabProgress"></span></div></div>
+ <div class="cab-meta"><span class="cab-chip" id="cabCategory">Mixed practice</span><span class="cab-chip" id="cabDifficulty">Intermediate</span><span class="cab-chip" id="cabMode">Question bank</span></div>
+ <div id="cabQuestion" class="cab-question">Preparing your practice set…</div><pre id="cabCode" class="cab-code" hidden></pre><div id="cabOptions" class="cab-options"></div><textarea id="cabAnswer" class="cab-textarea" hidden aria-label="Your coding solution"></textarea>
+ <div id="cabFeedback" class="cab-feedback" role="status" aria-live="polite"></div><div class="cab-actions"><button class="cab-btn" id="cabPrevious" type="button">← Previous</button><button class="cab-btn primary" id="cabNext" type="button">Next →</button><button class="cab-btn" id="cabHint" type="button">💡 Hint</button><button class="cab-btn" id="cabSolution" type="button" hidden>Show example</button><button class="cab-btn" id="cabComplete" type="button" hidden>Mark mission complete</button><span class="cab-stats" id="cabStats">0 correct · 0 answered</span></div>
+ <p class="cab-note" id="cabNote">Pick an answer to see feedback and a clear explanation. Code samples are presented as learning examples, not executed in this panel.</p>
+ <div class="cab-footer"><span id="cabPersistence">Progress saved on this device.</span><span>Use Esc to close</span></div></div></section>
+<script type="application/json" id="ca-bank-fallback">{"questions":[{"id":"digital_vault-001","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 2, 5, 8, 11 in sequence. If the pattern continues, what number comes next?","options":["14","11","10","13"],"answerIndex":1,"explanation":"The difference is consistently 3; add it once more to get 11."},{"id":"digital_vault-002","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 3, 7, 11, 15 in sequence. If the pattern continues, what number comes next?","options":["15","19","14","17"],"answerIndex":0,"explanation":"The difference is consistently 4; add it once more to get 15."},{"id":"digital_vault-003","category":"Number patterns","difficulty":"advanced","prompt":"A vault dial shows 4, 9, 14, 19 in sequence. If the pattern continues, what number comes next?","options":["24","18","21","19"],"answerIndex":3,"explanation":"The difference is consistently 5; add it once more to get 19."},{"id":"digital_vault-004","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 5, 11, 17, 23 in sequence. If the pattern continues, what number comes next?","options":["29","22","23","25"],"answerIndex":2,"explanation":"The difference is consistently 6; add it once more to get 23."},{"id":"digital_vault-005","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 6, 13, 20, 27 in sequence. If the pattern continues, what number comes next?","options":["34","27","26","29"],"answerIndex":1,"explanation":"The difference is consistently 7; add it once more to get 27."},{"id":"digital_vault-006","category":"Number patterns","difficulty":"advanced","prompt":"A vault dial shows 7, 15, 23, 31 in sequence. If the pattern continues, what number comes next?","options":["31","39","30","33"],"answerIndex":0,"explanation":"The difference is consistently 8; add it once more to get 31."},{"id":"digital_vault-007","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 8, 11, 14, 17 in sequence. If the pattern continues, what number comes next?","options":["20","16","19","17"],"answerIndex":3,"explanation":"The difference is consistently 3; add it once more to get 17."},{"id":"digital_vault-008","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 9, 13, 17, 21 in sequence. If the pattern continues, what number comes next?","options":["25","20","21","23"],"answerIndex":2,"explanation":"The difference is consistently 4; add it once more to get 21."},{"id":"digital_vault-009","category":"Number patterns","difficulty":"advanced","prompt":"A vault dial shows 10, 15, 20, 25 in sequence. If the pattern continues, what number comes next?","options":["30","25","24","27"],"answerIndex":1,"explanation":"The difference is consistently 5; add it once more to get 25."},{"id":"digital_vault-010","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 11, 17, 23, 29 in sequence. If the pattern continues, what number comes next?","options":["29","35","28","31"],"answerIndex":0,"explanation":"The difference is consistently 6; add it once more to get 29."},{"id":"digital_vault-011","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 12, 19, 26, 33 in sequence. If the pattern continues, what number comes next?","options":["40","32","35","33"],"answerIndex":3,"explanation":"The difference is consistently 7; add it once more to get 33."},{"id":"digital_vault-012","category":"Number patterns","difficulty":"advanced","prompt":"A vault dial shows 13, 21, 29, 37 in sequence. If the pattern continues, what number comes next?","options":["45","36","37","39"],"answerIndex":2,"explanation":"The difference is consistently 8; add it once more to get 37."},{"id":"digital_vault-013","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 14, 17, 20, 23 in sequence. If the pattern continues, what number comes next?","options":["26","23","22","25"],"answerIndex":1,"explanation":"The difference is consistently 3; add it once more to get 23."},{"id":"digital_vault-014","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 15, 19, 23, 27 in sequence. If the pattern continues, what number comes next?","options":["27","31","26","29"],"answerIndex":0,"explanation":"The difference is consistently 4; add it once more to get 27."},{"id":"digital_vault-015","category":"Number patterns","difficulty":"advanced","prompt":"A vault dial shows 16, 21, 26, 31 in sequence. If the pattern continues, what number comes next?","options":["36","30","33","31"],"answerIndex":3,"explanation":"The difference is consistently 5; add it once more to get 31."},{"id":"digital_vault-016","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 17, 23, 29, 35 in sequence. If the pattern continues, what number comes next?","options":["41","34","35","37"],"answerIndex":2,"explanation":"The difference is consistently 6; add it once more to get 35."},{"id":"digital_vault-017","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 18, 25, 32, 39 in sequence. If the pattern continues, what number comes next?","options":["46","39","38","41"],"answerIndex":1,"explanation":"The difference is consistently 7; add it once more to get 39."},{"id":"digital_vault-018","category":"Number patterns","difficulty":"advanced","prompt":"A vault dial shows 19, 27, 35, 43 in sequence. If the pattern continues, what number comes next?","options":["43","51","42","45"],"answerIndex":0,"explanation":"The difference is consistently 8; add it once more to get 43."},{"id":"digital_vault-019","category":"Number patterns","difficulty":"easy","prompt":"A vault dial shows 20, 23, 26, 29 in sequence. If the pattern continues, what number comes next?","options":["32","28","31","29"],"answerIndex":3,"explanation":"The difference is consistently 3; add it once more to get 29."},{"id":"digital_vault-020","category":"Number patterns","difficulty":"intermediate","prompt":"A vault dial shows 21, 25, 29, 33 in sequence. If the pattern continues, what number comes next?","options":["37","32","33","35"],"answerIndex":2,"explanation":"The difference is consistently 4; add it once more to get 33."},{"id":"digital_vault-021","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 16, 25, 36?","options":["50","49","37","35"],"answerIndex":1,"explanation":"The terms are consecutive squares. The next is 7² = 49."},{"id":"digital_vault-022","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 25, 36, 49?","options":["64","65","50","48"],"answerIndex":0,"explanation":"The terms are consecutive squares. The next is 8² = 64."},{"id":"digital_vault-023","category":"Number patterns","difficulty":"intermediate","prompt":"Which square number follows 36, 49, 64?","options":["82","65","63","81"],"answerIndex":3,"explanation":"The terms are consecutive squares. The next is 9² = 81."},{"id":"digital_vault-024","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 49, 64, 81?","options":["101","82","100","80"],"answerIndex":2,"explanation":"The terms are consecutive squares. The next is 10² = 100."},{"id":"digital_vault-025","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 64, 81, 100?","options":["122","121","101","99"],"answerIndex":1,"explanation":"The terms are consecutive squares. The next is 11² = 121."},{"id":"digital_vault-026","category":"Number patterns","difficulty":"intermediate","prompt":"Which square number follows 81, 100, 121?","options":["144","145","122","120"],"answerIndex":0,"explanation":"The terms are consecutive squares. The next is 12² = 144."},{"id":"digital_vault-027","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 100, 121, 144?","options":["170","145","143","169"],"answerIndex":3,"explanation":"The terms are consecutive squares. The next is 13² = 169."},{"id":"digital_vault-028","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 121, 144, 169?","options":["197","170","196","168"],"answerIndex":2,"explanation":"The terms are consecutive squares. The next is 14² = 196."},{"id":"digital_vault-029","category":"Number patterns","difficulty":"intermediate","prompt":"Which square number follows 144, 169, 196?","options":["226","225","197","195"],"answerIndex":1,"explanation":"The terms are consecutive squares. The next is 15² = 225."},{"id":"digital_vault-030","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 169, 196, 225?","options":["256","257","226","224"],"answerIndex":0,"explanation":"The terms are consecutive squares. The next is 16² = 256."},{"id":"digital_vault-031","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 196, 225, 256?","options":["290","257","255","289"],"answerIndex":3,"explanation":"The terms are consecutive squares. The next is 17² = 289."},{"id":"digital_vault-032","category":"Number patterns","difficulty":"intermediate","prompt":"Which square number follows 225, 256, 289?","options":["325","290","324","288"],"answerIndex":2,"explanation":"The terms are consecutive squares. The next is 18² = 324."},{"id":"digital_vault-033","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 256, 289, 324?","options":["362","361","325","323"],"answerIndex":1,"explanation":"The terms are consecutive squares. The next is 19² = 361."},{"id":"digital_vault-034","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 289, 324, 361?","options":["400","401","362","360"],"answerIndex":0,"explanation":"The terms are consecutive squares. The next is 20² = 400."},{"id":"digital_vault-035","category":"Number patterns","difficulty":"intermediate","prompt":"Which square number follows 324, 361, 400?","options":["442","401","399","441"],"answerIndex":3,"explanation":"The terms are consecutive squares. The next is 21² = 441."},{"id":"digital_vault-036","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 361, 400, 441?","options":["485","442","484","440"],"answerIndex":2,"explanation":"The terms are consecutive squares. The next is 22² = 484."},{"id":"digital_vault-037","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 400, 441, 484?","options":["530","529","485","483"],"answerIndex":1,"explanation":"The terms are consecutive squares. The next is 23² = 529."},{"id":"digital_vault-038","category":"Number patterns","difficulty":"intermediate","prompt":"Which square number follows 441, 484, 529?","options":["576","577","530","528"],"answerIndex":0,"explanation":"The terms are consecutive squares. The next is 24² = 576."},{"id":"digital_vault-039","category":"Number patterns","difficulty":"advanced","prompt":"Which square number follows 484, 529, 576?","options":["626","577","575","625"],"answerIndex":3,"explanation":"The terms are consecutive squares. The next is 25² = 625."},{"id":"digital_vault-040","category":"Number patterns","difficulty":"easy","prompt":"Which square number follows 529, 576, 625?","options":["677","626","676","624"],"answerIndex":2,"explanation":"The terms are consecutive squares. The next is 26² = 676."},{"id":"digital_vault-041","category":"Order of operations","difficulty":"intermediate","prompt":"Evaluate 3 + 2 × 2.","options":["10","7","8","6"],"answerIndex":1,"explanation":"Multiplication comes before addition: 2 × 2 = 4, then add 3 to get 7."},{"id":"digital_vault-042","category":"Order of operations","difficulty":"advanced","prompt":"Evaluate 4 + 3 × 3.","options":["13","21","10","15"],"answerIndex":0,"explanation":"Multiplication comes before addition: 3 × 3 = 9, then add 4 to get 13."},{"id":"digital_vault-043","category":"Order of operations","difficulty":"easy","prompt":"Evaluate 5 + 4 × 4.","options":["36","13","24","21"],"answerIndex":3,"explanation":"Multiplication comes before addition: 4 × 4 = 16, then add 5 to get 21."},{"id":"digital_vault-044","category":"Order of operations","difficulty":"intermediate","prompt":"Evaluate 6 + 5 × 5.","options":["55","16","31","35"],"answerIndex":2,"explanation":"Multiplication comes before addition: 5 × 5 = 25, then add 6 to get 31."},{"id":"digital_vault-045","category":"Order of operations","difficulty":"advanced","prompt":"Evaluate 7 + 6 × 6.","options":["78","43","19","48"],"answerIndex":1,"explanation":"Multiplication comes before addition: 6 × 6 = 36, then add 7 to get 43."},{"id":"digital_vault-046","category":"Order of operations","difficulty":"easy","prompt":"Evaluate 8 + 7 × 2.","options":["22","30","17","58"],"answerIndex":0,"explanation":"Multiplication comes before addition: 7 × 2 = 14, then add 8 to get 22."},{"id":"digital_vault-047","category":"Order of operations","difficulty":"intermediate","prompt":"Evaluate 9 + 8 × 3.","options":["51","20","75","33"],"answerIndex":3,"explanation":"Multiplication comes before addition: 8 × 3 = 24, then add 9 to get 33."},{"id":"digital_vault-048","category":"Order of operations","difficulty":"advanced","prompt":"Evaluate 10 + 2 × 4.","options":["48","16","18","24"],"answerIndex":2,"explanation":"Multiplication comes before addition: 2 × 4 = 8, then add 10 to get 18."},{"id":"digital_vault-049","category":"Order of operations","difficulty":"easy","prompt":"Evaluate 11 + 3 × 5.","options":["70","26","19","38"],"answerIndex":1,"explanation":"Multiplication comes before addition: 3 × 5 = 15, then add 11 to get 26."},{"id":"digital_vault-050","category":"Order of operations","difficulty":"intermediate","prompt":"Evaluate 12 + 4 × 6.","options":["36","96","22","54"],"answerIndex":0,"explanation":"Multiplication comes before addition: 4 × 6 = 24, then add 12 to get 36."}]}</script>
+
+<script>
+(()=>{
+ const GAME_ID="digital_vault", GAME_TITLE="Logic Vault", BANK_FILE="digital_vault_questions.json", IS_RACER=false;
+ const $=id=>document.getElementById(id), storeKey='code_academy_game_bank_'+GAME_ID+'_v1', langKey='code_academy_preferred_language_v1', localNoticeKey='code_academy_game_notifications_v1';
+ const lang=$('cabLanguage'), panel=$('caBank'), launch=$('caBankLaunch');
+ const state={items:[],generated:[],idx:0,score:0,answered:0,attempted:{},shownSolution:{},translations:{},saved:{},mode:'',closedBefore:null};
+ const builtIn=(()=>{try{return JSON.parse($('ca-bank-fallback')?.textContent||'{}')}catch(e){return {}}})();
+ const norm=s=>String(s??'').trim().toLowerCase().replace(/\s+/g,' ');
+ const safeParse=s=>{try{return JSON.parse(s)}catch(e){return null}};
+ const translationCacheKey=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return 'ca_game_translation_'+(h>>>0).toString(36)};
+ try{const saved=safeParse(localStorage.getItem(storeKey)||'{}')||{};state.idx=Math.max(0,Number(saved.idx)||0);state.score=Math.max(0,Number(saved.score)||0);state.answered=Math.max(0,Number(saved.answered)||0);state.attempted=saved.attempted||{};state.shownSolution=saved.shownSolution||{};state.saved=saved.saved||{};state.generated=Array.isArray(saved.generated)?saved.generated:[];}catch(e){}
+ try{lang.value=localStorage.getItem(langKey)||'en'}catch(e){lang.value='en'}
+ const save=()=>{try{localStorage.setItem(storeKey,JSON.stringify({idx:state.idx,score:state.score,answered:state.answered,attempted:state.attempted,shownSolution:state.shownSolution,saved:state.saved,generated:state.generated,updatedAt:Date.now()}))}catch(e){}}
+ const localNotification=(title,message)=>{try{let arr=JSON.parse(localStorage.getItem(localNoticeKey)||'[]');arr.unshift({title,message,type:'game',icon:'🎮',link:location.pathname.split('/').pop(),createdAt:Date.now(),read:false});localStorage.setItem(localNoticeKey,JSON.stringify(arr.slice(0,80)));}catch(e){}window.dispatchEvent(new CustomEvent('codeacademy-notification',{detail:{title,message,type:'game',icon:'🎮'}}));};
+ const notify=(title,message,eventKey)=>{localNotification(title,message);try{const p=window.CodeAcademyPlatform;if(p?.notify)p.notify({eventKey,title,message,type:'game',icon:'🎮',link:location.pathname.split('/').pop()});}catch(e){}};
+ const reward=(item)=>{const payload={eventKey:'bank_'+item.id,xp:5,coins:2.5,score:state.score,level:Math.floor(state.idx/10)+1,message:`You completed a practice challenge in ${GAME_TITLE}. Your progress and reward have been recorded.`,icon:'🧠'};try{if(window.CodeAcademyPlatform?.award){window.CodeAcademyPlatform.award(payload).catch(()=>{});}else window.dispatchEvent(new CustomEvent('codeacademy-game-reward',{detail:payload}));}catch(e){window.dispatchEvent(new CustomEvent('codeacademy-game-reward',{detail:payload}));}};
+ const translateEndpoint=['https://translate.argosopentech.com/translate','https://libretranslate.de/translate'];
+ async function translateText(text){const from='en',to=lang.value||'en';if(!text||to===from)return text;const key=to+'|'+text;if(state.translations[key])return state.translations[key];try{const cached=localStorage.getItem(translationCacheKey(key));if(cached){state.translations[key]=cached;return cached;}}catch(e){}
+   for(const endpoint of translateEndpoint){try{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({q:text,source:from,target:to,format:'text'}),signal:controller.signal});clearTimeout(timer);if(!response.ok)continue;const data=await response.json();if(data.translatedText){state.translations[key]=data.translatedText;try{localStorage.setItem(translationCacheKey(key),data.translatedText)}catch(e){}return data.translatedText;}}catch(e){}}
+   return text;
+ }
+ async function translateItem(item){if((lang.value||'en')==='en')return item;const out={...item};for(const key of ['prompt','explanation','hint','objective','title','expectedResult'])if(typeof out[key]==='string')out[key]=await translateText(out[key]);if(Array.isArray(out.options))out.options=await Promise.all(out.options.map(translateText));return out;}
+ const plainFallback=()=>{if(IS_RACER)return builtIn.challenges||[];return builtIn.questions||[]};
+ const BONUS_SCENES=['a school project','a community library','a small shop','a mobile app','a science club','a sports team','a garden','a bus station','a learning platform','a music group','a robotics club','a local market','a weather station','a museum','a delivery service','a computer lab','a public website','a savings group','a student team','a digital archive'];
+ function buildMcq(id,category,prompt,answer,wrongs,explanation,code=''){
+   const correct=String(answer),options=[];
+   for(const value of wrongs.map(String)){if(value!==correct&&!options.includes(value))options.push(value);}
+   let pad=1;while(options.length<3){const value=`Review option ${pad++}`;if(value!==correct&&!options.includes(value))options.push(value);}
+   options.length=3;const answerIndex=(Number(id.match(/(\d+)$/)?.[1])||1)%4;options.splice(answerIndex,0,correct);
+   return {id,category,difficulty:(Number(id.match(/(\d+)$/)?.[1])||1)%3===0?'advanced':'intermediate',prompt,options,answerIndex,explanation,...(code?{code}:{})};
+ }
+ function generateBonusItem(){
+   const serial=state.generated.length+1, round=200+serial, scene=BONUS_SCENES[(serial-1)%BONUS_SCENES.length], a=serial+4, b=2+(serial%9), id=`${GAME_ID}-bonus-${String(serial).padStart(5,'0')}`;
+   if(IS_RACER){
+     const mode=(serial-1)%8, word=['sunrise','river','orbit','signal','garden','bridge','lantern','comet','harbour','forest','planet','copper','silver','marble','puzzle','voyage','beacon','meadow','thunder','compass'][(serial-1)%20];
+     const value=serial+3, name=`mission${serial}`, fn=`combine${serial}`;
+     const tasks=[
+       {category:'Python variables',prompt:`Bonus mission ${serial}: create a variable named ${name} with the value ${value}.`,code:`${name} = ${value}` ,token:'=',hint:'Use an assignment statement with a descriptive name.'},
+       {category:'Python arithmetic',prompt:`Bonus mission ${serial}: write a Python statement that prints ${a} plus ${b}.`,code:`print(${a} + ${b})`,token:'print',hint:'Use print() with an arithmetic expression.'},
+       {category:'JavaScript condition',prompt:`Bonus mission ${serial}: check whether score is greater than ${value} and log “Ready” when it is.`,code:`if (score > ${value}) { console.log("Ready"); }`,token:'if',hint:'Use an if statement and the > operator.'},
+       {category:'Loops',prompt:`Bonus mission ${serial}: loop from 0 through ${serial%12+2} inclusive.`,code:`for (let i = 0; i <= ${serial%12+2}; i++) { console.log(i); }`,token:'for',hint:'Use a loop with a stopping condition that includes the final number.'},
+       {category:'Functions',prompt:`Bonus mission ${serial}: define a function named ${fn} that returns its input plus ${b}.`,code:`function ${fn}(value) { return value + ${b}; }`,token:'return',hint:'A return statement sends the computed value back to the caller.'},
+       {category:'HTML semantics',prompt:`Bonus mission ${serial}: create an HTML main heading that says ${word}.`,code:`<h1>${word}</h1>`,token:'<h1>',hint:'Use a semantic heading element.'},
+       {category:'CSS styling',prompt:`Bonus mission ${serial}: set the text color of .mission-${serial} to blue.`,code:`.mission-${serial} { color: blue; }`,token:'color',hint:'Write a CSS selector and a color declaration.'},
+       {category:'Array indexing',prompt:`Bonus mission ${serial}: read the first item in an array named ${name}.`,code:`const first = ${name}[0];`,token:'[0]',hint:'Most common JavaScript arrays use a zero-based first index.'}
+     ][mode];
+     return {id,category:tasks.category,difficulty:serial%3===0?'advanced':'intermediate',title:`Extended coding mission ${serial}`,prompt:tasks.prompt,objective:`Complete this extra mission, review the expected idea, and test the solution in a suitable editor. Scenario: ${scene}.`,starterCode:tasks.code,requiredToken:tasks.token,hint:tasks.hint,solutionExample:tasks.code,expectedResult:`A solution that meets the requirement for bonus mission ${serial}.`,language:'English'};
+   }
+   switch(GAME_ID){
+     case 'digital_vault':{const start=serial+5,step=2+(serial%8),answer=start+3*step;return buildMcq(id,'Number patterns',`Bonus vault puzzle ${serial}: continue ${start}, ${start+step}, ${start+2*step}, ${start+3*step}, … What comes next?`,answer,[answer+step,answer-1,answer-step],`The sequence increases by ${step} each time, so the next term is ${answer}.`);}
+     case 'detective_man':return buildMcq(id,'Evidence quality',`Case ${round}: two accounts about ${scene} conflict. What is the most reliable next step?`,'Check an independent source and document what it confirms',['Choose the more confident speaker','Publish the first version immediately','Assume the latest account must be true'],'Independent corroboration is more reliable than confidence, speed, or popularity.');
+     case 'mind_palace':{const start=serial+2,step=2+(serial%5),answer=start+3*step;return buildMcq(id,'Recall practice',`Memory challenge ${serial}: recall the pattern ${start}, ${start+step}, ${start+2*step}, ___. Which number follows?`,answer,[answer+1,answer-step,answer+step+2],`The pattern adds ${step} at every step. The next value is ${answer}.`);}
+     case 'civilization':{const budget=120+serial*7,water=25+(serial%17),food=32+(serial%13),answer=budget-water-food;return buildMcq(id,'Resource planning',`Town plan ${serial}: a community has ${budget} resource units. Water uses ${water} and food uses ${food}. How many units remain?`,answer,[answer+water,answer-food,answer+10],`Subtract both needs from the total: ${budget} − ${water} − ${food} = ${answer}.`);}
+     case 'truth_protocol':return buildMcq(id,'Verification',`Truth check ${serial}: a viral post makes a serious claim about ${scene} but provides no source. What is the strongest verdict before checking it?`,'Unverified; look for the original source and independent evidence',['Definitely true because it is popular','Definitely false because it is short','Confirmed because a screenshot exists'],'Popularity and screenshots do not establish truth. Verify the source and corroborate the claim.');
+     case 'code_breaker':case 'code_quest':{const x=serial+3,y=2+(serial%11),answer=x+y;return buildMcq(id,'Code tracing',`Code puzzle ${serial}: what value is printed by this program?`,answer,[x*y,x-y,`${x}${y}`],`The program adds ${x} and ${y}, so it prints ${answer}.`,`let value = ${x};
+value += ${y};
+console.log(value);`);}
+     case 'cybermission':return buildMcq(id,'Security awareness',`Security scenario ${serial}: an urgent message about ${scene} asks you to sign in through an unfamiliar shortened link. What should you do?`,'Visit the service through its known official address and verify the request',['Open the link immediately','Reply with your password or one-time code','Forward the link to everyone'],'Urgency and unfamiliar links are warning signs. Use a trusted route and never disclose login secrets.');
+     case 'algorithm_defender':return buildMcq(id,'Algorithm analysis',`Defense wave ${serial}: an algorithm checks every record in a list of n records once. Which time complexity describes the scan?`,'O(n)',['O(1)','O(log n)','O(n²)'],'The work grows in direct proportion to the number of records, so the complexity is O(n).');
+     default:{const x=serial+2,y=serial%9+3,answer=x*y;return buildMcq(id,'Programming logic',`Bonus logic question ${serial}: what is the result of ${x} × ${y}?`,answer,[answer+x,answer-y,answer+1],`Multiplying ${x} by ${y} gives ${answer}.`);}
+   }
+ }
+ async function loadItems(){let data=null;try{const res=await fetch(BANK_FILE,{cache:'no-store'});if(res.ok)data=await res.json();}catch(e){}let items=IS_RACER?data?.challenges:data?.questions;if(!Array.isArray(items)||items.length<50)items=plainFallback();if(!Array.isArray(items)||!items.length){items=[];}state.items=items.concat(state.generated);if(state.idx>=state.items.length)state.idx=0;return state.items.length;}
+ function elText(id,text){$(id).textContent=text??'';}
+ function current(){return state.items[Math.min(state.idx,Math.max(0,state.items.length-1))]}
+ function stats(){elText('cabStats',`${state.score} correct · ${state.answered} answered`);$('cabProgress').style.width=(state.items.length?Math.min(100,(state.idx+1)/state.items.length*100):0)+'%';elText('cabPersistence','Progress saves automatically on this device.');}
+ function announceActivity(type,item){if(type==='opened'){notify(`${GAME_TITLE} practice started`,'A learner opened the extra practice bank.',`opened_practice_${new Date().toISOString().slice(0,10)}`);}else if(type==='milestone'){notify(`${GAME_TITLE} practice milestone`,'A learner has answered five or more practice challenges.',`practice_milestone_${item?.id||state.idx}`);}}
+ async function render(){if(!state.items.length){elText('cabQuestion','The practice set is not available yet. Check your connection and try again.');$('cabOptions').replaceChildren();return;}
+  const raw=current();const item=await translateItem(raw);state.mode=IS_RACER?'coding-missions':'multiple-choice';elText('cabCategory',item.category||'Practice');elText('cabDifficulty',(item.difficulty||'intermediate').toUpperCase());elText('cabMode',IS_RACER?'Coding mission':'Question bank');elText('cabQuestion',IS_RACER?`${item.title||'Coding mission'} — ${item.prompt||''}\n\n${item.objective||''}`:item.prompt||'');
+  const code=$('cabCode');if(IS_RACER){code.hidden=false;code.textContent='Starter code:\n'+(raw.starterCode||'');$('cabAnswer').hidden=false;$('cabAnswer').value=state.saved[raw.id]||'';$('cabSolution').hidden=false;$('cabComplete').hidden=false;$('cabOptions').replaceChildren();$('cabHint').hidden=false;$('cabNote').textContent='Enter your solution or reasoning here. This lightweight checker looks for the required key idea; it does not execute code. Use the main Code Racer editor for full execution and testing.';}else{code.hidden=!item.code;code.textContent=item.code||'';$('cabAnswer').hidden=true;$('cabSolution').hidden=true;$('cabComplete').hidden=true;$('cabOptions').replaceChildren();(item.options||[]).forEach((option,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='cab-option';btn.textContent=String.fromCharCode(65+i)+'. '+option;btn.addEventListener('click',()=>pick(i,raw,btn));if(state.attempted[raw.id]){btn.disabled=true;if(i===raw.answerIndex)btn.classList.add('correct');else if(i===state.attempted[raw.id].choice)btn.classList.add('wrong');} $('cabOptions').append(btn);});$('cabNote').textContent='Choose the best answer to see feedback. When the curated bank ends, new bonus questions are generated automatically. Translation depends on service availability; code syntax remains unchanged.';}
+  $('cabPrevious').disabled=state.idx===0;$('cabNext').textContent=state.idx===state.items.length-1?'Generate next challenge':'Next →';stats();
+  const fb=$('cabFeedback');const old=state.attempted[raw.id];fb.className='cab-feedback'+(old?' show '+(old.correct?'good':'bad'):'');if(old){const msg=IS_RACER?(old.correct?'Mission marked complete.':'Your previous attempt needs another look.'):(`${old.correct?'Correct.':'Not quite.'} ${item.explanation||raw.explanation||''}`);fb.textContent=msg;}
+ }
+ async function pick(choice,raw){if(state.attempted[raw.id])return;const ok=choice===Number(raw.answerIndex);state.attempted[raw.id]={choice,correct:ok,at:Date.now()};state.answered++;if(ok){state.score++;reward(raw);if(state.score>0&&state.score%5===0)announceActivity('milestone',raw);}const item=await translateItem(raw);const fb=$('cabFeedback');fb.className='cab-feedback show '+(ok?'good':'bad');fb.textContent=(ok?'Correct. ':'Not quite. ')+(item.explanation||raw.explanation||'Review the concept and try another challenge.');$('cabOptions').querySelectorAll('button').forEach((btn,i)=>{btn.disabled=true;if(i===Number(raw.answerIndex))btn.classList.add('correct');else if(i===choice)btn.classList.add('wrong');});save();stats();}
+ $('cabAnswer').addEventListener('input',()=>{const item=current();if(item)state.saved[item.id]=$('cabAnswer').value;save();});
+ $('cabComplete').addEventListener('click',()=>{const item=current();if(!item)return;const response=$('cabAnswer').value.trim();if(!response){$('cabFeedback').className='cab-feedback show bad';$('cabFeedback').textContent='Add your solution or explanation before marking the mission complete.';return;}const token=String(item.requiredToken||'').toLowerCase();const ok=!token||response.toLowerCase().includes(token.toLowerCase());const prior=state.attempted[item.id];if(!prior)state.answered++;if(ok&&!prior?.correct){state.score++;reward(item);if(state.score>0&&state.score%5===0)announceActivity('milestone',item);}state.attempted[item.id]={choice:-1,correct:ok,at:Date.now()};save();const fb=$('cabFeedback');fb.className='cab-feedback show '+(ok?'good':'bad');fb.textContent=ok?'Key idea detected. Compare your solution with the example, then test it in a suitable editor.':'The required idea was not detected yet. Review the hint or example and revise your solution.';stats();});
+ $('cabHint').addEventListener('click',async()=>{const item=current();if(!item)return;const hint=await translateText(item.hint||'Break the problem into small steps and check what the instructions ask for.');const fb=$('cabFeedback');fb.className='cab-feedback show';fb.textContent='Hint: '+hint;});
+ $('cabSolution').addEventListener('click',()=>{const item=current();if(!item)return;const code=$('cabCode');code.hidden=false;code.textContent='Example solution:\n'+(item.solutionExample||item.starterCode||'');state.shownSolution[item.id]=true;save();});
+ $('cabPrevious').addEventListener('click',()=>{if(state.idx>0){state.idx--;save();render();}});$('cabNext').addEventListener('click',()=>{if(state.idx<state.items.length-1){state.idx++;save();render();}else{const bonus=generateBonusItem();state.generated.push(bonus);state.items.push(bonus);state.idx=state.items.length-1;save();render();if(state.generated.length===1||state.generated.length%10===0)notify(`${GAME_TITLE} bonus round unlocked`,`A fresh bonus ${IS_RACER?'coding mission':'question'} has been generated. Keep practising at your own pace.`,`bonus_round_${state.generated.length}`);}});
+ function speak(){if(!('speechSynthesis' in window)){elText('cabPersistence','Speech synthesis is not supported by this browser.');return;}const item=current();if(!item)return;const text=IS_RACER?`${item.title}. ${item.prompt}. ${item.objective}`:`${item.prompt}. ${(item.options||[]).map((v,i)=>`Option ${i+1}: ${v}`).join('. ')}. ${item.explanation||''}`;speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);const wanted=lang.value||'en';const voices=speechSynthesis.getVoices();let voice=voices.find(v=>v.lang.toLowerCase()===wanted.toLowerCase()||v.lang.toLowerCase().startsWith(wanted.toLowerCase()+'-'));if(!voice)voice=voices.find(v=>v.lang.toLowerCase().startsWith('en-'));if(voice){utter.voice=voice;utter.lang=voice.lang;}else utter.lang='en-US';utter.rate=.92;utter.pitch=1;utter.volume=1;speechSynthesis.speak(utter);}
+ $('cabListen').addEventListener('click',speak);lang.addEventListener('change',async()=>{try{localStorage.setItem(langKey,lang.value)}catch(e){}state.translations={};render();});
+ function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';announceActivity('opened');render();$('cabClose').focus();}
+ function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');document.body.style.overflow='';launch.focus();}
+ launch.addEventListener('click',open);$('cabClose').addEventListener('click',close);panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+ loadItems().then(count=>{elText('cabSubtitle',`${count} ${IS_RACER?'coding missions':'questions'} available · extra challenges generate automatically after the bank.`);render();}).catch(()=>render());
+})();
+</script>
+
+<script type="module">import { initGamePlatform } from "./game-platform.js"; initGamePlatform({gameId:"digital_vault",gameTitle:"Logic Vault",requireAuth:true,link:"digital_vault.html"});</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

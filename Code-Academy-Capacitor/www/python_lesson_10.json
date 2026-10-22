@@ -1,0 +1,176 @@
+{
+  "course": "python",
+  "lessonNumber": 10,
+  "lessonId": "python-lesson-10",
+  "title": "Classes and a Practical Mini-Project",
+  "subtitle": "Classes and a Practical Mini-Project: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on classes and a practical mini-project, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "python-10-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Classes and a Practical Mini-Project: foundations and mental model"
+    },
+    {
+      "id": "python-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Classes and a Practical Mini-Project is not just a syntax topic: it is a way to make the application’s intent explicit. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. In the Code Academy dashboard, that idea matters because A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "python-10-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Classes and a Practical Mini-Project: An instance stores state in attributes",
+      "language": "python",
+      "code": "class Learner:\n    def __init__(self, name, xp):\n        self.name = name\n        self.xp = xp\nlearner = Learner('Ama', 120)\nprint(learner.name)",
+      "output": "An instance stores state in attributes."
+    },
+    {
+      "id": "python-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “class Learner:”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def __init__(self, name, xp):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “self.name = name”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “self.xp = xp”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 5 — “learner = Learner('Ama', 120)”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 6 — “print(learner.name)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An instance stores state in attributes. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-10-quiz-1-5",
+      "type": "quiz",
+      "question": "A learner record contains name and XP. What is the main benefit of grouping them in one model?",
+      "options": [
+        "Every field becomes safe from modification automatically",
+        "All records must share the same XP value",
+        "Related state stays together and can be validated through a clear interface",
+        "The model automatically saves itself to Firebase"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Related state stays together and can be validated through a clear interface. A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation.",
+      "reasoning": "A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Classes and a Practical Mini-Project: Methods define behavior attached to objects",
+      "language": "python",
+      "code": "class Lesson:\n    def __init__(self, title):\n        self.title = title\n    def label(self):\n        return f'Lesson: {self.title}'\nprint(Lesson('Loops').label())",
+      "output": "Methods define behavior attached to objects."
+    },
+    {
+      "id": "python-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “class Lesson:”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def __init__(self, title):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “self.title = title”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “def label(self):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 5 — “return f'Lesson: {self.title}'”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 6 — “print(Lesson('Loops').label())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Methods define behavior attached to objects. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-10-quiz-2-8",
+      "type": "quiz",
+      "question": "Several types must provide `report()`, but their internal data differs. Which abstraction is suitable?",
+      "options": [
+        "Store source code in the report field",
+        "An interface or protocol describing the required behavior",
+        "Copy the same method into unrelated caller code",
+        "Use one global variable for all records"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: An interface or protocol describing the required behavior. An interface or protocol defines a contract without requiring identical internal representations.",
+      "reasoning": "An interface or protocol defines a contract without requiring identical internal representations. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Classes and a Practical Mini-Project: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "python-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "python-10-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Classes and a Practical Mini-Project: A dataclass can reduce repetitive data-model code",
+      "language": "python",
+      "code": "from dataclasses import dataclass\n@dataclass\nclass Course:\n    name: str\n    lesson_count: int\nprint(Course('Python', 10))",
+      "output": "A dataclass can reduce repetitive data-model code."
+    },
+    {
+      "id": "python-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “from dataclasses import dataclass”: Makes the needed library available or declares the package/module context for the code. Line 2 — “@dataclass”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 3 — “class Course:”: Declares a data type or contract that groups fields and/or behavior. Line 4 — “name: str”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 5 — “lesson_count: int”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 6 — “print(Course('Python', 10))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A dataclass can reduce repetitive data-model code. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A course-progress object must never have a negative total. Where should that rule be protected?",
+      "options": [
+        "At the model or validation boundary that creates and updates the object",
+        "Only in the page heading",
+        "Only when the object is printed",
+        "By assuming all call sites follow a comment"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: At the model or validation boundary that creates and updates the object. Domain invariants should be enforced where data enters or changes, not only at display time.",
+      "reasoning": "Domain invariants should be enforced where data enters or changes, not only at display time. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Classes and a Practical Mini-Project: The method handles a zero-total edge case",
+      "language": "python",
+      "code": "class Progress:\n    def __init__(self, done, total):\n        self.done = done\n        self.total = total\n    def percent(self):\n        return 0 if self.total == 0 else self.done / self.total * 100\nprint(Progress(4, 10).percent())",
+      "output": "The method handles a zero-total edge case."
+    },
+    {
+      "id": "python-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “class Progress:”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “def __init__(self, done, total):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “self.done = done”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “self.total = total”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 5 — “def percent(self):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 6 — “return 0 if self.total == 0 else self.done / self.total * 100”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 7 — “print(Progress(4, 10).percent())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: The method handles a zero-total edge case. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-10-quiz-3-16",
+      "type": "quiz",
+      "question": "A type has only two fields and no behavior or identity requirements. What design principle applies?",
+      "options": [
+        "Use inheritance by default",
+        "Create an abstract hierarchy for every field",
+        "Make all members globally mutable",
+        "Prefer the simplest data structure that clearly represents the value"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Prefer the simplest data structure that clearly represents the value. Classes, structs, and records should match actual domain needs rather than add ceremony.",
+      "reasoning": "Classes, structs, and records should match actual domain needs rather than add ceremony. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Classes and a Practical Mini-Project: applied challenge and mastery check"
+    },
+    {
+      "id": "python-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. For the Code Academy dashboard, A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "python-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses classes and a practical mini-project. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "python-10-quiz-5-20",
+      "type": "quiz",
+      "question": "A subclass overrides a method with an incompatible meaning. What is the key design risk?",
+      "options": [
+        "The program gains database persistence",
+        "Object fields become inaccessible in every language",
+        "The subtype may violate the contract expected by callers",
+        "The compiler must automatically rewrite all callers"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The subtype may violate the contract expected by callers. Subtyping is safe only when the subtype respects the behavioral expectations of its base contract.",
+      "reasoning": "Subtyping is safe only when the subtype respects the behavioral expectations of its base contract. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

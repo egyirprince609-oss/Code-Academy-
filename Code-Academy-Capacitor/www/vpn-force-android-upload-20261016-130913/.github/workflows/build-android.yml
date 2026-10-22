@@ -1,0 +1,65 @@
+name: Build Code Academy VPN Force
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    env:
+      VPN_SIGNING_CONFIGURED: ${{ secrets.VPN_KEYSTORE_BASE64 != '' && secrets.VPN_KEYSTORE_PASSWORD != '' && secrets.VPN_KEY_ALIAS != '' && secrets.VPN_KEY_PASSWORD != '' }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android 16 SDK packages
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager --install "platform-tools" "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Set up Gradle 8.13
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
+
+      - name: Build installable debug APK
+        run: gradle --no-daemon :app:assembleDebug
+
+      - name: Build signed release APK and AAB when upload-key secrets are configured
+        if: ${{ env.VPN_SIGNING_CONFIGURED == 'true' }}
+        env:
+          VPN_KEYSTORE_BASE64: ${{ secrets.VPN_KEYSTORE_BASE64 }}
+          VPN_KEYSTORE_PASSWORD: ${{ secrets.VPN_KEYSTORE_PASSWORD }}
+          VPN_KEY_ALIAS: ${{ secrets.VPN_KEY_ALIAS }}
+          VPN_KEY_PASSWORD: ${{ secrets.VPN_KEY_PASSWORD }}
+        run: |
+          printf '%s' "$VPN_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/vpn-force-upload.jks"
+          VPN_KEYSTORE_PATH="$RUNNER_TEMP/vpn-force-upload.jks" \
+          VPN_KEYSTORE_PASSWORD="$VPN_KEYSTORE_PASSWORD" \
+          VPN_KEY_ALIAS="$VPN_KEY_ALIAS" \
+          VPN_KEY_PASSWORD="$VPN_KEY_PASSWORD" \
+          gradle --no-daemon :app:assembleRelease :app:bundleRelease
+
+      - name: Upload Android artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-academy-vpn-force-build
+          path: |
+            app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: warn
+          retention-days: 14

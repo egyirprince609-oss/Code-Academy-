@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 8,
+  "lessonId": "sql-lesson-8",
+  "title": "INSERT, UPDATE and DELETE Safely",
+  "subtitle": "INSERT, UPDATE and DELETE Safely: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on insert, update and delete safely, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-8-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — INSERT, UPDATE and DELETE Safely: foundations and mental model"
+    },
+    {
+      "id": "sql-8-page-1-teaching-2",
+      "type": "content",
+      "text": "INSERT, UPDATE and DELETE Safely is not just a syntax topic: it is a way to make the application’s intent explicit. UPDATE and DELETE affect every row matching their predicates. Preview affected rows, use precise WHERE conditions, and protect related operations with transactions. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-8-code-1-3",
+      "type": "code",
+      "title": "Example 1 — INSERT, UPDATE and DELETE Safely: Uses a parameter and a restrictive key condition",
+      "language": "sql",
+      "code": "UPDATE lessons SET published = TRUE WHERE id = ?;",
+      "output": "Uses a parameter and a restrictive key condition."
+    },
+    {
+      "id": "sql-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “UPDATE lessons SET published = TRUE WHERE id = ?;”: Names the table whose rows will be changed; a precise WHERE condition is essential. Expected behavior: Uses a parameter and a restrictive key condition. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-8-quiz-1-5",
+      "type": "quiz",
+      "question": "An UPDATE should change XP for one learner only. What is essential?",
+      "options": [
+        "A restrictive WHERE predicate on the learner key and a bound parameter",
+        "Removing WHERE so the database finds the intended row automatically",
+        "Using ORDER BY instead of a predicate",
+        "Changing every learner and correcting them later"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A restrictive WHERE predicate on the learner key and a bound parameter. Without a target predicate, an UPDATE can modify every row.",
+      "reasoning": "Without a target predicate, an UPDATE can modify every row. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-8-code-2-6",
+      "type": "code",
+      "title": "Example 2 — INSERT, UPDATE and DELETE Safely: Deletes one targeted record by primary key",
+      "language": "sql",
+      "code": "DELETE FROM attempts WHERE id = ?;",
+      "output": "Deletes one targeted record by primary key."
+    },
+    {
+      "id": "sql-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “DELETE FROM attempts WHERE id = ?;”: Names a deletion operation; check its target predicate carefully before executing. Expected behavior: Deletes one targeted record by primary key. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-8-quiz-2-8",
+      "type": "quiz",
+      "question": "A delete request may be retried after a network timeout. What should the application consider?",
+      "options": [
+        "Delete all rows if the first response is delayed",
+        "Assume timeout means the database did nothing",
+        "Concatenate untrusted input into the statement",
+        "Idempotent semantics and a precise target key"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Idempotent semantics and a precise target key. A timeout does not prove whether a write committed; precise and retry-safe semantics reduce damage.",
+      "reasoning": "A timeout does not prove whether a write committed; precise and retry-safe semantics reduce damage. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-8-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — INSERT, UPDATE and DELETE Safely: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. UPDATE and DELETE affect every row matching their predicates. Preview affected rows, use precise WHERE conditions, and protect related operations with transactions. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-8-code-3-11",
+      "type": "code",
+      "title": "Example 3 — INSERT, UPDATE and DELETE Safely: Uses parameter placeholders for inserted values",
+      "language": "sql",
+      "code": "INSERT INTO attempts (learner_id, lesson_id, score) VALUES (?, ?, ?);",
+      "output": "Uses parameter placeholders for inserted values."
+    },
+    {
+      "id": "sql-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “INSERT INTO attempts (learner_id, lesson_id, score) VALUES (?, ?, ?);”: Defines the row or field values to insert; parameters should keep user input separate from SQL syntax. Expected behavior: Uses parameter placeholders for inserted values. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-8-quiz-2-13",
+      "type": "quiz",
+      "question": "A submitted title is passed into a SQL statement. What prevents it from changing query structure?",
+      "options": [
+        "A hidden input field",
+        "Adding a comment to the query",
+        "A prepared statement with a parameter for the title value",
+        "HTML escaping alone"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: A prepared statement with a parameter for the title value. SQL parameters protect the query structure; HTML escaping addresses a different context.",
+      "reasoning": "SQL parameters protect the query structure; HTML escaping addresses a different context. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — INSERT, UPDATE and DELETE Safely: Groups a related write in an explicit transaction; production code must roll back on failure",
+      "language": "sql",
+      "code": "BEGIN;\nUPDATE learners SET xp = xp + ? WHERE id = ?;\nCOMMIT;",
+      "output": "Groups a related write in an explicit transaction; production code must roll back on failure."
+    },
+    {
+      "id": "sql-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “BEGIN;”: Controls a transaction boundary and determines whether related changes persist together. Line 2 — “UPDATE learners SET xp = xp + ? WHERE id = ?;”: Names the table whose rows will be changed; a precise WHERE condition is essential. Line 3 — “COMMIT;”: Controls a transaction boundary and determines whether related changes persist together. Expected behavior: Groups a related write in an explicit transaction; production code must roll back on failure. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-8-quiz-3-16",
+      "type": "quiz",
+      "question": "Two related updates must both be applied or neither applied. What should wrap them?",
+      "options": [
+        "CSS validation",
+        "A transaction with commit on success and rollback on failure",
+        "Two independent writes with no error handling",
+        "A SELECT without a predicate"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: A transaction with commit on success and rollback on failure. A transaction provides atomicity for the related changes.",
+      "reasoning": "A transaction provides atomicity for the related changes. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — INSERT, UPDATE and DELETE Safely: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. UPDATE and DELETE affect every row matching their predicates. Preview affected rows, use precise WHERE conditions, and protect related operations with transactions. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses insert, update and delete safely. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-8-quiz-5-20",
+      "type": "quiz",
+      "question": "Before running a dangerous DELETE, what is a prudent verification step?",
+      "options": [
+        "Run an equivalent SELECT with the exact WHERE predicate to inspect the target rows",
+        "Remove the predicate to simplify review",
+        "Rely on a success message before execution",
+        "Disable the database constraints"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Run an equivalent SELECT with the exact WHERE predicate to inspect the target rows. Previewing the affected set can reveal an overly broad predicate before making an irreversible change.",
+      "reasoning": "Previewing the affected set can reveal an overly broad predicate before making an irreversible change. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: UPDATE and DELETE affect every row matching their predicates. Preview affected rows, use precise WHERE conditions, and protect related operations with transactions. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

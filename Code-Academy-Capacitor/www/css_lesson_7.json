@@ -1,0 +1,283 @@
+{
+  "course": "css",
+  "lessonNumber": 7,
+  "lessonId": "css-lesson-7",
+  "title": "CSS Grid",
+  "subtitle": "Build structured layouts using rows, columns and grid areas",
+  "description": "Learn how CSS Grid creates two-dimensional layouts, defines tracks, positions items, controls spacing and builds responsive page designs.",
+  "level": "Intermediate",
+  "estimatedMinutes": 45,
+  "blocks": [
+    {
+      "id": "page-1-added",
+      "type": "heading",
+      "text": "PAGE 1 — CSS Grid: concepts and applied practice"
+    },
+    {
+      "type": "content",
+      "title": "1. Introduction to CSS Grid",
+      "text": "CSS Grid Layout is a CSS system for arranging elements in rows and columns. Unlike Flexbox, which is primarily designed to lay items out along one axis at a time, Grid is designed to manage both rows and columns together. This makes Grid useful for dashboards, image galleries, product listings, page layouts and card collections. To create a grid, apply display: grid to a parent element. That parent becomes the grid container, and its direct children become grid items. You can then define the columns and rows, control the space between tracks, and place items in particular positions. Grid does not automatically make every descendant a grid item; only the direct children of the grid container participate in that grid. Grid is not a replacement for Flexbox in every situation. Use the layout system that best matches the structure you need.",
+      "id": "css-7-block-2"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 1: Create Your First Grid",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>My First Grid</title>\n  <style>\n    .grid-container {\n      display: grid;\n      grid-template-columns: 1fr 1fr 1fr;\n      gap: 12px;\n      padding: 16px;\n      background: #e2e8f0;\n    }\n\n    .grid-item {\n      padding: 24px;\n      background: #2563eb;\n      color: white;\n      text-align: center;\n      border-radius: 8px;\n    }\n  </style>\n</head>\n<body>\n  <div class=\"grid-container\">\n    <div class=\"grid-item\">One</div>\n    <div class=\"grid-item\">Two</div>\n    <div class=\"grid-item\">Three</div>\n    <div class=\"grid-item\">Four</div>\n    <div class=\"grid-item\">Five</div>\n    <div class=\"grid-item\">Six</div>\n  </div>\n</body>\n</html>",
+      "explanation": "display: grid creates the grid container. grid-template-columns: 1fr 1fr 1fr defines three equal flexible columns. The six direct children are placed into those columns, forming two rows when there is enough space for the layout. gap: 12px adds spacing between rows and columns.",
+      "output": "display: grid creates the grid container. grid-template-columns: 1fr 1fr 1fr defines three equal flexible columns. The six direct children are placed into those columns, forming two rows when there is enough space for the layout. gap: 12px adds spacing between rows and columns.",
+      "id": "css-7-block-3"
+    },
+    {
+      "type": "content",
+      "title": "2. Defining Columns and Rows",
+      "text": "The grid-template-columns property defines the column tracks, while grid-template-rows defines the row tracks. A track is a row or column in the grid. For example, grid-template-columns: 200px 300px creates two columns with specified widths. You can also use percentages, minmax(), repeat() and the flexible fr unit. The fr unit represents a share of the available space in the grid container after relevant fixed sizes, gaps and other sizing constraints are accounted for. For example, 1fr 2fr gives the second track twice the flexible share of the first track, assuming the same available space is being distributed between those flexible tracks. It does not mean the second column is always twice as wide under every possible sizing constraint. The repeat() function avoids repeating the same track definition, while minmax() defines a permitted minimum and maximum size for a track. Rows can also be sized explicitly. Rows created automatically for items that need additional space are called implicit rows.",
+      "id": "css-7-block-4"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 2: Use fr, repeat() and minmax()",
+      "language": "html",
+      "code": "<style>\n  .course-grid {\n    display: grid;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 16px;\n  }\n\n  .course-card {\n    min-width: 0;\n    padding: 18px;\n    background: #f1f5f9;\n    border: 1px solid #cbd5e1;\n    border-radius: 10px;\n    overflow-wrap: anywhere;\n  }\n</style>\n\n<div class=\"course-grid\">\n  <article class=\"course-card\">HTML</article>\n  <article class=\"course-card\">CSS</article>\n  <article class=\"course-card\">JavaScript</article>\n  <article class=\"course-card\">Python</article>\n  <article class=\"course-card\">React</article>\n  <article class=\"course-card\">Web Design</article>\n</div>",
+      "explanation": "repeat(3, minmax(0, 1fr)) defines three equal flexible columns. minmax(0, 1fr) allows a track's minimum sizing limit to be zero instead of its automatic minimum, which can help prevent long content from forcing a column wider than intended. With six items, the grid normally creates two rows of three cards.",
+      "output": "repeat(3, minmax(0, 1fr)) defines three equal flexible columns. minmax(0, 1fr) allows a track's minimum sizing limit to be zero instead of its automatic minimum, which can help prevent long content from forcing a column wider than intended. With six items, the grid normally creates two rows of three cards.",
+      "id": "css-7-block-5"
+    },
+    {
+      "type": "quiz",
+      "question": "What does grid-template-columns: repeat(3, 1fr) define?",
+      "options": [
+        "Three equal flexible columns",
+        "Three equal fixed-height rows",
+        "Three columns, each exactly one pixel wide",
+        "Three rows that automatically wrap their contents"
+      ],
+      "correctIndex": 0,
+      "explanation": "repeat(3, 1fr) repeats the 1fr column definition three times. It creates three equal flexible column tracks, subject to the grid's sizing constraints.",
+      "id": "css-7-block-6"
+    },
+    {
+      "type": "content",
+      "title": "3. Understanding the fr Unit and minmax()",
+      "text": "The fr unit is useful when you want grid tracks to share available space flexibly. For example, grid-template-columns: 1fr 2fr gives two flexible tracks a 1-to-2 share of the available flexible space when other sizing constraints permit. Fixed-size tracks and gaps affect how much space remains for the fr tracks. The minmax() function helps you control how small or large a track can become. For example, minmax(200px, 1fr) sets a minimum track size of 200px and allows it to grow flexibly. If the container is too narrow to accommodate the minimum sizes of all columns, the grid may overflow. For layouts that need to shrink more safely, minmax(0, 1fr) is often useful. The minmax() function is not a command to make a layout responsive by itself; you still need to choose sensible track definitions for the available space.",
+      "id": "css-7-block-7"
+    },
+    {
+      "type": "quiz",
+      "question": "In grid-template-columns: 1fr 2fr, what is the intended relationship between the two flexible tracks when sizing constraints allow?",
+      "options": [
+        "The first track receives twice the flexible share of the second.",
+        "The second track receives twice the flexible share of the first.",
+        "Both tracks must always be exactly 200px wide.",
+        "The first track is a row and the second is a column."
+      ],
+      "correctIndex": 1,
+      "explanation": "The flexible shares are in a 1-to-2 ratio, so the second track receives twice the flexible share of the first when the available space can be distributed that way.",
+      "id": "css-7-block-8"
+    },
+    {
+      "type": "content",
+      "title": "4. Controlling Space Between Grid Tracks",
+      "text": "The gap property sets the space between grid rows and columns. For example, gap: 20px applies 20px between adjacent rows and columns. You can control the two directions independently with row-gap and column-gap. These properties add space between tracks; they do not create padding around the outside of the grid container. Use padding when you want space between the container's border and its content. Do not confuse gap with margins on individual grid items. Margins belong to the items themselves, while gap defines spacing between tracks in the layout. Using gap is often simpler and more consistent for card galleries, dashboards and collections of related components.",
+      "id": "css-7-block-9"
+    },
+    {
+      "id": "page-2-added",
+      "type": "heading",
+      "text": "PAGE 2 — CSS Grid: concepts and applied practice"
+    },
+    {
+      "type": "quiz",
+      "question": "You want 24px between columns and 12px between rows. Which declaration does that directly?",
+      "options": [
+        "gap: 24px 12px;",
+        "padding: 24px 12px;",
+        "column-gap: 24px; row-gap: 12px;",
+        "grid-template-columns: 24px 12px;"
+      ],
+      "correctIndex": 2,
+      "explanation": "column-gap controls the spacing between columns, and row-gap controls the spacing between rows. The two values in gap shorthand can also represent row-gap first and column-gap second, so gap: 12px 24px would achieve the same spacing.",
+      "id": "css-7-block-11"
+    },
+    {
+      "type": "content",
+      "title": "5. Positioning Items with Grid Lines",
+      "text": "Grid items can occupy specific tracks by using grid-column and grid-row. Grid lines are the boundaries that separate the rows and columns. In a simple three-column grid, the vertical grid lines are numbered 1, 2, 3 and 4 from the start to the end. The declaration grid-column: 1 / 3 places an item from column line 1 to column line 3, so it spans the first two column tracks. The ending line is the boundary where the item stops; it is not an inclusive column number. Similarly, grid-row: 1 / 3 spans the first two row tracks. You can also use span, such as grid-column: span 2, to request that an item cover two column tracks. If you place items in locations that need additional tracks, Grid can create implicit tracks. Make sure you understand the line numbers before using them, because grid-column and grid-row refer to grid lines rather than directly naming the item numbers.",
+      "id": "css-7-block-12"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 3: Make an Item Span Two Columns",
+      "language": "html",
+      "code": "<style>\n  .dashboard {\n    display: grid;\n    grid-template-columns: repeat(3, minmax(0, 1fr));\n    gap: 12px;\n  }\n\n  .panel {\n    padding: 20px;\n    background: #dbeafe;\n    border-radius: 8px;\n  }\n\n  .panel-wide {\n    grid-column: 1 / 3;\n    background: #bfdbfe;\n  }\n</style>\n\n<div class=\"dashboard\">\n  <section class=\"panel panel-wide\">Main panel</section>\n  <section class=\"panel\">Side panel</section>\n  <section class=\"panel\">Recent activity</section>\n  <section class=\"panel\">Notifications</section>\n</div>",
+      "explanation": "The dashboard defines three columns. The main panel begins at column line 1 and ends at column line 3, so it occupies the first two column tracks. The remaining items are placed into available grid positions by the automatic placement algorithm.",
+      "output": "The dashboard defines three columns. The main panel begins at column line 1 and ends at column line 3, so it occupies the first two column tracks. The remaining items are placed into available grid positions by the automatic placement algorithm.",
+      "id": "css-7-block-13"
+    },
+    {
+      "type": "quiz",
+      "question": "In a grid with three columns, what does grid-column: 1 / 3 mean?",
+      "options": [
+        "Place the item only in the third column.",
+        "Make the item span from line 1 to line 3, covering two column tracks.",
+        "Create three additional columns before the item.",
+        "Place the item from row line 1 to row line 3."
+      ],
+      "correctIndex": 1,
+      "explanation": "Grid line 1 is the start boundary and line 3 is the end boundary. The item therefore spans the first and second column tracks.",
+      "id": "css-7-block-14"
+    },
+    {
+      "type": "content",
+      "title": "6. Aligning Content Inside a Grid",
+      "text": "CSS Grid has properties for aligning items and distributing tracks. justify-items controls the horizontal alignment of items inside their own grid areas in the usual left-to-right writing direction. align-items controls their alignment along the block axis, which is usually vertical. Common values include start, end, center and stretch. The default alignment generally stretches items across their grid areas when their size permits. You can override alignment for an individual item with justify-self or align-self. These properties are different from justify-content and align-content, which control the grid tracks as a group inside the grid container when extra space is available. For example, justify-content: center can center the grid's track group horizontally if the grid tracks occupy less space than the container. Do not confuse alignment of an item inside its cell with alignment of the entire group of tracks.",
+      "id": "css-7-block-15"
+    },
+    {
+      "type": "quiz",
+      "question": "Which property aligns an individual grid item horizontally inside its own grid area in a typical left-to-right layout?",
+      "options": [
+        "justify-self",
+        "justify-content",
+        "grid-template-columns",
+        "column-gap"
+      ],
+      "correctIndex": 0,
+      "explanation": "justify-self aligns an individual grid item within its grid area along the inline axis, which is usually horizontal in a left-to-right layout. justify-content controls the grid tracks as a group.",
+      "id": "css-7-block-16"
+    },
+    {
+      "type": "content",
+      "title": "7. Creating Responsive Grids",
+      "text": "A responsive grid adjusts its layout to the space available. One useful technique is repeat(auto-fit, minmax(...)). auto-fit allows the grid to create as many tracks as fit under the specified track-sizing rules and collapses unused repeated tracks when appropriate. For example, repeat(auto-fit, minmax(220px, 1fr)) creates columns that aim to be at least 220px wide and can grow to share available space. If the container becomes narrower than the minimum size needed for one column, overflow can still occur, so choose a sensible minimum for the context. Another technique is a media query, which applies CSS when a condition such as a maximum viewport width is met. Media queries are helpful when the design needs a deliberate change, such as reducing three columns to one. Use the viewport meta tag in HTML so mobile browsers can render the page at the device's intended width. Test with long text and different screen widths rather than assuming a layout is responsive just because it uses Grid.",
+      "id": "css-7-block-17"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 4: Responsive Card Grid",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Responsive Grid</title>\n  <style>\n    * {\n      box-sizing: border-box;\n    }\n\n    body {\n      margin: 0;\n      padding: 20px;\n      font-family: Arial, sans-serif;\n      background: #f8fafc;\n    }\n\n    .cards {\n      display: grid;\n      grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));\n      gap: 16px;\n    }\n\n    .card {\n      min-width: 0;\n      padding: 20px;\n      background: white;\n      border: 1px solid #cbd5e1;\n      border-radius: 12px;\n      overflow-wrap: anywhere;\n    }\n\n    .card h2 {\n      margin-top: 0;\n    }\n  </style>\n</head>\n<body>\n  <main class=\"cards\">\n    <article class=\"card\">\n      <h2>HTML</h2>\n      <p>Learn the structure of web pages.</p>\n    </article>\n    <article class=\"card\">\n      <h2>CSS</h2>\n      <p>Learn how to style and arrange content.</p>\n    </article>\n    <article class=\"card\">\n      <h2>JavaScript</h2>\n      <p>Learn to create interactive websites.</p>\n    </article>\n  </main>\n</body>\n</html>",
+      "explanation": "auto-fit repeats as many columns as can fit, while minmax() sets a minimum track size and permits flexible growth. The nested min(100%, 220px) lets the minimum adapt when the container is narrower than 220px. This helps the grid fit small screens without forcing a single column to exceed the available width.",
+      "output": "auto-fit repeats as many columns as can fit, while minmax() sets a minimum track size and permits flexible growth. The nested min(100%, 220px) lets the minimum adapt when the container is narrower than 220px. This helps the grid fit small screens without forcing a single column to exceed the available width.",
+      "id": "css-7-block-18"
+    },
+    {
+      "type": "quiz",
+      "question": "What is the main purpose of repeat(auto-fit, minmax(220px, 1fr)) in a card layout?",
+      "options": [
+        "To create exactly four fixed-width columns on every screen.",
+        "To create as many suitable columns as fit, with a minimum track size and flexible growth.",
+        "To force every card to occupy the entire viewport width.",
+        "To align all card text vertically without changing the columns."
+      ],
+      "correctIndex": 1,
+      "explanation": "auto-fit helps determine how many repeated tracks can fit, and minmax() sets the track's sizing range. The exact number of columns depends on the available space and sizing constraints.",
+      "id": "css-7-block-19"
+    },
+    {
+      "id": "page-3-added",
+      "type": "heading",
+      "text": "PAGE 3 — CSS Grid: concepts and applied practice"
+    },
+    {
+      "type": "content",
+      "title": "8. Grid Template Areas for Page Layouts",
+      "text": "The grid-template-areas property lets you give named regions to parts of a layout. You define a visual arrangement using quoted strings, with each string representing one row. Names in the same row describe which areas occupy that row's columns. Repeating the same name in adjacent cells makes that named area span multiple tracks. A period represents an empty cell. Every row in the template must describe a consistent number of columns, and a named area must form a rectangular region. After defining the template, assign each child its area with grid-area. This approach can make a page layout easier to read because the CSS shows the intended structure. It is particularly useful for a header, sidebar, main content and footer. The visual layout should still make sense with the HTML source order, especially for keyboard users and people using assistive technology.",
+      "id": "css-7-block-21"
+    },
+    {
+      "type": "code",
+      "title": "Code Sample 5: A Basic Page Layout",
+      "language": "html",
+      "code": "<style>\n  .page {\n    display: grid;\n    grid-template-columns: 220px minmax(0, 1fr);\n    grid-template-areas:\n      \"header header\"\n      \"sidebar main\"\n      \"footer footer\";\n    gap: 12px;\n  }\n\n  .header { grid-area: header; }\n  .sidebar { grid-area: sidebar; }\n  .main { grid-area: main; }\n  .footer { grid-area: footer; }\n\n  .page > * {\n    padding: 16px;\n    background: #e2e8f0;\n    border-radius: 8px;\n    overflow-wrap: anywhere;\n  }\n\n  @media (max-width: 600px) {\n    .page {\n      grid-template-columns: minmax(0, 1fr);\n      grid-template-areas:\n        \"header\"\n        \"main\"\n        \"sidebar\"\n        \"footer\";\n    }\n  }\n</style>\n\n<div class=\"page\">\n  <header class=\"header\">Header</header>\n  <aside class=\"sidebar\">Sidebar</aside>\n  <main class=\"main\">Main content</main>\n  <footer class=\"footer\">Footer</footer>\n</div>",
+      "explanation": "The named areas define a two-column layout with the header and footer spanning both columns. Below 600px, the media query changes the template to one column. The named areas are reordered visually on small screens, so make sure that this visual order remains appropriate for reading and keyboard navigation.",
+      "output": "The named areas define a two-column layout with the header and footer spanning both columns. Below 600px, the media query changes the template to one column. The named areas are reordered visually on small screens, so make sure that this visual order remains appropriate for reading and keyboard navigation.",
+      "id": "css-7-block-22"
+    },
+    {
+      "type": "quiz",
+      "question": "In grid-template-areas, what does repeating \"header header\" on the first row mean when there are two columns?",
+      "options": [
+        "It creates two separate areas both named header, which is invalid.",
+        "It makes the named header area span across both columns.",
+        "It adds two extra header rows above the grid.",
+        "It creates a header only when the screen is narrow."
+      ],
+      "correctIndex": 1,
+      "explanation": "Repeating the same area name in adjacent cells makes that named region span those cells, forming one rectangular header area across both columns.",
+      "id": "css-7-block-23"
+    },
+    {
+      "type": "content",
+      "title": "9. CSS Grid Compared with Flexbox",
+      "text": "Grid and Flexbox are complementary layout systems. Grid is often a good choice when you need to plan rows and columns together, such as a dashboard or a page with a sidebar and main content. Flexbox is often a good choice when arranging a row or column of items and distributing space along one main axis, such as navigation links or a toolbar. These are guidelines, not strict rules. You can use Grid inside a Flexbox item or Flexbox inside a Grid item. A Grid container can also have automatically placed items, so you do not need to specify every item's exact position. Choose the system that makes the layout easiest to understand and maintain. Avoid adding unnecessary nested containers just to use both systems; add structure where it helps the design or semantics.",
+      "id": "css-7-block-24"
+    },
+    {
+      "type": "quiz",
+      "question": "You are building a dashboard where cards must align in both rows and columns. Which layout system is especially suited to defining both dimensions together?",
+      "options": [
+        "CSS Grid",
+        "Text decoration",
+        "CSS transforms alone",
+        "Flexbox only, because Grid cannot create rows"
+      ],
+      "correctIndex": 0,
+      "explanation": "CSS Grid is designed for two-dimensional layouts, so it is especially suited to controlling rows and columns together. Flexbox can also wrap items, but its primary layout model is one-dimensional.",
+      "id": "css-7-block-25"
+    },
+    {
+      "type": "content",
+      "title": "10. Troubleshooting and Best Practices",
+      "text": "When a grid does not look right, inspect the parent element first. Confirm that it has display: grid and that the column and row definitions are appropriate. Check whether you are styling a direct child of the grid container; a deeply nested element is not automatically a grid item. If content pushes a column too wide, consider minmax(0, 1fr), min-width: 0 or overflow-wrap: anywhere where appropriate. Remember that grid-template-columns defines columns, grid-template-rows defines rows, gap defines spacing between tracks, and grid-column or grid-row positions items using grid lines. Use media queries when a layout needs a deliberate change at a chosen viewport width. Use auto-fit and minmax() when repeated tracks should adapt to available space. Keep HTML meaningful, check the visual order against the source order, and test at narrow and wide widths. Do not assume that adding display: grid alone will create a finished responsive layout; the track definitions and content sizes still matter.",
+      "id": "css-7-block-26"
+    },
+    {
+      "type": "quiz",
+      "question": "A grid has three columns, but one card containing a long unbroken string makes its column overflow. Which approach can help the content fit more safely?",
+      "options": [
+        "Replace display: grid with display: none.",
+        "Use minmax(0, 1fr) for flexible columns and allow long text to wrap where appropriate.",
+        "Set grid-template-columns: 3px 3px 3px for every screen.",
+        "Add more grid rows without changing the column sizing or text behavior."
+      ],
+      "correctIndex": 1,
+      "explanation": "minmax(0, 1fr) can remove the automatic minimum track-size constraint, and text wrapping can prevent a long unbroken string from forcing overflow. The exact fix depends on the content and layout.",
+      "id": "css-7-block-27"
+    },
+    {
+      "type": "quiz",
+      "question": "Which statement accurately distinguishes grid-template-rows from grid-template-columns?",
+      "options": [
+        "grid-template-rows defines row tracks, while grid-template-columns defines column tracks.",
+        "grid-template-rows controls spacing between columns, while grid-template-columns controls spacing between rows.",
+        "Both properties only change the text alignment inside grid items.",
+        "grid-template-columns controls HTML source order, while grid-template-rows changes the browser viewport."
+      ],
+      "correctIndex": 0,
+      "explanation": "grid-template-rows defines the grid's row tracks, and grid-template-columns defines its column tracks. The gap properties control spacing between tracks.",
+      "id": "css-7-block-28"
+    },
+    {
+      "type": "content",
+      "title": "11. Lesson Summary and Practice",
+      "text": "You have learned how to create a grid container with display: grid, define tracks using grid-template-columns and grid-template-rows, distribute flexible space with fr, and control track sizing with minmax(). You have also practiced spacing with gap, positioning items with grid lines, aligning items inside their areas, building responsive repeated columns and defining page regions with grid-template-areas. For practice, create a dashboard with a header, sidebar, main area and three course cards. Use Grid to define the main layout, gap to separate the cards, and a media query to simplify the layout on small screens. Test with long course titles and different viewport widths. Before finishing, explain to yourself why a Grid item is a direct child of its container, what a grid line is, and why the fr unit does not always mean an exact percentage of the full container width. Understanding these details will help you build layouts that are more reliable and easier to maintain.",
+      "id": "css-7-block-29"
+    },
+    {
+      "type": "quiz",
+      "question": "Which statement about CSS Grid is correct?",
+      "options": [
+        "Every element nested anywhere inside a grid container automatically becomes a grid item.",
+        "Grid can only create columns and cannot define rows.",
+        "Only the direct children of a grid container participate as its grid items.",
+        "Grid cannot be used together with Flexbox."
+      ],
+      "correctIndex": 2,
+      "explanation": "The direct children of a grid container are its grid items. A nested descendant participates in its own layout context unless its parent is itself a grid or another layout container.",
+      "id": "css-7-block-30"
+    }
+  ],
+  "xpReward": 5,
+  "coinsReward": 2
+}

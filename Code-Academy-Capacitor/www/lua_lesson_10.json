@@ -1,0 +1,176 @@
+{
+  "course": "lua",
+  "lessonNumber": 10,
+  "lessonId": "lua-lesson-10",
+  "title": "Errors, Coroutines and a Small Game Loop",
+  "subtitle": "Errors, Coroutines and a Small Game Loop: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on errors, coroutines and a small game loop, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "lua-10-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Errors, Coroutines and a Small Game Loop: foundations and mental model"
+    },
+    {
+      "id": "lua-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Errors, Coroutines and a Small Game Loop is not just a syntax topic: it is a way to make the application’s intent explicit. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. In the Code Academy dashboard, that idea matters because A small lesson tracker can use tables and functions while keeping state changes and errors clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "lua-10-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Errors, Coroutines and a Small Game Loop: A bounded loop demonstrates update frames without running forever",
+      "language": "lua",
+      "code": "local frames = 0\nwhile frames < 3 do\n  frames = frames + 1\n  print(\"Update frame\", frames)\nend",
+      "output": "A bounded loop demonstrates update frames without running forever."
+    },
+    {
+      "id": "lua-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “local frames = 0”: Creates a local variable or table binding for this scope. Line 2 — “while frames < 3 do”: Repeats the body while the condition remains true. Line 3 — “frames = frames + 1”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 4 — “print(\"Update frame\", frames)”: Displays the computed value so the behavior can be observed and checked. Line 5 — “end”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: A bounded loop demonstrates update frames without running forever. What if a line changes? If the loop update or stopping condition is removed or changed, iterations may be skipped, repeated, or never finish. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-10-quiz-1-5",
+      "type": "quiz",
+      "question": "A feature works for a normal course with ten lessons. Which additional test is most valuable?",
+      "options": [
+        "Test the same normal case repeatedly",
+        "Remove validation because the normal case passed",
+        "Test zero lessons, all completed, and invalid progress input",
+        "Change only the button shadow"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Test zero lessons, all completed, and invalid progress input. Boundary and invalid inputs reveal defects that a happy-path-only test misses.",
+      "reasoning": "Boundary and invalid inputs reveal defects that a happy-path-only test misses. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Errors, Coroutines and a Small Game Loop: Pass elapsed time into a game-loop update so behavior can scale with time",
+      "language": "lua",
+      "code": "local function tick(dt) return dt * 60 end\nprint(tick(0.016))",
+      "output": "Pass elapsed time into a game-loop update so behavior can scale with time."
+    },
+    {
+      "id": "lua-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “local function tick(dt) return dt * 60 end”: Declares a function whose name is limited to the local scope. Line 2 — “print(tick(0.016))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Pass elapsed time into a game-loop update so behavior can scale with time. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-10-quiz-2-8",
+      "type": "quiz",
+      "question": "A local lesson loads correctly but deployed users see a missing file. What should be verified?",
+      "options": [
+        "Whether the README has the right number of headings",
+        "The actual published URL, filename casing, deployment path, and network response",
+        "Only the local editor tab color",
+        "The name of an unrelated variable"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The actual published URL, filename casing, deployment path, and network response. A local success does not prove the deployment contains the same assets and paths.",
+      "reasoning": "A local success does not prove the deployment contains the same assets and paths. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-10-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Errors, Coroutines and a Small Game Loop: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "lua-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "lua-10-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Errors, Coroutines and a Small Game Loop: A coroutine can yield control and later resume; the caller must check resume results",
+      "language": "lua",
+      "code": "local function worker() coroutine.yield(\"waiting\") return \"done\" end\nlocal task = coroutine.create(worker)\nprint(coroutine.resume(task))",
+      "output": "A coroutine can yield control and later resume; the caller must check resume results."
+    },
+    {
+      "id": "lua-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “local function worker() coroutine.yield(\"waiting\") return \"done\" end”: Declares a function whose name is limited to the local scope. Line 2 — “local task = coroutine.create(worker)”: Creates a local variable or table binding for this scope. Line 3 — “print(coroutine.resume(task))”: Creates, resumes, or yields cooperative execution through a coroutine. Expected behavior: A coroutine can yield control and later resume; the caller must check resume results. What if a line changes? If task completion, failure handling, or cancellation is ignored, the interface may show stale data or the work may never finish cleanly. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A user can double-click a reward button. How should duplicate rewards be prevented?",
+      "options": [
+        "Make the operation idempotent or verify a unique attempt/state before awarding",
+        "Trust the button’s animation to block repeats",
+        "Award XP before checking the result",
+        "Hide the button but leave the event handler active"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Make the operation idempotent or verify a unique attempt/state before awarding. UI debouncing helps, but the operation needs a reliable duplicate-protection rule at the state boundary.",
+      "reasoning": "UI debouncing helps, but the operation needs a reliable duplicate-protection rule at the state boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-10-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Errors, Coroutines and a Small Game Loop: A small update function centralizes a state change",
+      "language": "lua",
+      "code": "local score = 0\nlocal function award(correct) if correct then score = score + 5 end end\naward(true)\nprint(score)",
+      "output": "A small update function centralizes a state change."
+    },
+    {
+      "id": "lua-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “local score = 0”: Creates a local variable or table binding for this scope. Line 2 — “local function award(correct) if correct then score = score + 5 end end”: Declares a function whose name is limited to the local scope. Line 3 — “award(true)”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 4 — “print(score)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A small update function centralizes a state change. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-10-quiz-3-16",
+      "type": "quiz",
+      "question": "A new feature has correct output but cannot be used by keyboard. Is it complete?",
+      "options": [
+        "Yes; output correctness guarantees accessibility",
+        "Yes; a mouse test is sufficient",
+        "Only if the color palette is changed",
+        "No; keyboard access, focus behavior, and understandable feedback must also be tested"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: No; keyboard access, focus behavior, and understandable feedback must also be tested. A professional interface includes interaction and accessibility checks in addition to functional correctness.",
+      "reasoning": "A professional interface includes interaction and accessibility checks in addition to functional correctness. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-10-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Errors, Coroutines and a Small Game Loop: applied challenge and mastery check"
+    },
+    {
+      "id": "lua-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "lua-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses errors, coroutines and a small game loop. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "lua-10-quiz-5-20",
+      "type": "quiz",
+      "question": "A reported bug is hard to reproduce. What should the test record?",
+      "options": [
+        "Only a screenshot of the background color",
+        "No details because the code has comments",
+        "The input, initial state, steps, expected result, and actual result",
+        "Only the developer’s guess about the cause"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The input, initial state, steps, expected result, and actual result. A precise reproduction turns an intermittent report into a testable behavior.",
+      "reasoning": "A precise reproduction turns an intermittent report into a testable behavior. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

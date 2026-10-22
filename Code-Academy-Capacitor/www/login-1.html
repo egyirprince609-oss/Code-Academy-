@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login - Code Academy</title>
+<!-- Basic website information -->
+
+
+<meta name="description"
+  content="Learn HTML, CSS, JavaScript, Python and more with Code Academy. Explore coding lessons, practise programming, and build your developer skills while playing game along side.
+Our motto,We Learn.We Code. We Succeed
+Have a life coding Editor which support almost 15 programming language after each lesson.
+You can download lesson as PDF, view your lesson history and also get a verified certificate after passing through all lesson for a course. You can verify your certificate with a QR code.
+
+CODE ACADEMY | 2026">
+
+<!-- Open Graph: WhatsApp, Facebook and other platforms -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Code Academy">
+<meta property="og:title"
+  content="Code Academy — We Learn, We Code, We Succeed">
+<meta property="og:description"
+  content="Learn to code with interactive lessons, quizzes and practical programming challenges. Start your coding journey with Code Academy while playing game along side.
+Our motto, "We Learn.We Code. We Succeed"
+Have a life coding Editor which support almost 15 programming language after each lesson.
+You can download lesson as PDF, view your lesson history and also get a verified certificate after passing through all lesson for a course. You can verify your certificate with a QR code.
+
+CODE ACADEMY | 2026.">
+<meta property="og:url"
+  content="https://egyirprince609-oss.github.io/Code-Academy-/">
+<meta property="og:image"
+  content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+<meta property="og:image:alt"
+  content="Code Academy — We Learn, We Code, We Succeed">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- Additional social sharing metadata -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title"
+  content="Code Academy — Learn, Code, Succeed">
+<meta name="twitter:description"
+  content="Learn programming with interactive lessons and practical challenges.">
+<meta name="twitter:image"
+  content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#020617;
+  color:white;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+
+/* ==============================
+   LOGIN CARD
+============================== */
+
+.login-card{
+  width:100%;
+  max-width:420px;
+  background:#0f172a;
+  border-radius:20px;
+  padding:35px 30px;
+  border:1px solid rgba(255,255,255,0.08);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+
+/* ==============================
+   LOGO
+============================== */
+
+.logo{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.logo img{
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  margin-bottom:12px;
+}
+
+.logo h1{
+  font-size:24px;
+  color:#38bdf8;
+  margin-bottom:5px;
+}
+
+.logo p{
+  font-size:12px;
+  color:#94a3b8;
+}
+
+/* ==============================
+   FORM
+============================== */
+
+.form-group{
+  margin-bottom:18px;
+}
+
+.input-box{
+  position:relative;
+}
+
+.input-box i{
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#38bdf8;
+  font-size:14px;
+}
+
+.input-box input{
+  width:100%;
+  padding:14px 14px 14px 42px;
+  background:#1e293b;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  color:white;
+  font-size:14px;
+  outline:none;
+  transition:0.3s;
+}
+
+.input-box input:focus{
+  border-color:#38bdf8;
+  background:#0f172a;
+}
+
+.input-box input::placeholder{
+  color:#64748b;
+}
+
+/* ==============================
+   REMEMBER ME + FORGOT
+============================== */
+
+.options-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:18px;
+  font-size:12px;
+}
+
+.checkbox-wrapper{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  color:#cbd5e1;
+  cursor:pointer;
+}
+
+.checkbox-wrapper input[type="checkbox"]{
+  width:16px;
+  height:16px;
+  cursor:pointer;
+  accent-color:#38bdf8;
+}
+
+.forgot-row a{
+  color:#38bdf8;
+  text-decoration:none;
+}
+
+.forgot-row a:hover{
+  text-decoration:underline;
+}
+
+/* ==============================
+   RECAPTCHA
+============================== */
+
+.recaptcha-box{
+  display:flex;
+  justify-content:center;
+  margin:20px 0;
+}
+
+/* ==============================
+   PRIMARY BUTTON
+============================== */
+
+.btn-primary{
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+  border:none;
+  border-radius:12px;
+  color:white;
+  font-size:15px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.btn-primary:hover{
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(56,189,248,0.4);
+}
+
+.btn-primary:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* ==============================
+   DIVIDER
+============================== */
+
+.divider{
+  display:flex;
+  align-items:center;
+  margin:25px 0;
+  color:#64748b;
+  font-size:12px;
+}
+
+.divider::before,
+.divider::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:rgba(255,255,255,0.1);
+}
+
+.divider span{
+  padding:0 12px;
+}
+
+/* ==============================
+   SOCIAL BUTTONS
+============================== */
+
+.social-btn{
+  width:100%;
+  padding:14px;
+  background:#1e293b;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  transition:0.3s;
+}
+
+.social-btn:hover{
+  background:#334155;
+  border-color:#38bdf8;
+}
+
+.social-btn:disabled{
+  opacity:0.5;
+  cursor:not-allowed;
+}
+
+.google-btn i{
+  color:#DB4437;
+}
+
+.yahoo-btn i{
+  color:#720e9e;
+}
+
+/* ==============================
+   SIGNUP LINK
+============================== */
+
+.signup-link{
+  text-align:center;
+  margin-top:20px;
+  font-size:13px;
+  color:#94a3b8;
+}
+
+.signup-link a{
+  color:#38bdf8;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.signup-link a:hover{
+  text-decoration:underline;
+}
+
+/* ==============================
+   MESSAGE BOX
+============================== */
+
+.message-box{
+  display:none;
+  padding:13px;
+  border-radius:10px;
+  font-size:12px;
+  margin-bottom:15px;
+  line-height:1.5;
+  word-break:break-word;
+}
+
+.message-box.show{
+  display:block;
+}
+
+.message-box.info{
+  background:rgba(56,189,248,0.10);
+  border:1px solid rgba(56,189,248,0.35);
+  color:#bae6fd;
+}
+
+.message-box.success{
+  background:rgba(34,197,94,0.12);
+  border:1px solid rgba(34,197,94,0.40);
+  color:#bbf7d0;
+}
+
+.message-box.error{
+  background:rgba(239,68,68,0.15);
+  border:1px solid rgba(239,68,68,0.40);
+  color:#fca5a5;
+}
+
+.message-title{
+  font-weight:bold;
+  font-size:14px;
+  margin-bottom:5px;
+}
+
+.message-details{
+  margin-top:8px;
+  font-size:11px;
+  white-space:pre-wrap;
+  opacity:0.9;
+}
+
+/* ==============================
+   LOADING
+============================== */
+
+.loading{
+  display:none;
+  text-align:center;
+  color:#38bdf8;
+  font-size:12px;
+  margin-top:10px;
+}
+
+.loading.show{
+  display:block;
+}
+
+.spinner{
+  width:16px;
+  height:16px;
+  display:inline-block;
+  vertical-align:middle;
+  margin-right:6px;
+  border:2px solid rgba(56,189,248,0.25);
+  border-top-color:#38bdf8;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+}
+
+@keyframes spin{
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+/* ==============================
+   SUCCESS SCREEN
+============================== */
+
+.success-screen{
+  display:none;
+  text-align:center;
+  padding:10px 0;
+}
+
+.success-screen.show{
+  display:block;
+}
+
+.success-icon{
+  width:62px;
+  height:62px;
+  border-radius:50%;
+  border:2px solid #22c55e;
+  color:#22c55e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 15px;
+  font-size:30px;
+}
+
+.success-screen h2{
+  color:#86efac;
+  font-size:21px;
+  margin-bottom:8px;
+}
+
+.success-screen p{
+  color:#cbd5e1;
+  font-size:13px;
+  line-height:1.6;
+}
+
+.redirect-info{
+  margin-top:14px;
+  color:#94a3b8 !important;
+  font-size:12px !important;
+}
+
+/* ==============================
+   MOBILE
+============================== */
+
+@media(max-width:480px){
+
+  .login-card{
+    padding:30px 22px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<div class="login-card">
+
+  <!-- ==============================
+       LOGO
+  =============================== -->
+
+  <div class="logo">
+
+    <img src="logo.png" alt="Code Academy">
+
+    <h1>Welcome Back</h1>
+
+    <p>Login to continue learning</p>
+
+  </div>
+
+
+  <!-- ==============================
+       MESSAGE
+  =============================== -->
+
+  <div id="messageBox" class="message-box">
+
+    <div id="messageTitle" class="message-title"></div>
+
+    <div id="messageText"></div>
+
+    <div id="messageDetails" class="message-details"></div>
+
+  </div>
+
+
+  <!-- ==============================
+       SUCCESS SCREEN
+  =============================== -->
+
+  <div id="successScreen" class="success-screen">
+
+    <div class="success-icon">
+      ✓
+    </div>
+
+    <h2>Login Successful! 🎉</h2>
+
+    <p>
+      Welcome back to Code Academy.
+      <br>
+      Your account has been verified successfully.
+    </p>
+
+    <p class="redirect-info">
+      Taking you to your learning dashboard...
+    </p>
+
+  </div>
+
+
+  <!-- ==============================
+       LOGIN CONTENT
+  =============================== -->
+
+  <div id="loginContent">
+
+    <form id="loginForm">
+
+      <!-- EMAIL -->
+
+      <div class="form-group">
+
+        <div class="input-box">
+
+          <i class="fa fa-envelope"></i>
+
+          <input
+            type="email"
+            id="email"
+            placeholder="you@email.com"
+            autocomplete="email"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- PASSWORD -->
+
+      <div class="form-group">
+
+        <div class="input-box">
+
+          <i class="fa fa-lock"></i>
+
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+            autocomplete="current-password"
+            required
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- REMEMBER ME -->
+
+      <div class="options-row">
+
+        <label class="checkbox-wrapper">
+
+          <input
+            type="checkbox"
+            id="rememberMe"
+          >
+
+          <span>Remember me</span>
+
+        </label>
+
+
+        <div class="forgot-row">
+
+          <a href="forgot.html">
+            Forgot Password?
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- RECAPTCHA -->
+
+      <div class="recaptcha-box">
+
+        <div
+          class="g-recaptcha"
+          data-sitekey="6LeBaj4tAAAAAG4tn09wVhqz5INyaJgfl-5S9Efh">
+        </div>
+
+      </div>
+
+
+      <!-- LOGIN BUTTON -->
+
+      <button
+        type="submit"
+        class="btn-primary"
+        id="loginBtn"
+      >
+        Log In
+      </button>
+
+
+      <!-- LOADING -->
+
+      <div
+        class="loading"
+        id="loading"
+      >
+
+        <span class="spinner"></span>
+
+        <span id="loadingText">
+          Verifying your account...
+        </span>
+
+      </div>
+
+    </form>
+
+
+    <!-- DIVIDER -->
+
+    <div class="divider">
+
+      <span>Or login with</span>
+
+    </div>
+
+
+    <!-- GOOGLE -->
+
+    <button
+      type="button"
+      class="social-btn google-btn"
+      id="googleBtn"
+    >
+
+      <i class="fab fa-google"></i>
+
+      Continue with Google
+
+    </button>
+
+
+    <!-- YAHOO -->
+
+    <button
+      type="button"
+      class="social-btn yahoo-btn"
+      id="yahooBtn"
+    >
+
+      <i class="fab fa-yahoo"></i>
+
+      Continue with Yahoo
+
+    </button>
+
+
+    <!-- SIGNUP -->
+
+    <div class="signup-link">
+
+      Don't have an account?
+
+      <a href="signup.html">
+        Sign up
+      </a>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script type="module">
+import {
+  auth,
+  logIn,
+  signInWithGoogle,
+  signInWithGoogleRedirect,
+  completeGoogleRedirect,
+  signInWithYahoo,
+  getFriendlyAuthError,
+  needsEmailVerification,
+  resendVerificationEmail,
+  reload
+} from "./authentication.js";
+import {
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const loginForm = document.getElementById("loginForm");
+const loginBtn = document.getElementById("loginBtn");
+const googleBtn = document.getElementById("googleBtn");
+const yahooBtn = document.getElementById("yahooBtn");
+const loading = document.getElementById("loading");
+const loadingText = document.getElementById("loadingText");
+const loginContent = document.getElementById("loginContent");
+const successScreen = document.getElementById("successScreen");
+const messageBox = document.getElementById("messageBox");
+const messageTitle = document.getElementById("messageTitle");
+const messageText = document.getElementById("messageText");
+const messageDetails = document.getElementById("messageDetails");
+let busy = false;
+let fallbackSheet = null;
+
+function ensureActionArea() {
+  let area = document.getElementById("authActionArea");
+  if (!area) {
+    area = document.createElement("div");
+    area.id = "authActionArea";
+    area.style.cssText = "display:grid;gap:9px;margin-top:12px;";
+    messageBox.appendChild(area);
+  }
+  return area;
+}
+
+function showMessage(type, title, text, actionBuilder = null) {
+  messageBox.className = "message-box show " + type;
+  messageTitle.textContent = title;
+  messageText.textContent = text;
+  // The actual Firebase code stays in the console for debugging. Learners see
+  // a human-readable explanation rather than raw auth/… messages.
+  messageDetails.textContent = "";
+  const area = ensureActionArea();
+  area.replaceChildren();
+  if (typeof actionBuilder === "function") actionBuilder(area);
+}
+
+function hideMessage() {
+  messageBox.className = "message-box";
+  messageTitle.textContent = "";
+  messageText.textContent = "";
+  messageDetails.textContent = "";
+  ensureActionArea().replaceChildren();
+}
+
+function setBusy(value, status = "Please wait while Code Academy checks your request…") {
+  busy = value;
+  loading.classList.toggle("show", value);
+  loadingText.textContent = status;
+  [loginBtn, googleBtn, yahooBtn].forEach(button => { if (button) button.disabled = value; });
+}
+
+function addActionButton(area, label, onClick, primary = false) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = label;
+  button.style.cssText = `width:100%;padding:11px 13px;border-radius:11px;border:1px solid #365778;background:${primary ? "linear-gradient(110deg,#67e8f9,#a78bfa)" : "#102541"};color:${primary ? "#061120" : "#eaf5ff"};font-weight:800;cursor:pointer;`;
+  button.addEventListener("click", onClick);
+  area.appendChild(button);
+  return button;
+}
+
+function showVerificationPrompt(user, note = "") {
+  showMessage("info", "Verify your email to continue", `${note || `Your account email (${user?.email || "your email"}) has not been verified yet.`} Open the verification message and tap its link.`, area => {
+    addActionButton(area, "Resend verification email", async () => {
+      if (busy) return;
+      setBusy(true, "Sending a fresh verification email…");
+      try {
+        const result = await resendVerificationEmail(user || auth.currentUser);
+        setBusy(false);
+        if (result.alreadyVerified) {
+          showMessage("success", "Email already verified", "Your email is verified. Opening Code Academy…");
+          location.replace("menu.html");
+        } else {
+          showMessage("success", "Verification email sent", `A new link has been sent to ${user?.email || "your email"}. Check your inbox and spam folder.`);
+        }
+      } catch (error) {
+        setBusy(false);
+        console.warn("Resending verification failed:", error?.code || error);
+        showMessage("error", "Could not send the verification email", getFriendlyAuthError(error, "verification"));
+      }
+    }, true);
+    addActionButton(area, "I have verified my email", async () => {
+      if (busy) return;
+      setBusy(true, "Checking your email verification status…");
+      try {
+        await reload(user || auth.currentUser);
+        const activeUser = user || auth.currentUser;
+        setBusy(false);
+        if (activeUser && !needsEmailVerification(activeUser)) {
+          showMessage("success", "Email verified", "Your email is confirmed. Opening your dashboard…");
+          location.replace("menu.html");
+        } else {
+          showVerificationPrompt(activeUser, "Firebase has not confirmed the verification yet.");
+        }
+      } catch (error) {
+        setBusy(false);
+        showMessage("error", "Could not check verification", getFriendlyAuthError(error, "verification"));
+      }
+    });
+  });
+}
+
+function isPopupFallbackError(error) {
+  return ["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/web-storage-unsupported"].includes(String(error?.code || ""));
+}
+
+function closeGoogleFallbackSheet() {
+  if (fallbackSheet) fallbackSheet.remove();
+  fallbackSheet = null;
+}
+
+function showGoogleFallbackSheet(onRetry, onRedirect, triedAgain = false) {
+  closeGoogleFallbackSheet();
+  const style = document.createElement("style");
+  style.id = "googleFallbackSheetStyles";
+  style.textContent = `
+    .ca-auth-sheet-overlay{position:fixed;inset:0;z-index:99999;background:rgba(1,6,18,.76);backdrop-filter:blur(8px);display:flex;align-items:flex-end;justify-content:center;padding:14px}
+    .ca-auth-sheet{width:min(520px,100%);background:#08152a;border:1px solid #284b70;border-radius:22px;padding:22px;color:#f4f8ff;box-shadow:0 22px 70px #0009;animation:caSheetIn .22s ease-out}
+    .ca-auth-sheet h3{margin:0 0 8px;font-size:1.1rem}.ca-auth-sheet p{color:#aabbd3;line-height:1.55;margin:0 0 15px;font-size:.92rem}
+    .ca-auth-sheet button{width:100%;border:1px solid #365778;border-radius:12px;padding:13px 15px;margin-top:9px;font-weight:800;cursor:pointer;background:#102541;color:#edf7ff}
+    .ca-auth-sheet .primary{background:linear-gradient(110deg,#67e8f9,#a78bfa);color:#061120;border:0}.ca-auth-sheet .subtle{background:transparent;color:#b5c7de}
+    @keyframes caSheetIn{from{transform:translateY(35px);opacity:.6}to{transform:translateY(0);opacity:1}}
+    @media(min-width:650px){.ca-auth-sheet-overlay{align-items:center}.ca-auth-sheet{animation:caSheetIn .22s ease-out}}
+  `;
+  if (!document.getElementById(style.id)) document.head.appendChild(style);
+  fallbackSheet = document.createElement("div");
+  fallbackSheet.className = "ca-auth-sheet-overlay";
+  fallbackSheet.innerHTML = `
+    <section class="ca-auth-sheet" role="dialog" aria-modal="true" aria-labelledby="caGoogleFallbackTitle">
+      <h3 id="caGoogleFallbackTitle">Google needs another sign-in method</h3>
+      <p>${triedAgain
+        ? "The browser still blocked the Google popup. Continue with full-page Google sign-in, or retry the popup."
+        : "The centered Google account chooser could not open. Try it again from this bottom panel, or continue with full-page Google sign-in."}</p>
+      <button type="button" id="caRetryGooglePopup" class="primary">Try Google popup again</button>
+      <button type="button" id="caUseGoogleRedirect">Continue with full-page Google sign-in</button>
+      <button type="button" id="caCancelGoogleFallback" class="subtle">Cancel</button>
+    </section>`;
+  document.body.appendChild(fallbackSheet);
+  fallbackSheet.querySelector("#caRetryGooglePopup").addEventListener("click", async () => { closeGoogleFallbackSheet(); await onRetry(); });
+  fallbackSheet.querySelector("#caUseGoogleRedirect").addEventListener("click", async () => { closeGoogleFallbackSheet(); await onRedirect(); });
+  fallbackSheet.querySelector("#caCancelGoogleFallback").addEventListener("click", closeGoogleFallbackSheet);
+  fallbackSheet.addEventListener("click", event => { if (event.target === fallbackSheet) closeGoogleFallbackSheet(); });
+}
+
+function finishLogin(user, providerName = "Code Academy") {
+  if (!user) {
+    showMessage("error", "Sign-in did not finish", "The sign-in service did not return an account. Please try again.");
+    setBusy(false);
+    return;
+  }
+  if (needsEmailVerification(user)) {
+    setBusy(false);
+    showVerificationPrompt(user);
+    return;
+  }
+  showMessage("success", `${providerName} login successful`, "Your account is connected. Opening your Code Academy dashboard…");
+  loginContent.style.display = "none";
+  successScreen.classList.add("show");
+  setTimeout(() => location.replace("menu.html"), 650);
+}
+
+loginForm.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (busy) return;
+  hideMessage();
+  if (!navigator.onLine) {
+    showMessage("error", "No internet connection", "Connect to the internet and try again."); return;
+  }
+  const email = document.getElementById("email").value.trim().toLowerCase();
+  const password = document.getElementById("password").value;
+  const rememberMe = document.getElementById("rememberMe").checked;
+  if (!email) { showMessage("error", "Email required", "Enter the email address connected to your account."); return; }
+  if (!password) { showMessage("error", "Password required", "Enter your password to continue."); return; }
+
+  // reCAPTCHA is a front-end anti-bot gate on this page. If it has been
+  // configured but did not load, tell the learner instead of throwing raw JS.
+  if (document.querySelector(".g-recaptcha")) {
+    if (typeof grecaptcha === "undefined" || typeof grecaptcha.getResponse !== "function") {
+      showMessage("error", "Security check did not load", "Reload this page so the security check can load, then try again."); return;
+    }
+    if (!grecaptcha.getResponse()) {
+      showMessage("error", "Verification required", "Complete the “I'm not a robot” check before logging in."); return;
+    }
+  }
+
+  setBusy(true, "Checking your account with Firebase…");
+  showMessage("info", "Logging you in", "Firebase is checking your email and password. Please keep this page open.");
+  try {
+    try {
+      await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
+    } catch (persistenceError) {
+      // Some privacy-focused browsers block persistence APIs. Authentication
+      // should still be attempted using Firebase's current default persistence.
+      console.warn("Could not change sign-in persistence:", persistenceError?.code || persistenceError);
+      showMessage("info", "Browser storage is restricted", "We will still try to sign you in, but this browser may not keep you signed in after it closes.");
+    }
+    const user = await logIn(email, password);
+    setBusy(false);
+    finishLogin(user, "Code Academy");
+  } catch (error) {
+    setBusy(false);
+    try { if (typeof grecaptcha !== "undefined" && grecaptcha.reset) grecaptcha.reset(); } catch (_) {}
+    console.warn("Email login failed:", error?.code || error);
+    showMessage("error", "Login was not completed", getFriendlyAuthError(error, "login"));
+  }
+});
+
+async function runGoogleLogin(retryFromSheet = false) {
+  if (busy) return;
+  hideMessage();
+  if (!navigator.onLine) { showMessage("error", "No internet connection", "Connect to the internet before continuing with Google."); return; }
+  setBusy(true, "Opening the Google account chooser…");
+  showMessage("info", "Connecting to Google", "Choose your Google account and approve the sign-in request.");
+  try {
+    const result = await signInWithGoogle({ withStatus: true, intent: "login" });
+    closeGoogleFallbackSheet();
+    setBusy(false);
+    finishLogin(result?.user, "Google");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Google login failed:", error?.code || error);
+    if (isPopupFallbackError(error)) {
+      showMessage("info", "Google popup was blocked", getFriendlyAuthError(error, "google"));
+      showGoogleFallbackSheet(
+        () => runGoogleLogin(true),
+        async () => {
+          setBusy(true, "Opening full-page Google sign-in…");
+          try { await signInWithGoogleRedirect("login"); }
+          catch (redirectError) {
+            setBusy(false);
+            showMessage("error", "Google sign-in could not open", getFriendlyAuthError(redirectError, "google"));
+          }
+        },
+        retryFromSheet
+      );
+    } else {
+      closeGoogleFallbackSheet();
+      showMessage("error", "Google login was not completed", getFriendlyAuthError(error, "google"));
+    }
+  }
+}
+
+googleBtn.addEventListener("click", () => runGoogleLogin(false));
+
+yahooBtn.addEventListener("click", async () => {
+  if (busy) return;
+  hideMessage();
+  if (!navigator.onLine) { showMessage("error", "No internet connection", "Connect to the internet before continuing with Yahoo."); return; }
+  setBusy(true, "Opening Yahoo sign-in…");
+  showMessage("info", "Connecting to Yahoo", "Complete the authentication request to continue.");
+  try {
+    const result = await signInWithYahoo({ withStatus: true, intent: "login" });
+    setBusy(false);
+    finishLogin(result?.user, "Yahoo");
+  } catch (error) {
+    setBusy(false);
+    console.warn("Yahoo login failed:", error?.code || error);
+    showMessage("error", "Yahoo login was not completed", getFriendlyAuthError(error, "auth"));
+  }
+});
+
+async function handleGoogleRedirectReturn() {
+  try {
+    const result = await completeGoogleRedirect({ withStatus: true, intent: "login" });
+    if (!result?.user) return;
+    setBusy(false);
+    finishLogin(result.user, "Google");
+  } catch (error) {
+    console.warn("Google redirect return failed:", error?.code || error);
+    showMessage("error", "Google sign-in could not finish", getFriendlyAuthError(error, "google"));
+  }
+}
+
+const params = new URLSearchParams(location.search);
+if (params.get("verified") === "1") {
+  showMessage("success", "Email verified", "Your email address has been confirmed. Sign in to continue.");
+} else if (params.get("passwordReset") === "success") {
+  showMessage("success", "Password updated", "Your password was reset. Log in with your new password.");
+}
+
+window.addEventListener("offline", () => showMessage("error", "Connection lost", "Reconnect to the internet before starting another sign-in request."));
+window.addEventListener("online", () => showMessage("info", "Connection restored", "Your connection is back. You can try again."));
+handleGoogleRedirectReturn();
+</script>
+
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

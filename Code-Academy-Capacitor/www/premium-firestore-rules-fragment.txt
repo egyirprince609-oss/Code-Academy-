@@ -1,0 +1,43 @@
+CODE ACADEMY PREMIUM FIRESTORE RULES NOTES
+==========================================
+
+The Python API uses Firebase Admin SDK, so it can write premiumOrders and the
+server-managed subscription fields. Browser code must not be able to create,
+edit, approve, or read other users' payment orders.
+
+Add the following match block to the existing Firestore ruleset (under the
+existing service cloud.firestore section, but outside any other match block):
+
+match /premiumOrders/{orderId} {
+  allow read, create, update, delete: if false;
+}
+
+For the EXISTING match /users/{uid} rule, ensure the signed-in owner cannot edit
+server-owned subscription fields through any client update/set path. Incorporate
+this check into EVERY client rule that currently permits a user to update their
+own users/{uid} document:
+
+!request.resource.data.diff(resource.data).affectedKeys().hasAny([
+  'premium', 'premiumUntil', 'subscription'
+])
+
+For example, if your existing owner-update rule currently reads:
+
+allow update: if request.auth != null && request.auth.uid == uid;
+
+it must become:
+
+allow update: if request.auth != null
+  && request.auth.uid == uid
+  && !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+    'premium', 'premiumUntil', 'subscription'
+  ]);
+
+IMPORTANT:
+- This is a fragment, not a replacement for the whole project's rules.
+- Firestore `allow` permissions combine with OR. Merely adding a restrictive
+  rule does not override a separate broad allow rule. Edit/remove any broad
+  existing rule that would still permit the same client update.
+- Keep other account/profile/progress rules that your app needs, but do not let
+  browser clients write premiumOrders or the subscription fields.
+- Test with Firebase Rules Playground and a normal learner account before launch.

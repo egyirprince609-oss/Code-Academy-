@@ -1,0 +1,205 @@
+{
+  "course": "ethicalhacking",
+  "lessonNumber": 6,
+  "lessonId": "ethicalhacking-lesson-6",
+  "title": "Web security testing with training applications",
+  "subtitle": "Assess input handling, authorization and sessions only in deliberately vulnerable training apps.",
+  "description": "Assess input handling, authorization and sessions only in deliberately vulnerable training apps. Guided explanations, six original visual diagrams, safe practice, trusted resource links, worked examples and a randomized quiz.",
+  "estimatedMinutes": 40,
+  "level": "Professional",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "randomizeQuizOrder": true,
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "Lesson 6 — Web security testing with training applications"
+    },
+    {
+      "type": "content",
+      "text": "LEARNING OUTCOME\nAssess input handling, authorization and sessions only in deliberately vulnerable training apps.\n\nSafety rule: work only with devices, accounts and training applications you own or have explicit written permission to assess. Use synthetic information. A public system or a suspicious person is not permission."
+    },
+    {
+      "type": "heading",
+      "text": "1. Use a purpose-built target"
+    },
+    {
+      "type": "content",
+      "text": "Practice in OWASP Juice Shop or an authorized PortSwigger lab. Learn how requests, responses, cookies, tokens and APIs work. Keep the browser, proxy and target limited to that training environment. Do not test real company sites or accounts without written permission."
+    },
+    {
+      "type": "image",
+      "src": "ethicalhacking_lesson_6_diagram_1.svg",
+      "alt": "Browser request diagram",
+      "caption": "Visual 1/6 — Browser request. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "ethicalhacking_lesson_6_diagram_2.svg",
+      "alt": "Training target diagram",
+      "caption": "Visual 2/6 — Training target. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "2. Test the defense, not a person"
+    },
+    {
+      "type": "content",
+      "text": "Check whether the server validates data, verifies access for each record and protects session state. Use provided lab accounts and synthetic records. A successful login is not permission to read someone else’s information."
+    },
+    {
+      "type": "image",
+      "src": "ethicalhacking_lesson_6_diagram_3.svg",
+      "alt": "Authorization check diagram",
+      "caption": "Visual 3/6 — Authorization check. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "ethicalhacking_lesson_6_diagram_4.svg",
+      "alt": "Input boundary diagram",
+      "caption": "Visual 4/6 — Input boundary. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "3. Explain and fix the cause"
+    },
+    {
+      "type": "content",
+      "text": "Use server-side authorization, parameterized database queries, context-aware output encoding, secure session settings and safe error handling. After a fix in your sample app, repeat the same lab check and show that the prohibited behavior is rejected."
+    },
+    {
+      "type": "image",
+      "src": "ethicalhacking_lesson_6_diagram_5.svg",
+      "alt": "Safe evidence diagram",
+      "caption": "Visual 5/6 — Safe evidence. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "ethicalhacking_lesson_6_diagram_6.svg",
+      "alt": "Verified fix diagram",
+      "caption": "Visual 6/6 — Verified fix. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "Guided practice — learn by doing"
+    },
+    {
+      "type": "content",
+      "text": "Practice checklist: (1) read the lab rules, (2) use fabricated data or an isolated training target, (3) predict what the control should do, (4) test one small condition, (5) save only minimal evidence, and (6) explain the defensive follow-up. Stop and ask the owner if any target or action is outside the approved scope."
+    },
+    {
+      "type": "code",
+      "language": "javascript",
+      "code": "function canRead(user, record) { return user.id === record.ownerId; }\nconsole.log(canRead({id:\"lab-a\"},{ownerId:\"lab-a\"}));",
+      "output": "Synthetic authorization check; production authorization must be server-side."
+    },
+    {
+      "type": "heading",
+      "text": "Five trusted resources and practice links"
+    },
+    {
+      "type": "resource",
+      "title": "PortSwigger Web Security Academy",
+      "url": "https://portswigger.net/web-security",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Juice Shop",
+      "url": "https://owasp.org/projects/juice-shop",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Juice Shop Guide",
+      "url": "https://pwning.owasp-juice.shop/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Web Security Testing Guide",
+      "url": "https://owasp.org/www-project-web-security-testing-guide/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Top 10",
+      "url": "https://owasp.org/projects/top-ten",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "heading",
+      "text": "Knowledge check — five questions"
+    },
+    {
+      "type": "quiz",
+      "id": "ethicalhacking-l6-q1",
+      "question": "Before Lesson 6 testing, what should be confirmed?",
+      "options": [
+        "A friend said it is okay",
+        "The target is simply public",
+        "An alert has not fired",
+        "The exact target is covered by written permission"
+      ],
+      "correctIndex": 3,
+      "explanation": "Written permission should define target and allowed methods.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "ethicalhacking-l6-q2",
+      "question": "How should a finding from Lesson 6 be handled?",
+      "options": [
+        "Treat a guess as fact",
+        "Save minimal redacted evidence and report through the approved channel",
+        "Post all output online",
+        "Include a real password as proof"
+      ],
+      "correctIndex": 1,
+      "explanation": "Findings need scoped, protected and reproducible evidence.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "ethicalhacking-l6-q3",
+      "question": "What requires the learner to stop?",
+      "options": [
+        "The test has a timestamp",
+        "Target is out of scope or testing may cause unexpected harm",
+        "A report needs editing",
+        "A lab result needs an explanation"
+      ],
+      "correctIndex": 1,
+      "explanation": "Stop if scope or safety limits may be crossed.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "ethicalhacking-l6-q4",
+      "question": "What is a sound step after applying a fix?",
+      "options": [
+        "Retest the same authorized condition and document the result",
+        "Assume the fix works",
+        "Remove the original ticket",
+        "Expand the scope"
+      ],
+      "correctIndex": 0,
+      "explanation": "Retesting verifies the correction and preserves a useful record.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "ethicalhacking-l6-q5",
+      "question": "What should happen when a target is outside scope?",
+      "options": [
+        "Stop and ask the owner to clarify permission",
+        "Hide the test",
+        "Continue if it looks related",
+        "Try another identity"
+      ],
+      "correctIndex": 0,
+      "explanation": "Scope is a boundary; do not proceed without permission.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    }
+  ]
+}

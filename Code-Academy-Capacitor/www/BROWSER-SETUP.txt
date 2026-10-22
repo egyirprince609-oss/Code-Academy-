@@ -1,0 +1,101 @@
+CODE ACADEMY BROWSER — IMPLEMENTATION & DEPLOYMENT NOTES
+=======================================================
+
+BROWSER FILES
+- browser.html                   Main browser workspace and the separate browser navigation bar
+- browser.css                    Responsive dark/light layout, home news cards, suggestions and share UI
+- browser.js                     Tabs, navigation, categorized searches, history, live feed, file handling and sharing
+- browser-settings.html          Browser-only settings control center (26 grouped cards)
+- browser-settings.css           Responsive settings layout
+- browser-settings.js            Local/account preferences, DNS-over-HTTPS diagnostics and device-permission checks
+- browser-manifest.json          Dedicated PWA manifest; deliberately not named manifest.json
+- browser-search-worker.js       Optional Cloudflare Worker for web search, live headlines and branded share previews
+- browser_image_preview.png      1200×630 PNG for Open Graph / Twitter preview cards
+- browser-share-preview.jpg      Existing browser social preview artwork (kept for backwards compatibility)
+- browser-icon-192.png / browser-icon-512.png   Browser-specific PWA icons
+
+SHARED APP FILES
+- The existing root manifest.json has not been replaced or renamed.
+- sw.js remains the shared Code Academy service worker. Its shell cache version was bumped and the new browser image was added to the cache list.
+- menu.html and other app routes remain in place.
+- Browser files still use the existing authentication.js Firebase session and owner-scoped browser data paths.
+
+WHAT THE PAGE DOES
+- Separate Home, History, Search history, Settings and Refresh navigation.
+- Multi-tab website and search views, back/forward, reload, local suggestions and focused URL/search input.
+- Categories: All/Web, Images, Videos, News, Documents, Maps and Books.
+- The Images category uses Wikimedia Commons, Books uses Open Library, and Maps uses OpenStreetMap geocoding. Direct web fallback sources include DuckDuckGo Instant Answers and Wikipedia. Search-result shortcuts also let users open the current query in Google, DuckDuckGo, Censys or FOFA; those external services keep their own account requirements, query syntax and usage terms. Full-index web/video/news/document searches use the optional Worker backend.
+- Home shows a live-headlines preview with source, title, publication age and optional thumbnail. It tries the configured Worker /headlines route first, and then tries public RSS feeds through RSS2JSON. Feed availability still depends on upstream services and network access.
+- Share opens two choices: “Share Code Academy App” and “Share Current Site View”. When the Worker URL is configured, current-site sharing creates a branded, server-rendered Open Graph preview through /share-preview. Without the Worker, the page shares the original URL and branded share text; the receiving app will normally use the original site's own preview.
+- The install modal offers the browser-supported PWA install prompt where available. An HTML page cannot download itself as a signed standalone APK; use BROWSER-APK-SETUP.md for a separate Android package build.
+
+26 SETTINGS CARDS
+1. Color theme (dark/light)
+2. Desktop layout preference
+3. Search Worker URL
+4. Accent color
+5. Text scale
+6. Reduced motion
+7. New-tab start page
+8. Safe search preference
+9. Voice search
+10. Default search category
+11. Show live headlines on Home
+12. News refresh interval
+13. Result thumbnails
+14. Local search suggestions
+15. Device notifications
+16. Imported-file manager / download confirmation
+17. Location permission test
+18. Camera permission test
+19. Microphone permission test
+20. Offline shell readiness check
+21. Third-party embedding/privacy warning
+22. DNS-over-HTTPS diagnostic resolver (Google, Cloudflare or AdGuard)
+23. Save browsing history
+24. Private session
+25. Clear local history on browser-page exit
+26. Account sync
+
+A webpage can ask for supported permissions after a user gesture. The permission test itself does not send location coordinates, record audio or record video. DNS selection changes only the resolver used by the diagnostic; it cannot alter Android, Wi-Fi, carrier or whole-device DNS.
+
+OPTIONAL SEARCH / HEADLINES / SHARE BACKEND
+GitHub Pages is static hosting and does not execute browser-search-worker.js by itself. Deploy that file as a Cloudflare Worker:
+1. Create a Worker and paste/deploy browser-search-worker.js as its module entry point.
+2. Optionally set the Worker environment variable APP_BASE_URL to your public Code Academy base URL with a trailing slash. The default is https://egyirprince609-oss.github.io/Code-Academy-/.
+3. In production, configure a Cloudflare rate-limit/WAF rule for /search, /headlines and /share-preview. The source includes a best-effort per-isolate request throttle, but that is not a substitute for a managed edge rule.
+4. Open Browser Settings and save the Worker HTTPS base URL (for example, https://your-worker.your-account.workers.dev). Do not include credentials or secrets in the URL.
+5. Test these paths after deployment:
+   - /health
+   - /search?q=paypal&category=web
+   - /headlines?limit=6
+   - /share-preview?url=https%3A%2F%2Fwww.paypal.com&title=PayPal
+
+The Worker searches DuckDuckGo HTML results, reads a small fixed set of public RSS feeds and produces a branded share page. It does not proxy arbitrary website content, bypass frame restrictions, scrape logged-in pages, or change browser/device DNS. Provider markup, rate limits and feed availability can change. Failures should be shown as service errors rather than fabricated search cards.
+
+FIRESTORE
+Browser tab data: users/{uid}/browserTabs
+Browser history: users/{uid}/browserHistory
+Browser preferences: users/{uid}/browserSettings/preferences
+Browser notification feed integration: users/{uid}/notifications
+Keep access owner-scoped in Firestore rules. Do not grant public reads/writes. A signed-in user should only read/write their own browser subcollections. Private session prevents new tab/history persistence for that session; it does not erase previously saved account data. “Clear local history on exit” only clears the local copy, not history already stored in Firestore.
+
+IMPORTANT WEB / ANDROID LIMITATIONS
+- This is a browser-style PWA workspace, not a replacement browser engine. It opens destination sites in an iframe. A site may refuse iframe embedding with X-Frame-Options or CSP frame-ancestors, and some login/payment pages intentionally will not work inside an embedded view. In those cases use “Open in full browser”. The app does not bypass a site's policy.
+- Google Chrome, Opera Mini, DuckDuckGo, Tor/onion routing, dark-web indexes and other independent engines are not interchangeable frontends. This implementation combines available public search providers and a configurable backend; it does not secretly connect to those engines' private indexes or provide a Tor network connection.
+- The existing service worker caches the app shell. It does not make all third-party websites available offline; a live connection is needed for new search results and current news.
+- Device notifications while the page runs are supported where the browser grants permission. True background push needs push subscription/token registration, an appropriate provider (for example, Firebase Cloud Messaging), VAPID/provider configuration and a trusted sender backend. A stored Firestore notification alone does not wake a closed app.
+- A normal webpage cannot control all-site cookies, spoof the underlying browser's user agent, access arbitrary device storage, force camera/microphone/location permissions, override website framing policy or change system DNS.
+- This project archive does not contain a newly compiled or signed APK. The separate Android packaging steps and asset-link requirements are documented in BROWSER-APK-SETUP.md.
+
+TEST CHECKLIST
+1. Deploy to HTTPS and sign into Code Academy.
+2. Open browser.html; check first-open install prompt, Home news cards and suggestions.
+3. Search a phrase, then search under Images, Videos, News, Documents, Maps and Books.
+4. Open a URL such as https://www.wikipedia.org or https://www.paypal.com. If a site blocks iframe embedding, use “Open in full browser”.
+5. Open History and Search history separately. Open/close tabs and check history persistence with the privacy settings on/off.
+6. Test share app, share current site, DNS selection, theme, thumbnail, live-news and voice settings.
+7. On HTTPS, test location/camera/microphone prompts only if you intend to grant them; streams are stopped immediately by the permission tests.
+8. Use Offline shell readiness to confirm browser assets present in the service-worker cache. Test an offline reload separately after the initial cache is created.
+9. After deploying the Worker, test /health, /search, /headlines and /share-preview; verify the share page emits the branded Open Graph tags.
+10. Follow BROWSER-APK-SETUP.md if you need a separate Android package. Update the Digital Asset Links file with the package ID and signing certificate fingerprint generated for that package.

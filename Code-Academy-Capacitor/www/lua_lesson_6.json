@@ -1,0 +1,176 @@
+{
+  "course": "lua",
+  "lessonNumber": 6,
+  "lessonId": "lua-lesson-6",
+  "title": "Tables as Arrays and Dictionaries",
+  "subtitle": "Tables as Arrays and Dictionaries: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on tables as arrays and dictionaries, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Intermediate",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "lua-6-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Tables as Arrays and Dictionaries: foundations and mental model"
+    },
+    {
+      "id": "lua-6-page-1-teaching-2",
+      "type": "content",
+      "text": "Tables as Arrays and Dictionaries is not just a syntax topic: it is a way to make the application’s intent explicit. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. In the Code Academy dashboard, that idea matters because A small lesson tracker can use tables and functions while keeping state changes and errors clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "lua-6-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Tables as Arrays and Dictionaries: Lua sequence tables are conventionally indexed from 1",
+      "language": "lua",
+      "code": "local courses = {\"HTML\", \"CSS\", \"Lua\"}\nprint(courses[1])",
+      "output": "Lua sequence tables are conventionally indexed from 1."
+    },
+    {
+      "id": "lua-6-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “local courses = {\"HTML\", \"CSS\", \"Lua\"}”: Creates a local variable or table binding for this scope. Line 2 — “print(courses[1])”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Lua sequence tables are conventionally indexed from 1. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-6-quiz-1-5",
+      "type": "quiz",
+      "question": "A course list contains three entries and uses zero-based indexing. Which expression selects the first item?",
+      "options": [
+        "courses[3]",
+        "courses[-3] in every language",
+        "courses[0]",
+        "courses[1]"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: courses[0]. In zero-based arrays, index zero refers to the first entry.",
+      "reasoning": "In zero-based arrays, index zero refers to the first entry. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-6-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Tables as Arrays and Dictionaries: String keys can model named values",
+      "language": "lua",
+      "code": "local xp = {HTML = 20, CSS = 10}\nprint(xp.HTML)",
+      "output": "String keys can model named values."
+    },
+    {
+      "id": "lua-6-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “local xp = {HTML = 20, CSS = 10}”: Creates a local variable or table binding for this scope. Line 2 — “print(xp.HTML)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: String keys can model named values. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-6-quiz-2-8",
+      "type": "quiz",
+      "question": "The dashboard must prevent the same completed lesson ID being counted twice. Which data structure is a natural fit?",
+      "options": [
+        "A counter incremented without checking the lesson ID",
+        "A set or a keyed map that enforces unique IDs",
+        "An unparsed text string with duplicates",
+        "Parallel arrays with no shared key"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: A set or a keyed map that enforces unique IDs. Uniqueness should be enforced by the data structure or explicit key check.",
+      "reasoning": "Uniqueness should be enforced by the data structure or explicit key check. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-6-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Tables as Arrays and Dictionaries: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "lua-6-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "lua-6-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Tables as Arrays and Dictionaries: Accumulates scores in a loop",
+      "language": "lua",
+      "code": "local scores = {4, 5, 3}\nlocal total = 0\nfor _, score in ipairs(scores) do total = total + score end",
+      "output": "Accumulates scores in a loop."
+    },
+    {
+      "id": "lua-6-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “local scores = {4, 5, 3}”: Creates a local variable or table binding for this scope. Line 2 — “local total = 0”: Creates a local variable or table binding for this scope. Line 3 — “for _, score in ipairs(scores) do total = total + score end”: Begins iteration over a numeric range or iterator. Expected behavior: Accumulates scores in a loop. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-6-quiz-2-13",
+      "type": "quiz",
+      "question": "A dictionary lookup may not find a key. What should the code do?",
+      "options": [
+        "Handle the missing-key result or use a deliberate fallback",
+        "Assume the lookup always succeeds",
+        "Treat the key’s absence as proof that its value is zero",
+        "Access a missing nested property without checking"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Handle the missing-key result or use a deliberate fallback. A missing key may be distinct from a key whose value is zero or empty.",
+      "reasoning": "A missing key may be distinct from a key whose value is zero or empty. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-6-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Tables as Arrays and Dictionaries: A table keyed by lesson IDs acts like a lookup map",
+      "language": "lua",
+      "code": "local completed = { [\"html-1\"] = true, [\"html-2\"] = true }\nprint(completed[\"html-1\"])",
+      "output": "A table keyed by lesson IDs acts like a lookup map."
+    },
+    {
+      "id": "lua-6-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “local completed = { [\"html-1\"] = true, [\"html-2\"] = true }”: Creates a local variable or table binding for this scope. Line 2 — “print(completed[\"html-1\"])”: Displays the computed value so the behavior can be observed and checked. Expected behavior: A table keyed by lesson IDs acts like a lookup map. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "lua-6-quiz-3-16",
+      "type": "quiz",
+      "question": "Each quiz attempt has both correctness and XP. Which representation best preserves the relationship?",
+      "options": [
+        "Separate arrays that can become different lengths",
+        "One string containing all values without delimiters",
+        "A single number containing the sum only",
+        "A list of structured attempt records"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A list of structured attempt records. Records keep related fields together and prevent losing which XP belongs to which attempt.",
+      "reasoning": "Records keep related fields together and prevent losing which XP belongs to which attempt. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-6-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Tables as Arrays and Dictionaries: applied challenge and mastery check"
+    },
+    {
+      "id": "lua-6-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. For the Code Academy dashboard, A small lesson tracker can use tables and functions while keeping state changes and errors clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "lua-6-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses tables as arrays and dictionaries. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "lua-6-quiz-5-20",
+      "type": "quiz",
+      "question": "A score array may be empty. What should the maximum-score calculation consider?",
+      "options": [
+        "Use the array length as the maximum score",
+        "Sort it and read index zero without a check",
+        "Handle the empty collection before assuming a maximum exists",
+        "Assume the maximum is always the first item"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Handle the empty collection before assuming a maximum exists. An empty collection has no element to return as its maximum.",
+      "reasoning": "An empty collection has no element to return as its maximum. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "lua-6-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Choose sequences for ordered items and maps for keyed lookup. Validate indexes and missing keys; empty collections must have deliberate behavior. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

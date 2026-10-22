@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 6,
+  "lessonId": "sql-lesson-6",
+  "title": "JOINs and Relationships",
+  "subtitle": "JOINs and Relationships: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on joins and relationships, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Intermediate",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-6-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — JOINs and Relationships: foundations and mental model"
+    },
+    {
+      "id": "sql-6-page-1-teaching-2",
+      "type": "content",
+      "text": "JOINs and Relationships is not just a syntax topic: it is a way to make the application’s intent explicit. Joins match rows by a relationship predicate. INNER JOIN drops unmatched rows; LEFT JOIN preserves all rows from its left side. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-6-code-1-3",
+      "type": "code",
+      "title": "Example 1 — JOINs and Relationships: Matches a lesson with its course",
+      "language": "sql",
+      "code": "SELECT l.title, c.name FROM lessons l JOIN courses c ON c.id = l.course_id;",
+      "output": "Matches a lesson with its course."
+    },
+    {
+      "id": "sql-6-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT l.title, c.name FROM lessons l JOIN courses c ON c.id = l.course_id;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Matches a lesson with its course. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-6-quiz-1-5",
+      "type": "quiz",
+      "question": "A course should appear even when it has zero lessons. Which join preserves such courses?",
+      "options": [
+        "CROSS JOIN every course and lesson",
+        "JOIN without a key predicate",
+        "LEFT JOIN from courses to lessons",
+        "INNER JOIN from courses to lessons"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: LEFT JOIN from courses to lessons. LEFT JOIN retains every row from the left table even without a match.",
+      "reasoning": "LEFT JOIN retains every row from the left table even without a match. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-6-code-2-6",
+      "type": "code",
+      "title": "Example 2 — JOINs and Relationships: Preserves learners who have no attempts",
+      "language": "sql",
+      "code": "SELECT u.name, a.score FROM learners u LEFT JOIN attempts a ON a.learner_id = u.id;",
+      "output": "Preserves learners who have no attempts."
+    },
+    {
+      "id": "sql-6-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT u.name, a.score FROM learners u LEFT JOIN attempts a ON a.learner_id = u.id;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Preserves learners who have no attempts. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-6-quiz-2-8",
+      "type": "quiz",
+      "question": "A learner has three attempts for one lesson. What may an ordinary join from that lesson to attempts return?",
+      "options": [
+        "The attempts are automatically averaged",
+        "Three joined rows for that lesson",
+        "Exactly one row in all cases",
+        "No rows unless attempts are unique"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Three joined rows for that lesson. One-to-many relationships multiply rows according to matching records.",
+      "reasoning": "One-to-many relationships multiply rows according to matching records. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-6-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — JOINs and Relationships: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-6-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Joins match rows by a relationship predicate. INNER JOIN drops unmatched rows; LEFT JOIN preserves all rows from its left side. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-6-code-3-11",
+      "type": "code",
+      "title": "Example 3 — JOINs and Relationships: Filters matched attempts",
+      "language": "sql",
+      "code": "SELECT l.title, a.score FROM lessons l JOIN attempts a ON a.lesson_id = l.id WHERE a.correct = TRUE;",
+      "output": "Filters matched attempts."
+    },
+    {
+      "id": "sql-6-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT l.title, a.score FROM lessons l JOIN attempts a ON a.lesson_id = l.id WHERE a.correct = TRUE;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Filters matched attempts. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-6-quiz-2-13",
+      "type": "quiz",
+      "question": "Two tables contain an `id` column but those IDs refer to different entities. What defines a correct join?",
+      "options": [
+        "The actual relationship key, such as attempts.lesson_id = lessons.id",
+        "Any matching column name",
+        "A condition based only on the current row order",
+        "No predicate because names look similar"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: The actual relationship key, such as attempts.lesson_id = lessons.id. Join conditions must express the real relationship, not coincidence of column names.",
+      "reasoning": "Join conditions must express the real relationship, not coincidence of column names. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-6-code-4-14",
+      "type": "code",
+      "title": "Example 4 — JOINs and Relationships: Shows course counts, including courses without lessons",
+      "language": "sql",
+      "code": "SELECT c.name, COUNT(l.id) FROM courses c LEFT JOIN lessons l ON l.course_id = c.id GROUP BY c.id, c.name;",
+      "output": "Shows course counts, including courses without lessons."
+    },
+    {
+      "id": "sql-6-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT c.name, COUNT(l.id) FROM courses c LEFT JOIN lessons l ON l.course_id = c.id GROUP BY c.id, c.name;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Shows course counts, including courses without lessons. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-6-quiz-3-16",
+      "type": "quiz",
+      "question": "Unmatched lessons must remain, but their attempt score should be absent. What is expected after a LEFT JOIN?",
+      "options": [
+        "The unmatched lesson is automatically deleted",
+        "Its score becomes guaranteed zero",
+        "The entire query errors out",
+        "The lesson row remains and attempt fields are NULL"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The lesson row remains and attempt fields are NULL. The missing right-side match is represented by NULL values in the joined result.",
+      "reasoning": "The missing right-side match is represented by NULL values in the joined result. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-6-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — JOINs and Relationships: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-6-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Joins match rows by a relationship predicate. INNER JOIN drops unmatched rows; LEFT JOIN preserves all rows from its left side. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-6-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses joins and relationships. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-6-quiz-5-20",
+      "type": "quiz",
+      "question": "A join unexpectedly returns more rows than the left table. What should be investigated?",
+      "options": [
+        "Whether ORDER BY was omitted",
+        "Whether the table name uses lowercase",
+        "Whether the join key matches multiple right-side rows",
+        "Whether SQL supports text columns"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Whether the join key matches multiple right-side rows. One-to-many matches naturally produce multiple joined rows per left record.",
+      "reasoning": "One-to-many matches naturally produce multiple joined rows per left record. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-6-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Joins match rows by a relationship predicate. INNER JOIN drops unmatched rows; LEFT JOIN preserves all rows from its left side. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

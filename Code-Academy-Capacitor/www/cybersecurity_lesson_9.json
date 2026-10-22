@@ -1,0 +1,205 @@
+{
+  "course": "cybersecurity",
+  "lessonNumber": 9,
+  "lessonId": "cybersecurity-lesson-9",
+  "title": "Cloud security, IAM and configuration hygiene",
+  "subtitle": "Secure cloud identities, network boundaries, storage policies, audit trails and configuration changes.",
+  "description": "Secure cloud identities, network boundaries, storage policies, audit trails and configuration changes. Guided explanations, six original visual diagrams, safe practice, trusted resource links, worked examples and a randomized quiz.",
+  "estimatedMinutes": 35,
+  "level": "Professional",
+  "xpReward": 25,
+  "coinsReward": 12.5,
+  "randomizeQuizOrder": true,
+  "blocks": [
+    {
+      "type": "heading",
+      "text": "Lesson 9 — Cloud security, IAM and configuration hygiene"
+    },
+    {
+      "type": "content",
+      "text": "LEARNING OUTCOME\nSecure cloud identities, network boundaries, storage policies, audit trails and configuration changes.\n\nSafety rule: work only with devices, accounts and training applications you own or have explicit written permission to assess. Use synthetic information. A public system or a suspicious person is not permission."
+    },
+    {
+      "type": "heading",
+      "text": "1. Understand shared responsibility"
+    },
+    {
+      "type": "content",
+      "text": "Cloud providers secure parts of the underlying platform, while customers retain responsibilities for identities, data, configuration, workloads and applications. Exact responsibilities depend on the service model. Write down each control owner and alert recipient."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_9_diagram_1.svg",
+      "alt": "Shared responsibility diagram",
+      "caption": "Visual 1/6 — Shared responsibility. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_9_diagram_2.svg",
+      "alt": "Cloud identity diagram",
+      "caption": "Visual 2/6 — Cloud identity. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "2. Identity and boundaries first"
+    },
+    {
+      "type": "content",
+      "text": "Use MFA, role-based access, short-lived credentials, scoped service identities and separation of development and production. Review public exposure, inbound rules, storage access, encryption settings and backups. Prefer reviewed infrastructure-as-code and automated policy checks over undocumented console changes."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_9_diagram_3.svg",
+      "alt": "Network boundary diagram",
+      "caption": "Visual 3/6 — Network boundary. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_9_diagram_4.svg",
+      "alt": "Storage policy diagram",
+      "caption": "Visual 4/6 — Storage policy. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "3. Detect configuration drift"
+    },
+    {
+      "type": "content",
+      "text": "Small changes can expose storage or grant excessive privileges. Log administrative changes, alert on high-impact drift, use approved templates and test incident and restore procedures. Use fabricated secrets and data in lessons; never paste real production keys into tutorial code."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_9_diagram_5.svg",
+      "alt": "Audit trail diagram",
+      "caption": "Visual 5/6 — Audit trail. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "image",
+      "src": "cybersecurity_lesson_9_diagram_6.svg",
+      "alt": "Config review diagram",
+      "caption": "Visual 6/6 — Config review. Use it to explain how the controls or workflow connect."
+    },
+    {
+      "type": "heading",
+      "text": "Guided practice — learn by doing"
+    },
+    {
+      "type": "content",
+      "text": "Practice checklist: (1) read the lab rules, (2) use fabricated data or an isolated training target, (3) predict what the control should do, (4) test one small condition, (5) save only minimal evidence, and (6) explain the defensive follow-up. Stop and ask the owner if any target or action is outside the approved scope."
+    },
+    {
+      "type": "code",
+      "language": "python",
+      "code": "policy = {\"public_storage\": False, \"admin_mfa\": True, \"audit_logs\": True}\nprint([k for k,v in policy.items() if not v])",
+      "output": "Fictional cloud review; verify real settings through approved tools."
+    },
+    {
+      "type": "heading",
+      "text": "Five trusted resources and practice links"
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Cloud-Native Security",
+      "url": "https://owasp.org/www-project-cloud-native-application-security-top-10/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "CIS Critical Security Controls",
+      "url": "https://www.cisecurity.org/controls",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "NIST Cybersecurity Framework 2.0",
+      "url": "https://www.nist.gov/cyberframework",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "CISA Secure Our World",
+      "url": "https://www.cisa.gov/secure-our-world",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "resource",
+      "title": "OWASP Cheat Sheet Series",
+      "url": "https://cheatsheetseries.owasp.org/",
+      "description": "Trusted reference or practice resource. Use only in-scope training environments and follow the provider’s rules."
+    },
+    {
+      "type": "heading",
+      "text": "Knowledge check — five questions"
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l9-q1",
+      "question": "What is cloud shared responsibility?",
+      "options": [
+        "Nobody owns storage permissions",
+        "Customers own the physical datacenter",
+        "The provider handles every customer setting",
+        "Provider and customer have different security duties based on the service"
+      ],
+      "correctIndex": 3,
+      "explanation": "Responsibilities vary by service model; document who owns each control.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l9-q2",
+      "question": "How can a team detect dangerous configuration drift?",
+      "options": [
+        "Audit changes and alert on high-impact settings",
+        "Share administrator credentials",
+        "Avoid reviewing cloud permissions",
+        "Disable change logging"
+      ],
+      "correctIndex": 0,
+      "explanation": "Audit and policy checks help detect unexpected exposure and privilege changes.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l9-q3",
+      "question": "Which approach better protects private information?",
+      "options": [
+        "Save secrets in screenshots",
+        "Use synthetic data and collect only necessary, authorized evidence",
+        "Share reports on social media",
+        "Copy all customer records for convenience"
+      ],
+      "correctIndex": 1,
+      "explanation": "Data minimization and redaction reduce privacy and exposure risks.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l9-q4",
+      "question": "What is a sound step after applying a fix?",
+      "options": [
+        "Assume the fix works",
+        "Retest the same authorized condition and document the result",
+        "Expand the scope",
+        "Remove the original ticket"
+      ],
+      "correctIndex": 1,
+      "explanation": "Retesting verifies the correction and preserves a useful record.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    },
+    {
+      "type": "quiz",
+      "id": "cybersecurity-l9-q5",
+      "question": "What should happen when a target is outside scope?",
+      "options": [
+        "Stop and ask the owner to clarify permission",
+        "Try another identity",
+        "Continue if it looks related",
+        "Hide the test"
+      ],
+      "correctIndex": 0,
+      "explanation": "Scope is a boundary; do not proceed without permission.",
+      "hint": "Use the lesson definitions and authorization boundary to reason through the options."
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "course": "java",
+  "lessonNumber": 5,
+  "lessonId": "java-lesson-5",
+  "title": "Loops and Iteration",
+  "subtitle": "Loops and Iteration: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on loops and iteration, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Intermediate",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "java-5-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Loops and Iteration: foundations and mental model"
+    },
+    {
+      "id": "java-5-page-1-teaching-2",
+      "type": "content",
+      "text": "Loops and Iteration is not just a syntax topic: it is a way to make the application’s intent explicit. Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. In the Code Academy dashboard, that idea matters because A progress tracker can model lessons and scores while keeping calculations testable. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "java-5-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Loops and Iteration: Includes lesson 4 because the condition is <=",
+      "language": "java",
+      "code": "for (int i = 1; i <= 4; i++) {\n    System.out.println(\"Lesson \" + i);\n}",
+      "output": "Includes lesson 4 because the condition is <=."
+    },
+    {
+      "id": "java-5-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “for (int i = 1; i <= 4; i++) {”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Line 2 — “System.out.println(\"Lesson \" + i);”: Displays the computed value so the behavior can be observed and checked. Line 3 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: Includes lesson 4 because the condition is <=. What if a line changes? If the loop update or stopping condition is removed or changed, iterations may be skipped, repeated, or never finish. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "java-5-quiz-1-5",
+      "type": "quiz",
+      "question": "A loop must print lesson numbers 1 through 10 exactly once. Which boundary rule includes lesson 10?",
+      "options": [
+        "Start at 1 and continue while the counter is < 1",
+        "Start at 0 and continue only while the counter is > 10",
+        "Increment the counter only when the loop finishes",
+        "Start at 1 and continue while the counter is <= 10"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Start at 1 and continue while the counter is <= 10. The inclusive upper-bound test includes 10; the counter must advance every iteration.",
+      "reasoning": "The inclusive upper-bound test includes 10; the counter must advance every iteration. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "java-5-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Loops and Iteration: Uses an enhanced for loop to read each score",
+      "language": "java",
+      "code": "int[] scores = {4, 5, 3};\nfor (int score : scores) {\n    System.out.println(score * 5);\n}",
+      "output": "Uses an enhanced for loop to read each score."
+    },
+    {
+      "id": "java-5-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “int[] scores = {4, 5, 3};”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “for (int score : scores) {”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Line 3 — “System.out.println(score * 5);”: Displays the computed value so the behavior can be observed and checked. Line 4 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: Uses an enhanced for loop to read each score. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "java-5-quiz-2-8",
+      "type": "quiz",
+      "question": "A `while remaining > 0` loop never finishes. Which defect is most likely?",
+      "options": [
+        "The variable has a descriptive name",
+        "The condition is evaluated before the body",
+        "The loop body never reduces or otherwise changes remaining toward the stop condition",
+        "The output includes a newline"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The loop body never reduces or otherwise changes remaining toward the stop condition. A terminating loop must make progress toward a condition that eventually becomes false.",
+      "reasoning": "A terminating loop must make progress toward a condition that eventually becomes false. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "java-5-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Loops and Iteration: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "java-5-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress tracker can model lessons and scores while keeping calculations testable. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "java-5-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Loops and Iteration: Moves toward the stopping condition",
+      "language": "java",
+      "code": "int remaining = 3;\nwhile (remaining > 0) {\n    System.out.println(remaining);\n    remaining--;\n}",
+      "output": "Moves toward the stopping condition."
+    },
+    {
+      "id": "java-5-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “int remaining = 3;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “while (remaining > 0) {”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Line 3 — “System.out.println(remaining);”: Displays the computed value so the behavior can be observed and checked. Line 4 — “remaining--;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 5 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: Moves toward the stopping condition. What if a line changes? If the loop update or stopping condition is removed or changed, iterations may be skipped, repeated, or never finish. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "java-5-quiz-2-13",
+      "type": "quiz",
+      "question": "An array has three elements. Which index-based condition avoids an out-of-range access?",
+      "options": [
+        "i == array.length + 1",
+        "i < array.length",
+        "i <= array.length",
+        "i < 0"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: i < array.length. The last valid index is length minus one, so the loop condition must stay strictly below length.",
+      "reasoning": "The last valid index is length minus one, so the loop condition must stay strictly below length. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "java-5-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Loops and Iteration: Skips one item without ending the loop",
+      "language": "java",
+      "code": "for (String course : java.util.List.of(\"HTML\", \"CSS\", \"Java\")) {\n    if (course.equals(\"CSS\")) continue;\n    System.out.println(course);\n}",
+      "output": "Skips one item without ending the loop."
+    },
+    {
+      "id": "java-5-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “for (String course : java.util.List.of(\"HTML\", \"CSS\", \"Java\")) {”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Line 2 — “if (course.equals(\"CSS\")) continue;”: Checks a condition or selects a branch; the result determines which path executes. Line 3 — “System.out.println(course);”: Displays the computed value so the behavior can be observed and checked. Line 4 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: Skips one item without ending the loop. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "java-5-quiz-3-16",
+      "type": "quiz",
+      "question": "A loop should skip low scores but keep processing later scores. Which action fits?",
+      "options": [
+        "Continue the current iteration",
+        "Break out of the entire loop",
+        "Return from the whole function",
+        "Reset the index to zero"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Continue the current iteration. Continue skips the current iteration, while break exits the loop.",
+      "reasoning": "Continue skips the current iteration, while break exits the loop. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "java-5-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Loops and Iteration: applied challenge and mastery check"
+    },
+    {
+      "id": "java-5-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. For the Code Academy dashboard, A progress tracker can model lessons and scores while keeping calculations testable. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "java-5-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses loops and iteration. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "java-5-quiz-5-20",
+      "type": "quiz",
+      "question": "A list can change size during iteration. What should the implementation do?",
+      "options": [
+        "Assume every index remains valid after any mutation",
+        "Ignore the collection’s size",
+        "Increment a counter without checking bounds",
+        "Use a deliberate iteration strategy and account for how changes affect indexes or iterators"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Use a deliberate iteration strategy and account for how changes affect indexes or iterators. Mutating a collection can invalidate indexes or iterators and can cause missed or repeated items.",
+      "reasoning": "Mutating a collection can invalidate indexes or iterators and can cause missed or repeated items. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "java-5-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Loops need a clear stopping condition and progress toward it. Check empty, one-item, and boundary cases to catch infinite loops and off-by-one errors. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

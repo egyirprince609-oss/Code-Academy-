@@ -1,0 +1,1661 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#020617">
+<meta name="description" content="Code Breaker — learn programming by solving interactive coding challenges.">
+<title>Code Breaker | Code Academy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #020617;
+  --panel: rgba(15, 23, 42, .84);
+  --panel2: #111c32;
+  --border: rgba(148, 163, 184, .16);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --cyan: #22d3ee;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --green: #4ade80;
+  --red: #fb7185;
+  --gold: #fbbf24;
+  --radius: 20px;
+  --page-width: 1100px;
+  font-family: Inter, system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { min-height: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 10% 0%, rgba(49,46,129,.26), transparent 38%),
+    radial-gradient(ellipse at 100% 25%, rgba(8,145,178,.13), transparent 34%),
+    var(--bg);
+  overflow-x: hidden;
+}
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+button:disabled { opacity: .48; cursor: not-allowed; }
+button, .clickable { touch-action: manipulation; }
+a { color: inherit; text-decoration: none; }
+button { color: inherit; }
+.shell {
+  width: min(100% - 32px, var(--page-width));
+  margin-inline: auto;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(2,6,23,.84);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid var(--border);
+  padding-top: env(safe-area-inset-top);
+}
+.topbar-inner {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand { display:flex; align-items:center; gap:10px; min-width:0; }
+.brand-mark {
+  width: 40px; height: 40px; flex: 0 0 auto;
+  display:grid; place-items:center;
+  border:1px solid rgba(34,211,238,.32);
+  border-radius:13px;
+  color:var(--cyan);
+  background:linear-gradient(145deg,rgba(34,211,238,.17),rgba(167,139,250,.13));
+  box-shadow:0 0 25px rgba(34,211,238,.08);
+}
+.brand-name { font-size:14px; font-weight:900; letter-spacing:-.35px; }
+.brand-sub { color:var(--muted); font-size:10px; margin-top:3px; }
+.top-actions { display:flex; gap:8px; align-items:center; }
+.icon-btn, .secondary-btn, .primary-btn, .hint-btn {
+  border:1px solid var(--border);
+  border-radius:12px;
+  min-height:42px;
+  padding:10px 13px;
+  background:rgba(15,23,42,.85);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  cursor:pointer;
+  transition:transform .18s ease, border-color .18s ease, background .18s ease;
+}
+.icon-btn { width:42px; padding:0; }
+.primary-btn {
+  background:linear-gradient(120deg,#0891b2,#4f46e5);
+  border-color:rgba(103,232,249,.28);
+  font-weight:800;
+  box-shadow:0 8px 24px rgba(8,145,178,.14);
+}
+.secondary-btn:hover, .icon-btn:hover { border-color:rgba(34,211,238,.5); }
+.primary-btn:hover { transform:translateY(-1px); }
+main { padding:25px 0 44px; }
+.screen { display:none; animation:screenIn .25s ease both; }
+.screen.active { display:block; }
+@keyframes screenIn {
+  from { opacity:0; transform:translateY(7px); }
+  to { opacity:1; transform:translateY(0); }
+}
+.hero {
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(250px,.95fr);
+  align-items:center;
+  gap:25px;
+  padding:clamp(20px,4vw,42px);
+  border:1px solid var(--border);
+  border-radius:26px;
+  background:linear-gradient(135deg,rgba(15,23,42,.95),rgba(15,23,42,.55));
+  overflow:hidden;
+  position:relative;
+}
+.hero::before {
+  content:""; position:absolute; width:300px; height:300px;
+  right:-120px; top:-160px; border-radius:50%;
+  background:rgba(34,211,238,.10); filter:blur(35px); pointer-events:none;
+}
+.eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--cyan); font-size:11px; font-weight:800;
+  letter-spacing:1.4px; text-transform:uppercase;
+}
+h1 { margin:15px 0 12px; font-size:clamp(30px,5vw,53px); line-height:1.05; letter-spacing:-2px; }
+.gradient-text {
+  background:linear-gradient(90deg,#67e8f9,#a5b4fc,#c4b5fd);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.lead { color:#bac7d8; font-size:14px; line-height:1.8; max-width:540px; }
+.hero-buttons { display:flex; flex-wrap:wrap; gap:10px; margin-top:23px; }
+.hero-art { min-width:0; display:grid; place-items:center; perspective:800px; }
+.vault-scene {
+  width:min(100%,300px); aspect-ratio:1; position:relative;
+  display:grid; place-items:center;
+  transform-style:preserve-3d;
+}
+.vault-orbit {
+  position:absolute; inset:10%; border:1px solid rgba(34,211,238,.28);
+  border-radius:50%; transform:rotateX(65deg) rotateZ(-25deg);
+  box-shadow:0 0 30px rgba(34,211,238,.08);
+}
+.vault-orbit.two {
+  inset:18%; border-color:rgba(167,139,250,.35);
+  transform:rotateY(65deg) rotateZ(25deg);
+}
+.vault-core {
+  width:56%; aspect-ratio:1; border-radius:28%;
+  display:grid; place-items:center; position:relative;
+  background:linear-gradient(145deg,#182b49,#080e20);
+  border:1px solid rgba(103,232,249,.5);
+  box-shadow:inset 0 0 30px rgba(34,211,238,.09),0 20px 50px #0008,0 0 40px #0891b222;
+  transform:rotateX(8deg) rotateY(-12deg);
+}
+.vault-core::before {
+  content:""; position:absolute; inset:9%; border-radius:23%;
+  border:1px solid rgba(34,211,238,.22);
+}
+.vault-core i { font-size:clamp(42px,8vw,76px); color:var(--cyan); text-shadow:0 0 25px #22d3ee55; }
+.floating-chip {
+  position:absolute; padding:9px 12px; border:1px solid var(--border);
+  background:rgba(15,23,42,.93); border-radius:12px; font-size:11px;
+  box-shadow:0 12px 30px #0004; color:#cbd5e1;
+}
+.chip-one { top:16%; right:0; }
+.chip-two { bottom:16%; left:0; }
+.section-title { font-size:19px; letter-spacing:-.5px; margin:28px 0 13px; }
+.stats-grid {
+  display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px; margin-top:18px;
+}
+.stat-card, .panel, .instruction-card, .history-item {
+  border:1px solid var(--border);
+  background:var(--panel);
+  border-radius:var(--radius);
+  min-width:0;
+}
+.stat-card { padding:16px; }
+.stat-top { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.stat-icon {
+  width:35px;height:35px;border-radius:11px;display:grid;place-items:center;
+  background:rgba(34,211,238,.1);color:var(--cyan);
+}
+.stat-label { color:var(--muted);font-size:11px;margin-top:13px; }
+.stat-value { font-size:clamp(18px,2.5vw,25px);font-weight:900;margin-top:5px; overflow-wrap:anywhere; }
+.stat-note { color:var(--muted);font-size:10px;margin-top:4px; }
+.instructions {
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;
+}
+.instruction-card { padding:17px; }
+.instruction-card i { color:var(--cyan);font-size:18px; }
+.instruction-card h3 { font-size:13px;margin:12px 0 7px; }
+.instruction-card p { color:var(--muted);font-size:12px;line-height:1.7;margin:0; }
+.note {
+  padding:13px 15px;border:1px solid rgba(251,191,36,.2);
+  border-radius:14px;background:rgba(120,80,10,.12);
+  color:#f5dca0;font-size:12px;line-height:1.7;margin-top:15px;
+}
+.game-layout { display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:15px;align-items:start; }
+.panel { padding:clamp(15px,3vw,25px); }
+.game-top {
+  display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;
+}
+.kicker { color:var(--cyan);font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase; }
+.game-title { margin:8px 0 0;font-size:clamp(22px,3.5vw,30px);letter-spacing:-1px; }
+.muted { color:var(--muted);font-size:12px;line-height:1.65; }
+.pill {
+  border:1px solid var(--border);border-radius:99px;padding:8px 10px;
+  font-size:11px;color:#cbd5e1;white-space:nowrap;
+}
+.progress-track { height:5px;border-radius:99px;background:#1e293b;overflow:hidden;margin:18px 0 22px; }
+.progress-fill { height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .3s; }
+.question-text { font-size:15px;line-height:1.8;margin:0 0 16px; }
+.code-box {
+  border:1px solid rgba(96,165,250,.19);border-radius:15px;overflow:hidden;
+  background:#050b18;margin:15px 0 19px;min-width:0;
+}
+.code-head {
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:11px 13px;border-bottom:1px solid rgba(148,163,184,.12);
+  color:var(--muted);font-size:10px;
+}
+.code-dots { display:flex;gap:5px; }
+.code-dots span { width:7px;height:7px;border-radius:50%;background:#64748b; }
+.code-dots span:first-child { background:#fb7185; }
+.code-dots span:nth-child(2) { background:#fbbf24; }
+.code-dots span:nth-child(3) { background:#4ade80; }
+pre {
+  margin:0;padding:17px;white-space:pre-wrap;overflow-wrap:anywhere;
+  font:12px/1.9 "JetBrains Mono",monospace;color:#c4b5fd;
+  overflow-x:auto;max-width:100%;
+}
+.answers { display:grid;gap:9px; }
+.answer-option {
+  width:100%;text-align:left;display:flex;align-items:flex-start;gap:11px;
+  padding:13px;border:1px solid var(--border);border-radius:13px;
+  background:rgba(15,23,42,.68);cursor:pointer;
+  font-size:12px;line-height:1.65;overflow-wrap:anywhere;min-width:0;
+}
+.answer-option:hover:not(:disabled) { border-color:rgba(34,211,238,.55);background:rgba(8,145,178,.08); }
+.answer-letter {
+  flex:0 0 25px;width:25px;height:25px;display:grid;place-items:center;
+  border-radius:8px;background:#1e293b;color:#cbd5e1;font-weight:800;font-size:11px;
+}
+.answer-option.correct { border-color:rgba(74,222,128,.6);background:rgba(22,163,74,.10); }
+.answer-option.correct .answer-letter { background:#166534;color:white; }
+.answer-option.wrong { border-color:rgba(251,113,133,.55);background:rgba(190,24,93,.08); }
+.answer-option.wrong .answer-letter { background:#9f1239;color:white; }
+.feedback {
+  display:none;padding:13px;border-radius:12px;font-size:12px;line-height:1.7;margin-top:13px;
+}
+.feedback.show { display:block; }
+.feedback.good { color:#bbf7d0;border:1px solid #166534;background:#052e1a; }
+.feedback.bad { color:#fecdd3;border:1px solid #881337;background:#310b1a; }
+.game-controls { display:flex;gap:9px;flex-wrap:wrap;margin-top:16px; }
+.game-controls button { flex:1 1 140px; }
+.hint-btn { color:#fde68a;border-color:rgba(251,191,36,.24);background:rgba(120,80,10,.13); }
+.side-stack { display:grid;gap:12px; }
+.side-card { padding:16px;border:1px solid var(--border);background:rgba(15,23,42,.65);border-radius:17px;min-width:0; }
+.side-card h3 { font-size:12px;margin:0 0 12px; }
+.timer-value { font:700 25px "JetBrains Mono",monospace;letter-spacing:1px; }
+.mini-row { display:flex;justify-content:space-between;gap:10px;margin-top:11px;font-size:11px; }
+.mini-row span:first-child { color:var(--muted); }
+.mini-row span:last-child { text-align:right;overflow-wrap:anywhere; }
+.badge-list { display:grid;gap:9px; }
+.badge-row { display:flex;align-items:center;gap:10px;font-size:11px;color:#cbd5e1; }
+.badge-icon { width:32px;height:32px;flex:0 0 auto;border-radius:10px;display:grid;place-items:center;background:rgba(167,139,250,.12);color:var(--purple); }
+.empty { padding:25px 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.7; }
+.history-header { display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap; }
+.history-list { display:grid;gap:10px;margin-top:16px; }
+.history-item { padding:14px;display:flex;align-items:flex-start;gap:12px; }
+.history-symbol { width:36px;height:36px;flex:0 0 auto;border-radius:12px;display:grid;place-items:center;background:rgba(34,211,238,.1);color:var(--cyan); }
+.history-body { flex:1;min-width:0; }
+.history-body strong { display:block;font-size:12px;overflow-wrap:anywhere; }
+.history-body p { margin:5px 0 0;color:var(--muted);font-size:11px;line-height:1.65;overflow-wrap:anywhere; }
+.history-time { color:var(--muted);font-size:10px;margin-top:7px; }
+.change-line { display:flex;gap:10px;flex-wrap:wrap;font-size:11px;margin-top:8px; }
+.positive { color:var(--green); }
+.negative { color:#fda4af; }
+.toast {
+  position:fixed;z-index:50;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));
+  transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  width:max-content;max-width:calc(100% - 28px);
+  padding:12px 16px;border-radius:13px;background:#172033;border:1px solid #334155;
+  box-shadow:0 12px 35px #0007;font-size:12px;line-height:1.6;transition:.2s;
+}
+.toast.show { opacity:1;transform:translate(-50%,0); }
+.toast.error { border-color:#9f1239; }
+.toast.success { border-color:#166534; }
+.footer { text-align:center;color:#64748b;font-size:10px;padding:18px 0 0; }
+.hidden { display:none!important; }
+
+@media (max-width:760px) {
+  .shell { width:min(100% - 24px,var(--page-width)); }
+  main { padding-top:14px; }
+  .topbar-inner { min-height:58px; }
+  .brand-mark { width:36px;height:36px;border-radius:11px; }
+  .brand-name { font-size:12px; }
+  .brand-sub { font-size:9px; }
+  .top-actions .button-label { display:none; }
+  .hero { grid-template-columns:minmax(0,1fr);gap:10px;padding:22px 18px; }
+  .hero-art { max-height:235px; }
+  .vault-scene { width:min(72vw,235px); }
+  h1 { font-size:clamp(30px,9vw,44px);letter-spacing:-1.4px; }
+  .lead { font-size:13px; }
+  .stats-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+  .stat-card { padding:13px; }
+  .instructions { grid-template-columns:minmax(0,1fr);gap:9px; }
+  .instruction-card { display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:9px;padding:13px; }
+  .instruction-card i { grid-row:span 2;margin-top:3px; }
+  .instruction-card h3 { margin:0 0 5px; }
+  .game-layout { grid-template-columns:minmax(0,1fr); }
+  .side-stack { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .side-card { padding:13px; }
+  .timer-value { font-size:20px; }
+  .panel { padding:15px; }
+  .question-text { font-size:13px; }
+  pre { font-size:11px;padding:13px; }
+  .answer-option { padding:11px;font-size:11px; }
+  .game-controls button { flex-basis:100%; }
+  .pill { font-size:10px; }
+}
+@media (max-width:380px) {
+  .shell { width:calc(100% - 18px); }
+  .topbar-inner { gap:6px; }
+  .brand { gap:7px; }
+  .brand-name { font-size:11px; }
+  .top-actions { gap:5px; }
+  .icon-btn { width:37px;min-height:37px; }
+  .hero { padding:17px 13px; }
+  .hero-buttons { display:grid;grid-template-columns:minmax(0,1fr); }
+  .hero-buttons button { width:100%; }
+  .stat-value { font-size:19px; }
+  .side-stack { grid-template-columns:minmax(0,1fr); }
+  .history-item { padding:11px;gap:9px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important; }
+}
+</style>
+<script id="ca-english-voice-bridge">(function(){if(window.__caEnglishVoiceBridgeInstalled||!window.SpeechSynthesisUtterance)return;try{const Native=window.SpeechSynthesisUtterance;window.SpeechSynthesisUtterance=new Proxy(Native,{construct(target,args){const utter=Reflect.construct(target,args,target);utter.lang='en-US';try{const voices=window.speechSynthesis?.getVoices?.()||[];const voice=voices.find(v=>/^en(-|_)/i.test(v.lang))||voices.find(v=>String(v.lang||'').toLowerCase().startsWith('en'));if(voice){utter.voice=voice;utter.lang=voice.lang;}}catch(e){}return utter;}});window.__caEnglishVoiceBridgeInstalled=true;}catch(e){console.warn('English speech voice selection is unavailable in this browser.',e);}})();</script>
+<link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#020617"><meta name="robots" content="index,follow"><meta name="description" content="Play Code Breaker on Code Academy. Practise with 200 curated challenges, responsive controls, progress tracking and language-aware guidance."><meta property="og:type" content="website"><meta property="og:site_name" content="Code Academy"><meta property="og:title" content="Code Breaker | Code Academy Games"><meta property="og:description" content="A responsive learning game with a 200-item practice bank, explanations and device-saved progress."><meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/code_breaker.html"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.png"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-login.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-signup.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Code Breaker | Code Academy"><meta name="twitter:description" content="Practise, learn from feedback, and keep your progress on Code Academy."><meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+</head>
+
+<body>
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="games_dash.html" aria-label="Code Academy games dashboard">
+      <span class="brand-mark"><i class="fa-solid fa-code"></i></span>
+      <span>
+        <span class="brand-name">CODE ACADEMY</span>
+        <span class="brand-sub">CODE BREAKER</span>
+      </span>
+    </a>
+    <div class="top-actions">
+      <button class="icon-btn" id="voiceTop" aria-label="Listen to game guide" title="Listen to guide"><i class="fa-solid fa-volume-high"></i></button>
+      <button class="secondary-btn" id="historyTop"><i class="fa-solid fa-clock-rotate-left"></i><span class="button-label">History</span></button>
+      <button class="icon-btn" id="dashboardTop" aria-label="Return to games dashboard" title="Dashboard"><i class="fa-solid fa-house"></i></button>
+    </div>
+  </div>
+</header>
+
+<main class="shell">
+  <!-- INTRO / ORIENTATION -->
+  <section class="screen active" id="introScreen">
+    <div class="hero">
+      <div>
+        <div class="eyebrow"><i class="fa-solid fa-shield-halved"></i> THINK. DEBUG. BREAK THROUGH.</div>
+        <h1>Welcome to<br><span class="gradient-text">Code Breaker.</span></h1>
+        <p class="lead" id="welcomeText">Welcome, Coder. Solve real programming puzzles, learn how to debug, and build your coding confidence one challenge at a time.</p>
+        <div class="hero-buttons">
+          <button class="primary-btn" id="startGame"><i class="fa-solid fa-play"></i> Enter the Arena</button>
+          <button class="secondary-btn" id="listenIntro"><i class="fa-solid fa-headphones"></i> Listen to Guide</button>
+        </div>
+        <p class="muted" style="margin-top:13px">Your progress and rewards are linked to your Code Academy account.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="vault-scene">
+          <div class="vault-orbit"></div><div class="vault-orbit two"></div>
+          <div class="vault-core"><i class="fa-solid fa-lock"></i></div>
+          <div class="floating-chip chip-one"><i class="fa-solid fa-bolt"></i> Logic engine</div>
+          <div class="floating-chip chip-two"><i class="fa-solid fa-terminal"></i> Debug mode</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-puzzle-piece"></i></span><span class="pill">Starter bank</span></div>
+        <div class="stat-value" id="availableCount">50+</div><div class="stat-label">Questions available</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-star"></i></span><span class="pill">Per solve</span></div>
+        <div class="stat-value">+10 XP</div><div class="stat-label">Correctly complete a new question</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-coins"></i></span><span class="pill">Per solve</span></div>
+        <div class="stat-value">+5</div><div class="stat-label">Coins earned</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-lightbulb"></i></span><span class="pill">Optional</span></div>
+        <div class="stat-value">−50 XP</div><div class="stat-label">Hint also costs 25 coins</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">Know the rules before you play</h2>
+    <div class="instructions">
+      <article class="instruction-card">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <h3>1. Find the problem</h3>
+        <p>Read the prompt and code carefully. Choose the best answer from the options. Challenges become harder as you progress.</p>
+      </article>
+      <article class="instruction-card">
+        <i class="fa-solid fa-lightbulb"></i>
+        <h3>2. Use hints wisely</h3>
+        <p>A hint costs 50 XP and 25 coins. Your balance is checked before a hint is revealed, and hint use is recorded in your history.</p>
+      </article>
+      <article class="instruction-card">
+        <i class="fa-solid fa-trophy"></i>
+        <h3>3. Earn rewards</h3>
+        <p>Complete a question you have not completed before to earn 10 XP and 5 coins. Re-answering an old question does not pay rewards twice.</p>
+      </article>
+    </div>
+    <div class="note"><i class="fa-solid fa-circle-info"></i> .</div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="gameScreen">
+    <div class="game-layout">
+      <div class="panel">
+        <div class="game-top">
+          <div>
+            <div class="kicker">Live challenge</div>
+            <h2 class="game-title" id="questionHeading">Loading challenge…</h2>
+            <p class="muted" id="questionMeta">Preparing your question bank.</p>
+          </div>
+          <span class="pill" id="difficultyPill">STARTER</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+        <div id="questionArea">
+          <p class="question-text" id="questionPrompt"></p>
+          <div class="code-box">
+            <div class="code-head">
+              <span><span class="code-dots"><span></span><span></span><span></span></span> <span id="codeLanguage">JavaScript</span></span>
+              <span>READ CAREFULLY</span>
+            </div>
+            <pre id="codeSnippet"></pre>
+          </div>
+          <div class="answers" id="answers"></div>
+          <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+          <div class="game-controls">
+            <button class="hint-btn" id="hintButton"><i class="fa-regular fa-lightbulb"></i> Get Hint · −50 XP / −25 coins</button>
+            <button class="secondary-btn" id="nextButton" disabled><i class="fa-solid fa-arrow-right"></i> Next Question</button>
+          </div>
+        </div>
+
+        <div class="hidden" id="bankFinished">
+          <div class="empty">
+            <i class="fa-solid fa-trophy" style="font-size:35px;color:var(--gold)"></i>
+            <h3 style="color:var(--text)">You've reached the end of the available bank!</h3>
+            <p id="bankFinishedMessage">You have answered all currently available questions.</p>
+            <p>Open the Practice Bank to continue with more coding questions and explanations.</p>
+            <button class="primary-btn" id="reloadQuestions"><i class="fa-solid fa-rotate"></i> Open extended practice</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="side-stack">
+        <div class="side-card">
+          <h3><i class="fa-regular fa-clock" style="color:var(--cyan)"></i> Playing time</h3>
+          <div class="timer-value" id="sessionTimer">00:00</div>
+          <div class="muted">Current session</div>
+          <div class="mini-row"><span>Today</span><span id="todayTime">0m</span></div>
+          <div class="mini-row"><span>Game lifetime</span><span id="lifetimeTime">0m</span></div>
+        </div>
+        <div class="side-card">
+          <h3><i class="fa-solid fa-chart-simple" style="color:var(--purple)"></i> Your progress</h3>
+          <div class="mini-row"><span>Signed in as</span><span id="playerName">Coder</span></div>
+          <div class="mini-row"><span>Completed</span><span id="completedCount">0</span></div>
+          <div class="mini-row"><span>Questions left</span><span id="remainingCount">—</span></div>
+          <div class="mini-row"><span>Hints used</span><span id="hintCount">0</span></div>
+          <div class="mini-row"><span>XP balance</span><span id="xpBalance">0</span></div>
+          <div class="mini-row"><span>Coin balance</span><span id="coinBalance">0</span></div>
+        </div>
+        <div class="side-card">
+          <h3><i class="fa-solid fa-medal" style="color:var(--gold)"></i> Recent badges</h3>
+          <div class="badge-list" id="badgeList"><div class="muted">Your earned badges will appear here.</div></div>
+        </div>
+        <button class="secondary-btn" id="historyButton"><i class="fa-solid fa-clock-rotate-left"></i> View full history</button>
+        <button class="secondary-btn" id="exitGame"><i class="fa-solid fa-arrow-left"></i> Exit to introduction</button>
+      </aside>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="screen" id="historyScreen">
+    <div class="panel">
+      <div class="history-header">
+        <div>
+          <div class="kicker">Your learning record</div>
+          <h2 class="game-title">Code Breaker History</h2>
+          <p class="muted">Completed questions, hint usage, rewards, and playing-time totals.</p>
+        </div>
+        <button class="secondary-btn" id="historyBack"><i class="fa-solid fa-arrow-left"></i> Back</button>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Completed questions</div><div class="stat-value" id="historyCompleted">0</div></div>
+        <div class="stat-card"><div class="stat-label">Hints used</div><div class="stat-value" id="historyHints">0</div></div>
+        <div class="stat-card"><div class="stat-label">Time today</div><div class="stat-value" id="historyToday">0m</div></div>
+        <div class="stat-card"><div class="stat-label">Total game time</div><div class="stat-value" id="historyLifetime">0m</div></div>
+      </div>
+      <h3 class="section-title">Activity history</h3>
+      <div class="history-list" id="historyList"><div class="empty">Loading your activity…</div></div>
+      <h3 class="section-title">Earned badges</h3>
+      <div class="badge-list" id="historyBadges"><div class="empty">Loading badges…</div></div>
+    </div>
+  </section>
+
+  <div class="footer">Code Academy · We Learn, We Code, We Succeed</div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import {
+  doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs,
+  query, orderBy, limit, runTransaction, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/*
+ * BUILT-IN STARTER BANK: 50 questions.
+ * Question fields:
+ * id, topic, difficulty, prompt, code, options, answer, hint, explanation
+ * `answer` is the zero-based index of the correct option.
+ */
+const BUILTIN_QUESTIONS = [
+  {
+    id:"cb001",topic:"Syntax",difficulty:"Starter",
+    prompt:"This line is missing one important character. Which correction fixes the syntax?",
+    code:"let score = 10;\nconsole.log(score",
+    options:["Add a semicolon after let","Add a closing parenthesis )","Change let to const only","Put score inside quotation marks"],
+    answer:1,hint:"The function call opens with a parenthesis. Check whether it closes.",
+    explanation:"A function call that opens with `(` must close with `)`: console.log(score)."
+  },
+  {
+    id:"cb002",topic:"Conditionals",difficulty:"Starter",
+    prompt:"Find the syntax error in this condition.",
+    code:"let age = 16;\nif (age >= 18 {\n  console.log('Adult');\n}",
+    options:["Remove the if keyword","Add a closing parenthesis before {","Change age to a string","Replace console.log with return"],
+    answer:1,hint:"The condition begins with a parenthesis. What should appear before the opening brace?",
+    explanation:"Write `if (age >= 18) {`. The condition needs a closing parenthesis before the block starts."
+  },
+  {
+    id:"cb003",topic:"Variables",difficulty:"Starter",
+    prompt:"Why does this code fail when it tries to print the user's name?",
+    code:"const userName = 'Ama';\nconsole.log(username);",
+    options:["Strings cannot be stored in const","The variable name uses different capitalization","console.log cannot print text","A semicolon cannot follow a string"],
+    answer:1,hint:"JavaScript distinguishes uppercase and lowercase letters in variable names.",
+    explanation:"`userName` and `username` are different identifiers. Use the exact declared name."
+  },
+  {
+    id:"cb004",topic:"Strings",difficulty:"Starter",
+    prompt:"Which option correctly closes the string?",
+    code:"const city = 'Accra;\nconsole.log(city);",
+    options:["const city = Accra;","const city = 'Accra';","const city = 'Accra;","console.log('city);"],
+    answer:1,hint:"A string opened with a single quote must have a matching closing quote.",
+    explanation:"The corrected declaration is `const city = 'Accra';`."
+  },
+  {
+    id:"cb005",topic:"Comparison",difficulty:"Starter",
+    prompt:"The program should run the block only when the score is exactly 10 in both value and type. What should replace the operator?",
+    code:"let score = 10;\nif (score = 10) {\n  console.log('Perfect');\n}",
+    options:["=","===",">=","!="],
+    answer:1,hint:"One operator assigns a value. Another checks strict equality.",
+    explanation:"Use `===` to compare value and type without assigning a new value."
+  },
+  {
+    id:"cb006",topic:"Arrays",difficulty:"Starter",
+    prompt:"What should be changed to print the first item in this array?",
+    code:"const colors = ['red', 'blue', 'gold'];\nconsole.log(colors[1]);",
+    options:["Use colors[0]","Use colors[3]","Use colors.first","Change the array to an object"],
+    answer:0,hint:"JavaScript arrays start counting positions at zero.",
+    explanation:"The first array item is at index `0`, so use `colors[0]`."
+  },
+  {
+    id:"cb007",topic:"Arithmetic",difficulty:"Starter",
+    prompt:"The expected answer is 15. Which operator should replace `+`?",
+    code:"const price = 20;\nconst discount = 5;\nconsole.log(price + discount);",
+    options:["*","/","-","%"],
+    answer:2,hint:"The discount should be taken away from the original price.",
+    explanation:"Use subtraction: `20 - 5` produces `15`."
+  },
+  {
+    id:"cb008",topic:"Functions",difficulty:"Starter",
+    prompt:"Which change makes the function return the greeting instead of returning nothing?",
+    code:"function greet() {\n  'Hello, coder!';\n}\nconsole.log(greet());",
+    options:["Add return before the string","Rename function to console","Replace string with a number","Remove the function parentheses"],
+    answer:0,hint:"A function needs a keyword to send a value back to its caller.",
+    explanation:"`return 'Hello, coder!';` sends the greeting back from the function."
+  },
+  {
+    id:"cb009",topic:"Loops",difficulty:"Starter",
+    prompt:"This loop should print 0, 1, and 2. What condition is best?",
+    code:"for (let i = 0; i <= 3; i++) {\n  console.log(i);\n}",
+    options:["i < 0","i < 3","i === 3","i > 3"],
+    answer:1,hint:"The final printed value should be 2, not 3.",
+    explanation:"`i < 3` allows 0, 1, and 2, then stops."
+  },
+  {
+    id:"cb010",topic:"Booleans",difficulty:"Starter",
+    prompt:"Which value represents a true boolean rather than text?",
+    code:"const isReady = 'true';",
+    options:["const isReady = true;","const isReady = 'yes';","const isReady = 1;","const isReady = 'false';"],
+    answer:0,hint:"A boolean literal does not need quotation marks.",
+    explanation:"`true` without quotes is a boolean. `'true'` is a string."
+  },
+  {
+    id:"cb011",topic:"Objects",difficulty:"Starter",
+    prompt:"How should the code access the user's name property?",
+    code:"const user = { name: 'Kojo', level: 2 };\nconsole.log(user.username);",
+    options:["user[0]","user.name","user->name","name.user"],
+    answer:1,hint:"Look at the exact property key defined in the object.",
+    explanation:"The object has a `name` property, so `user.name` returns `Kojo`."
+  },
+  {
+    id:"cb012",topic:"Strings",difficulty:"Starter",
+    prompt:"Which expression joins the two words with a space between them?",
+    code:"const first = 'Code';\nconst second = 'Breaker';\nconsole.log(first + second);",
+    options:["first - second","first + ' ' + second","first / second","first === second"],
+    answer:1,hint:"Join the first word, a single-space string, and the second word.",
+    explanation:"`first + ' ' + second` produces `Code Breaker`."
+  },
+  {
+    id:"cb013",topic:"Conditionals",difficulty:"Starter",
+    prompt:"The message should appear only when `loggedIn` is true. Which condition is clearest?",
+    code:"const loggedIn = false;\nif (loggedIn = true) {\n  console.log('Welcome');\n}",
+    options:["if (loggedIn === true)","if loggedIn = true","if (loggedIn !== true)","if (true = loggedIn)"],
+    answer:0,hint:"Do not assign a new value in the condition. Compare the existing value.",
+    explanation:"`if (loggedIn === true)` checks whether the variable is true."
+  },
+  {
+    id:"cb014",topic:"Arrays",difficulty:"Starter",
+    prompt:"How can the program find the number of items in this array?",
+    code:"const tools = ['HTML', 'CSS', 'JavaScript'];\nconsole.log(tools.count);",
+    options:["tools.size()","tools.length","length.tools","tools.items"],
+    answer:1,hint:"JavaScript arrays have a built-in property for their item count.",
+    explanation:"Use `tools.length`, which returns `3`."
+  },
+  {
+    id:"cb015",topic:"Functions",difficulty:"Starter",
+    prompt:"Which call actually runs the function?",
+    code:"function celebrate() {\n  console.log('Great work!');\n}\n// The function is not called yet.",
+    options:["celebrate;","run celebrate","celebrate()","function celebrate"],
+    answer:2,hint:"A normal function call uses the function name followed by parentheses.",
+    explanation:"`celebrate()` invokes the function."
+  },
+  {
+    id:"cb016",topic:"Loops",difficulty:"Intermediate",
+    prompt:"The loop should count upward. Which update expression belongs here?",
+    code:"for (let i = 0; i < 4; ___) {\n  console.log(i);\n}",
+    options:["i--","i++","i = 0","i < 4"],
+    answer:1,hint:"Each iteration must move the counter toward the stopping condition.",
+    explanation:"`i++` increases the counter by one each time."
+  },
+  {
+    id:"cb017",topic:"Scope",difficulty:"Intermediate",
+    prompt:"Why is `message` unavailable outside this block?",
+    code:"if (true) {\n  let message = 'Hello';\n}\nconsole.log(message);",
+    options:["let is block-scoped","console.log only accepts numbers","Strings cannot be declared in blocks","if blocks cannot contain variables"],
+    answer:0,hint:"Think about where a variable declared with `let` can be accessed.",
+    explanation:"A `let` variable declared inside the block is not accessible outside it."
+  },
+  {
+    id:"cb018",topic:"Parameters",difficulty:"Intermediate",
+    prompt:"What should be added so the function can calculate the sum of its two inputs?",
+    code:"function add(a, b) {\n  return a ___ b;\n}",
+    options:["&&","==","+",":"],
+    answer:2,hint:"The function should perform arithmetic, not a comparison or logical test.",
+    explanation:"The `+` operator adds the two parameters."
+  },
+  {
+    id:"cb019",topic:"Return values",difficulty:"Intermediate",
+    prompt:"What is the problem with this function?",
+    code:"function double(n) {\n  return;\n  n * 2;\n}\nconsole.log(double(4));",
+    options:["The number 4 cannot be passed to a function","Code after return in this path is not executed","Functions cannot use multiplication","console.log must be inside the function"],
+    answer:1,hint:"When JavaScript reaches return, what happens to the function?",
+    explanation:"The bare `return` ends the function immediately. Use `return n * 2;`."
+  },
+  {
+    id:"cb020",topic:"Equality",difficulty:"Intermediate",
+    prompt:"Which condition checks that `count` is not equal to 0 in both value and type?",
+    code:"const count = 3;\nif (count ___ 0) {\n  console.log('Not zero');\n}",
+    options:["===","!==","=","<="],
+    answer:1,hint:"Choose the strict inequality operator.",
+    explanation:"`!==` checks that the values or types are not strictly equal."
+  },
+  {
+    id:"cb021",topic:"Objects",difficulty:"Intermediate",
+    prompt:"Which syntax correctly updates the object's level to 3?",
+    code:"const player = { level: 2 };\n___\nconsole.log(player.level);",
+    options:["player.level = 3;","player = level: 3;","player->level(3);","level.player == 3;"],
+    answer:0,hint:"Use dot notation to access the property, then assign the new value.",
+    explanation:"`player.level = 3;` updates the object's property."
+  },
+  {
+    id:"cb022",topic:"Array methods",difficulty:"Intermediate",
+    prompt:"Which method adds `'Python'` to the end of this array?",
+    code:"const languages = ['HTML', 'CSS'];\n// Add Python at the end",
+    options:["languages.push('Python')","languages.pop('Python')","languages.shift('Python')","languages.slice('Python')"],
+    answer:0,hint:"Choose the array method that appends an item.",
+    explanation:"`push()` adds an item to the end of an array."
+  },
+  {
+    id:"cb023",topic:"Logical operators",difficulty:"Intermediate",
+    prompt:"A user must be signed in AND have permission. Which operator is needed?",
+    code:"if (signedIn ___ hasPermission) {\n  openPage();\n}",
+    options:["||","&&","!","%"],
+    answer:1,hint:"Both conditions must be true.",
+    explanation:"`&&` requires both expressions to be truthy."
+  },
+  {
+    id:"cb024",topic:"Logical operators",difficulty:"Intermediate",
+    prompt:"The program should allow entry if the user is an admin OR an owner. Choose the operator.",
+    code:"if (isAdmin ___ isOwner) {\n  allowEntry();\n}",
+    options:["&&","||","===","**"],
+    answer:1,hint:"Either one of the two conditions can be enough.",
+    explanation:"`||` is logical OR; either condition can make the expression true."
+  },
+  {
+    id:"cb025",topic:"Loops",difficulty:"Intermediate",
+    prompt:"Which keyword skips the rest of the current iteration and moves to the next one?",
+    code:"for (let i = 0; i < 5; i++) {\n  if (i === 2) {\n    ___;\n  }\n  console.log(i);\n}",
+    options:["break","return","continue","stop"],
+    answer:2,hint:"The loop should continue running, but skip printing the value 2.",
+    explanation:"`continue` skips the remainder of the current iteration."
+  },
+  {
+    id:"cb026",topic:"Array indexing",difficulty:"Intermediate",
+    prompt:"What is the last valid index in an array with four items?",
+    code:"const nums = [10, 20, 30, 40];\nconsole.log(nums[___]);",
+    options:["4","-1","3","5"],
+    answer:2,hint:"The first item is index zero. Count four positions starting from zero.",
+    explanation:"The indices are 0, 1, 2, and 3. The last item is `nums[3]`."
+  },
+  {
+    id:"cb027",topic:"Template literals",difficulty:"Intermediate",
+    prompt:"Which string correctly includes the value of `name` using a template literal?",
+    code:"const name = 'Ama';\nconsole.log(___);",
+    options:["'Hello, ${name}'","`Hello, ${name}`","'Hello, name'","(Hello, ${name})"],
+    answer:1,hint:"Template literals use backticks, not ordinary single quotes.",
+    explanation:"Backticks allow `${name}` interpolation."
+  },
+  {
+    id:"cb028",topic:"DOM basics",difficulty:"Intermediate",
+    prompt:"Which line selects the HTML element whose ID is `status`?",
+    code:"<p id=\"status\">Ready</p>\n\n// JavaScript:",
+    options:["document.getElementById('status')","document.getClass('status')","window.selectId('status')","document.id.status()"],
+    answer:0,hint:"Use the document method designed to find an element by its ID.",
+    explanation:"`document.getElementById('status')` selects the element with that ID."
+  },
+  {
+    id:"cb029",topic:"DOM updates",difficulty:"Intermediate",
+    prompt:"How should the selected element's text be changed to `Completed`?",
+    code:"const status = document.getElementById('status');\nstatus.___ = 'Completed';",
+    options:["innerText","styleText","textColor","htmlFile"],
+    answer:0,hint:"The property should change the text displayed inside the element.",
+    explanation:"`innerText` sets the element's displayed text."
+  },
+  {
+    id:"cb030",topic:"Event handling",difficulty:"Intermediate",
+    prompt:"Which method registers a click handler on a button?",
+    code:"const button = document.querySelector('button');\nbutton.___('click', handleClick);",
+    options:["onClick","addEventListener","clickEvent","listen"],
+    answer:1,hint:"This method accepts an event name and a callback function.",
+    explanation:"`addEventListener('click', handleClick)` registers the click handler."
+  },
+  {
+    id:"cb031",topic:"Array iteration",difficulty:"Advanced",
+    prompt:"Which method creates a new array by transforming every item?",
+    code:"const numbers = [1, 2, 3];\nconst doubled = numbers.___(n => n * 2);",
+    options:["filter","find","map","some"],
+    answer:2,hint:"Choose the method that returns a transformed array of matching length.",
+    explanation:"`map()` transforms each array element and returns a new array."
+  },
+  {
+    id:"cb032",topic:"Array filtering",difficulty:"Advanced",
+    prompt:"Which method keeps only numbers greater than 10?",
+    code:"const numbers = [4, 12, 18, 7];\nconst result = numbers.___(n => n > 10);",
+    options:["map","filter","reduce","join"],
+    answer:1,hint:"The result should contain only elements that pass a condition.",
+    explanation:"`filter()` returns a new array containing elements that pass the test."
+  },
+  {
+    id:"cb033",topic:"Array search",difficulty:"Advanced",
+    prompt:"Which method returns the first number greater than 10, rather than an array?",
+    code:"const numbers = [4, 12, 18, 7];\nconst result = numbers.___(n => n > 10);",
+    options:["filter","map","find","forEach"],
+    answer:2,hint:"This method stops when it finds the first matching item.",
+    explanation:"`find()` returns the first element satisfying the callback condition."
+  },
+  {
+    id:"cb034",topic:"Error handling",difficulty:"Advanced",
+    prompt:"Which block catches an exception thrown inside the try block?",
+    code:"try {\n  riskyOperation();\n} ___ (error) {\n  console.log(error.message);\n}",
+    options:["if","catch","except","finally"],
+    answer:1,hint:"JavaScript uses a specific keyword for handling exceptions.",
+    explanation:"`catch (error)` receives an exception thrown by the try block."
+  },
+  {
+    id:"cb035",topic:"Promises",difficulty:"Advanced",
+    prompt:"Which method handles the successfully resolved value of a Promise?",
+    code:"fetchData()\n  .___(data => console.log(data))\n  .catch(error => console.error(error));",
+    options:["then","catch","throw","awaitOnly"],
+    answer:0,hint:"A Promise uses this method to register a success callback.",
+    explanation:"`.then()` handles a fulfilled Promise; `.catch()` handles rejection."
+  },
+  {
+    id:"cb036",topic:"Async JavaScript",difficulty:"Advanced",
+    prompt:"What keyword is missing to allow this function to use `await`?",
+    code:"function loadUser() {\n  const response = await fetch('/user');\n  return response.json();\n}",
+    options:["defer","async","promise","then"],
+    answer:1,hint:"The function declaration must explicitly support await.",
+    explanation:"Declare it as `async function loadUser()`. The network request still needs suitable error handling in production."
+  },
+  {
+    id:"cb037",topic:"JSON",difficulty:"Advanced",
+    prompt:"Which method converts a JSON string into a JavaScript value?",
+    code:"const raw = '{\"level\":3}';\nconst data = JSON.___(raw);",
+    options:["stringify","parse","decodeObject","convert"],
+    answer:1,hint:"One JSON method reads a string; another converts a value into a string.",
+    explanation:"`JSON.parse(raw)` converts valid JSON text into a JavaScript value."
+  },
+  {
+    id:"cb038",topic:"JSON",difficulty:"Advanced",
+    prompt:"Which method converts a JavaScript object into JSON text?",
+    code:"const player = { level: 3 };\nconst raw = JSON.___(player);",
+    options:["parse","stringify","toObject","read"],
+    answer:1,hint:"This method is the opposite direction of JSON.parse.",
+    explanation:"`JSON.stringify(player)` returns a JSON-formatted string."
+  },
+  {
+    id:"cb039",topic:"Destructuring",difficulty:"Advanced",
+    prompt:"Which line correctly extracts `name` from the object?",
+    code:"const user = { name: 'Kojo', level: 4 };\n___\nconsole.log(name);",
+    options:["const [name] = user;","const { name } = user;","const (name) = user;","const name = user[];"],
+    answer:1,hint:"Object destructuring uses curly braces.",
+    explanation:"`const { name } = user;` extracts the object's `name` property."
+  },
+  {
+    id:"cb040",topic:"Spread syntax",difficulty:"Advanced",
+    prompt:"Which expression makes a shallow copy of this array?",
+    code:"const original = [1, 2, 3];\nconst copy = ___;",
+    options:["original = copy","[...original]","original.copy()","{original}"],
+    answer:1,hint:"The spread syntax expands array elements into a new array literal.",
+    explanation:"`[...original]` creates a new array containing the original elements."
+  },
+  {
+    id:"cb041",topic:"Closures",difficulty:"Expert",
+    prompt:"Why does this function keep access to `count` after `makeCounter` has returned?",
+    code:"function makeCounter() {\n  let count = 0;\n  return function () {\n    count++;\n    return count;\n  };\n}\nconst next = makeCounter();",
+    options:["The returned function forms a closure","let variables are always global","JavaScript automatically resets count","return copies count into the browser"],
+    answer:0,hint:"A function can retain access to the lexical environment where it was created.",
+    explanation:"The inner function closes over `count`, preserving access to it between calls."
+  },
+  {
+    id:"cb042",topic:"Asynchronous code",difficulty:"Expert",
+    prompt:"What should be added so this function waits for the Promise result before returning it?",
+    code:"async function getProfile() {\n  const profile = ___ loadProfile();\n  return profile;\n}",
+    options:["wait","await","returning","thening"],
+    answer:1,hint:"Inside an async function, this keyword pauses until the Promise settles.",
+    explanation:"`await` waits for the Promise to settle before assigning its fulfilled value or throwing its rejection."
+  },
+  {
+    id:"cb043",topic:"Error handling",difficulty:"Expert",
+    prompt:"Where should this cleanup action go if it must run whether the operation succeeds or fails?",
+    code:"try {\n  saveData();\n} catch (error) {\n  report(error);\n} ___ {\n  closeConnection();\n}",
+    options:["else","finally","then","after"],
+    answer:1,hint:"There is a block designed for cleanup after try/catch.",
+    explanation:"The `finally` block runs after the try/catch flow, whether or not an exception was thrown."
+  },
+  {
+    id:"cb044",topic:"Array reduction",difficulty:"Expert",
+    prompt:"Which initial value makes this reduce expression calculate the sum safely from zero?",
+    code:"const prices = [2, 3, 5];\nconst total = prices.reduce((sum, price) => sum + price, ___);",
+    options:["null","0","[]","false"],
+    answer:1,hint:"The accumulator is adding numeric prices, so start it as a number.",
+    explanation:"An initial accumulator value of `0` makes the sum start from zero."
+  },
+  {
+    id:"cb045",topic:"Event loop",difficulty:"Expert",
+    prompt:"Which statement about this output order is correct?",
+    code:"console.log('A');\nsetTimeout(() => console.log('B'), 0);\nconsole.log('C');",
+    options:["A, B, C","B, A, C","A, C, B","C, A, B"],
+    answer:2,hint:"A zero-millisecond timeout still schedules a later callback.",
+    explanation:"The synchronous logs A and C run before the timer callback B."
+  },
+  {
+    id:"cb046",topic:"Immutability",difficulty:"Expert",
+    prompt:"Which update creates a new object while preserving the existing properties?",
+    code:"const user = { name: 'Ama', level: 1 };\nconst updated = ___;",
+    options:["user.level = 2","{ ...user, level: 2 }","user + level","[...user, level: 2]"],
+    answer:1,hint:"Spread the original object's properties into a new object, then override level.",
+    explanation:"`{ ...user, level: 2 }` creates a new object and sets its level to 2."
+  },
+  {
+    id:"cb047",topic:"Nullish coalescing",difficulty:"Expert",
+    prompt:"Which operator uses the fallback only when `name` is null or undefined?",
+    code:"const displayName = name ___ 'Guest';",
+    options:["||","??","&&","!="],
+    answer:1,hint:"Unlike OR, this operator does not replace other falsy values such as an empty string.",
+    explanation:"`??` uses the fallback only when the left value is null or undefined."
+  },
+  {
+    id:"cb048",topic:"Optional chaining",difficulty:"Expert",
+    prompt:"How can the program safely read `user.profile.name` when profile might be missing?",
+    code:"const name = user___profile___name;",
+    options:[".?.","?.","??.","!!"],
+    answer:1,hint:"The optional chaining operator is written as question mark followed by a dot.",
+    explanation:"Use `user?.profile?.name` to avoid an error if an intermediate value is null or undefined."
+  },
+  {
+    id:"cb049",topic:"Security",difficulty:"Expert",
+    prompt:"A username is untrusted user input. Which choice is safest for placing it into an element as plain text?",
+    code:"const element = document.querySelector('#greeting');\n// username comes from user input",
+    options:["element.innerHTML = username","element.textContent = username","document.write(username)","eval(username)"],
+    answer:1,hint:"Use a text-only DOM property rather than interpreting input as HTML.",
+    explanation:"`textContent` inserts the value as text instead of parsing it as markup. Avoid evaluating untrusted input."
+  },
+  {
+    id:"cb050",topic:"Debugging strategy",difficulty:"Expert",
+    prompt:"A function returns the wrong result. What is the best first debugging step?",
+    code:"function calculateTotal(price, tax) {\n  return price - tax;\n}\nconsole.log(calculateTotal(100, 15));\n// Expected: 115",
+    options:["Rewrite the entire app immediately","Check the expected formula and change subtraction to addition","Delete the function","Ignore the expected result"],
+    answer:1,hint:"Compare the operation in the function with the stated expected result.",
+    explanation:"If tax is added to the price, use `price + tax`. Test with known inputs after changing the logic."
+  }
+];
+
+const $ = id => document.getElementById(id);
+const DAY_KEY = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+};
+const fmtTime = seconds => {
+  seconds = Math.max(0, Math.floor(Number(seconds) || 0));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h) return `${h}h ${m}m`;
+  if (m) return `${m}m ${s}s`;
+  return `${s}s`;
+};
+const fmtClock = seconds => {
+  seconds = Math.max(0, Math.floor(Number(seconds) || 0));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return h ? [h,m,s].map(n=>String(n).padStart(2,"0")).join(":") : [m,s].map(n=>String(n).padStart(2,"0")).join(":");
+};
+const escapeHTML = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[char]));
+const shuffle = input => {
+  const a = [...input];
+  for (let i=a.length-1;i>0;i--) {
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+};
+
+let currentUser = null;
+let userRef = null;
+let gameRef = null;
+let profile = {};
+let gameData = {};
+let questionBank = [];
+let currentQuestion = null;
+let currentQuestionNumber = 0;
+let currentQuestionIds = [];
+let selectedAnswer = null;
+let answerLocked = false;
+let hintShown = false;
+let sessionStartedAt = 0;
+let sessionSavedSeconds = 0;
+let sessionDocRef = null;
+let timerInterval = null;
+let toastTimer = null;
+let activeScreen = "intro";
+let busy = false;
+let lastQuestionId = null;
+let unsubscribeProfile = null;
+let unsubscribeGame = null;
+
+function showToast(message, kind="") {
+  const el = $("toast");
+  el.textContent = message;
+  el.className = `toast show ${kind}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className="toast", 3200);
+}
+function showScreen(name) {
+  activeScreen = name;
+  document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
+  const target = $(name + "Screen");
+  if (target) target.classList.add("active");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function speakGuide() {
+  if (!("speechSynthesis" in window)) {
+    showToast("Voice guidance is not supported by this browser.");
+    return;
+  }
+  window.speechSynthesis.cancel();
+  const name = profile.displayName || currentUser?.displayName ||
+    currentUser?.email?.split("@")[0] || "Coder";
+  const text = `Hello ${name}, welcome to Code Breaker, from Code Academy.
+  Read each programming question carefully, inspect the code, and choose the best answer.
+  The challenges become harder as you progress.
+  Every new question you complete successfully earns 10 experience points and 5 coins.
+  A hint costs 50 experience points and 25 coins, so use hints wisely.
+  Your progress, hints, rewards, badges, and playing time are recorded with your account.
+  The challenge set expands as you complete rounds, helping you keep practising with new coding problems.
+  If all available questions have been completed, the game will let you know instead of endlessly repeating them.
+  Good luck, ${name}. Think carefully, debug patiently, and keep learning.`;
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.rate = 0.94;
+  utterance.pitch = 1;
+  window.speechSynthesis.speak(utterance);
+}
+function updateProfileUI() {
+  const name = profile.displayName || currentUser?.displayName ||
+    currentUser?.email?.split("@")[0] || "Coder";
+  $("playerName").textContent = name;
+  $("welcomeText").textContent =
+    `Welcome, ${name}. Solve programming puzzles, learn how to debug, and build your coding confidence one challenge at a time.`;
+  $("xpBalance").textContent = Number(profile.xp || 0).toLocaleString();
+  $("coinBalance").textContent = Number(profile.coins || 0).toLocaleString();
+  $("completedCount").textContent = (gameData.completedQuestionIds || []).length;
+  $("hintCount").textContent = Number(gameData.hintsUsed || 0);
+  $("todayTime").textContent = fmtTime((gameData.dailySeconds || {})[DAY_KEY()] || 0);
+  $("lifetimeTime").textContent = fmtTime(gameData.totalSeconds || 0);
+  renderBadges();
+}
+function renderBadges() {
+  const badges = [...(gameData.badges || [])].slice(-4).reverse();
+  const html = badges.map(b => `
+    <div class="badge-row">
+      <span class="badge-icon"><i class="fa-solid fa-medal"></i></span>
+      <span>${escapeHTML(b.name || `Code Breaker ${b.level || ""}`)}</span>
+    </div>`).join("");
+  $("badgeList").innerHTML = html || '<div class="muted">Complete a new question to start earning badges.</div>';
+  $("historyBadges").innerHTML = (gameData.badges || []).length
+    ? [...gameData.badges].reverse().map(b => `
+      <div class="history-item">
+        <div class="history-symbol"><i class="fa-solid fa-medal"></i></div>
+        <div class="history-body"><strong>${escapeHTML(b.name || "Code Breaker Badge")}</strong>
+        <p>Unlocked after completing question ${escapeHTML(b.level ?? "")}.</p>
+        <div class="history-time">${escapeHTML(b.earnedAt || "")}</div></div>
+      </div>`).join("")
+    : '<div class="empty">No badges earned yet. Complete a new question to unlock your first badge.</div>';
+}
+function normalizeQuestion(q, index, source="json") {
+  if (!q || typeof q !== "object") return null;
+  const id = String(q.id || `${source}_${index+1}`).trim();
+  const options = Array.isArray(q.options) ? q.options.map(v=>String(v)) : [];
+  const answer = Number(q.answer);
+  if (!id || !q.prompt || !Array.isArray(q.options) || options.length < 2 ||
+      !Number.isInteger(answer) || answer < 0 || answer >= options.length) return null;
+  return {
+    id, topic:String(q.topic || "Programming"),
+    difficulty:String(q.difficulty || "Intermediate"),
+    prompt:String(q.prompt), code:String(q.code || ""),
+    options, answer, hint:String(q.hint || "Read the question and check each option carefully."),
+    explanation:String(q.explanation || "Review the code and test the logic step by step."),
+    source
+  };
+}
+async function loadQuestionBank() {
+  const unique = new Map();
+  BUILTIN_QUESTIONS.forEach((q,i) => {
+    const normalized = normalizeQuestion(q,i,"built-in");
+    if (normalized) unique.set(normalized.id, normalized);
+  });
+  let externalCount = 0;
+  try {
+    const response = await fetch("./codebreaker.json", {cache:"no-store"});
+    if (!response.ok) throw new Error(`JSON request returned ${response.status}`);
+    const data = await response.json();
+    const external = Array.isArray(data) ? data : data.questions;
+    if (!Array.isArray(external)) throw new Error("JSON must contain a questions array.");
+    external.forEach((q,i) => {
+      const normalized = normalizeQuestion(q,i,"json");
+      if (!normalized) return;
+      // Built-in IDs take precedence; JSON questions should have unique IDs.
+      if (!unique.has(normalized.id)) {
+        unique.set(normalized.id, normalized);
+        externalCount++;
+      }
+    });
+    console.info(`Code Breaker loaded ${externalCount} extra questions from codebreaker.json.`);
+  } catch (error) {
+    console.info("Code Breaker is using its built-in questions. Extra JSON bank not loaded:", error.message);
+  }
+  questionBank = [...unique.values()];
+  $("availableCount").textContent = questionBank.length;
+  return {total:questionBank.length,externalCount};
+}
+function completedSet() {
+  return new Set(Array.isArray(gameData.completedQuestionIds) ? gameData.completedQuestionIds : []);
+}
+function availableQuestions() {
+  const completed = completedSet();
+  return questionBank.filter(q => !completed.has(q.id));
+}
+function chooseNextQuestion() {
+  const pool = availableQuestions();
+  $("remainingCount").textContent = pool.length;
+  if (!pool.length) {
+    currentQuestion = null;
+    $("questionArea").classList.add("hidden");
+    $("bankFinished").classList.remove("hidden");
+    $("questionHeading").textContent = "Question bank completed";
+    $("questionMeta").textContent = `${questionBank.length} unique questions loaded`;
+    $("progressFill").style.width = "100%";
+    $("bankFinishedMessage").textContent =
+      `You have finished this round. Opening additional coding practice…`; if(!window.__caCodeBreakerPracticeOpened){window.__caCodeBreakerPracticeOpened=true;setTimeout(()=>document.getElementById('caBankLaunch')?.click(),650); }
+    return;
+  }
+  $("bankFinished").classList.add("hidden");
+  $("questionArea").classList.remove("hidden");
+  const chosen = shuffle(pool.filter(q=>q.id!==lastQuestionId));
+  currentQuestion = (chosen.length ? chosen : pool)[0];
+  lastQuestionId = currentQuestion.id;
+  currentQuestionNumber++;
+  selectedAnswer = null;
+  answerLocked = false;
+  hintShown = false;
+  renderQuestion();
+}
+function renderQuestion() {
+  const q = currentQuestion;
+  if (!q) return;
+  $("questionHeading").textContent = `Challenge ${currentQuestionNumber}`;
+  $("questionMeta").textContent = `${q.topic} · ${q.difficulty} · ID ${q.id}`;
+  $("difficultyPill").textContent = q.difficulty.toUpperCase();
+  $("questionPrompt").textContent = q.prompt;
+  $("codeSnippet").textContent = q.code;
+  $("codeLanguage").textContent = "JavaScript";
+  const done = (gameData.completedQuestionIds || []).length;
+  const total = questionBank.length;
+  $("progressFill").style.width = `${total ? Math.min(100,done/total*100) : 0}%`;
+  $("feedback").className = "feedback";
+  $("feedback").textContent = "";
+  $("nextButton").disabled = true;
+  $("hintButton").disabled = false;
+  $("answers").innerHTML = "";
+  q.options.forEach((option,index) => {
+    const button = document.createElement("button");
+    button.className = "answer-option";
+    button.type = "button";
+    button.innerHTML = `<span class="answer-letter">${String.fromCharCode(65+index)}</span><span>${escapeHTML(option)}</span>`;
+    button.addEventListener("click",()=>submitAnswer(index));
+    $("answers").appendChild(button);
+  });
+}
+function setAnswersLocked() {
+  $("answers").querySelectorAll("button").forEach(button=>button.disabled=true);
+}
+async function submitAnswer(index) {
+  if (!currentQuestion || answerLocked || busy) return;
+  selectedAnswer = index;
+  answerLocked = true;
+  setAnswersLocked();
+  const buttons = [...$("answers").querySelectorAll("button")];
+  buttons.forEach((button,i)=>{
+    if (i === currentQuestion.answer) button.classList.add("correct");
+    else if (i === index) button.classList.add("wrong");
+  });
+  if (index !== currentQuestion.answer) {
+    $("feedback").className = "feedback show bad";
+    $("feedback").textContent = "Not quite. Review the code and explanation, then try another challenge. " + currentQuestion.explanation;
+    $("nextButton").disabled = false;
+    return;
+  }
+  busy = true;
+  $("nextButton").disabled = true;
+  $("hintButton").disabled = true;
+  try {
+    const result = await awardQuestion(currentQuestion);
+    if (result.awarded) {
+      $("feedback").className = "feedback show good";
+      $("feedback").textContent = `Correct! ${currentQuestion.explanation} +10 XP, +5 coins, and a new badge have been awarded.`;
+      showToast("Correct! +10 XP and +5 coins.", "success");
+    } else {
+      $("feedback").className = "feedback show good";
+      $("feedback").textContent = `Correct! ${currentQuestion.explanation} This question was already completed before, so rewards are not repeated.`;
+      showToast("Correct answer! This question was already rewarded.", "success");
+    }
+    $("nextButton").disabled = false;
+  } catch (error) {
+    console.error(error);
+    answerLocked = false;
+    $("answers").querySelectorAll("button").forEach(button=>button.disabled=false);
+    $("feedback").className = "feedback show bad";
+    $("feedback").textContent = "Your answer is correct, but the progress/reward could not be saved. Check your connection or Firebase permissions, then choose the correct answer again to retry.";
+    $("hintButton").disabled = false;
+    showToast("Could not save progress. Please try again.", "error");
+  } finally {
+    busy = false;
+  }
+}
+async function addActivity(entry) {
+  try {
+    await addDoc(collection(db,"users",currentUser.uid,"gameData","code_breaker","history"), {
+      ...entry, createdAt:serverTimestamp()
+    });
+  } catch (error) {
+    console.warn("Activity history write failed:",error);
+  }
+}
+async function addNotification(title,message,type="achievement") {
+  try {
+    await addDoc(collection(db,"users",currentUser.uid,"notifications"), {
+      title, message, type, read:false, createdAt:serverTimestamp()
+    });
+  } catch (error) {
+    console.warn("Notification write failed:",error);
+  }
+}
+async function awardQuestion(question) {
+  const result = await runTransaction(db,async tx=>{
+    const [userSnap,gameSnap] = await Promise.all([tx.get(userRef),tx.get(gameRef)]);
+    const userData = userSnap.exists() ? userSnap.data() : {};
+    const saved = gameSnap.exists() ? gameSnap.data() : {};
+    const completed = Array.isArray(saved.completedQuestionIds) ? saved.completedQuestionIds : [];
+    if (completed.includes(question.id)) {
+      return {awarded:false,userData,saved};
+    }
+    const nextCompleted = [...completed,question.id];
+    const earnedBadge = {
+      level:nextCompleted.length,
+      questionId:question.id,
+      name:`Code Breaker · ${question.difficulty}`,
+      earnedAt:new Date().toISOString()
+    };
+    const badges = Array.isArray(saved.badges) ? saved.badges : [];
+    tx.set(userRef,{
+      xp:Number(userData.xp || 0)+10,
+      coins:Number(userData.coins || 0)+5
+    },{merge:true});
+    tx.set(gameRef,{
+      completedQuestionIds:nextCompleted,
+      completedLevels:nextCompleted,
+      level:nextCompleted.length+1,
+      badges:[...badges,earnedBadge],
+      updatedAt:serverTimestamp()
+    },{merge:true});
+    return {awarded:true,earnedBadge,completed:nextCompleted.length};
+  });
+  if (result.awarded) {
+    profile.xp = Number(profile.xp || 0)+10;
+    profile.coins = Number(profile.coins || 0)+5;
+    gameData.completedQuestionIds = [...new Set([...(gameData.completedQuestionIds || []),question.id])];
+    gameData.completedLevels = gameData.completedQuestionIds;
+    gameData.level = gameData.completedQuestionIds.length+1;
+    gameData.badges = [...(gameData.badges || []),result.earnedBadge];
+    updateProfileUI();
+    await addActivity({
+      type:"question_complete",title:"Question completed",
+      message:`Completed ${question.id}: ${question.topic}. Earned 10 XP and 5 coins.`,
+      questionId:question.id,level:result.completed,xp:10,coins:5
+    });
+    await addNotification(
+      "Code Breaker badge unlocked",
+      `Completed a new ${question.difficulty.toLowerCase()} question in Code Breaker. Earned 10 XP and 5 coins.`,
+      "achievement"
+    );
+    await addNotification("XP earned","You earned 10 XP in Code Breaker.","xp");
+    await addNotification("Coins earned","You earned 5 coins in Code Breaker.","coins");
+  }
+  return result;
+}
+async function requestHint() {
+  if (!currentQuestion || hintShown || busy || answerLocked) return;
+  busy = true;
+  $("hintButton").disabled = true;
+  try {
+    const result = await runTransaction(db,async tx=>{
+      const [userSnap,gameSnap] = await Promise.all([tx.get(userRef),tx.get(gameRef)]);
+      const userData = userSnap.exists() ? userSnap.data() : {};
+      const saved = gameSnap.exists() ? gameSnap.data() : {};
+      const xp = Number(userData.xp || 0);
+      const coins = Number(userData.coins || 0);
+      if (xp < 50 || coins < 25) return {ok:false,reason:"funds",xp,coins};
+      const dailyHints = Number(saved.hintsUsed || 0)+1;
+      tx.set(userRef,{xp:xp-50,coins:coins-25},{merge:true});
+      tx.set(gameRef,{hintsUsed:dailyHints,updatedAt:serverTimestamp()},{merge:true});
+      return {ok:true,xp:xp-50,coins:coins-25,hintsUsed:dailyHints};
+    });
+    if (!result.ok) {
+      showToast(`Not enough balance. You need 50 XP and 25 coins. Your balance: ${result.xp} XP, ${result.coins} coins.`, "error");
+      return;
+    }
+    profile.xp = result.xp;
+    profile.coins = result.coins;
+    gameData.hintsUsed = result.hintsUsed;
+    hintShown = true;
+    updateProfileUI();
+    $("feedback").className = "feedback show good";
+    $("feedback").textContent = `HINT for ${currentQuestion.id}: ${currentQuestion.hint}`;
+    showToast(`Hint unlocked for ${currentQuestion.id}: −50 XP, −25 coins.`, "success");
+    await addActivity({
+      type:"hint_used",title:"Hint used",
+      message:`Used a hint on ${currentQuestion.id} (${currentQuestion.topic}).`,
+      questionId:currentQuestion.id,level:gameData.level || 1,xp:-50,coins:-25
+    });
+    await addNotification(
+      "Code Breaker hint used",
+      `A hint was used on question ${currentQuestion.id}. Cost: 50 XP and 25 coins.`,
+      "xp"
+    );
+  } catch (error) {
+    console.error(error);
+    showToast("Could not charge for the hint. Please check your connection and try again.", "error");
+  } finally {
+    busy = false;
+    $("hintButton").disabled = hintShown || answerLocked || !currentQuestion;
+  }
+}
+async function startSession() {
+  if (!currentUser || sessionStartedAt) return;
+  sessionStartedAt = Date.now();
+  sessionSavedSeconds = 0;
+  try {
+    sessionDocRef = await addDoc(
+      collection(db,"users",currentUser.uid,"gameData","code_breaker","sessions"),
+      {startedAt:serverTimestamp(),activeSeconds:0,dayKey:DAY_KEY(),createdAt:serverTimestamp()}
+    );
+  } catch (error) {
+    sessionDocRef = null;
+    console.warn("Session record could not be created:",error);
+  }
+  timerInterval = setInterval(()=>{
+    $("sessionTimer").textContent = fmtClock(Math.floor((Date.now()-sessionStartedAt)/1000));
+    flushSession(false);
+  },1000);
+}
+async function flushSession(force=false) {
+  if (!sessionStartedAt || !gameRef) return;
+  const elapsed = Math.floor((Date.now()-sessionStartedAt)/1000);
+  const delta = elapsed-sessionSavedSeconds;
+  if (delta < 1 || (!force && delta < 15)) return;
+  const day = DAY_KEY();
+  try {
+    await runTransaction(db,async tx=>{
+      const snap = await tx.get(gameRef);
+      const saved = snap.exists() ? snap.data() : {};
+      const daily = {...(saved.dailySeconds || {})};
+      daily[day] = Number(daily[day] || 0)+delta;
+      tx.set(gameRef,{
+        totalSeconds:Number(saved.totalSeconds || 0)+delta,
+        dailySeconds:daily,
+        updatedAt:serverTimestamp()
+      },{merge:true});
+    });
+    if (sessionDocRef) {
+      await updateDoc(sessionDocRef,{activeSeconds:elapsed,updatedAt:serverTimestamp()});
+    }
+    sessionSavedSeconds = elapsed;
+    const snap = await getDoc(gameRef);
+    if (snap.exists()) gameData = {...gameData,...snap.data()};
+    updateProfileUI();
+    if (activeScreen === "history") renderHistory();
+  } catch (error) {
+    console.warn("Time update failed; will retry:",error);
+  }
+}
+async function stopSession() {
+  if (!sessionStartedAt) return;
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+  await flushSession(true);
+  const elapsed = Math.floor((Date.now()-sessionStartedAt)/1000);
+  await addActivity({
+    type:"session",title:"Game session",
+    message:`Played Code Breaker for ${fmtTime(elapsed)}.`,
+    seconds:elapsed,level:gameData.level || 1
+  });
+  sessionStartedAt = 0;
+  sessionSavedSeconds = 0;
+  sessionDocRef = null;
+}
+async function enterArena() {
+  showScreen("game");
+  if (!sessionStartedAt) await startSession();
+  if (!currentQuestion) chooseNextQuestion();
+}
+async function loadHistory() {
+  showScreen("history");
+  await renderHistory();
+}
+async function renderHistory() {
+  $("historyCompleted").textContent = (gameData.completedQuestionIds || []).length;
+  $("historyHints").textContent = Number(gameData.hintsUsed || 0);
+  $("historyToday").textContent = fmtTime((gameData.dailySeconds || {})[DAY_KEY()] || 0);
+  $("historyLifetime").textContent = fmtTime(gameData.totalSeconds || 0);
+  try {
+    const historyQuery = query(
+      collection(db,"users",currentUser.uid,"gameData","code_breaker","history"),
+      orderBy("createdAt","desc"),limit(50)
+    );
+    const snapshot = await getDocs(historyQuery);
+    if (snapshot.empty) {
+      $("historyList").innerHTML = '<div class="empty">No activity yet. Complete a question or use a hint to begin your history.</div>';
+    } else {
+      $("historyList").innerHTML = snapshot.docs.map(item=>{
+        const e = item.data();
+        const date = e.createdAt?.toDate ? e.createdAt.toDate().toLocaleString() : "Recently";
+        const icon = e.type==="hint_used" ? "fa-lightbulb" : e.type==="session" ? "fa-clock" : "fa-check";
+        const changes = [];
+        if (Number(e.xp || 0)) changes.push(`<span class="${e.xp>0?"positive":"negative"}">${e.xp>0?"+":""}${e.xp} XP</span>`);
+        if (Number(e.coins || 0)) changes.push(`<span class="${e.coins>0?"positive":"negative"}">${e.coins>0?"+":""}${e.coins} coins</span>`);
+        if (Number(e.seconds || 0)) changes.push(`<span>${fmtTime(e.seconds)}</span>`);
+        return `<article class="history-item">
+          <div class="history-symbol"><i class="fa-solid ${icon}"></i></div>
+          <div class="history-body"><strong>${escapeHTML(e.title || e.type || "Activity")}</strong>
+          <p>${escapeHTML(e.message || "")}</p>
+          <div class="history-time">${escapeHTML(date)}</div>
+          ${changes.length?`<div class="change-line">${changes.join("")}</div>`:""}</div>
+        </article>`;
+      }).join("");
+    }
+  } catch (error) {
+    console.error(error);
+    $("historyList").innerHTML = '<div class="empty">Activity history could not be loaded. Check Firestore permissions and your connection.</div>';
+  }
+  renderBadges();
+}
+async function refreshQuestionBank() {
+  const oldIds = new Set(questionBank.map(q=>q.id));
+  await loadQuestionBank();
+  const added = questionBank.filter(q=>!oldIds.has(q.id)).length;
+  $("remainingCount").textContent = availableQuestions().length;
+  if (added) showToast(`${added} new question${added===1?"":"s"} loaded.`, "success");
+  else { showToast("This question set is complete. Opening additional practice."); setTimeout(()=>document.getElementById('caBankLaunch')?.click(),350); }
+  chooseNextQuestion();
+}
+
+$("startGame").addEventListener("click",enterArena);
+$("listenIntro").addEventListener("click",speakGuide);
+$("voiceTop").addEventListener("click",speakGuide);
+$("historyTop").addEventListener("click",loadHistory);
+$("historyButton").addEventListener("click",loadHistory);
+$("historyBack").addEventListener("click",()=>showScreen("game"));
+$("exitGame").addEventListener("click",async()=>{
+  await stopSession();
+  showScreen("intro");
+});
+$("dashboardTop").addEventListener("click",async()=>{
+  await stopSession();
+  location.href="games_dash.html";
+});
+$("hintButton").addEventListener("click",requestHint);
+$("nextButton").addEventListener("click",()=>{
+  if (busy) return;
+  chooseNextQuestion();
+});
+$("reloadQuestions").addEventListener("click",refreshQuestionBank);
+document.addEventListener("visibilitychange",()=>{
+  if (document.visibilityState==="hidden") flushSession(true);
+});
+window.addEventListener("pagehide",()=>{
+  // Best-effort flush. Browsers may stop asynchronous writes during page unload.
+  flushSession(true);
+});
+
+onAuthStateChanged(auth,async user=>{
+  if (!user) {
+    location.replace("login.html");
+    return;
+  }
+  currentUser=user;
+  userRef=doc(db,"users",user.uid);
+  gameRef=doc(db,"users",user.uid,"gameData","code_breaker");
+  try {
+    const [profileSnap,gameSnap] = await Promise.all([getDoc(userRef),getDoc(gameRef)]);
+    profile=profileSnap.exists()?profileSnap.data():{};
+    gameData=gameSnap.exists()?gameSnap.data():{
+      level:1,totalSeconds:0,dailySeconds:{},completedQuestionIds:[],
+      completedLevels:[],hintsUsed:0,badges:[]
+    };
+    if (!gameSnap.exists()) {
+      await setDoc(gameRef,{
+        level:1,totalSeconds:0,dailySeconds:{},completedQuestionIds:[],
+        completedLevels:[],hintsUsed:0,badges:[],
+        createdAt:serverTimestamp(),updatedAt:serverTimestamp()
+      },{merge:true});
+    }
+    if (unsubscribeProfile) unsubscribeProfile();
+    if (unsubscribeGame) unsubscribeGame();
+    // Keep the displayed profile and game statistics in sync with other pages.
+    const {onSnapshot} = await import("https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js");
+    unsubscribeProfile=onSnapshot(userRef,snap=>{
+      if (snap.exists()) profile=snap.data();
+      updateProfileUI();
+    });
+    unsubscribeGame=onSnapshot(gameRef,snap=>{
+      if (snap.exists()) gameData=snap.data();
+      updateProfileUI();
+      $("remainingCount").textContent=availableQuestions().length;
+      if (activeScreen==="history") renderHistory();
+    });
+    updateProfileUI();
+    await loadQuestionBank();
+    $("remainingCount").textContent=availableQuestions().length;
+    if (!questionBank.length) throw new Error("No valid questions are available.");
+  } catch (error) {
+    console.error("Code Breaker setup failed:",error);
+    showToast("Could not load your game data. Check your internet connection and Firebase rules.", "error");
+  }
+});
+</script>
+
+<style id="ca-bank-style">
+#caBankLaunch{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:500000;border:1px solid rgba(103,232,249,.5);border-radius:999px;background:linear-gradient(135deg,#0e7490,#4338ca);color:#fff;padding:12px 16px;font:700 13px/1.2 system-ui,sans-serif;box-shadow:0 12px 35px #0008;cursor:pointer;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 28px)}
+#caBankLaunch:focus-visible,#caBank button:focus-visible,#caBank select:focus-visible,#caBank textarea:focus-visible{outline:3px solid #fbbf24;outline-offset:3px}
+#caBank{position:fixed;inset:0;z-index:500001;display:none;background:rgba(2,6,23,.82);backdrop-filter:blur(9px);padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));overflow:auto;font-family:Inter,system-ui,sans-serif;color:#eaf2ff}
+#caBank.open{display:flex;align-items:center;justify-content:center}
+#caBank .cab-card{width:min(760px,100%);max-height:100%;overflow:auto;border:1px solid #334766;background:linear-gradient(145deg,#0b162a,#101b34 70%,#1a1742);border-radius:22px;box-shadow:0 24px 80px #0009;padding:clamp(15px,3vw,25px)}
+#caBank .cab-top{display:flex;align-items:flex-start;gap:12px;justify-content:space-between}#caBank .cab-kicker{color:#67e8f9;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}#caBank h2{font-size:clamp(20px,4vw,29px);margin:5px 0 3px;line-height:1.15}#caBank .cab-sub{color:#9aabc7;font-size:13px;margin:0}#caBank .cab-close{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:11px;padding:8px 12px;font-size:18px;cursor:pointer}
+#caBank .cab-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:17px 0}#caBank .cab-toolbar label{font-size:12px;color:#b9c7df}#caBank select,#caBank textarea{width:100%;background:#07101f;color:#f8fafc;border:1px solid #3c516f;border-radius:10px;padding:10px;font:inherit}#caBank select{width:auto;max-width:100%;font-size:13px}#caBank .cab-progress{height:6px;background:#27354d;border-radius:99px;overflow:hidden;flex:1;min-width:100px}#caBank .cab-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#a78bfa);transition:width .2s}
+#caBank .cab-meta{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}#caBank .cab-chip{font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;border:1px solid #344968;background:#14223a;color:#b9d3ff}#caBank .cab-question{font-size:clamp(16px,2.7vw,20px);line-height:1.5;font-weight:700;margin:12px 0}#caBank .cab-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#030712;border:1px solid #293b55;border-radius:12px;padding:12px;font:13px/1.5 ui-monospace,monospace;color:#a5f3fc;margin:10px 0}#caBank .cab-options{display:grid;gap:9px;margin:14px 0}#caBank .cab-option{width:100%;text-align:left;background:#101d31;color:#e8f1ff;border:1px solid #334862;border-radius:12px;padding:12px 13px;cursor:pointer;font:600 14px/1.45 system-ui,sans-serif;overflow-wrap:anywhere}#caBank .cab-option:hover:not(:disabled){background:#182d47;border-color:#67e8f9}#caBank .cab-option:disabled{cursor:default;opacity:.92}#caBank .cab-option.correct{border-color:#34d399;background:#064e3b80}#caBank .cab-option.wrong{border-color:#fb7185;background:#88133750}
+#caBank .cab-feedback{display:none;border-radius:12px;padding:12px;background:#101d31;border:1px solid #334862;font-size:14px;line-height:1.5}#caBank .cab-feedback.show{display:block}#caBank .cab-feedback.good{border-color:#059669}#caBank .cab-feedback.bad{border-color:#be123c}#caBank .cab-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}#caBank .cab-btn{border:1px solid #3d5272;background:#17243a;color:#eef6ff;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer;font-size:13px}#caBank .cab-btn.primary{background:linear-gradient(135deg,#0891b2,#4f46e5);border-color:transparent}#caBank .cab-btn:disabled{opacity:.38;cursor:not-allowed}#caBank .cab-stats{margin-left:auto;color:#9fb3d2;font-size:12px}#caBank .cab-textarea{min-height:100px;resize:vertical;margin:8px 0}#caBank .cab-note{font-size:12px;color:#a7b8d3;line-height:1.45;margin-top:10px}#caBank .cab-footer{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#8194b4;font-size:11px}
+@media(max-width:480px){#caBankLaunch{padding:11px 13px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom))}#caBank .cab-card{border-radius:17px;padding:14px}#caBank .cab-toolbar{align-items:stretch}#caBank .cab-toolbar select{flex:1}#caBank .cab-stats{margin-left:0;width:100%}}
+
+/* Code Academy responsive game guardrails */
+html{scroll-behavior:smooth}img,canvas,video,svg{max-width:100%}button,a,input,select,textarea{touch-action:manipulation}body{overflow-wrap:anywhere} @media(max-width:600px),(max-height:520px){html,body{height:auto!important;min-height:100svh!important;overflow-x:hidden!important;overflow-y:auto!important}main,.container,.game-container,.game-wrapper,.app,.screen,.game-screen,#app{max-height:none;overflow-y:visible!important}} @media(max-width:520px){button{max-width:100%}pre,code{white-space:pre-wrap;overflow-wrap:anywhere}} @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+
+<button type="button" id="caBankLaunch" aria-haspopup="dialog" aria-controls="caBank"><span aria-hidden="true">✦</span> Practice Bank</button>
+<section id="caBank" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cabTitle">
+ <div class="cab-card"><div class="cab-top"><div><div class="cab-kicker">CODE ACADEMY • BONUS PRACTICE</div><h2 id="cabTitle">Challenge Bank</h2><p class="cab-sub" id="cabSubtitle">Learn at your own pace. Your progress is saved on this device.</p></div><button class="cab-close" type="button" id="cabClose" aria-label="Close practice bank">×</button></div>
+ <div class="cab-toolbar"><label for="cabLanguage">Preferred language</label><select id="cabLanguage"><option value="en">English</option><option value="fr">French</option><option value="es">Spanish</option><option value="pt">Portuguese</option><option value="de">German</option><option value="it">Italian</option><option value="nl">Dutch</option><option value="sv">Swedish</option><option value="no">Norwegian</option><option value="da">Danish</option><option value="fi">Finnish</option><option value="pl">Polish</option><option value="cs">Czech</option><option value="sk">Slovak</option><option value="hu">Hungarian</option><option value="ro">Romanian</option><option value="bg">Bulgarian</option><option value="el">Greek</option><option value="tr">Turkish</option><option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="ar">Arabic</option><option value="he">Hebrew</option><option value="fa">Persian</option><option value="hi">Hindi</option><option value="bn">Bengali</option><option value="ur">Urdu</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="vi">Vietnamese</option><option value="th">Thai</option><option value="id">Indonesian</option><option value="ms">Malay</option><option value="sw">Swahili</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="ak">Twi / Akan</option><option value="ee">Ewe</option><option value="am">Amharic</option><option value="zu">Zulu</option><option value="af">Afrikaans</option><option value="sr">Serbian</option><option value="hr">Croatian</option><option value="sl">Slovenian</option><option value="lt">Lithuanian</option><option value="lv">Latvian</option><option value="et">Estonian</option><option value="is">Icelandic</option><option value="ca">Catalan</option><option value="eu">Basque</option><option value="gl">Galician</option><option value="az">Azerbaijani</option><option value="kk">Kazakh</option><option value="uz">Uzbek</option><option value="mn">Mongolian</option><option value="my">Burmese</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="ne">Nepali</option><option value="si">Sinhala</option><option value="ps">Pashto</option><option value="ku">Kurdish</option><option value="sq">Albanian</option><option value="mk">Macedonian</option><option value="bs">Bosnian</option><option value="lb">Luxembourgish</option><option value="ga">Irish</option><option value="cy">Welsh</option><option value="gd">Scottish Gaelic</option><option value="mt">Maltese</option><option value="hy">Armenian</option><option value="ka">Georgian</option><option value="yi">Yiddish</option><option value="jv">Javanese</option><option value="su">Sundanese</option><option value="fil">Filipino</option><option value="ceb">Cebuano</option><option value="la">Latin</option><option value="eo">Esperanto</option><option value="be">Belarusian</option><option value="tk">Turkmen</option><option value="tg">Tajik</option><option value="ky">Kyrgyz</option><option value="or">Odia</option><option value="pa">Punjabi</option><option value="as">Assamese</option><option value="sa">Sanskrit</option><option value="rw">Kinyarwanda</option><option value="sn">Shona</option><option value="xh">Xhosa</option><option value="st">Sesotho</option><option value="tn">Tswana</option><option value="ny">Chichewa</option><option value="mg">Malagasy</option><option value="so">Somali</option><option value="ti">Tigrinya</option><option value="ln">Lingala</option></select><button class="cab-btn" id="cabListen" type="button">🔊 Listen</button><div class="cab-progress" aria-label="Progress"><span id="cabProgress"></span></div></div>
+ <div class="cab-meta"><span class="cab-chip" id="cabCategory">Mixed practice</span><span class="cab-chip" id="cabDifficulty">Intermediate</span><span class="cab-chip" id="cabMode">Question bank</span></div>
+ <div id="cabQuestion" class="cab-question">Preparing your practice set…</div><pre id="cabCode" class="cab-code" hidden></pre><div id="cabOptions" class="cab-options"></div><textarea id="cabAnswer" class="cab-textarea" hidden aria-label="Your coding solution"></textarea>
+ <div id="cabFeedback" class="cab-feedback" role="status" aria-live="polite"></div><div class="cab-actions"><button class="cab-btn" id="cabPrevious" type="button">← Previous</button><button class="cab-btn primary" id="cabNext" type="button">Next →</button><button class="cab-btn" id="cabHint" type="button">💡 Hint</button><button class="cab-btn" id="cabSolution" type="button" hidden>Show example</button><button class="cab-btn" id="cabComplete" type="button" hidden>Mark mission complete</button><span class="cab-stats" id="cabStats">0 correct · 0 answered</span></div>
+ <p class="cab-note" id="cabNote">Pick an answer to see feedback and a clear explanation. Code samples are presented as learning examples, not executed in this panel.</p>
+ <div class="cab-footer"><span id="cabPersistence">Progress saved on this device.</span><span>Use Esc to close</span></div></div></section>
+<script type="application/json" id="ca-bank-fallback">{"questions":[{"id":"code_breaker-001","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 5; score += 2;`, what is the value of `score`?","options":["7","9","5","2"],"answerIndex":0,"explanation":"The variable starts at 5; adding two makes it 7.","code":"let score = 5;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-002","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 6; score += 2;`, what is the value of `score`?","options":["10","6","2","8"],"answerIndex":3,"explanation":"The variable starts at 6; adding two makes it 8.","code":"let score = 6;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-003","category":"Variables","difficulty":"advanced","prompt":"In JavaScript, after `let score = 7; score += 2;`, what is the value of `score`?","options":["11","7","9","2"],"answerIndex":2,"explanation":"The variable starts at 7; adding two makes it 9.","code":"let score = 7;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-004","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 8; score += 2;`, what is the value of `score`?","options":["12","10","8","2"],"answerIndex":1,"explanation":"The variable starts at 8; adding two makes it 10.","code":"let score = 8;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-005","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 9; score += 2;`, what is the value of `score`?","options":["11","13","9","2"],"answerIndex":0,"explanation":"The variable starts at 9; adding two makes it 11.","code":"let score = 9;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-006","category":"Variables","difficulty":"advanced","prompt":"In JavaScript, after `let score = 10; score += 2;`, what is the value of `score`?","options":["14","10","2","12"],"answerIndex":3,"explanation":"The variable starts at 10; adding two makes it 12.","code":"let score = 10;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-007","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 11; score += 2;`, what is the value of `score`?","options":["15","11","13","2"],"answerIndex":2,"explanation":"The variable starts at 11; adding two makes it 13.","code":"let score = 11;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-008","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 12; score += 2;`, what is the value of `score`?","options":["16","14","12","2"],"answerIndex":1,"explanation":"The variable starts at 12; adding two makes it 14.","code":"let score = 12;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-009","category":"Variables","difficulty":"advanced","prompt":"In JavaScript, after `let score = 13; score += 2;`, what is the value of `score`?","options":["15","17","13","2"],"answerIndex":0,"explanation":"The variable starts at 13; adding two makes it 15.","code":"let score = 13;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-010","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 14; score += 2;`, what is the value of `score`?","options":["18","14","2","16"],"answerIndex":3,"explanation":"The variable starts at 14; adding two makes it 16.","code":"let score = 14;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-011","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 15; score += 2;`, what is the value of `score`?","options":["19","15","17","2"],"answerIndex":2,"explanation":"The variable starts at 15; adding two makes it 17.","code":"let score = 15;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-012","category":"Variables","difficulty":"advanced","prompt":"In JavaScript, after `let score = 16; score += 2;`, what is the value of `score`?","options":["20","18","16","2"],"answerIndex":1,"explanation":"The variable starts at 16; adding two makes it 18.","code":"let score = 16;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-013","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 17; score += 2;`, what is the value of `score`?","options":["19","21","17","2"],"answerIndex":0,"explanation":"The variable starts at 17; adding two makes it 19.","code":"let score = 17;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-014","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 18; score += 2;`, what is the value of `score`?","options":["22","18","2","20"],"answerIndex":3,"explanation":"The variable starts at 18; adding two makes it 20.","code":"let score = 18;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-015","category":"Variables","difficulty":"advanced","prompt":"In JavaScript, after `let score = 19; score += 2;`, what is the value of `score`?","options":["23","19","21","2"],"answerIndex":2,"explanation":"The variable starts at 19; adding two makes it 21.","code":"let score = 19;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-016","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 20; score += 2;`, what is the value of `score`?","options":["24","22","20","2"],"answerIndex":1,"explanation":"The variable starts at 20; adding two makes it 22.","code":"let score = 20;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-017","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 21; score += 2;`, what is the value of `score`?","options":["23","25","21","2"],"answerIndex":0,"explanation":"The variable starts at 21; adding two makes it 23.","code":"let score = 21;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-018","category":"Variables","difficulty":"advanced","prompt":"In JavaScript, after `let score = 22; score += 2;`, what is the value of `score`?","options":["26","22","2","24"],"answerIndex":3,"explanation":"The variable starts at 22; adding two makes it 24.","code":"let score = 22;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-019","category":"Variables","difficulty":"easy","prompt":"In JavaScript, after `let score = 23; score += 2;`, what is the value of `score`?","options":["27","23","25","2"],"answerIndex":2,"explanation":"The variable starts at 23; adding two makes it 25.","code":"let score = 23;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-020","category":"Variables","difficulty":"intermediate","prompt":"In JavaScript, after `let score = 24; score += 2;`, what is the value of `score`?","options":["28","26","24","2"],"answerIndex":1,"explanation":"The variable starts at 24; adding two makes it 26.","code":"let score = 24;\nscore += 2;\nconsole.log(score);"},{"id":"code_breaker-021","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `2 * 3 + 1` produce?","options":["7","8","6","5"],"answerIndex":0,"explanation":"Multiply first (2 × 3 = 6), then add 1.","code":"print(2 * 3 + 1)"},{"id":"code_breaker-022","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `3 * 4 + 1` produce?","options":["15","8","12","13"],"answerIndex":3,"explanation":"Multiply first (3 × 4 = 12), then add 1.","code":"print(3 * 4 + 1)"},{"id":"code_breaker-023","category":"Expressions","difficulty":"intermediate","prompt":"What value does the Python expression `4 * 5 + 1` produce?","options":["24","10","21","20"],"answerIndex":2,"explanation":"Multiply first (4 × 5 = 20), then add 1.","code":"print(4 * 5 + 1)"},{"id":"code_breaker-024","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `5 * 6 + 1` produce?","options":["35","31","12","30"],"answerIndex":1,"explanation":"Multiply first (5 × 6 = 30), then add 1.","code":"print(5 * 6 + 1)"},{"id":"code_breaker-025","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `6 * 7 + 1` produce?","options":["43","48","14","42"],"answerIndex":0,"explanation":"Multiply first (6 × 7 = 42), then add 1.","code":"print(6 * 7 + 1)"},{"id":"code_breaker-026","category":"Expressions","difficulty":"intermediate","prompt":"What value does the Python expression `7 * 8 + 1` produce?","options":["63","16","56","57"],"answerIndex":3,"explanation":"Multiply first (7 × 8 = 56), then add 1.","code":"print(7 * 8 + 1)"},{"id":"code_breaker-027","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `2 * 9 + 1` produce?","options":["20","12","19","18"],"answerIndex":2,"explanation":"Multiply first (2 × 9 = 18), then add 1.","code":"print(2 * 9 + 1)"},{"id":"code_breaker-028","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `3 * 3 + 1` produce?","options":["12","10","7","9"],"answerIndex":1,"explanation":"Multiply first (3 × 3 = 9), then add 1.","code":"print(3 * 3 + 1)"},{"id":"code_breaker-029","category":"Expressions","difficulty":"intermediate","prompt":"What value does the Python expression `4 * 4 + 1` produce?","options":["17","20","9","16"],"answerIndex":0,"explanation":"Multiply first (4 × 4 = 16), then add 1.","code":"print(4 * 4 + 1)"},{"id":"code_breaker-030","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `5 * 5 + 1` produce?","options":["30","11","25","26"],"answerIndex":3,"explanation":"Multiply first (5 × 5 = 25), then add 1.","code":"print(5 * 5 + 1)"},{"id":"code_breaker-031","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `6 * 6 + 1` produce?","options":["42","13","37","36"],"answerIndex":2,"explanation":"Multiply first (6 × 6 = 36), then add 1.","code":"print(6 * 6 + 1)"},{"id":"code_breaker-032","category":"Expressions","difficulty":"intermediate","prompt":"What value does the Python expression `7 * 7 + 1` produce?","options":["56","50","15","49"],"answerIndex":1,"explanation":"Multiply first (7 × 7 = 49), then add 1.","code":"print(7 * 7 + 1)"},{"id":"code_breaker-033","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `2 * 8 + 1` produce?","options":["17","18","11","16"],"answerIndex":0,"explanation":"Multiply first (2 × 8 = 16), then add 1.","code":"print(2 * 8 + 1)"},{"id":"code_breaker-034","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `3 * 9 + 1` produce?","options":["30","13","27","28"],"answerIndex":3,"explanation":"Multiply first (3 × 9 = 27), then add 1.","code":"print(3 * 9 + 1)"},{"id":"code_breaker-035","category":"Expressions","difficulty":"intermediate","prompt":"What value does the Python expression `4 * 3 + 1` produce?","options":["16","8","13","12"],"answerIndex":2,"explanation":"Multiply first (4 × 3 = 12), then add 1.","code":"print(4 * 3 + 1)"},{"id":"code_breaker-036","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `5 * 4 + 1` produce?","options":["25","21","10","20"],"answerIndex":1,"explanation":"Multiply first (5 × 4 = 20), then add 1.","code":"print(5 * 4 + 1)"},{"id":"code_breaker-037","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `6 * 5 + 1` produce?","options":["31","36","12","30"],"answerIndex":0,"explanation":"Multiply first (6 × 5 = 30), then add 1.","code":"print(6 * 5 + 1)"},{"id":"code_breaker-038","category":"Expressions","difficulty":"intermediate","prompt":"What value does the Python expression `7 * 6 + 1` produce?","options":["49","14","42","43"],"answerIndex":3,"explanation":"Multiply first (7 × 6 = 42), then add 1.","code":"print(7 * 6 + 1)"},{"id":"code_breaker-039","category":"Expressions","difficulty":"advanced","prompt":"What value does the Python expression `2 * 7 + 1` produce?","options":["16","10","15","14"],"answerIndex":2,"explanation":"Multiply first (2 × 7 = 14), then add 1.","code":"print(2 * 7 + 1)"},{"id":"code_breaker-040","category":"Expressions","difficulty":"easy","prompt":"What value does the Python expression `3 * 8 + 1` produce?","options":["27","25","12","24"],"answerIndex":1,"explanation":"Multiply first (3 × 8 = 24), then add 1.","code":"print(3 * 8 + 1)"},{"id":"code_breaker-041","category":"Conditionals","difficulty":"intermediate","prompt":"Which condition correctly checks that `age` is at least 18 in JavaScript?","options":["age \u003e= 18","age =\u003e 18","age = 18","age \u003c 18"],"answerIndex":0,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-042","category":"Conditionals","difficulty":"advanced","prompt":"Which condition correctly checks that `age` is at least 19 in JavaScript?","options":["age =\u003e 19","age = 19","age \u003c 19","age \u003e= 19"],"answerIndex":3,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-043","category":"Conditionals","difficulty":"easy","prompt":"Which condition correctly checks that `age` is at least 20 in JavaScript?","options":["age =\u003e 20","age = 20","age \u003e= 20","age \u003c 20"],"answerIndex":2,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-044","category":"Conditionals","difficulty":"intermediate","prompt":"Which condition correctly checks that `age` is at least 21 in JavaScript?","options":["age =\u003e 21","age \u003e= 21","age = 21","age \u003c 21"],"answerIndex":1,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-045","category":"Conditionals","difficulty":"advanced","prompt":"Which condition correctly checks that `age` is at least 22 in JavaScript?","options":["age \u003e= 22","age =\u003e 22","age = 22","age \u003c 22"],"answerIndex":0,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-046","category":"Conditionals","difficulty":"easy","prompt":"Which condition correctly checks that `age` is at least 23 in JavaScript?","options":["age =\u003e 23","age = 23","age \u003c 23","age \u003e= 23"],"answerIndex":3,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-047","category":"Conditionals","difficulty":"intermediate","prompt":"Which condition correctly checks that `age` is at least 24 in JavaScript?","options":["age =\u003e 24","age = 24","age \u003e= 24","age \u003c 24"],"answerIndex":2,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-048","category":"Conditionals","difficulty":"advanced","prompt":"Which condition correctly checks that `age` is at least 25 in JavaScript?","options":["age =\u003e 25","age \u003e= 25","age = 25","age \u003c 25"],"answerIndex":1,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-049","category":"Conditionals","difficulty":"easy","prompt":"Which condition correctly checks that `age` is at least 26 in JavaScript?","options":["age \u003e= 26","age =\u003e 26","age = 26","age \u003c 26"],"answerIndex":0,"explanation":"The \u003e= operator means greater than or equal to."},{"id":"code_breaker-050","category":"Conditionals","difficulty":"intermediate","prompt":"Which condition correctly checks that `age` is at least 27 in JavaScript?","options":["age =\u003e 27","age = 27","age \u003c 27","age \u003e= 27"],"answerIndex":3,"explanation":"The \u003e= operator means greater than or equal to."}]}</script>
+
+<script>
+(()=>{
+ const GAME_ID="code_breaker", GAME_TITLE="Code Breaker", BANK_FILE="code_breaker_questions.json", IS_RACER=false;
+ const $=id=>document.getElementById(id), storeKey='code_academy_game_bank_'+GAME_ID+'_v1', langKey='code_academy_preferred_language_v1', localNoticeKey='code_academy_game_notifications_v1';
+ const lang=$('cabLanguage'), panel=$('caBank'), launch=$('caBankLaunch');
+ const state={items:[],generated:[],idx:0,score:0,answered:0,attempted:{},shownSolution:{},translations:{},saved:{},mode:'',closedBefore:null};
+ const builtIn=(()=>{try{return JSON.parse($('ca-bank-fallback')?.textContent||'{}')}catch(e){return {}}})();
+ const norm=s=>String(s??'').trim().toLowerCase().replace(/\s+/g,' ');
+ const safeParse=s=>{try{return JSON.parse(s)}catch(e){return null}};
+ const translationCacheKey=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return 'ca_game_translation_'+(h>>>0).toString(36)};
+ try{const saved=safeParse(localStorage.getItem(storeKey)||'{}')||{};state.idx=Math.max(0,Number(saved.idx)||0);state.score=Math.max(0,Number(saved.score)||0);state.answered=Math.max(0,Number(saved.answered)||0);state.attempted=saved.attempted||{};state.shownSolution=saved.shownSolution||{};state.saved=saved.saved||{};state.generated=Array.isArray(saved.generated)?saved.generated:[];}catch(e){}
+ try{lang.value=localStorage.getItem(langKey)||'en'}catch(e){lang.value='en'}
+ const save=()=>{try{localStorage.setItem(storeKey,JSON.stringify({idx:state.idx,score:state.score,answered:state.answered,attempted:state.attempted,shownSolution:state.shownSolution,saved:state.saved,generated:state.generated,updatedAt:Date.now()}))}catch(e){}}
+ const localNotification=(title,message)=>{try{let arr=JSON.parse(localStorage.getItem(localNoticeKey)||'[]');arr.unshift({title,message,type:'game',icon:'🎮',link:location.pathname.split('/').pop(),createdAt:Date.now(),read:false});localStorage.setItem(localNoticeKey,JSON.stringify(arr.slice(0,80)));}catch(e){}window.dispatchEvent(new CustomEvent('codeacademy-notification',{detail:{title,message,type:'game',icon:'🎮'}}));};
+ const notify=(title,message,eventKey)=>{localNotification(title,message);try{const p=window.CodeAcademyPlatform;if(p?.notify)p.notify({eventKey,title,message,type:'game',icon:'🎮',link:location.pathname.split('/').pop()});}catch(e){}};
+ const reward=(item)=>{const payload={eventKey:'bank_'+item.id,xp:5,coins:2.5,score:state.score,level:Math.floor(state.idx/10)+1,message:`You completed a practice challenge in ${GAME_TITLE}. Your progress and reward have been recorded.`,icon:'🧠'};try{if(window.CodeAcademyPlatform?.award){window.CodeAcademyPlatform.award(payload).catch(()=>{});}else window.dispatchEvent(new CustomEvent('codeacademy-game-reward',{detail:payload}));}catch(e){window.dispatchEvent(new CustomEvent('codeacademy-game-reward',{detail:payload}));}};
+ const translateEndpoint=['https://translate.argosopentech.com/translate','https://libretranslate.de/translate'];
+ async function translateText(text){const from='en',to=lang.value||'en';if(!text||to===from)return text;const key=to+'|'+text;if(state.translations[key])return state.translations[key];try{const cached=localStorage.getItem(translationCacheKey(key));if(cached){state.translations[key]=cached;return cached;}}catch(e){}
+   for(const endpoint of translateEndpoint){try{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({q:text,source:from,target:to,format:'text'}),signal:controller.signal});clearTimeout(timer);if(!response.ok)continue;const data=await response.json();if(data.translatedText){state.translations[key]=data.translatedText;try{localStorage.setItem(translationCacheKey(key),data.translatedText)}catch(e){}return data.translatedText;}}catch(e){}}
+   return text;
+ }
+ async function translateItem(item){if((lang.value||'en')==='en')return item;const out={...item};for(const key of ['prompt','explanation','hint','objective','title','expectedResult'])if(typeof out[key]==='string')out[key]=await translateText(out[key]);if(Array.isArray(out.options))out.options=await Promise.all(out.options.map(translateText));return out;}
+ const plainFallback=()=>{if(IS_RACER)return builtIn.challenges||[];return builtIn.questions||[]};
+ const BONUS_SCENES=['a school project','a community library','a small shop','a mobile app','a science club','a sports team','a garden','a bus station','a learning platform','a music group','a robotics club','a local market','a weather station','a museum','a delivery service','a computer lab','a public website','a savings group','a student team','a digital archive'];
+ function buildMcq(id,category,prompt,answer,wrongs,explanation,code=''){
+   const correct=String(answer),options=[];
+   for(const value of wrongs.map(String)){if(value!==correct&&!options.includes(value))options.push(value);}
+   let pad=1;while(options.length<3){const value=`Review option ${pad++}`;if(value!==correct&&!options.includes(value))options.push(value);}
+   options.length=3;const answerIndex=(Number(id.match(/(\d+)$/)?.[1])||1)%4;options.splice(answerIndex,0,correct);
+   return {id,category,difficulty:(Number(id.match(/(\d+)$/)?.[1])||1)%3===0?'advanced':'intermediate',prompt,options,answerIndex,explanation,...(code?{code}:{})};
+ }
+ function generateBonusItem(){
+   const serial=state.generated.length+1, round=200+serial, scene=BONUS_SCENES[(serial-1)%BONUS_SCENES.length], a=serial+4, b=2+(serial%9), id=`${GAME_ID}-bonus-${String(serial).padStart(5,'0')}`;
+   if(IS_RACER){
+     const mode=(serial-1)%8, word=['sunrise','river','orbit','signal','garden','bridge','lantern','comet','harbour','forest','planet','copper','silver','marble','puzzle','voyage','beacon','meadow','thunder','compass'][(serial-1)%20];
+     const value=serial+3, name=`mission${serial}`, fn=`combine${serial}`;
+     const tasks=[
+       {category:'Python variables',prompt:`Bonus mission ${serial}: create a variable named ${name} with the value ${value}.`,code:`${name} = ${value}` ,token:'=',hint:'Use an assignment statement with a descriptive name.'},
+       {category:'Python arithmetic',prompt:`Bonus mission ${serial}: write a Python statement that prints ${a} plus ${b}.`,code:`print(${a} + ${b})`,token:'print',hint:'Use print() with an arithmetic expression.'},
+       {category:'JavaScript condition',prompt:`Bonus mission ${serial}: check whether score is greater than ${value} and log “Ready” when it is.`,code:`if (score > ${value}) { console.log("Ready"); }`,token:'if',hint:'Use an if statement and the > operator.'},
+       {category:'Loops',prompt:`Bonus mission ${serial}: loop from 0 through ${serial%12+2} inclusive.`,code:`for (let i = 0; i <= ${serial%12+2}; i++) { console.log(i); }`,token:'for',hint:'Use a loop with a stopping condition that includes the final number.'},
+       {category:'Functions',prompt:`Bonus mission ${serial}: define a function named ${fn} that returns its input plus ${b}.`,code:`function ${fn}(value) { return value + ${b}; }`,token:'return',hint:'A return statement sends the computed value back to the caller.'},
+       {category:'HTML semantics',prompt:`Bonus mission ${serial}: create an HTML main heading that says ${word}.`,code:`<h1>${word}</h1>`,token:'<h1>',hint:'Use a semantic heading element.'},
+       {category:'CSS styling',prompt:`Bonus mission ${serial}: set the text color of .mission-${serial} to blue.`,code:`.mission-${serial} { color: blue; }`,token:'color',hint:'Write a CSS selector and a color declaration.'},
+       {category:'Array indexing',prompt:`Bonus mission ${serial}: read the first item in an array named ${name}.`,code:`const first = ${name}[0];`,token:'[0]',hint:'Most common JavaScript arrays use a zero-based first index.'}
+     ][mode];
+     return {id,category:tasks.category,difficulty:serial%3===0?'advanced':'intermediate',title:`Extended coding mission ${serial}`,prompt:tasks.prompt,objective:`Complete this extra mission, review the expected idea, and test the solution in a suitable editor. Scenario: ${scene}.`,starterCode:tasks.code,requiredToken:tasks.token,hint:tasks.hint,solutionExample:tasks.code,expectedResult:`A solution that meets the requirement for bonus mission ${serial}.`,language:'English'};
+   }
+   switch(GAME_ID){
+     case 'digital_vault':{const start=serial+5,step=2+(serial%8),answer=start+3*step;return buildMcq(id,'Number patterns',`Bonus vault puzzle ${serial}: continue ${start}, ${start+step}, ${start+2*step}, ${start+3*step}, … What comes next?`,answer,[answer+step,answer-1,answer-step],`The sequence increases by ${step} each time, so the next term is ${answer}.`);}
+     case 'detective_man':return buildMcq(id,'Evidence quality',`Case ${round}: two accounts about ${scene} conflict. What is the most reliable next step?`,'Check an independent source and document what it confirms',['Choose the more confident speaker','Publish the first version immediately','Assume the latest account must be true'],'Independent corroboration is more reliable than confidence, speed, or popularity.');
+     case 'mind_palace':{const start=serial+2,step=2+(serial%5),answer=start+3*step;return buildMcq(id,'Recall practice',`Memory challenge ${serial}: recall the pattern ${start}, ${start+step}, ${start+2*step}, ___. Which number follows?`,answer,[answer+1,answer-step,answer+step+2],`The pattern adds ${step} at every step. The next value is ${answer}.`);}
+     case 'civilization':{const budget=120+serial*7,water=25+(serial%17),food=32+(serial%13),answer=budget-water-food;return buildMcq(id,'Resource planning',`Town plan ${serial}: a community has ${budget} resource units. Water uses ${water} and food uses ${food}. How many units remain?`,answer,[answer+water,answer-food,answer+10],`Subtract both needs from the total: ${budget} − ${water} − ${food} = ${answer}.`);}
+     case 'truth_protocol':return buildMcq(id,'Verification',`Truth check ${serial}: a viral post makes a serious claim about ${scene} but provides no source. What is the strongest verdict before checking it?`,'Unverified; look for the original source and independent evidence',['Definitely true because it is popular','Definitely false because it is short','Confirmed because a screenshot exists'],'Popularity and screenshots do not establish truth. Verify the source and corroborate the claim.');
+     case 'code_breaker':case 'code_quest':{const x=serial+3,y=2+(serial%11),answer=x+y;return buildMcq(id,'Code tracing',`Code puzzle ${serial}: what value is printed by this program?`,answer,[x*y,x-y,`${x}${y}`],`The program adds ${x} and ${y}, so it prints ${answer}.`,`let value = ${x};
+value += ${y};
+console.log(value);`);}
+     case 'cybermission':return buildMcq(id,'Security awareness',`Security scenario ${serial}: an urgent message about ${scene} asks you to sign in through an unfamiliar shortened link. What should you do?`,'Visit the service through its known official address and verify the request',['Open the link immediately','Reply with your password or one-time code','Forward the link to everyone'],'Urgency and unfamiliar links are warning signs. Use a trusted route and never disclose login secrets.');
+     case 'algorithm_defender':return buildMcq(id,'Algorithm analysis',`Defense wave ${serial}: an algorithm checks every record in a list of n records once. Which time complexity describes the scan?`,'O(n)',['O(1)','O(log n)','O(n²)'],'The work grows in direct proportion to the number of records, so the complexity is O(n).');
+     default:{const x=serial+2,y=serial%9+3,answer=x*y;return buildMcq(id,'Programming logic',`Bonus logic question ${serial}: what is the result of ${x} × ${y}?`,answer,[answer+x,answer-y,answer+1],`Multiplying ${x} by ${y} gives ${answer}.`);}
+   }
+ }
+ async function loadItems(){let data=null;try{const res=await fetch(BANK_FILE,{cache:'no-store'});if(res.ok)data=await res.json();}catch(e){}let items=IS_RACER?data?.challenges:data?.questions;if(!Array.isArray(items)||items.length<50)items=plainFallback();if(!Array.isArray(items)||!items.length){items=[];}state.items=items.concat(state.generated);if(state.idx>=state.items.length)state.idx=0;return state.items.length;}
+ function elText(id,text){$(id).textContent=text??'';}
+ function current(){return state.items[Math.min(state.idx,Math.max(0,state.items.length-1))]}
+ function stats(){elText('cabStats',`${state.score} correct · ${state.answered} answered`);$('cabProgress').style.width=(state.items.length?Math.min(100,(state.idx+1)/state.items.length*100):0)+'%';elText('cabPersistence','Progress saves automatically on this device.');}
+ function announceActivity(type,item){if(type==='opened'){notify(`${GAME_TITLE} practice started`,'A learner opened the extra practice bank.',`opened_practice_${new Date().toISOString().slice(0,10)}`);}else if(type==='milestone'){notify(`${GAME_TITLE} practice milestone`,'A learner has answered five or more practice challenges.',`practice_milestone_${item?.id||state.idx}`);}}
+ async function render(){if(!state.items.length){elText('cabQuestion','The practice set is not available yet. Check your connection and try again.');$('cabOptions').replaceChildren();return;}
+  const raw=current();const item=await translateItem(raw);state.mode=IS_RACER?'coding-missions':'multiple-choice';elText('cabCategory',item.category||'Practice');elText('cabDifficulty',(item.difficulty||'intermediate').toUpperCase());elText('cabMode',IS_RACER?'Coding mission':'Question bank');elText('cabQuestion',IS_RACER?`${item.title||'Coding mission'} — ${item.prompt||''}\n\n${item.objective||''}`:item.prompt||'');
+  const code=$('cabCode');if(IS_RACER){code.hidden=false;code.textContent='Starter code:\n'+(raw.starterCode||'');$('cabAnswer').hidden=false;$('cabAnswer').value=state.saved[raw.id]||'';$('cabSolution').hidden=false;$('cabComplete').hidden=false;$('cabOptions').replaceChildren();$('cabHint').hidden=false;$('cabNote').textContent='Enter your solution or reasoning here. This lightweight checker looks for the required key idea; it does not execute code. Use the main Code Racer editor for full execution and testing.';}else{code.hidden=!item.code;code.textContent=item.code||'';$('cabAnswer').hidden=true;$('cabSolution').hidden=true;$('cabComplete').hidden=true;$('cabOptions').replaceChildren();(item.options||[]).forEach((option,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='cab-option';btn.textContent=String.fromCharCode(65+i)+'. '+option;btn.addEventListener('click',()=>pick(i,raw,btn));if(state.attempted[raw.id]){btn.disabled=true;if(i===raw.answerIndex)btn.classList.add('correct');else if(i===state.attempted[raw.id].choice)btn.classList.add('wrong');} $('cabOptions').append(btn);});$('cabNote').textContent='Choose the best answer to see feedback. When the curated bank ends, new bonus questions are generated automatically. Translation depends on service availability; code syntax remains unchanged.';}
+  $('cabPrevious').disabled=state.idx===0;$('cabNext').textContent=state.idx===state.items.length-1?'Generate next challenge':'Next →';stats();
+  const fb=$('cabFeedback');const old=state.attempted[raw.id];fb.className='cab-feedback'+(old?' show '+(old.correct?'good':'bad'):'');if(old){const msg=IS_RACER?(old.correct?'Mission marked complete.':'Your previous attempt needs another look.'):(`${old.correct?'Correct.':'Not quite.'} ${item.explanation||raw.explanation||''}`);fb.textContent=msg;}
+ }
+ async function pick(choice,raw){if(state.attempted[raw.id])return;const ok=choice===Number(raw.answerIndex);state.attempted[raw.id]={choice,correct:ok,at:Date.now()};state.answered++;if(ok){state.score++;reward(raw);if(state.score>0&&state.score%5===0)announceActivity('milestone',raw);}const item=await translateItem(raw);const fb=$('cabFeedback');fb.className='cab-feedback show '+(ok?'good':'bad');fb.textContent=(ok?'Correct. ':'Not quite. ')+(item.explanation||raw.explanation||'Review the concept and try another challenge.');$('cabOptions').querySelectorAll('button').forEach((btn,i)=>{btn.disabled=true;if(i===Number(raw.answerIndex))btn.classList.add('correct');else if(i===choice)btn.classList.add('wrong');});save();stats();}
+ $('cabAnswer').addEventListener('input',()=>{const item=current();if(item)state.saved[item.id]=$('cabAnswer').value;save();});
+ $('cabComplete').addEventListener('click',()=>{const item=current();if(!item)return;const response=$('cabAnswer').value.trim();if(!response){$('cabFeedback').className='cab-feedback show bad';$('cabFeedback').textContent='Add your solution or explanation before marking the mission complete.';return;}const token=String(item.requiredToken||'').toLowerCase();const ok=!token||response.toLowerCase().includes(token.toLowerCase());const prior=state.attempted[item.id];if(!prior)state.answered++;if(ok&&!prior?.correct){state.score++;reward(item);if(state.score>0&&state.score%5===0)announceActivity('milestone',item);}state.attempted[item.id]={choice:-1,correct:ok,at:Date.now()};save();const fb=$('cabFeedback');fb.className='cab-feedback show '+(ok?'good':'bad');fb.textContent=ok?'Key idea detected. Compare your solution with the example, then test it in a suitable editor.':'The required idea was not detected yet. Review the hint or example and revise your solution.';stats();});
+ $('cabHint').addEventListener('click',async()=>{const item=current();if(!item)return;const hint=await translateText(item.hint||'Break the problem into small steps and check what the instructions ask for.');const fb=$('cabFeedback');fb.className='cab-feedback show';fb.textContent='Hint: '+hint;});
+ $('cabSolution').addEventListener('click',()=>{const item=current();if(!item)return;const code=$('cabCode');code.hidden=false;code.textContent='Example solution:\n'+(item.solutionExample||item.starterCode||'');state.shownSolution[item.id]=true;save();});
+ $('cabPrevious').addEventListener('click',()=>{if(state.idx>0){state.idx--;save();render();}});$('cabNext').addEventListener('click',()=>{if(state.idx<state.items.length-1){state.idx++;save();render();}else{const bonus=generateBonusItem();state.generated.push(bonus);state.items.push(bonus);state.idx=state.items.length-1;save();render();if(state.generated.length===1||state.generated.length%10===0)notify(`${GAME_TITLE} bonus round unlocked`,`A fresh bonus ${IS_RACER?'coding mission':'question'} has been generated. Keep practising at your own pace.`,`bonus_round_${state.generated.length}`);}});
+ function speak(){if(!('speechSynthesis' in window)){elText('cabPersistence','Speech synthesis is not supported by this browser.');return;}const item=current();if(!item)return;const text=IS_RACER?`${item.title}. ${item.prompt}. ${item.objective}`:`${item.prompt}. ${(item.options||[]).map((v,i)=>`Option ${i+1}: ${v}`).join('. ')}. ${item.explanation||''}`;speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);const wanted=lang.value||'en';const voices=speechSynthesis.getVoices();let voice=voices.find(v=>v.lang.toLowerCase()===wanted.toLowerCase()||v.lang.toLowerCase().startsWith(wanted.toLowerCase()+'-'));if(!voice)voice=voices.find(v=>v.lang.toLowerCase().startsWith('en-'));if(voice){utter.voice=voice;utter.lang=voice.lang;}else utter.lang='en-US';utter.rate=.92;utter.pitch=1;utter.volume=1;speechSynthesis.speak(utter);}
+ $('cabListen').addEventListener('click',speak);lang.addEventListener('change',async()=>{try{localStorage.setItem(langKey,lang.value)}catch(e){}state.translations={};render();});
+ function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';announceActivity('opened');render();$('cabClose').focus();}
+ function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');document.body.style.overflow='';launch.focus();}
+ launch.addEventListener('click',open);$('cabClose').addEventListener('click',close);panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+ loadItems().then(count=>{elText('cabSubtitle',`${count} ${IS_RACER?'coding missions':'questions'} available · extra challenges generate automatically after the bank.`);render();}).catch(()=>render());
+})();
+</script>
+
+<script type="module">import { initGamePlatform } from "./game-platform.js"; initGamePlatform({gameId:"code_breaker",gameTitle:"Code Breaker",requireAuth:true,link:"code_breaker.html"});</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

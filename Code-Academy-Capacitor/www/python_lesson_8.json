@@ -1,0 +1,176 @@
+{
+  "course": "python",
+  "lessonNumber": 8,
+  "lessonId": "python-lesson-8",
+  "title": "Modules and File Handling",
+  "subtitle": "Modules and File Handling: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on modules and file handling, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "python-8-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Modules and File Handling: foundations and mental model"
+    },
+    {
+      "id": "python-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Modules and File Handling is not just a syntax topic: it is a way to make the application’s intent explicit. Modules separate reusable functionality. Use clear interfaces and paths, and manage files and other resources deliberately. In the Code Academy dashboard, that idea matters because A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "python-8-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Modules and File Handling: Imports one named function from a standard module",
+      "language": "python",
+      "code": "from math import ceil\nprint(ceil(4.2))",
+      "output": "Imports one named function from a standard module."
+    },
+    {
+      "id": "python-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “from math import ceil”: Makes the needed library available or declares the package/module context for the code. Line 2 — “print(ceil(4.2))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Imports one named function from a standard module. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-8-quiz-1-5",
+      "type": "quiz",
+      "question": "Three pages need the same progress calculation. What is the strongest module design?",
+      "options": [
+        "Export one focused helper with a clear interface",
+        "Copy different versions into each page",
+        "Create a circular dependency among all pages",
+        "Expose every internal variable as a public API"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Export one focused helper with a clear interface. A focused module reduces duplication and coupling.",
+      "reasoning": "A focused module reduces duplication and coupling. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-8-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Modules and File Handling: A helper module can keep calculations reusable",
+      "language": "python",
+      "code": "# progress.py\ndef percent(done, total):\n    return 0 if total == 0 else done / total * 100\n\n# app.py would import percent from progress",
+      "output": "A helper module can keep calculations reusable."
+    },
+    {
+      "id": "python-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “# progress.py”: This comment records the intent for a reader; it does not change program state by itself. Line 2 — “def percent(done, total):”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 3 — “return 0 if total == 0 else done / total * 100”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 4 — “# app.py would import percent from progress”: This comment records the intent for a reader; it does not change program state by itself. Expected behavior: A helper module can keep calculations reusable. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-8-quiz-2-8",
+      "type": "quiz",
+      "question": "A module cannot be imported after a file was moved. What should be checked?",
+      "options": [
+        "Whether the function’s button is blue",
+        "Whether the source comments have a period",
+        "Whether the file contains at least one blank line",
+        "The import path, file name, export format, and runtime/module settings"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The import path, file name, export format, and runtime/module settings. Imports depend on the module system and actual path/export names.",
+      "reasoning": "Imports depend on the module system and actual path/export names. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-8-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Modules and File Handling: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "python-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Modules separate reusable functionality. Use clear interfaces and paths, and manage files and other resources deliberately. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "python-8-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Modules and File Handling: Uses a standard library rather than reimplementing a common operation",
+      "language": "python",
+      "code": "import statistics\nprint(statistics.mean([4, 5, 3]))",
+      "output": "Uses a standard library rather than reimplementing a common operation."
+    },
+    {
+      "id": "python-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “import statistics”: Makes the needed library available or declares the package/module context for the code. Line 2 — “print(statistics.mean([4, 5, 3]))”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Uses a standard library rather than reimplementing a common operation. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-8-quiz-2-13",
+      "type": "quiz",
+      "question": "A module performs network work immediately when imported. Why can this be problematic?",
+      "options": [
+        "A network request always finishes synchronously",
+        "Every imported module must define a class",
+        "Importing code has an unexpected side effect that makes reuse and testing harder",
+        "Modules are not allowed to contain functions"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Importing code has an unexpected side effect that makes reuse and testing harder. Keep module initialization predictable and perform side-effectful work at an explicit call boundary where possible.",
+      "reasoning": "Keep module initialization predictable and perform side-effectful work at an explicit call boundary where possible. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Modules and File Handling: Path joins are clearer than manual separator concatenation",
+      "language": "python",
+      "code": "from pathlib import Path\nfile_path = Path('lessons') / 'python_lesson_1.json'\nprint(file_path.name)",
+      "output": "Path joins are clearer than manual separator concatenation."
+    },
+    {
+      "id": "python-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “from pathlib import Path”: Makes the needed library available or declares the package/module context for the code. Line 2 — “file_path = Path('lessons') / 'python_lesson_1.json'”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 3 — “print(file_path.name)”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Path joins are clearer than manual separator concatenation. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "python-8-quiz-3-16",
+      "type": "quiz",
+      "question": "Two modules import each other to access internal details. What should be considered?",
+      "options": [
+        "Duplicate imports under different names",
+        "Extract shared contracts or restructure responsibilities to reduce circular coupling",
+        "Add more circular imports",
+        "Make every export mutable"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Extract shared contracts or restructure responsibilities to reduce circular coupling. Circular dependencies complicate initialization and often signal unclear responsibility boundaries.",
+      "reasoning": "Circular dependencies complicate initialization and often signal unclear responsibility boundaries. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Modules and File Handling: applied challenge and mastery check"
+    },
+    {
+      "id": "python-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Modules separate reusable functionality. Use clear interfaces and paths, and manage files and other resources deliberately. For the Code Academy dashboard, A lesson-progress tracker is a practical example because it needs reliable values, reusable calculations, and clear failure handling. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "python-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses modules and file handling. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "python-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A reusable helper returns a result and does not need page elements. Where should it live?",
+      "options": [
+        "In a module independent of the page-specific DOM layer",
+        "Inside a click handler duplicated on every page",
+        "In an HTML attribute string",
+        "In a CSS rule"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: In a module independent of the page-specific DOM layer. Keeping domain logic separate from page mechanics makes it easier to reuse and test.",
+      "reasoning": "Keeping domain logic separate from page mechanics makes it easier to reuse and test. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "python-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Modules separate reusable functionality. Use clear interfaces and paths, and manage files and other resources deliberately. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

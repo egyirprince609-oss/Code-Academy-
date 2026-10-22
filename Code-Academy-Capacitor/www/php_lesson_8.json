@@ -1,0 +1,176 @@
+{
+  "course": "php",
+  "lessonNumber": 8,
+  "lessonId": "php-lesson-8",
+  "title": "Forms, Input Validation and Escaping",
+  "subtitle": "Forms, Input Validation and Escaping: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on forms, input validation and escaping, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "php-8-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Forms, Input Validation and Escaping: foundations and mental model"
+    },
+    {
+      "id": "php-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Forms, Input Validation and Escaping is not just a syntax topic: it is a way to make the application’s intent explicit. Treat submitted form data as untrusted. Validate the expected shape and allowed values on the server, then escape output for its destination context. Browser-side checks improve usability but do not create a security boundary. In the Code Academy dashboard, that idea matters because A course portal must validate requests and keep generated output and database interactions safe. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "php-8-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Forms, Input Validation and Escaping: Treat POST values as untrusted and validate the actual format on the server",
+      "language": "php",
+      "code": "$rawEmail = $_POST[\"email\"] ?? \"\";\n$email = filter_var(trim($rawEmail), FILTER_VALIDATE_EMAIL);\nif ($email === false) { http_response_code(400); exit(\"Invalid email\"); }",
+      "output": "Treat POST values as untrusted and validate the actual format on the server."
+    },
+    {
+      "id": "php-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “$rawEmail = $_POST[\"email\"] ?? \"\";”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “$email = filter_var(trim($rawEmail), FILTER_VALIDATE_EMAIL);”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 3 — “if ($email === false) { http_response_code(400); exit(\"Invalid email\"); }”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Treat POST values as untrusted and validate the actual format on the server. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-8-quiz-1-5",
+      "type": "quiz",
+      "question": "A PHP form submits a learner name and the page renders it in HTML. Which combination is safest?",
+      "options": [
+        "Validate the name on the server and escape it for HTML output",
+        "Trust the browser’s `required` attribute alone",
+        "Insert the value directly into the response",
+        "Encode it only as a URL and then output it as HTML"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Validate the name on the server and escape it for HTML output. Validation checks acceptable data; HTML escaping prevents data from being interpreted as markup. They serve different roles.",
+      "reasoning": "Validation checks acceptable data; HTML escaping prevents data from being interpreted as markup. They serve different roles. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-8-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Forms, Input Validation and Escaping: Checks both emptiness and a length limit before use",
+      "language": "php",
+      "code": "$name = trim($_POST[\"name\"] ?? \"\");\nif ($name === \"\" || mb_strlen($name) > 80) { exit(\"Name is required\"); }",
+      "output": "Checks both emptiness and a length limit before use."
+    },
+    {
+      "id": "php-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “$name = trim($_POST[\"name\"] ?? \"\");”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “if ($name === \"\" || mb_strlen($name) > 80) { exit(\"Name is required\"); }”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Checks both emptiness and a length limit before use. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-8-quiz-2-8",
+      "type": "quiz",
+      "question": "A hidden input carries a learner ID. What security assumption is correct?",
+      "options": [
+        "Hidden means encrypted",
+        "Hidden values cannot be changed in devtools",
+        "The ID itself proves the requester owns the account",
+        "The submitted ID can be modified, so authorization must be checked server-side"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The submitted ID can be modified, so authorization must be checked server-side. Hidden form fields are still user-controlled input.",
+      "reasoning": "Hidden form fields are still user-controlled input. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-8-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Forms, Input Validation and Escaping: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "php-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Treat submitted form data as untrusted. Validate the expected shape and allowed values on the server, then escape output for its destination context. Browser-side checks improve usability but do not create a security boundary. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A course portal must validate requests and keep generated output and database interactions safe. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "php-8-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Forms, Input Validation and Escaping: Context-appropriate HTML escaping prevents submitted text from being interpreted as markup",
+      "language": "php",
+      "code": "$comment = $_POST[\"comment\"] ?? \"\";\necho htmlspecialchars($comment, ENT_QUOTES | ENT_SUBSTITUTE, \"UTF-8\");",
+      "output": "Context-appropriate HTML escaping prevents submitted text from being interpreted as markup."
+    },
+    {
+      "id": "php-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “$comment = $_POST[\"comment\"] ?? \"\";”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Line 2 — “echo htmlspecialchars($comment, ENT_QUOTES | ENT_SUBSTITUTE, \"UTF-8\");”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Context-appropriate HTML escaping prevents submitted text from being interpreted as markup. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-8-quiz-2-13",
+      "type": "quiz",
+      "question": "A comment is stored as text and later displayed inside HTML. What should happen at output time?",
+      "options": [
+        "Remove every letter from the comment",
+        "Trust that it was safe when first submitted",
+        "Escape special HTML characters in the correct output context",
+        "Run the submitted string as code"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Escape special HTML characters in the correct output context. Stored input can become dangerous later; encode it for the context where it is rendered.",
+      "reasoning": "Stored input can become dangerous later; encode it for the context where it is rendered. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Forms, Input Validation and Escaping: Checking the method is one part of request validation; authorization and CSRF protection may also be needed",
+      "language": "php",
+      "code": "if ($_SERVER[\"REQUEST_METHOD\"] !== \"POST\") { http_response_code(405); exit(\"Method not allowed\"); }",
+      "output": "Checking the method is one part of request validation; authorization and CSRF protection may also be needed."
+    },
+    {
+      "id": "php-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “if ($_SERVER[\"REQUEST_METHOD\"] !== \"POST\") { http_response_code(405); exit(\"Method not allowed\"); }”: Checks a condition or selects a branch; the result determines which path executes. Expected behavior: Checking the method is one part of request validation; authorization and CSRF protection may also be needed. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "php-8-quiz-3-16",
+      "type": "quiz",
+      "question": "A user-supplied course ID is used in a SQL query. Which practice addresses SQL injection?",
+      "options": [
+        "Remove the database WHERE clause",
+        "Use a parameterized query and validate/authorize the ID",
+        "Escape the value only for HTML and concatenate into SQL",
+        "Hide the field with CSS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Use a parameterized query and validate/authorize the ID. SQL parameters keep values separate from query structure. Authorization and domain validation still matter.",
+      "reasoning": "SQL parameters keep values separate from query structure. Authorization and domain validation still matter. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Forms, Input Validation and Escaping: applied challenge and mastery check"
+    },
+    {
+      "id": "php-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Treat submitted form data as untrusted. Validate the expected shape and allowed values on the server, then escape output for its destination context. Browser-side checks improve usability but do not create a security boundary. For the Code Academy dashboard, A course portal must validate requests and keep generated output and database interactions safe. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "php-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses forms, input validation and escaping. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "php-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A valid request is required to change progress. Which server check is essential?",
+      "options": [
+        "Verify the request method, authenticated identity, permission, and expected input shape",
+        "Trust the submit button label",
+        "Accept any request that contains an ID",
+        "Check only that the background is dark"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Verify the request method, authenticated identity, permission, and expected input shape. Request validation includes method and input checks, while authentication and authorization decide who may change state.",
+      "reasoning": "Request validation includes method and input checks, while authentication and authorization decide who may change state. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "php-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Treat submitted form data as untrusted. Validate the expected shape and allowed values on the server, then escape output for its destination context. Browser-side checks improve usability but do not create a security boundary. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

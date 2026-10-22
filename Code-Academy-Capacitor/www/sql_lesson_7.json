@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 7,
+  "lessonId": "sql-lesson-7",
+  "title": "Subqueries and Common Table Expressions",
+  "subtitle": "Subqueries and Common Table Expressions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on subqueries and common table expressions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Intermediate",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-7-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Subqueries and Common Table Expressions: foundations and mental model"
+    },
+    {
+      "id": "sql-7-page-1-teaching-2",
+      "type": "content",
+      "text": "Subqueries and Common Table Expressions is not just a syntax topic: it is a way to make the application’s intent explicit. Subqueries and CTEs define intermediate results. Make the relationship to the outer query explicit and keep result cardinality in mind. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-7-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Subqueries and Common Table Expressions: Uses a subquery to identify active courses",
+      "language": "sql",
+      "code": "SELECT title FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE active = TRUE);",
+      "output": "Uses a subquery to identify active courses."
+    },
+    {
+      "id": "sql-7-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT title FROM lessons WHERE course_id IN (SELECT id FROM courses WHERE active = TRUE);”: Chooses which fields or calculated results appear in the query output. Expected behavior: Uses a subquery to identify active courses. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-7-quiz-1-5",
+      "type": "quiz",
+      "question": "A scalar subquery appears where one value is required but returns multiple rows. What is the problem?",
+      "options": [
+        "The outer query becomes a CSS selector",
+        "The subquery result cardinality violates the scalar context",
+        "A scalar subquery must always return a table of all columns",
+        "SQL automatically chooses the first row in every dialect"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The subquery result cardinality violates the scalar context. A scalar subquery must provide a single value; choose a different operator or refine the query.",
+      "reasoning": "A scalar subquery must provide a single value; choose a different operator or refine the query. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-7-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Subqueries and Common Table Expressions: Checks whether any related attempt exists",
+      "language": "sql",
+      "code": "SELECT name FROM learners WHERE EXISTS (SELECT 1 FROM attempts WHERE attempts.learner_id = learners.id);",
+      "output": "Checks whether any related attempt exists."
+    },
+    {
+      "id": "sql-7-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT name FROM learners WHERE EXISTS (SELECT 1 FROM attempts WHERE attempts.learner_id = learners.id);”: Chooses which fields or calculated results appear in the query output. Expected behavior: Checks whether any related attempt exists. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-7-quiz-2-8",
+      "type": "quiz",
+      "question": "The query should return learners who have at least one attempt. Which pattern states existence directly?",
+      "options": [
+        "WHERE EXISTS (SELECT 1 FROM attempts WHERE attempts.learner_id = learners.id)",
+        "WHERE attempts = TRUE",
+        "ORDER BY EXISTS only",
+        "SELECT * from learners without a predicate"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: WHERE EXISTS (SELECT 1 FROM attempts WHERE attempts.learner_id = learners.id). EXISTS tests whether the correlated subquery finds a matching row.",
+      "reasoning": "EXISTS tests whether the correlated subquery finds a matching row. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-7-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Subqueries and Common Table Expressions: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-7-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Subqueries and CTEs define intermediate results. Make the relationship to the outer query explicit and keep result cardinality in mind. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-7-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Subqueries and Common Table Expressions: Names an intermediate result with a CTE",
+      "language": "sql",
+      "code": "WITH totals AS (SELECT learner_id, SUM(xp) AS xp FROM attempts GROUP BY learner_id) SELECT learner_id, xp FROM totals WHERE xp >= 100;",
+      "output": "Names an intermediate result with a CTE."
+    },
+    {
+      "id": "sql-7-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “WITH totals AS (SELECT learner_id, SUM(xp) AS xp FROM attempts GROUP BY learner_id) SELECT learner_id, xp FROM totals WHERE xp >= 100;”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Expected behavior: Names an intermediate result with a CTE. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-7-quiz-2-13",
+      "type": "quiz",
+      "question": "A common table expression is named `totals`. What does it primarily provide?",
+      "options": [
+        "A permanent table automatically stored forever",
+        "A grant of database administrator privileges",
+        "An automatic index on every referenced column",
+        "A named intermediate result that the following query can reference"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A named intermediate result that the following query can reference. A CTE structures a query; it does not necessarily create a permanent table or index.",
+      "reasoning": "A CTE structures a query; it does not necessarily create a permanent table or index. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-7-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Subqueries and Common Table Expressions: A scalar subquery returns a single minimum value",
+      "language": "sql",
+      "code": "SELECT title FROM lessons WHERE lesson_number = (SELECT MIN(lesson_number) FROM lessons);",
+      "output": "A scalar subquery returns a single minimum value."
+    },
+    {
+      "id": "sql-7-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT title FROM lessons WHERE lesson_number = (SELECT MIN(lesson_number) FROM lessons);”: Chooses which fields or calculated results appear in the query output. Expected behavior: A scalar subquery returns a single minimum value. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-7-quiz-3-16",
+      "type": "quiz",
+      "question": "A subquery uses `IN` against a set of course IDs. What should the developer verify?",
+      "options": [
+        "That the outer query has no WHERE clause",
+        "That the result order is guaranteed",
+        "That the subquery returns the expected single column and handles NULL semantics correctly",
+        "That it returns unrelated text and numeric columns"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: That the subquery returns the expected single column and handles NULL semantics correctly. IN compares a value against the result set; output shape and NULL behavior matter.",
+      "reasoning": "IN compares a value against the result set; output shape and NULL behavior matter. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-7-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Subqueries and Common Table Expressions: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-7-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Subqueries and CTEs define intermediate results. Make the relationship to the outer query explicit and keep result cardinality in mind. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-7-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses subqueries and common table expressions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-7-quiz-5-20",
+      "type": "quiz",
+      "question": "A correlated subquery is unexpectedly slow. What should be reviewed?",
+      "options": [
+        "Whether a comment exists at the end",
+        "The correlation predicate, supporting indexes, and query plan",
+        "Only the color of the SQL editor",
+        "Whether the SQL uses uppercase keywords"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The correlation predicate, supporting indexes, and query plan. Performance depends on the actual plan, predicates, and indexes, not keyword case.",
+      "reasoning": "Performance depends on the actual plan, predicates, and indexes, not keyword case. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-7-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Subqueries and CTEs define intermediate results. Make the relationship to the outer query explicit and keep result cardinality in mind. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

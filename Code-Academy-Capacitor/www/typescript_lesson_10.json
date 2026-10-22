@@ -1,0 +1,176 @@
+{
+  "course": "typescript",
+  "lessonNumber": 10,
+  "lessonId": "typescript-lesson-10",
+  "title": "Build a Typed Course Progress Module",
+  "subtitle": "Build a Typed Course Progress Module: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on build a typed course progress module, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "typescript-10-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Build a Typed Course Progress Module: foundations and mental model"
+    },
+    {
+      "id": "typescript-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Build a Typed Course Progress Module is not just a syntax topic: it is a way to make the application’s intent explicit. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. In the Code Academy dashboard, that idea matters because A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "typescript-10-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Build a Typed Course Progress Module: Calculates progress while defining the zero-total behavior",
+      "language": "typescript",
+      "code": "function progress(done: number, total: number): number { return total > 0 ? done / total * 100 : 0; }",
+      "output": "Calculates progress while defining the zero-total behavior."
+    },
+    {
+      "id": "typescript-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “function progress(done: number, total: number): number { return total > 0 ? done / total * 100 : 0; }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: Calculates progress while defining the zero-total behavior. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-10-quiz-1-5",
+      "type": "quiz",
+      "question": "A feature works for a normal course with ten lessons. Which additional test is most valuable?",
+      "options": [
+        "Test the same normal case repeatedly",
+        "Remove validation because the normal case passed",
+        "Test zero lessons, all completed, and invalid progress input",
+        "Change only the button shadow"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Test zero lessons, all completed, and invalid progress input. Boundary and invalid inputs reveal defects that a happy-path-only test misses.",
+      "reasoning": "Boundary and invalid inputs reveal defects that a happy-path-only test misses. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Build a Typed Course Progress Module: A typed array keeps each attempt record consistent",
+      "language": "typescript",
+      "code": "type LessonResult = { correct: boolean; xp: number };\nconst results: LessonResult[] = [{ correct: true, xp: 5 }, { correct: false, xp: 0 }];",
+      "output": "A typed array keeps each attempt record consistent."
+    },
+    {
+      "id": "typescript-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “type LessonResult = { correct: boolean; xp: number };”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “const results: LessonResult[] = [{ correct: true, xp: 5 }, { correct: false, xp: 0 }];”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A typed array keeps each attempt record consistent. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-10-quiz-2-8",
+      "type": "quiz",
+      "question": "A local lesson loads correctly but deployed users see a missing file. What should be verified?",
+      "options": [
+        "Whether the README has the right number of headings",
+        "The actual published URL, filename casing, deployment path, and network response",
+        "Only the local editor tab color",
+        "The name of an unrelated variable"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The actual published URL, filename casing, deployment path, and network response. A local success does not prove the deployment contains the same assets and paths.",
+      "reasoning": "A local success does not prove the deployment contains the same assets and paths. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-10-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Build a Typed Course Progress Module: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "typescript-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "typescript-10-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Build a Typed Course Progress Module: Aggregates only the explicit XP result for each attempt",
+      "language": "typescript",
+      "code": "const totalXp = results.reduce((sum, result) => sum + result.xp, 0);",
+      "output": "Aggregates only the explicit XP result for each attempt."
+    },
+    {
+      "id": "typescript-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “const totalXp = results.reduce((sum, result) => sum + result.xp, 0);”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: Aggregates only the explicit XP result for each attempt. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A user can double-click a reward button. How should duplicate rewards be prevented?",
+      "options": [
+        "Make the operation idempotent or verify a unique attempt/state before awarding",
+        "Trust the button’s animation to block repeats",
+        "Award XP before checking the result",
+        "Hide the button but leave the event handler active"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Make the operation idempotent or verify a unique attempt/state before awarding. UI debouncing helps, but the operation needs a reliable duplicate-protection rule at the state boundary.",
+      "reasoning": "UI debouncing helps, but the operation needs a reliable duplicate-protection rule at the state boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-10-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Build a Typed Course Progress Module: Unknown external values should be checked at runtime before being trusted",
+      "language": "typescript",
+      "code": "function isLessonId(value: unknown): value is string { return typeof value === \"string\" && value.startsWith(\"html-\"); }",
+      "output": "Unknown external values should be checked at runtime before being trusted."
+    },
+    {
+      "id": "typescript-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “function isLessonId(value: unknown): value is string { return typeof value === \"string\" && value.startsWith(\"html-\"); }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: Unknown external values should be checked at runtime before being trusted. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-10-quiz-3-16",
+      "type": "quiz",
+      "question": "A new feature has correct output but cannot be used by keyboard. Is it complete?",
+      "options": [
+        "Yes; output correctness guarantees accessibility",
+        "Yes; a mouse test is sufficient",
+        "Only if the color palette is changed",
+        "No; keyboard access, focus behavior, and understandable feedback must also be tested"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: No; keyboard access, focus behavior, and understandable feedback must also be tested. A professional interface includes interaction and accessibility checks in addition to functional correctness.",
+      "reasoning": "A professional interface includes interaction and accessibility checks in addition to functional correctness. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-10-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Build a Typed Course Progress Module: applied challenge and mastery check"
+    },
+    {
+      "id": "typescript-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "typescript-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses build a typed course progress module. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "typescript-10-quiz-5-20",
+      "type": "quiz",
+      "question": "A reported bug is hard to reproduce. What should the test record?",
+      "options": [
+        "Only a screenshot of the background color",
+        "No details because the code has comments",
+        "The input, initial state, steps, expected result, and actual result",
+        "Only the developer’s guess about the cause"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The input, initial state, steps, expected result, and actual result. A precise reproduction turns an intermittent report into a testable behavior.",
+      "reasoning": "A precise reproduction turns an intermittent report into a testable behavior. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

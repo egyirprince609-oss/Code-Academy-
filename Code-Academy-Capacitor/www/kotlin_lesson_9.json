@@ -1,0 +1,176 @@
+{
+  "course": "kotlin",
+  "lessonNumber": 9,
+  "lessonId": "kotlin-lesson-9",
+  "title": "Interfaces, Lambdas and Errors",
+  "subtitle": "Interfaces, Lambdas and Errors: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on interfaces, lambdas and errors, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "kotlin-9-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Interfaces, Lambdas and Errors: foundations and mental model"
+    },
+    {
+      "id": "kotlin-9-page-1-teaching-2",
+      "type": "content",
+      "text": "Interfaces, Lambdas and Errors is not just a syntax topic: it is a way to make the application’s intent explicit. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. In the Code Academy dashboard, that idea matters because A tracker can use data classes and null-safe operations to keep model state clear. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "kotlin-9-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Interfaces, Lambdas and Errors: A nullable return type communicates that parsing may fail",
+      "language": "kotlin",
+      "code": "fun parseScore(raw: String): Int? = raw.toIntOrNull()",
+      "output": "A nullable return type communicates that parsing may fail."
+    },
+    {
+      "id": "kotlin-9-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “fun parseScore(raw: String): Int? = raw.toIntOrNull()”: Assigns or updates state; later lines observe the new value, so the right-hand expression matters. Expected behavior: A nullable return type communicates that parsing may fail. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "kotlin-9-quiz-1-5",
+      "type": "quiz",
+      "question": "A score is converted from external text, and the input may be \"eighty\". What should occur?",
+      "options": [
+        "Treat the failed conversion as a valid score of zero in every context",
+        "Ignore the failure and report success",
+        "Display a full private stack trace to the learner",
+        "Handle the conversion failure and show a controlled validation message"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Handle the conversion failure and show a controlled validation message. Invalid input should not silently become success; handle expected conversion errors at the boundary.",
+      "reasoning": "Invalid input should not silently become success; handle expected conversion errors at the boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Interfaces, Lambdas and Errors: Catch a specific expected conversion failure",
+      "language": "kotlin",
+      "code": "try { println(\"85\".toInt()) } catch (error: NumberFormatException) { println(\"Invalid score\") }",
+      "output": "Catch a specific expected conversion failure."
+    },
+    {
+      "id": "kotlin-9-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “try { println(\"85\".toInt()) } catch (error: NumberFormatException) { println(\"Invalid score\") }”: Displays the computed value so the behavior can be observed and checked. Expected behavior: Catch a specific expected conversion failure. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "kotlin-9-quiz-2-8",
+      "type": "quiz",
+      "question": "A file read fails because the file is missing. Which response is most useful?",
+      "options": [
+        "Catch every error and do nothing",
+        "Expose server paths and secrets in the page",
+        "Handle the specific I/O failure and keep detailed diagnostics in a protected log",
+        "Continue using the missing file’s contents"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Handle the specific I/O failure and keep detailed diagnostics in a protected log. A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals.",
+      "reasoning": "A controlled user message plus safe diagnostics preserves usability without hiding the cause or exposing internals. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Interfaces, Lambdas and Errors: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "kotlin-9-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A tracker can use data classes and null-safe operations to keep model state clear. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "kotlin-9-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Interfaces, Lambdas and Errors: An interface defines a contract; an object expression provides an implementation",
+      "language": "kotlin",
+      "code": "interface Reporter { fun report(): String }\nval reporter = object : Reporter { override fun report() = \"Progress saved\" }\nprintln(reporter.report())",
+      "output": "An interface defines a contract; an object expression provides an implementation."
+    },
+    {
+      "id": "kotlin-9-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “interface Reporter { fun report(): String }”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “val reporter = object : Reporter { override fun report() = \"Progress saved\" }”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “println(reporter.report())”: Displays the computed value so the behavior can be observed and checked. Expected behavior: An interface defines a contract; an object expression provides an implementation. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "kotlin-9-quiz-2-13",
+      "type": "quiz",
+      "question": "A broad catch block returns a successful result after any exception. What is the core defect?",
+      "options": [
+        "It makes type checking stricter",
+        "It turns failures into false success and makes corruption harder to detect",
+        "It forces every function to become asynchronous",
+        "It guarantees all resources are closed"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: It turns failures into false success and makes corruption harder to detect. Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data.",
+      "reasoning": "Recovery must reflect the actual state; pretending success masks defects and can corrupt progress data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Interfaces, Lambdas and Errors: A lambda transforms each input and returns the mapped list",
+      "language": "kotlin",
+      "code": "val names = listOf(\"Ama\", \"Kojo\")\nval labels = names.map { name -> \"Learner: $name\" }",
+      "output": "A lambda transforms each input and returns the mapped list."
+    },
+    {
+      "id": "kotlin-9-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “val names = listOf(\"Ama\", \"Kojo\")”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “val labels = names.map { name -> \"Learner: $name\" }”: Defines an expression, mapping, or function result; the left side supplies the input and the right side determines the behavior. Expected behavior: A lambda transforms each input and returns the mapped list. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "kotlin-9-quiz-3-16",
+      "type": "quiz",
+      "question": "Two database updates must both succeed or both be undone. Which mechanism is designed for that?",
+      "options": [
+        "A transaction with commit on success and rollback on failure",
+        "A loop that retries forever",
+        "HTML form validation alone",
+        "A display-only warning after each update"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: A transaction with commit on success and rollback on failure. Transactions group related operations atomically when used correctly.",
+      "reasoning": "Transactions group related operations atomically when used correctly. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Interfaces, Lambdas and Errors: applied challenge and mastery check"
+    },
+    {
+      "id": "kotlin-9-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. For the Code Academy dashboard, A tracker can use data classes and null-safe operations to keep model state clear. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "kotlin-9-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses interfaces, lambdas and errors. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "kotlin-9-quiz-5-20",
+      "type": "quiz",
+      "question": "A failure is expected and the caller can recover. What belongs in the function contract?",
+      "options": [
+        "A silent return value that looks like success",
+        "An unconditional retry with no limit",
+        "An undocumented global flag",
+        "A clear error/result path or a documented exception"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: A clear error/result path or a documented exception. A caller needs a reliable way to distinguish success from a recoverable failure.",
+      "reasoning": "A caller needs a reliable way to distinguish success from a recoverable failure. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "kotlin-9-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Handle expected failures specifically and keep useful diagnostics. Do not turn failed operations into misleading success or hide defects with arbitrary defaults. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#060a14">
+  <meta name="description" content="Track your Code Academy lessons, course progress, XP, achievements and certificates in real time.">
+  <title>My Progress | Code Academy</title>
+  <link rel="icon" href="logo.png">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <style>
+    :root{color-scheme:dark;--bg:#060a14;--panel:#0d1629;--panel2:#111e35;--panel3:#0a1222;--text:#f1f5ff;--muted:#91a0ba;--dim:#66758f;--line:rgba(148,163,184,.14);--line2:rgba(148,163,184,.23);--cyan:#38bdf8;--cyan2:#0ea5e9;--violet:#a78bfa;--green:#34d399;--gold:#fbbf24;--red:#fb7185;--radius:22px;--shadow:0 24px 80px rgba(0,0,0,.28)}
+    *{box-sizing:border-box}html{min-height:100%;scroll-behavior:smooth;background:var(--bg)}body{margin:0;min-height:100vh;background:radial-gradient(900px 500px at 0% 0%,rgba(56,189,248,.09),transparent 65%),radial-gradient(850px 520px at 100% 14%,rgba(167,139,250,.09),transparent 62%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif;overflow-x:hidden}button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}a{color:inherit;text-decoration:none}button{color:inherit}button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+    .topbar{height:68px;position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 clamp(14px,3vw,34px);background:rgba(6,10,20,.88);backdrop-filter:blur(22px);border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:11px;min-width:0}.brand-logo{width:38px;height:38px;border-radius:12px;overflow:hidden;border:1px solid var(--line2);background:#101b30;flex:none}.brand-logo img{width:100%;height:100%;object-fit:cover}.brand-copy{min-width:0}.brand-copy strong{display:block;font-size:14px;font-weight:900;letter-spacing:-.025em}.brand-copy span{display:block;margin-top:3px;color:var(--muted);font-size:10px;letter-spacing:.07em;text-transform:uppercase}.top-actions{display:flex;align-items:center;gap:8px}.icon-btn{width:39px;height:39px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:13px;background:rgba(17,30,53,.84);color:#c3d3ea;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}.icon-btn:hover{background:#162743;border-color:rgba(56,189,248,.45);transform:translateY(-1px)}.sync-state{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:99px;border:1px solid var(--line);background:rgba(13,22,41,.85);font-size:10px;font-weight:800;color:var(--muted);white-space:nowrap}.sync-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(251,191,36,.08)}.sync-state.live{color:#a7f3d0}.sync-state.live .sync-dot{background:var(--green);box-shadow:0 0 0 4px rgba(52,211,153,.09)}.sync-state.offline .sync-dot{background:var(--red);box-shadow:0 0 0 4px rgba(251,113,133,.08)}
+    .page{width:min(1380px,100%);margin:0 auto;padding:clamp(16px,3vw,34px) clamp(12px,2.5vw,30px) 56px}.page-intro{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:22px}.eyebrow{display:flex;align-items:center;gap:8px;color:var(--cyan);font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase}.eyebrow i{font-size:11px}.page-title{margin:9px 0 7px;font-size:clamp(26px,4vw,43px);line-height:1.06;letter-spacing:-.05em;font-weight:900}.page-subtitle{margin:0;color:var(--muted);font-size:13px;line-height:1.65;max-width:650px}.date-chip{flex:none;display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:13px;background:rgba(13,22,41,.74);color:#bac6da;font-size:11px}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(290px,.85fr);gap:16px;margin-bottom:16px}.panel{min-width:0;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(17,30,53,.94),rgba(10,18,34,.96));box-shadow:var(--shadow)}.profile-panel{position:relative;overflow:hidden;padding:clamp(19px,2.8vw,30px)}.profile-panel::after{content:"";position:absolute;right:-92px;top:-130px;width:290px;height:290px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,.16),transparent 67%);pointer-events:none}.profile-row{position:relative;z-index:1;display:flex;align-items:center;gap:16px}.avatar-wrap{width:78px;height:78px;flex:none;position:relative;border-radius:24px;padding:3px;background:linear-gradient(135deg,var(--cyan),var(--violet));box-shadow:0 10px 35px rgba(56,189,248,.14)}.avatar{width:100%;height:100%;border-radius:21px;object-fit:cover;background:#0a1222}.online-mark{position:absolute;right:-4px;bottom:-4px;width:17px;height:17px;border:3px solid #0e182c;background:var(--green);border-radius:50%}.profile-meta{min-width:0;flex:1}.welcome{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:800}.user-name{margin:6px 0 4px;font-size:clamp(20px,2.3vw,27px);font-weight:900;letter-spacing:-.035em;overflow-wrap:anywhere}.user-email{color:var(--muted);font-size:12px;overflow-wrap:anywhere}.profile-tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.tag{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border:1px solid var(--line);border-radius:9px;background:rgba(5,10,20,.4);font-size:10px;font-weight:800;color:#d2dced}.tag.cyan{color:#a5e4ff;border-color:rgba(56,189,248,.25);background:rgba(56,189,248,.07)}.xp-block{position:relative;z-index:1;margin-top:25px;padding-top:19px;border-top:1px solid var(--line)}.xp-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}.xp-label{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800}.xp-label i{color:var(--gold)}.xp-value{font-size:11px;color:#d7e5fa;font-weight:800;font-variant-numeric:tabular-nums}.track{height:10px;width:100%;border-radius:99px;background:#030712;border:1px solid rgba(148,163,184,.1);overflow:hidden}.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--violet));box-shadow:0 0 16px rgba(56,189,248,.18);transition:width .7s ease}.xp-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;color:var(--muted);font-size:10px}.level-pill{color:#d8ceff}
+    .journey-panel{padding:clamp(19px,2.8vw,30px);display:flex;flex-direction:column;justify-content:space-between;gap:18px;position:relative;overflow:hidden}.journey-panel::after{content:"";position:absolute;right:-38px;bottom:-82px;width:210px;height:210px;border:1px solid rgba(167,139,250,.13);border-radius:50%;box-shadow:0 0 0 22px rgba(167,139,250,.025),0 0 0 47px rgba(167,139,250,.02);pointer-events:none}.section-kicker{font-size:10px;color:var(--muted);letter-spacing:.13em;text-transform:uppercase;font-weight:900}.journey-title{margin:8px 0 7px;font-size:21px;letter-spacing:-.035em;font-weight:900}.journey-text{margin:0;color:var(--muted);font-size:12px;line-height:1.7;max-width:400px}.journey-progress{display:flex;align-items:center;gap:15px;margin-top:16px}.ring{--pct:0%;width:82px;height:82px;display:grid;place-items:center;flex:none;border-radius:50%;background:conic-gradient(var(--cyan) var(--pct),rgba(148,163,184,.12) 0);position:relative}.ring::before{content:"";position:absolute;inset:7px;border-radius:50%;background:#0e182b;border:1px solid var(--line)}.ring strong{position:relative;font-size:18px;font-weight:900}.journey-stats{display:grid;gap:9px;min-width:0}.journey-stat{font-size:11px;color:#d5e0f1}.journey-stat span{color:var(--muted)}.primary-btn,.secondary-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:0 15px;border-radius:13px;border:1px solid transparent;font-size:11px;font-weight:900;cursor:pointer;transition:transform .18s,filter .18s,border-color .18s}.primary-btn{color:#04111c;background:linear-gradient(110deg,#7dd3fc,var(--cyan));box-shadow:0 9px 24px rgba(56,189,248,.13)}.primary-btn:hover,.secondary-btn:hover{transform:translateY(-1px);filter:brightness(1.05)}.secondary-btn{background:rgba(5,11,22,.5);border-color:var(--line2);color:#d7e3f6}.journey-action{position:relative;z-index:1;display:flex;gap:9px;flex-wrap:wrap;margin-top:20px}.journey-action .primary-btn{flex:1 1 155px}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin:16px 0}.stat-card{padding:19px;border:1px solid var(--line);border-radius:18px;background:rgba(13,22,41,.82);min-width:0;transition:border-color .2s,transform .2s}.stat-card:hover{border-color:rgba(56,189,248,.3);transform:translateY(-2px)}.stat-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.stat-icon{width:35px;height:35px;display:grid;place-items:center;border-radius:12px;color:var(--cyan);background:rgba(56,189,248,.09);border:1px solid rgba(56,189,248,.13);font-size:14px}.stat-icon.gold{color:var(--gold);background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.16)}.stat-icon.purple{color:var(--violet);background:rgba(167,139,250,.09);border-color:rgba(167,139,250,.16)}.stat-icon.green{color:var(--green);background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.16)}.stat-number{display:block;margin:15px 0 5px;font-size:clamp(24px,3vw,31px);font-weight:900;letter-spacing:-.04em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.stat-label{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.09em;font-weight:800}.stat-note{margin-top:9px;color:var(--dim);font-size:10px;line-height:1.5}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin:32px 0 15px}.section-heading{margin:0;font-size:20px;font-weight:900;letter-spacing:-.03em}.section-description{margin:6px 0 0;color:var(--muted);font-size:11px;line-height:1.6}.count-chip{flex:none;border:1px solid var(--line);background:rgba(13,22,41,.8);padding:8px 10px;border-radius:10px;color:#c6d4e8;font-weight:800;font-size:10px}
+    .course-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}.search-wrap{position:relative;flex:1 1 230px;max-width:410px}.search-wrap i{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:12px}.search-input{width:100%;height:42px;padding:0 14px 0 37px;border:1px solid var(--line2);border-radius:13px;background:rgba(5,11,22,.55);color:var(--text);font-size:12px}.search-input::placeholder{color:var(--dim)}.filter-group{display:flex;gap:6px;flex-wrap:wrap}.filter-btn{min-height:34px;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:rgba(13,22,41,.7);color:var(--muted);font-size:10px;font-weight:800;cursor:pointer}.filter-btn.active{background:rgba(56,189,248,.11);border-color:rgba(56,189,248,.35);color:#a5e4ff}.course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.course-card{position:relative;min-width:0;padding:17px;border:1px solid var(--line);border-radius:18px;background:linear-gradient(145deg,rgba(17,30,53,.88),rgba(9,16,31,.93));transition:transform .2s,border-color .2s,box-shadow .2s;overflow:hidden}.course-card:hover{transform:translateY(-3px);border-color:rgba(56,189,248,.31);box-shadow:0 18px 35px rgba(0,0,0,.18)}.course-card-head{display:flex;align-items:center;gap:11px;min-width:0}.course-logo-box{width:47px;height:47px;display:grid;place-items:center;flex:none;border:1px solid var(--line);border-radius:14px;background:rgba(4,10,20,.5);padding:8px}.course-logo{width:100%;height:100%;object-fit:contain}.course-mark{display:none;align-items:center;justify-content:center;width:100%;height:100%;font-size:10px;font-weight:900;color:#b6e9ff}.course-info{min-width:0;flex:1}.course-name{margin:0;font-size:13px;font-weight:900;line-height:1.35;overflow-wrap:anywhere}.course-level{margin-top:5px;color:var(--muted);font-size:10px}.course-percent{flex:none;color:#9be4ff;font-size:12px;font-weight:900}.course-status-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0 8px}.status-chip{display:inline-flex;align-items:center;gap:6px;max-width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:rgba(4,10,20,.32);font-size:9px;font-weight:800;color:#b7c5dc}.status-chip.started{color:#a5e4ff;border-color:rgba(56,189,248,.2)}.status-chip.done{color:#a7f3d0;border-color:rgba(52,211,153,.2);background:rgba(52,211,153,.05)}.course-fraction{color:var(--muted);font-size:10px;white-space:nowrap}.course-track{height:6px;border-radius:99px;background:#030712;overflow:hidden}.course-track span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--violet));transition:width .6s}.course-bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:14px}.course-bottom .secondary-btn{min-height:36px;padding:0 11px;font-size:10px;flex:1}.course-bottom .primary-btn{min-height:36px;padding:0 11px;font-size:10px;flex:1}.empty-state{grid-column:1/-1;padding:34px 18px;border:1px dashed var(--line2);border-radius:18px;text-align:center;color:var(--muted);background:rgba(13,22,41,.4)}.empty-state i{display:block;font-size:24px;color:var(--cyan);margin-bottom:10px}.empty-state strong{display:block;color:var(--text);font-size:13px}.empty-state p{font-size:11px;line-height:1.6}
+    .lower-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:15px;margin-top:30px}.activity-panel,.achievement-panel{padding:20px;min-width:0}.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.panel-heading h3{margin:0;font-size:15px;font-weight:900;letter-spacing:-.025em}.panel-heading span{color:var(--muted);font-size:10px}.activity-list{display:grid;gap:9px}.activity-item{display:flex;align-items:flex-start;gap:11px;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(4,10,20,.28);min-width:0}.activity-mark{width:32px;height:32px;display:grid;place-items:center;flex:none;border-radius:10px;background:rgba(56,189,248,.09);color:var(--cyan)}.activity-main{flex:1;min-width:0}.activity-title{font-size:11px;font-weight:800;line-height:1.5;overflow-wrap:anywhere}.activity-detail{margin-top:4px;color:var(--muted);font-size:10px;line-height:1.55;overflow-wrap:anywhere}.activity-time{margin-top:5px;color:var(--dim);font-size:9px}.activity-badge{flex:none;padding:5px 6px;border-radius:7px;border:1px solid var(--line);font-size:8px;font-weight:900;color:var(--muted)}.activity-badge.correct{color:#a7f3d0;border-color:rgba(52,211,153,.2)}.activity-badge.incorrect{color:#fecdd3;border-color:rgba(251,113,133,.2)}.achievement-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.achievement{display:flex;align-items:center;gap:10px;min-width:0;padding:12px;border:1px solid var(--line);border-radius:13px;background:rgba(4,10,20,.26)}.achievement-icon{width:36px;height:36px;display:grid;place-items:center;flex:none;border:1px solid rgba(251,191,36,.18);border-radius:11px;background:rgba(251,191,36,.07);color:var(--gold)}.achievement.locked .achievement-icon{color:var(--dim);background:rgba(148,163,184,.04);border-color:var(--line)}.achievement strong{display:block;font-size:10px;line-height:1.4}.achievement small{display:block;color:var(--muted);margin-top:3px;font-size:9px;line-height:1.45}.certificate-strip{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:15px;padding:15px 16px;border:1px solid rgba(251,191,36,.17);border-radius:15px;background:linear-gradient(110deg,rgba(251,191,36,.06),rgba(56,189,248,.04))}.certificate-strip strong{display:block;font-size:12px}.certificate-strip p{margin:5px 0 0;color:var(--muted);font-size:10px;line-height:1.6}.footer-note{padding:26px 0 0;text-align:center;color:var(--dim);font-size:10px;line-height:1.7}.footer-note b{color:#a8bad2}
+    .loading-shell,.error-shell{max-width:540px;margin:65px auto;padding:30px 22px;text-align:center;border:1px solid var(--line);border-radius:22px;background:rgba(13,22,41,.88)}.spinner{font-size:27px;color:var(--cyan);margin-bottom:13px}.loading-shell h2,.error-shell h2{font-size:17px;margin:0 0 8px}.loading-shell p,.error-shell p{margin:0;color:var(--muted);font-size:12px;line-height:1.7}.error-shell{display:none}.error-shell .primary-btn{margin-top:18px}.toast-host{position:fixed;right:16px;bottom:16px;z-index:100;display:grid;gap:8px;width:min(340px,calc(100vw - 32px));pointer-events:none}.toast{padding:12px 14px;border:1px solid var(--line2);border-radius:13px;background:#101c31;box-shadow:var(--shadow);color:#e8f2ff;font-size:11px;line-height:1.5;animation:toastIn .2s ease both}.toast.error{border-color:rgba(251,113,133,.35)}@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:1000px){.course-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-grid{grid-template-columns:minmax(0,1fr) minmax(275px,.9fr)}}
+    @media(max-width:760px){.topbar{height:61px;padding-inline:12px}.brand-logo{width:34px;height:34px}.brand-copy strong{font-size:12px}.brand-copy span{font-size:9px}.sync-state{padding:7px 8px;font-size:9px}.icon-btn{width:35px;height:35px}.page{padding-top:20px}.page-intro{align-items:flex-start}.date-chip{display:none}.hero-grid{grid-template-columns:1fr}.profile-panel,.journey-panel{padding:20px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat-card{padding:15px}.stat-number{margin-top:12px}.lower-grid{grid-template-columns:1fr}.section-head{margin-top:27px}.journey-action{margin-top:16px}}
+    @media(max-width:460px){.course-grid{grid-template-columns:1fr}.profile-row{align-items:flex-start}.avatar-wrap{width:66px;height:66px;border-radius:21px}.avatar{border-radius:18px}.user-name{font-size:20px}.profile-tags .tag{font-size:9px}.journey-progress{gap:12px}.ring{width:74px;height:74px}.page-title{font-size:29px}.course-card{padding:15px}.course-logo-box{width:43px;height:43px}.filter-group{width:100%}.filter-btn{flex:1}.certificate-strip{align-items:flex-start;flex-direction:column}.achievement-grid{grid-template-columns:1fr 1fr}.activity-item{gap:8px;padding:10px}.activity-badge{font-size:7px}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="menu.html" aria-label="Code Academy dashboard">
+      <span class="brand-logo"><img src="logo.png" alt="Code Academy logo"></span>
+      <span class="brand-copy"><strong>Code Academy</strong><span>My learning progress</span></span>
+    </a>
+    <div class="top-actions">
+      <span class="sync-state" id="syncState" role="status"><span class="sync-dot"></span><span id="syncLabel">Connecting</span></span>
+      <button class="icon-btn" id="refreshBtn" type="button" aria-label="Refresh progress" title="Refresh progress"><i class="fa-solid fa-rotate"></i></button>
+      <a class="icon-btn" href="menu.html" aria-label="Back to dashboard" title="Dashboard"><i class="fa-solid fa-house"></i></a>
+    </div>
+  </header>
+
+  <main class="page" id="mainPage" hidden>
+    <div class="page-intro">
+      <div><div class="eyebrow"><i class="fa-solid fa-chart-line"></i> YOUR LEARNING OVERVIEW</div><h1 class="page-title">Progress that moves with you.</h1><p class="page-subtitle">Every completed lesson updates this page from your Code Academy account. Keep learning, track your growth and see how far you have come.</p></div>
+      <div class="date-chip"><i class="fa-regular fa-calendar"></i><span id="todayDate">Today</span></div>
+    </div>
+
+    <section class="hero-grid" aria-label="Your learning summary">
+      <article class="panel profile-panel">
+        <div class="profile-row">
+          <div class="avatar-wrap"><img id="userPhoto" class="avatar" src="logo.png" alt="Your profile photo"><span class="online-mark" aria-hidden="true"></span></div>
+          <div class="profile-meta"><div class="welcome">Welcome back, learner</div><h2 class="user-name" id="userName">Coder</h2><div class="user-email" id="userEmail">Loading account…</div><div class="profile-tags"><span class="tag cyan"><i class="fa-solid fa-shield-halved"></i> Account connected</span><span class="tag"><i class="fa-solid fa-fire"></i> <span id="streakInline">0-day streak</span></span></div></div>
+        </div>
+        <div class="xp-block"><div class="xp-head"><div class="xp-label"><i class="fa-solid fa-bolt"></i><span>Developer level <b id="userLevel">1</b> · <span id="levelTitle" class="level-pill">Beginner</span></span></div><div class="xp-value"><span id="currentXP">0</span> / 100 XP</div></div><div class="track" aria-label="XP toward next level"><div class="fill" id="xpFill"></div></div><div class="xp-foot"><span id="nextLevel">100 XP to next level</span><span><b id="totalXP">0</b> total XP</span></div></div>
+      </article>
+      <article class="panel journey-panel">
+        <div><div class="section-kicker">The bigger picture</div><h2 class="journey-title">Your coding journey</h2><p class="journey-text" id="journeyText">Your progress is ready to be built, one lesson at a time.</p><div class="journey-progress"><div class="ring" id="overallRing" style="--pct:0%"><strong id="overallCompletion">0%</strong></div><div class="journey-stats"><div class="journey-stat"><b id="journeyLessons">0 / 200</b> <span>lessons completed</span></div><div class="journey-stat"><b id="journeyCourses">0 / 20</b> <span>courses completed</span></div><div class="journey-stat"><b id="lastUpdated">Live sync active</b></div></div></div></div>
+        <div class="journey-action"><a class="primary-btn" id="continueBtn" href="html_dashboard.html"><i class="fa-solid fa-play"></i> Continue learning</a><a class="secondary-btn" href="menu.html"><i class="fa-solid fa-grid-2"></i> Dashboard</a></div>
+      </article>
+    </section>
+
+    <section class="stats-grid" aria-label="Learning statistics">
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon"><i class="fa-solid fa-book-open"></i></span><span class="count-chip" id="lessonStatMini">0 / 200</span></div><strong class="stat-number" id="lessonsDone">0</strong><div class="stat-label">Lessons completed</div><div class="stat-note">Synced from your lesson completions</div></article>
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon gold"><i class="fa-solid fa-coins"></i></span><span class="count-chip">BALANCE</span></div><strong class="stat-number" id="coins">0</strong><div class="stat-label">Academy coins</div><div class="stat-note">Earned by answering lesson quizzes</div></article>
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon purple"><i class="fa-solid fa-code-branch"></i></span><span class="count-chip" id="startedMini">0 active</span></div><strong class="stat-number" id="coursesStarted">0</strong><div class="stat-label">Courses started</div><div class="stat-note">Courses with saved lesson progress</div></article>
+      <article class="stat-card"><div class="stat-top"><span class="stat-icon green"><i class="fa-solid fa-award"></i></span><span class="count-chip" id="certMini">CERTS</span></div><strong class="stat-number" id="certCount">0</strong><div class="stat-label">Certificates earned</div><div class="stat-note" id="completedCourseNote">Keep learning toward your first certificate</div></article>
+    </section>
+
+    <div class="section-head"><div><h2 class="section-heading">Course progress</h2><p class="section-description">Choose a course to open its dashboard. Progress is calculated against the ten lessons used by the lesson and certificate engines.</p></div><span class="count-chip" id="courseCount">20 courses</span></div>
+    <div class="course-toolbar"><label class="search-wrap"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i><input class="search-input" id="courseSearch" type="search" placeholder="Search your courses…" autocomplete="off" aria-label="Search courses"></label><div class="filter-group" role="group" aria-label="Filter courses"><button class="filter-btn active" data-filter="all" type="button">All courses</button><button class="filter-btn" data-filter="active" type="button">In progress</button><button class="filter-btn" data-filter="done" type="button">Completed</button><button class="filter-btn" data-filter="new" type="button">Not started</button></div></div>
+    <section id="courseGrid" class="course-grid" aria-label="Courses"></section>
+
+    <section class="lower-grid">
+      <article class="panel activity-panel"><div class="panel-heading"><h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--cyan);margin-right:7px"></i>Recent learning activity</h3><span id="activityCount">Live from lesson history</span></div><div id="activityList" class="activity-list"><div class="empty-state"><i class="fa-solid fa-hourglass-start"></i><strong>Your activity will appear here</strong><p>Answer a quiz in a lesson to begin building your learning history.</p></div></div></article>
+      <article class="panel achievement-panel"><div class="panel-heading"><h3><i class="fa-solid fa-medal" style="color:var(--gold);margin-right:7px"></i>Milestones</h3><span>Based on saved progress</span></div><div class="achievement-grid" id="achievementGrid"></div><div class="certificate-strip"><div><strong>Ready for your next achievement?</strong><p id="certificatePrompt">Complete all ten lessons in a course to unlock its certificate setup.</p></div><a class="secondary-btn" id="certificateBtn" href="certificate_setup.html?course=html"><i class="fa-solid fa-certificate"></i> Certificates</a></div></article>
+    </section>
+    <div class="footer-note">Your progress is read from your signed-in Code Academy profile and lesson history.<br><b>We Learn, We Code, We Succeed.</b></div>
+  </main>
+
+  <section class="loading-shell" id="loadingShell" aria-live="polite"><div class="spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></div><h2>Synchronising your progress</h2><p>Connecting to the same account data used by your lessons and certificates…</p></section>
+  <section class="error-shell" id="errorShell" role="alert"><div class="spinner" style="color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i></div><h2>Progress could not be loaded</h2><p id="errorMessage">Check your connection and try again.</p><button id="retryBtn" class="primary-btn" type="button"><i class="fa-solid fa-rotate"></i> Try again</button><a class="secondary-btn" href="menu.html" style="margin:10px auto 0"><i class="fa-solid fa-house"></i> Back to dashboard</a></section>
+  <div class="toast-host" id="toastHost" aria-live="polite"></div>
+  <script src="pwa.js" defer></script>
+
+  <script type="module">
+    import { auth, db, onAuthStateChanged } from './authentication.js';
+    import { doc, getDoc, collection, query, orderBy, limit, onSnapshot } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const TOTAL_LESSONS_PER_COURSE = 10;
+    const DEVICON = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/';
+    const COURSE_LIST = [
+      {id:'html',name:'HTML',subtitle:'Web structure and semantics',level:'Beginner',logo:DEVICON+'html5/html5-original.svg',dashboard:'html_dashboard.html',mark:'HTML'},
+      {id:'css',name:'CSS',subtitle:'Layouts, styles and responsive UI',level:'Beginner',logo:DEVICON+'css3/css3-original.svg',dashboard:'css_dashboard.html',mark:'CSS'},
+      {id:'javascript',name:'JavaScript',subtitle:'Logic and interactive web apps',level:'Beginner',logo:DEVICON+'javascript/javascript-original.svg',dashboard:'javascript_dashboard.html',mark:'JS'},
+      {id:'python',name:'Python',subtitle:'Readable code and automation',level:'Beginner',logo:DEVICON+'python/python-original.svg',dashboard:'python_dashboard.html',mark:'PY'},
+      {id:'react',name:'React',subtitle:'Components and app interfaces',level:'Intermediate',logo:DEVICON+'react/react-original.svg',dashboard:'react_dashboard.html',mark:'RE'},
+      {id:'java',name:'Java',subtitle:'Object-oriented programming',level:'Beginner',logo:DEVICON+'java/java-original.svg',dashboard:'Java.html',mark:'JAVA'},
+      {id:'c',name:'C',subtitle:'Procedural programming fundamentals',level:'Beginner',logo:DEVICON+'c/c-original.svg',dashboard:'C.html',mark:'C'},
+      {id:'cplusplus',name:'C++',subtitle:'OOP, data structures and algorithms',level:'Intermediate',logo:DEVICON+'cplusplus/cplusplus-original.svg',dashboard:'CPlusPlus.html',mark:'C++'},
+      {id:'csharp',name:'C#',subtitle:'Modern application development',level:'Beginner',logo:DEVICON+'csharp/csharp-original.svg',dashboard:'CSharp.html',mark:'C#'},
+      {id:'php',name:'PHP',subtitle:'Server-side web development',level:'Beginner',logo:DEVICON+'php/php-original.svg',dashboard:'PHP.html',mark:'PHP'},
+      {id:'typescript',name:'TypeScript',subtitle:'Typed JavaScript development',level:'Intermediate',logo:DEVICON+'typescript/typescript-original.svg',dashboard:'TypeScript.html',mark:'TS'},
+      {id:'go',name:'Go',subtitle:'Efficient services and concurrency',level:'Intermediate',logo:DEVICON+'go/go-original.svg',dashboard:'Go.html',mark:'GO'},
+      {id:'rust',name:'Rust',subtitle:'Memory safety and systems code',level:'Advanced',logo:DEVICON+'rust/rust-original.svg',dashboard:'Rust.html',mark:'RS'},
+      {id:'kotlin',name:'Kotlin',subtitle:'Modern app programming',level:'Intermediate',logo:DEVICON+'kotlin/kotlin-original.svg',dashboard:'Kotlin.html',mark:'KT'},
+      {id:'swift',name:'Swift',subtitle:'Apple-platform development',level:'Intermediate',logo:DEVICON+'swift/swift-original.svg',dashboard:'Swift.html',mark:'SW'},
+      {id:'dart',name:'Dart',subtitle:'Language fundamentals and async code',level:'Beginner',logo:DEVICON+'dart/dart-original.svg',dashboard:'Dart.html',mark:'DA'},
+      {id:'ruby',name:'Ruby',subtitle:'Expressive syntax and web apps',level:'Beginner',logo:DEVICON+'ruby/ruby-original.svg',dashboard:'Ruby.html',mark:'RB'},
+      {id:'sql',name:'SQL',subtitle:'Queries and relational data',level:'Beginner',logo:DEVICON+'mysql/mysql-original.svg',dashboard:'SQL.html',mark:'SQL'},
+      {id:'r',name:'R',subtitle:'Statistics and data analysis',level:'Intermediate',logo:DEVICON+'r/r-original.svg',dashboard:'R.html',mark:'R'},
+      {id:'lua',name:'Lua',subtitle:'Lightweight scripting',level:'Beginner',logo:DEVICON+'lua/lua-original.svg',dashboard:'Lua.html',mark:'LUA'}
+    ];
+    const ALIASES = { js:'javascript', py:'python', cpp:'cplusplus', 'c++':'cplusplus', 'c-plus-plus':'cplusplus', 'c#':'csharp', 'c-sharp':'csharp' };
+    const $ = id => document.getElementById(id);
+    let currentUser = null;
+    let userData = {};
+    let recentHistory = [];
+    let profileUnsubscribe = null;
+    let historyUnsubscribe = null;
+    let receivedProfileSnapshot = false;
+    let activeFilter = 'all';
+    let refreshBusy = false;
+
+    function normalizeCourseId(value) {
+      const key = String(value ?? '').trim().toLowerCase().replace(/\s+/g, '-');
+      return ALIASES[key] || key;
+    }
+    function finiteNumber(value) {
+      if (typeof value === 'number' && Number.isFinite(value)) return value;
+      if (typeof value === 'string' && value.trim() !== '' && Number.isFinite(Number(value))) return Number(value);
+      return 0;
+    }
+    function clamp(value, min, max) { return Math.min(max, Math.max(min, value)); }
+    function timestampMillis(value) {
+      try {
+        if (value?.toMillis) return value.toMillis();
+        if (value?.toDate) return value.toDate().getTime();
+        if (value instanceof Date) return value.getTime();
+        if (typeof value === 'number') return value;
+        if (typeof value === 'string') return Date.parse(value) || 0;
+        if (value && Number.isFinite(value.seconds)) return value.seconds * 1000;
+      } catch (_) { /* Invalid legacy timestamp: show a safe fallback. */ }
+      return 0;
+    }
+    function formatDate(value, options = {month:'short', day:'numeric', year:'numeric'}) {
+      const millis = timestampMillis(value);
+      return millis ? new Date(millis).toLocaleDateString(undefined, options) : 'Not recorded yet';
+    }
+    function formatDateTime(value) {
+      const millis = timestampMillis(value);
+      return millis ? new Date(millis).toLocaleString(undefined, {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'Recently';
+    }
+    function courseById(id) {
+      const canonical = normalizeCourseId(id);
+      return COURSE_LIST.find(course => course.id === canonical) || null;
+    }
+    function getLevel(xpValue) {
+      const xp = Math.max(0, Math.floor(finiteNumber(xpValue)));
+      const level = Math.floor(xp / 100) + 1;
+      const labels = ['Beginner','Learner','Coder','Developer','Advanced Developer','Expert','Master','Legend'];
+      return { level, title: labels[Math.min(level - 1, labels.length - 1)], within: xp % 100, toNext: 100 - (xp % 100), total: xp };
+    }
+    function getProgressEntries(data) {
+      return data?.progress && typeof data.progress === 'object' && !Array.isArray(data.progress) ? data.progress : {};
+    }
+    function readDirectProgress(progressMap, course) {
+      const keys = [course.id, ...Object.keys(ALIASES).filter(alias => ALIASES[alias] === course.id)];
+      let best = 0;
+      for (const key of keys) {
+        const raw = progressMap[key];
+        let value = 0;
+        if (typeof raw === 'number' || typeof raw === 'string') value = finiteNumber(raw);
+        else if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+          value = Math.max(finiteNumber(raw.completed), finiteNumber(raw.lastCompleted), finiteNumber(raw.lessonsCompleted), finiteNumber(raw.completedCount));
+        }
+        best = Math.max(best, value);
+      }
+      return clamp(Math.floor(best), 0, TOTAL_LESSONS_PER_COURSE);
+    }
+    function completedLessonNumbers(data, course) {
+      const raw = data?.completedLessons;
+      const values = new Set();
+      const entries = [];
+      if (Array.isArray(raw)) {
+        for (const item of raw) {
+          if (typeof item === 'string') entries.push(item);
+          else if (item && typeof item === 'object') entries.push(item.lessonId || item.id || item.key || '');
+        }
+      } else if (raw && typeof raw === 'object') {
+        for (const [key, value] of Object.entries(raw)) if (value === true || value === 1 || (value && typeof value === 'object' && value.completed === true)) entries.push(key);
+      }
+      for (const entry of entries) {
+        const match = String(entry).trim().match(/^(.*?)[_-]lesson[_-]?(\d+)$/i);
+        if (!match || normalizeCourseId(match[1]) !== course.id) continue;
+        const n = Number(match[2]);
+        if (Number.isInteger(n) && n >= 1 && n <= TOTAL_LESSONS_PER_COURSE) values.add(n);
+      }
+      return values;
+    }
+    function getCourseProgress(data, course) {
+      const fromRecord = readDirectProgress(getProgressEntries(data), course);
+      const completedNumbers = completedLessonNumbers(data, course);
+      let contiguous = 0;
+      while (completedNumbers.has(contiguous + 1)) contiguous++;
+      return clamp(Math.max(fromRecord, contiguous), 0, TOTAL_LESSONS_PER_COURSE);
+    }
+    function getCertificateCourseIds(data) {
+      const found = new Set();
+      const certs = data?.certificates;
+      if (certs && typeof certs === 'object' && !Array.isArray(certs)) {
+        for (const [key, value] of Object.entries(certs)) {
+          if (value === true || (value && typeof value === 'object' && (value.id || value.certificateId || value.status === 'active'))) found.add(normalizeCourseId(key));
+        }
+      }
+      const ids = data?.certificateIds;
+      if (ids && typeof ids === 'object' && !Array.isArray(ids)) {
+        for (const [key, value] of Object.entries(ids)) if (value) found.add(normalizeCourseId(key));
+      }
+      return found;
+    }
+    function readModel() {
+      const xp = Math.max(0, Math.floor(finiteNumber(userData.xp)));
+      const coins = Math.max(0, finiteNumber(userData.coins));
+      const streak = Math.max(0, Math.floor(finiteNumber(userData.streak)));
+      const courseStats = COURSE_LIST.map(course => {
+        const completed = getCourseProgress(userData, course);
+        return {...course, completed, total:TOTAL_LESSONS_PER_COURSE, percent:Math.round(completed / TOTAL_LESSONS_PER_COURSE * 100), status:completed >= TOTAL_LESSONS_PER_COURSE ? 'done' : completed > 0 ? 'active' : 'new'};
+      });
+      const completedLessons = courseStats.reduce((sum, course) => sum + course.completed, 0);
+      const started = courseStats.filter(course => course.completed > 0).length;
+      const completeCourses = courseStats.filter(course => course.completed >= TOTAL_LESSONS_PER_COURSE).length;
+      const certificates = getCertificateCourseIds(userData);
+      const certificateCount = [...certificates].filter(id => courseById(id)).length;
+      const xpLevel = getLevel(xp);
+      return {xp, coins, streak, courseStats, completedLessons, started, completeCourses, certificates, certificateCount, xpLevel, overall:Math.round(completedLessons / (COURSE_LIST.length * TOTAL_LESSONS_PER_COURSE) * 100)};
+    }
+    function setSyncState(mode, text) {
+      const node = $('syncState');
+      node.classList.remove('live','offline');
+      if (mode === 'live') node.classList.add('live');
+      if (mode === 'offline') node.classList.add('offline');
+      $('syncLabel').textContent = text;
+    }
+    function toast(message, type = '') {
+      const node = document.createElement('div');
+      node.className = `toast${type ? ` ${type}` : ''}`;
+      node.textContent = String(message);
+      $('toastHost').appendChild(node);
+      window.setTimeout(() => node.remove(), 3600);
+    }
+    function create(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+    function openCourseUrl(course) { return course.dashboard; }
+    function lessonUrl(course, lesson) {
+      const paramId = course.id === 'cplusplus' ? 'cpp' : course.id;
+      return `lesson.html?course=${encodeURIComponent(paramId)}&lesson=${encodeURIComponent(clamp(lesson,1,TOTAL_LESSONS_PER_COURSE))}`;
+    }
+    function certificateUrl(course) {
+      const paramId = course.id === 'cplusplus' ? 'cpp' : course.id;
+      return `certificate_setup.html?course=${encodeURIComponent(paramId)}`;
+    }
+    function renderTopProfile(model) {
+      const displayName = String(userData.displayName || userData.name || userData.username || currentUser?.displayName || currentUser?.email?.split('@')[0] || 'Coder');
+      const email = String(userData.email || currentUser?.email || 'Email not available');
+      const photo = String(userData.photoURL || currentUser?.photoURL || 'logo.png');
+      $('userName').textContent = displayName;
+      $('userEmail').textContent = email;
+      $('userPhoto').src = photo;
+      $('userPhoto').onerror = () => { $('userPhoto').onerror = null; $('userPhoto').src = 'logo.png'; };
+      $('streakInline').textContent = `${model.streak}-day streak`;
+      $('userLevel').textContent = model.xpLevel.level;
+      $('levelTitle').textContent = model.xpLevel.title;
+      $('currentXP').textContent = model.xpLevel.within.toLocaleString();
+      $('totalXP').textContent = model.xp.toLocaleString();
+      $('xpFill').style.width = `${model.xpLevel.within}%`;
+      $('nextLevel').textContent = `${model.xpLevel.toNext} XP to reach level ${model.xpLevel.level + 1}`;
+      $('xpFill').parentElement.setAttribute('aria-valuenow', String(model.xpLevel.within));
+    }
+    function renderSummary(model) {
+      $('overallCompletion').textContent = `${model.overall}%`;
+      $('overallRing').style.setProperty('--pct', `${model.overall}%`);
+      $('journeyLessons').textContent = `${model.completedLessons} / ${COURSE_LIST.length * TOTAL_LESSONS_PER_COURSE}`;
+      $('journeyCourses').textContent = `${model.completeCourses} / ${COURSE_LIST.length}`;
+      $('lessonsDone').textContent = model.completedLessons.toLocaleString();
+      $('lessonStatMini').textContent = `${model.completedLessons} / ${COURSE_LIST.length * TOTAL_LESSONS_PER_COURSE}`;
+      $('coursesStarted').textContent = model.started.toLocaleString();
+      $('startedMini').textContent = `${model.started} active`;
+      $('coins').textContent = Number.isInteger(model.coins) ? model.coins.toLocaleString() : model.coins.toLocaleString(undefined,{maximumFractionDigits:1});
+      $('certCount').textContent = model.certificateCount.toLocaleString();
+      $('certMini').textContent = `${model.completeCourses} COURSE${model.completeCourses === 1 ? '' : 'S'} DONE`;
+      $('completedCourseNote').textContent = model.certificateCount ? `${model.certificateCount} official course certificate${model.certificateCount === 1 ? '' : 's'} on your account` : model.completeCourses ? `${model.completeCourses} completed course${model.completeCourses === 1 ? '' : 's'} · check certificate eligibility` : 'Finish all ten lessons in a course to work toward a certificate';
+      $('journeyText').textContent = model.completedLessons === 0 ? 'Your journey starts with one lesson. Pick a course, learn a new concept and build momentum.' : model.overall >= 100 ? 'Outstanding work. You have completed every course currently tracked by Code Academy.' : `You have completed ${model.completedLessons} lesson${model.completedLessons === 1 ? '' : 's'} across ${model.started} course${model.started === 1 ? '' : 's'}. Keep the momentum going.`;
+      $('courseCount').textContent = `${COURSE_LIST.length} courses · ${model.completeCourses} complete`;
+      $('todayDate').textContent = new Date().toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+      const updated = timestampMillis(userData.lastLessonCompletionAt);
+      $('lastUpdated').textContent = updated ? `Last lesson completed ${formatDateTime(updated)}` : 'Progress updates automatically';
+      $('lastUpdated').style.color = 'var(--muted)';
+      const certCourse = model.courseStats.find(course => model.certificates.has(course.id)) || model.courseStats.find(course => course.completed >= TOTAL_LESSONS_PER_COURSE) || model.courseStats.find(course => course.completed > 0) || COURSE_LIST[0];
+      const certificateIdEntry = Object.entries(userData.certificateIds || {}).find(([key, value]) => normalizeCourseId(key) === certCourse.id && Boolean(value));
+      $('certificateBtn').href = certCourse ? (model.certificates.has(certCourse.id) && certificateIdEntry ? `certificate_view.html?id=${encodeURIComponent(certificateIdEntry[1])}&course=${encodeURIComponent(certCourse.id === 'cplusplus' ? 'cpp' : certCourse.id)}` : certificateUrl(certCourse)) : 'certificate_setup.html?course=html';
+      $('certificatePrompt').textContent = model.certificateCount ? 'Open your certificate page to review your current achievements and certificate details.' : model.completeCourses ? 'You have completed a course. Open certificate setup to check eligibility and complete the required details.' : 'Complete all ten lessons in a course to unlock its certificate setup.';
+      renderContinueRecommendation(model);
+    }
+    function renderContinueRecommendation(model) {
+      const latest = recentHistory[0];
+      let target = null;
+      let nextLesson = 1;
+      let directResume = false;
+      if (latest) {
+        const fromHistory = courseById(latest.course || latest.courseId);
+        if (fromHistory) {
+          const matching = model.courseStats.find(course => course.id === fromHistory.id);
+          if (matching && matching.completed < TOTAL_LESSONS_PER_COURSE) {
+            target = matching;
+            nextLesson = Math.min(TOTAL_LESSONS_PER_COURSE, Math.max(matching.completed + 1, Math.floor(finiteNumber(latest.lesson)) || 1));
+            directResume = true;
+          }
+        }
+      }
+      if (!target) {
+        target = model.courseStats.find(course => course.completed > 0 && course.completed < TOTAL_LESSONS_PER_COURSE) || model.courseStats.find(course => course.completed < TOTAL_LESSONS_PER_COURSE) || COURSE_LIST[0];
+        nextLesson = Math.min(TOTAL_LESSONS_PER_COURSE, target.completed + 1);
+        directResume = recentHistory.some(item => normalizeCourseId(item.course || item.courseId) === target.id);
+      }
+      const allCoursesComplete = model.courseStats.every(course => course.completed >= TOTAL_LESSONS_PER_COURSE);
+      if (allCoursesComplete) {
+        const reviewCourse = courseById(latest?.course || latest?.courseId) || COURSE_LIST[0];
+        $('continueBtn').href = reviewCourse.dashboard;
+        $('continueBtn').innerHTML = `<i class="fa-solid fa-rotate-right"></i> Review ${reviewCourse.name}`;
+        $('continueBtn').title = `Open the ${reviewCourse.name} dashboard to review a course`;
+        return;
+      }
+      $('continueBtn').href = directResume ? lessonUrl(target, nextLesson) : target.dashboard;
+      $('continueBtn').innerHTML = `<i class="fa-solid fa-play"></i> ${target.completed ? `Continue ${target.name}` : `Start ${target.name}`}`;
+      $('continueBtn').title = directResume ? `Resume ${target.name}, lesson ${nextLesson}` : `Open the ${target.name} course dashboard`;
+    }
+    function renderCourseGrid(model) {
+      const grid = $('courseGrid');
+      const search = $('courseSearch').value.trim().toLowerCase();
+      const filtered = model.courseStats.filter(course => {
+        const matchesSearch = `${course.name} ${course.subtitle} ${course.id} ${course.level}`.toLowerCase().includes(search);
+        const matchesFilter = activeFilter === 'all' || course.status === activeFilter;
+        return matchesSearch && matchesFilter;
+      });
+      grid.replaceChildren();
+      if (!filtered.length) {
+        const empty = create('div','empty-state');
+        empty.append(create('i','fa-solid fa-magnifying-glass'));
+        empty.append(create('strong','', 'No courses match your search'));
+        empty.append(create('p','', 'Try a different course name or choose another filter.'));
+        grid.append(empty);
+        return;
+      }
+      for (const course of filtered) {
+        const card = create('article','course-card');
+        const head = create('div','course-card-head');
+        const logoBox = create('div','course-logo-box');
+        const img = create('img','course-logo');
+        img.src = course.logo; img.alt = `${course.name} logo`; img.loading = 'lazy'; img.decoding = 'async';
+        const mark = create('span','course-mark',course.mark);
+        img.addEventListener('error', () => { img.style.display = 'none'; mark.style.display = 'flex'; }, {once:true});
+        logoBox.append(img,mark);
+        const info = create('div','course-info');
+        info.append(create('h3','course-name',course.name),create('div','course-level',course.subtitle));
+        head.append(logoBox,info,create('div','course-percent',`${course.percent}%`));
+        card.append(head);
+        const statusRow = create('div','course-status-row');
+        const statusClass = course.status === 'done' ? 'done' : course.status === 'active' ? 'started' : '';
+        const statusLabel = course.status === 'done' ? 'Course completed' : course.status === 'active' ? 'In progress' : 'Not started';
+        const status = create('span',`status-chip ${statusClass}`,statusLabel);
+        const fraction = create('span','course-fraction',`${course.completed} / ${course.total} lessons`);
+        statusRow.append(status,fraction);
+        const track = create('div','course-track');
+        const fill = create('span'); fill.style.width = `${course.percent}%`; track.append(fill);
+        card.append(statusRow,track);
+        const bottom = create('div','course-bottom');
+        const open = create('a','secondary-btn'); open.href = openCourseUrl(course); open.innerHTML = '<i class="fa-solid fa-arrow-up-right-from-square"></i> Open course';
+        bottom.append(open);
+        if (course.completed >= TOTAL_LESSONS_PER_COURSE) {
+          const cert = create('a','primary-btn'); cert.href = certificateUrl(course); cert.innerHTML = '<i class="fa-solid fa-award"></i> Certificate'; bottom.append(cert);
+        } else {
+          const savedActivity = recentHistory.find(item => normalizeCourseId(item.course || item.courseId) === course.id);
+          const resume = create('a','primary-btn');
+          if (savedActivity) {
+            const lessonToOpen = Math.min(TOTAL_LESSONS_PER_COURSE, Math.max(course.completed + 1, Math.floor(finiteNumber(savedActivity.lesson)) || 1));
+            resume.href = lessonUrl(course, lessonToOpen);
+            resume.title = `Resume ${course.name}, lesson ${lessonToOpen}`;
+          } else {
+            resume.href = course.dashboard;
+            resume.title = `Open the ${course.name} course dashboard`;
+          }
+          resume.innerHTML = `<i class="fa-solid fa-play"></i> ${course.completed ? 'Continue' : 'Start'}`;
+          bottom.append(resume);
+        }
+        card.append(bottom);
+        grid.append(card);
+      }
+    }
+    function renderActivity() {
+      const list = $('activityList');
+      list.replaceChildren();
+      $('activityCount').textContent = recentHistory.length ? `${recentHistory.length} latest answers` : 'Waiting for lesson activity';
+      if (!recentHistory.length) {
+        const empty = create('div','empty-state');
+        empty.append(create('i','fa-solid fa-hourglass-start'));
+        empty.append(create('strong','', 'Your activity will appear here'));
+        empty.append(create('p','', 'Answer a quiz in a lesson to begin building your learning history. New activity appears automatically.'));
+        list.append(empty);
+        return;
+      }
+      for (const item of recentHistory) {
+        const course = courseById(item.course || item.courseId);
+        const courseName = course?.name || String(item.courseLabel || item.course || 'Course');
+        const lessonNumber = Math.max(0,Math.floor(finiteNumber(item.lesson)));
+        const isKnown = typeof item.isCorrect === 'boolean';
+        const correct = item.isCorrect === true;
+        const row = create('article','activity-item');
+        const mark = create('div','activity-mark'); mark.innerHTML = `<i class="fa-solid ${isKnown ? (correct ? 'fa-check' : 'fa-rotate-left') : 'fa-code'}"></i>`;
+        const main = create('div','activity-main');
+        const title = create('div','activity-title',`${courseName}${lessonNumber ? ` · Lesson ${lessonNumber}` : ''}${item.lessonTitle ? ` — ${item.lessonTitle}` : ''}`);
+        const detail = create('div','activity-detail',String(item.question || 'Quiz answer saved').replace(/\s+/g,' ').slice(0,150));
+        const time = create('div','activity-time',formatDateTime(item.createdAt));
+        main.append(title,detail,time); row.append(mark,main);
+        if (isKnown) row.append(create('span',`activity-badge ${correct ? 'correct' : 'incorrect'}`,correct ? 'CORRECT' : 'REVIEW'));
+        list.append(row);
+      }
+    }
+    function renderAchievements(model) {
+      const achievements = [
+        {id:'first',title:'First step',description:'Complete your first lesson',icon:'fa-shoe-prints',unlocked:model.completedLessons>=1},
+        {id:'streak',title:'On a roll',description:'Build a 3-day learning streak',icon:'fa-fire',unlocked:model.streak>=3},
+        {id:'xp',title:'XP collector',description:'Reach 100 total XP',icon:'fa-bolt',unlocked:model.xp>=100},
+        {id:'course',title:'Course finisher',description:'Complete all 10 lessons in one course',icon:'fa-trophy',unlocked:model.completeCourses>=1},
+        {id:'cert',title:'Certified',description:'Earn your first course certificate',icon:'fa-certificate',unlocked:model.certificateCount>=1},
+        {id:'explorer',title:'Course explorer',description:'Start learning in 3 courses',icon:'fa-compass',unlocked:model.started>=3}
+      ];
+      const grid = $('achievementGrid'); grid.replaceChildren();
+      for (const item of achievements) {
+        const card = create('div',`achievement ${item.unlocked ? '' : 'locked'}`);
+        const icon = create('span','achievement-icon'); icon.innerHTML = `<i class="fa-solid ${item.icon}"></i>`;
+        const text = create('span'); text.append(create('strong','',item.title),create('small','',item.unlocked ? 'Unlocked' : item.description));
+        card.append(icon,text); grid.append(card);
+      }
+    }
+    function renderAll() {
+      const model = readModel();
+      renderTopProfile(model);
+      renderSummary(model);
+      renderCourseGrid(model);
+      renderActivity();
+      renderAchievements(model);
+      $('loadingShell').style.display = 'none';
+      $('errorShell').style.display = 'none';
+      $('mainPage').hidden = false;
+    }
+    function showError(message) {
+      $('loadingShell').style.display = 'none';
+      $('mainPage').hidden = true;
+      $('errorShell').style.display = 'block';
+      $('errorMessage').textContent = message || 'Your progress is temporarily unavailable.';
+    }
+    function stopSubscriptions() {
+      if (typeof profileUnsubscribe === 'function') profileUnsubscribe();
+      if (typeof historyUnsubscribe === 'function') historyUnsubscribe();
+      profileUnsubscribe = null; historyUnsubscribe = null;
+    }
+    function subscribeToUser(user) {
+      stopSubscriptions();
+      receivedProfileSnapshot = false;
+      currentUser = user;
+      userData = {};
+      recentHistory = [];
+      $('mainPage').hidden = true;
+      $('loadingShell').style.display = 'block';
+      $('errorShell').style.display = 'none';
+      setSyncState('','Connecting');
+      profileUnsubscribe = onSnapshot(doc(db,'users',user.uid), snapshot => {
+        userData = snapshot.exists() ? (snapshot.data() || {}) : {};
+        receivedProfileSnapshot = true;
+        setSyncState(navigator.onLine ? 'live' : 'offline',navigator.onLine ? 'Live sync' : 'Offline');
+        renderAll();
+      }, error => {
+        console.error('Progress profile listener failed:',error);
+        setSyncState('offline','Sync paused');
+        if (!receivedProfileSnapshot) showError(error?.code === 'permission-denied' ? 'Firebase rules do not allow this account to read its own users/{uid} profile document. Check the Firestore rules for the signed-in UID.' : (error?.message || 'Could not listen for profile updates. Check your connection and retry.'));
+        else toast('Live updates paused. Your last loaded progress is still shown.','error');
+      });
+      const historyQuery = query(collection(db,'users',user.uid,'lessonHistory'),orderBy('createdAt','desc'),limit(8));
+      historyUnsubscribe = onSnapshot(historyQuery, snapshot => {
+        recentHistory = snapshot.docs.map(document => ({id:document.id,...(document.data() || {})}));
+        if (receivedProfileSnapshot) renderAll();
+      }, error => {
+        console.warn('Recent lesson activity unavailable:',error);
+        recentHistory = [];
+        if (receivedProfileSnapshot) renderAll();
+      });
+    }
+
+    $('refreshBtn').addEventListener('click', async () => {
+      if (!currentUser || refreshBusy) return;
+      refreshBusy = true;
+      const button = $('refreshBtn'); button.disabled = true; button.querySelector('i').classList.add('fa-spin');
+      try {
+        const snap = await getDoc(doc(db,'users',currentUser.uid));
+        userData = snap.exists() ? (snap.data() || {}) : {};
+        renderAll();
+        toast('Progress refreshed. Live sync remains enabled.');
+      } catch (error) {
+        console.error('Manual progress refresh failed:',error);
+        toast('Refresh failed. Check your connection and try again.','error');
+      } finally {
+        refreshBusy = false; button.disabled = false; button.querySelector('i').classList.remove('fa-spin');
+      }
+    });
+    $('retryBtn').addEventListener('click', () => { if (currentUser) subscribeToUser(currentUser); });
+    $('courseSearch').addEventListener('input', () => { if (currentUser) renderCourseGrid(readModel()); });
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click',() => {
+      activeFilter = button.dataset.filter || 'all';
+      document.querySelectorAll('[data-filter]').forEach(item => item.classList.toggle('active',item === button));
+      if (currentUser) renderCourseGrid(readModel());
+    }));
+    window.addEventListener('online', () => { if (receivedProfileSnapshot) setSyncState('live','Live sync'); });
+    window.addEventListener('offline', () => setSyncState('offline','Offline'));
+    window.addEventListener('pagehide', stopSubscriptions);
+    window.addEventListener('error', event => console.error('Progress page runtime error:',event.error || event.message));
+    window.addEventListener('unhandledrejection', event => console.error('Progress page rejected promise:',event.reason));
+
+    onAuthStateChanged(auth,user => {
+      if (!user) {
+        stopSubscriptions();
+        window.location.replace('login.html');
+        return;
+      }
+      subscribeToUser(user);
+    });
+  </script>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#020617">
+  <meta name="description" content="Code Academy C++ Studio — edit, compile, run and save modern C++ projects.">
+  <meta name="application-name" content="Code Academy C++ Studio">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="C++ Editor | Code Academy">
+  <meta property="og:description" content="A modern C++ coding studio with compiler-backed execution, project saving, standard headers, and external library discovery.">
+  <meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/logo.png">
+  <title>C++ Editor | Code Academy</title>
+  <link rel="icon" href="logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+  <script>
+/* Embedded runtime: ./cpp-runtime.js */
+/* Code Academy C++ runtime manager.
+ * Uses Compiler Explorer's documented REST API for genuine GCC/Clang compilation
+ * and sandboxed execution. No API key is embedded in this public client.
+ */
+(function (global) {
+  "use strict";
+
+  const API_ROOT = "https://godbolt.org/api";
+  const REQUEST_TIMEOUT_MS = 45000;
+  let compilerCache = null;
+  let libraryCache = null;
+  let formatterCache = null;
+  const activeRequests = new Set();
+  const listeners = new Set();
+
+  function emit(type, detail) {
+    const message = Object.assign({ type }, detail || {});
+    listeners.forEach((listener) => {
+      try { listener(message); } catch (error) { console.error("C++ runtime listener failed", error); }
+    });
+  }
+
+  function safeText(value) {
+    if (value == null) return "";
+    if (typeof value === "string") return value;
+    if (typeof value === "number" || typeof value === "boolean") return String(value);
+    if (Array.isArray(value)) return value.map(safeText).filter(Boolean).join("\n");
+    if (typeof value === "object") {
+      if (typeof value.text === "string") return value.text;
+      if (typeof value.message === "string") return value.message;
+      if (typeof value.stdout === "string" || typeof value.stderr === "string") {
+        return [safeText(value.stdout), safeText(value.stderr)].filter(Boolean).join("\n");
+      }
+      try { return JSON.stringify(value); } catch (_) { return ""; }
+    }
+    return "";
+  }
+
+  async function requestJSON(url, options, timeoutMs) {
+    const controller = new AbortController();
+    const duration = Math.max(1000, Number(timeoutMs) || REQUEST_TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(new Error("Request timed out")), duration);
+    activeRequests.add(controller);
+    emit("status", { phase: "request", text: "Contacting Compiler Explorer…" });
+    try {
+      const response = await fetch(url, Object.assign({
+        method: "GET",
+        mode: "cors",
+        credentials: "omit",
+        cache: "no-store",
+        headers: { "Accept": "application/json" },
+        signal: controller.signal
+      }, options || {}));
+      const text = await response.text();
+      let data;
+      try { data = text ? JSON.parse(text) : {}; }
+      catch (_) { data = { message: text.slice(0, 1000) }; }
+      if (!response.ok) {
+        const message = data && (data.message || data.error || data.stderr);
+        throw new Error("Compiler service returned HTTP " + response.status + (message ? ": " + safeText(message) : "."));
+      }
+      return data;
+    } catch (error) {
+      if (error && error.name === "AbortError") {
+        throw new Error("The compiler request was cancelled or timed out. Try again with a smaller program.");
+      }
+      if (error instanceof TypeError) {
+        throw new Error("Could not reach Compiler Explorer. Check your internet connection, browser connectivity, and the compiler service status.");
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      activeRequests.delete(controller);
+    }
+  }
+
+  function versionParts(value) {
+    const match = String(value || "").match(/\d+(?:\.\d+)*/);
+    return match ? match[0].split(".").map(part => Number(part) || 0) : [0];
+  }
+
+  function compareVersions(a, b) {
+    const aa = versionParts(a.semver || a.name || a.id);
+    const bb = versionParts(b.semver || b.name || b.id);
+    for (let i = 0; i < Math.max(aa.length, bb.length); i++) {
+      const diff = (bb[i] || 0) - (aa[i] || 0);
+      if (diff) return diff;
+    }
+    return String(a.name || a.id).localeCompare(String(b.name || b.id));
+  }
+
+  function normalizeCompilers(data) {
+    const raw = Array.isArray(data) ? data : Array.isArray(data && data.compilers) ? data.compilers : [];
+    const usable = raw.filter(item => item && item.id && item.name && /(?:gcc|g\+\+|clang|llvm)/i.test(String(item.name) + " " + String(item.id)));
+    const host = usable.filter(item => /x86[-_ ]?64|amd64/i.test(String(item.name)));
+    const selectedPool = host.length ? host : usable;
+    const stable = selectedPool.filter(item => !item.releaseTrack || item.releaseTrack === "stable");
+    const pool = stable.length ? stable : selectedPool.filter(item => item.releaseTrack !== "experimental");
+    const chosenPool = pool.length ? pool : selectedPool;
+    const seen = new Set();
+    const chosen = chosenPool.filter(item => {
+      const id = String(item.id);
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    });
+    if (!chosen.length) throw new Error("Compiler Explorer did not report any usable GCC or Clang C++ compilers.");
+    // Keep all stable versions offered by the service, not just the newest GCC/Clang.
+    // This lets learners compare older and newer compiler versions when available.
+    return chosen.sort((a, b) => {
+      const af = /clang|llvm/i.test(String(a.name) + " " + a.id) ? 1 : 0;
+      const bf = /clang|llvm/i.test(String(b.name) + " " + b.id) ? 1 : 0;
+      if (af !== bf) return af - bf;
+      return compareVersions(a, b);
+    });
+  }
+
+  async function getCompilers(options) {
+    if (options && options.force) compilerCache = null;
+    if (compilerCache) return compilerCache.slice();
+    const data = await requestJSON(API_ROOT + "/compilers/c%2B%2B?fields=id,name,semver,releaseTrack,compilerType");
+    compilerCache = normalizeCompilers(data);
+    emit("compilers", { compilers: compilerCache.slice() });
+    return compilerCache.slice();
+  }
+
+  function normalizeLibraries(data) {
+    const raw = Array.isArray(data) ? data : Array.isArray(data && data.libraries) ? data.libraries : [];
+    const result = [];
+    for (const item of raw) {
+      if (!item || typeof item !== "object") continue;
+      const id = String(item.id || item.name || "").trim();
+      const name = String(item.name || item.id || "").trim();
+      if (!id || !name) continue;
+      let versions = [];
+      const source = item.versions || item.version || item.versionId;
+      if (Array.isArray(source)) {
+        versions = source.map(value => typeof value === "string" || typeof value === "number" ? String(value) : String(value && (value.id || value.version || value.name) || "")).filter(Boolean);
+      } else if (source && typeof source === "object") {
+        versions = Object.keys(source);
+      } else if (typeof source === "string" || typeof source === "number") {
+        versions = [String(source)];
+      }
+      versions = [...new Set(versions)];
+      result.push({ id, name, description: String(item.description || item.summary || ""), versions });
+    }
+    return result.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  async function getLibraries(options) {
+    if (options && options.force) libraryCache = null;
+    if (libraryCache) return libraryCache.slice();
+    const data = await requestJSON(API_ROOT + "/libraries/c%2B%2B");
+    libraryCache = normalizeLibraries(data);
+    emit("libraries", { libraries: libraryCache.slice() });
+    return libraryCache.slice();
+  }
+
+  async function getFormatters(options) {
+    if (options && options.force) formatterCache = null;
+    if (formatterCache) return formatterCache.slice();
+    const data = await requestJSON(API_ROOT + "/formats");
+    formatterCache = Array.isArray(data) ? data : Array.isArray(data && data.formats) ? data.formats : [];
+    return formatterCache.slice();
+  }
+
+  function formatOutput(data) {
+    const answer = typeof (data && data.answer) === "string" ? data.answer : "";
+    if (!answer || (data && (data.throw || Number(data.exit) !== 0))) {
+      throw new Error("The remote formatter could not format this file.");
+    }
+    return answer;
+  }
+
+  async function format(source, options) {
+    const text = String(source || "");
+    try {
+      const formatters = await getFormatters();
+      const formatter = formatters.find(item => /clang-format/i.test(String(item.name || item.type || item.exe || "")));
+      if (formatter) {
+        const body = await requestJSON(API_ROOT + "/format/" + encodeURIComponent(formatter.name || formatter.type), {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify({ source: text, base: "Google", useSpaces: true, tabWidth: 4 })
+        });
+        return formatOutput(body);
+      }
+    } catch (error) {
+      emit("status", { phase: "format-fallback", text: "Remote formatter unavailable; using safe whitespace cleanup." });
+    }
+    return text.split(/\r?\n/).map(line => line.replace(/[\t ]+$/g, "")).join("\n").replace(/\n*$/g, "") + (text.length ? "\n" : "");
+  }
+
+  function normalizeCompileResponse(data) {
+    const result = data && (data.execResult || data.executionResult || data.executeResult || data.execution || data.runResult || (data.result && (data.result.execResult || data.result.executionResult)) || null);
+    const compilerStdout = safeText(data && data.stdout);
+    const compilerStderr = safeText(data && data.stderr);
+    let executionStdout = "";
+    let executionStderr = "";
+    let executionCode = null;
+    if (result) {
+      executionStdout = safeText(result.stdout || result.output || result.out);
+      executionStderr = safeText(result.stderr || result.error || result.err);
+      const code = result.code ?? result.exitCode ?? result.returnCode;
+      if (Number.isFinite(Number(code))) executionCode = Number(code);
+    }
+    // Some service responses place executor data in a nested list/object.
+    if (!result && data && data.result && typeof data.result === "object") {
+      const nested = data.result;
+      executionStdout = safeText(nested.stdout || nested.output);
+      executionStderr = safeText(nested.stderr || nested.error);
+      const code = nested.code ?? nested.exitCode;
+      if (code !== undefined && Number.isFinite(Number(code))) executionCode = Number(code);
+    }
+    return {
+      raw: data,
+      compileCode: Number.isFinite(Number(data && data.code)) ? Number(data.code) : 0,
+      compilerStdout,
+      compilerStderr,
+      executionStdout,
+      executionStderr,
+      executionCode,
+      asm: safeText(data && data.asm)
+    };
+  }
+
+  async function compile(options) {
+    const opts = options || {};
+    const source = String(opts.source || "");
+    if (!source.trim()) throw new Error("Write some C++ code before compiling.");
+    const compilerId = String(opts.compilerId || "").trim();
+    if (!compilerId) throw new Error("Choose an available C++ compiler first.");
+    const standard = /^c\+\+(?:98|03|11|14|17|20|23)$/.test(String(opts.standard || "")) ? opts.standard : "c++20";
+    const libraries = Array.isArray(opts.libraries) ? opts.libraries.filter(item => item && item.id && item.version).map(item => ({ id: String(item.id), version: String(item.version) })) : [];
+    const files = Array.isArray(opts.files) ? opts.files.filter(item => item && item.filename && typeof item.contents === "string").map(item => ({ filename: String(item.filename), contents: item.contents })) : [];
+    const request = {
+      source,
+      lang: "c++",
+      allowStoreCodeDebug: false,
+      files,
+      options: {
+        userArguments: "-std=" + standard + " -Wall -Wextra -pedantic -fno-diagnostics-color",
+        compilerOptions: { executorRequest: opts.execute !== false, skipAsm: true, overrides: [] },
+        filters: { execute: opts.execute !== false, binary: false, binaryObject: false, commentOnly: false, demangle: true, directives: false, intel: false, labels: false, libraryCode: false, trim: true, debugCalls: false },
+        executeParameters: { args: [], stdin: String(opts.stdin || ""), runtimeTools: [] },
+        tools: [],
+        libraries
+      }
+    };
+    emit("status", { phase: opts.execute === false ? "checking" : "compiling", text: opts.execute === false ? "Checking C++ source with the selected compiler…" : "Compiling and running with the selected compiler…" });
+    const data = await requestJSON(API_ROOT + "/compiler/" + encodeURIComponent(compilerId) + "/compile", {
+      method: "POST",
+      headers: { "Accept": "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(request)
+    }, opts.timeoutMs || REQUEST_TIMEOUT_MS);
+    const result = normalizeCompileResponse(data);
+    emit("result", { result, requestSummary: { compilerId, standard, sourceLength: source.length, extraFileCount: files.length, libraryCount: libraries.length } });
+    return result;
+  }
+
+  function stop() {
+    for (const controller of [...activeRequests]) {
+      try { controller.abort(); } catch (_) {}
+    }
+    emit("stopped", { text: "Stopped waiting for the compiler response. A request already accepted by the remote service may finish there." });
+  }
+
+  global.CodeAcademyCppRuntime = Object.freeze({
+    apiRoot: API_ROOT,
+    on(listener) { if (typeof listener !== "function") return function () {}; listeners.add(listener); return () => listeners.delete(listener); },
+    getCompilers,
+    getLibraries,
+    getFormatters,
+    compile,
+    format,
+    stop
+  });
+})(typeof window !== "undefined" ? window : globalThis);
+
+</script>
+  <style>
+    :root{color-scheme:dark;--bg:#020617;--surface:#0b1220;--surface2:#111b2e;--surface3:#172337;--line:#26364d;--line2:#344761;--text:#e5edf8;--muted:#8da1bd;--primary:#60a5fa;--primary2:#2563eb;--cyan:#22d3ee;--good:#34d399;--warn:#fbbf24;--bad:#fb7185;--radius:12px;--top:58px;--shadow:0 18px 55px rgba(0,0,0,.36)}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:disabled{opacity:.45;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}.app{height:100%;height:100dvh;display:flex;flex-direction:column;min-width:0;background:radial-gradient(ellipse at 55% -18%,rgba(37,99,235,.17),transparent 50%),var(--bg)}
+    .topbar{height:var(--top);flex:0 0 var(--top);display:flex;align-items:center;gap:9px;padding:0 14px;background:rgba(8,15,29,.97);border-bottom:1px solid var(--line);z-index:25;min-width:0}.brand{display:flex;align-items:center;gap:9px;min-width:0;max-width:215px}.brandLogo{width:33px;height:33px;object-fit:contain;border-radius:9px;background:#fff;flex-shrink:0}.brandMark{display:none;width:33px;height:33px;border-radius:9px;background:linear-gradient(135deg,#2563eb,#06b6d4);align-items:center;justify-content:center;color:white}.brandText{min-width:0}.brandText strong{display:block;font-size:13px;letter-spacing:.2px;white-space:nowrap}.brandText small{display:block;font-size:10px;color:var(--muted);margin-top:2px}.projectTitleWrap{min-width:0;flex:1;display:flex;align-items:center;gap:8px}.projectTitle{border:0;background:transparent;outline:none;color:var(--text);font-size:14px;font-weight:800;min-width:0;width:100%;text-overflow:ellipsis}.cloudState{font-size:10px;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:5px}.cloudState i{font-size:8px;color:var(--good)}.cloudState.pending i{color:var(--warn)}.cloudState.error i{color:var(--bad)}
+    .iconBtn,.actionBtn,.pillBtn{border:1px solid var(--line2);background:#101b2d;color:var(--text);height:36px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 11px;white-space:nowrap;transition:background .16s,border-color .16s,transform .16s}.iconBtn{width:36px;padding:0;flex-shrink:0}.iconBtn:hover,.actionBtn:hover,.pillBtn:hover{background:#1a2a41;border-color:#5880b3}.actionBtn{font-size:12px;font-weight:750}.actionBtn.primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);border-color:#3978f1;color:white}.actionBtn.run{background:linear-gradient(135deg,#059669,#047857);border-color:#10b981;color:white}.actionBtn.stop{border-color:#8b3346;color:#fecdd3}.actionBtn.ghost{background:transparent}.spacer{flex:1;min-width:4px}.toolrow{height:42px;flex:0 0 42px;border-bottom:1px solid var(--line);background:#080f1d;display:flex;align-items:center;gap:8px;padding:0 12px;overflow-x:auto;scrollbar-width:none}.toolrow::-webkit-scrollbar{display:none}.toolgroup{display:flex;gap:6px;align-items:center;flex-shrink:0}.toolSep{height:20px;width:1px;background:var(--line2);margin:0 2px;flex-shrink:0}.select{height:30px;max-width:150px;border-radius:8px;border:1px solid var(--line2);background:#101b2d;color:var(--text);padding:0 9px;font-size:11px}.toolbarHint{font-size:10px;color:var(--muted);white-space:nowrap;margin-left:auto}
+    .layout{min-height:0;flex:1;display:flex;position:relative;overflow:hidden}.sidebar{width:258px;flex:0 0 258px;min-width:0;display:flex;flex-direction:column;background:#080f1c;border-right:1px solid var(--line);overflow:hidden;transition:width .18s,flex-basis .18s}.sidebar.collapsed{width:0;flex-basis:0;border-right:0}.sideScroll{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:#2b405c transparent}.sideHead{height:44px;flex:0 0 44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid rgba(52,71,97,.6);font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:1px;color:#afc2db}.sideHead small{font-size:9px;color:var(--muted);letter-spacing:0}.sideBtns{display:flex;gap:5px}.miniBtn{height:29px;width:29px;border-radius:7px;border:1px solid var(--line);background:#101b2d;color:#c8d7e9;font-size:11px}.miniBtn:hover{color:white;background:#1d3554;border-color:#5e81af}.sideSection{padding:11px 10px 7px}.sectionLabel{color:#6f85a2;font-size:9px;font-weight:850;text-transform:uppercase;letter-spacing:1.1px;padding:0 6px 7px;display:flex;justify-content:space-between;align-items:center}.projectList,.fileList{display:flex;flex-direction:column;gap:3px}.projectRow,.fileRow{min-height:34px;display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:8px;color:#b4c4d9;font-size:11px;cursor:pointer;min-width:0;border:1px solid transparent}.projectRow:hover,.fileRow:hover{background:#111e31}.folderRow{min-height:30px;display:flex;align-items:center;gap:7px;padding:4px 7px;border:1px solid transparent;border-radius:7px;color:#a9bfd9;font-size:10px;cursor:pointer}.folderRow:hover{background:#101c2f}.folderRow .deleteTiny{opacity:0;border:0;background:transparent;color:#8da1bd;width:20px;height:22px;padding:0;border-radius:5px;flex-shrink:0}.folderRow:hover .deleteTiny{opacity:1}.folderRow .deleteTiny:hover{background:#4c1d28;color:#fecdd3}.folderRow .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}.folderRow .twisty{width:10px;color:#7f98b8;font-size:9px}.projectRow.active,.fileRow.active{background:#15294a;color:#e7f2ff;border-color:#25497d}.projectRow .name,.fileRow .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}.projectRow .name{font-weight:650}.fileRow .deleteTiny{opacity:0;border:0;background:transparent;color:#8da1bd;width:20px;height:22px;padding:0;border-radius:5px;flex-shrink:0}.fileRow:hover .deleteTiny{opacity:1}.fileRow .deleteTiny:hover{background:#4c1d28;color:#fecdd3}.treeEmpty{padding:13px 9px;color:var(--muted);font-size:11px;line-height:1.6;text-align:center}.sideBottom{margin-top:auto;border-top:1px solid var(--line);padding:9px;display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0}.sideBottom button{height:32px;border-radius:8px;border:1px solid var(--line);background:#0f1b2c;color:#c6d7ed;font-size:10px;font-weight:700}.sideBottom button:hover{background:#162945}
+    .editorArea{flex:1;min-width:0;min-height:0;display:flex;flex-direction:column;position:relative}.fileTabs{height:39px;flex:0 0 39px;display:flex;align-items:stretch;overflow-x:auto;background:#09111f;border-bottom:1px solid var(--line);scrollbar-width:none}.fileTabs::-webkit-scrollbar{display:none}.fileTab{display:flex;gap:8px;align-items:center;padding:0 13px;min-width:105px;max-width:220px;border-right:1px solid rgba(38,54,77,.7);border-bottom:2px solid transparent;background:#0b1423;color:#879cb8;font-size:11px;cursor:pointer}.fileTab.active{background:#101c2f;color:#edf5ff;border-bottom-color:var(--primary)}.fileTab .tabName{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.tabClose{border:0;background:transparent;color:#7187a4;font-size:12px;padding:2px;border-radius:4px}.tabClose:hover{background:#4c1d28;color:#fecdd3}.editorMeta{height:30px;flex:0 0 30px;display:flex;align-items:center;gap:8px;padding:0 13px;background:#0c1626;border-bottom:1px solid rgba(38,54,77,.65);font-size:10px;color:var(--muted);min-width:0}.languagePill{border:1px solid var(--line);background:#142238;border-radius:6px;padding:3px 7px;color:#c8d8eb;font-size:9px;font-weight:800}.editorMeta .filepath{white-space:nowrap;text-overflow:ellipsis;overflow:hidden;min-width:0;flex:1}.editorHost{flex:1;min-height:0;position:relative;overflow:hidden;background:#0b1220}.monacoWrap{position:absolute;inset:0;display:none}.monacoWrap.ready{display:block}.fallbackEditor{position:absolute;inset:0;width:100%;height:100%;resize:none;border:0;outline:none;background:#0b1220;color:#e5edf8;padding:16px;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:4;white-space:pre;overflow:auto;display:none;caret-color:#60a5fa}.editorLoading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#91a6c4;font-size:12px}.editorLoading i{color:#60a5fa;font-size:26px}.loadingSub{font-size:10px;color:#607795}
+    .dock{height:220px;max-height:42%;min-height:118px;display:flex;flex-direction:column;background:#070d18;border-top:1px solid var(--line);flex-shrink:0}.dock.collapsed{height:35px;min-height:35px}.dockHead{height:35px;flex:0 0 35px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--line);padding:0 10px;background:#0a1220}.dockTab{height:34px;border:0;background:transparent;color:#7f94b1;font-size:10px;font-weight:800;padding:0 9px;border-bottom:2px solid transparent}.dockTab.active{color:#e0edff;border-bottom-color:var(--cyan)}.dockTab .count{margin-left:4px;padding:2px 5px;border-radius:8px;background:#1a2a40;color:#a9bdd7;font-size:9px}.dockActions{margin-left:auto;display:flex;gap:5px}.dockBody{flex:1;min-height:0;overflow:auto;padding:8px 11px;scrollbar-width:thin;scrollbar-color:#334966 transparent}.consoleLine{font:11px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;padding:2px 0;white-space:pre-wrap;overflow-wrap:anywhere;color:#c8d5e7}.consoleLine.log:before{content:"› ";color:#5d84b4}.consoleLine.success{color:var(--good)}.consoleLine.warn{color:var(--warn)}.consoleLine.error{color:#fda4af}.consoleLine.info{color:#7890af}.consoleEmpty{font-size:11px;color:#8197b4;padding:10px 3px}.packagePanel{display:none;max-width:800px;padding:6px}.packagePanel.active{display:block}.packageIntro{font-size:11px;line-height:1.6;color:#9bb0c9;margin:0 0 12px}.packageInstallRow{display:flex;gap:7px;margin-bottom:12px}.packageInstallRow input{min-width:0;flex:1;height:35px;border:1px solid var(--line2);background:#091321;border-radius:8px;color:var(--text);padding:0 10px}.packageGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:8px}.packageCard{border:1px solid var(--line);background:#0c1728;border-radius:9px;padding:10px;display:flex;align-items:center;gap:9px;text-align:left;color:#d8e6f8;min-width:0}.packageCard:hover{border-color:#4c78a8;background:#13233a}.packageCard i{color:#60a5fa}.packageCard span{min-width:0}.packageCard strong{display:block;font-size:11px}.packageCard small{display:block;color:#8197b4;font-size:9px;margin-top:3px}.statusBar{height:25px;flex:0 0 25px;background:#07101d;border-top:1px solid var(--line);display:flex;align-items:center;gap:13px;padding:0 10px;color:#8498b4;font-size:9px;overflow:hidden;white-space:nowrap}.statusBar .right{margin-left:auto;overflow:hidden;text-overflow:ellipsis}.toast{position:fixed;z-index:200;left:50%;bottom:35px;transform:translate(-50%,15px);padding:11px 15px;background:#101d30;border:1px solid #365276;box-shadow:var(--shadow);border-radius:10px;color:#eaf3ff;font-size:12px;max-width:min(92vw,580px);opacity:0;pointer-events:none;transition:.2s;line-height:1.5}.toast.show{opacity:1;transform:translate(-50%,0)}.toast.error{border-color:#8b3346}.toast.success{border-color:#168a68}.modalBack{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,12,.78);backdrop-filter:blur(9px);z-index:100;padding:18px}.modalBack.active{display:flex}.modal{width:min(100%,430px);background:#0c1728;border:1px solid #2e4564;border-radius:16px;padding:20px;box-shadow:var(--shadow)}.modal h2{margin:0 0 6px;font-size:17px}.modal p{margin:0 0 17px;color:var(--muted);font-size:12px;line-height:1.55}.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:10px;font-weight:800;color:#a4b8d1;letter-spacing:.8px}.field input{height:40px;border:1px solid var(--line2);background:#081321;border-radius:8px;color:var(--text);padding:0 10px}.modalActions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}.hidden{display:none!important}
+    @media(max-width:980px){.brand{max-width:42px}.brandText{display:none}.cloudState{max-width:100px;overflow:hidden;text-overflow:ellipsis}.toolbarHint{display:none}.sidebar{width:232px;flex-basis:232px}}
+    @media(max-width:680px){:root{--top:54px}.topbar{padding:0 7px;gap:6px}.brand{max-width:35px}.brandLogo,.brandMark{width:30px;height:30px}.projectTitle{font-size:12px}.cloudState{display:none}.topbar .actionBtn span{display:none}.topbar .actionBtn{width:35px;padding:0}.topbar .iconBtn{width:33px;height:34px}.toolrow{padding:0 7px;gap:6px}.actionBtn{font-size:11px;padding:0 9px}.sidebar{position:absolute;z-index:50;top:0;bottom:0;left:0;width:min(84vw,285px);flex-basis:min(84vw,285px);box-shadow:var(--shadow)}.sidebar.collapsed{width:0;flex-basis:0}.sidebar.mobileOpen{width:min(84vw,285px);flex-basis:min(84vw,285px)}.editorMeta{padding:0 8px}.dock{height:185px}.statusBar{gap:7px;padding:0 6px;font-size:8px}.sideBottom{grid-template-columns:1fr 1fr}}
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  
+    .compilerSelect{height:30px;max-width:190px;min-width:120px;border-radius:8px;border:1px solid var(--line2);background:#101b2d;color:var(--text);padding:0 9px;font-size:11px}
+    .cppPanelGrid{display:grid;grid-template-columns:minmax(220px,1fr) minmax(220px,1fr);gap:12px;align-items:start}
+    .cppPanelTitle{font-size:10px;font-weight:850;text-transform:uppercase;letter-spacing:1px;color:#b8cbe3;margin:6px 0 9px}
+    .cppInputLabel{display:block;color:#9bb0c9;font-size:10px;font-weight:700;margin:8px 0 5px}
+    .cppTextarea{display:block;width:100%;min-height:58px;resize:vertical;border:1px solid var(--line2);background:#091321;border-radius:8px;color:var(--text);padding:9px;font:11px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}
+    .cppNote{color:#8da1bd;font-size:10px;line-height:1.55;margin:7px 0 10px}
+    .headerShelf,.libraryGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}
+    .cppPanelSection{border:1px solid rgba(52,71,97,.6);background:rgba(12,23,40,.45);border-radius:10px;padding:10px;margin-bottom:10px;min-width:0}
+    .cppPanelSection .packageCard{padding:8px}
+    .cppPanelSection .packageCard strong{word-break:break-word}
+    @media(max-width:760px){.cppPanelGrid{grid-template-columns:1fr}.compilerSelect{max-width:145px}.toolbarHint{display:none}.brand{max-width:125px}.brandText small{font-size:9px}}
+
+  
+.caOutputScreen{position:fixed;inset:0;z-index:10000;display:none;flex-direction:column;background:#020617;color:#e5eefb;font-family:Inter,system-ui,sans-serif}
+.caOutputScreen.open{display:flex}.caOutputHead{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:12px;padding:0 16px;background:#0b1424;border-bottom:1px solid #243750}.caOutputMark{width:34px;height:34px;border:1px solid #294460;background:#12253b;border-radius:10px;display:grid;place-items:center;color:#67e8f9}.caOutputTitle{font-weight:850;font-size:14px}.caOutputSub{font-size:11px;color:#91a5c0;margin-top:3px}.caOutputGrow{flex:1}.caOutputButton{border:1px solid #304864;border-radius:10px;background:#122238;color:#e2edf9;padding:9px 12px;font-weight:750;cursor:pointer}.caOutputButton.primary{background:#047857;border-color:#10b981;color:white}.caOutputBody{flex:1;min-height:0;overflow:auto;background:#020617}.caOutputFrame{width:100%;height:100%;border:0;background:white}.caOutputText{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;padding:22px clamp(14px,4vw,42px);font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;color:#d7e5f6}.caOutputText .stderr{color:#fda4af}.caOutputText .diagnostic{color:#fcd34d}.caOutputState{padding:10px 16px;color:#9fb2cc;font-size:11px;border-bottom:1px solid #1c3048;background:#071020}
+
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <button class="iconBtn" id="toggleExplorer" title="Toggle file explorer" aria-label="Toggle file explorer"><i class="fa-solid fa-bars-staggered"></i></button>
+    <div class="brand"><img class="brandLogo" id="brandLogo" src="logo.png" alt="Code Academy logo"><span class="brandMark" id="brandMark"><i class="fa-solid fa-code"></i></span><div class="brandText"><strong>Code Academy</strong><small>C++ Studio</small></div></div>
+    <div class="projectTitleWrap"><input id="projectNameInput" class="projectTitle" maxlength="80" value="C++ Workspace" aria-label="Project name"><div class="cloudState pending" id="cloudState"><i class="fa-solid fa-circle"></i><span id="cloudText">Connecting to compiler…</span></div></div>
+    <button class="actionBtn primary" id="saveBtn" title="Save project"><i class="fa-solid fa-cloud-arrow-up"></i><span>Save</span></button>
+    <button class="iconBtn" id="projectPageBtn" title="Open saved projects" aria-label="Open saved projects"><i class="fa-solid fa-folder-open"></i></button><button class="iconBtn" id="editorDashboardBtn" type="button" title="All language editors" aria-label="All editors"><i class="fa-solid fa-layer-group"></i></button><button class="actionBtn" id="exitEditorBtn" type="button" title="Exit to menu"><i class="fa-solid fa-right-from-bracket"></i><span>Exit</span></button>
+  </header>
+  <nav class="toolrow" aria-label="C++ editor tools">
+    <div class="toolgroup"><button class="actionBtn" id="newProjectBtn"><i class="fa-solid fa-folder-plus"></i><span>New project</span></button><button class="actionBtn" id="newFileBtn"><i class="fa-solid fa-file-circle-plus"></i><span>New file</span></button><button class="actionBtn" id="newFolderBtn"><i class="fa-solid fa-folder-plus"></i><span>New folder</span></button></div>
+    <span class="toolSep"></span>
+    <div class="toolgroup"><button class="actionBtn run" id="runBtn"><i class="fa-solid fa-play"></i><span>Run C++</span></button><button class="actionBtn stop" id="stopBtn" disabled><i class="fa-solid fa-stop"></i><span>Stop</span></button><button class="actionBtn" id="checkBtn"><i class="fa-solid fa-check-double"></i><span>Compile check</span></button><button class="actionBtn" id="formatBtn"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Format</span></button></div>
+    <span class="toolSep"></span>
+    <div class="toolgroup"><label for="standardSelect" style="font-size:10px;color:var(--muted)">Standard</label><select class="select" id="standardSelect" aria-label="C++ language standard"><option value="c++98">C++98</option><option value="c++03">C++03</option><option value="c++11">C++11</option><option value="c++14">C++14</option><option value="c++17">C++17</option><option value="c++20" selected>C++20</option><option value="c++23">C++23</option></select></div>
+    <div class="toolgroup"><label for="compilerSelect" style="font-size:10px;color:var(--muted)">Compiler</label><select class="compilerSelect" id="compilerSelect" aria-label="C++ compiler"><option value="">Loading GCC / Clang…</option></select></div>
+    <div class="toolbarHint" id="runtimeHint">Preparing compiler catalog…</div>
+  </nav>
+  <div class="layout" id="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sideHead"><span>Explorer</span><div class="sideBtns"><button class="miniBtn" id="refreshProjects" title="Refresh projects"><i class="fa-solid fa-rotate"></i></button><button class="miniBtn" id="hideExplorer" title="Hide explorer"><i class="fa-solid fa-xmark"></i></button></div></div>
+      <div class="sideScroll">
+        <section class="sideSection"><div class="sectionLabel">Saved projects <small id="projectsCount">0</small></div><div class="projectList" id="projectsList"><div class="treeEmpty"><i class="fa-solid fa-spinner fa-spin"></i> Loading your projects…</div></div></section>
+        <section class="sideSection"><div class="sectionLabel">Project files <span><button class="miniBtn" id="sideNewFile" title="Create C++ source or project file"><i class="fa-solid fa-file-circle-plus"></i></button> <button class="miniBtn" id="sideNewFolder" title="Create folder"><i class="fa-solid fa-folder-plus"></i></button></span></div><div class="fileList" id="fileList"><div class="treeEmpty">Loading files…</div></div></section>
+        <section class="sideSection"><div class="sectionLabel">C++ workspace <small>Compiler-backed</small></div><p class="packageIntro">Build modern C++ with available GCC or Clang compilers. Create multiple source and header files, organize folders, and save the entire workspace to your Code Academy account.</p><div class="packageCard" style="cursor:default"><i class="fa-solid fa-shield-halved"></i><span><strong>Sandboxed compile service</strong><small>Code is sent to Compiler Explorer when you run or check it.</small></span></div><p class="cppNote">The standard C++ library comes with the compiler toolchain; no separate C++ standard-library file needs to be uploaded. Optional third-party libraries are listed in the Compiler &amp; libraries panel.</p></section>
+      </div>
+      <div class="sideBottom"><button id="downloadFileBtn"><i class="fa-solid fa-download"></i> Download file</button><button id="backupBtn"><i class="fa-solid fa-box-archive"></i> Export backup</button><button id="importBtn"><i class="fa-solid fa-file-import"></i> Import backup</button><button id="helpBtn"><i class="fa-regular fa-circle-question"></i> Help</button></div>
+    </aside>
+    <main class="editorArea">
+      <div class="fileTabs" id="fileTabs" aria-label="Open C++ workspace files"></div>
+      <div class="editorMeta"><span class="languagePill" id="languagePill"><i class="fa-solid fa-code"></i> C / C++</span><span class="filepath" id="filePathLabel">main.py</span><span id="cursorStatus">Ln 1, Col 1</span><button class="miniBtn" id="deleteActiveFileBtn" title="Delete current project file"><i class="fa-solid fa-trash"></i></button></div>
+      <div class="editorHost" id="editorHost"><div class="editorLoading" id="editorLoading"><i class="fa-solid fa-code"></i><strong>Preparing your C++ workspace</strong><span class="loadingSub" id="editorLoadingSub">Loading the editor…</span></div><div class="monacoWrap" id="monacoWrap"></div><textarea class="fallbackEditor" id="fallbackEditor" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="C++ source code"></textarea></div>
+      <section class="dock" id="dock"><div class="dockHead"><button class="dockTab active" data-dock="console"><i class="fa-solid fa-terminal"></i> Console <span class="count" id="consoleCount">0</span></button><button class="dockTab" data-dock="libraries"><i class="fa-solid fa-cubes"></i> Compiler &amp; libraries</button><div class="dockActions"><button class="miniBtn" id="clearConsole" title="Clear console"><i class="fa-solid fa-broom"></i></button><button class="miniBtn" id="collapseDock" title="Collapse output panel"><i class="fa-solid fa-chevron-down"></i></button></div></div><div class="dockBody" id="consoleBody"><div class="consoleLine info">Welcome to Code Academy C++ Studio.</div><div class="consoleLine info">Choose a compiler and C++ standard, then select Run C++ or Compile check. Runtime input and output appear here.</div></div><div class="dockBody packagePanel" id="dockLibraries"><div class="cppPanelGrid"><div><div class="cppPanelSection"><div class="cppPanelTitle">Program input (stdin)</div><textarea class="cppTextarea" id="stdinInput" aria-label="Standard input passed to the C++ program" placeholder="Optional input, one line at a time…"></textarea><p class="cppNote">If your program uses <code>std::cin</code>, place its test input here before running.</p></div><div class="cppPanelSection"><div class="cppPanelTitle">Standard C++ headers</div><p class="cppNote">Tap a header to insert its <code>#include</code> line into the active file. These headers are part of the compiler's C++ standard library.</p><div class="headerShelf" id="headerShelf"></div></div></div><div><div class="cppPanelSection"><div class="cppPanelTitle">External library catalog <small>(<span id="libraryCount">0</span> listed)</small></div><p class="cppNote">Optional libraries depend on the compiler service's catalog. Select one to include it in the next compile request.</p><div class="packageInstallRow"><input id="librarySearch" placeholder="Search libraries…" aria-label="Search external C++ libraries" autocomplete="off" spellcheck="false"><button class="actionBtn" id="refreshLibraries" type="button" title="Refresh compiler and library lists"><i class="fa-solid fa-rotate"></i></button></div><p class="cppNote">Selected external libraries: <strong id="selectedLibraryCount">0</strong></p><div class="libraryGrid" id="libraryGrid"><div class="treeEmpty">Loading external library catalog…</div></div></div><div class="cppPanelSection"><div class="cppPanelTitle">Compiler status</div><div class="consoleLine" id="runtimeDetail">Loading the GCC / Clang compiler catalog…</div><p class="cppNote">Compiler Explorer is a third-party service. C++ source and any included project files are sent to its compiler endpoint when you run or check code. Avoid sending passwords, personal information, or secrets.</p></div></div></div></section>
+    </main>
+  </div>
+  <footer class="statusBar"><span><i class="fa-solid fa-code"></i> C / C++</span><span id="statusRuntime">Loading compiler</span><span id="statusFiles">0 C++ files</span><span class="right" id="statusMessage">Code Academy · We Learn, We Code, We Succeed</span></footer>
+</div>
+<input type="file" id="importInput" accept=".json,application/json" hidden>
+<div class="modalBack" id="helpModalBack" role="dialog" aria-modal="true" aria-labelledby="helpTitle"><div class="modal"><h2 id="helpTitle">C++ Studio quick guide</h2><p>Create <code>.cpp</code>, <code>.h</code> and <code>.hpp</code> files, organize them into folders, and save your complete project. The file format matches the rest of Code Academy: a <code>files</code> map plus a <code>folders</code> map in <code>users/{uid}/projects/{projectId}</code>.</p><p><b>Run and compile:</b> The editor dynamically loads currently available GCC and Clang compiler options from Compiler Explorer. Choose C++11, C++14, C++17, C++20 or C++23. The service compiles and can execute supported programs in an isolated environment; internet access is required for these actions.</p><p><b>Libraries:</b> Headers such as <code>iostream</code>, <code>vector</code>, <code>string</code> and <code>algorithm</code> belong to the compiler's standard library and need no separate download. Optional third-party libraries are discovered through Compiler Explorer's library endpoint.</p><p><b>Privacy:</b> Unlike the Python editor's local Pyodide runtime, this C++ compiler service receives your source code and project source files for compilation. Do not submit secrets or personal data. Saving your workspace still uses your existing Firebase account and Firestore project format.</p><div class="modalActions"><button class="actionBtn primary" id="closeHelp">Got it</button></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(function(){var logo=document.getElementById('brandLogo');if(logo)logo.addEventListener('error',function(){logo.style.display='none';document.getElementById('brandMark').style.display='flex';});})();
+</script>
+<script type="module">
+"use strict";
+import { auth, db, onAuthStateChanged } from "./authentication.js";
+import { collection, doc, getDoc, getDocs, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const $ = id => document.getElementById(id);
+
+const __caOutput = { lines: [], mode: "text", title: "Program output" };
+function __caEsc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function __caShowText(title, initial="", status="Running"){
+ const root=document.getElementById("caOutputScreen"); if(!root)return;
+ __caOutput.mode="text";__caOutput.title=title;__caOutput.lines=[];
+ document.getElementById("caOutputTitle").textContent=title;
+ document.getElementById("caOutputSub").textContent="Full-screen execution results";
+ document.getElementById("caOutputState").textContent=status;
+ document.getElementById("caOutputFrame").style.display="none";
+ document.getElementById("caOutputText").style.display="block";
+ document.getElementById("caOutputText").textContent=initial;
+ root.classList.add("open");document.body.style.overflow="hidden";
+}
+function __caAppendText(text, kind="stdout"){
+ const node=document.getElementById("caOutputText");if(!node)return;
+ const s=String(text==null?"":text);if(!s)return;
+ __caOutput.lines.push({text:s,kind});
+ node.textContent+=s;node.scrollTop=node.scrollHeight;
+}
+function __caSetOutputStatus(status){const n=document.getElementById("caOutputState");if(n)n.textContent=String(status||"");}
+function __caShowHtml(title, html, status="Preview ready"){
+ const root=document.getElementById("caOutputScreen");if(!root)return;
+ document.getElementById("caOutputTitle").textContent=title;
+ document.getElementById("caOutputSub").textContent="Sandboxed full-screen preview";
+ document.getElementById("caOutputState").textContent=status;
+ document.getElementById("caOutputText").style.display="none";
+ const frame=document.getElementById("caOutputFrame");frame.style.display="block";frame.srcdoc=String(html||"");
+ __caOutput.mode="html";__caOutput.title=title;root.classList.add("open");document.body.style.overflow="hidden";
+}
+function __caCloseOutput(){const root=document.getElementById("caOutputScreen");if(root)root.classList.remove("open");document.body.style.overflow="";}
+function __caBindOutput(runFn){document.getElementById("caOutputClose")?.addEventListener("click",__caCloseOutput);document.getElementById("caOutputRunAgain")?.addEventListener("click",()=>{__caCloseOutput();if(typeof runFn==="function")runFn();});document.addEventListener("keydown",e=>{if(e.key==="Escape")__caCloseOutput();});}
+
+const MONACO_ROOT = "https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min";
+const STARTER = `#include <iostream>
+#include <string>
+#include <vector>
+
+int main() {
+    const std::string name = "Code Academy";
+    const std::vector<int> scores{85, 92, 78};
+
+    std::cout << "Hello from " << name << "!\\n";
+    std::cout << "Scores:";
+    for (const int score : scores) {
+        std::cout << ' ' << score;
+    }
+    std::cout << "\\nC++ is ready.\\n";
+    return 0;
+}
+`;
+const SOURCE_EXT = /\.(?:c|cc|cpp|cxx)$/i;
+const HEADER_EXT = /\.(?:h|hh|hpp|hxx)$/i;
+const CODE_EXT = /\.(?:c|cc|cpp|cxx|h|hh|hpp|hxx)$/i;
+const ALLOWED_TEXT_EXT = /\.(?:c|cc|cpp|cxx|h|hh|hpp|hxx|txt|md|json|ya?ml|ini|cmake)$/i;
+const HEADER_SHELF = ["iostream", "string", "vector", "algorithm", "map", "set", "cmath", "fstream", "sstream", "iomanip", "numeric", "array", "memory", "optional", "unordered_map", "limits"];
+const $escape = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[char]));
+const STARTER_FILES = () => ({"main.cpp": { lang: "cpp", content: STARTER }});
+let currentUser = null, projectId = new URLSearchParams(location.search).get("id") || "", currentProjectData = null;
+let files = {}, folders = {}, allProjects = [], currentFile = "main.cpp", editor = null, monacoReady = false, fallbackMode = false;
+let dirty = false, editVersion = 0, saving = false, pendingSave = false, saveTimer = null, toastTimer = null, runtimeUnsubscribe = null, running = false, authStarted = false, switchingFile = false, runSequence = 0;
+let compilers = [], externalLibraries = [], selectedLibraries = {}, libraryQuery = "", preferredCompilerId = "";
+const modelCache = new Map();
+const collapsedFolders = new Set();
+
+function toast(message, type="info") { clearTimeout(toastTimer); const el=$("toast"); el.textContent=message; el.className="toast show"+(type==="error"?" error":type==="success"?" success":""); toastTimer=setTimeout(()=>el.classList.remove("show"),3600); }
+function setCloud(message, state="") { $("cloudText").textContent=message; $("cloudState").className="cloudState"+(state?" "+state:""); $("cloudState").querySelector("i").className=state==="saved"?"fa-solid fa-circle-check":state==="error"?"fa-solid fa-circle-exclamation":state==="pending"?"fa-solid fa-circle-notch fa-spin":"fa-solid fa-circle"; }
+function statusMessage(message){$("statusMessage").textContent=message;}
+function timestamp(value){if(!value)return 0;if(typeof value.toMillis==="function")return value.toMillis();if(typeof value.seconds==="number")return value.seconds*1000;const n=Date.parse(value);return Number.isFinite(n)?n:0;}
+function firebaseErrorMessage(error){const code=error?.code||"";if(code.includes("permission-denied"))return "Firebase denied access. Check Firestore rules for users/{uid}/projects.";if(code.includes("unauthenticated"))return "Your login has expired. Please sign in again.";if(code.includes("unavailable"))return "Firebase is unavailable. Check your connection.";return error?.message||"An unexpected Firebase error occurred.";}
+function clone(value){return JSON.parse(JSON.stringify(value));}
+function detectLang(path){const name=String(path||"").split("/").pop().toLowerCase();if(/\.(?:c|cc|cpp|cxx|h|hh|hpp|hxx)$/i.test(name))return "cpp";if(/\.json$/i.test(name))return "json";if(/\.ya?ml$/i.test(name))return "yaml";if(/\.md$/i.test(name))return "markdown";if(/\.txt$/i.test(name)||/\.ini$/i.test(name)||/\.cmake$/i.test(name)||name==="cmakelists.txt")return "plaintext";return "plaintext";}
+function normalizeFiles(data){if(!data||typeof data!=="object"||Array.isArray(data))return {};const out={};for(const [rawPath,item] of Object.entries(data)){if(typeof rawPath!=="string"||!item||typeof item!=="object")continue;const path=rawPath.replace(/\\/g,"/").replace(/^\/+/,"");if(!path||path.split("/").some(part=>!part||part==="."||part===".."))continue;out[path]={...item,lang:CODE_EXT.test(path)?"cpp":(item.lang||detectLang(path)),content:typeof item.content==="string"?item.content:""};}return out;}
+function sourcePaths(){return Object.keys(files).filter(path=>SOURCE_EXT.test(path)).sort((a,b)=>a.localeCompare(b));}
+function codePaths(){return Object.keys(files).filter(path=>CODE_EXT.test(path)).sort((a,b)=>a.localeCompare(b));}
+function isCppWorkspace(project){if(project?.editorType==="cpp")return true;const paths=Object.keys(normalizeFiles(project?.files));return paths.some(path=>SOURCE_EXT.test(path)||HEADER_EXT.test(path))&&paths.every(path=>ALLOWED_TEXT_EXT.test(path)||/\.md$/i.test(path));}
+function safeFilename(name){return String(name||"cpp-project").normalize("NFKD").replace(/[^a-zA-Z0-9 _.-]/g,"").trim().replace(/[ .]+/g,"-").slice(0,80)||"cpp-project";}
+function downloadBlob(filename, content, type="application/octet-stream"){const blob=new Blob([content],{type});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;a.style.display="none";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
+function localKey(){return currentUser?`ca-cpp-editor:${currentUser.uid}:${projectId}`:`ca-cpp-editor:guest:${projectId||"local"}`;}
+function saveLocalBackup(){try{if(JSON.stringify(files).length>3500000)return;localStorage.setItem(localKey(),JSON.stringify({files,folders,projectName:$("projectNameInput").value,updatedAt:Date.now(),standard:$("standardSelect").value,compilerId:$("compilerSelect").value,selectedLibraries:clone(selectedLibraries),stdin:$("stdinInput").value}));}catch(error){console.warn("C++ local backup unavailable",error);}}
+function readLocalBackup(){try{const value=localStorage.getItem(localKey());return value?JSON.parse(value):null;}catch{return null;}}
+function clearLocalBackup(){try{localStorage.removeItem(localKey());}catch{}}
+function syncCurrentText(){if(!files[currentFile])return;if(editor&&monacoReady&&editor.getModel())files[currentFile].content=editor.getValue();else if(fallbackMode)files[currentFile].content=$("fallbackEditor").value;}
+function scheduleSave(){clearTimeout(saveTimer);if(!currentUser?.emailVerified){saveLocalBackup();return;}saveTimer=setTimeout(()=>saveProject(true),1500);}
+function markDirty(){dirty=true;editVersion++;setCloud("Unsaved changes","pending");saveLocalBackup();scheduleSave();renderTabs();}
+function payloadBytes(value){try{return new TextEncoder().encode(JSON.stringify(value)).length;}catch{return 0;}}
+function setCursorStatus(line=1,column=1){$("cursorStatus").textContent=`Ln ${line}, Col ${column}`;}
+function updateFileStatus(){const count=codePaths().length;$("statusFiles").textContent=`${count} C++ source/header file${count===1?"":"s"}`;}
+function renderProjects(){const host=$("projectsList");host.replaceChildren();const projects=allProjects.filter(isCppWorkspace).sort((a,b)=>timestamp(b.updatedAt||b.createdAt)-timestamp(a.updatedAt||a.createdAt));$("projectsCount").textContent=String(projects.length);if(!projects.length){const el=document.createElement("div");el.className="treeEmpty";el.textContent="No saved C++ projects yet. Create one to get started.";host.append(el);return;}for(const project of projects.slice(0,40)){const row=document.createElement("div");row.className="projectRow"+(project.id===projectId?" active":"");const icon=document.createElement("i");icon.className="fa-solid fa-folder";icon.style.color=project.id===projectId?"#60a5fa":"#8197b4";const name=document.createElement("span");name.className="name";name.textContent=project.name||project.title||"Untitled Project";name.title=name.textContent;row.append(icon,name);row.addEventListener("click",()=>openProject(project.id));host.append(row);}}
+function normalizedFolderPath(raw){return String(raw||"").trim().replace(/\\/g,"/").replace(/^\/+|\/+$/g,"");}
+function folderPaths(){const result=new Set(Object.keys(folders||{}).map(normalizedFolderPath).filter(Boolean));for(const path of Object.keys(files)){const parts=path.split("/");parts.pop();let current="";for(const part of parts){current=current?current+"/"+part:part;result.add(current);}}return [...result].filter(path=>!path.startsWith("/")&&!path.split("/").some(part=>!part||part==="."||part===".."));}
+function addFolderParents(path){if(!path)return;const parts=path.split("/");let current="";for(const part of parts){current=current?current+"/"+part:part;folders[current]=true;}}
+function iconForFile(path){const ext=path.split(".").pop().toLowerCase();return CODE_EXT.test(path)?"fa-solid fa-file-code":ext==="md"?"fa-regular fa-file-lines":ext==="json"?"fa-solid fa-brackets-curly":"fa-regular fa-file-lines";}
+function renderFiles(){const host=$("fileList");host.replaceChildren();const paths=Object.keys(files).sort((a,b)=>a.localeCompare(b));const dirs=folderPaths();function addFile(path,depth){const row=document.createElement("div");row.className="fileRow"+(path===currentFile?" active":"");row.style.paddingLeft=(8+depth*13)+"px";const icon=document.createElement("i");icon.className=iconForFile(path);icon.style.color=CODE_EXT.test(path)?"#60a5fa":"#8da1bd";const name=document.createElement("span");name.className="name";name.textContent=path.split("/").pop();name.title=path;const del=document.createElement("button");del.className="deleteTiny";del.type="button";del.title="Delete "+path;del.setAttribute("aria-label","Delete "+path);del.innerHTML='<i class="fa-solid fa-xmark"></i>';del.addEventListener("click",event=>{event.stopPropagation();deleteFile(path);});row.append(icon,name,del);row.addEventListener("click",()=>switchFile(path));host.append(row);}
+ function addDir(parent,depth){const prefix=parent?parent+"/":"";const childDirs=dirs.filter(path=>path.startsWith(prefix)&&path.slice(prefix.length).includes("/")===false&&path!==parent).sort((a,b)=>a.localeCompare(b));for(const path of childDirs){const row=document.createElement("div");row.className="folderRow";row.style.paddingLeft=(7+depth*13)+"px";const twist=document.createElement("span");twist.className="twisty";twist.innerHTML=collapsedFolders.has(path)?'<i class="fa-solid fa-chevron-right"></i>':'<i class="fa-solid fa-chevron-down"></i>';const icon=document.createElement("i");icon.className=collapsedFolders.has(path)?"fa-regular fa-folder":"fa-solid fa-folder-open";icon.style.color="#60a5fa";const name=document.createElement("span");name.className="name";name.textContent=path.split("/").pop();name.title=path;const del=document.createElement("button");del.className="deleteTiny";del.type="button";del.title="Delete empty folder";del.setAttribute("aria-label","Remove folder "+path);del.innerHTML='<i class="fa-solid fa-xmark"></i>';del.addEventListener("click",event=>{event.stopPropagation();deleteFolder(path);});row.append(twist,icon,name,del);row.addEventListener("click",()=>{if(collapsedFolders.has(path))collapsedFolders.delete(path);else collapsedFolders.add(path);renderFiles();});host.append(row);if(!collapsedFolders.has(path))addDir(path,depth+1);}const children=paths.filter(path=>{const slash=path.lastIndexOf("/");return (slash<0?"":path.slice(0,slash))===parent;});for(const path of children)addFile(path,depth);}
+ addDir("",0);if(!paths.length&&!dirs.length){const el=document.createElement("div");el.className="treeEmpty";el.textContent="No files or folders yet. Create a C++ source file to begin.";host.append(el);}updateFileStatus();}
+function renderTabs(){const host=$("fileTabs");host.replaceChildren();for(const path of Object.keys(files).sort((a,b)=>a.localeCompare(b))){const tab=document.createElement("div");tab.className="fileTab"+(path===currentFile?" active":"");tab.title=path;const icon=document.createElement("i");icon.className=iconForFile(path);icon.style.color=CODE_EXT.test(path)?"#60a5fa":"#8da1bd";const name=document.createElement("span");name.className="tabName";name.textContent=path;const close=document.createElement("button");close.className="tabClose";close.type="button";close.title="Close tab (file stays saved)";close.innerHTML='<i class="fa-solid fa-xmark"></i>';close.addEventListener("click",event=>{event.stopPropagation();if(path===currentFile){const other=Object.keys(files).filter(p=>p!==path).sort()[0];if(other)switchFile(other);else toast("A workspace must keep at least one file.","warning");}else{const model=modelCache.get(path);if(model){modelCache.delete(path);model.dispose();}tab.remove();}});tab.append(icon,name,close);tab.addEventListener("click",()=>switchFile(path));host.append(tab);}}
+function setActiveMeta(){$("filePathLabel").textContent=currentFile;const lang=detectLang(currentFile);const label=$("languagePill");if(label)label.textContent=lang==="cpp"?"C / C++":lang.toUpperCase();$("deleteActiveFileBtn").disabled=Object.keys(files).length<2;}
+function setupEditorModel(){if(!monacoReady||!editor||!files[currentFile])return;switchingFile=true;let model=modelCache.get(currentFile);if(!model){model=window.monaco.editor.createModel(files[currentFile].content||"",detectLang(currentFile));modelCache.set(currentFile,model);}editor.setModel(model);setActiveMeta();$("editorLoading").style.display="none";$("monacoWrap").classList.add("ready");$("fallbackEditor").style.display="none";switchingFile=false;}
+function switchFile(path){if(!files[path]||path===currentFile)return;syncCurrentText();currentFile=path;renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else if(fallbackMode)$("fallbackEditor").value=files[path].content||"";}
+function enableFallback(){fallbackMode=true;$("editorLoading").style.display="none";$("monacoWrap").classList.remove("ready");$("fallbackEditor").style.display="block";$("fallbackEditor").value=files[currentFile]?.content||"";$("fallbackEditor").addEventListener("input",()=>markDirty());$("fallbackEditor").addEventListener("keyup",()=>{const el=$("fallbackEditor"),before=el.value.slice(0,el.selectionStart),lines=before.split("\n");setCursorStatus(lines.length,lines[lines.length-1].length+1);});$("editorLoadingSub").textContent="Using the built-in text editor";statusMessage("Monaco could not load; plain-text editing is still available.");}
+function setupMonaco(){return new Promise(resolve=>{const amd=window.require;if(!amd||!amd.config){resolve(false);return;}try{window.MonacoEnvironment={getWorkerUrl:function(){const workerMain=MONACO_ROOT+"/vs/base/worker/workerMain.js";const cfg=`self.MonacoEnvironment={baseUrl:${JSON.stringify(MONACO_ROOT+"/")}};importScripts(${JSON.stringify(workerMain)});`;return "data:text/javascript;charset=utf-8,"+encodeURIComponent(cfg);}};amd.config({paths:{vs:MONACO_ROOT+"/vs"}});amd(["vs/editor/editor.main"],function(){try{monacoReady=true;window.monaco.editor.defineTheme("ca-dark",{base:"vs-dark",inherit:true,rules:[{token:"comment",foreground:"7186A3",fontStyle:"italic"},{token:"keyword",foreground:"C4B5FD"},{token:"string",foreground:"86EFAC"}],colors:{"editor.background":"#0b1220","editorLineNumber.foreground":"#536985","editorLineNumber.activeForeground":"#b8d5fb","editorCursor.foreground":"#67e8f9","editor.selectionBackground":"#1d4ed866","editor.inactiveSelectionBackground":"#1d4ed833","editorIndentGuide.background":"#1d2b40","editorIndentGuide.activeBackground":"#405c80"}});editor=window.monaco.editor.create($("monacoWrap"),{value:"",language:"cpp",theme:"ca-dark",automaticLayout:true,minimap:{enabled:false},fontSize:13,lineHeight:21,fontFamily:"ui-monospace, SFMono-Regular, Consolas, monospace",tabSize:4,insertSpaces:true,wordWrap:"off",scrollBeyondLastLine:false,renderWhitespace:"selection",padding:{top:14,bottom:14},smoothScrolling:true,mouseWheelZoom:true,quickSuggestions:true,suggestOnTriggerCharacters:true,bracketPairColorization:{enabled:true},glyphMargin:true,contextmenu:true,stickyScroll:{enabled:true},ariaLabel:"C++ source editor"});editor.onDidChangeModelContent(()=>{if(!switchingFile)markDirty();});editor.onDidChangeCursorPosition(e=>setCursorStatus(e.position.lineNumber,e.position.column));editor.addCommand(window.monaco.KeyMod.CtrlCmd|window.monaco.KeyCode.KeyS,()=>saveProject(false));editor.addCommand(window.monaco.KeyMod.CtrlCmd|window.monaco.KeyCode.Enter,()=>runCpp());$("editorLoading").style.display="none";$("monacoWrap").classList.add("ready");$("fallbackEditor").style.display="none";setupEditorModel();resolve(true);}catch(error){console.error("Monaco setup failed",error);resolve(false);}},error=>{console.error("Monaco modules failed",error);resolve(false);});}catch(error){console.error("Monaco loading failed",error);resolve(false);}});}
+function openItemModal(){let raw=prompt("New file path (for example: src/main.cpp, include/tools.hpp or README.md):","main.cpp");if(raw===null)return;let path=raw.trim().replace(/\\/g,"/").replace(/^\/+|\/+$/g,"");if(!path)return;if(!/\.[A-Za-z0-9]+$/.test(path)&&!/^CMakeLists\.txt$/i.test(path))path+=".cpp";if(path.length>180||path.startsWith("/")||path.split("/").some(part=>!part||part==="."||part===".."||/[<>:"|?*\x00-\x1f]/.test(part))){toast("Enter a valid relative file path without . or .. segments.","warning");return;}if(files[path]){toast("That file already exists.","warning");return;}syncCurrentText();const ext=path.split(".").pop().toLowerCase();let content="";if(SOURCE_EXT.test(path))content=`#include <iostream>\n\nint main() {\n    std::cout << "${path.split("/").pop().replace(/\.(?:c|cc|cpp|cxx)$/i,"")} is ready." << '\\n';\n    return 0;\n}\n`;else if(HEADER_EXT.test(path))content="#pragma once\n\n// Add declarations for your C++ project here.\n";else if(/\.md$/i.test(path))content="# "+path.split("/").pop().replace(/\.md$/i,"")+"\n\nProject notes.\n";files[path]={lang:detectLang(path),content};addFolderParents(path.split("/").slice(0,-1).join("/"));currentFile=path;renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else $("fallbackEditor").value=content;markDirty();toast(path+" created.","success");}
+function createFolder(){const raw=prompt("Folder path (for example: src or include/utils):","src");if(raw===null)return;const path=normalizedFolderPath(raw);if(!path||path.length>180||path.split("/").some(part=>!part||part==="."||part===".."||/[<>:"|?*\x00-\x1f]/.test(part))){toast("Enter a valid relative folder path without . or .. segments.","warning");return;}if(folderPaths().includes(path)){toast("That folder already exists.","warning");return;}addFolderParents(path);renderFiles();markDirty();toast("Folder created: "+path,"success");}
+function deleteFolder(path){const descendants=Object.keys(files).some(file=>file.startsWith(path+"/"));const nested=folderPaths().some(folder=>folder!==path&&folder.startsWith(path+"/"));if(descendants||nested){toast("This folder contains files or subfolders. Move or delete them first.","warning");return;}if(!confirm("Remove folder "+path+" from this project?"))return;delete folders[path];collapsedFolders.delete(path);renderFiles();markDirty();toast("Folder removed.","success");}
+function deleteFile(path){if(!files[path])return;if(SOURCE_EXT.test(path)&&sourcePaths().length<2){toast("A C++ project must keep at least one source file.","warning");return;}if(!confirm(`Delete ${path}? This change will be synced when the next cloud save succeeds.`))return;delete files[path];const model=modelCache.get(path);if(model){model.dispose();modelCache.delete(path);}if(currentFile===path)currentFile=sourcePaths()[0]||Object.keys(files).sort()[0]||"main.cpp";if(!Object.keys(files).length)files["main.cpp"]={lang:"cpp",content:STARTER};renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else $("fallbackEditor").value=files[currentFile]?.content||"";markDirty();toast(path+" removed.","success");}
+function readAndMergeLocalBackup(data){const local=readLocalBackup();if(local&&local.files&&local.updatedAt>timestamp(data?.updatedAt)){if(confirm("A newer local recovery copy was found. Restore the local C++ files? Click Cancel to use the cloud version.")){files={...normalizeFiles(data?.files),...normalizeFiles(local.files)};folders={...(data?.folders||{}),...(local.folders||{})};$("projectNameInput").value=local.projectName||data?.name||"C++ Workspace";if(local.standard&&$("standardSelect"))$("standardSelect").value=local.standard;if(local.compilerId)preferredCompilerId=local.compilerId;if(local.selectedLibraries&&typeof local.selectedLibraries==="object")selectedLibraries=local.selectedLibraries;if(typeof local.stdin==="string")$("stdinInput").value=local.stdin;dirty=true;editVersion++;renderLibraries();return true;}}return false;}
+async function loadProjects(){if(!currentUser)return [];const snap=await getDocs(collection(db,"users",currentUser.uid,"projects"));allProjects=[];snap.forEach(item=>allProjects.push({id:item.id,...item.data()}));allProjects.sort((a,b)=>timestamp(b.updatedAt||b.createdAt)-timestamp(a.updatedAt||a.createdAt));renderProjects();return allProjects;}
+function makeProjectId(){return "cpp_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);}
+async function createCloudProject(name="C++ Workspace",openAfter=true){if(!currentUser)throw new Error("Sign in to create a saved project.");if(!currentUser.emailVerified)throw new Error("Verify your email before creating cloud projects.");const id=makeProjectId();const starter=STARTER_FILES();const payload={name,title:name,description:"C++ coding workspace created in Code Academy C++ Studio",tags:["C++"],ownerId:currentUser.uid,files:starter,folders:{},editorType:"cpp",projectType:"code",cppSettings:{standard:$("standardSelect").value||"c++20"},createdAt:serverTimestamp(),updatedAt:serverTimestamp()};await setDoc(doc(db,"users",currentUser.uid,"projects",id),payload);if(openAfter){location.href="CppEditor.html?id="+encodeURIComponent(id);return;}return {id,...payload};}
+async function openProject(id){if(id===projectId)return;syncCurrentText();if(dirty&&!confirm("There are unsaved changes. Switch projects? A local recovery copy will be kept."))return;saveLocalBackup();location.href="CppEditor.html?id="+encodeURIComponent(id);}
+async function loadCurrentProject(){setCloud("Loading project…","pending");const ref=doc(db,"users",currentUser.uid,"projects",projectId);const snap=await getDoc(ref);if(!snap.exists()){toast("That project was not found. Opening your saved projects.","error");location.replace("project.html");return;}currentProjectData={id:snap.id,...snap.data()};if(!isCppWorkspace(currentProjectData)){location.replace("CODEEDITOR.html?id="+encodeURIComponent(projectId));return;}files=normalizeFiles(currentProjectData.files);folders=currentProjectData.folders&&typeof currentProjectData.folders==="object"?currentProjectData.folders:{};$("projectNameInput").value=currentProjectData.name||currentProjectData.title||"C++ Workspace";const chosen=Object.keys(files).sort();if(!chosen.length){files=STARTER_FILES();}if(!sourcePaths().length){files["main.cpp"]={lang:"cpp",content:STARTER};dirty=true;editVersion++;}currentFile=sourcePaths()[0]||Object.keys(files).sort()[0]||"main.cpp";const settings=currentProjectData.cppSettings||{};if(settings.standard&&$("standardSelect"))$("standardSelect").value=settings.standard;if(settings.compilerId)preferredCompilerId=settings.compilerId;if(Array.isArray(settings.libraries))selectedLibraries=Object.fromEntries(settings.libraries.filter(item=>item&&item.id&&item.version).map(item=>[String(item.id),{id:String(item.id),version:String(item.version)}]));if(typeof settings.stdin==="string")$("stdinInput").value=settings.stdin;readAndMergeLocalBackup(currentProjectData);if(!files[currentFile])currentFile=Object.keys(files).sort()[0];renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else if(fallbackMode)$("fallbackEditor").value=files[currentFile].content;setCloud(currentUser.emailVerified?"Ready to save":"Verify email to save",currentUser.emailVerified?"saved":"error");if(!currentUser.emailVerified)toast("You can practise locally; verify your email to save to the cloud.","warning");if(dirty)scheduleSave();}
+async function startWorkspace(){try{await loadProjects();}catch(error){console.error("Could not load C++ project list",error);toast(firebaseErrorMessage(error),"error");}if(projectId.startsWith("local_")&&!currentUser.emailVerified){const local=readLocalBackup();files=normalizeFiles(local?.files||STARTER_FILES());folders=local?.folders&&typeof local.folders==="object"?local.folders:{};$("projectNameInput").value=local?.projectName||"Local C++ Workspace";if(local?.standard)$("standardSelect").value=local.standard;if(local?.compilerId)preferredCompilerId=local.compilerId;if(local?.selectedLibraries&&typeof local.selectedLibraries==="object")selectedLibraries=local.selectedLibraries;if(typeof local?.stdin==="string")$("stdinInput").value=local.stdin;currentFile=sourcePaths()[0]||Object.keys(files).sort()[0]||"main.cpp";if(!sourcePaths().length)files["main.cpp"]={lang:"cpp",content:STARTER};renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else if(fallbackMode)$("fallbackEditor").value=files[currentFile].content;setCloud("Verify email to save","error");renderLibraries();return;}if(projectId){const selected=allProjects.find(p=>p.id===projectId);if(selected&&!isCppWorkspace(selected)){location.replace("CODEEDITOR.html?id="+encodeURIComponent(projectId));return;}}if(!projectId){const latest=allProjects.find(isCppWorkspace);if(latest){projectId=latest.id;history.replaceState(null,"","CppEditor.html?id="+encodeURIComponent(projectId));}else if(currentUser.emailVerified){await createCloudProject("C++ Workspace",true);return;}else{projectId="local_"+currentUser.uid;history.replaceState(null,"","CppEditor.html?id="+encodeURIComponent(projectId));const local=readLocalBackup();if(local?.files){files=normalizeFiles(local.files);folders=local.folders&&typeof local.folders==="object"?local.folders:{};$("projectNameInput").value=local.projectName||"Local C++ Workspace";if(local.standard)$("standardSelect").value=local.standard;currentFile=sourcePaths()[0]||Object.keys(files).sort()[0]||"main.cpp";dirty=true;editVersion++;}else{files=STARTER_FILES();folders={};$("projectNameInput").value="Local C++ Workspace";}if(!sourcePaths().length)files["main.cpp"]={lang:"cpp",content:STARTER};currentFile=sourcePaths()[0]||Object.keys(files).sort()[0]||"main.cpp";renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else if(fallbackMode)$("fallbackEditor").value=files[currentFile].content;setCloud("Verify email to save","error");toast("Verify your email before creating cloud projects. Your local practice workspace is available for now.","warning");return;}}await loadCurrentProject();}
+async function saveProject(silent=false){syncCurrentText();saveLocalBackup();if(!currentUser){setCloud("Not signed in","error");if(!silent)toast("Sign in to save your project.","error");return false;}if(!currentUser.emailVerified){setCloud("Email verification required","error");if(!silent)toast("Verify your email before saving projects.","warning");return false;}if(saving){pendingSave=true;return false;}const name=$("projectNameInput").value.trim()||"C++ Workspace";$("projectNameInput").value=name;const payload={name,title:name,description:"C++ coding workspace created in Code Academy C++ Studio",tags:["C++"],ownerId:currentUser.uid,files:clone(files),folders:clone(folders),editorType:"cpp",projectType:"code",cppSettings:{standard:$("standardSelect").value||"c++20",compilerId:$("compilerSelect").value||preferredCompilerId||"",libraries:Object.values(selectedLibraries),stdin:$("stdinInput").value||""},updatedAt:serverTimestamp()};if(payloadBytes(payload)>850000){setCloud("Project too large to save","error");if(!silent)toast("This project exceeds the safe Firestore document size. Remove large files or export a backup.","error");return false;}saving=true;const version=editVersion;setCloud("Saving…","pending");$("saveBtn").disabled=true;try{const ref=doc(db,"users",currentUser.uid,"projects",projectId);const existing=await getDoc(ref);if(!existing.exists())payload.createdAt=serverTimestamp();else if(existing.data().createdAt)payload.createdAt=existing.data().createdAt;await setDoc(ref,payload,{merge:true});currentProjectData={id:projectId,...payload};dirty=editVersion!==version;if(!dirty)clearLocalBackup();setCloud(dirty?"More changes pending":"Saved","saved");if(!dirty&&!silent)toast("C++ project saved to your Code Academy account.","success");await loadProjects();return true;}catch(error){console.error("C++ project save failed",error);setCloud("Save failed","error");saveLocalBackup();if(!silent)toast(firebaseErrorMessage(error),"error");return false;}finally{saving=false;$("saveBtn").disabled=false;if(pendingSave){pendingSave=false;scheduleSave();}}}
+function appendConsole(text,type="log"){if(text==null||text==="")return;const host=$("consoleBody");const empty=host.querySelector(".consoleEmpty");if(empty)empty.remove();const line=document.createElement("div");line.className="consoleLine "+type;line.textContent=String(text);host.append(line);while(host.children.length>600)host.firstElementChild.remove();host.scrollTop=host.scrollHeight;$("consoleCount").textContent=String(host.querySelectorAll(".consoleLine").length);}
+function clearConsole(message="Console cleared."){$("consoleBody").replaceChildren();$("consoleCount").textContent="0";if(message)appendConsole(message,"info");}
+function showDock(name){$("dock").classList.remove("collapsed");document.querySelectorAll(".dockTab").forEach(button=>button.classList.toggle("active",button.dataset.dock===name));$("consoleBody").style.display=name==="console"?"block":"none";$("dockLibraries").classList.toggle("active",name==="libraries");}
+function onRuntimeMessage(message){if(!message)return;switch(message.type){case"status":$("runtimeDetail").textContent=message.text||"Compiler service working";$("runtimeHint").textContent=message.text||"Preparing compiler";if(message.phase==="compiling"||message.phase==="checking")$("statusRuntime").textContent="Compiler running";break;case"compilers":compilers=message.compilers||[];renderCompilers();break;case"libraries":externalLibraries=message.libraries||[];renderLibraries();break;case"result":break;case"stopped":appendConsole(message.text||"Compiler request stopped.","warn");$("statusRuntime").textContent="Stopped";break;}}
+function renderCompilers(){const select=$("compilerSelect");const before=select.value;select.replaceChildren();if(!compilers.length){const option=document.createElement("option");option.value="";option.textContent="Compiler service unavailable";select.append(option);return;}for(const compiler of compilers){const option=document.createElement("option");option.value=compiler.id;option.textContent=compiler.name+(compiler.semver?" · "+compiler.semver:"");select.append(option);}if(compilers.some(item=>item.id===before))select.value=before;else if(compilers.some(item=>item.id===preferredCompilerId))select.value=preferredCompilerId;else select.value=compilers[0].id;preferredCompilerId=select.value;$("runtimeDetail").textContent="Loaded "+compilers.length+" compiler option(s).";$("statusRuntime").textContent="Compiler ready";$("runtimeHint").textContent="GCC / Clang compiler service ready";}
+function renderLibraries(){const host=$("libraryGrid");if(!host)return;host.replaceChildren();const query=String($("librarySearch").value||"").trim().toLowerCase();const list=externalLibraries.filter(item=>(item.name+" "+item.id+" "+item.description).toLowerCase().includes(query));$("libraryCount").textContent=String(externalLibraries.length);if(!list.length){const empty=document.createElement("div");empty.className="treeEmpty";empty.textContent=externalLibraries.length?"No external libraries match this search.":"External library catalog is unavailable right now. The standard C++ library is included by the compiler.";host.append(empty);return;}for(const lib of list.slice(0,60)){const selected=Boolean(selectedLibraries[lib.id]);const card=document.createElement("button");card.type="button";card.className="packageCard";card.style.width="100%";card.style.borderColor=selected?"#3b82f6":"";const icon=document.createElement("i");icon.className=selected?"fa-solid fa-circle-check":"fa-solid fa-cube";const body=document.createElement("span");body.innerHTML="<strong>"+$escape(lib.name)+"</strong><small>"+$escape(lib.id)+(lib.versions.length?" · "+$escape(lib.versions[0]):" · version not listed")+"</small>";card.append(icon,body);card.title=lib.description||("Toggle "+lib.name);card.disabled=!lib.versions.length&&!selected;card.addEventListener("click",()=>{if(selected)delete selectedLibraries[lib.id];else if(lib.versions.length)selectedLibraries[lib.id]={id:lib.id,version:lib.versions[0]};renderLibraries();const count=Object.keys(selectedLibraries).length;$("selectedLibraryCount").textContent=String(count);});host.append(card);}$("selectedLibraryCount").textContent=String(Object.keys(selectedLibraries).length);}
+function insertHeader(header){syncCurrentText();if(!files[currentFile])return;const text="#include <"+header+">";const old=files[currentFile].content||"";if(old.includes(text)){toast(text+" is already in this file.","info");return;}if(editor&&monacoReady&&editor.getModel()){const position=editor.getPosition()||{lineNumber:1,column:1};editor.executeEdits("code-academy-header",[{range:new window.monaco.Range(position.lineNumber,1,position.lineNumber,1),text:text+"\n",forceMoveMarkers:true}]);files[currentFile].content=editor.getValue();}else{files[currentFile].content=text+"\n"+old;$("fallbackEditor").value=files[currentFile].content;}markDirty();toast("Added "+text,"success");}
+function renderHeaderShelf(){const host=$("headerShelf");host.replaceChildren();for(const header of HEADER_SHELF){const button=document.createElement("button");button.type="button";button.className="packageCard";button.innerHTML='<i class="fa-solid fa-file-code"></i><span><strong>&lt;'+$escape(header)+'&gt;</strong><small>Insert standard header</small></span>';button.addEventListener("click",()=>insertHeader(header));host.append(button);}}
+function addLibraryCatalog(){const runtime=window.CodeAcademyCppRuntime;if(!runtime)return;$("runtimeDetail").textContent="Loading real C++ compilers and external libraries…";Promise.allSettled([runtime.getCompilers(),runtime.getLibraries()]).then(results=>{let failed=false;for(let i=0;i<results.length;i++){const result=results[i];if(result.status==="rejected"){failed=true;console.warn("C++ service catalog failed",result.reason);}}if(!compilers.length&&failed){$("runtimeDetail").textContent="Could not reach compiler catalog. Editing and local backups still work; Run requires the compiler service and internet.";$("statusRuntime").textContent="Compiler offline";$("runtimeHint").textContent="Compiler service offline";}else if(failed){$("runtimeDetail").textContent="Some library catalog data is unavailable. Standard C++ headers remain part of the compiler toolchain.";}});}
+function sourceBundle(){syncCurrentText();let main=currentFile;if(!SOURCE_EXT.test(main)){main=sourcePaths()[0]||"";}if(!main||!files[main])throw new Error("Create or select a .cpp, .cc, .cxx, or .c source file before running.");const additional=[];for(const [path,item] of Object.entries(files)){if(path===main)continue;if(CODE_EXT.test(path)&&typeof item.content==="string")additional.push({filename:path,contents:item.content});}return {main,source:files[main].content||"",files:additional};}
+async function runCpp(){if(running)return;const runtime=window.CodeAcademyCppRuntime;if(!runtime||typeof runtime.compile!=="function"){toast("C++ runtime manager failed to initialize. Check the browser console and network connection, then reload the page.","error");return;}let bundle;try{bundle=sourceBundle();}catch(error){toast(error.message,"warning");return;}const runId=++runSequence;running=true;__caShowText("C++ program output","Submitting source to the selected C++ compiler…","Compiling and running");clearConsole("Compiling and executing "+bundle.main+"…");showDock("console");$("runBtn").disabled=true;$("stopBtn").disabled=false;$("statusRuntime").textContent="Compiling";$("runtimeHint").textContent="Sending code to Compiler Explorer";if(dirty&&currentUser?.emailVerified)await saveProject(true);try{const result=await runtime.compile({source:bundle.source,files:bundle.files,compilerId:$("compilerSelect").value,standard:$("standardSelect").value,stdin:$("stdinInput").value,libraries:Object.values(selectedLibraries),execute:true,timeoutMs:45000});if(runId!==runSequence)return;if(result.compilerStdout){appendConsole(result.compilerStdout,"info");__caAppendText("COMPILER OUTPUT\n"+result.compilerStdout+"\n","diagnostic");}if(result.compilerStderr){appendConsole(result.compilerStderr,result.compileCode===0?"warn":"error");__caAppendText("COMPILER DIAGNOSTICS\n"+result.compilerStderr+"\n","diagnostic");}if(result.compileCode!==0){appendConsole("Compilation failed with exit code "+result.compileCode+".","error");__caAppendText("Compilation failed with exit code "+result.compileCode+".\n","stderr");__caSetOutputStatus("Compilation failed");$("statusRuntime").textContent="Compile failed";setCloud("Compilation failed","error");statusMessage("C++ compilation failed — see Console.");return;}if(result.executionStdout){appendConsole(result.executionStdout,"log");__caAppendText(result.executionStdout,"stdout");}if(result.executionStderr){appendConsole(result.executionStderr,"error");__caAppendText("\nSTDERR\n"+result.executionStderr,"stderr");}if(!result.executionStdout&&!result.executionStderr){appendConsole("Compiler accepted the program. The service did not return a separate execution-output field for this request.","warn");if(!result.raw?.execResult&&!result.raw?.executionResult&&!result.raw?.executeResult&&!result.raw?.execution&&!result.raw?.result)appendConsole("Tip: open Compiler & libraries to check service connectivity, or try Run again.","info");}if(result.executionCode!==null&&result.executionCode!==0){appendConsole("Program exited with code "+result.executionCode+".","warn");__caAppendText("\nProgram exited with code "+result.executionCode+".\n","stderr");__caSetOutputStatus("Program exited with code "+result.executionCode);}else{appendConsole("Compilation and execution request completed.","success");__caSetOutputStatus("Compilation and execution completed");}if(!result.executionStdout&&!result.executionStderr)__caAppendText("(Program produced no standard output.)\n","stdout");$("statusRuntime").textContent="Run complete";setCloud("C++ run complete","saved");statusMessage("C++ run completed.");}catch(error){if(runId!==runSequence)return;appendConsole(error.message||String(error),"error");__caAppendText("\nERROR\n"+(error.message||String(error)),"stderr");__caSetOutputStatus("Compiler service error");$("statusRuntime").textContent="Compiler error";setCloud("Compiler service error","error");statusMessage("C++ run failed — see Console for details.");}finally{if(runId===runSequence){running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;}}}
+async function checkSyntax(){const runtime=window.CodeAcademyCppRuntime;if(!runtime||typeof runtime.compile!=="function"){toast("C++ runtime manager failed to initialize. Check the browser console and network connection, then reload the page.","error");return;}if(running){toast("Stop the current request before checking syntax.","warning");return;}let bundle;try{bundle=sourceBundle();}catch(error){toast(error.message,"warning");return;}clearConsole("Checking "+bundle.main+" with the selected C++ compiler…");showDock("console");try{const result=await runtime.compile({source:bundle.source,files:bundle.files,compilerId:$("compilerSelect").value,standard:$("standardSelect").value,libraries:Object.values(selectedLibraries),execute:false,timeoutMs:45000});if(result.compilerStdout)appendConsole(result.compilerStdout,"info");if(result.compilerStderr)appendConsole(result.compilerStderr,result.compileCode===0?"warn":"error");if(result.compileCode===0){appendConsole("Compiler check completed successfully.","success");$("statusRuntime").textContent="Compile check passed";}else{appendConsole("Compilation failed with exit code "+result.compileCode+".","error");$("statusRuntime").textContent="Compile check failed";}}catch(error){appendConsole(error.message||String(error),"error");$("statusRuntime").textContent="Compiler error";}}
+function stopCpp(){if(!running)return;runSequence++;window.CodeAcademyCppRuntime?.stop?.();running=false;$("runBtn").disabled=false;$("stopBtn").disabled=true;$("statusRuntime").textContent="Stopped";}
+async function formatCurrentFile(){syncCurrentText();if(!files[currentFile])return;const old=files[currentFile].content||"";try{const formatted=window.CodeAcademyCppRuntime?await window.CodeAcademyCppRuntime.format(old):old.split(/\r?\n/).map(line=>line.replace(/[\t ]+$/g,"")).join("\n").replace(/\n*$/g,"")+"\n";if(formatted===old){toast("Formatting made no changes.","info");return;}files[currentFile].content=formatted;if(editor&&monacoReady)editor.getModel()?.setValue(formatted);else $("fallbackEditor").value=formatted;markDirty();toast("C++ source formatted.","success");}catch(error){toast(error.message||"Could not format this file.","error");}}
+function downloadCurrentFile(){syncCurrentText();if(!files[currentFile])return;downloadBlob(currentFile.split("/").pop(),files[currentFile].content||"","text/plain;charset=utf-8");toast("Downloaded "+currentFile,"success");}
+function exportBackup(){syncCurrentText();const backup={format:"code-academy-editor-project",version:2,projectId,name:$("projectNameInput").value,description:"C++ workspace backup",editorType:"cpp",cppSettings:{standard:$("standardSelect").value,compilerId:$("compilerSelect").value,libraries:Object.values(selectedLibraries),stdin:$("stdinInput").value},files:clone(files),folders:clone(folders),exportedAt:new Date().toISOString()};downloadBlob(safeFilename(backup.name)+".ca-project.json",JSON.stringify(backup,null,2),"application/json;charset=utf-8");toast("Project backup downloaded.","success");}
+async function importBackup(file){if(!file)return;try{const data=JSON.parse(await file.text());if(!data?.files||typeof data.files!=="object"||Array.isArray(data.files))throw new Error("This file is not a Code Academy project backup.");const imported=normalizeFiles(data.files);if(!Object.keys(imported).some(path=>SOURCE_EXT.test(path)||HEADER_EXT.test(path)))throw new Error("The backup does not contain C/C++ source or header files.");if(!confirm("Import these C++ project files? Matching paths will be replaced."))return;files={...files,...imported};folders={...folders,...(data.folders&&typeof data.folders==="object"?data.folders:{})};for(const path of Object.keys(files))if(!ALLOWED_TEXT_EXT.test(path)&&!Object.prototype.hasOwnProperty.call(imported,path))continue;currentFile=sourcePaths()[0]||Object.keys(files).sort()[0]||"main.cpp";renderFiles();renderTabs();setActiveMeta();if(monacoReady)setupEditorModel();else $("fallbackEditor").value=files[currentFile]?.content||"";markDirty();toast("C++ files imported. Save to sync them with your account.","success");}catch(error){toast(error.message||"Could not import project backup.","error");}finally{$("importInput").value="";}}
+function bindUI(){
+ $("toggleExplorer").addEventListener("click",()=>{$("sidebar").classList.toggle("collapsed");if(window.matchMedia("(max-width:680px)").matches)$("sidebar").classList.toggle("mobileOpen");if(editor)editor.layout();});
+ $("hideExplorer").addEventListener("click",()=>{$("sidebar").classList.add("collapsed");if(editor)editor.layout();});
+ $("sideNewFile").addEventListener("click",openItemModal);$("newFileBtn").addEventListener("click",openItemModal);$("sideNewFolder").addEventListener("click",createFolder);$("newFolderBtn").addEventListener("click",createFolder);
+ $("newProjectBtn").addEventListener("click",async()=>{if(!currentUser?.emailVerified){toast("Verify your email before creating cloud projects.","warning");return;}if(dirty){syncCurrentText();saveLocalBackup();const saved=await saveProject(true);if(!saved&&!confirm("Your latest changes are not synced to the cloud. A recovery copy was kept. Continue creating another project?"))return;}const name=prompt("Name your new C++ project:","C++ Learning Project");if(name===null)return;if(name.trim().length<2){toast("Enter a project name with at least two characters.","warning");return;}try{await createCloudProject(name.trim(),true);}catch(error){toast(firebaseErrorMessage(error),"error");}});
+ $("saveBtn").addEventListener("click",()=>saveProject(false));$("runBtn").addEventListener("click",runCpp);$("stopBtn").addEventListener("click",stopCpp);$("checkBtn").addEventListener("click",checkSyntax);$("formatBtn").addEventListener("click",formatCurrentFile);$("deleteActiveFileBtn").addEventListener("click",()=>deleteFile(currentFile));$("downloadFileBtn").addEventListener("click",downloadCurrentFile);$("backupBtn").addEventListener("click",exportBackup);$("importBtn").addEventListener("click",()=>$("importInput").click());$("importInput").addEventListener("change",event=>importBackup(event.target.files?.[0]));
+ $("projectPageBtn").addEventListener("click",()=>location.href="project.html");$("refreshProjects").addEventListener("click",()=>loadProjects().catch(error=>toast(firebaseErrorMessage(error),"error")));$("clearConsole").addEventListener("click",()=>clearConsole("Console cleared."));$("collapseDock").addEventListener("click",()=>$("dock").classList.toggle("collapsed"));document.querySelectorAll(".dockTab").forEach(button=>button.addEventListener("click",()=>showDock(button.dataset.dock)));$("librarySearch").addEventListener("input",()=>{libraryQuery=$("librarySearch").value;renderLibraries();});$("refreshLibraries").addEventListener("click",()=>addLibraryCatalog());
+ $("projectNameInput").addEventListener("change",markDirty);$("projectNameInput").addEventListener("keydown",event=>{if(event.key==="Enter")$("projectNameInput").blur();});$("standardSelect").addEventListener("change",()=>{markDirty();statusMessage("C++ standard set to "+$("standardSelect").value+".");});$("compilerSelect").addEventListener("change",()=>{preferredCompilerId=$("compilerSelect").value;saveLocalBackup();statusMessage("Compiler changed to "+$("compilerSelect").selectedOptions[0]?.textContent+".");});$("stdinInput").addEventListener("input",saveLocalBackup);$("helpBtn").addEventListener("click",()=>$("helpModalBack").classList.add("active"));$("closeHelp").addEventListener("click",()=>$("helpModalBack").classList.remove("active"));$("helpModalBack").addEventListener("click",event=>{if(event.target===$("helpModalBack"))$("helpModalBack").classList.remove("active");});
+ document.addEventListener("keydown",event=>{const mod=event.ctrlKey||event.metaKey;if(mod&&event.key.toLowerCase()==="s"){event.preventDefault();saveProject(false);}else if(mod&&event.key==="Enter"){event.preventDefault();runCpp();}else if(mod&&event.key.toLowerCase()==="b"){event.preventDefault();$("sidebar").classList.toggle("collapsed");if(editor)editor.layout();}else if(event.key==="Escape")$("helpModalBack").classList.remove("active");});
+ window.addEventListener("beforeunload",event=>{syncCurrentText();if(dirty){saveLocalBackup();event.preventDefault();event.returnValue="";}});window.addEventListener("resize",()=>{if(editor)editor.layout();if(window.matchMedia("(min-width:681px)").matches)$("sidebar").classList.remove("mobileOpen");});
+}
+
+bindUI();
+__caBindOutput(runCpp);document.getElementById("exitEditorBtn")?.addEventListener("click",()=>{location.href="menu.html";});document.getElementById("editorDashboardBtn")?.addEventListener("click",()=>{try{sessionStorage.setItem("ca-editor-dashboard-return",location.href);}catch(_){}location.href="editor-dashboard.html";});
+renderHeaderShelf();
+if(window.CodeAcademyCppRuntime&&typeof window.CodeAcademyCppRuntime.on==="function"){runtimeUnsubscribe=window.CodeAcademyCppRuntime.on(onRuntimeMessage);}else{appendConsole("C++ runtime manager is missing. Ensure cpp-runtime.js is in the repository root beside CppEditor.html.","error");$("statusRuntime").textContent="Runtime unavailable";$("runtimeDetail").textContent="cpp-runtime.js was not found or failed to load.";}
+const monacoDeadline=setTimeout(()=>{if(!monacoReady)enableFallback();},9000);setupMonaco().then(ok=>{clearTimeout(monacoDeadline);if(!ok)enableFallback();}).catch(error=>{console.error(error);clearTimeout(monacoDeadline);enableFallback();});
+onAuthStateChanged(auth,async user=>{if(authStarted)return;authStarted=true;if(!user){setCloud("Sign in required","error");location.replace("login.html");return;}currentUser=user;try{await startWorkspace();}catch(error){console.error("C++ workspace failed to start",error);setCloud("Workspace load failed","error");appendConsole(firebaseErrorMessage(error),"error");toast(firebaseErrorMessage(error),"error");}});
+addLibraryCatalog();
+window.addEventListener("pagehide",()=>{if(runtimeUnsubscribe)runtimeUnsubscribe();});
+</script>
+
+<div class="caOutputScreen" id="caOutputScreen" aria-modal="true" role="dialog" aria-label="Program output">
+ <header class="caOutputHead"><span class="caOutputMark"><i class="fa-solid fa-terminal"></i></span><div><div class="caOutputTitle" id="caOutputTitle">Program output</div><div class="caOutputSub" id="caOutputSub">Full-screen execution results</div></div><span class="caOutputGrow"></span><button class="caOutputButton" id="caOutputRunAgain" type="button"><i class="fa-solid fa-rotate-right"></i> Run again</button><button class="caOutputButton" id="caOutputClose" type="button"><i class="fa-solid fa-xmark"></i> Back to editor</button></header>
+ <div class="caOutputState" id="caOutputState" role="status" aria-live="polite">Waiting for output</div><div class="caOutputBody" id="caOutputBody"><pre class="caOutputText" id="caOutputText"></pre><iframe class="caOutputFrame" id="caOutputFrame" title="Program output" sandbox="allow-scripts allow-forms allow-modals"></iframe></div>
+</div>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

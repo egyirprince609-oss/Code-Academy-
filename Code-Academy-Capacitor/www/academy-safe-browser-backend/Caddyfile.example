@@ -1,0 +1,15 @@
+# Rename academy-api.example.com to your real API domain.
+# Caddy obtains/renews HTTPS certificates automatically when DNS points here
+# and inbound TCP 80/443 are allowed through the server firewall.
+academy-api.example.com {
+    encode zstd gzip
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        Referrer-Policy "no-referrer"
+        X-Frame-Options "DENY"
+        Permissions-Policy "camera=(), microphone=(), geolocation=()"
+        Content-Security-Policy "default-src 'none'; frame-ancestors 'none'; base-uri 'none'"
+    }
+    reverse_proxy 127.0.0.1:8000
+}

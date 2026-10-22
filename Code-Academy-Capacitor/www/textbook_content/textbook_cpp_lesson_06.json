@@ -1,0 +1,394 @@
+{
+  "schemaVersion": 1,
+  "contentType": "premium-textbook-lesson",
+  "courseSlug": "cpp",
+  "courseTitle": "C++",
+  "lessonNumber": 6,
+  "lessonId": "textbook-cpp-lesson-06",
+  "title": "RAII and resource lifetime",
+  "subtitle": "Extended chapter: raii and resource lifetime",
+  "description": "A structured, practice-led treatment of raii and resource lifetime with concepts, examples, labs, and assessment.",
+  "level": "Applied professional practice",
+  "estimatedMinutes": 73,
+  "learningObjectives": [
+    "Explain the purpose and core rule of raii and resource lifetime.",
+    "Identify the inputs, states, and assumptions that affect raii and resource lifetime.",
+    "Apply a methodical approach to a realistic task.",
+    "Test normal, boundary, and failure cases.",
+    "Justify one trade-off and communicate the evidence for your result."
+  ],
+  "conceptSections": [
+    {
+      "heading": "1. The central idea",
+      "paragraphs": [
+        "The practical question is not only what works, but why it works and what happens when conditions change. In this chapter, raii and resource lifetime is treated as a practical engineering skill, not as a vocabulary list. RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools.",
+        "Consider this real-work scenario: implement a small, testable feature involving “RAII and resource lifetime”. Start by describing what a user or system should observe, then identify the rule that must hold. That simple move separates requirements from guesses and gives you a reliable way to decide whether an implementation is complete."
+      ]
+    },
+    {
+      "heading": "2. How to reason about it",
+      "paragraphs": [
+        "Use a three-part mental model for raii and resource lifetime: define the input and its meaning, apply the rule in a controlled place, and inspect the observable result. The rule should remain understandable even when a value is missing, a request fails, or the user takes an unexpected path.",
+        "Write down the preconditions, the expected result, and the cases where the operation must stop or report an error. This turns a vague goal into a contract that another developer can review. It also provides the foundation for a good test: the test states an input, an expected result, and why that result is correct."
+      ]
+    },
+    {
+      "heading": "3. Step-by-step implementation method",
+      "paragraphs": [
+        "First, rewrite “RAII and resource lifetime” as two or three observable acceptance criteria. Next, identify the smallest useful model and choose names that describe meaning rather than implementation details. Implement one behavior at a time, keep unrelated responsibilities separate, and use the normal facilities of C++ instead of creating extra complexity without a requirement.",
+        "Then test an ordinary example, an empty or boundary value, and an input that should be rejected or handled differently. Inspect the result rather than assuming it. Where there is external input, a network call, persistence, or a user action, describe what happens if the dependency is missing or returns an error. Record any limitation that remains."
+      ]
+    },
+    {
+      "heading": "4. Worked example: read, predict, verify",
+      "paragraphs": [
+        "The code block below demonstrates a representative C++ pattern. Before reading the explanation, predict what the code produces and identify any assumptions it makes. Trace the names and control flow from input to result. If the snippet is not executable in your present environment, treat it as a code-reading exercise and state the setup it would need.",
+        "The example illustrates a technique, not a complete production system. A full implementation may also require stronger input validation, a user-facing status, persistence rules, access checks, performance evaluation, or tests. Be specific about which extra requirements apply to your scenario rather than adding every possible feature by default."
+      ]
+    },
+    {
+      "heading": "5. Trade-offs and design choices",
+      "paragraphs": [
+        "For raii and resource lifetime, begin with correctness and clarity. A shorter expression is not automatically better if it hides a boundary condition, ownership rule, permission check, or meaningful relationship between data. Choose the simplest structure that meets the contract and can be tested independently.",
+        "There may be more than one acceptable approach. Compare options using requirements such as readability for the team, runtime constraints, accessibility, safety, resource use, and expected changes. Explain when you would reconsider your choice. That explanation demonstrates engineering judgement because it connects the design to evidence and constraints, not personal preference alone."
+      ]
+    },
+    {
+      "heading": "6. Common failures and debugging",
+      "paragraphs": [
+        "A common failure is to assume that data will always be complete or that the system will always be in its ideal state. When working with raii and resource lifetime, check missing values, unexpected types, repeated actions, and failed dependencies where these apply. Do not fix a symptom by suppressing an error message without finding its cause.",
+        "To debug, reproduce the smallest failing case, record expected and actual behavior, state one hypothesis, and inspect the relevant evidence. Change one cause at a time. After the fix, rerun the original case and add a regression check so a future change cannot quietly reintroduce the defect."
+      ]
+    },
+    {
+      "heading": "7. Quality and maintainability",
+      "paragraphs": [
+        "The caller should be able to predict what the solution promises from its name and contract. In C++, this often means using appropriate native or standard features, documenting assumptions, handling errors at a clear boundary, and keeping sensitive information out of logs or visible output where relevant.",
+        "Review your work for clear names, logical structure, understandable failure behavior, and tests that could be repeated by someone else. If a choice affects privacy, security, data integrity, performance, or accessibility, state how it was checked. These tasks are part of normal development, not optional polish after the feature is finished."
+      ]
+    },
+    {
+      "heading": "8. Practice transfer",
+      "paragraphs": [
+        "Complete the scenario: implement a small, testable feature involving “RAII and resource lifetime”. Before coding, define three acceptance criteria and one risk. Build a thin correct version first, test it, then extend it in small steps. Explain how the implementation applies raii and resource lifetime and which requirement you deliberately left out of scope.",
+        "Keep the result, test evidence, and a short design note together. A future maintainer should be able to understand what the feature is meant to do, why you selected the approach, and how to reproduce the checks. If you cannot yet explain a decision, mark it as a question for further study instead of pretending it is settled."
+      ]
+    }
+  ],
+  "workedExamples": [
+    {
+      "title": "C++ worked sample 6",
+      "language": "cpp",
+      "code": "std::vector<int> scores{72, 88, 65};\nstd::erase_if(scores, [](int score) { return score < 70; });",
+      "explanation": "The snippet demonstrates a core C++ pattern related to raii and resource lifetime. Read it as a contract: find the inputs, follow the rule, predict the result, and check its boundary assumptions. Adapt variable names and validation to the real scenario.",
+      "expectedBehavior": "Verify the ordinary result and add a boundary test before treating the sample as complete."
+    },
+    {
+      "title": "Requirement-to-test walkthrough",
+      "language": "text",
+      "code": "REQUIREMENT: implement a small, testable feature involving “RAII and resource lifetime”\nRULE: RAII and resource lifetime\nTEST 1: ordinary valid input\nTEST 2: empty or boundary input\nTEST 3: invalid or unavailable dependency\nEVIDENCE: record expected and actual outcomes",
+      "explanation": "This walkthrough turns a narrative requirement into observable tests; the actual implementation depends on the project and runtime.",
+      "expectedBehavior": "A reviewer can trace each criterion to a test and an explained outcome."
+    }
+  ],
+  "handsOnLabs": [
+    {
+      "title": "Lab A — Implement raii and resource lifetime",
+      "scenario": "implement a small, testable feature involving “RAII and resource lifetime”",
+      "tasks": [
+        "Rewrite the request as three verifiable acceptance criteria.",
+        "Build the smallest solution that satisfies the main rule.",
+        "Check a normal case and record the expected output.",
+        "Check one edge case and define a safe failure path.",
+        "Write a short note explaining the design choice."
+      ],
+      "deliverable": "A working or clearly specified solution, repeatable checks, and a short design note."
+    },
+    {
+      "title": "Lab B — Peer review and improve",
+      "scenario": "A teammate has created a first draft related to raii and resource lifetime, but the assumptions and failure paths are not documented.",
+      "tasks": [
+        "Identify one unsupported assumption.",
+        "Create a test that exposes it.",
+        "Suggest one simplification or safer boundary.",
+        "Rerun tests and record the result."
+      ],
+      "deliverable": "A review note with one finding, its correction, and verification evidence."
+    }
+  ],
+  "commonMistakes": [
+    {
+      "mistake": "Assuming typical data is the only data.",
+      "whyItFails": "Missing, stale, malformed, or boundary values can expose hidden assumptions.",
+      "betterApproach": "Define the input contract and test at least one boundary and one invalid case."
+    },
+    {
+      "mistake": "Combining unrelated responsibilities.",
+      "whyItFails": "Parsing, business rules, persistence, and display become harder to isolate.",
+      "betterApproach": "Separate responsibilities when doing so makes a rule easier to test and explain."
+    },
+    {
+      "mistake": "Treating one successful run as complete proof.",
+      "whyItFails": "A single sample gives little evidence about other states or future regressions.",
+      "betterApproach": "Keep repeatable tests for normal behavior and relevant failures."
+    },
+    {
+      "mistake": "Adding abstraction without a requirement.",
+      "whyItFails": "Unnecessary indirection increases the concepts a reader must follow.",
+      "betterApproach": "Choose the smallest design that supports the contract and likely changes."
+    },
+    {
+      "mistake": "Leaving assumptions undocumented.",
+      "whyItFails": "A future maintainer cannot tell which behavior is guaranteed.",
+      "betterApproach": "Record constraints, known limitations, setup, and verification steps."
+    }
+  ],
+  "criticalQuestions": [
+    {
+      "id": "cpp-06-q01",
+      "question": "Which statement best describes the central idea of raii and resource lifetime?",
+      "difficulty": "Apply",
+      "options": [
+        "Treat the topic as a decoration that does not affect behavior.",
+        "Skip defining expected behavior until after implementation.",
+        "Add the most complex abstraction available, regardless of need.",
+        "RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools."
+      ],
+      "correctIndex": 3,
+      "correctAnswer": "RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q02",
+      "question": "For this scenario — implement a small, testable feature involving “RAII and resource lifetime” — what evidence is needed before the work is complete?",
+      "difficulty": "Analyze",
+      "options": [
+        "An assumption that normal input proves every case.",
+        "Removing validation so the example is shorter.",
+        "A repeatable check of the normal path and a meaningful boundary or failure case.",
+        "A single successful screenshot with no test data."
+      ],
+      "correctIndex": 2,
+      "correctAnswer": "A repeatable check of the normal path and a meaningful boundary or failure case.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q03",
+      "question": "Which review question most directly checks raii and resource lifetime?",
+      "difficulty": "Evaluate",
+      "options": [
+        "Can all failures be silently ignored?",
+        "Does the implementation meet its stated contract for valid and unexpected input?",
+        "Does the file contain as many lines as possible?",
+        "Was the code typed without consulting a reference?"
+      ],
+      "correctIndex": 1,
+      "correctAnswer": "Does the implementation meet its stated contract for valid and unexpected input?",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q04",
+      "question": "A defect appears only with empty or boundary data. What is the strongest next step?",
+      "difficulty": "Apply",
+      "options": [
+        "Reproduce it, isolate the responsible rule, fix the cause, and add a regression check.",
+        "Delete the failing case because typical data works.",
+        "Change several unrelated files until the symptom disappears.",
+        "Hide the warning without understanding it."
+      ],
+      "correctIndex": 0,
+      "correctAnswer": "Reproduce it, isolate the responsible rule, fix the cause, and add a regression check.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q05",
+      "question": "Which design decision best supports maintainability?",
+      "difficulty": "Analyze",
+      "options": [
+        "Combine parsing, storage, rendering, and validation into one procedure.",
+        "Duplicate the same rule across several locations.",
+        "Rely on unexplained magic values.",
+        "Use clear names and separate responsibilities that change for different reasons."
+      ],
+      "correctIndex": 3,
+      "correctAnswer": "Use clear names and separate responsibilities that change for different reasons.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q06",
+      "question": "Why should unexpected input be handled deliberately?",
+      "difficulty": "Evaluate",
+      "options": [
+        "Unexpected values cannot occur in production.",
+        "Raw input is safe in every output context.",
+        "External data and user actions may violate assumptions, so the application needs a defined response.",
+        "A browser or compiler guarantees every remote value is valid."
+      ],
+      "correctIndex": 2,
+      "correctAnswer": "External data and user actions may violate assumptions, so the application needs a defined response.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q07",
+      "question": "What is the strongest evidence that the core rule works?",
+      "difficulty": "Apply",
+      "options": [
+        "A screenshot of the editor only.",
+        "Repeatable tests covering expected behavior and relevant edge cases.",
+        "A comment saying that the feature should work.",
+        "The fact that the code was written quickly."
+      ],
+      "correctIndex": 1,
+      "correctAnswer": "Repeatable tests covering expected behavior and relevant edge cases.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "id": "cpp-06-q08",
+      "question": "Which next activity best transfers the lesson to professional practice?",
+      "difficulty": "Analyze",
+      "options": [
+        "Complete the scenario, record acceptance criteria, and explain the verification evidence.",
+        "Copy the sample without understanding or changing it.",
+        "Avoid documenting constraints.",
+        "Treat one successful run as final proof."
+      ],
+      "correctIndex": 0,
+      "correctAnswer": "Complete the scenario, record acceptance criteria, and explain the verification evidence.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    }
+  ],
+  "shortAnswerQuestions": [
+    {
+      "question": "Explain raii and resource lifetime to a learner who has never used it. Include the purpose and one boundary that matters.",
+      "modelAnswer": "RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. A complete response describes the purpose, demonstrates how it affects behavior, and names a boundary case.",
+      "marks": 4
+    },
+    {
+      "question": "For this scenario — implement a small, testable feature involving “RAII and resource lifetime” — write three acceptance criteria a reviewer can verify.",
+      "modelAnswer": "Strong criteria state observable results, define relevant inputs, and include a normal case plus a failure or boundary case.",
+      "marks": 5
+    },
+    {
+      "question": "Describe a systematic debugging process for a fault that only appears with unusual input.",
+      "modelAnswer": "Reproduce the input; record the expected and actual results; isolate the smallest failing behavior; test one hypothesis at a time; fix the cause; add a regression test; rerun related checks.",
+      "marks": 5
+    },
+    {
+      "question": "Compare two possible approaches to raii and resource lifetime and explain the relevant trade-off.",
+      "modelAnswer": "Name a genuine alternative and compare readability, correctness, safety, performance, team needs, and future maintenance in relation to the stated requirements.",
+      "marks": 4
+    },
+    {
+      "question": "What evidence should you leave for another developer?",
+      "modelAnswer": "Acceptance criteria, a reproducible example, relevant configuration, expected and actual test results, and a short design note, excluding secrets and unnecessary personal data.",
+      "marks": 4
+    }
+  ],
+  "glossary": [
+    {
+      "term": "C++",
+      "definition": "Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools."
+    },
+    {
+      "term": "RAII and resource lifetime",
+      "definition": "RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools."
+    },
+    {
+      "term": "acceptance criterion",
+      "definition": "An observable condition that must be met before a task is complete."
+    },
+    {
+      "term": "boundary case",
+      "definition": "An input or state at the edge of the allowed range, including empty or maximum values."
+    },
+    {
+      "term": "invariant",
+      "definition": "A condition that must remain true before and after an operation."
+    },
+    {
+      "term": "regression test",
+      "definition": "A repeatable check that helps prevent a previously fixed fault from returning."
+    },
+    {
+      "term": "trade-off",
+      "definition": "A choice that improves one quality while potentially costing another."
+    },
+    {
+      "term": "verification evidence",
+      "definition": "A repeatable test, observation, or record that supports a claim about behavior."
+    }
+  ],
+  "chapterSummary": [
+    "RAII and resource lifetime: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools.",
+    "Begin with requirements, implement a small rule, then test normal, boundary, and failure behavior.",
+    "Keep the approach explainable and save the evidence that supports your conclusion."
+  ],
+  "examChallenge": [
+    {
+      "prompt": "Design review: the solution for “implement a small, testable feature involving “RAII and resource lifetime”” works on one sample but fails on unusual data. Explain the investigation, revision, and verification sequence.",
+      "modelAnswer": "Define the expected contract; reproduce the unusual data; isolate the failing rule; implement explicit validation and a safe failure response; test normal and boundary paths; document the changed assumption; add regression coverage.",
+      "markingGuide": [
+        "Clear requirement",
+        "Systematic fault isolation",
+        "Suitable correction",
+        "Repeatable verification"
+      ]
+    },
+    {
+      "prompt": "Transfer raii and resource lifetime to a different project with different data and users. What can be reused and what must be reconsidered?",
+      "modelAnswer": "Reuse the reasoning, contracts, validation boundaries, tests, and documentation. Reassess the data model, threat and privacy context, performance constraints, accessibility needs, and deployment environment.",
+      "markingGuide": [
+        "Reusable principles identified",
+        "Changed assumptions recognized",
+        "Verification and communication included"
+      ]
+    }
+  ],
+  "answerKey": [
+    {
+      "questionId": "cpp-06-q01",
+      "correctOption": "RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q02",
+      "correctOption": "A repeatable check of the normal path and a meaningful boundary or failure case.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q03",
+      "correctOption": "Does the implementation meet its stated contract for valid and unexpected input?",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q04",
+      "correctOption": "Reproduce it, isolate the responsible rule, fix the cause, and add a regression check.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q05",
+      "correctOption": "Use clear names and separate responsibilities that change for different reasons.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q06",
+      "correctOption": "External data and user actions may violate assumptions, so the application needs a defined response.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q07",
+      "correctOption": "Repeatable tests covering expected behavior and relevant edge cases.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    },
+    {
+      "questionId": "cpp-06-q08",
+      "correctOption": "Complete the scenario, record acceptance criteria, and explain the verification evidence.",
+      "explanation": "The correct choice is grounded in the chapter principle: RAII and resource lifetime concerns the rules, structure, decisions, and edge cases that determine how a C++ solution behaves. Modern C++ combines performance with abstractions such as RAII, standard containers, algorithms, and value types. Prefer clear ownership and standard-library tools. The other options rely on unsupported assumptions or make the behavior harder to verify."
+    }
+  ],
+  "publicationNotes": {
+    "originalSupplement": true,
+    "basedOnExistingFreeLessons": false,
+    "revisionStatus": "Supplementary curriculum draft; expert technical review and proof-reading recommended before commercial publication."
+  }
+}

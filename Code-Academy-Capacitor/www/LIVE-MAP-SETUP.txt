@@ -1,0 +1,41 @@
+CODE ACADEMY LIVE MAP — SETUP
+===============================
+
+1) Mapbox token location
+------------------------
+Open live-map.html and find this exact line in the module script:
+
+const MAPBOX_ACCESS_TOKEN = 'PASTE_YOUR_MAPBOX_PUBLIC_TOKEN_HERE';
+
+Replace only the text between the quotes with your Mapbox PUBLIC token, which starts with pk. Example format only:
+const MAPBOX_ACCESS_TOKEN = 'pk.example_public_token_value';
+
+Do NOT use a token beginning sk. Those are secret tokens and must never be placed in client-side files. Because every frontend token can be viewed by users, create a dedicated public token, grant only the scopes/features you need (the interactive map needs styles:read and fonts:read; place search uses the Geocoding API and may require the appropriate public geocoding scope), add URL restrictions for the deployed site host `egyirprince609-oss.github.io`, and monitor use in Mapbox. Do not send the token in a public post.
+
+2) Firebase location-share rules
+-------------------------------
+Open MAP-SHARES-FIRESTORE-RULES.txt, copy its `match /mapShares/{shareId}` block into the existing Firestore rules inside `match /databases/{database}/documents { ... }`. Do not replace your existing rules. Publish the merged rules in Firebase Console. If your current rules deny requests, creating or viewing links will fail safely with an error.
+
+3) Integration supplied
+-----------------------
+- `live-map.html`: Mapbox map, location search, location permission prompt, map styles, 3D layer (where available), consent-based time-limited location sharing, live viewer link, install button, metadata and authentication/notification wiring.
+- `menu.html`: contains a new Live Map link.
+- `manifest.json`: adds a Live Map installation shortcut.
+- `sw.js`: adds live-map.html to the offline shell cache and bumps the cache version.
+- `MAP-SHARES-FIRESTORE-RULES.txt`: restrictive Firestore rule fragment for owner writes and time-limited token-link reads.
+
+4) Verify after deployment
+--------------------------
+- Open the site over HTTPS and visit live-map.html.
+- Test map tiles and place search; if search fails but tiles work, review token public scopes.
+- Test on two devices/accounts: start sharing on the first, open the generated link on the second, then stop sharing and confirm the second page stops displaying updates.
+- Confirm the current authentication account can create and revoke a share.
+- Test a rejected/expired link.
+
+Important behavior and privacy limits
+------------------------------------
+Live location uses explicit browser/device permission, requires the sender to be authenticated, and shares coordinates through a hard-to-guess private link. Anyone the recipient forwards the link to can also view the location until it is revoked or expires; never share it publicly. Expiry is limited to 24 hours, but expired records may remain in Firestore until cleaned up. Enable Firestore TTL on `expiresAt` if you want automatic cleanup of expired records.
+
+A normal HTML/PWA page cannot guarantee accurate location updates after it is closed, suspended, or Android kills it. The sender should keep this map page active. Reliable closed-app tracking requires separately implemented native Android foreground location service code, a persistent system notification, Android permission/manifest configuration, and real-device testing. The website code does not grant itself background access.
+
+The link opens `live-map.html?share=<opaque-id>` on the Code Academy origin. On the hosted website this displays the shared live location; an installed PWA/TWA can handle the route only if its scope/domain association covers the URL and the Android wrapper is configured correctly.

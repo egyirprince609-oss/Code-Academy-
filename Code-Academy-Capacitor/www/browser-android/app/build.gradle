@@ -1,0 +1,41 @@
+plugins {
+    id 'com.android.application'
+}
+
+// FCM becomes fully active when you add the Code Academy Browser Android app's
+// google-services.json. The debug browser can still build without that file.
+if (file('google-services.json').exists()) {
+    apply plugin: 'com.google.gms.google-services'
+}
+
+android {
+    namespace 'com.codeacademy.browser'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.codeacademy.browser'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '1.0.0'
+    }
+
+    buildTypes {
+        debug { }
+        release {
+            minifyEnabled false
+            // Release APKs remain unsigned until you configure your private upload-key signingConfig.
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.webkit:webkit:1.12.1'
+    implementation 'androidx.work:work-runtime:2.10.0'
+    implementation 'com.google.firebase:firebase-messaging:24.1.0'
+}

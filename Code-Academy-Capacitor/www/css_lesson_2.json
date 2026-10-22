@@ -1,0 +1,231 @@
+{
+  "course": "css",
+  "lessonNumber": 2,
+  "lessonId": "css-lesson-2",
+  "title": "CSS Selectors",
+  "subtitle": "Target the right elements with the right rules",
+  "description": "Learn how to select HTML elements using element, class, ID, grouping, descendant, child, and attribute selectors.",
+  "level": "Beginner",
+  "estimatedMinutes": 20,
+  "blocks": [
+    {
+      "id": "page-1-added",
+      "type": "heading",
+      "text": "PAGE 1 — CSS Selectors: concepts and applied practice"
+    },
+    {
+      "id": "css2-intro",
+      "type": "content",
+      "title": "1. What Is a CSS Selector?",
+      "text": "A CSS selector tells the browser which HTML elements should receive a style. For example, p selects paragraphs, .card selects elements with the class card, and #header selects the element with the ID header. Choosing the right selector helps you style exactly what you want without affecting unrelated elements."
+    },
+    {
+      "id": "css2-basic",
+      "type": "content",
+      "title": "2. Element, Class, and ID Selectors",
+      "text": "An element selector uses an HTML tag name, such as h1 or button. A class selector begins with a period (.) and can be reused on many elements. An ID selector begins with a hash (#) and should identify one unique element on the page. Remember: class=\"card\" matches .card, while id=\"card\" matches #card."
+    },
+    {
+      "id": "css2-basic-code",
+      "type": "code",
+      "title": "3. Try the Three Main Selectors",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Basic Selectors</title>\n  <style>\n    p {\n      color: #475569;\n    }\n\n    .highlight {\n      background-color: #fef3c7;\n      padding: 8px;\n    }\n\n    #page-title {\n      color: #4f46e5;\n    }\n  </style>\n</head>\n<body>\n  <h1 id=\"page-title\">My Website</h1>\n  <p>This paragraph uses the element selector.</p>\n  <p class=\"highlight\">This paragraph uses a class selector.</p>\n  <p class=\"highlight\">The same class can be reused.</p>\n</body>\n</html>",
+      "output": "The heading is purple, all paragraphs have slate-colored text, and the two highlighted paragraphs have a pale yellow background."
+    },
+    {
+      "id": "css2-grouping",
+      "type": "content",
+      "title": "4. Grouping Selectors",
+      "text": "When several elements need the same style, group their selectors with commas. For example, h1, h2, p { font-family: Arial, sans-serif; } applies the font family to all three types of elements. Grouping avoids repeating the same declaration in separate rules. The comma means each selector is targeted independently."
+    },
+    {
+      "id": "css2-grouping-code",
+      "type": "code",
+      "title": "5. Style Several Elements Together",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Grouping Selectors</title>\n  <style>\n    h1, h2, p {\n      font-family: Arial, sans-serif;\n    }\n\n    h1, h2 {\n      color: #0f766e;\n    }\n  </style>\n</head>\n<body>\n  <h1>Welcome</h1>\n  <h2>About Us</h2>\n  <p>We are learning CSS selectors.</p>\n</body>\n</html>",
+      "output": "All three elements use Arial. Both headings are teal, while the paragraph keeps its default text color."
+    },
+    {
+      "id": "css2-relationships",
+      "type": "content",
+      "title": "6. Descendant and Child Selectors",
+      "text": "A descendant selector uses a space. For example, .card p selects every paragraph inside an element with class card, even if another element sits between them. A child selector uses > and selects only direct children. For example, .card > p selects paragraphs directly inside the card, but not paragraphs nested inside another element within it. Use descendant selectors for broader targeting and child selectors when the direct relationship matters."
+    },
+    {
+      "id": "page-2-added",
+      "type": "heading",
+      "text": "PAGE 2 — CSS Selectors: concepts and applied practice"
+    },
+    {
+      "id": "css2-relationships-code",
+      "type": "code",
+      "title": "7. Space Versus Greater-Than Sign",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Related Selectors</title>\n  <style>\n    .card p {\n      color: #2563eb;\n    }\n\n    .card > p {\n      font-weight: bold;\n    }\n  </style>\n</head>\n<body>\n  <section class=\"card\">\n    <p>Direct child paragraph.</p>\n    <div>\n      <p>Nested paragraph.</p>\n    </div>\n  </section>\n</body>\n</html>",
+      "output": "Both paragraphs are blue because both are descendants of .card. Only the direct child paragraph is bold."
+    },
+    {
+      "id": "css2-attribute",
+      "type": "content",
+      "title": "8. Attribute Selectors",
+      "text": "Attribute selectors target elements based on their HTML attributes. For example, input[type=\"email\"] selects email input fields. The selector a[target=\"_blank\"] selects links whose target attribute is exactly _blank. Attribute selectors are useful when you want to style a particular kind of form field or link without adding extra classes."
+    },
+    {
+      "id": "css2-attribute-code",
+      "type": "code",
+      "title": "9. Target an Input by Its Attribute",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Attribute Selectors</title>\n  <style>\n    input[type=\"email\"] {\n      border: 2px solid #0f766e;\n      padding: 8px;\n    }\n\n    input[type=\"text\"] {\n      border: 2px solid #94a3b8;\n      padding: 8px;\n    }\n  </style>\n</head>\n<body>\n  <p><label>Name: <input type=\"text\"></label></p>\n  <p><label>Email: <input type=\"email\"></label></p>\n</body>\n</html>",
+      "output": "The email field has a teal border, while the text field has a gray border."
+    },
+    {
+      "id": "css2-specificity",
+      "type": "content",
+      "title": "10. Which Selector Wins?",
+      "text": "Sometimes several selectors target the same element and set the same property. CSS uses specificity and the cascade to decide which declaration wins. In a simple comparison, an ID selector is more specific than a class selector, and a class selector is more specific than an element selector. For example, #notice generally beats .message for the same color property when both declarations have the same importance and origin. Specificity is not the only cascade rule, but understanding this basic order helps you debug styling problems."
+    },
+    {
+      "id": "css2-specificity-code",
+      "type": "code",
+      "title": "11. Understand Specificity",
+      "language": "html",
+      "code": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n  <title>Selector Specificity</title>\n  <style>\n    p {\n      color: gray;\n    }\n\n    .message {\n      color: blue;\n    }\n\n    #notice {\n      color: crimson;\n    }\n  </style>\n</head>\n<body>\n  <p id=\"notice\" class=\"message\">Which color will this paragraph use?</p>\n</body>\n</html>",
+      "output": "The paragraph is crimson because the ID selector has greater specificity than the class and element selectors for this color declaration."
+    },
+    {
+      "id": "css2-practice",
+      "type": "content",
+      "title": "12. Apply What You Have Learned",
+      "text": "Imagine you are styling a student dashboard. You need to make every button blue, highlight several cards, style one page heading, and change only email input fields. You could use button, .card, #page-title, and input[type=\"email\"] respectively. Before writing a selector, ask yourself: which elements should be affected, and how are those elements identified in the HTML? This habit helps you avoid accidental styling and makes your CSS easier to maintain."
+    },
+    {
+      "id": "page-3-added",
+      "type": "heading",
+      "text": "PAGE 3 — CSS Selectors: concepts and applied practice"
+    },
+    {
+      "id": "css2-quiz-1",
+      "type": "quiz",
+      "title": "Knowledge Check 1",
+      "question": "Which selector targets every element with class=\"product\"?",
+      "options": [
+        "#product",
+        ".product",
+        "product",
+        "*product"
+      ],
+      "correctIndex": 1,
+      "explanation": "A period starts a class selector. The selector .product targets elements whose class list includes product.",
+      "hint": "Remember the symbol used before a class name."
+    },
+    {
+      "id": "css2-quiz-2",
+      "type": "quiz",
+      "title": "Knowledge Check 2",
+      "question": "You need to style only the element with id=\"main-title\". Which selector should you use?",
+      "options": [
+        ".main-title",
+        "main-title",
+        "#main-title",
+        "*main-title"
+      ],
+      "correctIndex": 2,
+      "explanation": "An ID selector begins with # and matches the element with the corresponding ID.",
+      "hint": "An ID selector uses a hash symbol."
+    },
+    {
+      "id": "css2-quiz-3",
+      "type": "quiz",
+      "title": "Knowledge Check 3",
+      "question": "Which rule applies the same font to both h1 and p elements?",
+      "options": [
+        "h1 p { font-family: Arial; }",
+        "h1 + p { font-family: Arial; }",
+        "h1 > p { font-family: Arial; }",
+        "h1, p { font-family: Arial; }"
+      ],
+      "correctIndex": 3,
+      "explanation": "A comma groups selectors so the same declaration applies independently to both h1 and p elements.",
+      "hint": "Use a comma to list separate selectors in one rule."
+    },
+    {
+      "id": "css2-quiz-4",
+      "type": "quiz",
+      "title": "Application Question 1",
+      "question": "A page has five cards, all using class=\"card\". You want every card to have rounded corners. Which selector is most suitable?",
+      "options": [
+        "#card",
+        "card",
+        ".card",
+        "body.card"
+      ],
+      "correctIndex": 2,
+      "explanation": "The reusable class selector .card applies to all elements with that class, making it suitable for styling repeated cards.",
+      "hint": "The same class can be assigned to many elements."
+    },
+    {
+      "id": "css2-quiz-5",
+      "type": "quiz",
+      "title": "Application Question 2",
+      "question": "Inside a .menu element, you want to style only links that are direct children of .menu. Which selector is correct?",
+      "options": [
+        ".menu a",
+        ".menu > a",
+        ".menu + a",
+        "#menu a"
+      ],
+      "correctIndex": 1,
+      "explanation": "The > combinator selects direct children. Therefore, .menu > a matches links directly inside the menu, not links nested in another element.",
+      "hint": "Use the direct-child combinator."
+    },
+    {
+      "id": "css2-quiz-6",
+      "type": "quiz",
+      "title": "Application Question 3",
+      "question": "A form contains text, email, and password inputs. You want to give only email inputs a teal border. Which selector should you use?",
+      "options": [
+        "input.email",
+        "#email",
+        "input[type=\"email\"]",
+        "email input"
+      ],
+      "correctIndex": 2,
+      "explanation": "The attribute selector input[type=\"email\"] targets input elements whose type attribute is email, without affecting the other input types.",
+      "hint": "The desired elements are identified by an HTML attribute."
+    },
+    {
+      "id": "css2-quiz-7",
+      "type": "quiz",
+      "title": "Critical Thinking",
+      "question": "A paragraph matches both p { color: gray; } and .warning { color: orange; }. Both declarations have the same importance and origin. Which color normally wins?",
+      "options": [
+        "Gray, because element selectors always win",
+        "Orange, because the class selector is more specific",
+        "The browser chooses randomly",
+        "Both colors are blended together"
+      ],
+      "correctIndex": 1,
+      "explanation": "A class selector has greater specificity than an element selector, so orange normally wins for this property in the stated situation.",
+      "hint": "Compare class-selector specificity with element-selector specificity."
+    },
+    {
+      "id": "css2-quiz-8",
+      "type": "quiz",
+      "title": "Application Question 4",
+      "question": "You want every paragraph inside .article to be green, including paragraphs nested inside other elements. Which selector should you choose?",
+      "options": [
+        ".article > p",
+        "#article p",
+        ".article p",
+        "article + p"
+      ],
+      "correctIndex": 2,
+      "explanation": "The descendant selector .article p matches paragraphs anywhere inside an element with class article, including nested paragraphs.",
+      "hint": "A space between selectors matches descendants at any nesting depth."
+    }
+  ],
+  "xpReward": 5,
+  "coinsReward": 2
+}

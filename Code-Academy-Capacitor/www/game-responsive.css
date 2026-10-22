@@ -1,0 +1,83 @@
+/* Shared responsive safety layer for all Code Academy games. */
+:root {
+  --ca-viewport-width: 100vw;
+  --ca-viewport-height: 100dvh;
+  --ca-ui-scale: 1;
+  --ca-safe-top: env(safe-area-inset-top, 0px);
+  --ca-safe-right: env(safe-area-inset-right, 0px);
+  --ca-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ca-safe-left: env(safe-area-inset-left, 0px);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { min-height: 100%; width: 100%; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { min-width: 0; width: 100%; min-height: var(--ca-viewport-height, 100vh); overflow-x: clip; padding-bottom: var(--ca-safe-bottom); }
+img, video, svg, canvas, iframe { max-width: 100%; }
+img, video { height: auto; }
+button, input, textarea, select { max-width: 100%; min-width: 0; font: inherit; }
+button, a, input[type="button"], input[type="submit"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+button { overflow-wrap: anywhere; }
+pre, code { max-width: 100%; }
+pre { overflow-x: auto; overscroll-behavior-x: contain; }
+main, section, article, aside, header, footer, nav, form, fieldset, .shell, .container, .app, .layout, .panel, .card, .game, .game-container, .game-shell, .game-layout { min-width: 0; }
+:where(.shell, .container, .app, .game-container, .game-shell) { max-width: 100%; }
+:where(.game, .game-container, .game-shell, .arena, .arena-panel, .play-area, .panel) { overflow-wrap: anywhere; }
+:where(button, .btn, .primary, .secondary, .play-btn, .game-link) { min-height: 42px; }
+@media (max-width: 720px) {
+  body { font-size: max(14px, 1rem); }
+  :where(.shell, .container, .app, .game-container, .game-shell) { width: 100%; max-width: 100%; padding-left: max(10px, var(--ca-safe-left)); padding-right: max(10px, var(--ca-safe-right)); }
+  :where(.stats, .stats-grid, .stat-grid, .records, .metrics-grid) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  :where(.topbar, .top-bar, .header-row, .game-header) { flex-wrap: wrap; }
+  :where(.top-actions, .top-actions, .game-actions, .toolbar) { flex-wrap: wrap; }
+  :where(input, select, textarea) { font-size: 16px; }
+  :where(.game-card, .panel, .stat-card, .stat, .side-panel, .arena-panel) { max-width: 100%; }
+  :where(.game-grid, .games-grid, .layout, .main-grid, .arena-grid, .content-grid) { grid-template-columns: minmax(0, 1fr) !important; }
+  :where(.question, .question-area, .question-box, .play-area, .panel-body) { min-width: 0; }
+}
+@media (max-width: 380px) {
+  :where(.shell, .container, .app, .game-container, .game-shell) { padding-left: 8px; padding-right: 8px; }
+  :where(.stats, .stats-grid, .stat-grid, .records, .metrics-grid) { gap: 7px; }
+  :where(.stat, .stat-card, .panel, .side-panel, .card) { padding-left: 10px; padding-right: 10px; }
+  :where(.btn-row, .actions, .controls-row, .play-controls) { flex-wrap: wrap; }
+}
+@media (min-width: 721px) {
+  :where(.shell, .container, .app, .game-shell) { margin-left: auto; margin-right: auto; }
+}
+@media (min-width: 1440px) {
+  :where(.shell, .container, .app, .game-shell) { max-width: 1440px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+/* Desktop expansion for legacy mobile-first game containers. */
+@media (min-width: 900px) {
+  .app {
+    width: min(calc(100% - 48px), 1240px) !important;
+    max-width: 1240px !important;
+    height: auto !important;
+    min-height: var(--ca-viewport-height, 100vh) !important;
+    overflow: visible !important;
+    margin-inline: auto !important;
+  }
+  .container {
+    width: min(calc(100% - 48px), 1220px) !important;
+    max-width: 1220px !important;
+    height: auto !important;
+    min-height: var(--ca-viewport-height, 100vh) !important;
+    overflow: visible !important;
+    margin-inline: auto !important;
+  }
+  .game.active {
+    height: auto !important;
+    min-height: min(760px, calc(var(--ca-viewport-height, 100vh) - 130px));
+    overflow: visible !important;
+  }
+  body { overflow-y: auto !important; }
+}
+@media (max-width: 899px) {
+  body { overflow-y: auto; }
+}
+@media (max-width: 899px) {
+  html { height: auto !important; min-height: 100%; overflow-y: auto !important; }
+  body { height: auto !important; min-height: var(--ca-viewport-height, 100vh) !important; overflow-y: auto !important; }
+  .container { height: auto !important; min-height: var(--ca-viewport-height, 100vh) !important; }
+}

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#061126">
+  <meta name="description" content="Code Academy Safe Browser helps you search the web, open websites directly, review suspicious links, follow trending technology stories, and manage browsing tools with privacy-conscious controls.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing.html">
+  <link rel="icon" href="safe-browser-icon-192.png">
+  <link rel="apple-touch-icon" href="safe-browser-icon-192.png">
+  <link rel="manifest" href="safe-browser.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Code Academy">
+  <meta property="og:title" content="Code Academy Safe Browser | Search smarter. Browse safer.">
+  <meta property="og:description" content="Search the web with Code Academy Safe Browser, follow live technology headlines, open websites in your device browser, and manage link checks, tabs, privacy and voice tools.">
+  <meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing.html">
+  <meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing-preview.jpg">
+  <meta property="og:image:alt" content="Code Academy Safe Browser interface with a search bar, privacy controls, browser tabs and trending technology stories.">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Code Academy Safe Browser">
+  <meta name="twitter:description" content="Search, browse, review link risks, manage tabs and use device voice tools from Code Academy.">
+  <meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/safe-browsing-preview.jpg">
+  <meta name="twitter:image:alt" content="Code Academy Safe Browser interface with a search bar, privacy controls, browser tabs and trending technology stories.">
+  <title>Code Academy Safe Browser</title>
+  <link rel="stylesheet" href="safe-browsing.css">
+  <script type="module" src="safe-browsing.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#browserWorkspace">Skip to browser workspace</a>
+  <header class="app-header">
+    <button id="exitBrowser" class="icon-button exit-button" type="button" aria-label="Return to previous page" title="Return to previous page">←</button>
+    <a class="brand" href="index.html" aria-label="Code Academy home">
+      <img src="safe-browser-icon-192.png" alt="" width="42" height="42">
+      <span><strong>Code Academy</strong><small>SAFE BROWSING</small></span>
+    </a>
+    <div class="account-chip" id="accountStatus"><span class="status-dot"></span><span>Checking account…</span></div>
+    <div class="header-actions">
+      <button id="voiceSearch" class="icon-button" type="button" title="Search with voice" aria-label="Search with voice">🎙</button>
+      <button id="newTab" class="icon-button" type="button" title="Open a new tab" aria-label="Open a new tab">＋</button>
+      <button id="openTabs" class="icon-button tab-count" type="button" title="Show tabs" aria-label="Show tabs">1</button>
+      <button id="openSettings" class="icon-button" type="button" title="Browser settings" aria-label="Browser settings">⚙</button>
+    </div>
+  </header>
+
+  <main id="browserWorkspace">
+    <section class="address-row" aria-label="Address and search">
+      <button id="goBack" class="icon-button subtle" type="button" aria-label="Back" title="Back">‹</button>
+      <button id="goForward" class="icon-button subtle" type="button" aria-label="Forward" title="Forward">›</button>
+      <button id="reloadPage" class="icon-button subtle" type="button" aria-label="Reload" title="Reload">↻</button>
+      <form id="addressForm" class="address-form">
+        <span id="securityMark" class="security-mark" title="Connection indicator">⌕</span>
+        <input id="addressInput" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Search or enter a website address" aria-label="Search or enter a website address">
+        <button id="scanAddress" class="scan-address" type="button" title="Check link before opening">Scan</button>
+        <button class="go-button" type="submit" aria-label="Go">➜</button>
+      </form>
+      <button id="bookmarkCurrent" class="icon-button subtle" type="button" title="Bookmark current page" aria-label="Bookmark current page">☆</button>
+      <button id="openExternal" class="icon-button subtle" type="button" title="Open current page in your device browser" aria-label="Open current page externally">↗</button>
+    </section>
+
+    <nav id="tabStrip" class="tab-strip" aria-label="Open tabs"></nav>
+
+    <section class="quick-toolbar" aria-label="Browser tools">
+      <label class="provider-label">Search engine
+        <select id="searchProvider" aria-label="Search engine">
+          <option value="duckduckgo">DuckDuckGo</option>
+          <option value="google">Google</option>
+          <option value="bing">Bing</option>
+          <option value="brave">Brave Search</option>
+        </select>
+      </label>
+      <div class="toolbar-spacer"></div>
+      <button id="showHistory" class="tool-button" type="button">◷ <span>History</span></button>
+      <button id="showBookmarks" class="tool-button" type="button">☆ <span>Bookmarks</span></button>
+      <button id="showGroups" class="tool-button" type="button">▦ <span>Groups</span></button>
+      <button id="readPage" class="tool-button" type="button">🔊 <span>Read aloud</span></button>
+    </section>
+
+    <section id="alertBanner" class="alert-banner" role="status" aria-live="polite" hidden></section>
+
+    <section class="browser-area" id="browserArea">
+      <div id="startPage" class="start-page">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="pulse"></span> CODE ACADEMY SAFE BROWSER</div>
+          <h1>What would you like<br><span>to explore today?</span></h1>
+          <p>Use the long address bar above to search or open a site. Search results and websites open as normal browser pages, so sites that forbid embedded frames can load correctly.</p>
+          <div class="hero-tags"><span>🛡 Link checks</span><span>🔒 HTTPS awareness</span><span>🎙 Voice search</span><span>📉 Data Saver</span></div>
+        </div>
+        <form id="startSearchForm" class="start-search-form">
+          <label class="visually-hidden" for="startSearch">Search the web</label>
+          <span>⌕</span><input id="startSearch" type="search" placeholder="What would you like to find?" autocomplete="off">
+          <button type="button" id="startVoice" class="voice-small" aria-label="Voice search">🎙</button>
+          <button type="submit" class="primary-button">Search the web</button>
+        </form>
+        <section class="trending-section" aria-labelledby="trendingHeading">
+          <div class="trending-heading"><div><span class="eyebrow">LIVE PUBLIC FEED</span><h2 id="trendingHeading">Trending in technology</h2></div><button id="refreshTrending" class="mini-button" type="button">↻ Refresh</button></div>
+          <p id="trendingStatus" class="trending-status" role="status" aria-live="polite">Loading current technology stories…</p>
+          <div id="trendingFeed" class="trending-grid" aria-live="polite"></div>
+          <p class="feed-source">Headlines are loaded from the public Hacker News API. Select a card to open its original source in a separate browser tab. If the feed cannot connect, search still works.</p>
+        </section>
+        <div class="shortcut-grid">
+          <button class="shortcut" data-url="https://www.google.com" type="button"><span class="shortcut-icon">G</span><span><b>Google</b><small>Web search</small></span></button>
+          <button class="shortcut" data-url="https://duckduckgo.com" type="button"><span class="shortcut-icon purple">D</span><span><b>DuckDuckGo</b><small>Privacy-focused search</small></span></button>
+          <button class="shortcut" data-url="https://search.brave.com" type="button"><span class="shortcut-icon orange">B</span><span><b>Brave Search</b><small>Independent search</small></span></button>
+          <button class="shortcut" data-url="https://transparencyreport.google.com/safe-browsing/search" type="button"><span class="shortcut-icon green">✓</span><span><b>Check a site</b><small>Google Safe Browsing report</small></span></button>
+        </div>
+        <div class="notice-row"><span>ⓘ</span><p><b>Browse with awareness:</b> link checks look for common warning signals; they cannot guarantee that a site is safe. Search and website links open as ordinary browser pages so destination sites can apply their own security policies.</p></div>
+      </div>
+      <div id="frameShell" class="frame-shell" hidden>
+        <div class="frame-topline"><span id="currentPageLabel">Browsing</span><span id="frameSafetyLabel" class="safety-pill">Link not yet checked</span><button id="frameFallbackBtn" type="button" class="mini-button">Can’t view?</button><button id="expandFrame" type="button" class="mini-button">Full view</button></div>
+        <div id="deviceViewport" class="device-viewport mode-fluid">
+          <div id="frameFallback" class="frame-fallback external-launch-card" hidden>
+            <span class="fallback-icon">↗</span><h2 id="externalStatusTitle">Ready to open website</h2>
+            <p id="externalStatusMessage">Websites open as ordinary top-level pages. This keeps sites that prohibit embedded frames from showing a blank error panel.</p>
+            <div id="externalStatusURL" class="external-status-url"></div>
+            <div class="external-actions"><button id="fallbackOpen" class="primary-button" type="button">Open website in browser tab</button><a id="externalDirectLink" class="direct-open-link" href="https://example.com" target="_blank" rel="noopener noreferrer">Open direct link ↗</a></div>
+            <p class="external-explainer">If the destination reports a network, DNS, certificate or availability error, that error is shown by your device browser. A web page cannot read another tab's private error page or override the site's embedding policy.</p>
+          </div>
+        </div>
+        <div class="frame-footer"><span id="currentDomain">No page opened</span><button id="checkCurrentSafety" type="button">Check site status</button><button id="copyCurrentUrl" type="button">Copy link</button></div>
+      </div>
+    </section>
+
+    <footer class="app-footer"><span>Code Academy Safe Browser</span><span>Search · Open · Check · Protect</span><button id="defaultBrowserHelp" type="button">Set up as default browser</button></footer>
+  </main>
+
+  <div id="panelShade" class="panel-shade" hidden></div>
+  <aside id="sidePanel" class="side-panel" aria-hidden="true" aria-labelledby="panelTitle">
+    <div class="panel-head"><div><small>CODE ACADEMY</small><h2 id="panelTitle">Browser panel</h2></div><button id="closePanel" class="icon-button" type="button" aria-label="Close panel">×</button></div>
+    <div id="panelContent" class="panel-content"></div>
+  </aside>
+
+  <div id="dialogShade" class="dialog-shade" hidden>
+    <section id="appDialog" class="app-dialog" role="dialog" aria-modal="true" aria-labelledby="dialogTitle">
+      <div class="dialog-heading"><span id="dialogIcon" class="dialog-icon">ⓘ</span><div><h2 id="dialogTitle">Information</h2><p id="dialogSubtitle"></p></div><button id="dialogClose" class="icon-button" type="button" aria-label="Close dialog">×</button></div>
+      <div id="dialogBody" class="dialog-body"></div>
+      <div id="dialogActions" class="dialog-actions"></div>
+    </section>
+  </div>
+
+  <div id="toastStack" class="toast-stack" aria-live="polite" aria-atomic="false"></div>
+  <noscript><div class="noscript-message">Enable JavaScript to use Code Academy Safe Browser.</div></noscript>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

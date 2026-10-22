@@ -1,0 +1,176 @@
+{
+  "course": "csharp",
+  "lessonNumber": 10,
+  "lessonId": "csharp-lesson-10",
+  "title": "Build a Small C# Progress Tracker",
+  "subtitle": "Build a Small C# Progress Tracker: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on build a small c# progress tracker, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "csharp-10-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Build a Small C# Progress Tracker: foundations and mental model"
+    },
+    {
+      "id": "csharp-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Build a Small C# Progress Tracker is not just a syntax topic: it is a way to make the application’s intent explicit. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. In the Code Academy dashboard, that idea matters because A progress tracker benefits from clear data models and testable methods. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "csharp-10-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Build a Small C# Progress Tracker: Prints one line",
+      "language": "csharp",
+      "code": "Console.WriteLine(\"Code Academy\");",
+      "output": "Prints one line."
+    },
+    {
+      "id": "csharp-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “Console.WriteLine(\"Code Academy\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Prints one line. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "csharp-10-quiz-1-5",
+      "type": "quiz",
+      "question": "A feature works for a normal course with ten lessons. Which additional test is most valuable?",
+      "options": [
+        "Test the same normal case repeatedly",
+        "Remove validation because the normal case passed",
+        "Test zero lessons, all completed, and invalid progress input",
+        "Change only the button shadow"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Test zero lessons, all completed, and invalid progress input. Boundary and invalid inputs reveal defects that a happy-path-only test misses.",
+      "reasoning": "Boundary and invalid inputs reveal defects that a happy-path-only test misses. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Build a Small C# Progress Tracker: Interpolates values into a string",
+      "language": "csharp",
+      "code": "string learner = \"Ama\";\nint xp = 120;\nConsole.WriteLine($\"{learner}: {xp} XP\");",
+      "output": "Interpolates values into a string."
+    },
+    {
+      "id": "csharp-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “string learner = \"Ama\";”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “int xp = 120;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “Console.WriteLine($\"{learner}: {xp} XP\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Interpolates values into a string. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "csharp-10-quiz-2-8",
+      "type": "quiz",
+      "question": "A local lesson loads correctly but deployed users see a missing file. What should be verified?",
+      "options": [
+        "Whether the README has the right number of headings",
+        "The actual published URL, filename casing, deployment path, and network response",
+        "Only the local editor tab color",
+        "The name of an unrelated variable"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The actual published URL, filename casing, deployment path, and network response. A local success does not prove the deployment contains the same assets and paths.",
+      "reasoning": "A local success does not prove the deployment contains the same assets and paths. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-10-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Build a Small C# Progress Tracker: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "csharp-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A progress tracker benefits from clear data models and testable methods. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "csharp-10-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Build a Small C# Progress Tracker: Uses floating-point arithmetic and guards against zero",
+      "language": "csharp",
+      "code": "int done = 4, total = 10;\ndouble percent = total > 0 ? done * 100.0 / total : 0;\nConsole.WriteLine($\"{percent:F0}%\");",
+      "output": "Uses floating-point arithmetic and guards against zero."
+    },
+    {
+      "id": "csharp-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “int done = 4, total = 10;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “double percent = total > 0 ? done * 100.0 / total : 0;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “Console.WriteLine($\"{percent:F0}%\");”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Uses floating-point arithmetic and guards against zero. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "csharp-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A user can double-click a reward button. How should duplicate rewards be prevented?",
+      "options": [
+        "Make the operation idempotent or verify a unique attempt/state before awarding",
+        "Trust the button’s animation to block repeats",
+        "Award XP before checking the result",
+        "Hide the button but leave the event handler active"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Make the operation idempotent or verify a unique attempt/state before awarding. UI debouncing helps, but the operation needs a reliable duplicate-protection rule at the state boundary.",
+      "reasoning": "UI debouncing helps, but the operation needs a reliable duplicate-protection rule at the state boundary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-10-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Build a Small C# Progress Tracker: foreach visits each element without manual indexes",
+      "language": "csharp",
+      "code": "string[] courses = { \"HTML\", \"CSS\", \"C#\" };\nforeach (string course in courses) Console.WriteLine(course);",
+      "output": "foreach visits each element without manual indexes."
+    },
+    {
+      "id": "csharp-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “string[] courses = { \"HTML\", \"CSS\", \"C#\" };”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “foreach (string course in courses) Console.WriteLine(course);”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Expected behavior: foreach visits each element without manual indexes. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "csharp-10-quiz-3-16",
+      "type": "quiz",
+      "question": "A new feature has correct output but cannot be used by keyboard. Is it complete?",
+      "options": [
+        "Yes; output correctness guarantees accessibility",
+        "Yes; a mouse test is sufficient",
+        "Only if the color palette is changed",
+        "No; keyboard access, focus behavior, and understandable feedback must also be tested"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: No; keyboard access, focus behavior, and understandable feedback must also be tested. A professional interface includes interaction and accessibility checks in addition to functional correctness.",
+      "reasoning": "A professional interface includes interaction and accessibility checks in addition to functional correctness. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-10-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Build a Small C# Progress Tracker: applied challenge and mastery check"
+    },
+    {
+      "id": "csharp-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. For the Code Academy dashboard, A progress tracker benefits from clear data models and testable methods. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "csharp-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses build a small c# progress tracker. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "csharp-10-quiz-5-20",
+      "type": "quiz",
+      "question": "A reported bug is hard to reproduce. What should the test record?",
+      "options": [
+        "Only a screenshot of the background color",
+        "No details because the code has comments",
+        "The input, initial state, steps, expected result, and actual result",
+        "Only the developer’s guess about the cause"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The input, initial state, steps, expected result, and actual result. A precise reproduction turns an intermittent report into a testable behavior.",
+      "reasoning": "A precise reproduction turns an intermittent report into a testable behavior. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "csharp-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Combine small responsibilities, meaningful names, predictable state, and tests. Separate inputs, transformations, and outputs, then test normal and boundary cases. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

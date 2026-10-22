@@ -1,0 +1,176 @@
+{
+  "course": "dart",
+  "lessonNumber": 8,
+  "lessonId": "dart-lesson-8",
+  "title": "Classes, Constructors and Inheritance",
+  "subtitle": "Classes, Constructors and Inheritance: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on classes, constructors and inheritance, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "dart-8-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Classes, Constructors and Inheritance: foundations and mental model"
+    },
+    {
+      "id": "dart-8-page-1-teaching-2",
+      "type": "content",
+      "text": "Classes, Constructors and Inheritance is not just a syntax topic: it is a way to make the application’s intent explicit. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. In the Code Academy dashboard, that idea matters because A course model benefits from sound types and clear asynchronous boundaries. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "dart-8-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Classes, Constructors and Inheritance: A constructor initializes required fields and final fields cannot be reassigned",
+      "language": "dart",
+      "code": "class Lesson { final String id; final String title; const Lesson({required this.id, required this.title}); }\nconst lesson = Lesson(id: \"html-1\", title: \"HTML\");",
+      "output": "A constructor initializes required fields and final fields cannot be reassigned."
+    },
+    {
+      "id": "dart-8-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “class Lesson { final String id; final String title; const Lesson({required this.id, required this.title}); }”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “const lesson = Lesson(id: \"html-1\", title: \"HTML\");”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A constructor initializes required fields and final fields cannot be reassigned. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "dart-8-quiz-1-5",
+      "type": "quiz",
+      "question": "A learner record contains name and XP. What is the main benefit of grouping them in one model?",
+      "options": [
+        "Related state stays together and can be validated through a clear interface",
+        "The model automatically saves itself to Firebase",
+        "Every field becomes safe from modification automatically",
+        "All records must share the same XP value"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Related state stays together and can be validated through a clear interface. A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation.",
+      "reasoning": "A model expresses a domain entity, but persistence and encapsulation still require deliberate implementation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-8-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Classes, Constructors and Inheritance: A method keeps the progress rule with its model and checks zero",
+      "language": "dart",
+      "code": "class Progress { final int total; Progress(this.total); double percent(int done) => total <= 0 ? 0 : done * 100 / total; }",
+      "output": "A method keeps the progress rule with its model and checks zero."
+    },
+    {
+      "id": "dart-8-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “class Progress { final int total; Progress(this.total); double percent(int done) => total <= 0 ? 0 : done * 100 / total; }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: A method keeps the progress rule with its model and checks zero. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "dart-8-quiz-2-8",
+      "type": "quiz",
+      "question": "Several types must provide `report()`, but their internal data differs. Which abstraction is suitable?",
+      "options": [
+        "Copy the same method into unrelated caller code",
+        "Use one global variable for all records",
+        "Store source code in the report field",
+        "An interface or protocol describing the required behavior"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: An interface or protocol describing the required behavior. An interface or protocol defines a contract without requiring identical internal representations.",
+      "reasoning": "An interface or protocol defines a contract without requiring identical internal representations. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-8-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Classes, Constructors and Inheritance: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "dart-8-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A course model benefits from sound types and clear asynchronous boundaries. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "dart-8-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Classes, Constructors and Inheritance: Inheritance reuses a base class when the subtype truly is a kind of that class",
+      "language": "dart",
+      "code": "class PremiumLesson extends Lesson { const PremiumLesson({required super.id, required super.title}); }",
+      "output": "Inheritance reuses a base class when the subtype truly is a kind of that class."
+    },
+    {
+      "id": "dart-8-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “class PremiumLesson extends Lesson { const PremiumLesson({required super.id, required super.title}); }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: Inheritance reuses a base class when the subtype truly is a kind of that class. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "dart-8-quiz-2-13",
+      "type": "quiz",
+      "question": "A course-progress object must never have a negative total. Where should that rule be protected?",
+      "options": [
+        "Only when the object is printed",
+        "By assuming all call sites follow a comment",
+        "At the model or validation boundary that creates and updates the object",
+        "Only in the page heading"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: At the model or validation boundary that creates and updates the object. Domain invariants should be enforced where data enters or changes, not only at display time.",
+      "reasoning": "Domain invariants should be enforced where data enters or changes, not only at display time. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-8-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Classes, Constructors and Inheritance: An abstract class can declare behavior that subclasses must implement",
+      "language": "dart",
+      "code": "abstract class Reporter { String report(); }\nclass ConsoleReporter extends Reporter { @override String report() => \"Saved\"; }",
+      "output": "An abstract class can declare behavior that subclasses must implement."
+    },
+    {
+      "id": "dart-8-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “abstract class Reporter { String report(); }”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Line 2 — “class ConsoleReporter extends Reporter { @override String report() => \"Saved\"; }”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: An abstract class can declare behavior that subclasses must implement. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "dart-8-quiz-3-16",
+      "type": "quiz",
+      "question": "A type has only two fields and no behavior or identity requirements. What design principle applies?",
+      "options": [
+        "Make all members globally mutable",
+        "Prefer the simplest data structure that clearly represents the value",
+        "Use inheritance by default",
+        "Create an abstract hierarchy for every field"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Prefer the simplest data structure that clearly represents the value. Classes, structs, and records should match actual domain needs rather than add ceremony.",
+      "reasoning": "Classes, structs, and records should match actual domain needs rather than add ceremony. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-8-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Classes, Constructors and Inheritance: applied challenge and mastery check"
+    },
+    {
+      "id": "dart-8-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. For the Code Academy dashboard, A course model benefits from sound types and clear asynchronous boundaries. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "dart-8-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses classes, constructors and inheritance. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "dart-8-quiz-5-20",
+      "type": "quiz",
+      "question": "A subclass overrides a method with an incompatible meaning. What is the key design risk?",
+      "options": [
+        "The subtype may violate the contract expected by callers",
+        "The compiler must automatically rewrite all callers",
+        "The program gains database persistence",
+        "Object fields become inaccessible in every language"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: The subtype may violate the contract expected by callers. Subtyping is safe only when the subtype respects the behavioral expectations of its base contract.",
+      "reasoning": "Subtyping is safe only when the subtype respects the behavioral expectations of its base contract. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "dart-8-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Types group related state and behavior. Initialize valid values, protect invariants, and use inheritance or composition only when it improves the model. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

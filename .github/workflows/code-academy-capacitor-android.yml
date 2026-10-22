@@ -1,0 +1,69 @@
+name: Code Academy Capacitor Android APK
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Code-Academy-Capacitor/**'
+      - '.github/workflows/code-academy-capacitor-android.yml'
+permissions:
+  contents: read
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: Code-Academy-Capacitor/package-lock.json
+      - name: Install dependencies
+        working-directory: Code-Academy-Capacitor
+        run: npm ci
+      - name: Build web bridge and sync Android
+        working-directory: Code-Academy-Capacitor
+        run: |
+          set -euo pipefail
+          npm run build:native
+          python3 scripts/inject-html-script.py www /capacitor-native.js code-academy-native
+          chmod +x android/gradlew
+          npx cap sync android
+      - name: Build signed release APK when secrets exist, otherwise debug APK
+        working-directory: Code-Academy-Capacitor
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist-apk
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            export ANDROID_KEYSTORE_PATH="$RUNNER_TEMP/code-academy-release.jks"
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+            chmod 600 "$ANDROID_KEYSTORE_PATH"
+            (cd android && ./gradlew --no-daemon assembleRelease)
+            APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' -print -quit)"
+            test -n "$APK_PATH"
+            cp "$APK_PATH" dist-apk/Code-Academy-release.apk
+          else
+            echo 'Release-signing secrets not configured; building a debug APK for testing.'
+            (cd android && ./gradlew --no-daemon assembleDebug)
+            APK_PATH="$(find android/app/build/outputs/apk/debug -type f -name '*.apk' -print -quit)"
+            test -n "$APK_PATH"
+            cp "$APK_PATH" dist-apk/Code-Academy-debug.apk
+          fi
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-academy-android-apk
+          path: Code-Academy-Capacitor/dist-apk/*.apk
+          if-no-files-found: error
+          retention-days: 30

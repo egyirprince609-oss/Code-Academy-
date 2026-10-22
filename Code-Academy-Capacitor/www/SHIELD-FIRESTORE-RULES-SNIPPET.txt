@@ -1,0 +1,62 @@
+CODE ACADEMY SHIELD — OPTIONAL OWNER-ONLY PREFERENCES RULE
+
+Merge this match block INSIDE your existing:
+  match /databases/{database}/documents {
+
+Do not replace your full Firestore rules with this snippet. Review parent and recursive
+rules too: Firestore allows a request if ANY matching allow rule grants it, so a broad
+parent wildcard could override the intent of an owner-only child rule.
+
+match /users/{uid}/securitySettings/{settingId} {
+  function isShieldOwner() {
+    return request.auth != null && request.auth.uid == uid;
+  }
+
+  allow get, list: if isShieldOwner();
+
+  allow create, update: if isShieldOwner() &&
+    settingId == 'shield' &&
+    request.resource.data.keys().hasOnly([
+      'theme',
+      'checksEnabled',
+      'fileScanning',
+      'messageReview',
+      'soundAlerts',
+      'vibration',
+      'appSources',
+      'passwordHash',
+      'passwordSalt',
+      'passwordUpdatedAt',
+      'firewallGuideSeen',
+      'updatedAt'
+    ]) &&
+    request.resource.data.theme in ['dark', 'light'] &&
+    request.resource.data.checksEnabled is bool &&
+    request.resource.data.fileScanning is bool &&
+    request.resource.data.messageReview is bool &&
+    request.resource.data.soundAlerts is bool &&
+    request.resource.data.vibration is bool &&
+    request.resource.data.appSources is list &&
+    request.resource.data.appSources.size() <= 6 &&
+    request.resource.data.passwordHash is string &&
+    request.resource.data.passwordHash.size() <= 200 &&
+    request.resource.data.passwordSalt is string &&
+    request.resource.data.passwordSalt.size() <= 100 &&
+    request.resource.data.firewallGuideSeen is bool &&
+    request.resource.data.updatedAt == request.time;
+
+  allow delete: if isShieldOwner() && settingId == 'shield';
+}
+
+IMPORTANT
+
+- The browser's notification/location permission and its device-local denylist are not stored in this cloud document.
+- This rule gates each user's own security preferences. It does not provide server-side
+  enforcement for a password lock in the browser, and it does not make a client-side hash
+  equivalent to Android device authentication.
+- The Shield notification events use the existing users/{uid}/notifications collection.
+  Keep that collection's existing owner-only read/write rules compatible with the fields
+  already written by notification-engine.js and menu.html; this file deliberately does not
+  replace or broaden those rules.
+- Existing parent rules that grant broad recursive writes must be reviewed. Do not make
+  users or subcollections publicly readable/writable to make a failed sync disappear.

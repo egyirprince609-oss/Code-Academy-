@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 10,
+  "lessonId": "sql-lesson-10",
+  "title": "Transactions, Least Privilege and Data Safety",
+  "subtitle": "Transactions, Least Privilege and Data Safety: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on transactions, least privilege and data safety, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Advanced",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-10-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Transactions, Least Privilege and Data Safety: foundations and mental model"
+    },
+    {
+      "id": "sql-10-page-1-teaching-2",
+      "type": "content",
+      "text": "Transactions, Least Privilege and Data Safety is not just a syntax topic: it is a way to make the application’s intent explicit. Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-10-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Transactions, Least Privilege and Data Safety: Keeps balance update and audit log together",
+      "language": "sql",
+      "code": "BEGIN;\nUPDATE learners SET xp = xp + 10 WHERE id = ?;\nINSERT INTO reward_log (learner_id, amount) VALUES (?, 10);\nCOMMIT;",
+      "output": "Keeps balance update and audit log together."
+    },
+    {
+      "id": "sql-10-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “BEGIN;”: Controls a transaction boundary and determines whether related changes persist together. Line 2 — “UPDATE learners SET xp = xp + 10 WHERE id = ?;”: Names the table whose rows will be changed; a precise WHERE condition is essential. Line 3 — “INSERT INTO reward_log (learner_id, amount) VALUES (?, 10);”: Defines the row or field values to insert; parameters should keep user input separate from SQL syntax. Line 4 — “COMMIT;”: Controls a transaction boundary and determines whether related changes persist together. Expected behavior: Keeps balance update and audit log together. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-10-quiz-1-5",
+      "type": "quiz",
+      "question": "XP is updated and a reward-log row is inserted. If one write fails, what behavior is usually desired?",
+      "options": [
+        "Delete unrelated learners",
+        "Skip checking either error",
+        "Rollback both writes so the state and audit log remain consistent",
+        "Commit whichever write completed first and pretend success"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Rollback both writes so the state and audit log remain consistent. A transaction groups related updates so partial success does not leave inconsistent state.",
+      "reasoning": "A transaction groups related updates so partial success does not leave inconsistent state. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Transactions, Least Privilege and Data Safety: Rolls back a transaction when the operation must not persist",
+      "language": "sql",
+      "code": "BEGIN;\n-- perform the related writes\nROLLBACK;",
+      "output": "Rolls back a transaction when the operation must not persist."
+    },
+    {
+      "id": "sql-10-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “BEGIN;”: Controls a transaction boundary and determines whether related changes persist together. Line 2 — “-- perform the related writes”: This comment records the intent for a reader; it does not change program state by itself. Line 3 — “ROLLBACK;”: Controls a transaction boundary and determines whether related changes persist together. Expected behavior: Rolls back a transaction when the operation must not persist. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-10-quiz-2-8",
+      "type": "quiz",
+      "question": "A transaction changes data but never commits or rolls back. What is a risk?",
+      "options": [
+        "All writes must be committed by the frontend",
+        "The transaction may hold resources or locks and leave the operation incomplete",
+        "The database automatically renders a lesson",
+        "The transaction becomes a chart"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The transaction may hold resources or locks and leave the operation incomplete. Transactions need explicit completion and cleanup in the application’s control flow.",
+      "reasoning": "Transactions need explicit completion and cleanup in the application’s control flow. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Transactions, Least Privilege and Data Safety: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-10-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-10-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Transactions, Least Privilege and Data Safety: Reads a specific learner using a bound parameter",
+      "language": "sql",
+      "code": "SELECT id, xp FROM learners WHERE id = ?;",
+      "output": "Reads a specific learner using a bound parameter."
+    },
+    {
+      "id": "sql-10-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT id, xp FROM learners WHERE id = ?;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Reads a specific learner using a bound parameter. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-10-quiz-2-13",
+      "type": "quiz",
+      "question": "A parameterized query is used inside a transaction. Does that alone guarantee authorization?",
+      "options": [
+        "No; parameterization protects query structure, while authorization must be checked separately",
+        "Yes; a parameterized query grants every user permission",
+        "No; parameterized queries always corrupt rows",
+        "Yes; because transactions disable all security checks"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: No; parameterization protects query structure, while authorization must be checked separately. Security controls address different threats and are not interchangeable.",
+      "reasoning": "Security controls address different threats and are not interchangeable. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Transactions, Least Privilege and Data Safety: Separates query structure from user-supplied values",
+      "language": "sql",
+      "code": "UPDATE lessons SET title = ? WHERE id = ?;",
+      "output": "Separates query structure from user-supplied values."
+    },
+    {
+      "id": "sql-10-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “UPDATE lessons SET title = ? WHERE id = ?;”: Names the table whose rows will be changed; a precise WHERE condition is essential. Expected behavior: Separates query structure from user-supplied values. What if a line changes? If the predicate, parameter, or transaction boundary is removed, the query may affect the wrong rows or leave related data inconsistent. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-10-quiz-3-16",
+      "type": "quiz",
+      "question": "An application account only needs to read lesson metadata. What permission design is preferable?",
+      "options": [
+        "Grant database administrator rights for convenience",
+        "Allow schema deletion by every user",
+        "Share one unrestricted credential with all clients",
+        "Grant only the required read permissions"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Grant only the required read permissions. Least privilege limits the damage possible if the application or credentials are misused.",
+      "reasoning": "Least privilege limits the damage possible if the application or credentials are misused. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Transactions, Least Privilege and Data Safety: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-10-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-10-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses transactions, least privilege and data safety. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-10-quiz-5-20",
+      "type": "quiz",
+      "question": "A transaction may fail halfway through multiple operations. What should error handling ensure?",
+      "options": [
+        "It swallows all exceptions and continues",
+        "It retries indefinitely without checking whether a commit already happened",
+        "The application rolls back when appropriate and reports failure honestly",
+        "It logs success before commit"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: The application rolls back when appropriate and reports failure honestly. Failure handling should preserve atomicity and should not report success before the commit succeeds.",
+      "reasoning": "Failure handling should preserve atomicity and should not report success before the commit succeeds. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-10-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Transactions make related operations atomic. Use parameterized statements and least-privilege permissions when data can be changed by application input. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

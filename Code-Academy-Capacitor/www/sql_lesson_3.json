@@ -1,0 +1,176 @@
+{
+  "course": "sql",
+  "lessonNumber": 3,
+  "lessonId": "sql-lesson-3",
+  "title": "ORDER BY and LIMIT: Shape Results",
+  "subtitle": "ORDER BY and LIMIT: Shape Results: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on order by and limit: shape results, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "sql-3-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — ORDER BY and LIMIT: Shape Results: foundations and mental model"
+    },
+    {
+      "id": "sql-3-page-1-teaching-2",
+      "type": "content",
+      "text": "ORDER BY and LIMIT: Shape Results is not just a syntax topic: it is a way to make the application’s intent explicit. SQL result order is not guaranteed without ORDER BY. Use a stable tie-breaker when predictability matters, and apply LIMIT after defining the order. In the Code Academy dashboard, that idea matters because Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "sql-3-code-1-3",
+      "type": "code",
+      "title": "Example 1 — ORDER BY and LIMIT: Shape Results: Makes the order explicit",
+      "language": "sql",
+      "code": "SELECT title FROM lessons ORDER BY lesson_number ASC;",
+      "output": "Makes the order explicit."
+    },
+    {
+      "id": "sql-3-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “SELECT title FROM lessons ORDER BY lesson_number ASC;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Makes the order explicit. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-3-quiz-1-5",
+      "type": "quiz",
+      "question": "The five most recently updated lessons should be shown. What operation order is needed?",
+      "options": [
+        "Assume insertion order equals update order",
+        "ORDER BY updated_at DESC, then LIMIT 5",
+        "LIMIT 5 before defining any order",
+        "GROUP BY updated_at without ordering"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: ORDER BY updated_at DESC, then LIMIT 5. The order should be explicit before limiting which rows are returned.",
+      "reasoning": "The order should be explicit before limiting which rows are returned. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-3-code-2-6",
+      "type": "code",
+      "title": "Example 2 — ORDER BY and LIMIT: Shape Results: Adds a tie-breaker for predictable ordering",
+      "language": "sql",
+      "code": "SELECT title, lesson_number FROM lessons ORDER BY lesson_number DESC, title ASC;",
+      "output": "Adds a tie-breaker for predictable ordering."
+    },
+    {
+      "id": "sql-3-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “SELECT title, lesson_number FROM lessons ORDER BY lesson_number DESC, title ASC;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Adds a tie-breaker for predictable ordering. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-3-quiz-2-8",
+      "type": "quiz",
+      "question": "Two rows share the same updated_at timestamp. What improves repeatable pagination?",
+      "options": [
+        "Add a unique tie-breaker such as the primary key",
+        "Remove ORDER BY",
+        "Sort by a random expression",
+        "Assume timestamps are always unique"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Add a unique tie-breaker such as the primary key. A tie-breaker creates a stable total ordering.",
+      "reasoning": "A tie-breaker creates a stable total ordering. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-3-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — ORDER BY and LIMIT: Shape Results: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "sql-3-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. SQL result order is not guaranteed without ORDER BY. Use a stable tie-breaker when predictability matters, and apply LIMIT after defining the order. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "sql-3-code-3-11",
+      "type": "code",
+      "title": "Example 3 — ORDER BY and LIMIT: Shape Results: Requests case-insensitive sorting in SQLite",
+      "language": "sql",
+      "code": "SELECT title FROM lessons ORDER BY title COLLATE NOCASE;",
+      "output": "Requests case-insensitive sorting in SQLite."
+    },
+    {
+      "id": "sql-3-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “SELECT title FROM lessons ORDER BY title COLLATE NOCASE;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Requests case-insensitive sorting in SQLite. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-3-quiz-2-13",
+      "type": "quiz",
+      "question": "A query output appears in different order across runs, though the rows are the same. What is the likely reason?",
+      "options": [
+        "SQL always uses alphabetical order",
+        "The table automatically rotates row order",
+        "WHERE clauses randomize results",
+        "The query has no ORDER BY clause"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The query has no ORDER BY clause. Without ORDER BY, relational results are unordered.",
+      "reasoning": "Without ORDER BY, relational results are unordered. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-3-code-4-14",
+      "type": "code",
+      "title": "Example 4 — ORDER BY and LIMIT: Shape Results: Sorts before limiting the result",
+      "language": "sql",
+      "code": "SELECT title FROM lessons ORDER BY updated_at DESC LIMIT 5;",
+      "output": "Sorts before limiting the result."
+    },
+    {
+      "id": "sql-3-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “SELECT title FROM lessons ORDER BY updated_at DESC LIMIT 5;”: Chooses which fields or calculated results appear in the query output. Expected behavior: Sorts before limiting the result. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "sql-3-quiz-3-16",
+      "type": "quiz",
+      "question": "A query needs the largest score first. Which direction is appropriate?",
+      "options": [
+        "ORDER BY score IS NULL only",
+        "LIMIT score DESC",
+        "ORDER BY score DESC",
+        "ORDER BY score ASC"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: ORDER BY score DESC. DESC sorts from high to low.",
+      "reasoning": "DESC sorts from high to low. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-3-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — ORDER BY and LIMIT: Shape Results: applied challenge and mastery check"
+    },
+    {
+      "id": "sql-3-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. SQL result order is not guaranteed without ORDER BY. Use a stable tie-breaker when predictability matters, and apply LIMIT after defining the order. For the Code Academy dashboard, Learner, course, lesson, and attempt tables relate through keys; queries should return precisely the needed records. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "sql-3-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses order by and limit: shape results. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "sql-3-quiz-5-20",
+      "type": "quiz",
+      "question": "A sort key may be NULL. What should a robust query designer do?",
+      "options": [
+        "Drop all rows automatically",
+        "Know the dialect’s NULL ordering behavior and specify a deliberate rule if it matters",
+        "Assume all databases place NULL identically",
+        "Use IS NULL as the sort direction"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Know the dialect’s NULL ordering behavior and specify a deliberate rule if it matters. NULL sort behavior can differ by SQL dialect; specify the desired ordering when necessary.",
+      "reasoning": "NULL sort behavior can differ by SQL dialect; specify the desired ordering when necessary. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "sql-3-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: SQL result order is not guaranteed without ORDER BY. Use a stable tie-breaker when predictability matters, and apply LIMIT after defining the order. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

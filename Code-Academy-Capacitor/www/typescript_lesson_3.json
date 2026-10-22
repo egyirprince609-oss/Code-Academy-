@@ -1,0 +1,176 @@
+{
+  "course": "typescript",
+  "lessonNumber": 3,
+  "lessonId": "typescript-lesson-3",
+  "title": "Union Types and Narrowing",
+  "subtitle": "Union Types and Narrowing: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on union types and narrowing, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "typescript-3-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Union Types and Narrowing: foundations and mental model"
+    },
+    {
+      "id": "typescript-3-page-1-teaching-2",
+      "type": "content",
+      "text": "Union Types and Narrowing is not just a syntax topic: it is a way to make the application’s intent explicit. A union represents more than one possible type. Narrow the value using a reliable discriminator or type check before using type-specific operations. In the Code Academy dashboard, that idea matters because A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "typescript-3-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Union Types and Narrowing: A literal union permits only the listed answer values",
+      "language": "typescript",
+      "code": "type Answer = \"A\" | \"B\" | \"C\" | \"D\";\nconst answer: Answer = \"B\";",
+      "output": "A literal union permits only the listed answer values."
+    },
+    {
+      "id": "typescript-3-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “type Answer = \"A\" | \"B\" | \"C\" | \"D\";”: Declares a data type or contract that groups fields and/or behavior. Line 2 — “const answer: Answer = \"B\";”: Declares or assigns a value. The name and type determine how later expressions can use it. Expected behavior: A literal union permits only the listed answer values. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-3-quiz-1-5",
+      "type": "quiz",
+      "question": "A value is `string | number`. Which step lets the compiler safely allow string-only methods?",
+      "options": [
+        "Assume JSON input follows the declared union at runtime",
+        "Use a type guard such as `typeof value === \"string\"` before calling them",
+        "Cast it to string without checking",
+        "Disable type checking for the whole file"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Use a type guard such as `typeof value === \"string\"` before calling them. A type guard narrows the union; TypeScript annotations do not validate runtime data.",
+      "reasoning": "A type guard narrows the union; TypeScript annotations do not validate runtime data. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-3-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Union Types and Narrowing: A discriminant lets TypeScript identify which state fields are available",
+      "language": "typescript",
+      "code": "type LoadState = { status: \"loading\" } | { status: \"ready\"; title: string } | { status: \"error\"; message: string };",
+      "output": "A discriminant lets TypeScript identify which state fields are available."
+    },
+    {
+      "id": "typescript-3-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “type LoadState = { status: \"loading\" } | { status: \"ready\"; title: string } | { status: \"error\"; message: string };”: Declares a data type or contract that groups fields and/or behavior. Expected behavior: A discriminant lets TypeScript identify which state fields are available. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-3-quiz-2-8",
+      "type": "quiz",
+      "question": "A lesson-load state can be loading, ready, or error. Why use a discriminant field such as `status`?",
+      "options": [
+        "It lets control flow identify the active variant and its valid fields",
+        "It automatically saves the state to Firebase",
+        "It guarantees external JSON is valid",
+        "It forces all variants to have identical fields"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: It lets control flow identify the active variant and its valid fields. Discriminated unions model mutually distinct states and allow safe narrowing.",
+      "reasoning": "Discriminated unions model mutually distinct states and allow safe narrowing. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-3-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Union Types and Narrowing: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "typescript-3-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. A union represents more than one possible type. Narrow the value using a reliable discriminator or type check before using type-specific operations. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "typescript-3-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Union Types and Narrowing: The type guard narrows the union before each type-specific operation",
+      "language": "typescript",
+      "code": "function label(value: string | number): string {\n  if (typeof value === \"number\") return value.toFixed(0);\n  return value.trim();\n}",
+      "output": "The type guard narrows the union before each type-specific operation."
+    },
+    {
+      "id": "typescript-3-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “function label(value: string | number): string {”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Line 2 — “if (typeof value === \"number\") return value.toFixed(0);”: Checks a condition or selects a branch; the result determines which path executes. Line 3 — “return value.trim();”: Returns a value, signals a failure, or changes control flow so the caller/loop can proceed correctly. Line 4 — “}”: This delimiter opens or closes a block/element so the following statements belong to the intended scope. Expected behavior: The type guard narrows the union before each type-specific operation. What if a line changes? If the return path is removed, the caller may receive no usable result even though the calculation ran. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-3-quiz-2-13",
+      "type": "quiz",
+      "question": "A new `cancelled` variant is added to a union. How can missed handling be caught?",
+      "options": [
+        "Cast the new value to any everywhere",
+        "Delete the error branch",
+        "Return success for every unknown state",
+        "Use an exhaustive switch and a `never` check for the remaining case"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Use an exhaustive switch and a `never` check for the remaining case. An exhaustive check helps the compiler identify an unhandled variant.",
+      "reasoning": "An exhaustive check helps the compiler identify an unhandled variant. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-3-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Union Types and Narrowing: A never check can reveal an unhandled union case when the union grows",
+      "language": "typescript",
+      "code": "function assertNever(value: never): never { throw new Error(`Unhandled state: ${value}`); }",
+      "output": "A never check can reveal an unhandled union case when the union grows."
+    },
+    {
+      "id": "typescript-3-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “function assertNever(value: never): never { throw new Error(`Unhandled state: ${value}`); }”: Declares a reusable operation or program entry point, including the name and expected inputs/result. Expected behavior: A never check can reveal an unhandled union case when the union grows. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "typescript-3-quiz-3-16",
+      "type": "quiz",
+      "question": "A function accepts `unknown` JSON. What is needed before treating it as a typed lesson object?",
+      "options": [
+        "A variable name ending with `Lesson`",
+        "An `as Lesson` cast with no check",
+        "Runtime shape validation for required fields and allowed values",
+        "A TypeScript interface alone"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: Runtime shape validation for required fields and allowed values. The type system disappears at runtime; external data needs runtime validation.",
+      "reasoning": "The type system disappears at runtime; external data needs runtime validation. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-3-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Union Types and Narrowing: applied challenge and mastery check"
+    },
+    {
+      "id": "typescript-3-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. A union represents more than one possible type. Narrow the value using a reliable discriminator or type check before using type-specific operations. For the Code Academy dashboard, A dashboard module can use explicit types while remembering that external JSON still requires runtime validation. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "typescript-3-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses union types and narrowing. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "typescript-3-quiz-5-20",
+      "type": "quiz",
+      "question": "Two union variants share a property name but its types differ. What makes access safe?",
+      "options": [
+        "Access the property from a completely unrelated object",
+        "Narrow to the relevant variant before relying on the property’s specific type",
+        "Assume the property means the same thing on every branch",
+        "Convert all values to strings silently"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: Narrow to the relevant variant before relying on the property’s specific type. A shared property name does not guarantee identical meaning or type across variants.",
+      "reasoning": "A shared property name does not guarantee identical meaning or type across variants. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "typescript-3-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: A union represents more than one possible type. Narrow the value using a reliable discriminator or type check before using type-specific operations. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}

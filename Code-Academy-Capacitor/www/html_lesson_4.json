@@ -1,0 +1,186 @@
+{
+  "course": "html",
+  "lessonNumber": 4,
+  "lessonId": "html-lesson-4",
+  "title": "Images and Multimedia",
+  "subtitle": "Build accessible images, responsive visuals, and usable media experiences",
+  "description": "Learn image paths, informative and decorative alternative text, responsive sizing, loading strategy, native video, captions, and real deployment checks.",
+  "level": "Beginner to Intermediate",
+  "estimatedMinutes": 45,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "page-1",
+      "type": "heading",
+      "text": "PAGE 1 — Images: meaning, paths, and alternative text"
+    },
+    {
+      "id": "intro-1",
+      "type": "content",
+      "text": "Images add evidence, context, and visual meaning to a webpage, but an image is not automatically understandable to every visitor. A useful image starts with a real asset path and an appropriate text alternative. The src attribute tells the browser where the image file lives. The alt attribute communicates the image’s purpose when it cannot be seen or loaded, and it is read by screen readers. The best alt text describes the information the image contributes in the current context—not every tiny visual detail and not a keyword list. For a meaningful course diagram, state what the diagram teaches. For a decorative flourish that adds no information, use alt=\"\" so assistive technology can skip it. Never omit alt just because the image appears obvious visually."
+    },
+    {
+      "id": "img-1",
+      "type": "code",
+      "title": "Example 1 — A meaningful course diagram",
+      "language": "html",
+      "code": "<figure>\n  <img src=\"images/course-map.png\"\n       alt=\"Diagram showing HTML structure, CSS styling, and JavaScript behavior\"\n       width=\"900\" height=\"520\">\n  <figcaption>How the three core web technologies work together.</figcaption>\n</figure>",
+      "output": "A diagram with a helpful text alternative and visible caption."
+    },
+    {
+      "id": "intro-2",
+      "type": "content",
+      "text": "Line by line: figure groups one visual with its caption. img loads the requested file. src is relative to the page URL, so images/course-map.png means an images folder beside the current page. alt describes the learning point for people who cannot see the image. Width and height reserve the correct space while loading and reduce layout shifts. figcaption supplies visible context for everyone. If the file is renamed or moved but src is not updated, the browser shows a broken image. If alt is replaced with “image image image,” it conveys little useful information. Keep the asset path case-sensitive where the deployed host is case-sensitive, and test it on the actual published site."
+    },
+    {
+      "id": "quiz-1",
+      "type": "quiz",
+      "question": "A course diagram explains that HTML gives structure, CSS styles the page, and JavaScript adds behavior. Which alt text is most useful?",
+      "options": [
+        "image of a diagram",
+        "course-map.png",
+        "beautiful graphic with many colors",
+        "Diagram showing HTML structure, CSS styling, and JavaScript behavior"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Diagram showing HTML structure, CSS styling, and JavaScript behavior. Informative alt text communicates the lesson-relevant information rather than announcing that a picture exists or repeating only its filename.",
+      "reasoning": "Informative alt text communicates the lesson-relevant information rather than announcing that a picture exists or repeating only its filename.",
+      "hint": "Apply the accessibility, responsive-design, media, or deployment rule described in the question."
+    },
+    {
+      "id": "page-2",
+      "type": "heading",
+      "text": "PAGE 2 — Responsive images and visual performance"
+    },
+    {
+      "id": "responsive-1",
+      "type": "content",
+      "text": "A learning page must work on a small phone as well as a wide desktop. A fixed-width image wider than the viewport can force horizontal scrolling. CSS such as max-width: 100% lets an image shrink to fit its container while width: 100% is useful when the design intends the image to fill that space. The image’s intrinsic width-to-height ratio should remain intact; otherwise the picture appears stretched. Native lazy loading can defer an off-screen image until it is near view, reducing initial work on long pages. Do not lazy-load every image by habit: the main image immediately visible at the top may deserve eager loading. Performance is about choosing behavior that matches the user’s first view and the page’s content."
+    },
+    {
+      "id": "img-2",
+      "type": "code",
+      "title": "Example 2 — Responsive image without distortion",
+      "language": "html",
+      "code": "<img class=\"lesson-illustration\"\n     src=\"images/responsive-layout.png\"\n     alt=\"A lesson card adapting from desktop to phone width\"\n     width=\"1200\" height=\"700\" loading=\"lazy\">\n<style>\n  .lesson-illustration {\n    display: block;\n    max-width: 100%;\n    height: auto;\n    margin-inline: auto;\n  }\n</style>",
+      "output": "The image scales down to fit the available content width and keeps its natural ratio."
+    },
+    {
+      "id": "responsive-2",
+      "type": "content",
+      "text": "The class connects the image to a reusable CSS rule. display: block removes the inline-image baseline gap and makes margin behavior predictable. max-width: 100% prevents the image from exceeding its parent; height: auto preserves aspect ratio. margin-inline: auto centers the image when its rendered width is narrower than the parent. If height: auto is removed while a fixed height remains, some images may look stretched. If max-width is removed, a large source image may overflow a phone screen. loading=\"lazy\" is useful for non-critical below-the-fold media, but check whether the image is needed immediately before applying it."
+    },
+    {
+      "id": "img-3",
+      "type": "code",
+      "title": "Example 3 — Decorative image that should be skipped by a screen reader",
+      "language": "html",
+      "code": "<div class=\"course-card__accent\" aria-hidden=\"true\">\n  <img src=\"images/sparkle.png\" alt=\"\">\n</div>\n<p>Complete the CSS lesson to unlock the next unit.</p>",
+      "output": "The decorative sparkle does not interrupt the meaningful learning message."
+    },
+    {
+      "id": "responsive-3",
+      "type": "content",
+      "text": "The empty alt attribute is intentional: the sparkle adds no information to the paragraph. This differs from omitting alt entirely, which may cause some assistive technologies to announce the file name or otherwise expose unhelpful information. aria-hidden=\"true\" hides the decoration container from the accessibility tree, so do not place meaningful buttons or text inside that container. The paragraph remains real text and stays understandable without the image. This is an example of deciding the semantic role before choosing an attribute."
+    },
+    {
+      "id": "quiz-2",
+      "type": "quiz",
+      "question": "A small sparkle next to a course card is purely decorative and adds no information. How should its image alternative be written?",
+      "options": [
+        "Use alt=\"\" so assistive technology can skip the decorative image",
+        "Omit the alt attribute entirely",
+        "Use alt=\"sparkle image decorative icon\"",
+        "Repeat the adjacent paragraph in the alt text"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Use alt=\"\" so assistive technology can skip the decorative image. An empty alt attribute marks the image as decorative. Omitting alt can expose a meaningless filename, while repeating surrounding text adds noise.",
+      "reasoning": "An empty alt attribute marks the image as decorative. Omitting alt can expose a meaningless filename, while repeating surrounding text adds noise.",
+      "hint": "Apply the accessibility, responsive-design, media, or deployment rule described in the question."
+    },
+    {
+      "id": "page-3",
+      "type": "heading",
+      "text": "PAGE 3 — Video, captions, and deployment checks"
+    },
+    {
+      "id": "media-1",
+      "type": "content",
+      "text": "HTML can embed audio and video using native media elements. The controls attribute provides browser playback controls instead of forcing every learner to depend on a custom player. A source element lets the browser try a declared media file and type. Captions help people who cannot hear the audio and help anyone learning in a quiet environment; a track element can reference a WebVTT caption file. Always provide fallback text between the video tags for browsers that cannot play the element. Make sure captions match the spoken content and identify important non-speech audio. Do not autoplay audio unexpectedly. Media files can be large, so use suitable compression and avoid loading huge videos before the learner chooses to play them."
+    },
+    {
+      "id": "img-4",
+      "type": "code",
+      "title": "Example 4 — Accessible lesson video with captions and fallback",
+      "language": "html",
+      "code": "<video controls width=\"720\" poster=\"images/video-cover.jpg\">\n  <source src=\"media/html-introduction.mp4\" type=\"video/mp4\">\n  <track src=\"media/html-introduction.en.vtt\" kind=\"captions\"\n         srclang=\"en\" label=\"English captions\" default>\n  Your browser does not support embedded video. Read the lesson transcript below.\n</video>",
+      "output": "A native video player with a cover image, a media source, captions, and fallback text."
+    },
+    {
+      "id": "media-2",
+      "type": "content",
+      "text": "controls enables play, pause, seeking, and volume controls supplied by the browser. poster provides the preview image before playback. source identifies both a file path and its MIME type. track tells the browser where the WebVTT captions are stored and identifies their language. A broken source path prevents video playback even if the markup itself is valid, so verify the file name, extension, capitalization, and deployed URL. A default track is not a substitute for checking caption accuracy. Provide a readable transcript too when the video teaches essential material, and do not rely on audio alone to communicate instructions."
+    },
+    {
+      "id": "quiz-3",
+      "type": "quiz",
+      "question": "A large lesson illustration overflows a phone viewport. Which CSS rule most directly allows it to shrink without distortion?",
+      "options": [
+        "transform: scale(2);",
+        "max-width: 100%; height: auto;",
+        "width: 1200px; height: 700px; on every screen",
+        "position: fixed; left: 0;"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: max-width: 100%; height: auto;. max-width: 100% limits the image to its container, and height: auto preserves its intrinsic aspect ratio.",
+      "reasoning": "max-width: 100% limits the image to its container, and height: auto preserves its intrinsic aspect ratio.",
+      "hint": "Apply the accessibility, responsive-design, media, or deployment rule described in the question."
+    },
+    {
+      "id": "media-3",
+      "type": "content",
+      "text": "Professional image and media checks: open every asset URL, verify that informative images have useful alt text, verify that decorative images use an empty alt attribute, resize the browser to phone width, and confirm that no media causes sideways scrolling. Test a slow connection and a missing-file case. For video, check keyboard access to controls and confirm captions are synchronized. In a Code Academy lesson, images should clarify code or course progress, not distract from the teaching objective. These checks turn a page that merely appears correct on one device into a robust learning interface."
+    },
+    {
+      "id": "quiz-4",
+      "type": "quiz",
+      "question": "A lesson video must provide synchronized captions. Which markup feature is intended for a WebVTT caption file?",
+      "options": [
+        "An alt attribute on the video element",
+        "A poster image containing the full transcript as tiny text",
+        "A track element with kind=\"captions\" and a valid .vtt source",
+        "A figcaption placed outside the video with no timing data"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: A track element with kind=\"captions\" and a valid .vtt source. The track element points to timed text such as captions. A visible figure caption is not a timed subtitle track, and alt is for images.",
+      "reasoning": "The track element points to timed text such as captions. A visible figure caption is not a timed subtitle track, and alt is for images.",
+      "hint": "Apply the accessibility, responsive-design, media, or deployment rule described in the question."
+    },
+    {
+      "id": "challenge",
+      "type": "content",
+      "text": "Challenge: add an image to a course card that explains what the next lesson covers. Write alt text that conveys that information without beginning with “image of.” Then make it responsive, add a caption only if it benefits the learner, and test the asset on the published URL. For an optional decorative icon, make the alternative empty. Explain why these two images need different alternatives even if both appear inside the same card."
+    },
+    {
+      "id": "quiz-5",
+      "type": "quiz",
+      "question": "The image works on a local phone preview but is broken after publishing. What should be checked first?",
+      "options": [
+        "Remove the alt text so the image loads faster",
+        "Replace the image with a heading",
+        "Add autoplay to the image",
+        "Verify the deployed URL, relative path, filename capitalization, and that the asset was uploaded"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: Verify the deployed URL, relative path, filename capitalization, and that the asset was uploaded. A browser cannot load an asset that is missing or referenced by the wrong URL. Relative paths and capitalization must match the deployed files.",
+      "reasoning": "A browser cannot load an asset that is missing or referenced by the wrong URL. Relative paths and capitalization must match the deployed files.",
+      "hint": "Apply the accessibility, responsive-design, media, or deployment rule described in the question."
+    },
+    {
+      "id": "recap",
+      "type": "content",
+      "text": "Key takeaways: src identifies a resource; alt communicates its purpose; width and height reserve space; responsive CSS prevents overflow; lazy loading should match the image’s position and importance; controls and captions support accessible multimedia; and every relative path must be checked after deployment. The professional habit is to evaluate structure, accessibility, responsive behavior, and real asset availability together—not as separate afterthoughts."
+    }
+  ]
+}

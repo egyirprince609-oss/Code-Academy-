@@ -1,0 +1,3313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="theme-color" content="#050814">
+
+<title>Civilization Puzzle | Code Academy</title>
+
+<style>
+:root{
+    --bg:#050814;
+    --panel:rgba(11,18,35,.94);
+    --panel2:rgba(15,23,42,.94);
+    --neon:#00f5ff;
+    --gold:#ffd700;
+    --danger:#ff3b30;
+    --success:#00ff88;
+    --purple:#a855f7;
+    --text:#e8f4ff;
+    --muted:#8b9dc3;
+    --border:rgba(0,245,255,.25);
+    --shadow:0 0 30px rgba(0,245,255,.15);
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Orbitron','Courier New',monospace;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    background:
+        radial-gradient(circle at 15% 20%,rgba(0,245,255,.10),transparent 40%),
+        radial-gradient(circle at 85% 80%,rgba(168,85,247,.08),transparent 40%),
+        var(--bg);
+    color:var(--text);
+}
+
+body{
+    min-height:100dvh;
+    overflow:auto;
+}
+
+button,
+input{
+    font:inherit;
+}
+
+button{
+    touch-action:manipulation;
+}
+
+.container{
+    width:min(100%,1000px);
+    min-height:100dvh;
+    margin:auto;
+    padding:10px;
+    display:flex;
+    flex-direction:column;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    min-height:48px;
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:8px;
+    border-bottom:1px solid rgba(0,245,255,.25);
+    padding-bottom:8px;
+    flex-shrink:0;
+}
+
+.logo{
+    text-align:center;
+    color:var(--neon);
+    font-size:clamp(13px,2vw,19px);
+    font-weight:900;
+    letter-spacing:1.5px;
+    text-shadow:0 0 18px var(--neon);
+    white-space:nowrap;
+}
+
+.controls{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.timer-box{
+    min-width:48px;
+    padding:6px 8px;
+    text-align:center;
+    border:1px solid var(--neon);
+    border-radius:7px;
+    color:var(--neon);
+    background:rgba(0,245,255,.10);
+    font-size:11px;
+    font-weight:900;
+}
+
+.timer-box.paused{
+    color:var(--gold);
+    border-color:var(--gold);
+}
+
+.timer-box.danger{
+    color:var(--danger);
+    border-color:var(--danger);
+    animation:blink .65s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:.35}
+}
+
+.btn{
+    border:1px solid;
+    border-radius:7px;
+    padding:7px 9px;
+    cursor:pointer;
+    font-size:9px;
+    font-weight:900;
+    transition:.2s;
+    white-space:nowrap;
+}
+
+.btn:active{
+    transform:scale(.96);
+}
+
+.btn-back{
+    color:var(--danger);
+    border-color:var(--danger);
+    background:rgba(255,59,48,.10);
+}
+
+.btn-guide{
+    color:var(--neon);
+    border-color:var(--neon);
+    background:rgba(0,245,255,.10);
+}
+
+.btn-pause{
+    color:var(--gold);
+    border-color:var(--gold);
+    background:rgba(255,215,0,.08);
+}
+
+/* =========================
+   COMMON
+========================= */
+
+.hidden{
+    display:none !important;
+}
+
+.card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.intro{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:12px;
+    padding:10px 0;
+}
+
+.dashboard-preview{
+    background:var(--panel);
+    border:2px solid var(--neon);
+    border-radius:15px;
+    padding:16px;
+    text-align:center;
+    box-shadow:0 0 35px rgba(0,245,255,.20);
+}
+
+.preview-title{
+    color:var(--gold);
+    font-size:clamp(20px,4vw,31px);
+    font-weight:900;
+    text-shadow:0 0 18px var(--gold);
+    margin-bottom:5px;
+}
+
+.preview-subtitle{
+    color:var(--muted);
+    font-size:10px;
+    margin-bottom:12px;
+}
+
+.preview-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.stat-box{
+    background:rgba(0,245,255,.06);
+    border:1px solid rgba(0,245,255,.22);
+    border-radius:7px;
+    padding:7px 4px;
+}
+
+.stat-label{
+    color:var(--muted);
+    font-size:8px;
+}
+
+.stat-value{
+    color:var(--neon);
+    font-size:13px;
+    font-weight:900;
+    margin-top:2px;
+}
+
+.rules-card{
+    background:var(--panel);
+    border:1px solid rgba(0,245,255,.3);
+    border-radius:12px;
+    padding:13px 15px;
+}
+
+.rules-card h3{
+    color:var(--neon);
+    text-align:center;
+    font-size:12px;
+    margin-bottom:7px;
+}
+
+.rules-card p{
+    color:var(--text);
+    font-size:9px;
+    line-height:1.55;
+    margin-bottom:4px;
+}
+
+.account-box{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    color:var(--muted);
+    font-size:9px;
+    min-height:28px;
+}
+
+.account-name{
+    color:var(--neon);
+    font-weight:900;
+}
+
+.start-btn{
+    width:100%;
+    min-height:46px;
+    border:0;
+    border-radius:9px;
+    cursor:pointer;
+    background:linear-gradient(135deg,var(--neon),#0099cc);
+    color:var(--bg);
+    font-size:12px;
+    font-weight:900;
+    box-shadow:0 0 25px rgba(0,245,255,.25);
+    transition:.2s;
+}
+
+.start-btn:active{
+    transform:scale(.98);
+}
+
+/* =========================
+   GAME
+========================= */
+
+.game{
+    display:none;
+    flex:1;
+    flex-direction:column;
+    gap:8px;
+    padding-top:8px;
+}
+
+.game.active{
+    display:flex;
+}
+
+.turn-info{
+    padding:8px;
+    text-align:center;
+}
+
+.turn-title{
+    color:var(--gold);
+    font-size:14px;
+    font-weight:900;
+}
+
+.ruler-name{
+    color:var(--muted);
+    font-size:9px;
+    margin-top:3px;
+}
+
+.sync-status{
+    color:var(--success);
+    font-size:7px;
+    margin-top:3px;
+}
+
+/* =========================
+   ALERT
+========================= */
+
+.alert-box{
+    display:none;
+    padding:8px 10px;
+    border:1px solid var(--danger);
+    border-radius:8px;
+    background:rgba(255,59,48,.12);
+}
+
+.alert-box.show{
+    display:block;
+}
+
+.alert-text{
+    color:var(--danger);
+    font-size:9px;
+    font-weight:900;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+}
+
+.stat-card{
+    min-width:0;
+    padding:7px 4px;
+    text-align:center;
+    background:var(--panel);
+    border:1px solid rgba(0,245,255,.18);
+    border-radius:8px;
+}
+
+.stat-card.critical{
+    border-color:var(--danger);
+    background:rgba(255,59,48,.10);
+}
+
+.stat-card-label{
+    color:var(--muted);
+    font-size:7px;
+    margin-bottom:2px;
+}
+
+.stat-card-value{
+    color:var(--neon);
+    font-size:15px;
+    font-weight:900;
+}
+
+.stat-card-change{
+    min-height:9px;
+    font-size:7px;
+    margin-top:1px;
+}
+
+.stat-card-change.pos{
+    color:var(--success);
+}
+
+.stat-card-change.neg{
+    color:var(--danger);
+}
+
+/* =========================
+   ACTIONS
+========================= */
+
+.actions-title{
+    color:var(--muted);
+    font-size:8px;
+    letter-spacing:1px;
+    padding:2px 3px;
+}
+
+.actions-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:6px;
+}
+
+.action-btn{
+    min-width:0;
+    padding:9px 8px;
+    text-align:left;
+    border:1px solid rgba(0,245,255,.24);
+    border-radius:8px;
+    background:var(--panel2);
+    color:var(--text);
+    cursor:pointer;
+    transition:.18s;
+}
+
+.action-btn:hover{
+    border-color:var(--neon);
+    background:rgba(0,245,255,.08);
+}
+
+.action-btn:disabled{
+    opacity:.38;
+    cursor:not-allowed;
+    transform:none;
+}
+
+.action-name{
+    color:var(--neon);
+    font-size:9px;
+    font-weight:900;
+    margin-bottom:3px;
+}
+
+.action-desc{
+    color:var(--muted);
+    font-size:7px;
+    line-height:1.35;
+}
+
+.action-cost{
+    color:var(--gold);
+    font-size:7px;
+    margin-top:4px;
+}
+
+/* =========================
+   FOOTER / LOG
+========================= */
+
+.bottom-area{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:7px;
+    align-items:stretch;
+}
+
+.event-log{
+    min-height:62px;
+    max-height:78px;
+    overflow:auto;
+    padding:7px;
+}
+
+.log-entry{
+    color:var(--muted);
+    font-size:7px;
+    line-height:1.4;
+    margin-bottom:3px;
+}
+
+.log-entry.success{
+    color:var(--success);
+}
+
+.log-entry.warning{
+    color:var(--danger);
+}
+
+.log-entry.info{
+    color:var(--neon);
+}
+
+.game-controls{
+    display:flex;
+    flex-direction:column;
+    gap:5px;
+}
+
+.small-btn{
+    min-width:92px;
+    flex:1;
+    padding:6px 8px;
+    border-radius:7px;
+    border:1px solid rgba(0,245,255,.25);
+    background:var(--panel);
+    color:var(--text);
+    cursor:pointer;
+    font-size:8px;
+    font-weight:900;
+}
+
+/* =========================
+   VICTORY / DEFEAT
+========================= */
+
+.result-overlay{
+    position:fixed;
+    inset:0;
+    z-index:5000;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+    background:rgba(2,5,15,.86);
+    backdrop-filter:blur(7px);
+}
+
+.result-overlay.show{
+    display:flex;
+}
+
+.result-card{
+    width:min(100%,420px);
+    padding:24px 18px;
+    text-align:center;
+    background:var(--panel2);
+    border:2px solid var(--neon);
+    border-radius:16px;
+    box-shadow:0 0 50px rgba(0,245,255,.25);
+}
+
+.result-icon{
+    font-size:42px;
+    margin-bottom:7px;
+}
+
+.result-title{
+    color:var(--gold);
+    font-size:22px;
+    font-weight:900;
+    margin-bottom:7px;
+}
+
+.result-text{
+    color:var(--muted);
+    font-size:9px;
+    line-height:1.6;
+}
+
+.reward-box{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin:15px 0;
+}
+
+.reward{
+    min-width:105px;
+    padding:10px;
+    border-radius:9px;
+    background:rgba(0,245,255,.08);
+    border:1px solid rgba(0,245,255,.25);
+}
+
+.reward strong{
+    display:block;
+    color:var(--neon);
+    font-size:18px;
+}
+
+.reward span{
+    color:var(--muted);
+    font-size:7px;
+}
+
+.result-actions{
+    display:flex;
+    gap:7px;
+}
+
+.result-actions button{
+    flex:1;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
+    border:1px solid var(--neon);
+    background:rgba(0,245,255,.08);
+    color:var(--neon);
+    font-size:9px;
+    font-weight:900;
+}
+
+.result-actions button.primary{
+    background:var(--neon);
+    color:var(--bg);
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+.msg{
+    position:fixed;
+    top:58px;
+    left:50%;
+    z-index:6000;
+    max-width:min(92vw,500px);
+    padding:9px 13px;
+    border-radius:8px;
+    background:rgba(0,245,255,.96);
+    color:var(--bg);
+    font-size:9px;
+    font-weight:900;
+    text-align:center;
+    opacity:0;
+    pointer-events:none;
+    transform:translate(-50%,-20px);
+    transition:.25s;
+}
+
+.msg.show{
+    opacity:1;
+    transform:translate(-50%,0);
+}
+
+/* =========================
+   LOADING
+========================= */
+
+.loading{
+    position:fixed;
+    inset:0;
+    z-index:7000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--bg);
+}
+
+.loading-card{
+    text-align:center;
+}
+
+.loading-icon{
+    font-size:35px;
+    animation:pulse 1s infinite;
+}
+
+.loading-text{
+    margin-top:8px;
+    color:var(--neon);
+    font-size:10px;
+}
+
+@keyframes pulse{
+    50%{transform:scale(1.08);opacity:.7}
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    .container{
+        padding:8px;
+    }
+
+    .header{
+        grid-template-columns:auto 1fr auto;
+    }
+
+    .logo{
+        font-size:12px;
+    }
+
+    .btn{
+        padding:6px 7px;
+        font-size:8px;
+    }
+
+    .btn-guide{
+        font-size:0;
+    }
+
+    .btn-guide::after{
+        content:'🔊';
+        font-size:12px;
+    }
+
+    .preview-stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .rules-card{
+        padding:11px 12px;
+    }
+
+    .rules-card p{
+        font-size:8px;
+    }
+
+    .stats-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+
+    .stat-card-value{
+        font-size:13px;
+    }
+
+    .actions-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .bottom-area{
+        grid-template-columns:1fr;
+    }
+
+    .game-controls{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .small-btn{
+        min-width:0;
+    }
+}
+
+@media(max-height:650px){
+
+    .container{
+        padding:6px;
+    }
+
+    .intro{
+        gap:7px;
+        padding:5px 0;
+    }
+
+    .dashboard-preview{
+        padding:10px;
+    }
+
+    .preview-title{
+        font-size:19px;
+    }
+
+    .rules-card{
+        padding:8px 10px;
+    }
+
+    .rules-card p{
+        line-height:1.35;
+        margin-bottom:2px;
+    }
+
+    .start-btn{
+        min-height:40px;
+    }
+
+    .game{
+        gap:5px;
+        padding-top:4px;
+    }
+
+    .turn-info{
+        padding:5px;
+    }
+
+    .action-btn{
+        padding:7px;
+    }
+
+    .event-log{
+        min-height:45px;
+        max-height:58px;
+    }
+}
+
+@media(max-width:380px){
+
+    .stats-grid{
+        grid-template-columns:repeat(4,1fr);
+        gap:3px;
+    }
+
+    .stat-card{
+        padding:5px 2px;
+    }
+
+    .stat-card-label{
+        font-size:6px;
+    }
+
+    .stat-card-value{
+        font-size:11px;
+    }
+
+    .actions-grid{
+        gap:4px;
+    }
+
+    .action-btn{
+        padding:7px 5px;
+    }
+
+    .action-name{
+        font-size:8px;
+    }
+}
+</style>
+<script id="ca-english-voice-bridge">(function(){if(window.__caEnglishVoiceBridgeInstalled||!window.SpeechSynthesisUtterance)return;try{const Native=window.SpeechSynthesisUtterance;window.SpeechSynthesisUtterance=new Proxy(Native,{construct(target,args){const utter=Reflect.construct(target,args,target);utter.lang='en-US';try{const voices=window.speechSynthesis?.getVoices?.()||[];const voice=voices.find(v=>/^en(-|_)/i.test(v.lang))||voices.find(v=>String(v.lang||'').toLowerCase().startsWith('en'));if(voice){utter.voice=voice;utter.lang=voice.lang;}}catch(e){}return utter;}});window.__caEnglishVoiceBridgeInstalled=true;}catch(e){console.warn('English speech voice selection is unavailable in this browser.',e);}})();</script>
+<link rel="manifest" href="./manifest.json"><meta name="theme-color" content="#020617"><meta name="robots" content="index,follow"><meta name="description" content="Play Civilization Puzzle on Code Academy. Practise with 200 curated challenges, responsive controls, progress tracking and language-aware guidance."><meta property="og:type" content="website"><meta property="og:site_name" content="Code Academy"><meta property="og:title" content="Civilization Puzzle | Code Academy Games"><meta property="og:description" content="A responsive learning game with a 200-item practice bank, explanations and device-saved progress."><meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/civilization.html"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.png"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-login.jpg"><meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview-signup.jpg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Civilization Puzzle | Code Academy"><meta name="twitter:description" content="Practise, learn from feedback, and keep your progress on Code Academy."><meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/share-preview.jpg">
+</head>
+
+<body>
+
+<div class="loading" id="loading">
+    <div class="loading-card">
+        <div class="loading-icon">🌍</div>
+        <div class="loading-text">CONNECTING TO CODE ACADEMY...</div>
+    </div>
+</div>
+
+<div class="msg" id="msg"></div>
+
+<div class="result-overlay" id="resultOverlay">
+    <div class="result-card">
+
+        <div class="result-icon" id="resultIcon">🏆</div>
+
+        <div class="result-title" id="resultTitle">
+            Civilization Victorious
+        </div>
+
+        <div class="result-text" id="resultText"></div>
+
+        <div class="reward-box" id="rewardBox">
+            <div class="reward">
+                <strong id="rewardXP">+10</strong>
+                <span>XP EARNED</span>
+            </div>
+
+            <div class="reward">
+                <strong id="rewardCoins">+5</strong>
+                <span>COINS EARNED</span>
+            </div>
+        </div>
+
+        <div class="result-actions">
+            <button onclick="closeResult()">CONTINUE</button>
+            <button class="primary" onclick="newCampaign()">NEW CAMPAIGN</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <button class="btn btn-back" onclick="goBack()">
+            ← BACK
+        </button>
+
+        <div class="logo">
+            🌍 CIVILIZATION
+        </div>
+
+        <div class="controls">
+
+            <div class="timer-box" id="timer">
+                30
+            </div>
+
+            <button class="btn btn-pause"
+                    id="pauseBtn"
+                    onclick="togglePause()">
+                PAUSE
+            </button>
+
+            <button class="btn btn-guide"
+                    onclick="playGuide()"
+                    aria-label="AI Guide">
+                🔊 AI GUIDE
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- INTRO -->
+    <div class="intro" id="introPage">
+
+        <div class="dashboard-preview">
+
+            <div class="preview-title">
+                CIVILIZATION
+            </div>
+
+            <div class="preview-subtitle">
+                Every decision has consequences.
+            </div>
+
+            <div class="preview-stats">
+
+                <div class="stat-box">
+                    <div class="stat-label">POPULATION</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">FOOD</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">ENERGY</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">MONEY</div>
+                    <div class="stat-value">100</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">KNOWLEDGE</div>
+                    <div class="stat-value">0</div>
+                </div>
+
+                <div class="stat-box">
+                    <div class="stat-label">HAPPINESS</div>
+                    <div class="stat-value">100%</div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="rules-card">
+
+            <h3>🏛️ HOW TO RULE</h3>
+
+            <p>
+                1. Begin with Population, Food, Energy, Money and Happiness at 100.
+            </p>
+
+            <p>
+                2. Each turn choose ONE civilization action.
+            </p>
+
+            <p>
+                3. Decisions can create delayed consequences several turns later.
+            </p>
+
+            <p>
+                4. Balance your resources or your civilization can collapse.
+            </p>
+
+            <p>
+                5. Droughts, crashes, diseases and breakthroughs may appear.
+            </p>
+
+            <p>
+                6. Survive 50 turns to achieve victory.
+            </p>
+
+            <p>
+                7. Victory gives your Code Academy account <b>+10 XP +5 Coins</b>.
+            </p>
+
+            <p>
+                8. Your campaign and rewards are synchronized with your account.
+            </p>
+
+        </div>
+
+        <div class="account-box">
+            ACCOUNT:
+            <span class="account-name" id="introAccount">
+                Connecting...
+            </span>
+        </div>
+
+        <button class="start-btn" onclick="startGame()">
+            ▶ BEGIN CIVILIZATION
+        </button>
+
+    </div>
+
+    <!-- GAME -->
+    <div class="game" id="gamePage">
+
+        <div class="turn-info card">
+
+            <div class="turn-title" id="turnTitle">
+                Turn 1
+            </div>
+
+            <div class="ruler-name" id="rulerNameDisplay">
+                Ruler: Leader
+            </div>
+
+            <div class="sync-status" id="syncStatus">
+                ● ACCOUNT SYNCED
+            </div>
+
+        </div>
+
+        <div class="alert-box" id="alertBox">
+            <div class="alert-text" id="alertText">
+                ⚠ No alerts
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="actions-title">
+            AVAILABLE DECISIONS
+        </div>
+
+        <div class="actions-grid" id="actionsGrid"></div>
+
+        <div class="bottom-area">
+
+            <div class="event-log card" id="eventLog">
+                <div class="log-entry info">
+                    Civilization founded. Awaiting first decision...
+                </div>
+            </div>
+
+            <div class="game-controls">
+
+                <button class="small-btn"
+                        onclick="restartCurrentTurn()">
+                    ↻ RESTART TURN
+                </button>
+
+                <button class="small-btn"
+                        onclick="confirmNewCampaign()">
+                    ⚠ NEW CAMPAIGN
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script type="module">
+
+/* =========================================================
+   FIREBASE / CODE ACADEMY ACCOUNT
+========================================================= */
+
+import {
+    auth,
+    db,
+    onAuthStateChanged,
+    getUserProfile
+} from "./authentication.js";
+
+import {
+    doc,
+    runTransaction,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+/* =========================================================
+   REWARD RULE
+========================================================= */
+
+const XP_PER_VICTORY = 10;
+const COINS_PER_VICTORY = XP_PER_VICTORY / 2;
+
+
+/* =========================================================
+   GAME STATE
+========================================================= */
+
+let currentUser = null;
+
+let rulerName = "Leader";
+
+let turn = 1;
+
+let timer = null;
+
+let timeLeft = 30;
+
+let isPaused = false;
+
+let gameRunning = false;
+
+let gameEnded = false;
+
+let processingAction = false;
+
+let usingExternalJS = false;
+
+let pendingEvents = [];
+
+let campaignLoaded = false;
+
+let campaignVictoryRewarded = false;
+
+
+/* =========================================================
+   RESOURCES
+========================================================= */
+
+const INITIAL_RESOURCES = {
+    population:100,
+    food:100,
+    energy:100,
+    knowledge:0,
+    money:100,
+    happiness:100,
+    pollution:0,
+    health:100
+};
+
+let resources = cloneResources(INITIAL_RESOURCES);
+
+let lastChange = {
+    population:0,
+    food:0,
+    energy:0,
+    knowledge:0,
+    money:0,
+    happiness:0,
+    pollution:0,
+    health:0
+};
+
+
+/* =========================================================
+   SNAPSHOT FOR RESTART TURN
+========================================================= */
+
+let turnSnapshot = null;
+
+
+function cloneResources(obj){
+    return JSON.parse(JSON.stringify(obj));
+}
+
+
+/* =========================================================
+   BUILT-IN ACTIONS
+========================================================= */
+
+const baseActions = [
+
+    {
+        id:'farm',
+        name:'Build Farm',
+        desc:'Increase food production.',
+        cost:'Money -20',
+
+        canExecute:() => resources.money >= 20,
+
+        effect:() => {
+
+            resources.money -= 20;
+            resources.food += 30;
+
+            pendingEvents.push({
+                turn:turn + 3,
+                effect:() => {
+
+                    resources.population += 20;
+
+                    logEvent(
+                        'Population grew from food surplus.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'school',
+        name:'Build School',
+        desc:'Increase knowledge.',
+        cost:'Money -15',
+
+        canExecute:() => resources.money >= 15,
+
+        effect:() => {
+
+            resources.money -= 15;
+            resources.knowledge += 10;
+
+            pendingEvents.push({
+                turn:turn + 5,
+                effect:() => {
+
+                    resources.food += 15;
+
+                    logEvent(
+                        'Knowledge improved farm efficiency.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'powerplant',
+        name:'Build Power Plant',
+        desc:'Generate energy but increase pollution.',
+        cost:'Money -25',
+
+        canExecute:() => resources.money >= 25,
+
+        effect:() => {
+
+            resources.money -= 25;
+            resources.energy += 40;
+            resources.pollution += 5;
+
+            pendingEvents.push({
+                turn:turn + 7,
+                effect:() => {
+
+                    resources.health -= 10;
+
+                    logEvent(
+                        'Pollution reduced population health.',
+                        'warning'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'hospital',
+        name:'Build Hospital',
+        desc:'Improve population health.',
+        cost:'Money -30',
+
+        canExecute:() => resources.money >= 30,
+
+        effect:() => {
+
+            resources.money -= 30;
+            resources.health += 20;
+
+            pendingEvents.push({
+                turn:turn + 4,
+                effect:() => {
+
+                    resources.population += 15;
+
+                    logEvent(
+                        'Better health increased population.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'factory',
+        name:'Build Factory',
+        desc:'Generate money at pollution cost.',
+        cost:'Energy -10',
+
+        canExecute:() => resources.energy >= 10,
+
+        effect:() => {
+
+            resources.energy -= 10;
+            resources.money += 20;
+            resources.pollution += 10;
+
+            pendingEvents.push({
+                turn:turn + 10,
+                effect:() => {
+
+                    resources.health -= 25;
+                    resources.population -= 15;
+
+                    logEvent(
+                        'Industrial pollution caused a crisis.',
+                        'warning'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'research',
+        name:'Research Technology',
+        desc:'Advance scientific knowledge.',
+        cost:'Money -10',
+
+        canExecute:() => resources.money >= 10,
+
+        effect:() => {
+
+            resources.money -= 10;
+            resources.knowledge += 15;
+
+            if(Math.random() > .7){
+
+                pendingEvents.push({
+                    turn:turn + 3,
+                    effect:() => {
+
+                        resources.knowledge += 30;
+
+                        logEvent(
+                            'Scientific breakthrough!',
+                            'success'
+                        );
+                    }
+                });
+
+            }
+        }
+    },
+
+    {
+        id:'tax_up',
+        name:'Increase Taxes',
+        desc:'Gain money now but reduce happiness.',
+        cost:'Happiness -15',
+
+        canExecute:() => resources.happiness >= 15,
+
+        effect:() => {
+
+            resources.happiness -= 15;
+            resources.money += 25;
+
+            pendingEvents.push({
+                turn:turn + 6,
+                effect:() => {
+
+                    resources.population -= 20;
+
+                    logEvent(
+                        'High taxes caused emigration.',
+                        'warning'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'tax_down',
+        name:'Reduce Taxes',
+        desc:'Increase happiness using money.',
+        cost:'Money -10',
+
+        canExecute:() => resources.money >= 10,
+
+        effect:() => {
+
+            resources.money -= 10;
+            resources.happiness += 15;
+
+            pendingEvents.push({
+                turn:turn + 5,
+                effect:() => {
+
+                    resources.population += 25;
+
+                    logEvent(
+                        'Low taxes attracted immigrants.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'park',
+        name:'Build Park',
+        desc:'Increase happiness and future health.',
+        cost:'Money -15',
+
+        canExecute:() => resources.money >= 15,
+
+        effect:() => {
+
+            resources.money -= 15;
+            resources.happiness += 20;
+
+            pendingEvents.push({
+                turn:turn + 4,
+                effect:() => {
+
+                    resources.health += 10;
+
+                    logEvent(
+                        'Parks improved citizen health.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'trade',
+        name:'Trade Center',
+        desc:'Boost the economy using energy.',
+        cost:'Energy -15',
+
+        canExecute:() => resources.energy >= 15,
+
+        effect:() => {
+
+            resources.energy -= 15;
+            resources.money += 35;
+
+            if(Math.random() > .6){
+
+                pendingEvents.push({
+                    turn:turn + 12,
+                    effect:() => {
+
+                        resources.money -= 50;
+
+                        logEvent(
+                            'Economic crash hit the trade center.',
+                            'warning'
+                        );
+                    }
+                });
+            }
+        }
+    },
+
+    {
+        id:'water',
+        name:'Build Reservoir',
+        desc:'Secure food and drought protection.',
+        cost:'Money -20',
+
+        canExecute:() => resources.money >= 20,
+
+        effect:() => {
+
+            resources.money -= 20;
+            resources.food += 10;
+
+            pendingEvents.push({
+                turn:turn + 8,
+                effect:() => {
+
+                    logEvent(
+                        'Reservoir prevented a drought disaster.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'entertainment',
+        name:'Entertainment Complex',
+        desc:'Boost happiness at energy cost.',
+        cost:'Money -18, Energy -5',
+
+        canExecute:() =>
+            resources.money >= 18 &&
+            resources.energy >= 5,
+
+        effect:() => {
+
+            resources.money -= 18;
+            resources.happiness += 25;
+            resources.energy -= 5;
+        }
+    },
+
+    {
+        id:'defense',
+        name:'Defense System',
+        desc:'Prepare the civilization for danger.',
+        cost:'Money -22',
+
+        canExecute:() => resources.money >= 22,
+
+        effect:() => {
+
+            resources.money -= 22;
+
+            pendingEvents.push({
+                turn:turn + 15,
+                effect:() => {
+
+                    logEvent(
+                        'Defense system prevented an attack.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'university',
+        name:'Build University',
+        desc:'Advanced research and technology.',
+        cost:'Money -35, Knowledge 20+',
+
+        canExecute:() =>
+            resources.money >= 35 &&
+            resources.knowledge >= 20,
+
+        effect:() => {
+
+            resources.money -= 35;
+            resources.knowledge += 25;
+
+            pendingEvents.push({
+                turn:turn + 10,
+                effect:() => {
+
+                    resources.knowledge += 50;
+                    resources.energy += 30;
+
+                    logEvent(
+                        'University breakthrough revolutionized civilization.',
+                        'success'
+                    );
+                }
+            });
+        }
+    },
+
+    {
+        id:'bank',
+        name:'Build Bank',
+        desc:'Store wealth for future interest.',
+        cost:'Money -25',
+
+        canExecute:() => resources.money >= 25,
+
+        effect:() => {
+
+            resources.money -= 25;
+
+            pendingEvents.push({
+                turn:turn + 7,
+                effect:() => {
+
+                    resources.money += 40;
+
+                    logEvent(
+                        'Bank generated interest income.',
+                        'success'
+                    );
+                }
+            });
+        }
+    }
+
+];
+
+
+/* =========================================================
+   FIREBASE AUTH
+========================================================= */
+
+onAuthStateChanged(auth, async user => {
+
+    if(!user){
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    currentUser = user;
+
+    try{
+
+        const profile = await getUserProfile(user.uid);
+
+        const name =
+            profile?.displayName ||
+            user.displayName ||
+            user.email?.split('@')[0] ||
+            'Leader';
+
+        rulerName = name;
+
+        document.getElementById('introAccount').textContent =
+            name;
+
+        document.getElementById('rulerNameDisplay').textContent =
+            `Ruler: ${name}`;
+
+        await loadCampaign();
+
+    }catch(error){
+
+        console.error(error);
+
+        rulerName =
+            user.displayName ||
+            user.email?.split('@')[0] ||
+            'Leader';
+
+        document.getElementById('introAccount').textContent =
+            rulerName;
+    }
+
+    document.getElementById('loading').style.display = 'none';
+
+});
+
+
+/* =========================================================
+   LOAD SAVED CAMPAIGN
+========================================================= */
+
+async function loadCampaign(){
+
+    if(!currentUser) return;
+
+    try{
+
+        const profile = await getUserProfile(currentUser.uid);
+
+        const saved = profile?.civilizationGame;
+
+        if(saved){
+
+            turn =
+                Number(saved.turn || 1);
+
+            if(saved.resources){
+
+                resources = {
+                    ...cloneResources(INITIAL_RESOURCES),
+                    ...saved.resources
+                };
+            }
+
+            if(Array.isArray(saved.pendingEvents)){
+
+                /*
+                 * Functions cannot be stored in Firestore.
+                 * Delayed events therefore intentionally restart
+                 * as an empty queue when the page is reopened.
+                 */
+                pendingEvents = [];
+            }
+
+        }else{
+
+            turn = 1;
+            resources = cloneResources(INITIAL_RESOURCES);
+            pendingEvents = [];
+
+        }
+
+        campaignLoaded = true;
+
+    }catch(error){
+
+        console.error(
+            'Could not load civilization campaign:',
+            error
+        );
+
+        campaignLoaded = true;
+    }
+
+}
+
+
+/* =========================================================
+   SAVE CAMPAIGN
+========================================================= */
+
+async function saveCampaign(){
+
+    if(!currentUser) return;
+
+    try{
+
+        const userRef =
+            doc(db,'users',currentUser.uid);
+
+        await runTransaction(
+            db,
+            async transaction => {
+
+                const snap =
+                    await transaction.get(userRef);
+
+                if(!snap.exists()) return;
+
+                transaction.update(
+                    userRef,
+                    {
+                        civilizationGame:{
+                            turn:turn,
+                            resources:{
+                                ...resources
+                            },
+                            updatedAt:serverTimestamp()
+                        }
+                    }
+                );
+
+            }
+        );
+
+        document.getElementById('syncStatus').textContent =
+            '● ACCOUNT SYNCED';
+
+    }catch(error){
+
+        console.error(
+            'Campaign save failed:',
+            error
+        );
+
+        document.getElementById('syncStatus').textContent =
+            '● OFFLINE / SAVE RETRY';
+
+    }
+
+}
+
+
+/* =========================================================
+   START GAME
+========================================================= */
+
+window.startGame = async function(){
+
+    if(!currentUser){
+
+        window.location.href = "login.html";
+        return;
+    }
+
+    if(!campaignLoaded){
+
+        await loadCampaign();
+    }
+
+    gameEnded = false;
+    gameRunning = true;
+    processingAction = false;
+    isPaused = false;
+
+    document.getElementById('introPage')
+        .style.display = 'none';
+
+    document.getElementById('gamePage')
+        .classList.add('active');
+
+    document.getElementById('rulerNameDisplay')
+        .textContent =
+        `Ruler: ${rulerName}`;
+
+    document.getElementById('pauseBtn')
+        .textContent = 'PAUSE';
+
+    showMsg(
+        turn === 1
+            ? 'Civilization founded. Rule wisely.'
+            : `Campaign resumed at Turn ${turn}.`
+    );
+
+    takeTurnSnapshot();
+
+    updateDisplay();
+
+    startTimer();
+
+};
+
+
+/* =========================================================
+   TIMER
+========================================================= */
+
+function startTimer(){
+
+    clearInterval(timer);
+
+    if(!gameRunning || gameEnded || isPaused){
+        return;
+    }
+
+    timeLeft = 30;
+
+    updateTimer();
+
+    timer = setInterval(
+        updateTimer,
+        1000
+    );
+}
+
+
+function updateTimer(){
+
+    const timerElement =
+        document.getElementById('timer');
+
+    timerElement.textContent =
+        String(Math.max(0,timeLeft))
+            .padStart(2,'0');
+
+    if(timeLeft <= 10){
+
+        timerElement.classList.add('danger');
+
+    }else{
+
+        timerElement.classList.remove('danger');
+
+    }
+
+    if(isPaused){
+
+        timerElement.classList.add('paused');
+
+    }else{
+
+        timerElement.classList.remove('paused');
+
+    }
+
+    if(timeLeft <= 0){
+
+        clearInterval(timer);
+
+        showMsg(
+            'Time expired. Turn skipped.'
+        );
+
+        nextTurn();
+
+        return;
+    }
+
+    timeLeft--;
+
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+window.togglePause = function(){
+
+    if(!gameRunning || gameEnded){
+        return;
+    }
+
+    isPaused = !isPaused;
+
+    const button =
+        document.getElementById('pauseBtn');
+
+    if(isPaused){
+
+        clearInterval(timer);
+
+        button.textContent = 'RESUME';
+
+        document.getElementById('timer')
+            .classList.add('paused');
+
+        showMsg('Civilization paused.');
+
+    }else{
+
+        button.textContent = 'PAUSE';
+
+        document.getElementById('timer')
+            .classList.remove('paused');
+
+        startTimer();
+
+        showMsg('Civilization resumed.');
+
+    }
+
+};
+
+
+/* =========================================================
+   TURN SNAPSHOT
+========================================================= */
+
+function takeTurnSnapshot(){
+
+    turnSnapshot = {
+
+        turn:turn,
+
+        resources:
+            cloneResources(resources),
+
+        pendingEvents:
+            [...pendingEvents]
+
+    };
+
+}
+
+
+/* =========================================================
+   RESTART CURRENT TURN
+========================================================= */
+
+window.restartCurrentTurn = function(){
+
+    if(!gameRunning || !turnSnapshot){
+        return;
+    }
+
+    if(!confirm(
+        'Restart this turn? Your current turn decision will be lost.'
+    )){
+        return;
+    }
+
+    clearInterval(timer);
+
+    turn = turnSnapshot.turn;
+
+    resources =
+        cloneResources(turnSnapshot.resources);
+
+    pendingEvents =
+        [...turnSnapshot.pendingEvents];
+
+    processingAction = false;
+    gameEnded = false;
+
+    Object.keys(lastChange)
+        .forEach(key => {
+            lastChange[key] = 0;
+        });
+
+    updateDisplay();
+    startTimer();
+
+    logEvent(
+        'Current turn restarted.',
+        'info'
+    );
+
+};
+
+
+/* =========================================================
+   DISPLAY
+========================================================= */
+
+function updateDisplay(){
+
+    document.getElementById('turnTitle')
+        .textContent =
+        `Turn ${turn}`;
+
+    renderStats();
+    renderActions();
+    checkAlerts();
+
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+function renderStats(){
+
+    const grid =
+        document.getElementById('statsGrid');
+
+    grid.innerHTML = '';
+
+    const statKeys = [
+        'population',
+        'food',
+        'energy',
+        'money',
+        'knowledge',
+        'happiness',
+        'health',
+        'pollution'
+    ];
+
+    statKeys.forEach(key => {
+
+        const card =
+            document.createElement('div');
+
+        card.className = 'stat-card';
+
+        if(
+            resources[key] < 20 &&
+            key !== 'knowledge' &&
+            key !== 'pollution'
+        ){
+
+            card.classList.add('critical');
+        }
+
+        const change =
+            Math.round(lastChange[key] || 0);
+
+        const changeClass =
+            change > 0
+                ? 'pos'
+                : change < 0
+                    ? 'neg'
+                    : '';
+
+        const changeText =
+            change > 0
+                ? `+${change}`
+                : change < 0
+                    ? `${change}`
+                    : '';
+
+        card.innerHTML = `
+
+            <div class="stat-card-label">
+                ${key.toUpperCase()}
+            </div>
+
+            <div class="stat-card-value">
+                ${Math.max(0,Math.floor(resources[key]))}
+            </div>
+
+            <div class="stat-card-change ${changeClass}">
+                ${changeText}
+            </div>
+        `;
+
+        grid.appendChild(card);
+
+    });
+
+}
+
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+function renderActions(){
+
+    const grid =
+        document.getElementById('actionsGrid');
+
+    grid.innerHTML = '';
+
+    baseActions.forEach(action => {
+
+        const button =
+            document.createElement('button');
+
+        button.className = 'action-btn';
+
+        const affordable =
+            action.canExecute();
+
+        button.disabled =
+            !affordable ||
+            processingAction ||
+            isPaused ||
+            gameEnded;
+
+        button.innerHTML = `
+
+            <div class="action-name">
+                ${action.name}
+            </div>
+
+            <div class="action-desc">
+                ${action.desc}
+            </div>
+
+            <div class="action-cost">
+                ${affordable
+                    ? action.cost
+                    : 'INSUFFICIENT RESOURCES'}
+            </div>
+
+        `;
+
+        button.onclick =
+            () => executeAction(action);
+
+        grid.appendChild(button);
+
+    });
+
+}
+
+
+/* =========================================================
+   EXECUTE ACTION
+========================================================= */
+
+async function executeAction(action){
+
+    if(
+        processingAction ||
+        !gameRunning ||
+        gameEnded ||
+        isPaused
+    ){
+
+        return;
+    }
+
+    if(!action.canExecute()){
+
+        showMsg(
+            'Insufficient resources for this action.'
+        );
+
+        return;
+    }
+
+    processingAction = true;
+
+    clearInterval(timer);
+
+    Object.keys(lastChange)
+        .forEach(k => {
+            lastChange[k] = 0;
+        });
+
+    const before =
+        cloneResources(resources);
+
+    try{
+
+        action.effect();
+
+    }catch(error){
+
+        console.error(error);
+
+        resources =
+            cloneResources(before);
+
+        processingAction = false;
+
+        showMsg(
+            'Action failed. Nothing was changed.'
+        );
+
+        startTimer();
+
+        return;
+    }
+
+    Object.keys(resources)
+        .forEach(k => {
+
+            lastChange[k] =
+                resources[k] - before[k];
+
+        });
+
+    logEvent(
+        `Decision: ${action.name}`,
+        'success'
+    );
+
+    await nextTurn();
+
+}
+
+
+/* =========================================================
+   NEXT TURN
+========================================================= */
+
+async function nextTurn(){
+
+    if(gameEnded) return;
+
+    turn++;
+
+    processPendingEvents();
+
+    applyNaturalConsumption();
+
+    applyResourceEffects();
+
+    if(Math.random() < .15){
+
+        triggerRandomEvent();
+    }
+
+    clampResources();
+
+    updateDisplay();
+
+    if(resources.population <= 0){
+
+        endGame(false);
+
+        return;
+    }
+
+    if(
+        resources.health <= 0 ||
+        resources.happiness <= 0
+    ){
+
+        endGame(false);
+
+        return;
+    }
+
+    if(turn >= 50){
+
+        endGame(true);
+
+        return;
+    }
+
+    takeTurnSnapshot();
+
+    processingAction = false;
+
+    await saveCampaign();
+
+    updateDisplay();
+
+    startTimer();
+
+}
+
+
+/* =========================================================
+   PENDING EVENTS
+========================================================= */
+
+function processPendingEvents(){
+
+    pendingEvents =
+        pendingEvents.filter(event => {
+
+            if(event.turn <= turn){
+
+                const before =
+                    cloneResources(resources);
+
+                try{
+
+                    event.effect();
+
+                }catch(error){
+
+                    console.error(
+                        'Delayed event failed:',
+                        error
+                    );
+
+                }
+
+                Object.keys(resources)
+                    .forEach(key => {
+
+                        lastChange[key] +=
+                            resources[key] -
+                            before[key];
+
+                    });
+
+                return false;
+            }
+
+            return true;
+
+        });
+
+}
+
+
+/* =========================================================
+   NATURAL CONSUMPTION
+========================================================= */
+
+function applyNaturalConsumption(){
+
+    const foodUse =
+        Math.floor(resources.population * .1);
+
+    const energyUse =
+        Math.floor(resources.population * .05);
+
+    resources.food -= foodUse;
+    resources.energy -= energyUse;
+
+    lastChange.food -= foodUse;
+    lastChange.energy -= energyUse;
+
+}
+
+
+/* =========================================================
+   RESOURCE EFFECTS
+========================================================= */
+
+function applyResourceEffects(){
+
+    if(
+        resources.food <
+        resources.population * .5
+    ){
+
+        resources.happiness -= 10;
+        lastChange.happiness -= 10;
+
+        logEvent(
+            'Food shortage reduced happiness.',
+            'warning'
+        );
+    }
+
+    if(
+        resources.energy <
+        resources.population * .3
+    ){
+
+        resources.happiness -= 8;
+        lastChange.happiness -= 8;
+
+        logEvent(
+            'Energy shortage caused unrest.',
+            'warning'
+        );
+    }
+
+    if(resources.pollution > 50){
+
+        const damage =
+            Math.floor(resources.pollution * .1);
+
+        resources.health -= damage;
+
+        lastChange.health -= damage;
+
+        logEvent(
+            `Pollution damaged health by ${damage}.`,
+            'warning'
+        );
+    }
+
+    if(resources.health < 50){
+
+        const populationLoss =
+            Math.floor(
+                (50 - resources.health) * .5
+            );
+
+        resources.population -= populationLoss;
+
+        lastChange.population -=
+            populationLoss;
+    }
+
+}
+
+
+/* =========================================================
+   RANDOM EVENTS
+========================================================= */
+
+function triggerRandomEvent(){
+
+    const events = [
+
+        {
+            name:'Drought',
+
+            effect:() => {
+
+                resources.food -= 30;
+                lastChange.food -= 30;
+
+                logEvent(
+                    'DROUGHT: Food -30.',
+                    'warning'
+                );
+            }
+        },
+
+        {
+            name:'Economic Crash',
+
+            effect:() => {
+
+                resources.money -= 20;
+                lastChange.money -= 20;
+
+                logEvent(
+                    'CRASH: Money -20.',
+                    'warning'
+                );
+            }
+        },
+
+        {
+            name:'Disease Outbreak',
+
+            effect:() => {
+
+                resources.population -= 10;
+                resources.health -= 15;
+
+                lastChange.population -= 10;
+                lastChange.health -= 15;
+
+                logEvent(
+                    'DISEASE: Population and health reduced.',
+                    'warning'
+                );
+            }
+        },
+
+        {
+            name:'Scientific Breakthrough',
+
+            effect:() => {
+
+                resources.knowledge += 50;
+
+                lastChange.knowledge += 50;
+
+                logEvent(
+                    'BREAKTHROUGH: Knowledge +50.',
+                    'success'
+                );
+            }
+        }
+
+    ];
+
+    const event =
+        events[
+            Math.floor(
+                Math.random() * events.length
+            )
+        ];
+
+    event.effect();
+
+}
+
+
+/* =========================================================
+   RESOURCE CLAMP
+========================================================= */
+
+function clampResources(){
+
+    Object.keys(resources)
+        .forEach(key => {
+
+            resources[key] =
+                Math.max(
+                    0,
+                    Math.floor(resources[key])
+                );
+
+        });
+
+    resources.happiness =
+        Math.min(100,resources.happiness);
+
+    resources.health =
+        Math.min(100,resources.health);
+
+}
+
+
+/* =========================================================
+   ALERT SYSTEM
+========================================================= */
+
+function checkAlerts(){
+
+    const box =
+        document.getElementById('alertBox');
+
+    const text =
+        document.getElementById('alertText');
+
+    if(
+        resources.food <
+        resources.population * .3
+    ){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ CRITICAL: Food reserves are dangerously low.';
+
+        return;
+    }
+
+    if(
+        resources.energy <
+        resources.population * .2
+    ){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ CRITICAL: Energy reserves are dangerously low.';
+
+        return;
+    }
+
+    if(resources.pollution > 60){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ WARNING: Pollution is creating a health crisis.';
+
+        return;
+    }
+
+    if(resources.health < 50){
+
+        box.classList.add('show');
+
+        text.textContent =
+            '⚠ WARNING: Population health is deteriorating.';
+
+        return;
+    }
+
+    box.classList.remove('show');
+
+}
+
+
+/* =========================================================
+   EVENT LOG
+========================================================= */
+
+function logEvent(text,type='info'){
+
+    const log =
+        document.getElementById('eventLog');
+
+    const entry =
+        document.createElement('div');
+
+    entry.className =
+        `log-entry ${type}`;
+
+    entry.textContent =
+        `Turn ${turn}: ${text}`;
+
+    log.insertBefore(
+        entry,
+        log.firstChild
+    );
+
+    while(log.children.length > 10){
+
+        log.removeChild(
+            log.lastChild
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   VICTORY / DEFEAT
+========================================================= */
+
+async function endGame(victory){
+
+    if(gameEnded){
+        return;
+    }
+
+    gameEnded = true;
+    gameRunning = false;
+
+    clearInterval(timer);
+
+    processingAction = false;
+
+    if(victory){
+
+        document.getElementById('resultIcon')
+            .textContent = '🏆';
+
+        document.getElementById('resultTitle')
+            .textContent =
+            'CIVILIZATION VICTORIOUS';
+
+        document.getElementById('resultText')
+            .textContent =
+            `Congratulations ${rulerName}. ` +
+            `Your civilization survived 50 turns. ` +
+            `Your Code Academy account has been credited ` +
+            `with the victory reward.`;
+
+        await rewardVictory();
+
+    }else{
+
+        document.getElementById('resultIcon')
+            .textContent = '💀';
+
+        document.getElementById('resultTitle')
+            .textContent =
+            'CIVILIZATION COLLAPSED';
+
+        document.getElementById('resultText')
+            .textContent =
+            `Your civilization could not survive. ` +
+            `You can begin a new campaign and try a different strategy.`;
+
+        document.getElementById('rewardBox')
+            .style.display = 'none';
+
+        speak(
+            'Civilization has fallen. Your rule ends here.'
+        );
+
+    }
+
+    document.getElementById('resultOverlay')
+        .classList.add('show');
+
+}
+
+
+/* =========================================================
+   FIREBASE VICTORY REWARD
+========================================================= */
+
+async function rewardVictory(){
+
+    if(!currentUser){
+
+        showMsg(
+            'Victory achieved, but account was unavailable.'
+        );
+
+        return;
+    }
+
+    const userRef =
+        doc(db,'users',currentUser.uid);
+
+    try{
+
+        const result =
+            await runTransaction(
+                db,
+                async transaction => {
+
+                    const snap =
+                        await transaction.get(userRef);
+
+                    if(!snap.exists()){
+
+                        throw new Error(
+                            'User profile does not exist.'
+                        );
+                    }
+
+                    const data =
+                        snap.data();
+
+                    const civilization =
+                        data.civilizationGame || {};
+
+                    const alreadyRewarded =
+                        civilization.lastVictoryReward === true;
+
+                    const currentXP =
+                        Number(data.xp || 0);
+
+                    const currentCoins =
+                        Number(data.coins || 0);
+
+                    if(alreadyRewarded){
+
+                        return {
+                            already:true,
+                            xp:currentXP,
+                            coins:currentCoins
+                        };
+                    }
+
+                    transaction.update(
+                        userRef,
+                        {
+
+                            xp:
+                                currentXP +
+                                XP_PER_VICTORY,
+
+                            coins:
+                                currentCoins +
+                                COINS_PER_VICTORY,
+
+                            'civilizationGame.lastVictoryReward':
+                                true,
+
+                            'civilizationGame.victoryCount':
+                                Number(
+                                    civilization.victoryCount || 0
+                                ) + 1,
+
+                            'civilizationGame.completed':
+                                true,
+
+                            'civilizationGame.updatedAt':
+                                serverTimestamp()
+
+                        }
+                    );
+
+                    return {
+                        already:false,
+                        xp:
+                            currentXP +
+                            XP_PER_VICTORY,
+
+                        coins:
+                            currentCoins +
+                            COINS_PER_VICTORY
+                    };
+
+                }
+            );
+
+        campaignVictoryRewarded =
+            !result.already;
+
+        document.getElementById('rewardBox')
+            .style.display = 'flex';
+
+        document.getElementById('rewardXP')
+            .textContent =
+            result.already
+                ? '✓10'
+                : `+${XP_PER_VICTORY}`;
+
+        document.getElementById('rewardCoins')
+            .textContent =
+            result.already
+                ? '✓5'
+                : `+${COINS_PER_VICTORY}`;
+
+        if(result.already){
+
+            showMsg(
+                'Victory already rewarded. No duplicate XP or Coins.'
+            );
+
+        }else{
+
+            showMsg(
+                `VICTORY REWARD: +${XP_PER_VICTORY} XP +${COINS_PER_VICTORY} Coins`
+            );
+
+            speak(
+                `Victory achieved, ${rulerName}. ` +
+                `You earned ${XP_PER_VICTORY} XP and ` +
+                `${COINS_PER_VICTORY} coins.`
+            );
+
+        }
+
+    }catch(error){
+
+        console.error(
+            'Victory reward error:',
+            error
+        );
+
+        document.getElementById('rewardBox')
+            .style.display = 'flex';
+
+        document.getElementById('rewardXP')
+            .textContent = 'SYNC';
+
+        document.getElementById('rewardCoins')
+            .textContent = 'ERROR';
+
+        showMsg(
+            'Victory saved, but reward synchronization failed. Try again while online.'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   RESULT CONTROLS
+========================================================= */
+
+window.closeResult = function(){
+
+    document.getElementById('resultOverlay')
+        .classList.remove('show');
+
+};
+
+
+window.confirmNewCampaign = function(){
+
+    if(confirm(
+        'Start a completely new civilization campaign? Your previous campaign progress will be replaced.'
+    )){
+
+        newCampaign();
+    }
+
+};
+
+
+window.newCampaign = async function(){
+
+    clearInterval(timer);
+
+    gameEnded = false;
+    gameRunning = true;
+    isPaused = false;
+    processingAction = false;
+
+    turn = 1;
+
+    resources =
+        cloneResources(INITIAL_RESOURCES);
+
+    pendingEvents = [];
+
+    campaignVictoryRewarded = false;
+
+    Object.keys(lastChange)
+        .forEach(key => {
+            lastChange[key] = 0;
+        });
+
+    document.getElementById('resultOverlay')
+        .classList.remove('show');
+
+    document.getElementById('resultBox');
+
+    document.getElementById('rewardBox')
+        .style.display = 'flex';
+
+    document.getElementById('pauseBtn')
+        .textContent = 'PAUSE';
+
+    document.getElementById('introPage')
+        .style.display = 'none';
+
+    document.getElementById('gamePage')
+        .classList.add('active');
+
+    takeTurnSnapshot();
+
+    updateDisplay();
+
+    logEvent(
+        'New civilization campaign founded.',
+        'success'
+    );
+
+    await saveCampaign();
+
+    startTimer();
+
+};
+
+
+/* =========================================================
+   BACK
+========================================================= */
+
+window.goBack = function(){
+
+    clearInterval(timer);
+
+    if(
+        gameRunning &&
+        !gameEnded
+    ){
+
+        if(
+            !confirm(
+                'Leave Civilization? Your saved campaign will remain in your account.'
+            )
+        ){
+
+            if(gameRunning){
+                startTimer();
+            }
+
+            return;
+        }
+
+    }
+
+    window.history.back();
+
+};
+
+
+/* =========================================================
+   SPEECH SYSTEM
+========================================================= */
+
+let speechQueue = [];
+let isSpeaking = false;
+
+
+function speak(text){
+
+    if(!('speechSynthesis' in window)){
+        return;
+    }
+
+    speechQueue.push(text);
+
+    if(!isSpeaking){
+        processSpeech();
+    }
+
+}
+
+
+function processSpeech(){
+
+    if(
+        speechQueue.length === 0 ||
+        !('speechSynthesis' in window)
+    ){
+
+        isSpeaking = false;
+        return;
+    }
+
+    isSpeaking = true;
+
+    const text =
+        speechQueue.shift();
+
+    speechSynthesis.cancel();
+
+    const utter =
+        new SpeechSynthesisUtterance(text);
+
+    utter.rate = .86;
+    utter.pitch = .72;
+    utter.volume = 1;
+
+    utter.onend = () => {
+
+        setTimeout(
+            processSpeech,
+            300
+        );
+
+    };
+
+    utter.onerror = () => {
+
+        isSpeaking = false;
+
+        setTimeout(
+            processSpeech,
+            100
+        );
+
+    };
+
+    speechSynthesis.speak(utter);
+
+}
+
+
+/* =========================================================
+   AI GUIDE
+========================================================= */
+
+window.playGuide = function(){
+
+    if(!currentUser){
+        return;
+    }
+
+    let message =
+        `Ruler ${rulerName}. Turn ${turn}. `;
+
+    if(
+        resources.food <
+        resources.population * .5
+    ){
+
+        message +=
+            'Your food reserves are under pressure. ' +
+            'Consider improving food production. ';
+    }
+
+    if(resources.energy < 40){
+
+        message +=
+            'Energy reserves are becoming dangerous. ';
+    }
+
+    if(resources.pollution > 40){
+
+        message +=
+            'Pollution is beginning to threaten health. ';
+    }
+
+    if(resources.money < 20){
+
+        message +=
+            'Your treasury is low. Look for a controlled source of income. ';
+    }
+
+    if(resources.knowledge >= 20){
+
+        message +=
+            'Your knowledge level is sufficient for advanced research. ';
+    }
+
+    if(
+        resources.food >= resources.population * .5 &&
+        resources.energy >= resources.population * .3 &&
+        resources.money >= 20 &&
+        resources.health >= 70
+    ){
+
+        message +=
+            'Your civilization is currently stable. ' +
+            'Think several turns ahead. ';
+    }
+
+    message +=
+        'I will guide your strategy, but I will not reveal hidden future consequences.';
+
+    speak(message);
+
+    showMsg(
+        'AI Guide analyzing your civilization...'
+    );
+
+};
+
+
+/* =========================================================
+   EXTERNAL ADVANCED ENGINE
+========================================================= */
+
+async function loadExternalJS(){
+
+    if(usingExternalJS){
+        return;
+    }
+
+    try{
+
+        const response =
+            await fetch('civilization.js', {
+                cache:'no-store'
+            });
+
+        if(response.ok){
+
+            usingExternalJS = true;
+
+            logEvent(
+                'Advanced technology layer detected.',
+                'success'
+            );
+
+        }
+
+    }catch(error){
+
+        console.warn(
+            'Optional civilization.js unavailable.'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+let messageTimer = null;
+
+function showMsg(text){
+
+    const msg =
+        document.getElementById('msg');
+
+    msg.textContent = text;
+
+    msg.classList.add('show');
+
+    clearTimeout(messageTimer);
+
+    messageTimer =
+        setTimeout(() => {
+
+            msg.classList.remove('show');
+
+        },3000);
+
+}
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+window.addEventListener(
+    'beforeunload',
+    () => {
+
+        clearInterval(timer);
+
+        if(
+            'speechSynthesis' in window
+        ){
+
+            speechSynthesis.cancel();
+        }
+
+    }
+);
+
+</script>
+
+
+<style id="ca-bank-style">
+#caBankLaunch{position:fixed;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:500000;border:1px solid rgba(103,232,249,.5);border-radius:999px;background:linear-gradient(135deg,#0e7490,#4338ca);color:#fff;padding:12px 16px;font:700 13px/1.2 system-ui,sans-serif;box-shadow:0 12px 35px #0008;cursor:pointer;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 28px)}
+#caBankLaunch:focus-visible,#caBank button:focus-visible,#caBank select:focus-visible,#caBank textarea:focus-visible{outline:3px solid #fbbf24;outline-offset:3px}
+#caBank{position:fixed;inset:0;z-index:500001;display:none;background:rgba(2,6,23,.82);backdrop-filter:blur(9px);padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom));overflow:auto;font-family:Inter,system-ui,sans-serif;color:#eaf2ff}
+#caBank.open{display:flex;align-items:center;justify-content:center}
+#caBank .cab-card{width:min(760px,100%);max-height:100%;overflow:auto;border:1px solid #334766;background:linear-gradient(145deg,#0b162a,#101b34 70%,#1a1742);border-radius:22px;box-shadow:0 24px 80px #0009;padding:clamp(15px,3vw,25px)}
+#caBank .cab-top{display:flex;align-items:flex-start;gap:12px;justify-content:space-between}#caBank .cab-kicker{color:#67e8f9;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}#caBank h2{font-size:clamp(20px,4vw,29px);margin:5px 0 3px;line-height:1.15}#caBank .cab-sub{color:#9aabc7;font-size:13px;margin:0}#caBank .cab-close{background:#1e293b;color:#fff;border:1px solid #475569;border-radius:11px;padding:8px 12px;font-size:18px;cursor:pointer}
+#caBank .cab-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:17px 0}#caBank .cab-toolbar label{font-size:12px;color:#b9c7df}#caBank select,#caBank textarea{width:100%;background:#07101f;color:#f8fafc;border:1px solid #3c516f;border-radius:10px;padding:10px;font:inherit}#caBank select{width:auto;max-width:100%;font-size:13px}#caBank .cab-progress{height:6px;background:#27354d;border-radius:99px;overflow:hidden;flex:1;min-width:100px}#caBank .cab-progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#22d3ee,#a78bfa);transition:width .2s}
+#caBank .cab-meta{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}#caBank .cab-chip{font-size:11px;font-weight:800;padding:5px 9px;border-radius:999px;border:1px solid #344968;background:#14223a;color:#b9d3ff}#caBank .cab-question{font-size:clamp(16px,2.7vw,20px);line-height:1.5;font-weight:700;margin:12px 0}#caBank .cab-code{white-space:pre-wrap;overflow-wrap:anywhere;background:#030712;border:1px solid #293b55;border-radius:12px;padding:12px;font:13px/1.5 ui-monospace,monospace;color:#a5f3fc;margin:10px 0}#caBank .cab-options{display:grid;gap:9px;margin:14px 0}#caBank .cab-option{width:100%;text-align:left;background:#101d31;color:#e8f1ff;border:1px solid #334862;border-radius:12px;padding:12px 13px;cursor:pointer;font:600 14px/1.45 system-ui,sans-serif;overflow-wrap:anywhere}#caBank .cab-option:hover:not(:disabled){background:#182d47;border-color:#67e8f9}#caBank .cab-option:disabled{cursor:default;opacity:.92}#caBank .cab-option.correct{border-color:#34d399;background:#064e3b80}#caBank .cab-option.wrong{border-color:#fb7185;background:#88133750}
+#caBank .cab-feedback{display:none;border-radius:12px;padding:12px;background:#101d31;border:1px solid #334862;font-size:14px;line-height:1.5}#caBank .cab-feedback.show{display:block}#caBank .cab-feedback.good{border-color:#059669}#caBank .cab-feedback.bad{border-color:#be123c}#caBank .cab-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:14px}#caBank .cab-btn{border:1px solid #3d5272;background:#17243a;color:#eef6ff;border-radius:11px;padding:10px 13px;font-weight:750;cursor:pointer;font-size:13px}#caBank .cab-btn.primary{background:linear-gradient(135deg,#0891b2,#4f46e5);border-color:transparent}#caBank .cab-btn:disabled{opacity:.38;cursor:not-allowed}#caBank .cab-stats{margin-left:auto;color:#9fb3d2;font-size:12px}#caBank .cab-textarea{min-height:100px;resize:vertical;margin:8px 0}#caBank .cab-note{font-size:12px;color:#a7b8d3;line-height:1.45;margin-top:10px}#caBank .cab-footer{margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#8194b4;font-size:11px}
+@media(max-width:480px){#caBankLaunch{padding:11px 13px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom))}#caBank .cab-card{border-radius:17px;padding:14px}#caBank .cab-toolbar{align-items:stretch}#caBank .cab-toolbar select{flex:1}#caBank .cab-stats{margin-left:0;width:100%}}
+
+/* Code Academy responsive game guardrails */
+html{scroll-behavior:smooth}img,canvas,video,svg{max-width:100%}button,a,input,select,textarea{touch-action:manipulation}body{overflow-wrap:anywhere} @media(max-width:600px),(max-height:520px){html,body{height:auto!important;min-height:100svh!important;overflow-x:hidden!important;overflow-y:auto!important}main,.container,.game-container,.game-wrapper,.app,.screen,.game-screen,#app{max-height:none;overflow-y:visible!important}} @media(max-width:520px){button{max-width:100%}pre,code{white-space:pre-wrap;overflow-wrap:anywhere}} @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+
+<button type="button" id="caBankLaunch" aria-haspopup="dialog" aria-controls="caBank"><span aria-hidden="true">✦</span> Practice Bank</button>
+<section id="caBank" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="cabTitle">
+ <div class="cab-card"><div class="cab-top"><div><div class="cab-kicker">CODE ACADEMY • BONUS PRACTICE</div><h2 id="cabTitle">Challenge Bank</h2><p class="cab-sub" id="cabSubtitle">Learn at your own pace. Your progress is saved on this device.</p></div><button class="cab-close" type="button" id="cabClose" aria-label="Close practice bank">×</button></div>
+ <div class="cab-toolbar"><label for="cabLanguage">Preferred language</label><select id="cabLanguage"><option value="en">English</option><option value="fr">French</option><option value="es">Spanish</option><option value="pt">Portuguese</option><option value="de">German</option><option value="it">Italian</option><option value="nl">Dutch</option><option value="sv">Swedish</option><option value="no">Norwegian</option><option value="da">Danish</option><option value="fi">Finnish</option><option value="pl">Polish</option><option value="cs">Czech</option><option value="sk">Slovak</option><option value="hu">Hungarian</option><option value="ro">Romanian</option><option value="bg">Bulgarian</option><option value="el">Greek</option><option value="tr">Turkish</option><option value="ru">Russian</option><option value="uk">Ukrainian</option><option value="ar">Arabic</option><option value="he">Hebrew</option><option value="fa">Persian</option><option value="hi">Hindi</option><option value="bn">Bengali</option><option value="ur">Urdu</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="zh">Chinese</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="vi">Vietnamese</option><option value="th">Thai</option><option value="id">Indonesian</option><option value="ms">Malay</option><option value="sw">Swahili</option><option value="yo">Yoruba</option><option value="ha">Hausa</option><option value="ig">Igbo</option><option value="ak">Twi / Akan</option><option value="ee">Ewe</option><option value="am">Amharic</option><option value="zu">Zulu</option><option value="af">Afrikaans</option><option value="sr">Serbian</option><option value="hr">Croatian</option><option value="sl">Slovenian</option><option value="lt">Lithuanian</option><option value="lv">Latvian</option><option value="et">Estonian</option><option value="is">Icelandic</option><option value="ca">Catalan</option><option value="eu">Basque</option><option value="gl">Galician</option><option value="az">Azerbaijani</option><option value="kk">Kazakh</option><option value="uz">Uzbek</option><option value="mn">Mongolian</option><option value="my">Burmese</option><option value="km">Khmer</option><option value="lo">Lao</option><option value="ne">Nepali</option><option value="si">Sinhala</option><option value="ps">Pashto</option><option value="ku">Kurdish</option><option value="sq">Albanian</option><option value="mk">Macedonian</option><option value="bs">Bosnian</option><option value="lb">Luxembourgish</option><option value="ga">Irish</option><option value="cy">Welsh</option><option value="gd">Scottish Gaelic</option><option value="mt">Maltese</option><option value="hy">Armenian</option><option value="ka">Georgian</option><option value="yi">Yiddish</option><option value="jv">Javanese</option><option value="su">Sundanese</option><option value="fil">Filipino</option><option value="ceb">Cebuano</option><option value="la">Latin</option><option value="eo">Esperanto</option><option value="be">Belarusian</option><option value="tk">Turkmen</option><option value="tg">Tajik</option><option value="ky">Kyrgyz</option><option value="or">Odia</option><option value="pa">Punjabi</option><option value="as">Assamese</option><option value="sa">Sanskrit</option><option value="rw">Kinyarwanda</option><option value="sn">Shona</option><option value="xh">Xhosa</option><option value="st">Sesotho</option><option value="tn">Tswana</option><option value="ny">Chichewa</option><option value="mg">Malagasy</option><option value="so">Somali</option><option value="ti">Tigrinya</option><option value="ln">Lingala</option></select><button class="cab-btn" id="cabListen" type="button">🔊 Listen</button><div class="cab-progress" aria-label="Progress"><span id="cabProgress"></span></div></div>
+ <div class="cab-meta"><span class="cab-chip" id="cabCategory">Mixed practice</span><span class="cab-chip" id="cabDifficulty">Intermediate</span><span class="cab-chip" id="cabMode">Question bank</span></div>
+ <div id="cabQuestion" class="cab-question">Preparing your practice set…</div><pre id="cabCode" class="cab-code" hidden></pre><div id="cabOptions" class="cab-options"></div><textarea id="cabAnswer" class="cab-textarea" hidden aria-label="Your coding solution"></textarea>
+ <div id="cabFeedback" class="cab-feedback" role="status" aria-live="polite"></div><div class="cab-actions"><button class="cab-btn" id="cabPrevious" type="button">← Previous</button><button class="cab-btn primary" id="cabNext" type="button">Next →</button><button class="cab-btn" id="cabHint" type="button">💡 Hint</button><button class="cab-btn" id="cabSolution" type="button" hidden>Show example</button><button class="cab-btn" id="cabComplete" type="button" hidden>Mark mission complete</button><span class="cab-stats" id="cabStats">0 correct · 0 answered</span></div>
+ <p class="cab-note" id="cabNote">Pick an answer to see feedback and a clear explanation. Code samples are presented as learning examples, not executed in this panel.</p>
+ <div class="cab-footer"><span id="cabPersistence">Progress saved on this device.</span><span>Use Esc to close</span></div></div></section>
+<script type="application/json" id="ca-bank-fallback">{"questions":[{"id":"civilization-001","category":"Resource planning","difficulty":"easy","prompt":"A town has 100 units. Water needs 35 and food needs 40. How many units remain for other priorities?","options":["25","35","20","75"],"answerIndex":0,"explanation":"Subtract the two planned costs: 100 − 35 − 40 = 25."},{"id":"civilization-002","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 110 units. Water needs 36 and food needs 41. How many units remain for other priorities?","options":["43","28","77","33"],"answerIndex":3,"explanation":"Subtract the two planned costs: 110 − 36 − 41 = 33."},{"id":"civilization-003","category":"Resource planning","difficulty":"advanced","prompt":"A town has 120 units. Water needs 37 and food needs 42. How many units remain for other priorities?","options":["51","36","41","79"],"answerIndex":2,"explanation":"Subtract the two planned costs: 120 − 37 − 42 = 41."},{"id":"civilization-004","category":"Resource planning","difficulty":"easy","prompt":"A town has 130 units. Water needs 38 and food needs 43. How many units remain for other priorities?","options":["59","49","44","81"],"answerIndex":1,"explanation":"Subtract the two planned costs: 130 − 38 − 43 = 49."},{"id":"civilization-005","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 140 units. Water needs 39 and food needs 44. How many units remain for other priorities?","options":["57","67","52","83"],"answerIndex":0,"explanation":"Subtract the two planned costs: 140 − 39 − 44 = 57."},{"id":"civilization-006","category":"Resource planning","difficulty":"advanced","prompt":"A town has 150 units. Water needs 40 and food needs 45. How many units remain for other priorities?","options":["75","60","85","65"],"answerIndex":3,"explanation":"Subtract the two planned costs: 150 − 40 − 45 = 65."},{"id":"civilization-007","category":"Resource planning","difficulty":"easy","prompt":"A town has 160 units. Water needs 41 and food needs 46. How many units remain for other priorities?","options":["83","68","73","87"],"answerIndex":2,"explanation":"Subtract the two planned costs: 160 − 41 − 46 = 73."},{"id":"civilization-008","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 170 units. Water needs 42 and food needs 47. How many units remain for other priorities?","options":["91","81","76","89"],"answerIndex":1,"explanation":"Subtract the two planned costs: 170 − 42 − 47 = 81."},{"id":"civilization-009","category":"Resource planning","difficulty":"advanced","prompt":"A town has 180 units. Water needs 43 and food needs 40. How many units remain for other priorities?","options":["97","107","92","83"],"answerIndex":0,"explanation":"Subtract the two planned costs: 180 − 43 − 40 = 97."},{"id":"civilization-010","category":"Resource planning","difficulty":"easy","prompt":"A town has 190 units. Water needs 44 and food needs 41. How many units remain for other priorities?","options":["115","100","85","105"],"answerIndex":3,"explanation":"Subtract the two planned costs: 190 − 44 − 41 = 105."},{"id":"civilization-011","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 200 units. Water needs 35 and food needs 42. How many units remain for other priorities?","options":["133","118","123","77"],"answerIndex":2,"explanation":"Subtract the two planned costs: 200 − 35 − 42 = 123."},{"id":"civilization-012","category":"Resource planning","difficulty":"advanced","prompt":"A town has 210 units. Water needs 36 and food needs 43. How many units remain for other priorities?","options":["141","131","126","79"],"answerIndex":1,"explanation":"Subtract the two planned costs: 210 − 36 − 43 = 131."},{"id":"civilization-013","category":"Resource planning","difficulty":"easy","prompt":"A town has 220 units. Water needs 37 and food needs 44. How many units remain for other priorities?","options":["139","149","134","81"],"answerIndex":0,"explanation":"Subtract the two planned costs: 220 − 37 − 44 = 139."},{"id":"civilization-014","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 230 units. Water needs 38 and food needs 45. How many units remain for other priorities?","options":["157","142","83","147"],"answerIndex":3,"explanation":"Subtract the two planned costs: 230 − 38 − 45 = 147."},{"id":"civilization-015","category":"Resource planning","difficulty":"advanced","prompt":"A town has 240 units. Water needs 39 and food needs 46. How many units remain for other priorities?","options":["165","150","155","85"],"answerIndex":2,"explanation":"Subtract the two planned costs: 240 − 39 − 46 = 155."},{"id":"civilization-016","category":"Resource planning","difficulty":"easy","prompt":"A town has 250 units. Water needs 40 and food needs 47. How many units remain for other priorities?","options":["173","163","158","87"],"answerIndex":1,"explanation":"Subtract the two planned costs: 250 − 40 − 47 = 163."},{"id":"civilization-017","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 260 units. Water needs 41 and food needs 40. How many units remain for other priorities?","options":["179","189","174","81"],"answerIndex":0,"explanation":"Subtract the two planned costs: 260 − 41 − 40 = 179."},{"id":"civilization-018","category":"Resource planning","difficulty":"advanced","prompt":"A town has 270 units. Water needs 42 and food needs 41. How many units remain for other priorities?","options":["197","182","83","187"],"answerIndex":3,"explanation":"Subtract the two planned costs: 270 − 42 − 41 = 187."},{"id":"civilization-019","category":"Resource planning","difficulty":"easy","prompt":"A town has 280 units. Water needs 43 and food needs 42. How many units remain for other priorities?","options":["205","190","195","85"],"answerIndex":2,"explanation":"Subtract the two planned costs: 280 − 43 − 42 = 195."},{"id":"civilization-020","category":"Resource planning","difficulty":"intermediate","prompt":"A town has 290 units. Water needs 44 and food needs 43. How many units remain for other priorities?","options":["213","203","198","87"],"answerIndex":1,"explanation":"Subtract the two planned costs: 290 − 44 − 43 = 203."},{"id":"civilization-021","category":"Sustainability","difficulty":"advanced","prompt":"A school project consumes a resource faster than it renews. Which plan is most sustainable?","options":["Reduce demand and allow time for the resource to recover","Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":0,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-022","category":"Sustainability","difficulty":"easy","prompt":"A community library consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target","Reduce demand and allow time for the resource to recover"],"answerIndex":3,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-023","category":"Sustainability","difficulty":"intermediate","prompt":"A small shop consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Reduce demand and allow time for the resource to recover","Replace long-term planning with a one-day target"],"answerIndex":2,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-024","category":"Sustainability","difficulty":"advanced","prompt":"A mobile app consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Reduce demand and allow time for the resource to recover","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":1,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-025","category":"Sustainability","difficulty":"easy","prompt":"A science club consumes a resource faster than it renews. Which plan is most sustainable?","options":["Reduce demand and allow time for the resource to recover","Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":0,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-026","category":"Sustainability","difficulty":"intermediate","prompt":"A sports team consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target","Reduce demand and allow time for the resource to recover"],"answerIndex":3,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-027","category":"Sustainability","difficulty":"advanced","prompt":"A garden consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Reduce demand and allow time for the resource to recover","Replace long-term planning with a one-day target"],"answerIndex":2,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-028","category":"Sustainability","difficulty":"easy","prompt":"A bus station consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Reduce demand and allow time for the resource to recover","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":1,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-029","category":"Sustainability","difficulty":"intermediate","prompt":"A learning platform consumes a resource faster than it renews. Which plan is most sustainable?","options":["Reduce demand and allow time for the resource to recover","Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":0,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-030","category":"Sustainability","difficulty":"advanced","prompt":"A music group consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target","Reduce demand and allow time for the resource to recover"],"answerIndex":3,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-031","category":"Sustainability","difficulty":"easy","prompt":"A clinic reception consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Reduce demand and allow time for the resource to recover","Replace long-term planning with a one-day target"],"answerIndex":2,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-032","category":"Sustainability","difficulty":"intermediate","prompt":"A robotics club consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Reduce demand and allow time for the resource to recover","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":1,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-033","category":"Sustainability","difficulty":"advanced","prompt":"A local market consumes a resource faster than it renews. Which plan is most sustainable?","options":["Reduce demand and allow time for the resource to recover","Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":0,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-034","category":"Sustainability","difficulty":"easy","prompt":"A weather station consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target","Reduce demand and allow time for the resource to recover"],"answerIndex":3,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-035","category":"Sustainability","difficulty":"intermediate","prompt":"A student team consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Reduce demand and allow time for the resource to recover","Replace long-term planning with a one-day target"],"answerIndex":2,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-036","category":"Sustainability","difficulty":"advanced","prompt":"A museum consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Reduce demand and allow time for the resource to recover","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":1,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-037","category":"Sustainability","difficulty":"easy","prompt":"A delivery service consumes a resource faster than it renews. Which plan is most sustainable?","options":["Reduce demand and allow time for the resource to recover","Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":0,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-038","category":"Sustainability","difficulty":"intermediate","prompt":"A computer lab consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target","Reduce demand and allow time for the resource to recover"],"answerIndex":3,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-039","category":"Sustainability","difficulty":"advanced","prompt":"A savings group consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Ignore measurements until the resource is gone","Reduce demand and allow time for the resource to recover","Replace long-term planning with a one-day target"],"answerIndex":2,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-040","category":"Sustainability","difficulty":"easy","prompt":"A public website consumes a resource faster than it renews. Which plan is most sustainable?","options":["Increase use because supply is currently available","Reduce demand and allow time for the resource to recover","Ignore measurements until the resource is gone","Replace long-term planning with a one-day target"],"answerIndex":1,"explanation":"Sustainability balances current needs with the resource’s ability to replenish over time."},{"id":"civilization-041","category":"Civic decision-making","difficulty":"intermediate","prompt":"A community council receives three different proposals for a school project. What improves the decision most?","options":["Compare costs, benefits, evidence and who is affected","Choose the loudest proposal","Ignore residents who disagree","Decide before reading any estimates"],"answerIndex":0,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-042","category":"Civic decision-making","difficulty":"advanced","prompt":"A community council receives three different proposals for a community library. What improves the decision most?","options":["Choose the loudest proposal","Ignore residents who disagree","Decide before reading any estimates","Compare costs, benefits, evidence and who is affected"],"answerIndex":3,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-043","category":"Civic decision-making","difficulty":"easy","prompt":"A community council receives three different proposals for a small shop. What improves the decision most?","options":["Choose the loudest proposal","Ignore residents who disagree","Compare costs, benefits, evidence and who is affected","Decide before reading any estimates"],"answerIndex":2,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-044","category":"Civic decision-making","difficulty":"intermediate","prompt":"A community council receives three different proposals for a mobile app. What improves the decision most?","options":["Choose the loudest proposal","Compare costs, benefits, evidence and who is affected","Ignore residents who disagree","Decide before reading any estimates"],"answerIndex":1,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-045","category":"Civic decision-making","difficulty":"advanced","prompt":"A community council receives three different proposals for a science club. What improves the decision most?","options":["Compare costs, benefits, evidence and who is affected","Choose the loudest proposal","Ignore residents who disagree","Decide before reading any estimates"],"answerIndex":0,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-046","category":"Civic decision-making","difficulty":"easy","prompt":"A community council receives three different proposals for a sports team. What improves the decision most?","options":["Choose the loudest proposal","Ignore residents who disagree","Decide before reading any estimates","Compare costs, benefits, evidence and who is affected"],"answerIndex":3,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-047","category":"Civic decision-making","difficulty":"intermediate","prompt":"A community council receives three different proposals for a garden. What improves the decision most?","options":["Choose the loudest proposal","Ignore residents who disagree","Compare costs, benefits, evidence and who is affected","Decide before reading any estimates"],"answerIndex":2,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-048","category":"Civic decision-making","difficulty":"advanced","prompt":"A community council receives three different proposals for a bus station. What improves the decision most?","options":["Choose the loudest proposal","Compare costs, benefits, evidence and who is affected","Ignore residents who disagree","Decide before reading any estimates"],"answerIndex":1,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-049","category":"Civic decision-making","difficulty":"easy","prompt":"A community council receives three different proposals for a learning platform. What improves the decision most?","options":["Compare costs, benefits, evidence and who is affected","Choose the loudest proposal","Ignore residents who disagree","Decide before reading any estimates"],"answerIndex":0,"explanation":"Transparent criteria and affected-community input make decisions more accountable."},{"id":"civilization-050","category":"Civic decision-making","difficulty":"intermediate","prompt":"A community council receives three different proposals for a music group. What improves the decision most?","options":["Choose the loudest proposal","Ignore residents who disagree","Decide before reading any estimates","Compare costs, benefits, evidence and who is affected"],"answerIndex":3,"explanation":"Transparent criteria and affected-community input make decisions more accountable."}]}</script>
+
+<script>
+(()=>{
+ const GAME_ID="civilization", GAME_TITLE="Civilization Puzzle", BANK_FILE="civilization_questions.json", IS_RACER=false;
+ const $=id=>document.getElementById(id), storeKey='code_academy_game_bank_'+GAME_ID+'_v1', langKey='code_academy_preferred_language_v1', localNoticeKey='code_academy_game_notifications_v1';
+ const lang=$('cabLanguage'), panel=$('caBank'), launch=$('caBankLaunch');
+ const state={items:[],generated:[],idx:0,score:0,answered:0,attempted:{},shownSolution:{},translations:{},saved:{},mode:'',closedBefore:null};
+ const builtIn=(()=>{try{return JSON.parse($('ca-bank-fallback')?.textContent||'{}')}catch(e){return {}}})();
+ const norm=s=>String(s??'').trim().toLowerCase().replace(/\s+/g,' ');
+ const safeParse=s=>{try{return JSON.parse(s)}catch(e){return null}};
+ const translationCacheKey=s=>{let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return 'ca_game_translation_'+(h>>>0).toString(36)};
+ try{const saved=safeParse(localStorage.getItem(storeKey)||'{}')||{};state.idx=Math.max(0,Number(saved.idx)||0);state.score=Math.max(0,Number(saved.score)||0);state.answered=Math.max(0,Number(saved.answered)||0);state.attempted=saved.attempted||{};state.shownSolution=saved.shownSolution||{};state.saved=saved.saved||{};state.generated=Array.isArray(saved.generated)?saved.generated:[];}catch(e){}
+ try{lang.value=localStorage.getItem(langKey)||'en'}catch(e){lang.value='en'}
+ const save=()=>{try{localStorage.setItem(storeKey,JSON.stringify({idx:state.idx,score:state.score,answered:state.answered,attempted:state.attempted,shownSolution:state.shownSolution,saved:state.saved,generated:state.generated,updatedAt:Date.now()}))}catch(e){}}
+ const localNotification=(title,message)=>{try{let arr=JSON.parse(localStorage.getItem(localNoticeKey)||'[]');arr.unshift({title,message,type:'game',icon:'🎮',link:location.pathname.split('/').pop(),createdAt:Date.now(),read:false});localStorage.setItem(localNoticeKey,JSON.stringify(arr.slice(0,80)));}catch(e){}window.dispatchEvent(new CustomEvent('codeacademy-notification',{detail:{title,message,type:'game',icon:'🎮'}}));};
+ const notify=(title,message,eventKey)=>{localNotification(title,message);try{const p=window.CodeAcademyPlatform;if(p?.notify)p.notify({eventKey,title,message,type:'game',icon:'🎮',link:location.pathname.split('/').pop()});}catch(e){}};
+ const reward=(item)=>{const payload={eventKey:'bank_'+item.id,xp:5,coins:2.5,score:state.score,level:Math.floor(state.idx/10)+1,message:`You completed a practice challenge in ${GAME_TITLE}. Your progress and reward have been recorded.`,icon:'🧠'};try{if(window.CodeAcademyPlatform?.award){window.CodeAcademyPlatform.award(payload).catch(()=>{});}else window.dispatchEvent(new CustomEvent('codeacademy-game-reward',{detail:payload}));}catch(e){window.dispatchEvent(new CustomEvent('codeacademy-game-reward',{detail:payload}));}};
+ const translateEndpoint=['https://translate.argosopentech.com/translate','https://libretranslate.de/translate'];
+ async function translateText(text){const from='en',to=lang.value||'en';if(!text||to===from)return text;const key=to+'|'+text;if(state.translations[key])return state.translations[key];try{const cached=localStorage.getItem(translationCacheKey(key));if(cached){state.translations[key]=cached;return cached;}}catch(e){}
+   for(const endpoint of translateEndpoint){try{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),6500);const response=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({q:text,source:from,target:to,format:'text'}),signal:controller.signal});clearTimeout(timer);if(!response.ok)continue;const data=await response.json();if(data.translatedText){state.translations[key]=data.translatedText;try{localStorage.setItem(translationCacheKey(key),data.translatedText)}catch(e){}return data.translatedText;}}catch(e){}}
+   return text;
+ }
+ async function translateItem(item){if((lang.value||'en')==='en')return item;const out={...item};for(const key of ['prompt','explanation','hint','objective','title','expectedResult'])if(typeof out[key]==='string')out[key]=await translateText(out[key]);if(Array.isArray(out.options))out.options=await Promise.all(out.options.map(translateText));return out;}
+ const plainFallback=()=>{if(IS_RACER)return builtIn.challenges||[];return builtIn.questions||[]};
+ const BONUS_SCENES=['a school project','a community library','a small shop','a mobile app','a science club','a sports team','a garden','a bus station','a learning platform','a music group','a robotics club','a local market','a weather station','a museum','a delivery service','a computer lab','a public website','a savings group','a student team','a digital archive'];
+ function buildMcq(id,category,prompt,answer,wrongs,explanation,code=''){
+   const correct=String(answer),options=[];
+   for(const value of wrongs.map(String)){if(value!==correct&&!options.includes(value))options.push(value);}
+   let pad=1;while(options.length<3){const value=`Review option ${pad++}`;if(value!==correct&&!options.includes(value))options.push(value);}
+   options.length=3;const answerIndex=(Number(id.match(/(\d+)$/)?.[1])||1)%4;options.splice(answerIndex,0,correct);
+   return {id,category,difficulty:(Number(id.match(/(\d+)$/)?.[1])||1)%3===0?'advanced':'intermediate',prompt,options,answerIndex,explanation,...(code?{code}:{})};
+ }
+ function generateBonusItem(){
+   const serial=state.generated.length+1, round=200+serial, scene=BONUS_SCENES[(serial-1)%BONUS_SCENES.length], a=serial+4, b=2+(serial%9), id=`${GAME_ID}-bonus-${String(serial).padStart(5,'0')}`;
+   if(IS_RACER){
+     const mode=(serial-1)%8, word=['sunrise','river','orbit','signal','garden','bridge','lantern','comet','harbour','forest','planet','copper','silver','marble','puzzle','voyage','beacon','meadow','thunder','compass'][(serial-1)%20];
+     const value=serial+3, name=`mission${serial}`, fn=`combine${serial}`;
+     const tasks=[
+       {category:'Python variables',prompt:`Bonus mission ${serial}: create a variable named ${name} with the value ${value}.`,code:`${name} = ${value}` ,token:'=',hint:'Use an assignment statement with a descriptive name.'},
+       {category:'Python arithmetic',prompt:`Bonus mission ${serial}: write a Python statement that prints ${a} plus ${b}.`,code:`print(${a} + ${b})`,token:'print',hint:'Use print() with an arithmetic expression.'},
+       {category:'JavaScript condition',prompt:`Bonus mission ${serial}: check whether score is greater than ${value} and log “Ready” when it is.`,code:`if (score > ${value}) { console.log("Ready"); }`,token:'if',hint:'Use an if statement and the > operator.'},
+       {category:'Loops',prompt:`Bonus mission ${serial}: loop from 0 through ${serial%12+2} inclusive.`,code:`for (let i = 0; i <= ${serial%12+2}; i++) { console.log(i); }`,token:'for',hint:'Use a loop with a stopping condition that includes the final number.'},
+       {category:'Functions',prompt:`Bonus mission ${serial}: define a function named ${fn} that returns its input plus ${b}.`,code:`function ${fn}(value) { return value + ${b}; }`,token:'return',hint:'A return statement sends the computed value back to the caller.'},
+       {category:'HTML semantics',prompt:`Bonus mission ${serial}: create an HTML main heading that says ${word}.`,code:`<h1>${word}</h1>`,token:'<h1>',hint:'Use a semantic heading element.'},
+       {category:'CSS styling',prompt:`Bonus mission ${serial}: set the text color of .mission-${serial} to blue.`,code:`.mission-${serial} { color: blue; }`,token:'color',hint:'Write a CSS selector and a color declaration.'},
+       {category:'Array indexing',prompt:`Bonus mission ${serial}: read the first item in an array named ${name}.`,code:`const first = ${name}[0];`,token:'[0]',hint:'Most common JavaScript arrays use a zero-based first index.'}
+     ][mode];
+     return {id,category:tasks.category,difficulty:serial%3===0?'advanced':'intermediate',title:`Extended coding mission ${serial}`,prompt:tasks.prompt,objective:`Complete this extra mission, review the expected idea, and test the solution in a suitable editor. Scenario: ${scene}.`,starterCode:tasks.code,requiredToken:tasks.token,hint:tasks.hint,solutionExample:tasks.code,expectedResult:`A solution that meets the requirement for bonus mission ${serial}.`,language:'English'};
+   }
+   switch(GAME_ID){
+     case 'digital_vault':{const start=serial+5,step=2+(serial%8),answer=start+3*step;return buildMcq(id,'Number patterns',`Bonus vault puzzle ${serial}: continue ${start}, ${start+step}, ${start+2*step}, ${start+3*step}, … What comes next?`,answer,[answer+step,answer-1,answer-step],`The sequence increases by ${step} each time, so the next term is ${answer}.`);}
+     case 'detective_man':return buildMcq(id,'Evidence quality',`Case ${round}: two accounts about ${scene} conflict. What is the most reliable next step?`,'Check an independent source and document what it confirms',['Choose the more confident speaker','Publish the first version immediately','Assume the latest account must be true'],'Independent corroboration is more reliable than confidence, speed, or popularity.');
+     case 'mind_palace':{const start=serial+2,step=2+(serial%5),answer=start+3*step;return buildMcq(id,'Recall practice',`Memory challenge ${serial}: recall the pattern ${start}, ${start+step}, ${start+2*step}, ___. Which number follows?`,answer,[answer+1,answer-step,answer+step+2],`The pattern adds ${step} at every step. The next value is ${answer}.`);}
+     case 'civilization':{const budget=120+serial*7,water=25+(serial%17),food=32+(serial%13),answer=budget-water-food;return buildMcq(id,'Resource planning',`Town plan ${serial}: a community has ${budget} resource units. Water uses ${water} and food uses ${food}. How many units remain?`,answer,[answer+water,answer-food,answer+10],`Subtract both needs from the total: ${budget} − ${water} − ${food} = ${answer}.`);}
+     case 'truth_protocol':return buildMcq(id,'Verification',`Truth check ${serial}: a viral post makes a serious claim about ${scene} but provides no source. What is the strongest verdict before checking it?`,'Unverified; look for the original source and independent evidence',['Definitely true because it is popular','Definitely false because it is short','Confirmed because a screenshot exists'],'Popularity and screenshots do not establish truth. Verify the source and corroborate the claim.');
+     case 'code_breaker':case 'code_quest':{const x=serial+3,y=2+(serial%11),answer=x+y;return buildMcq(id,'Code tracing',`Code puzzle ${serial}: what value is printed by this program?`,answer,[x*y,x-y,`${x}${y}`],`The program adds ${x} and ${y}, so it prints ${answer}.`,`let value = ${x};
+value += ${y};
+console.log(value);`);}
+     case 'cybermission':return buildMcq(id,'Security awareness',`Security scenario ${serial}: an urgent message about ${scene} asks you to sign in through an unfamiliar shortened link. What should you do?`,'Visit the service through its known official address and verify the request',['Open the link immediately','Reply with your password or one-time code','Forward the link to everyone'],'Urgency and unfamiliar links are warning signs. Use a trusted route and never disclose login secrets.');
+     case 'algorithm_defender':return buildMcq(id,'Algorithm analysis',`Defense wave ${serial}: an algorithm checks every record in a list of n records once. Which time complexity describes the scan?`,'O(n)',['O(1)','O(log n)','O(n²)'],'The work grows in direct proportion to the number of records, so the complexity is O(n).');
+     default:{const x=serial+2,y=serial%9+3,answer=x*y;return buildMcq(id,'Programming logic',`Bonus logic question ${serial}: what is the result of ${x} × ${y}?`,answer,[answer+x,answer-y,answer+1],`Multiplying ${x} by ${y} gives ${answer}.`);}
+   }
+ }
+ async function loadItems(){let data=null;try{const res=await fetch(BANK_FILE,{cache:'no-store'});if(res.ok)data=await res.json();}catch(e){}let items=IS_RACER?data?.challenges:data?.questions;if(!Array.isArray(items)||items.length<50)items=plainFallback();if(!Array.isArray(items)||!items.length){items=[];}state.items=items.concat(state.generated);if(state.idx>=state.items.length)state.idx=0;return state.items.length;}
+ function elText(id,text){$(id).textContent=text??'';}
+ function current(){return state.items[Math.min(state.idx,Math.max(0,state.items.length-1))]}
+ function stats(){elText('cabStats',`${state.score} correct · ${state.answered} answered`);$('cabProgress').style.width=(state.items.length?Math.min(100,(state.idx+1)/state.items.length*100):0)+'%';elText('cabPersistence','Progress saves automatically on this device.');}
+ function announceActivity(type,item){if(type==='opened'){notify(`${GAME_TITLE} practice started`,'A learner opened the extra practice bank.',`opened_practice_${new Date().toISOString().slice(0,10)}`);}else if(type==='milestone'){notify(`${GAME_TITLE} practice milestone`,'A learner has answered five or more practice challenges.',`practice_milestone_${item?.id||state.idx}`);}}
+ async function render(){if(!state.items.length){elText('cabQuestion','The practice set is not available yet. Check your connection and try again.');$('cabOptions').replaceChildren();return;}
+  const raw=current();const item=await translateItem(raw);state.mode=IS_RACER?'coding-missions':'multiple-choice';elText('cabCategory',item.category||'Practice');elText('cabDifficulty',(item.difficulty||'intermediate').toUpperCase());elText('cabMode',IS_RACER?'Coding mission':'Question bank');elText('cabQuestion',IS_RACER?`${item.title||'Coding mission'} — ${item.prompt||''}\n\n${item.objective||''}`:item.prompt||'');
+  const code=$('cabCode');if(IS_RACER){code.hidden=false;code.textContent='Starter code:\n'+(raw.starterCode||'');$('cabAnswer').hidden=false;$('cabAnswer').value=state.saved[raw.id]||'';$('cabSolution').hidden=false;$('cabComplete').hidden=false;$('cabOptions').replaceChildren();$('cabHint').hidden=false;$('cabNote').textContent='Enter your solution or reasoning here. This lightweight checker looks for the required key idea; it does not execute code. Use the main Code Racer editor for full execution and testing.';}else{code.hidden=!item.code;code.textContent=item.code||'';$('cabAnswer').hidden=true;$('cabSolution').hidden=true;$('cabComplete').hidden=true;$('cabOptions').replaceChildren();(item.options||[]).forEach((option,i)=>{const btn=document.createElement('button');btn.type='button';btn.className='cab-option';btn.textContent=String.fromCharCode(65+i)+'. '+option;btn.addEventListener('click',()=>pick(i,raw,btn));if(state.attempted[raw.id]){btn.disabled=true;if(i===raw.answerIndex)btn.classList.add('correct');else if(i===state.attempted[raw.id].choice)btn.classList.add('wrong');} $('cabOptions').append(btn);});$('cabNote').textContent='Choose the best answer to see feedback. When the curated bank ends, new bonus questions are generated automatically. Translation depends on service availability; code syntax remains unchanged.';}
+  $('cabPrevious').disabled=state.idx===0;$('cabNext').textContent=state.idx===state.items.length-1?'Generate next challenge':'Next →';stats();
+  const fb=$('cabFeedback');const old=state.attempted[raw.id];fb.className='cab-feedback'+(old?' show '+(old.correct?'good':'bad'):'');if(old){const msg=IS_RACER?(old.correct?'Mission marked complete.':'Your previous attempt needs another look.'):(`${old.correct?'Correct.':'Not quite.'} ${item.explanation||raw.explanation||''}`);fb.textContent=msg;}
+ }
+ async function pick(choice,raw){if(state.attempted[raw.id])return;const ok=choice===Number(raw.answerIndex);state.attempted[raw.id]={choice,correct:ok,at:Date.now()};state.answered++;if(ok){state.score++;reward(raw);if(state.score>0&&state.score%5===0)announceActivity('milestone',raw);}const item=await translateItem(raw);const fb=$('cabFeedback');fb.className='cab-feedback show '+(ok?'good':'bad');fb.textContent=(ok?'Correct. ':'Not quite. ')+(item.explanation||raw.explanation||'Review the concept and try another challenge.');$('cabOptions').querySelectorAll('button').forEach((btn,i)=>{btn.disabled=true;if(i===Number(raw.answerIndex))btn.classList.add('correct');else if(i===choice)btn.classList.add('wrong');});save();stats();}
+ $('cabAnswer').addEventListener('input',()=>{const item=current();if(item)state.saved[item.id]=$('cabAnswer').value;save();});
+ $('cabComplete').addEventListener('click',()=>{const item=current();if(!item)return;const response=$('cabAnswer').value.trim();if(!response){$('cabFeedback').className='cab-feedback show bad';$('cabFeedback').textContent='Add your solution or explanation before marking the mission complete.';return;}const token=String(item.requiredToken||'').toLowerCase();const ok=!token||response.toLowerCase().includes(token.toLowerCase());const prior=state.attempted[item.id];if(!prior)state.answered++;if(ok&&!prior?.correct){state.score++;reward(item);if(state.score>0&&state.score%5===0)announceActivity('milestone',item);}state.attempted[item.id]={choice:-1,correct:ok,at:Date.now()};save();const fb=$('cabFeedback');fb.className='cab-feedback show '+(ok?'good':'bad');fb.textContent=ok?'Key idea detected. Compare your solution with the example, then test it in a suitable editor.':'The required idea was not detected yet. Review the hint or example and revise your solution.';stats();});
+ $('cabHint').addEventListener('click',async()=>{const item=current();if(!item)return;const hint=await translateText(item.hint||'Break the problem into small steps and check what the instructions ask for.');const fb=$('cabFeedback');fb.className='cab-feedback show';fb.textContent='Hint: '+hint;});
+ $('cabSolution').addEventListener('click',()=>{const item=current();if(!item)return;const code=$('cabCode');code.hidden=false;code.textContent='Example solution:\n'+(item.solutionExample||item.starterCode||'');state.shownSolution[item.id]=true;save();});
+ $('cabPrevious').addEventListener('click',()=>{if(state.idx>0){state.idx--;save();render();}});$('cabNext').addEventListener('click',()=>{if(state.idx<state.items.length-1){state.idx++;save();render();}else{const bonus=generateBonusItem();state.generated.push(bonus);state.items.push(bonus);state.idx=state.items.length-1;save();render();if(state.generated.length===1||state.generated.length%10===0)notify(`${GAME_TITLE} bonus round unlocked`,`A fresh bonus ${IS_RACER?'coding mission':'question'} has been generated. Keep practising at your own pace.`,`bonus_round_${state.generated.length}`);}});
+ function speak(){if(!('speechSynthesis' in window)){elText('cabPersistence','Speech synthesis is not supported by this browser.');return;}const item=current();if(!item)return;const text=IS_RACER?`${item.title}. ${item.prompt}. ${item.objective}`:`${item.prompt}. ${(item.options||[]).map((v,i)=>`Option ${i+1}: ${v}`).join('. ')}. ${item.explanation||''}`;speechSynthesis.cancel();const utter=new SpeechSynthesisUtterance(text);const wanted=lang.value||'en';const voices=speechSynthesis.getVoices();let voice=voices.find(v=>v.lang.toLowerCase()===wanted.toLowerCase()||v.lang.toLowerCase().startsWith(wanted.toLowerCase()+'-'));if(!voice)voice=voices.find(v=>v.lang.toLowerCase().startsWith('en-'));if(voice){utter.voice=voice;utter.lang=voice.lang;}else utter.lang='en-US';utter.rate=.92;utter.pitch=1;utter.volume=1;speechSynthesis.speak(utter);}
+ $('cabListen').addEventListener('click',speak);lang.addEventListener('change',async()=>{try{localStorage.setItem(langKey,lang.value)}catch(e){}state.translations={};render();});
+ function open(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';announceActivity('opened');render();$('cabClose').focus();}
+ function close(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');document.body.style.overflow='';launch.focus();}
+ launch.addEventListener('click',open);$('cabClose').addEventListener('click',close);panel.addEventListener('click',e=>{if(e.target===panel)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))close()});
+ loadItems().then(count=>{elText('cabSubtitle',`${count} ${IS_RACER?'coding missions':'questions'} available · extra challenges generate automatically after the bank.`);render();}).catch(()=>render());
+})();
+</script>
+
+<script type="module">import { initGamePlatform } from "./game-platform.js"; initGamePlatform({gameId:"civilization",gameTitle:"Civilization Puzzle",requireAuth:true,link:"civilization.html"});</script>
+<script>if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}</script>
+<script src="/capacitor-native.js" data-code-academy-native></script>
+</body>
+</html>

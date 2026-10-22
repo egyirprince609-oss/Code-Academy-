@@ -1,0 +1,176 @@
+{
+  "course": "c",
+  "lessonNumber": 3,
+  "lessonId": "c-lesson-3",
+  "title": "Operators and Expressions",
+  "subtitle": "Operators and Expressions: build, inspect, test, and apply the concept",
+  "description": "An interactive, dashboard-focused lesson on operators and expressions, with worked code, deliberate debugging, practical transfer, and five explained application questions.",
+  "level": "Beginner",
+  "estimatedMinutes": 40,
+  "xpReward": 5,
+  "coinsReward": 2,
+  "blocks": [
+    {
+      "id": "c-3-page-1-1",
+      "type": "heading",
+      "text": "PAGE 1 — Operators and Expressions: foundations and mental model"
+    },
+    {
+      "id": "c-3-page-1-teaching-2",
+      "type": "content",
+      "text": "Operators and Expressions is not just a syntax topic: it is a way to make the application’s intent explicit. Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. In the Code Academy dashboard, that idea matters because A score tracker makes explicit types, array bounds, and pointer validity important. Start by identifying the input, the rule being applied, and the result that a learner should observe. Separate what the code declares from what it actually does at runtime. A name, selector, function, condition, or query should express one clear responsibility. When reading an example, predict its behavior before running or reviewing the output. If the prediction is wrong, trace each meaningful line instead of rewriting everything at once. This habit builds the kind of reasoning that transfers to unfamiliar code, not merely a memory of one sample. The first example introduces the smallest useful version of the idea; later examples test it against variations and edge cases."
+    },
+    {
+      "id": "c-3-code-1-3",
+      "type": "code",
+      "title": "Example 1 — Operators and Expressions: Handles a missing total",
+      "language": "c",
+      "code": "int progress(int done, int total) { return total > 0 ? done * 100 / total : 0; }\nprintf(\"%d%%\\n\", progress(4,10));",
+      "output": "Handles a missing total."
+    },
+    {
+      "id": "c-3-code-analysis-1-4",
+      "type": "content",
+      "text": "Example 1 — line-by-line reading. Line 1 — “int progress(int done, int total) { return total > 0 ? done * 100 / total : 0; }”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “printf(\"%d%%\\n\", progress(4,10));”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Handles a missing total. What if a line changes? If the guard or missing-value check is removed, empty or absent data can produce a wrong result or runtime failure. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-3-quiz-1-5",
+      "type": "quiz",
+      "question": "A calculation is intended to add 3 to the product of 4 and 5. Which expression states that rule directly?",
+      "options": [
+        "4 + 5 * 3",
+        "4 * 5 + 3",
+        "4 * (5 + 3)",
+        "(4 + 5) * 3"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: 4 * 5 + 3. Multiplication has higher precedence than addition, so 4 * 5 + 3 expresses the intended result.",
+      "reasoning": "Multiplication has higher precedence than addition, so 4 * 5 + 3 expresses the intended result. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-3-code-2-6",
+      "type": "code",
+      "title": "Example 2 — Operators and Expressions: Normalizes one ASCII lowercase answer",
+      "language": "c",
+      "code": "char answer = 'b';\nif (answer >= 'a' && answer <= 'z') answer -= ('a' - 'A');\nprintf(\"%c\\n\", answer);",
+      "output": "Normalizes one ASCII lowercase answer."
+    },
+    {
+      "id": "c-3-code-analysis-2-7",
+      "type": "content",
+      "text": "Example 2 — line-by-line reading. Line 1 — “char answer = 'b';”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “if (answer >= 'a' && answer <= 'z') answer -= ('a' - 'A');”: Checks a condition or selects a branch; the result determines which path executes. Line 3 — “printf(\"%c\\n\", answer);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Normalizes one ASCII lowercase answer. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-3-quiz-2-8",
+      "type": "quiz",
+      "question": "A percentage unexpectedly becomes an integer in a typed language. What should be checked first?",
+      "options": [
+        "Whether division is using integer operands before conversion",
+        "Whether the output label has enough colors",
+        "Whether the variable name begins with a capital letter",
+        "Whether a comment appears above the expression"
+      ],
+      "correctIndex": 0,
+      "explanation": "Correct answer: Whether division is using integer operands before conversion. Some languages perform integer division when both operands are integers.",
+      "reasoning": "Some languages perform integer division when both operands are integers. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-3-page-2-9",
+      "type": "heading",
+      "text": "PAGE 2 — Operators and Expressions: implementation, debugging, and edge cases"
+    },
+    {
+      "id": "c-3-page-2-teaching-10",
+      "type": "content",
+      "text": "Implementation quality depends on details that are easy to miss. Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. Compare the expected result with the actual result, then ask which smallest change explains any difference. Check the data type, boundaries, execution order, and assumptions about missing or invalid input. For the Code Academy dashboard, A score tracker makes explicit types, array bounds, and pointer validity important. A solution that works only for one perfect input is incomplete. For instance, check empty strings, a zero count, an unavailable resource, an unknown key, or a repeated user action whenever those cases fit the feature. Keep responsibilities small so the cause of a defect can be isolated. The second and third examples show how to make the logic clearer and how to recognize a failure mode. Read the comments and output notes as a guide to reasoning, not as a substitute for inspecting every statement."
+    },
+    {
+      "id": "c-3-code-3-11",
+      "type": "code",
+      "title": "Example 3 — Operators and Expressions: Counts successful attempts",
+      "language": "c",
+      "code": "int attempts[] = {1, 0, 1}; int correct = 0;\nfor (int i=0; i<3; i++) correct += attempts[i];\nprintf(\"%d\\n\", correct);",
+      "output": "Counts successful attempts."
+    },
+    {
+      "id": "c-3-code-analysis-3-12",
+      "type": "content",
+      "text": "Example 3 — line-by-line reading. Line 1 — “int attempts[] = {1, 0, 1}; int correct = 0;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “for (int i=0; i<3; i++) correct += attempts[i];”: Repeats an operation over a sequence or while a condition is met; its bounds and update control termination. Line 3 — “printf(\"%d\\n\", correct);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Counts successful attempts. What if a line changes? If the loop update or stopping condition is removed or changed, iterations may be skipped, repeated, or never finish. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-3-quiz-2-13",
+      "type": "quiz",
+      "question": "A remainder operation is used to decide whether an interval has been reached. What does x % 5 produce for integer x?",
+      "options": [
+        "The quotient rounded up",
+        "A Boolean indicating x is greater than 5",
+        "The product of x and 5",
+        "The remainder after division by 5"
+      ],
+      "correctIndex": 3,
+      "explanation": "Correct answer: The remainder after division by 5. Remainder is useful for divisibility and periodic boundaries, but it is not the quotient.",
+      "reasoning": "Remainder is useful for divisibility and periodic boundaries, but it is not the quotient. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-3-code-4-14",
+      "type": "code",
+      "title": "Example 4 — Operators and Expressions: Checks thresholds from highest-priority rule to lowest",
+      "language": "c",
+      "code": "int xp = 120;\nconst char *tier = xp >= 300 ? \"Creator\" : xp >= 100 ? \"Builder\" : \"Starter\";\nputs(tier);",
+      "output": "Checks thresholds from highest-priority rule to lowest."
+    },
+    {
+      "id": "c-3-code-analysis-4-15",
+      "type": "content",
+      "text": "Example 4 — line-by-line reading. Line 1 — “int xp = 120;”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 2 — “const char *tier = xp >= 300 ? \"Creator\" : xp >= 100 ? \"Builder\" : \"Starter\";”: Declares or assigns a value. The name and type determine how later expressions can use it. Line 3 — “puts(tier);”: Continues the example’s expression or control block. Read it in order with the preceding declaration and following result. Expected behavior: Checks thresholds from highest-priority rule to lowest. What if a line changes? Change one input or line at a time and predict the new result. Removing a required declaration, condition, selector, or query clause changes the behavior described above; never assume unchanged output without testing. This controlled experiment helps distinguish syntax, data, and logic errors."
+    },
+    {
+      "id": "c-3-quiz-3-16",
+      "type": "quiz",
+      "question": "A condition must be true only when both the learner is signed in and the lesson is unlocked. Which logical operator matches that requirement?",
+      "options": [
+        "Remainder (%)",
+        "Assignment (=)",
+        "AND ( && in many C-style languages)",
+        "OR ( || in many C-style languages)"
+      ],
+      "correctIndex": 2,
+      "explanation": "Correct answer: AND ( && in many C-style languages). AND requires both conditions to be true.",
+      "reasoning": "AND requires both conditions to be true. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-3-page-3-17",
+      "type": "heading",
+      "text": "PAGE 3 — Operators and Expressions: applied challenge and mastery check"
+    },
+    {
+      "id": "c-3-page-3-teaching-18",
+      "type": "content",
+      "text": "Professional practice means verifying the requirement from a learner’s point of view. Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. For the Code Academy dashboard, A score tracker makes explicit types, array bounds, and pointer validity important. Finish by following a small test sequence: verify a normal case, a boundary case, and a failure case; confirm the page remains understandable; and check that the result matches the requirement rather than merely appearing plausible. Ask what would happen if one important line were removed, changed, or called in the wrong order. Distinguish a syntax error from a logic error and from an interface or data issue. The final sample brings the concept into a compact applied task, and the questions ask for decisions rather than isolated definitions. A strong answer should be supported by a reason and by a test that could prove or disprove the assumption."
+    },
+    {
+      "id": "c-3-challenge-19",
+      "type": "content",
+      "text": "Applied challenge: implement a small Code Academy feature that uses operators and expressions. Define the expected behavior in one sentence, identify the input and output, and choose the simplest code pattern above that fits. Test a normal case and an edge case. Then make one controlled change: remove a condition, alter a value, or change an input shape. Record what breaks and explain why. This is the “do and let me do” part of the lesson: the concept becomes memorable when the learner predicts a result, observes it, and explains the difference."
+    },
+    {
+      "id": "c-3-quiz-5-20",
+      "type": "quiz",
+      "question": "A condition relies on short-circuiting to avoid reading a missing value. Why does operand order matter?",
+      "options": [
+        "Boolean expressions never evaluate in sequence",
+        "The left-hand guard must stop evaluation before an unsafe right-hand expression",
+        "The compiler always rearranges conditions to match the developer’s intent",
+        "Short-circuiting only changes whitespace"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct answer: The left-hand guard must stop evaluation before an unsafe right-hand expression. In short-circuit operators, evaluation order can prevent access to a value when the guard fails.",
+      "reasoning": "In short-circuit operators, evaluation order can prevent access to a value when the guard fails. Apply the rule to a real dashboard scenario, then test both ordinary and boundary inputs."
+    },
+    {
+      "id": "c-3-lesson-recap-21",
+      "type": "content",
+      "text": "Lesson recap: Operators calculate or compare values. Distinguish assignment from equality, understand precedence, and confirm that operands represent the intended units. Keep the underlying rule in mind when moving to more complex dashboard features. Syntax is the visible surface; reliable reasoning, validation, and testing are the transferable skill."
+    }
+  ]
+}
