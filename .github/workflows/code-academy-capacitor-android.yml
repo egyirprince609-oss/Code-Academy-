@@ -6,7 +6,7 @@ on:
       - 'Code-Academy-Capacitor/**'
       - '.github/workflows/code-academy-capacitor-android.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   build-android:
     runs-on: ubuntu-latest
@@ -35,6 +35,19 @@ jobs:
           python3 scripts/inject-html-script.py www /capacitor-native.js code-academy-native
           chmod +x android/gradlew
           npx cap sync android
+      - name: Check signed-release configuration
+        id: release-config
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Build signed release APK when secrets exist, otherwise debug APK
         working-directory: Code-Academy-Capacitor
         env:
@@ -52,7 +65,7 @@ jobs:
             (cd android && ./gradlew --no-daemon assembleRelease)
             APK_PATH="$(find android/app/build/outputs/apk/release -type f -name '*.apk' -print -quit)"
             test -n "$APK_PATH"
-            cp "$APK_PATH" dist-apk/Code-Academy-release.apk
+            cp "$APK_PATH" dist-apk/Code-Academy.apk
           else
             echo 'Release-signing secrets not configured; building a debug APK for testing.'
             (cd android && ./gradlew --no-daemon assembleDebug)
@@ -67,3 +80,19 @@ jobs:
           path: Code-Academy-Capacitor/dist-apk/*.apk
           if-no-files-found: error
           retention-days: 30
+      - name: Publish signed APK on GitHub Releases
+        if: steps.release-config.outputs.ready == 'true'
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: android-${{ github.run_number }}-${{ github.run_attempt }}
+          name: Code Academy Android build ${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          body: |
+            Code Academy Android app. Package: com.wm.codeacademy.
+            Install only on Android devices and review permission prompts when features request camera, microphone, location, or notifications.
+          files: Code-Academy-Capacitor/dist-apk/Code-Academy.apk
+          draft: false
+          prerelease: false
+          make_latest: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

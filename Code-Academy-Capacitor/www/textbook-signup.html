@@ -16,5 +16,4 @@ if(password!==confirm){show('error','Passwords do not match','Re-enter the same 
 busy=true;actionStarted=true;button.disabled=true;button.textContent='Creating Firebase account…';try{await setAuthPersistence(true);const user=await signUp(email,password,name);show('success','Account created','Your textbook account is ready. Opening AI Mentor…');sessionStorage.setItem('textbookAccessEmail',user.email||email);location.replace('AI%20Mentor.html');}
 catch(error){actionStarted=false;console.error(error);const messages={'auth/email-already-in-use':'An account already uses this email. Open textbook login instead.','auth/invalid-email':'Firebase rejected this email format. Check the address.','auth/weak-password':'Firebase rejected this password. Use a stronger password.','auth/password-policy-not-met':'Use at least 8 characters, uppercase and lowercase letters, and a special character.','auth/network-request-failed':'The network request failed. Check your connection and try again.'};show('error','Account creation could not finish',messages[error?.code]||'Firebase did not finish account creation. Review the exact error below.',error);}
 finally{busy=false;button.disabled=false;button.textContent='Create textbook account';}});
-</script><script src="/capacitor-native.js" data-code-academy-native></script>
-</body></html>
+</script></body></html>
