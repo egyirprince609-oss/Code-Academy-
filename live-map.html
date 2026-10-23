@@ -218,7 +218,7 @@ const RENDER_API_BASE_URL = 'https://code-academy-map-backend.onrender.com';
 let MAPBOX_ACCESS_TOKEN = '';
 let mapConfigReady = false;
 const APP_BASE_URL = 'https://codeacademybywm.web.app/';
-const PUBLIC_SITE_HOST = 'egyirprince609-oss.github.io';
+const PUBLIC_SITE_HOST = 'codeacademybywm.web.app';
 const SHORTCUT_ACTION = new URLSearchParams(location.search).get('action') || '';
 const REQUESTED_SHARE = new URLSearchParams(location.search).get('share') || '';
 let requestedShareStarted = false;
@@ -458,9 +458,13 @@ function initMap(){
     mapLoadTimer=setTimeout(()=>{if(!mapReady&&mapEngine==='mapbox')initLeafletMap('Mapbox timed out');},12000);
   }catch(error){console.warn('Mapbox initialization failed:',error);initLeafletMap('Mapbox could not initialize.');}
 }
-function getCurrentPosition(){
+async function getCurrentPosition() {
+  const native = window.CodeAcademyNative;
+  if (native && native.isNative && typeof native.getCurrentPosition === 'function') {
+    return native.getCurrentPosition({ enableHighAccuracy: true, timeout: 18000, maximumAge: 5000 });
+  }
   return new Promise((resolve,reject)=>{
-    if(!navigator.geolocation){reject(new Error('This browser does not support location services.'));return;}
+    if(!navigator.geolocation){reject(new Error('This device/browser does not support location services.'));return;}
     navigator.geolocation.getCurrentPosition(resolve,error=>{const messages={1:'Location permission was denied. Allow location in your browser or device settings.',2:'Your current location is unavailable. Check GPS/location services.',3:'The location request timed out. Try again in an area with better GPS reception.'};reject(new Error(messages[error.code]||'Unable to read device location.'));},{enableHighAccuracy:true,timeout:18000,maximumAge:5000});
   });
 }

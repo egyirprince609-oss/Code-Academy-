@@ -15,16 +15,19 @@ app.set('trust proxy', 1);
 app.disable('x-powered-by');
 
 const DEFAULT_ORIGINS = [
+  'https://codeacademybywm.web.app',
+  'https://codeacademybywm.firebaseapp.com',
   'https://egyirprince609-oss.github.io',
-  'https://codeacademy.netlify.app'
+  'https://codeacademy.netlify.app',
+  'https://localhost',
+  'capacitor://localhost',
 ];
+const configuredOrigins = String(process.env.ALLOWED_ORIGINS || '').split(',');
 const allowedOrigins = new Set(
-  (process.env.ALLOWED_ORIGINS || DEFAULT_ORIGINS.join(','))
-    .split(',')
+  [...DEFAULT_ORIGINS, ...configuredOrigins]
     .map(value => value.trim().replace(/\/$/, ''))
     .filter(Boolean)
 );
-
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
   contentSecurityPolicy: false

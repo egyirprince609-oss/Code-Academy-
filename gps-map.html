@@ -132,7 +132,22 @@
 
     /* Production setup: paste your Mapbox PUBLIC token below, then restrict its URL origins in Mapbox.
        You can also enter a public token through Settings during local testing. */
-    const MAPBOX_ACCESS_TOKEN = 'YOUR_MAPBOX_PUBLIC_ACCESS_TOKEN';
+    let MAPBOX_ACCESS_TOKEN = '';
+    const RENDER_API_BASE_URL = 'https://code-academy-map-backend.onrender.com';
+    async function loadMapboxTokenFromRender() {
+      try {
+        const response = await fetch(RENDER_API_BASE_URL + '/api/map-config', {headers: {Accept: 'application/json'}, cache: 'no-store'});
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok || typeof data.mapboxPublicToken !== 'string' || !data.mapboxPublicToken.startsWith('pk.')) {
+          throw new Error(data.error || 'Render has not returned a valid public Mapbox token.');
+        }
+        MAPBOX_ACCESS_TOKEN = data.mapboxPublicToken.trim();
+        return true;
+      } catch (error) {
+        console.warn('Mapbox token could not be loaded from Render; 2D map or saved public-token fallback will remain available.', error);
+        return false;
+      }
+    }
     const TOKEN_STORAGE_KEY = 'code_academy_mapbox_public_token_v1';
     const LANGUAGE_STORAGE_KEY = 'code_academy_preferred_language_v1';
     const VOICE_STORAGE_KEY = 'code_academy_live_map_voice_v1';
@@ -180,10 +195,10 @@
 
     function readVoicePreference(){ try { return localStorage.getItem(VOICE_STORAGE_KEY) !== 'off'; } catch { return true; } }
     function getMapboxToken(){
+      if (MAPBOX_ACCESS_TOKEN.startsWith('pk.')) return MAPBOX_ACCESS_TOKEN.trim();
       let saved = '';
       try { saved = localStorage.getItem(TOKEN_STORAGE_KEY) || ''; } catch {}
-      if (saved.startsWith('pk.')) return saved.trim();
-      return MAPBOX_ACCESS_TOKEN.startsWith('pk.') ? MAPBOX_ACCESS_TOKEN.trim() : '';
+      return saved.startsWith('pk.') ? saved.trim() : '';
     }
     function escapeHTML(value){ return String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char])); }
     function toast(message){ const el=document.createElement('div');el.className='toast';el.textContent=message;$('toastStack').appendChild(el);setTimeout(()=>el.remove(),5000); }
@@ -426,21 +441,31 @@
     function translateLabel(english){
       const node=[...document.querySelectorAll('[data-i18n]')].find(n=>n.dataset.i18n===english);return node?node.textContent:english;
     }
-    function requestCurrentPosition(){
-      if(!navigator.geolocation){toast('This device/browser does not provide GPS location.');setLiveStatus('GPS unavailable','warn');return;}
-      if(!window.isSecureContext){toast('Location access requires HTTPS. Open the secure GitHub Pages URL.');setLiveStatus('HTTPS required','warn');return;}
+    async function requestCurrentPosition(){
+      const native = window.CodeAcademyNative;
+      const hasNativeGPS = !!(native && native.isNative && typeof native.getCurrentPosition === 'function');
+      if(!hasNativeGPS && !navigator.geolocation){toast('This device/browser does not provide GPS location.');setLiveStatus('GPS unavailable','warn');return;}
+      if(!window.isSecureContext && !hasNativeGPS){toast('Location access requires the secure Code Academy HTTPS address.');setLiveStatus('HTTPS required','warn');return;}
       locationViewPendingNotification=true;setLiveStatus('Requesting precise GPS…');setTag('locationPermissionState','Requesting','warn');
       $('locateBtn').disabled=true;
-      navigator.geolocation.getCurrentPosition(position=>{
+      const onPosition = position => {
         $('locateBtn').disabled=false;setTag('locationPermissionState','Granted','ok');
         Promise.resolve(updatePositionUI(position)).finally(()=>{if(voiceOn)speakText(buildLocationSummary(position));});
         toast(`Location acquired (reported accuracy ±${Math.round(position.coords.accuracy||0)} m).`);
-      },error=>{
+      };
+      const onError = error => {
         $('locateBtn').disabled=false;locationViewPendingNotification=false;
+        const code=Number(error&&error.code||0);
         const messages={1:'Location permission was denied. Enable it in your device/browser settings if you want to use GPS.',2:'Location is unavailable. Move to a place with better GPS/network reception and try again.',3:'GPS request timed out. Try again outdoors or check device location settings.'};
-        const message=messages[error.code]||'Could not read location. Check device permissions and try again.';
-        setLiveStatus('GPS not available','warn');setTag('locationPermissionState',error.code===1?'Denied':'Unavailable','warn');toast(message);
-      },{enableHighAccuracy:true,timeout:25000,maximumAge:0});
+        const message=messages[code]||String(error&&error.message||'Could not read location. Check device permissions and try again.');
+        setLiveStatus('GPS not available','warn');setTag('locationPermissionState',code===1||/permission/i.test(message)?'Denied':'Unavailable','warn');toast(message);
+      };
+      if(hasNativeGPS){
+        try { onPosition(await native.getCurrentPosition({enableHighAccuracy:true,timeout:25000,maximumAge:0})); }
+        catch(error){ onError(error); }
+      }else{
+        navigator.geolocation.getCurrentPosition(onPosition,onError,{enableHighAccuracy:true,timeout:25000,maximumAge:0});
+      }
     }
     function startLiveGPS(){
       if(liveWatchId!==null){navigator.geolocation.clearWatch(liveWatchId);liveWatchId=null;$('liveBtn').innerHTML='<i class="fa-solid fa-tower-broadcast"></i><span>'+translateLabel('Start live GPS')+'</span>';setLiveStatus(currentPosition?'GPS location received':'GPS stopped',currentPosition?'ok':'normal');toast('Live GPS stopped.');recordActivity('Live GPS stopped','You stopped continuous GPS updates on this page.','location','⏹️').catch(()=>{});return;}
@@ -648,7 +673,7 @@
       $('voiceBtn').addEventListener('click',()=>{voiceOn=!voiceOn;try{localStorage.setItem(VOICE_STORAGE_KEY,voiceOn?'on':'off');}catch{}$('voiceBtn').classList.toggle('voice-on',voiceOn);$('voiceBtn').innerHTML=voiceOn?'<i class="fa-solid fa-volume-high"></i>':'<i class="fa-solid fa-volume-xmark"></i>'; $('voiceBtn').title=voiceOn?'AI voice on':'AI voice off';if(!voiceOn&&'speechSynthesis'in window)window.speechSynthesis.cancel();else if(voiceOn)speakText('AI voice is on. Tap Locate me to hear a summary of your current GPS reading.');});
     }
     async function initializePage(){
-      setupLanguageSelector();attachEvents();$('voiceBtn').classList.toggle('voice-on',voiceOn);$('voiceBtn').innerHTML=voiceOn?'<i class="fa-solid fa-volume-high"></i>':'<i class="fa-solid fa-volume-xmark"></i>';ensureNotificationPermissionStatus();initMap();
+      setupLanguageSelector();attachEvents();$('voiceBtn').classList.toggle('voice-on',voiceOn);$('voiceBtn').innerHTML=voiceOn?'<i class="fa-solid fa-volume-high"></i>':'<i class="fa-solid fa-volume-xmark"></i>';ensureNotificationPermissionStatus();try{await loadMapboxTokenFromRender();}catch(error){console.warn('Render map configuration unavailable; retaining 2D fallback.',error);}initMap();
       if('serviceWorker' in navigator && window.isSecureContext){navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service worker registration failed:',error));}
       try{rememberReferral();}catch(error){console.warn('Referral engine could not remember the incoming code:',error);}
       onAuthStateChanged(auth,async user=>{
