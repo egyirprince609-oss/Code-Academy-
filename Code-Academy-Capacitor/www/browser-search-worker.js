@@ -12,7 +12,7 @@
 const ALLOWED_CATEGORIES = new Set(['web', 'videos', 'news', 'documents']);
 const MAX_QUERY_LENGTH = 240;
 const MAX_RESULTS = 15;
-const DEFAULT_APP_BASE = 'https://egyirprince609-oss.github.io/Code-Academy-/';
+const DEFAULT_APP_BASE = 'https://codeacademybywm.web.app/';
 const NEWS_FEEDS = [
   { url: 'https://feeds.bbci.co.uk/news/world/rss.xml', label: 'BBC News · World' },
   { url: 'https://feeds.bbci.co.uk/news/technology/rss.xml', label: 'BBC News · Technology' },
@@ -236,7 +236,7 @@ export default {
         method: 'GET',
         headers: {
           'Accept': 'text/html,application/xhtml+xml',
-          'User-Agent': 'CodeAcademyBrowserSearch/1.0 (+https://egyirprince609-oss.github.io/Code-Academy-/)'
+          'User-Agent': 'CodeAcademyBrowserSearch/1.0 (+https://codeacademybywm.web.app/)'
         },
         cf: { cacheTtl: 90, cacheEverything: true },
         signal: AbortSignal.timeout(12000)

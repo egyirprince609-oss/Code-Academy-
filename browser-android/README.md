@@ -62,4 +62,4 @@ The workflow's debug APK can be installed for testing, but it is **not** a Googl
 
 ## Update the browser code in the native package
 
-Edit the web browser files in the repository root. The Android build workflow runs `scripts/copy-assets.py` to refresh the bundled copies before building. The hosted page is still expected to be published at `https://egyirprince609-oss.github.io/Code-Academy-/` unless the constants in `MainActivity.java` are updated for another domain.
+Edit the web browser files in the repository root. The Android build workflow runs `scripts/copy-assets.py` to refresh the bundled copies before building. The hosted page is still expected to be published at `https://codeacademybywm.web.app/` unless the constants in `MainActivity.java` are updated for another domain.

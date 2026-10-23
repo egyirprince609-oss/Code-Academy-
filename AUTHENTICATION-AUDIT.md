@@ -31,7 +31,7 @@ The new `email-action.html` displays Code Academy branding and the app logo on t
 1. Open **Firebase Console → Authentication → Settings → Authorized domains** and ensure `egyirprince609-oss.github.io` is listed.
 2. Open **Authentication → Sign-in method** and ensure **Email/Password** and **Google** are enabled. Configure Google's provider/OAuth details if the console requests them. Yahoo sign-in remains in the code only for continuity; its provider must also be enabled to use it.
 3. Open **Authentication → Templates**. For the email verification and password reset templates, choose **Customize action URL** and set the handler URL to:
-   `https://egyirprince609-oss.github.io/Code-Academy-/email-action.html`
+   `https://codeacademybywm.web.app/email-action.html`
    Firebase adds parameters such as `mode` and `oobCode` to the email action URL. The handler supports verification and reset links. Firebase's official custom-handler guide describes this setup: [Create custom email action handlers](https://firebase.google.com/docs/auth/custom-email-handler).
 4. Publish the updated files to the same GitHub Pages repository. Check that `authentication.js`, `signup.html`, `login.html`, and `email-action.html` all deploy together.
 5. Test with a new email/password account: submit signup → receive Firebase's verification email → open the link in the same browser → confirm it returns to the dashboard. Also test a link opened in another browser; it should ask the learner to log in rather than treating a UID in the URL as proof of login.

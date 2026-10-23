@@ -36,4 +36,4 @@ The page provides manual links to external research services instead of uploadin
 1. Confirm Firestore rules allow a signed-in user to read/write only `users/{theirUid}/securitySettings/shield` and `users/{theirUid}/notifications`; do not make these paths public.
 2. Test a link check, message review, selected-text file check, password create/change/delete, pause/resume prompt, notification permission, theme preference, referral sharing, and menu notification display on the deployed HTTPS site.
 3. Regenerate the Android package after the source changes are deployed. Real closed-app push alerts require a configured push sender and token registration; they are not created by this frontend change alone.
-4. Verify that the deployed social preview image is publicly reachable at `https://egyirprince609-oss.github.io/Code-Academy-/security-preview.jpg` and refresh platform caches if an older preview persists.
+4. Verify that the deployed social preview image is publicly reachable at `https://codeacademybywm.web.app/security-preview.jpg` and refresh platform caches if an older preview persists.

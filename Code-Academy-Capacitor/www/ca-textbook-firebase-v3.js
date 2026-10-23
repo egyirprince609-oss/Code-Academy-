@@ -74,7 +74,7 @@ function randomToken(length = 7) {
 }
 function makeVerifyUrl(bookId, code) {
   // Keep codes printed in books pointed at the official GitHub Pages site even when testing locally.
-  const url = new URL("verify-textbook-v3.html", "https://egyirprince609-oss.github.io/Code-Academy-/");
+  const url = new URL("verify-textbook-v3.html", "https://codeacademybywm.web.app/");
   url.searchParams.set("book", bookId);
   url.searchParams.set("code", code);
   return url.href;

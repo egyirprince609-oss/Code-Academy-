@@ -6,7 +6,7 @@ The browser page is installable as a PWA using `browser-manifest.json`. That ins
 
 1. Deploy the updated project to HTTPS and make sure this manifest is publicly reachable:
 
-   `https://egyirprince609-oss.github.io/Code-Academy-/browser-manifest.json`
+   `https://codeacademybywm.web.app/browser-manifest.json`
 
 2. Install [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) on a machine with the required Node.js and Android build tools:
 
@@ -17,7 +17,7 @@ The browser page is installable as a PWA using `browser-manifest.json`. That ins
 3. Initialize a *separate* Trusted Web Activity project from the browser manifest. This uses the browser-only `start_url` and leaves the existing Code Academy app manifest untouched:
 
    ```sh
-   bubblewrap init --manifest "https://egyirprince609-oss.github.io/Code-Academy-/browser-manifest.json" --directory ./build-browser-twa
+   bubblewrap init --manifest "https://codeacademybywm.web.app/browser-manifest.json" --directory ./build-browser-twa
    ```
 
 4. During the interactive prompts, use a **new unique Android package ID**, for example `com.codeacademy.browser`, if that ID is available to you. Do not reuse `com.wm.codeacademy` for a second separately installable app. Confirm that the start URL remains under `/Code-Academy-/browser.html` and the scope remains under `/Code-Academy-/`. Create and securely back up the signing key and passwords. Never commit a keystore or passwords to this ZIP/repository.

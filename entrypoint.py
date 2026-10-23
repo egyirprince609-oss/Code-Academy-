@@ -28,7 +28,7 @@ async def academy_api_home():
 <div class="feature"><span class="label">File scanning · ClamAV</span><strong id="clam"><span class="dot"></span>Checking…</strong></div>
 <div class="feature"><span class="label">Known-threat lookup</span><strong id="risk"><span class="dot"></span>Checking…</strong></div>
 </div>
-<div class="links"><a class="link primary" href="https://egyirprince609-oss.github.io/Code-Academy-/browser.html">Open Academy Browser</a><a class="link" href="/api/health">Health JSON</a><a class="link" href="/api/config">Public API config</a><a class="link" href="/docs">API docs</a></div>
+<div class="links"><a class="link primary" href="https://codeacademybywm.web.app/browser.html">Open Academy Browser</a><a class="link" href="/api/health">Health JSON</a><a class="link" href="/api/config">Public API config</a><a class="link" href="/docs">API docs</a></div>
 <details class="raw"><summary>View diagnostic response</summary><pre id="raw">Waiting for health response…</pre></details>
 <p class="hint">A healthy API does not automatically mean all supporting services are ready. The indicators above use the live health response. If Render's free instance has been idle, the first request may take a while.</p>
 </section><p class="foot">Academy Safe Browser · An unverified URL or file is not guaranteed safe.</p>

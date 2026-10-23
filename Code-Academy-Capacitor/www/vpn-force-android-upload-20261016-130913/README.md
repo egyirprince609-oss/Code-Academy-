@@ -52,7 +52,7 @@ Open the folder in Android Studio on a computer with JDK 17 and Android SDK 36 i
 
 The Account screen opens the existing Code Academy `profile.html` page in the device browser at:
 
-`https://egyirprince609-oss.github.io/Code-Academy-/profile.html`
+`https://codeacademybywm.web.app/profile.html`
 
 That preserves the existing website account implementation and avoids forcing Google sign-in into an embedded WebView. This project does not silently copy website credentials into the VPN engine.
 

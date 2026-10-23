@@ -78,7 +78,7 @@ These commands configure the **server's** firewall, not a visitor's phone. Cloud
 1. Copy `academy-browser.html` to the root of your Code Academy GitHub repository as `browser.html`.
 2. Copy `academy-browser-preview.png` from the ZIP to that same repository root. The Open Graph/Twitter metadata in the HTML points to:
 
-   `https://egyirprince609-oss.github.io/Code-Academy-/academy-browser-preview.png`
+   `https://codeacademybywm.web.app/academy-browser-preview.png`
 
 3. Open `browser.html`, click **Settings → General**, and enter your public HTTPS API URL, e.g. `https://academy-api.example.com`. Save and tap **Test connection**. Do not enter API keys in the frontend.
 4. Add a link to `browser.html` from the Academy menu/dashboard when you are ready.

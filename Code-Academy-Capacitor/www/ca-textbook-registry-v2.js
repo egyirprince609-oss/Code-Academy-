@@ -9,8 +9,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-HTM-MK8XYWYK",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-HTM-001&code=CA26-HTM-MK8XYWYK"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-HTM-001&code=CA26-HTM-MK8XYWYK"
     },
     {
       "courseId": "css",
@@ -20,8 +20,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-CSS-5V65TRD6",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-CSS-001&code=CA26-CSS-5V65TRD6"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-CSS-001&code=CA26-CSS-5V65TRD6"
     },
     {
       "courseId": "javascript",
@@ -31,8 +31,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-JSC-W3WS5NEX",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-JSC-001&code=CA26-JSC-W3WS5NEX"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-JSC-001&code=CA26-JSC-W3WS5NEX"
     },
     {
       "courseId": "python",
@@ -42,8 +42,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-PYT-PH2GADZT",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-PYT-001&code=CA26-PYT-PH2GADZT"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-PYT-001&code=CA26-PYT-PH2GADZT"
     },
     {
       "courseId": "react",
@@ -53,8 +53,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-RCT-3H52FJKT",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-RCT-001&code=CA26-RCT-3H52FJKT"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-RCT-001&code=CA26-RCT-3H52FJKT"
     },
     {
       "courseId": "java",
@@ -64,8 +64,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-JAV-ZDZJDPAU",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-JAV-001&code=CA26-JAV-ZDZJDPAU"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-JAV-001&code=CA26-JAV-ZDZJDPAU"
     },
     {
       "courseId": "c",
@@ -75,8 +75,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-CPL-AATFZ9GY",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-CPL-001&code=CA26-CPL-AATFZ9GY"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-CPL-001&code=CA26-CPL-AATFZ9GY"
     },
     {
       "courseId": "cplusplus",
@@ -86,8 +86,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-CPP-ASAH8BPA",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-CPP-001&code=CA26-CPP-ASAH8BPA"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-CPP-001&code=CA26-CPP-ASAH8BPA"
     },
     {
       "courseId": "csharp",
@@ -97,8 +97,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-CSH-LPWQZUAP",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-CSH-001&code=CA26-CSH-LPWQZUAP"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-CSH-001&code=CA26-CSH-LPWQZUAP"
     },
     {
       "courseId": "php",
@@ -108,8 +108,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-PHP-KGPRGPZS",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-PHP-001&code=CA26-PHP-KGPRGPZS"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-PHP-001&code=CA26-PHP-KGPRGPZS"
     },
     {
       "courseId": "typescript",
@@ -119,8 +119,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-TSC-KPKBB788",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-TSC-001&code=CA26-TSC-KPKBB788"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-TSC-001&code=CA26-TSC-KPKBB788"
     },
     {
       "courseId": "go",
@@ -130,8 +130,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-GOL-7A87VSQU",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-GOL-001&code=CA26-GOL-7A87VSQU"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-GOL-001&code=CA26-GOL-7A87VSQU"
     },
     {
       "courseId": "rust",
@@ -141,8 +141,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-RST-E39ZZK54",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-RST-001&code=CA26-RST-E39ZZK54"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-RST-001&code=CA26-RST-E39ZZK54"
     },
     {
       "courseId": "kotlin",
@@ -152,8 +152,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-KTN-9U993Q25",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-KTN-001&code=CA26-KTN-9U993Q25"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-KTN-001&code=CA26-KTN-9U993Q25"
     },
     {
       "courseId": "swift",
@@ -163,8 +163,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-SWF-VY3GQ7MP",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-SWF-001&code=CA26-SWF-VY3GQ7MP"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-SWF-001&code=CA26-SWF-VY3GQ7MP"
     },
     {
       "courseId": "dart",
@@ -174,8 +174,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-DRT-2DKYWT9R",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-DRT-001&code=CA26-DRT-2DKYWT9R"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-DRT-001&code=CA26-DRT-2DKYWT9R"
     },
     {
       "courseId": "ruby",
@@ -185,8 +185,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-RBY-52EXH2DA",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-RBY-001&code=CA26-RBY-52EXH2DA"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-RBY-001&code=CA26-RBY-52EXH2DA"
     },
     {
       "courseId": "sql",
@@ -196,8 +196,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-SQL-KL4VVQW6",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-SQL-001&code=CA26-SQL-KL4VVQW6"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-SQL-001&code=CA26-SQL-KL4VVQW6"
     },
     {
       "courseId": "r",
@@ -207,8 +207,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-RLA-GUR7ZMEN",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-RLA-001&code=CA26-RLA-GUR7ZMEN"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-RLA-001&code=CA26-RLA-GUR7ZMEN"
     },
     {
       "courseId": "lua",
@@ -218,8 +218,8 @@ window.CATextbookRegistryV2 = {
       "verificationCode": "CA26-LUA-ZHBN7RGY",
       "edition": "First digital edition, 2026",
       "publisher": "CODE ACADEMY Publication",
-      "url": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html",
-      "verifyUrl": "https://egyirprince609-oss.github.io/Code-Academy-/verify-textbook.html?book=CAP-2026-LUA-001&code=CA26-LUA-ZHBN7RGY"
+      "url": "https://codeacademybywm.web.app/verify-textbook.html",
+      "verifyUrl": "https://codeacademybywm.web.app/verify-textbook.html?book=CAP-2026-LUA-001&code=CA26-LUA-ZHBN7RGY"
     }
   ]
 };

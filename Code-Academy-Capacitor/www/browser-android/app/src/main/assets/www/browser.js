@@ -139,7 +139,7 @@ function looksLikeWebsite(value) {
   if (!text || /\s/.test(text)) return false;
   return /^(https?:\/\/|www\.)/i.test(text) || /^(localhost(?::\d+)?|(?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:[/?#].*)?)$/i.test(text);
 }
-function currentBaseUrl() { return window.CodeAcademyNative ? 'https://egyirprince609-oss.github.io/Code-Academy-/' : new URL('./', location.href).href; }
+function currentBaseUrl() { return window.CodeAcademyNative ? 'https://codeacademybywm.web.app/' : new URL('./', location.href).href; }
 function safeExternalUrl(value) { try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password ? url.href : ''; } catch { return ''; } }
 
 function applyPreferences() {
@@ -1406,7 +1406,7 @@ window.CodeAcademyBrowser = {
     nativeActiveUrl = String(url || '');
     setStatus(title || safeDomain(url) || 'Website open');
   },
-  openSettings: () => { location.href = window.CodeAcademyNative ? 'https://egyirprince609-oss.github.io/Code-Academy-/browser-settings.html' : './browser-settings.html'; }
+  openSettings: () => { location.href = window.CodeAcademyNative ? 'https://codeacademybywm.web.app/browser-settings.html' : './browser-settings.html'; }
 };
 
 bootBrowser();
