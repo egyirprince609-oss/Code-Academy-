@@ -1,0 +1,89 @@
+CODE ACADEMY NATIVE BROWSER FIRESTORE RULES ADD-ON
+==================================================
+
+This is a rules fragment for review/merge, not a replacement for your existing rules file.
+No canonical firestore.rules file was present in the inspected archive. Before deployment,
+merge the complete fragment (including helper functions and nested matches) inside the existing
+`match /databases/{database}/documents { ... }` scope in service cloud.firestore, then inspect the final rules for broad overlapping matches: Firestore allow rules are additive,
+so a more permissive match elsewhere can weaken these checks.
+
+function browserOwner(uid) {
+  return request.auth != null && request.auth.uid == uid;
+}
+function browserBoundedString(value, maxLength) {
+  return value is string && value.size() <= maxLength;
+}
+function browserWebUrl(value) {
+  return value is string && value.size() <= 4096 && value.matches('https?://[^/@?#\\s]+([/?#][^\\s]*)?');
+}
+function browserNumber(value) {
+  return value is number && value >= 0;
+}
+function browserBookmarkValid(uid, recordId) {
+  return request.resource.data.keys().hasOnly([
+    'id','url','title','domain','folder','createdAt','updatedAt','deletedAt'
+  ]) && request.resource.data.keys().hasAll([
+    'id','url','title','domain','folder','createdAt','updatedAt','deletedAt'
+  ]) && request.resource.data.id == recordId &&
+  browserWebUrl(request.resource.data.url) &&
+  browserBoundedString(request.resource.data.title, 300) &&
+  browserBoundedString(request.resource.data.domain, 255) &&
+  browserBoundedString(request.resource.data.folder, 80) &&
+  browserNumber(request.resource.data.createdAt) &&
+  browserNumber(request.resource.data.updatedAt) &&
+  browserNumber(request.resource.data.deletedAt);
+}
+function browserHistoryValid(uid, recordId) {
+  return request.resource.data.keys().hasOnly([
+    'id','url','title','domain','visitedAt','createdAt','updatedAt','deletedAt'
+  ]) && request.resource.data.keys().hasAll([
+    'id','url','title','domain','visitedAt','createdAt','updatedAt','deletedAt'
+  ]) && request.resource.data.id == recordId &&
+  browserWebUrl(request.resource.data.url) &&
+  browserBoundedString(request.resource.data.title, 300) &&
+  browserBoundedString(request.resource.data.domain, 255) &&
+  browserNumber(request.resource.data.visitedAt) &&
+  browserNumber(request.resource.data.createdAt) &&
+  browserNumber(request.resource.data.updatedAt) &&
+  browserNumber(request.resource.data.deletedAt);
+}
+match /users/{uid}/browserNativeBookmarks/{recordId} {
+  allow read: if browserOwner(uid);
+  allow create, update: if browserOwner(uid) && browserBookmarkValid(uid, recordId);
+  allow delete: if browserOwner(uid); // Only the explicit “Delete cloud browser data” flow deletes documents.
+}
+match /users/{uid}/browserNativeHistory/{recordId} {
+  allow read: if browserOwner(uid);
+  allow create, update: if browserOwner(uid) &&
+    exists(/databases/$(database)/documents/users/$(uid)/browserSettings/nativePreferences) &&
+    get(/databases/$(database)/documents/users/$(uid)/browserSettings/nativePreferences).data.historySyncOptIn == true &&
+    browserHistoryValid(uid, recordId);
+  allow delete: if browserOwner(uid); // Explicit account data deletion is supported.
+}
+match /users/{uid}/browserSettings/{settingId} {
+  allow read: if browserOwner(uid);
+  allow create, update: if browserOwner(uid) && settingId == 'nativePreferences' &&
+    request.resource.data.keys().hasOnly([
+      'id','updatedAt','searchProvider','javascriptEnabled','textZoom','desktopMode',
+      'historyEnabled','previewsEnabled','darkChrome','historySyncOptIn'
+    ]) && request.resource.data.keys().hasAll(['id','updatedAt']) &&
+    request.resource.data.id == 'nativePreferences' &&
+    browserNumber(request.resource.data.updatedAt) &&
+    (!('searchProvider' in request.resource.data) || request.resource.data.searchProvider in ['google','duckduckgo']) &&
+    (!('javascriptEnabled' in request.resource.data) || request.resource.data.javascriptEnabled is bool) &&
+    (!('desktopMode' in request.resource.data) || request.resource.data.desktopMode is bool) &&
+    (!('historyEnabled' in request.resource.data) || request.resource.data.historyEnabled is bool) &&
+    (!('previewsEnabled' in request.resource.data) || request.resource.data.previewsEnabled is bool) &&
+    (!('darkChrome' in request.resource.data) || request.resource.data.darkChrome is bool) &&
+    (!('historySyncOptIn' in request.resource.data) || request.resource.data.historySyncOptIn is bool) &&
+    (!('textZoom' in request.resource.data) || (request.resource.data.textZoom is int && request.resource.data.textZoom >= 75 && request.resource.data.textZoom <= 150));
+  allow delete: if browserOwner(uid);
+}
+
+SECURITY NOTES
+--------------
+- These are additive matches; test the fully assembled rules in Firebase Rules Emulator before publishing.
+- History writes are blocked unless the same UID's nativePreferences document has historySyncOptIn=true.
+- History reads are still owner-scoped. The client deliberately does not query history while the opt-in is off.
+- Firebase Auth UID is obtained from the existing Code Academy Web SDK session. A client-supplied UID is never a substitute for Firestore Rules authorization.
+- No service-account credentials or Admin SDK code belong in the app.

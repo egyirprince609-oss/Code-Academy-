@@ -1,4 +1,4 @@
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Device } from '@capacitor/device';
 import { Geolocation } from '@capacitor/geolocation';
@@ -6,9 +6,30 @@ import { LocalNotifications } from '@capacitor/local-notifications';
 import { Network } from '@capacitor/network';
 
 const isNative = Capacitor.isNativePlatform();
+const CodeAcademyBrowser = registerPlugin('CodeAcademyBrowser');
 const api = (window.CodeAcademyNative = window.CodeAcademyNative || {});
 api.isNative = isNative;
 api.appId = 'com.wm.codeacademy';
+
+// Native Android browser host. This plugin opens a separate Activity/WebView; it never
+// navigates the Code Academy shell WebView to an arbitrary third-party website.
+api.openBrowser = async (options = {}) => {
+  if (!isNative) throw new Error('The full Code Academy browser engine is available in the Android app.');
+  return CodeAcademyBrowser.openBrowser({
+    url: String(options.url || ''),
+    privateMode: options.privateMode === true,
+    openSettings: options.openSettings === true,
+    uid: String(options.uid || 'device')
+  });
+};
+api.getBrowserSyncSnapshot = async (uid) => {
+  if (!isNative) throw new Error('Browser sync storage is available in the Android app.');
+  return CodeAcademyBrowser.getSyncSnapshot({ uid: String(uid || '') });
+};
+api.applyBrowserSyncSnapshot = async (snapshot = {}) => {
+  if (!isNative) throw new Error('Browser sync storage is available in the Android app.');
+  return CodeAcademyBrowser.applySyncSnapshot(snapshot);
+};
 
 api.getDeviceInfo = async () => Device.getInfo();
 api.getNetworkStatus = async () => Network.getStatus();
