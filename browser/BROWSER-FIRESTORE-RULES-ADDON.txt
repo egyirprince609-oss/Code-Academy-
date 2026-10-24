@@ -1,0 +1,20 @@
+# Merge this block into your existing Firestore rules. Do not replace the entire ruleset with this snippet.
+# Each signed-in user may read/write only their own browser profile and its browser data.
+match /browserProfiles/{uid} {
+  allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+  match /browserTabs/{tabId} {
+    allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+  }
+  match /browserHistory/{entryId} {
+    allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+  }
+  match /browserSettings/{settingId} {
+    allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+  }
+  match /notifications/{notificationId} {
+    allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+  }
+}
+
+# Review and adapt these rules to your existing collection structure before deploying.
+# Client-side UI switches are preferences only; enforce permissions, validation, and access limits server-side/native-side.
