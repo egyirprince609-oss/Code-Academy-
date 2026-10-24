@@ -3,3 +3,5 @@ const $=id=>document.getElementById(id);function feedback(){const raw=$('feedbac
 $('copyFeedbackButton').addEventListener('click',async()=>{try{const text=feedback();await navigator.clipboard.writeText(text);$('feedbackStatus').textContent='Feedback copied to the clipboard.'}catch(error){$('feedbackStatus').textContent=`Could not copy feedback: ${errorText(error)}. You can select and copy the text manually.`}});
 $('emailFeedbackButton').addEventListener('click',()=>{try{const text=encodeURIComponent(feedback());location.href=`mailto:?subject=${encodeURIComponent('Code Academy Browser feedback')}&body=${text}`;$('feedbackStatus').textContent='Email draft opened if an email app is configured on this device.'}catch(error){$('feedbackStatus').textContent=errorText(error)}});
 onAuthStateChanged(auth,user=>{if(!user)location.replace('./login.html')},error=>{$('feedbackStatus').textContent=`Authentication check failed: ${errorText(error)}`});
+
+window.__codeAcademyPageReady = true;

@@ -22,7 +22,7 @@ The main Activity declares HTTP/HTTPS `VIEW` intents and exposes a guarded nativ
 - HTTPS is used for remote content; cleartext traffic is disabled in the manifest. Explicit HTTP destinations may not load unless you configure a carefully scoped network security policy.
 - Certificate errors are not ignored. If the destination's certificate is invalid, the app shows an error and blocks it.
 - No third-party website is given the dashboard's JavaScript bridge; only the dashboard WebView receives the app bridge.
-- Firebase email/Google/phone auth uses the configuration in `browser/browser-auth.js`. For truly separate account credentials, configure a separate Firebase project and update that config; the current one shares the main project's Auth identity pool, while the browser profile/data collection is separate.
+- Firebase email/Google/phone auth reuses the Code Academy `authentication.js` module copied into the browser folder. It uses the existing Firebase project and authentication identity pool; browser-specific preferences/profiles are additionally stored under `browserProfiles/{uid}`.
 - To enable FCM push, register package ID `com.codeacademy.browser` in your intended Firebase project and add your `google-services.json` privately. Do not put service-account credentials into the repository.
 
 `APP_BASE` in `MainActivity.java` points to the repository's GitHub Pages `browser/` directory. The shell falls back to the self-contained local assets when the configured host is unreachable. `scripts/copy-assets.py` copies all browser-owned local files into the APK assets.

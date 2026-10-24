@@ -1,5 +1,111 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#080d19"><meta name="description" content="Sign in to your Code Academy Browser account."><link rel="icon" href="./browser-icon-192.png"><link rel="stylesheet" href="./browser-auth.css"><title>Sign in | Code Academy Browser</title></head>
-<body data-page="login"><main class="auth-wrap"><a class="auth-brand" href="./index.html"><img src="./browser-icon-192.png" alt="Code Academy Browser logo"><span><strong>Code Academy</strong><span>Browser account</span></span></a><section class="auth-card"><p class="eyebrow">YOUR BROWSING SPACE</p><h1>Welcome back.</h1><p class="intro">Sign in to restore your browser profile, tabs and settings. Authentication errors appear here with their original details.</p><div class="mode-switch" role="group" aria-label="Sign-in method"><button type="button" data-auth-mode="email" aria-pressed="true">Email & password</button><button type="button" data-auth-mode="phone" aria-pressed="false">Phone & SMS</button></div>
-<form id="emailAuthForm" class="auth-form" novalidate><div class="field"><label for="email">Email address</label><input id="email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="you@example.com" required></div><div class="field"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Your password" required></div><div class="field-row"><label class="check-row"><input id="rememberMe" type="checkbox" checked> Keep me signed in</label><a href="./forgot.html">Forgot password?</a></div><button class="btn primary" id="signInButton" type="submit">Sign in securely</button></form>
-<form id="phoneAuthForm" class="auth-form" hidden novalidate><div class="field"><label for="phone">Phone number with country code</label><input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+233241234567"></div><div id="recaptcha-container" class="recaptcha"></div><div class="field" id="smsCodeField" hidden><label for="smsCode">Six-digit SMS code</label><input id="smsCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456"></div><p class="subtle">SMS sign-in must be enabled in Firebase Authentication and may require Android/Web reCAPTCHA verification.</p><button class="btn primary" id="sendPhoneCodeButton" type="button">Send verification code</button><button class="btn primary" id="verifyPhoneButton" type="button" hidden>Verify and sign in</button></form>
-<div class="divider">OR</div><button class="btn secondary google" id="googleSignInButton" type="button"><span class="google-mark">G</span> Continue with Google</button><div id="authMessage" class="auth-message" role="status" aria-live="polite"></div><div class="auth-links"><a href="./index.html">← Browser home</a><a href="./signup.html">Create browser account</a></div></section><p class="auth-footer">Signing in connects the browser UI to Firebase Authentication. Browser preferences and profile records are kept in the browser-specific <code>browserProfiles</code> collection.</p></main><script type="module" src="./browser-auth-page.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#050914">
+<meta name="color-scheme" content="dark">
+<meta name="description" content="Sign in securely to Code Academy Browser to continue lessons, access saved coding projects and notes, and sync progress and certificates.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Code Academy Browser">
+<meta property="og:title" content="Sign In — Code Academy Browser">
+<meta property="og:description" content="Sign in securely to Code Academy Browser to continue lessons, access saved coding projects and notes, and sync progress and certificates.">
+<meta property="og:url" content="https://codeacademybywm.web.app/login.html">
+<meta property="og:image" content="https://codeacademybywm.web.app/share-preview-login.jpg">
+<meta property="og:image:alt" content="Code Academy Browser — Browse. Learn. Explore.">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Sign In — Code Academy Browser">
+<meta name="twitter:description" content="Sign in securely to Code Academy Browser to continue lessons, access saved coding projects and notes, and sync progress and certificates.">
+<meta name="twitter:image" content="https://codeacademybywm.web.app/share-preview-login.jpg">
+<link rel="canonical" href="https://codeacademybywm.web.app/login.html">
+<link rel="icon" href="./browser-icon-192.png">
+<title>Sign In — Code Academy Browser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050914;--panel:rgba(13,24,43,.92);--line:rgba(93,180,255,.22);--text:#eef6ff;--muted:#94a8c3;--cyan:#38bdf8;--blue:#6366f1;--purple:#8b5cf6;--red:#fb7185;--green:#34d399}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;color:var(--text);background:radial-gradient(circle at 15% 7%,rgba(14,165,233,.16),transparent 34%),radial-gradient(circle at 90% 95%,rgba(99,102,241,.18),transparent 34%),var(--bg);display:grid;place-items:center;padding:24px 14px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(100,180,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(100,180,255,.07) 1px,transparent 1px);background-size:40px 40px;mask-image:linear-gradient(to bottom,black,transparent 92%)}
+.shell{width:min(100%,520px);position:relative;z-index:1}
+.brand{display:flex;align-items:center;gap:12px;margin:0 0 18px 4px}
+.brand img{width:46px;height:46px;object-fit:contain;border-radius:14px;background:#08162a;border:1px solid var(--line);padding:5px}
+.brand strong{display:block;font-size:16px;letter-spacing:.04em}.brand small{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:26px;padding:clamp(22px,5vw,34px);box-shadow:0 28px 80px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.035);backdrop-filter:blur(22px)}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.2em;color:#7dd3fc;font-weight:800;margin-bottom:10px}
+h1{font-size:clamp(27px,6vw,36px);line-height:1.12;letter-spacing:-.045em;margin:0 0 10px}
+.sub{color:var(--muted);line-height:1.65;font-size:14px;margin:0 0 24px}
+label{display:block;font-size:12px;color:#d7e6f8;font-weight:700;margin:15px 0 8px}
+input{width:100%;min-width:0;border:1px solid rgba(148,163,184,.22);background:rgba(2,8,23,.82);color:var(--text);border-radius:13px;padding:14px 14px;font:inherit;font-size:14px;outline:none;transition:border .18s,box-shadow .18s}
+input::placeholder{color:#637891}input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(56,189,248,.12)}input:disabled{opacity:.6}
+.field{position:relative}.field input{padding-right:74px}.toggle{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:0;background:#12233c;color:#9edfff;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+.switches{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:rgba(2,8,23,.64);padding:5px;border:1px solid var(--line);border-radius:15px;margin-bottom:18px}
+.switches button{background:transparent;border:0;color:var(--muted);border-radius:11px;padding:11px 8px;font:inherit;font-weight:700;font-size:12px;cursor:pointer}
+.switches button[aria-pressed="true"]{background:linear-gradient(120deg,rgba(14,165,233,.23),rgba(99,102,241,.24));color:#fff;box-shadow:inset 0 0 0 1px rgba(125,211,252,.3)}
+.btn{width:100%;display:flex;justify-content:center;align-items:center;gap:10px;border:1px solid transparent;border-radius:13px;padding:14px 15px;margin-top:16px;color:white;font:inherit;font-size:14px;font-weight:800;cursor:pointer;transition:transform .15s,filter .15s,opacity .15s}
+.btn:active{transform:scale(.99)}.btn:disabled{opacity:.56;cursor:wait;filter:saturate(.6)}.primary{background:linear-gradient(105deg,#0284c7,#4f46e5 70%,#7c3aed);box-shadow:0 12px 28px rgba(37,99,235,.2)}.secondary{background:rgba(15,30,52,.88);border-color:var(--line);color:#dbeafe}
+.divider{display:flex;align-items:center;gap:12px;color:#657992;font-size:10px;font-weight:800;letter-spacing:.16em;margin:20px 0 2px}.divider:before,.divider:after{content:"";height:1px;background:rgba(148,163,184,.17);flex:1}
+.msg{display:none;border-radius:14px;padding:13px 14px;margin:0 0 16px;border:1px solid;font-size:13px;line-height:1.55;overflow-wrap:anywhere;white-space:pre-wrap}.msg.show{display:block}.msg.info{background:rgba(14,165,233,.09);border-color:rgba(56,189,248,.25);color:#c4ecff}.msg.success{background:rgba(16,185,129,.09);border-color:rgba(52,211,153,.25);color:#bbf7d0}.msg.error{background:rgba(244,63,94,.09);border-color:rgba(251,113,133,.3);color:#fecdd3}.details{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;margin-top:9px;overflow-wrap:anywhere;color:#fbcfe8}
+.links{display:flex;justify-content:space-between;gap:12px;margin-top:15px;font-size:12px;flex-wrap:wrap}a{color:#7dd3fc;text-decoration:none}a:hover{text-decoration:underline}.bottom{margin-top:22px;text-align:center;font-size:12px;color:var(--muted)}
+.policy{margin-top:12px;border:1px solid rgba(148,163,184,.15);border-radius:13px;padding:12px;background:rgba(2,8,23,.48)}.policy-head{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:#bfdbfe;margin-bottom:9px}.meter{height:5px;background:#1e293b;border-radius:99px;overflow:hidden}.meter span{display:block;width:0;height:100%;background:linear-gradient(90deg,#fb7185,#fbbf24,#34d399);transition:width .18s}.checks{display:grid;grid-template-columns:1fr 1fr;gap:7px 12px;margin-top:10px}.check{font-size:11px;color:#8da2bc}.check:before{content:"○";display:inline-block;width:16px;color:#fb7185}.check.ok{color:#bbf7d0}.check.ok:before{content:"✓";color:#34d399}
+.match{font-size:11px;margin-top:7px;min-height:16px;color:var(--muted)}.match.ok{color:#6ee7b7}.match.bad{color:#fda4af}.recaptcha{margin-top:14px;min-height:76px;display:flex;justify-content:center;align-items:center;overflow:hidden}.fine{font-size:10px;color:#617590;line-height:1.6;margin-top:16px}
+@media(max-width:400px){body{padding:16px 10px}.card{padding:22px 17px}.row{display:block}.checks{grid-template-columns:1fr 1fr}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body><main class="shell">
+  <div class="brand"><img src="./browser-icon-192.png" alt="Code Academy Browser logo" onerror="this.style.display='none'"><div><strong>CODE ACADEMY BROWSER</strong><small>Browse. Learn. Explore.</small></div></div>
+  <section class="card" aria-labelledby="pageTitle">
+    <div class="eyebrow">Welcome back</div><h1 id="pageTitle">Your next idea starts here.</h1><p class="sub">Sign in to continue your lessons, open your code workspaces, and sync progress, saved notes, notifications and achievements.</p>
+    <div class="msg" id="message" role="status" aria-live="polite"><strong id="messageTitle"></strong><div id="messageText"></div><div class="details" id="errorDetails"></div></div>
+    <div class="switches" role="group" aria-label="Choose sign-in method"><button type="button" data-mode="email" aria-pressed="true">Email + password</button><button type="button" data-mode="phone" aria-pressed="false">Phone + SMS</button></div>
+    <form id="loginForm" novalidate>
+      <section id="emailPanel"><label for="email">Email address</label><input id="email" type="email" autocomplete="username" inputmode="email" placeholder="you@example.com" required><label for="password">Password</label><div class="field"><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password" required><button class="toggle" type="button" data-toggle="password">SHOW</button></div><div class="links"><label style="display:flex;align-items:center;gap:8px;margin:6px 0"><input id="rememberMe" type="checkbox" checked style="width:auto;accent-color:#38bdf8"> Keep me signed in</label><a href="./forgot.html">Forgot password?</a></div></section>
+      <section id="phonePanel" hidden><label for="phone">Phone number with country code</label><input id="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+233241234567"><div class="recaptcha" id="recaptcha-container"></div><label id="smsCodeLabel" for="smsCode" hidden>Six-digit SMS code</label><input id="smsCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="123456" hidden><p class="fine">Phone access is verified by SMS. If this number is new to Firebase, phone verification may create its first account.</p></section>
+      <button class="btn primary" id="submitBtn" type="submit">Sign in securely</button><button class="btn secondary" id="sendCodeBtn" type="button" hidden>Send SMS verification code</button>
+    </form>
+    <div class="divider">OR</div><button class="btn secondary" id="googleBtn" type="button"><span aria-hidden="true">G</span> Continue with Google</button>
+    <div class="links"><a href="./index.html">← Back to home</a><a href="./signup.html">Create account</a></div>
+    <div class="bottom">One account. Your learning, connected.</div>
+  </section>
+</main>
+<script type="module">
+import { auth, logIn, signInWithGoogle, createPhoneVerifier, sendPhoneVerificationCode, completePhoneVerification, getFirebaseErrorDetails, setAuthPersistence, onAuthStateChanged } from './authentication.js';
+const $=id=>document.getElementById(id);const form=$('loginForm'),submitBtn=$('submitBtn'),sendCodeBtn=$('sendCodeBtn'),googleBtn=$('googleBtn');let mode='email',confirmationResult=null,verifier=null,codeSent=false,working=false,authActionStarted=false;
+function message(type,title,text,error){const box=$('message');box.className='msg show '+type;$('messageTitle').textContent=title;$('messageText').textContent=text;const d=$('errorDetails');d.textContent='';if(error){const detail=getFirebaseErrorDetails(error);d.textContent=`Exact Firebase/SDK error code: ${detail.code}
+Exact Firebase/SDK message: ${detail.message}
+${detail.explanation}`;}box.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function clearMessage(){$('message').className='msg';$('messageTitle').textContent='';$('messageText').textContent='';$('errorDetails').textContent='';}
+function setBusy(on,button=submitBtn,label='Please wait…'){working=on;for(const b of [submitBtn,sendCodeBtn,googleBtn,...document.querySelectorAll('[data-mode]')])b.disabled=on;if(on){button.dataset.idle=button.textContent;button.textContent=label;button.setAttribute('aria-busy','true');}else if(button.dataset.idle){button.textContent=button.dataset.idle;delete button.dataset.idle;button.removeAttribute('aria-busy');}}
+function getPostLoginDestination(){
+  const isBrowserFlow=location.pathname.includes('/browser/');
+  const defaultDestination=isBrowserFlow?'index.html?welcome=1':'index.html?welcome=1';
+  const requested=new URLSearchParams(location.search).get('next');
+  if(!requested)return defaultDestination;
+  try{
+    const target=new URL(requested,location.href);
+    if(target.origin!==location.origin)return defaultDestination;
+    if(isBrowserFlow){
+      const allowed=/\/browser\/(?:index\.html|browser\.html|onboarding\.html|browser-settings\.html|browser-profile\.html)$/.test(target.pathname);
+      if(!allowed)return defaultDestination;
+      return target.pathname+target.search+target.hash;
+    }
+    if(!target.pathname.endsWith('/live-map.html'))return 'index.html?welcome=1';
+    return target.pathname+target.search+target.hash;
+  }catch{return defaultDestination;}
+}
+function continueAfterLogin(){location.replace(getPostLoginDestination());}
+function switchMode(next){if(working)return;mode=next;for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===mode));$('emailPanel').hidden=mode!=='email';$('phonePanel').hidden=mode!=='phone';$('email').required=mode==='email';$('password').required=mode==='email';$('phone').required=mode==='phone'&&!codeSent;$('smsCode').required=mode==='phone'&&codeSent;submitBtn.hidden=mode==='phone'&&!codeSent;sendCodeBtn.hidden=mode!=='phone'||codeSent;submitBtn.textContent=mode==='phone'?'Verify phone & continue':'Sign in securely';clearMessage();}
+for(const b of document.querySelectorAll('[data-mode]'))b.addEventListener('click',()=>switchMode(b.dataset.mode));for(const b of document.querySelectorAll('[data-toggle]'))b.addEventListener('click',()=>{const i=$(b.dataset.toggle),show=i.type==='password';i.type=show?'text':'password';b.textContent=show?'HIDE':'SHOW';});
+async function requestPhoneCode(){clearMessage();setBusy(true,sendCodeBtn,'Preparing secure SMS…');try{if(!verifier)verifier=createPhoneVerifier('recaptcha-container');confirmationResult=await sendPhoneVerificationCode($('phone').value,verifier);codeSent=true;$('smsCode').hidden=false;$('smsCodeLabel').hidden=false;$('phone').readOnly=true;$('phone').required=false;$('smsCode').required=true;sendCodeBtn.hidden=true;submitBtn.hidden=false;submitBtn.textContent='Verify phone & continue';message('success','Verification code sent','Firebase accepted the SMS request. Enter the six-digit code received on your phone.');$('smsCode').focus();}catch(error){console.error(error);message('error','Firebase could not send the SMS','Check the phone number, network, reCAPTCHA and the Phone provider/SMS quota in Firebase.',error);if(verifier&&verifier.clear){try{verifier.clear();}catch(_){}}verifier=null;}finally{setBusy(false,sendCodeBtn);if(codeSent)sendCodeBtn.hidden=true;}}
+sendCodeBtn.addEventListener('click',requestPhoneCode);
+form.addEventListener('submit',async e=>{e.preventDefault();if(working)return;authActionStarted=true;clearMessage();try{if(mode==='email'){if(!$('email').value.trim()||!$('password').value)throw new Error('Enter your email address and password.');setBusy(true,submitBtn,'Checking Firebase credentials…');await setAuthPersistence($('rememberMe').checked);const user=await logIn($('email').value,$('password').value);if(user.email&&!user.emailVerified){sessionStorage.setItem('codeAcademyPendingEmail',user.email);location.replace('email-verification.html?required=1&next='+encodeURIComponent(getPostLoginDestination()));return;}message('success','Signed in','Firebase authenticated your account. Opening your learning hub…');setTimeout(continueAfterLogin,300);}else{if(!codeSent){await requestPhoneCode();return;}setBusy(true,submitBtn,'Verifying SMS code…');const user=await completePhoneVerification(confirmationResult,$('smsCode').value);message('success','Phone verified','Your phone has been verified. Opening your learning hub…');setTimeout(continueAfterLogin,300);}}catch(error){console.error('Login operation failed:',error);message('error',error?.accountAuthenticated?'Firebase authenticated you, but profile sync failed':'Sign-in could not finish',error?.accountAuthenticated?'Firebase accepted your credentials, but the Firestore profile could not be read or updated. The exact error is below.':'Firebase or a local validation step stopped this request. The exact SDK details are shown below.',error);}finally{setBusy(false,submitBtn);if(mode==='phone'&&codeSent){submitBtn.hidden=false;submitBtn.textContent='Verify phone & continue';}}});
+googleBtn.addEventListener('click',async()=>{if(working)return;authActionStarted=true;clearMessage();setBusy(true,googleBtn,'Waiting for Google…');try{await setAuthPersistence($('rememberMe').checked);await signInWithGoogle();continueAfterLogin();}catch(error){console.error(error);message('error','Google authentication failed','Firebase did not finish Google sign-in. Check popup permissions, authorized domains, Google provider settings and your connection.',error);}finally{setBusy(false,googleBtn);}});
+onAuthStateChanged(auth,user=>{if(!authActionStarted&&user&&!user.isAnonymous){if(user.email&&!user.emailVerified)location.replace('email-verification.html?required=1&next='+encodeURIComponent(getPostLoginDestination()));else if(!new URLSearchParams(location.search).has('stay'))continueAfterLogin();}});
+
+window.__codeAcademyPageReady = true;
+</script><script id="__ca-auth-watchdog">(function(){function show(label,detail){if(window.__codeAcademyPageReady)return;var box=document.getElementById('message')||document.getElementById('authMessage')||document.getElementById('errorMsg');if(!box)return;box.style.display='block';box.classList.add('show','error');box.textContent=label+': '+detail;}window.addEventListener('error',function(e){if(!window.__codeAcademyPageReady&&e.message)show('Authentication script error',e.message+(e.filename?' ('+e.filename+':'+e.lineno+')':''));},true);window.addEventListener('unhandledrejection',function(e){if(!window.__codeAcademyPageReady)show('Authentication request error',e.reason&&e.reason.message?e.reason.message:String(e.reason));});setTimeout(function(){if(window.__codeAcademyPageReady)return;var box=document.getElementById('message')||document.getElementById('authMessage')||document.getElementById('errorMsg');if(!box)return;if(!box.textContent.trim()){show('Authentication script did not initialize','Check the network, Firebase CDN availability, authorized domains and browser console, then reload.');}},12000);})();</script></body></html>

@@ -57,3 +57,5 @@ $('clearLocalDataButton').addEventListener('click', () => {
 $('switchAccountButton').addEventListener('click', async () => { try { await signOutBrowser(); location.replace('./login.html?stay=1'); } catch (error) { message(`Could not switch accounts: ${errorText(error)}`); } });
 $('signOutButton').addEventListener('click', async () => { try { await signOutBrowser(); location.replace('./login.html'); } catch (error) { message(`Sign out failed: ${errorText(error)}`); } });
 onAuthStateChanged(auth, user => { if (!user) location.replace('./login.html'); else loadProfile(user); }, error => message(`Authentication status failed: ${errorText(error)}`));
+
+window.__codeAcademyPageReady = true;

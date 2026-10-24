@@ -75,7 +75,7 @@ function defaultPreferences() {
     liveNews: true, newsRefresh: '15', showThumbnails: true, suggestionsEnabled: true,
     voiceEnabled: true, notificationsEnabled: false, confirmDownloads: true,
     siteWarning: true, dnsProvider: 'google', saveHistory: true, privateSession: false,
-    clearHistoryOnExit: false, accountSync: true, searchEngine: 'google', customSearchEngineUrl: '',
+    clearHistoryOnExit: false, accountSync: true, searchEngine: 'google', customSearchEngineUrl: '', customSearchEngineUrls: { torch: '', grams: '', foc: '' },
     addressBarPosition: 'top', interfaceLanguage: 'en', thirdPartyCookies: false, doNotTrack: true, preloadPages: false,
     lockIncognito: false, safeBrowsing: true, secureConnection: true, secureDns: false, secureDnsProvider: 'cloudflare',
     javascriptSecurity: true, permissionLocation: false, permissionCamera: false, permissionMicrophone: false,
@@ -115,6 +115,19 @@ function showError(error, label = 'Browser error') {
   showToast(detail, 'error');
   ui.footerStatus.textContent = detail;
 }
+function setSiteFallback(url, detail = '') {
+  if (ui.iframeWrap) ui.iframeWrap.hidden = true;
+  if (ui.blocked) ui.blocked.hidden = false;
+  const art = $('#siteErrorArt');
+  if (art) art.src = !navigator.onLine ? './assets/errors/network-interruption.png' : (/DNS|NXDOMAIN|name.*resolve|domain.*resolve/i.test(detail) ? './assets/errors/dns-error.png' : './assets/errors/site-unreachable.png');
+  const heading = ui.blocked?.querySelector('h2');
+  const message = ui.blocked?.querySelector('p');
+  if (heading) heading.textContent = !navigator.onLine ? 'No internet connection' : 'Open this website in a full browser tab';
+  if (message) message.textContent = !navigator.onLine
+    ? `The device reports that it is offline. Connect to the internet, then retry ${safeDomain(url)}.`
+    : `${safeDomain(url)} may block embedded viewing. This web app cannot override the destination’s frame security policy. Open the actual website in a full browser tab. ${detail}`.trim();
+  if (ui.openExternal) ui.openExternal.textContent = 'Open website in full browser tab ↗';
+}
 function setStatus(text) { if (ui.status) ui.status.textContent = text; }
 function setProgressTask(name, active) {
   if (active) progressTasks.add(name); else progressTasks.delete(name);
@@ -140,6 +153,9 @@ function normalizeUrl(input) {
   if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error(`Unsupported URL protocol: ${parsed.protocol}`);
   if (parsed.username || parsed.password) throw new Error('For security, enter a website address without embedded username or password credentials.');
   if (!parsed.hostname || !parsed.hostname.includes('.')) throw new Error(`That does not look like a website address: ${raw}`);
+  const host = parsed.hostname.toLowerCase();
+  const isLocal = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.startsWith('192.168.') || host.startsWith('10.') || host.startsWith('172.16.');
+  if (preferences.secureConnection && parsed.protocol === 'http:' && !isLocal) parsed.protocol = 'https:';
   return parsed.href;
 }
 function looksLikeWebsite(value) {
@@ -170,7 +186,52 @@ function applyPreferences() {
   } else ui.privacyNotice.hidden = true;
   if (ui.siteHint) ui.siteHint.hidden = !preferences.siteWarning;
   applyDesktopMode();
+  if (window.CodeAcademyNative?.updateBrowserPolicy) {
+    try { window.CodeAcademyNative.updateBrowserPolicy(JSON.stringify(preferences)); }
+    catch (error) { console.warn('[Code Academy Browser] Native browser policy update failed:', getErrorText(error)); }
+  }
 }
+function maybePrefetchPage(rawUrl) {
+  if (!preferences.preloadPages || preferences.privateSession || !rawUrl || !safeExternalUrl(rawUrl)) return;
+  let url;
+  try { url = new URL(rawUrl); } catch { return; }
+  if (url.protocol !== 'https:' || Array.from(document.querySelectorAll('link[data-ca-prefetch]')).some(item => item.dataset.caPrefetch === url.href)) return;
+  try {
+    const hint = document.createElement('link'); hint.rel = 'prefetch'; hint.href = url.href; hint.dataset.caPrefetch = url.href;
+    document.head.append(hint);
+  } catch (error) { console.info('[Code Academy Browser] Page prefetch was not available:', error); }
+}
+let pwaPrivateLockRunning = false;
+async function lockPrivatePwaSession() {
+  if (pwaPrivateLockRunning || window.CodeAcademyNative || !preferences.privateSession || !preferences.lockIncognito) return;
+  pwaPrivateLockRunning = true;
+  try { sessionStorage.setItem('ca_browser_private_lock_pending', '1'); } catch (error) { console.warn('[Code Academy Browser] Could not set private-session lock marker:', getErrorText(error)); }
+  try {
+    const authentication = await import('./browser-auth.js');
+    await authentication.signOutBrowser();
+  } catch (error) {
+    try { sessionStorage.setItem('ca_browser_private_lock_error', getErrorText(error)); } catch {}
+    console.error('[Code Academy Browser] Private PWA session sign-out failed:', error);
+  } finally { pwaPrivateLockRunning = false; }
+}
+function handlePrivatePwaVisibility() {
+  if (window.CodeAcademyNative || !preferences.privateSession || !preferences.lockIncognito) return;
+  if (document.hidden) { void lockPrivatePwaSession(); return; }
+  let pending = false; let lockError = '';
+  try { pending = sessionStorage.getItem('ca_browser_private_lock_pending') === '1'; lockError = sessionStorage.getItem('ca_browser_private_lock_error') || ''; }
+  catch (error) { console.warn('[Code Academy Browser] Private lock state could not be read:', getErrorText(error)); }
+  if (pending) {
+    try { sessionStorage.removeItem('ca_browser_private_lock_pending'); sessionStorage.removeItem('ca_browser_private_lock_error'); } catch {}
+    const destination = './login.html?stay=1&next=browser.html';
+    const errorParam = lockError ? `&lockError=${encodeURIComponent(lockError)}` : '';
+    location.replace(destination + errorParam);
+  }
+}
+if (!window.__codeAcademyPrivateVisibilityBound) {
+  window.__codeAcademyPrivateVisibilityBound = true;
+  document.addEventListener('visibilitychange', handlePrivatePwaVisibility);
+}
+
 function applyDesktopMode() {
   if (!ui.frame || ui.websiteView.hidden) return;
   if (!desktopMode) {
@@ -247,7 +308,7 @@ async function loadSavedTabs() {
   persistLocalTabs();
   if (!tabs.length) {
     const tab = makeTab({ title: 'New tab', kind: 'home' });
-    tabs = [tab]; activeTabId = tab.id; persistLocalTabs(); await saveTabRemote(tab);
+    tabs = [tab]; activeTabId = tab.id; persistLocalTabs(); void saveTabRemote(tab);
   }
   renderTabs();
   await renderActiveTab();
@@ -322,14 +383,17 @@ async function renderActiveTab() {
       }
       return;
     }
-    ui.websiteView.hidden = false; startFrameLoad(tab.url, false); return;
+    ui.websiteView.hidden = false;
+    setSiteFallback(tab.url);
+    setStatus(navigator.onLine ? `Ready to open ${safeDomain(tab.url)}` : 'Offline');
+    return;
   }
   ui.emptyView.hidden = false;
 }
 async function ensureTab() {
   let tab = getActiveTab();
   if (tab) return tab;
-  tab = makeTab({ title: 'New tab', kind: 'home' }); tabs.push(tab); activeTabId = tab.id; persistLocalTabs(); renderTabs(); await saveTabRemote(tab); return tab;
+  tab = makeTab({ title: 'New tab', kind: 'home' }); tabs.push(tab); activeTabId = tab.id; persistLocalTabs(); renderTabs(); void saveTabRemote(tab); return tab;
 }
 async function updateActiveTab(patch, save = true) {
   const tab = await ensureTab();
@@ -360,12 +424,12 @@ async function createNewTab({ focus = true, persist = true } = {}) {
   browserHadUserActivity = true;
   if (tabs.length >= TAB_LIMIT) {
     const oldest = tabs.shift();
-    if (oldest) await deleteTabRemote(oldest.id);
+    if (oldest) void deleteTabRemote(oldest.id);
   }
   const tab = makeTab({ title: 'New tab', kind: 'home' });
   tabs.push(tab); activeTabId = focus ? tab.id : activeTabId;
   persistLocalTabs(); renderTabs();
-  if (persist) await saveTabRemote(tab);
+  if (persist) void saveTabRemote(tab);
   if (focus) await renderActiveTab();
   if (focus && preferences.notificationsEnabled && window.CodeAcademyNative?.onNewTabOpened) window.CodeAcademyNative.onNewTabOpened();
   return tab;
@@ -374,10 +438,10 @@ async function closeTab(tabId) {
   const index = tabs.findIndex(tab => tab.id === tabId);
   if (index < 0) return;
   const [closed] = tabs.splice(index, 1);
-  await deleteTabRemote(closed.id);
+  void deleteTabRemote(closed.id);
   if (activeTabId === tabId) activeTabId = tabs[Math.min(index, tabs.length - 1)]?.id || tabs[tabs.length - 1]?.id || null;
   if (!tabs.length) {
-    const replacement = makeTab({ title: 'New tab', kind: 'home' }); tabs.push(replacement); activeTabId = replacement.id; await saveTabRemote(replacement);
+    const replacement = makeTab({ title: 'New tab', kind: 'home' }); tabs.push(replacement); activeTabId = replacement.id; void saveTabRemote(replacement);
   }
   persistLocalTabs(); renderTabs(); await renderActiveTab();
   showToast('Tab closed. Its visit remains in history.');
@@ -478,7 +542,7 @@ function renderHistory() {
       if (item.kind === 'file-import' || item.kind === 'file-export') { openDrawer('files'); return; }
       if (item.kind === 'search' || item.query) {
         const tab = await createNewTab({ focus: true }); Object.assign(tab, { title: item.title || item.query, kind: 'search', query: item.query || item.title, category: item.category || 'web' });
-        persistLocalTabs(); renderTabs(); await saveTabRemote(tab); await renderActiveTab();
+        persistLocalTabs(); renderTabs(); void saveTabRemote(tab); await renderActiveTab();
       } else if (safeExternalUrl(item.url)) { await openAddress(item.url, { createTab: true, title: item.title }); }
     });
     row.append(favicon, copy, open); ui.historyList.append(row);
@@ -790,12 +854,17 @@ function renderHomeFeed(items, source = '', error = '') {
   } else {
     status.textContent = 'Live headlines could not be reached right now.';
     const notice = document.createElement('div'); notice.className = 'feed-error';
-    const title = document.createElement('strong'); title.textContent = 'Live headlines are temporarily unavailable';
+    const failureDetail = getErrorText(error);
+    const dnsFailure = /DNS|NXDOMAIN|NAME_NOT_RESOLVED|name.*resolve|domain.*resolve|unknown host/i.test(failureDetail);
+    const networkFailure = !navigator.onLine || /Failed to fetch|NetworkError|network request failed|ERR_INTERNET_DISCONNECTED|ERR_NETWORK|ERR_CONNECTION|connection timed out|load failed/i.test(failureDetail);
+    const illustration = document.createElement('img'); illustration.className = 'browser-error-art'; illustration.alt = '';
+    illustration.src = networkFailure ? './assets/errors/network-interruption.png' : (dnsFailure ? './assets/errors/dns-error.png' : './assets/errors/site-unreachable.png');
+    const title = document.createElement('strong'); title.textContent = networkFailure ? 'Network connection interrupted' : (dnsFailure ? 'DNS lookup failed' : 'Live headlines are temporarily unavailable');
     const detail = document.createElement('p'); detail.textContent = 'Check your connection or configure the Search Worker / Academy API in Browser Settings. Search results may still work through other sources.';
     const exact = document.createElement('small'); exact.className = 'feed-error-detail'; exact.textContent = error ? `Exact source error: ${String(error).slice(0, 900)}` : 'No source returned a parseable feed.';
     const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'quiet-btn'; retry.textContent = 'Try again'; retry.addEventListener('click', () => loadHomeFeed({ force: true }));
     const news = document.createElement('a'); news.href = 'https://news.google.com/'; news.target = '_blank'; news.rel = 'noopener noreferrer'; news.textContent = 'Open Google News ↗';
-    notice.append(title, detail, exact, retry, news); grid.append(notice);
+    notice.append(illustration, title, detail, exact, retry, news); grid.append(notice);
     if (error) console.info('[Code Academy Browser] Live news feed error:', error);
   }
 }
@@ -870,7 +939,7 @@ function engineSearchUrl(engine, queryText, category = 'web') {
   };
   if (urls[engine]) return urls[engine];
   if (['torch', 'grams', 'foc'].includes(engine)) {
-    const custom = String(preferences.customSearchEngineUrl || '').trim();
+    const custom = String(preferences.customSearchEngineUrls?.[engine] || preferences.customSearchEngineUrl || '').trim();
     if (!custom || !custom.includes('{query}')) throw new Error(`${engine.toUpperCase()} is not a verified built-in search provider. Configure its trusted HTTPS template in Browser Settings before using it.`);
     const target = new URL(custom.replaceAll('{query}', q));
     if (target.protocol !== 'https:' || target.username || target.password) throw new Error('Custom search engines must use a trusted HTTPS URL without embedded credentials.');
@@ -960,46 +1029,133 @@ async function performSearch(rawQuery, category = activeCategory, options = {}) 
   if (!options.silent) browserHadUserActivity = true;
   const queryText = String(rawQuery || '').trim();
   if (!queryText) { showToast('Enter a search phrase or website address.', 'warn'); return; }
-  if (searchBusy) return;
+  if (searchBusy) { showToast('A search is already running. Please wait for it to finish.', 'warn'); return; }
   if (category === 'web' && looksLikeWebsite(queryText)) {
     try { await openAddress(normalizeUrl(queryText), { createTab: false }); }
     catch (error) { showError(error, 'Website address error'); }
     return;
   }
-  searchBusy = true; lastSearchQuery = queryText; setSelectedCategory(category); if (ui.categoryRow) ui.categoryRow.hidden = false; ui.address.value = queryText; if (ui.heroSearch) ui.heroSearch.value = queryText; setProgressTask('Search', true);
-  hideViews(); ui.searchView.hidden = false; ui.heading.textContent = `Searching for “${queryText}”`; ui.meta.textContent = `Contacting ${categoryLabel(category).toLowerCase()} search sources…`;
-  ui.results.replaceChildren(); const loading = document.createElement('div'); loading.className = 'no-results'; loading.textContent = `Searching ${categoryLabel(category).toLowerCase()} sources for “${queryText}”…`; ui.results.append(loading);
+
+  searchBusy = true;
+  lastSearchQuery = queryText;
+  setSelectedCategory(category);
+  if (ui.categoryRow) ui.categoryRow.hidden = false;
+  ui.address.value = queryText;
+  if (ui.heroSearch) ui.heroSearch.value = queryText;
+  setProgressTask('Search', true);
+  hideViews();
+  ui.searchView.hidden = false;
+  ui.heading.textContent = `Searching for “${queryText}”`;
+  ui.meta.textContent = `Contacting ${categoryLabel(category).toLowerCase()} search sources…`;
+  ui.results.replaceChildren();
+  const loading = document.createElement('div'); loading.className = 'no-results';
+  loading.textContent = `Searching ${categoryLabel(category).toLowerCase()} sources for “${queryText}”…`;
+  ui.results.append(loading);
   ui.googleFallback.href = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`;
   ui.duckFallback.href = `https://duckduckgo.com/?q=${encodeURIComponent(queryText)}`;
   updatePreferredEngineLink(queryText, category);
+  const fullSearchLink = $('#openFullSearchButton');
+  if (fullSearchLink) {
+    const selectedEngine = String(preferences.searchEngine || 'google').toLowerCase();
+    try {
+      fullSearchLink.href = engineSearchUrl(selectedEngine, queryText, category);
+      fullSearchLink.textContent = `Open full ${selectedEngine.toUpperCase()} results ↗`;
+      fullSearchLink.title = `Open the full ${selectedEngine} result page`;
+    } catch (engineError) {
+      fullSearchLink.href = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`;
+      fullSearchLink.textContent = 'Open Google fallback results ↗';
+      fullSearchLink.title = `The selected provider needs a valid HTTPS URL template: ${getErrorText(engineError)}`;
+    }
+  }
   $('#censysFallback').href = `https://search.censys.io/search?resource=hosts&q=${encodeURIComponent(queryText)}`;
   const fofaQuery = looksLikeWebsite(queryText) ? `domain="${queryText.replace(/^https?:\/\//i, '').replace(/^www\./i, '').split(/[/?#]/)[0]}"` : queryText;
   let fofaEncoded = '';
-  try { fofaEncoded = btoa(String.fromCharCode(...new TextEncoder().encode(fofaQuery))); } catch { fofaEncoded = btoa(fofaQuery.replace(/[^\x00-\x7F]/g, '')); }
+  try { fofaEncoded = btoa(String.fromCharCode(...new TextEncoder().encode(fofaQuery))); }
+  catch { fofaEncoded = btoa(fofaQuery.replace(/[^\x00-\x7F]/g, '')); }
   $('#fofaFallback').href = `https://fofa.info/result?qbase64=${encodeURIComponent(fofaEncoded)}`;
-  ui.footerStatus.textContent = `Searching: ${queryText}`; setStatus('Searching…');
+  ui.footerStatus.textContent = `Searching: ${queryText}`;
+  setStatus('Searching…');
+
   let tab = getActiveTab();
-  if (!options.silent) {
-    tab = await navigateTabView({ title: shorten(queryText, 30), kind: 'search', url: `browser.html?q=${encodeURIComponent(queryText)}&category=${encodeURIComponent(category)}`, query: queryText, category });
-    // Log every user-initiated search attempt even when the search provider later fails.
-    if (preferences.notificationsEnabled && preferences.accountSync && !preferences.privateSession) await sendBrowserNotification(queryText, category);
-  }
   try {
+    // Tab/session state is local-first. Cloud notification/history failures must not block the actual search request.
+    if (!options.silent) {
+      try {
+        tab = await navigateTabView({ title: shorten(queryText, 30), kind: 'search', url: `browser.html?q=${encodeURIComponent(queryText)}&category=${encodeURIComponent(category)}`, query: queryText, category });
+      } catch (tabError) {
+        console.warn('[Code Academy Browser] Search tab metadata could not be saved; search continues:', tabError);
+        ui.footerStatus.textContent = `Search is continuing. Exact tab-save error: ${getErrorText(tabError)}`;
+      }
+      if (preferences.notificationsEnabled && preferences.accountSync && !preferences.privateSession) {
+        void sendBrowserNotification(queryText, category).catch(error => console.warn('[Code Academy Browser] Notification error:', error));
+      }
+    }
+
     const payload = await getSearchResults(queryText, category);
     renderSearchResults(queryText, category, payload);
-    if (!options.silent) {
-      const entry = await saveHistoryEntry({ title: `Search: ${queryText}`, kind: 'search', query: queryText, category, url: `browser.html?q=${encodeURIComponent(queryText)}&category=${encodeURIComponent(category)}` });
-      await saveTabRemote(getActiveTab() || tab || entry);
-      if (preferences.notificationsEnabled && !preferences.privateSession && 'Notification' in window && Notification.permission === 'granted') {
-        try { new Notification('Code Academy Browser', { body: `Search completed: ${queryText}`, icon: './browser-icon-192.png', tag: `browser-search-${Date.now()}` }); } catch (error) { console.warn('[Code Academy Browser] Device notification failed:', error); }
-      }
+    if (preferences.preloadPages && !preferences.privateSession) {
+      ui.results.querySelectorAll('a[href]').forEach(anchor => anchor.addEventListener('pointerenter', () => maybePrefetchPage(anchor.href), { once:true }));
     }
     setStatus(`${payload.results.length} result${payload.results.length === 1 ? '' : 's'}`);
     ui.footerStatus.textContent = `${payload.provider} · Results shown inside Code Academy Browser.`;
+
+    // Persist search history/tab in the background. A slow Firestore request no longer keeps the progress bar spinning.
+    if (!options.silent) {
+      void saveHistoryEntry({ title: `Search: ${queryText}`, kind: 'search', query: queryText, category, url: `browser.html?q=${encodeURIComponent(queryText)}&category=${encodeURIComponent(category)}` })
+        .catch(error => {
+          const note = `Search completed. Local results are visible; cloud history sync failed: ${getErrorText(error)}`;
+          console.warn('[Code Academy Browser] Search history save failed:', error);
+          ui.footerStatus.textContent = note;
+        });
+      void Promise.resolve(saveTabRemote(getActiveTab() || tab)).catch(error => console.warn('[Code Academy Browser] Search tab sync failed:', error));
+      if (preferences.notificationsEnabled && !preferences.privateSession && 'Notification' in window && Notification.permission === 'granted') {
+        try { new Notification('Code Academy Browser', { body: `Search completed: ${queryText}`, icon: './browser-icon-192.png', tag: `browser-search-${Date.now()}` }); }
+        catch (error) { console.warn('[Code Academy Browser] Device notification failed:', error); }
+      }
+    }
   } catch (error) {
-    ui.results.replaceChildren(); const box = document.createElement('div'); box.className = 'error-box'; box.textContent = `Search failed: ${getErrorText(error)}`; ui.results.append(box);
-    ui.heading.textContent = 'Search could not be completed'; ui.meta.textContent = `The exact error is shown below.`; showError(error, 'Search error'); setStatus('Search error');
-  } finally { searchBusy = false; setProgressTask('Search', false); }
+    const detail = getErrorText(error);
+    const dnsFailure = /DNS|NXDOMAIN|NAME_NOT_RESOLVED|name.*resolve|domain.*resolve|unknown host/i.test(detail);
+    const networkFailure = !navigator.onLine || /Failed to fetch|NetworkError|network request failed|ERR_INTERNET_DISCONNECTED|ERR_NETWORK|ERR_CONNECTION|connection timed out|load failed/i.test(detail);
+    ui.results.replaceChildren();
+    const box = document.createElement('section'); box.className = 'browser-error-state';
+    const illustration = document.createElement('img');
+    illustration.className = 'browser-error-art'; illustration.alt = '';
+    illustration.src = networkFailure ? './assets/errors/network-interruption.png' : (dnsFailure ? './assets/errors/dns-error.png' : './assets/errors/site-unreachable.png');
+    const title = document.createElement('h3'); title.textContent = networkFailure ? 'Network connection interrupted' : (dnsFailure ? 'DNS lookup failed' : 'Live search sources did not return results');
+    const explanation = document.createElement('p');
+    explanation.textContent = networkFailure
+      ? 'The request failed at the network layer. Reconnect, check mobile data/Wi-Fi, and retry. The exact error is available under Technical details.'
+      : (dnsFailure ? 'The requested host could not be resolved. Check the spelling, DNS/private-DNS settings and connection, then retry.' : 'No configured search API returned usable results. Open the selected provider for its full live results, or configure the Academy Search API in Browser Settings.');
+    const exact = document.createElement('details'); const summary = document.createElement('summary'); summary.textContent = 'Technical details';
+    const raw = document.createElement('pre'); raw.textContent = `Exact error reported by the search sources: ${detail}`; exact.append(summary, raw);
+    const openEngine = document.createElement('a'); openEngine.className = 'browser-error-action';
+    const selectedEngine = String(preferences.searchEngine || 'google').toLowerCase();
+    try {
+      openEngine.href = engineSearchUrl(selectedEngine, queryText, category);
+      openEngine.textContent = `Open full ${selectedEngine.toUpperCase()} results ↗`;
+    } catch (engineError) {
+      openEngine.href = `https://www.google.com/search?q=${encodeURIComponent(queryText)}`;
+      openEngine.textContent = 'Open Google fallback results ↗';
+      openEngine.title = `The selected provider needs a valid HTTPS URL template: ${getErrorText(engineError)}`;
+    }
+    openEngine.target = '_blank'; openEngine.rel = 'noopener noreferrer';
+    openEngine.addEventListener('click', event => {
+      if (window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function') {
+        event.preventDefault(); event.stopPropagation();
+        openAddress(openEngine.href, { createTab:false, title:`${String(preferences.searchEngine || 'google').toUpperCase()} search` }).catch(navError => showError(navError, 'Could not open full search results'));
+      }
+    });
+    const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'browser-error-action secondary';
+    retry.textContent = 'Retry search'; retry.addEventListener('click', () => performSearch(queryText, category, { silent: true }));
+    box.append(illustration, title, explanation, exact, openEngine, retry); ui.results.append(box);
+    ui.heading.textContent = 'Search could not be completed';
+    ui.meta.textContent = 'The exact source failure is shown below; full provider results remain available.';
+    showError(error, 'Search error'); setStatus(navigator.onLine ? 'Search source error' : 'Offline');
+  } finally {
+    searchBusy = false;
+    setProgressTask('Search', false);
+  }
 }
 async function sendBrowserNotification(queryText, category) {
   if (!currentUser) return;
@@ -1031,7 +1187,9 @@ function startFrameLoad(url, forceReload = true) {
   frameTimer = setTimeout(() => {
     if (requestNumber === frameNavigation) {
       ui.progress.classList.remove('loading');
-      setStatus('Website response may be restricted');
+      setSiteFallback(safeUrl, 'The embedded preview did not produce a dependable response before the 12-second timeout. The browser cannot read a cross-origin page’s HTTP status from an iframe.');
+      setStatus(navigator.onLine ? 'Embedded preview timed out' : 'Offline');
+      if (ui.footerStatus) ui.footerStatus.textContent = `Embedded preview timed out for ${safeUrl} after 12 seconds. Open the actual site in a full browser tab.`;
     }
   }, 12000);
   ui.frame.onload = () => {
@@ -1044,15 +1202,40 @@ function startFrameLoad(url, forceReload = true) {
 }
 async function openAddress(url, options = {}) {
   const safeUrl = normalizeUrl(url);
+  const nativeCanBrowse = Boolean(window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function');
+  // Open the destination synchronously while the click/submit gesture is still active.
+  // A normal PWA cannot override X-Frame-Options/CSP to embed Google, PayPal, etc.
+  let externalWindow = null;
+  if (!nativeCanBrowse && options.openExternal !== false && navigator.onLine) {
+    try {
+      externalWindow = window.open('about:blank', '_blank');
+      if (externalWindow) { externalWindow.opener = null; externalWindow.location.replace(safeUrl); }
+    } catch (popupError) { console.info('[Code Academy Browser] External tab could not be prepared:', getErrorText(popupError)); }
+  }
+
   let tab = getActiveTab();
   if (options.createTab || !tab) tab = await createNewTab({ focus: true });
   tab = await navigateTabView({ title: shorten(options.title || safeDomain(safeUrl), 34), kind: 'site', url: safeUrl, query: '', category: 'web' });
-  ui.address.value = safeUrl; await saveHistoryEntry({ title: options.title || safeDomain(safeUrl), kind: 'site', url: safeUrl, category: 'web' });
+  ui.address.value = safeUrl;
+  // Save visit history in the background; cloud latency must not delay opening the actual website.
+  void saveHistoryEntry({ title: options.title || safeDomain(safeUrl), kind: 'site', url: safeUrl, category: 'web' })
+    .catch(error => { console.warn('[Code Academy Browser] Visit history save failed:', error); if (ui.footerStatus) ui.footerStatus.textContent = `Website opened. History sync error: ${getErrorText(error)}`; });
   renderTabs();
-  if (window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function') {
+  if (nativeCanBrowse) {
     nativeActiveUrl = safeUrl;
     window.CodeAcademyNative.openUrl(safeUrl, options.title || safeDomain(safeUrl));
-  } else startFrameLoad(safeUrl, true);
+  } else if (externalWindow) {
+    setStatus(`Opened ${safeDomain(safeUrl)} in a full browser tab`);
+    ui.footerStatus.textContent = `Opened ${safeUrl} in a new browser tab. The destination website controls its own rendering and security.`;
+    showToast(`Opened ${safeDomain(safeUrl)} in a new browser tab.`);
+  } else {
+    // Popup blocked or navigation restored without a user gesture: render a clear action, not a blank iframe.
+    ui.websiteView.hidden = false;
+    setSiteFallback(safeUrl);
+    setStatus(navigator.onLine ? 'Waiting for website to open' : 'Offline');
+    ui.footerStatus.textContent = `The browser blocked the external tab. Tap Open website in full browser tab. URL: ${safeUrl}`;
+    showToast(!navigator.onLine ? 'No internet connection is available. Reconnect and retry the website.' : 'The site could not be opened in a new tab automatically. Tap the on-screen button to try again.', 'warn');
+  }
   return tab;
 }
 async function submitAddress(raw) {
@@ -1085,6 +1268,25 @@ function openInstallDialog() {
     ui.installHelp.textContent = 'No web-app install prompt is available right now. A normal webpage cannot silently install an APK. Build and distribute the native Android package separately, then install it through Android or Google Play.';
   }
 }
+async function installCurrentSiteShortcut() {
+  const tab = getActiveTab();
+  const raw = tab?.kind === 'site' && safeExternalUrl(tab.url) ? tab.url : (safeExternalUrl(ui.address.value) || '');
+  if (!raw) { showToast('Open a website first, then choose “Install this site” to create its home-screen shortcut.', 'warn'); return; }
+  let title = String(tab?.title || safeDomain(raw) || 'Website shortcut').trim().slice(0, 40);
+  if (window.CodeAcademyNative && typeof window.CodeAcademyNative.createHomeScreenShortcut === 'function') {
+    try {
+      window.CodeAcademyNative.createHomeScreenShortcut(raw, title);
+      showToast(`Asked Android to pin a shortcut for ${safeDomain(raw)}. Confirm the Android system prompt if it appears.`);
+      return;
+    } catch (error) { showError(error, 'Could not create Android home-screen shortcut'); return; }
+  }
+  // A webpage cannot silently add arbitrary launchers/shortcuts. Explain the supported manual path rather than pretending it succeeded.
+  const status = $('#installHelp');
+  if (status) status.textContent = `This PWA cannot pin an arbitrary website shortcut by itself. Open ${raw} in Chrome, open Chrome’s ⋮ menu, and choose “Add to Home screen” or “Install app” if offered. The native Android APK can request a pinned shortcut through Android.`;
+  if (ui.footerStatus) ui.footerStatus.textContent = `Shortcut not created: the PWA cannot pin arbitrary sites. Open ${raw} in Chrome and choose ⋮ → Add to Home screen, or use the native Android APK for the pinned-shortcut request.`;
+  showToast('A webpage cannot silently add an Android home-screen icon. Use Chrome → ⋮ → Add to Home screen, or use the native APK.', 'warn');
+}
+
 async function installBrowser() {
   if (deferredInstallPrompt) {
     try {
@@ -1400,6 +1602,7 @@ function attachEvents() {
       case 'files': openDrawer('files'); break;
       case 'desktop': preferences.desktopMode = !preferences.desktopMode; writeJSON(STORAGE.prefs, preferences); applyPreferences(); showToast(`Desktop layout ${preferences.desktopMode ? 'enabled' : 'disabled'}.`); break;
       case 'install': openInstallDialog(); break;
+      case 'install-site': await installCurrentSiteShortcut(); break;
       case 'download': downloadCurrent().catch(error => showError(error, 'Download failed')); break;
       case 'share': openShareDialog(); break;
       case 'settings': location.href = './browser-settings.html'; break;
@@ -1423,19 +1626,29 @@ function attachEvents() {
   const openFullBrowser = () => {
     const tab = getActiveTab();
     if (!tab?.url || !safeExternalUrl(tab.url)) { showToast('There is no valid HTTP/HTTPS website open in this tab.', 'warn'); return; }
-    openAddress(tab.url, { createTab: false, title: tab.title || 'Website' }).catch(error => showError(error, 'Could not reopen this website inside Code Academy Browser'));
+    openAddress(tab.url, { createTab: false, title: tab.title || 'Website' }).catch(error => showError(error, 'Could not open website'));
   };
   $('#openFullBrowserButton').addEventListener('click', openFullBrowser);
   ui.openExternal.addEventListener('click', openFullBrowser);
   ui.retryFrame.addEventListener('click', retryCurrentFrame);
   $('#saveSearchButton').addEventListener('click', async () => { if (!lastSearchQuery) return; await saveHistoryEntry({ title: `Saved search: ${lastSearchQuery}`, query: lastSearchQuery, kind: 'search', category: activeCategory }); showToast('Search saved to history.'); });
+  $('#openFullSearchButton')?.addEventListener('click', event => {
+    const link = $('#openFullSearchButton');
+    if (window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function' && link?.href) {
+      event.preventDefault();
+      openAddress(link.href, { createTab:false, title:`${String(preferences.searchEngine || 'google').toUpperCase()} search results` }).catch(error => showError(error, 'Could not open full search results'));
+    }
+  });
   ['preferredEngineFallback','googleFallback','duckFallback','censysFallback','fofaFallback'].forEach(id => {
     const link = $('#'+id); if (!link) return;
     link.addEventListener('click', event => {
-      event.preventDefault();
-      if (!link.href || link.href === location.href) { showToast(link.title || 'This search engine needs a trusted HTTPS URL in Browser Settings.', 'warn'); return; }
-      const label = (link.textContent || 'Search provider').replace(/↗/g, '').trim();
-      openAddress(link.href, { createTab: false, title: label }).catch(error => showError(error, `${label} navigation failed`));
+      if (!link.href || link.href === location.href) { event.preventDefault(); showToast(link.title || 'This search engine needs a trusted HTTPS URL in Browser Settings.', 'warn'); return; }
+      if (window.CodeAcademyNative && typeof window.CodeAcademyNative.openUrl === 'function') {
+        event.preventDefault();
+        const label = (link.textContent || 'Search provider').replace(/↗/g, '').trim();
+        openAddress(link.href, { createTab: false, title: label }).catch(error => showError(error, `${label} navigation failed`));
+      }
+      // In a PWA the anchor opens the real provider page in the browser, not a blocked iframe.
     });
   });
   window.addEventListener('resize', applyDesktopMode);
@@ -1476,9 +1689,10 @@ async function initializeBrowser(user) {
     else if (queryText) await performSearch(queryText, CATEGORIES.includes(cat) ? cat : 'web', { silent: false });
     if (params.get('files') === '1') openDrawer('files');
     const openUrl = params.get('open'); if (openUrl) { const safeOpen = safeExternalUrl(openUrl); if (safeOpen) await openAddress(safeOpen, { createTab: true }); else showError(new Error('Only valid HTTP or HTTPS destinations can be reopened.'), 'Invalid recent-tab destination'); }
+    // Never launch a blocking install modal automatically: the user's first tap must remain available for search/navigation.
+    // Installation stays available from the explicit Install button and the menu.
     const installed = Boolean(window.CodeAcademyNative) || window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
-    let installDismissed = false; try { installDismissed = localStorage.getItem('ca_browser_install_prompt_dismissed_v2') === '1'; } catch {}
-    if (!installed && !installDismissed) window.setTimeout(() => { if (!ui.installDialog.hidden) return; openInstallDialog(); }, 1700);
+    if (!installed && $('#installButton')) $('#installButton').title = 'Install Code Academy Browser';
   } catch (error) { showError(error, 'Browser startup error'); }
   window.addEventListener('pagehide', () => {
     if (preferences.clearHistoryOnExit && !preferences.privateSession) {
@@ -1534,19 +1748,58 @@ async function connectOptionalAccountSync() {
 async function bootBrowser() {
   if (browserInitialized) return;
   browserInitialized = true;
+
+  // Attach the browser UI and restore device-local tabs before waiting for Firebase.
+  // A CDN/Auth outage must never leave every button inert or the page stuck on “loading”.
+  try {
+    await initializeBrowser(null);
+  } catch (error) {
+    browserInitialized = false;
+    showError(error, 'Local browser initialization failed');
+    return;
+  }
+
   try {
     const authentication = await import('./browser-auth.js');
     auth = authentication.auth; db = authentication.db;
     const user = await new Promise((resolve, reject) => {
       let unsubscribe = () => {};
-      const timer = window.setTimeout(() => { unsubscribe(); reject(new Error('Timed out checking the browser sign-in session.')); }, 12000);
-      unsubscribe = authentication.onAuthStateChanged(auth, current => { window.clearTimeout(timer); unsubscribe(); resolve(current || null); }, error => { window.clearTimeout(timer); unsubscribe(); reject(error); });
+      let settled = false;
+      const finish = (callback, value) => {
+        if (settled) return;
+        settled = true;
+        window.clearTimeout(timer);
+        try { unsubscribe(); } catch {}
+        callback(value);
+      };
+      const timer = window.setTimeout(() => finish(reject, new Error('Timed out while waiting for Firebase Authentication. Check internet access, Firebase status, and the authorised domain settings.')), 12000);
+      unsubscribe = authentication.onAuthStateChanged(auth, value => finish(resolve, value || null), error => finish(reject, error));
     });
-    if (!user) { location.replace('./login.html?next=browser.html'); return; }
-    await initializeBrowser(user);
-    // Account sync is optional after login; a Firestore rule or network error must not blank the UI.
+
+    if (!user) {
+      // No signed-in account: preserve the requested account-only workflow.
+      location.replace('./login.html?next=browser.html');
+      return;
+    }
+    if (user.email && !user.emailVerified && user.providerData?.some(provider => provider.providerId === 'password')) {
+      location.replace(`./email-verification.html?email=${encodeURIComponent(user.email)}`);
+      return;
+    }
+    currentUser = user;
+    const avatar = $('#headerProfileImage');
+    if (avatar) avatar.src = user.photoURL || './browser-icon-192.png';
+    setStatus('Signed in');
     connectOptionalAccountSync();
-  } catch (error) { browserInitialized = false; showError(error, 'Browser initialization failed'); }
+  } catch (error) {
+    // Firebase is an optional cloud layer for an already initialized local browser.
+    // Show the exact failure, retain every local control, and do not spin forever.
+    const detail = getErrorText(error);
+    currentUser = null;
+    setStatus(navigator.onLine ? 'Device-only mode' : 'Offline');
+    if (ui.footerStatus) ui.footerStatus.textContent = `Account sync unavailable; local browser controls remain active. Exact error: ${detail}`;
+    showToast(`Firebase account service unavailable. Local browsing is active. ${detail}`, 'warn');
+    console.warn('[Code Academy Browser] Firebase startup fallback:', error);
+  }
 }
 
 // Native APK bridge entry points. These keep the browser state/history in the page
@@ -1579,3 +1832,5 @@ window.CodeAcademyBrowser = {
 };
 
 bootBrowser();
+
+window.__codeAcademyPageReady = true;

@@ -28,3 +28,10 @@ This folder is the separate Code Academy Browser web/PWA and Capacitor source. I
 ## Android build
 
 Follow `capacitor/README.md`. Build and test under the app's own package ID and sign it separately from the main Code Academy APK.
+
+
+## Search and real-site navigation
+
+The browser now initializes local UI controls before waiting for Firebase. If auth modules or a profile write fail, the exact error is surfaced and local browsing controls remain available where authentication policy permits. The app reuses the original Code Academy `authentication.js` workflow through a browser adapter.
+
+When running as a PWA, websites with frame restrictions are opened as real browser tabs; arbitrary remote sites cannot be forced into an iframe. The native Android WebView bridge opens the site in the native browser view. Full ranked in-app web search requires deploying/configuring the included Academy Search API or another trusted HTTPS search endpoint.

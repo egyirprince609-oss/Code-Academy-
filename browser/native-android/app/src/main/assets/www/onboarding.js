@@ -13,11 +13,74 @@ const tips = [
   [/news|feed|headline/i, 'The home screen loads news when the device is online. If feeds fail, the browser shows the connection error rather than inventing current headlines. Try Refresh on the feed.'],
   [/save|sync|cloud/i, 'Browser data is stored locally first. Cloud synchronization uses the browserProfiles Firestore collection. If rules deny access, the exact sync error appears and the page continues using local data.']
 ];
+
+let narrationQueue = [];
+let narrationIndex = 0;
+let narrationActive = false;
+function tourStatus(text) { const target = $('tourError'); if (target) target.textContent = text; }
+function stopTourNarration() {
+  try { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }
+  catch (error) { console.warn('[Code Academy Browser Tour] Could not stop speech:', error); }
+  narrationQueue = []; narrationIndex = 0; narrationActive = false;
+  const button = $('readTourButton'); if (button) { button.disabled = false; button.textContent = '▶ Read tour aloud'; }
+  tourStatus('Voice narration stopped.');
+}
+function readTourAloud() {
+  if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+    tourStatus('Voice narration is not available in this browser/WebView. Check that Android Text-to-Speech is installed and enabled, or use the written tour.');
+    return;
+  }
+  stopTourNarration();
+  const chunks = Array.from(document.querySelectorAll('.tour-head h1,.tour-head p,.tour-card b,.tour-card p'))
+    .map(node => (node.textContent || '').trim()).filter(Boolean);
+  if (!chunks.length) { tourStatus('No tour text was available for narration.'); return; }
+  narrationQueue = chunks;
+  narrationIndex = 0;
+  narrationActive = true;
+  const button = $('readTourButton'); if (button) { button.disabled = true; button.textContent = 'Speaking…'; }
+  let voices = [];
+  try { voices = window.speechSynthesis.getVoices() || []; } catch {}
+  const voice = voices.find(item => /^en(-|_)/i.test(item.lang) && /natural|enhanced|google|microsoft|english/i.test(item.name))
+    || voices.find(item => /^en(-|_)/i.test(item.lang)) || null;
+  tourStatus(voice ? `Reading the tour aloud using ${voice.name}.` : 'Reading the tour aloud using the default system voice.');
+  const speakNext = () => {
+    if (!narrationActive || narrationIndex >= narrationQueue.length) {
+      narrationActive = false;
+      if (button) { button.disabled = false; button.textContent = '▶ Read tour aloud'; }
+      tourStatus('Tour narration is complete.');
+      return;
+    }
+    const text = narrationQueue[narrationIndex++];
+    const utterance = new SpeechSynthesisUtterance(text);
+    if (voice) utterance.voice = voice;
+    utterance.lang = voice?.lang || 'en-US'; utterance.rate = 0.94; utterance.pitch = 1; utterance.volume = 1;
+    utterance.onend = () => window.setTimeout(speakNext, 120);
+    utterance.onerror = event => {
+      narrationActive = false;
+      if (button) { button.disabled = false; button.textContent = '▶ Read tour aloud'; }
+      tourStatus(`Speech synthesis failed: ${event.error || 'the device text-to-speech service returned an unspecified error'}. Check Android Text-to-Speech settings, then retry.`);
+    };
+    try { window.speechSynthesis.speak(utterance); }
+    catch (error) { narrationActive = false; if (button) { button.disabled = false; button.textContent = '▶ Read tour aloud'; } tourStatus(`Speech synthesis failed: ${error && error.message ? error.message : String(error)}.`); }
+  };
+  // User-initiated speech is required by mobile browsers. Re-check voices once they become available.
+  if (!voices.length) {
+    let started = false;
+    const startOnce = () => { if (started || !narrationActive) return; started = true; try { window.speechSynthesis.removeEventListener?.('voiceschanged', startOnce); } catch {} speakNext(); };
+    try { window.speechSynthesis.addEventListener?.('voiceschanged', startOnce, { once:true }); } catch {}
+    window.setTimeout(startOnce, 700);
+  } else speakNext();
+}
+$('readTourButton')?.addEventListener('click', readTourAloud);
+$('stopTourVoiceButton')?.addEventListener('click', stopTourNarration);
+window.addEventListener('pagehide', () => { try { window.speechSynthesis?.cancel(); } catch {} });
+
 function answerGuide() {
   const q = $('guideQuestion').value.trim();
   if (!q) { $('guideAnswer').textContent = 'Type a question first.'; return; }
   const match = tips.find(([pattern]) => pattern.test(q));
   $('guideAnswer').textContent = match ? match[1] : 'I could not match that question to the built-in browser help. Try asking about search, history, private tabs, profile, password reset, installation, permissions, news or cloud sync.';
+  if (match) tourStatus('The built-in guide answered from the on-device help library. For live AI answers, configure a trusted AI endpoint in a backend; this tour does not send your question to an outside service.');
 }
 async function finishTour() {
   $('finishTourButton').disabled = true; $('skipTourButton').disabled = true;
@@ -42,5 +105,9 @@ $('askGuideButton').addEventListener('click', answerGuide);
 $('guideQuestion').addEventListener('keydown', event => { if (event.key === 'Enter') answerGuide(); });
 $('finishTourButton').addEventListener('click', finishTour);
 $('skipTourButton').addEventListener('click', finishTour);
+$('finishTourButton').addEventListener('click', stopTourNarration);
+$('skipTourButton').addEventListener('click', stopTourNarration);
 $('signOutTourButton').addEventListener('click', async () => { try { await signOutBrowser(); location.replace('./login.html'); } catch (error) { $('tourError').textContent = `Sign out failed: ${errorText(error)}`; } });
 onAuthStateChanged(auth, user => { activeUser = user || null; if (!activeUser) location.replace('./login.html?next=index.html'); }, error => { $('tourError').textContent = `Authentication check failed: ${errorText(error)}`; });
+
+window.__codeAcademyPageReady = true;

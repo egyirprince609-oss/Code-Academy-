@@ -10,7 +10,10 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutManager;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -93,6 +96,7 @@ public class MainActivity extends Activity {
     private static final int REQUEST_MEDIA = 6003;
     private static final int REQUEST_FILE = 6004;
     private static final int REQUEST_BROWSER_ROLE = 6005;
+    private static final int REQUEST_PRIVATE_UNLOCK = 6006;
 
     private LinearLayout root;
     private LinearLayout browserBar;
@@ -102,6 +106,10 @@ public class MainActivity extends Activity {
     private WebView dashboardWebView;
     private WebView siteWebView;
     private TextView siteError;
+    private FrameLayout privateLockOverlay;
+    private TextView privateLockMessage;
+    private boolean privateSessionLocked = false;
+    private boolean privateUnlockRequestPending = false;
     private ValueCallback<Uri[]> pendingFileCallback;
     private PermissionRequest pendingMediaRequest;
     private GeolocationPermissions.Callback pendingGeoCallback;
@@ -120,6 +128,7 @@ public class MainActivity extends Activity {
         buildShell();
         setupDashboardWebView();
         setupSiteWebView();
+        createPrivateLockOverlay();
         enqueueBackgroundNewsCheck();
         loadDashboard();
         if (getIntent() != null) {
@@ -217,6 +226,105 @@ public class MainActivity extends Activity {
         bg.setColor(color); bg.setCornerRadius(radius); return bg;
     }
 
+    private void createPrivateLockOverlay() {
+        if (content == null) return;
+        privateLockOverlay = new FrameLayout(this);
+        privateLockOverlay.setVisibility(View.GONE);
+        privateLockOverlay.setBackgroundColor(Color.rgb(7, 14, 27));
+        LinearLayout panel = new LinearLayout(this);
+        panel.setOrientation(LinearLayout.VERTICAL);
+        panel.setGravity(Gravity.CENTER_HORIZONTAL);
+        panel.setPadding(dp(24), dp(28), dp(24), dp(28));
+        TextView emblem = new TextView(this);
+        emblem.setText("◈"); emblem.setTextSize(40); emblem.setTextColor(Color.rgb(69, 216, 232)); emblem.setGravity(Gravity.CENTER);
+        panel.addView(emblem, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, dp(76)));
+        TextView heading = new TextView(this);
+        heading.setText("Private tabs are locked"); heading.setTextColor(Color.WHITE); heading.setTextSize(22); heading.setGravity(Gravity.CENTER);
+        panel.addView(heading, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        privateLockMessage = new TextView(this);
+        privateLockMessage.setText("Confirm your Android screen lock to resume this private session.");
+        privateLockMessage.setTextColor(Color.rgb(174, 194, 216)); privateLockMessage.setTextSize(14); privateLockMessage.setGravity(Gravity.CENTER); privateLockMessage.setPadding(0, dp(12), 0, dp(20));
+        panel.addView(privateLockMessage, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button unlock = new Button(this); unlock.setText("Unlock with device screen lock");
+        unlock.setOnClickListener(view -> requestPrivateDeviceUnlock());
+        panel.addView(unlock, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        Button exit = new Button(this); exit.setText("Close browser");
+        exit.setOnClickListener(view -> finish());
+        LinearLayout.LayoutParams exitParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        exitParams.topMargin = dp(8); panel.addView(exit, exitParams);
+        FrameLayout.LayoutParams panelParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER);
+        privateLockOverlay.addView(panel, panelParams);
+        content.addView(privateLockOverlay, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    private void requestPrivateDeviceUnlock() {
+        if (!privateSessionLocked || privateUnlockRequestPending) return;
+        android.app.KeyguardManager keyguard = (android.app.KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+        if (keyguard == null || !keyguard.isDeviceSecure()) {
+            if (privateLockMessage != null) privateLockMessage.setText("No secure screen lock is set on this device. Set a PIN, password or supported biometric lock in Android Settings, then return and unlock private tabs.");
+            try { startActivity(new Intent(Settings.ACTION_SECURITY_SETTINGS)); }
+            catch (Exception error) { showNativeMessage("Open Android Settings and set a device screen lock to protect private tabs."); }
+            return;
+        }
+        Intent credential = keyguard.createConfirmDeviceCredentialIntent("Unlock Code Academy Browser", "Confirm your device lock to resume private tabs.");
+        if (credential == null) {
+            if (privateLockMessage != null) privateLockMessage.setText("Android did not provide a device-authentication screen. Private tabs remain locked.");
+            return;
+        }
+        privateUnlockRequestPending = true;
+        try { startActivityForResult(credential, REQUEST_PRIVATE_UNLOCK); }
+        catch (Exception error) {
+            privateUnlockRequestPending = false;
+            if (privateLockMessage != null) privateLockMessage.setText("Unable to open Android device authentication: " + error.getClass().getSimpleName() + ": " + error.getMessage());
+        }
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent == null) return;
+        String target = intent.getStringExtra(EXTRA_OPEN_URL);
+        if (target != null && !target.trim().isEmpty()) {
+            String normalized = normalizeHttpUrl(target);
+            if (normalized != null) showSite(normalized, true);
+            else showNativeMessage("Shortcut target was not a valid website address.");
+        }
+    }
+
+    @Override protected void onPause() {
+        android.content.SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (prefs.getBoolean("privateSession", false) && prefs.getBoolean("lockIncognito", false)) {
+            privateSessionLocked = true;
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+            if (privateLockOverlay != null) privateLockOverlay.setVisibility(View.VISIBLE);
+        }
+        super.onPause();
+    }
+
+    @Override protected void onResume() {
+        super.onResume();
+        if (privateSessionLocked && privateLockOverlay != null) privateLockOverlay.setVisibility(View.VISIBLE);
+    }
+
+    private void applyBrowserPolicyToNative() {
+        android.content.SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        if (siteWebView != null) {
+            WebSettings settings = siteWebView.getSettings();
+            settings.setJavaScriptEnabled(prefs.getBoolean("javascriptSecurity", true));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                try { settings.setSafeBrowsingEnabled(prefs.getBoolean("safeBrowsing", true)); }
+                catch (Exception error) { showNativeMessage("Could not update Safe Browsing: " + error.getClass().getSimpleName() + ": " + error.getMessage()); }
+            }
+            try { CookieManager.getInstance().setAcceptThirdPartyCookies(siteWebView, prefs.getBoolean("thirdPartyCookies", false)); }
+            catch (Exception error) { showNativeMessage("Could not update third-party cookie policy: " + error.getClass().getSimpleName() + ": " + error.getMessage()); }
+        }
+        if (!prefs.getBoolean("privateSession", false) || !prefs.getBoolean("lockIncognito", false)) {
+            privateSessionLocked = false;
+            if (privateLockOverlay != null) privateLockOverlay.setVisibility(View.GONE);
+            if (!prefs.getBoolean("privateSession", false) || !prefs.getBoolean("lockIncognito", false)) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        }
+    }
+
     private void setupWebSettings(WebView webView) {
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -289,6 +397,7 @@ public class MainActivity extends Activity {
 
     private void setupSiteWebView() {
         setupWebSettings(siteWebView);
+        applyBrowserPolicyToNative();
         siteWebView.setWebViewClient(new WebViewClient() {
             @Override public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri uri = request.getUrl();
@@ -326,6 +435,11 @@ public class MainActivity extends Activity {
                 progress.setProgress(Math.max(0, Math.min(100, newProgress)));
             }
             @Override public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+                if (!getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean("permissionLocation", false)) {
+                    callback.invoke(origin, false, false);
+                    showNativeMessage("Location blocked by Code Academy Browser Site Settings. Enable Location and save settings to permit the site to request it.");
+                    return;
+                }
                 if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     callback.invoke(origin, true, false);
@@ -336,12 +450,25 @@ public class MainActivity extends Activity {
             }
             @Override public void onPermissionRequest(PermissionRequest request) {
                 runOnUiThread(() -> {
+                    android.content.SharedPreferences policy = getSharedPreferences(PREFS, MODE_PRIVATE);
                     List<String> needed = new ArrayList<>();
+                    boolean deniedByBrowserPolicy = false;
                     for (String resource : request.getResources()) {
-                        if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource) && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) needed.add(Manifest.permission.CAMERA);
-                        if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource) && ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) needed.add(Manifest.permission.RECORD_AUDIO);
+                        if (PermissionRequest.RESOURCE_VIDEO_CAPTURE.equals(resource)) {
+                            if (!policy.getBoolean("permissionCamera", false)) deniedByBrowserPolicy = true;
+                            else if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) needed.add(Manifest.permission.CAMERA);
+                        } else if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(resource)) {
+                            if (!policy.getBoolean("permissionMicrophone", false)) deniedByBrowserPolicy = true;
+                            else if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) needed.add(Manifest.permission.RECORD_AUDIO);
+                        } else {
+                            // Unknown WebView permission resources are denied by default for safer behavior.
+                            deniedByBrowserPolicy = true;
+                        }
                     }
-                    if (needed.isEmpty()) request.grant(request.getResources());
+                    if (deniedByBrowserPolicy) {
+                        request.deny();
+                        showNativeMessage("Camera/microphone request blocked by Code Academy Browser Site Settings. Enable the required permission and save settings, then reload the site.");
+                    } else if (needed.isEmpty()) request.grant(request.getResources());
                     else { pendingMediaRequest = request; requestPermissions(needed.toArray(new String[0]), REQUEST_MEDIA); }
                 });
             }
@@ -412,7 +539,10 @@ public class MainActivity extends Activity {
             if (uri.getHost() == null || uri.getUserInfo() != null) return null;
             String scheme = uri.getScheme() == null ? "" : uri.getScheme().toLowerCase(Locale.ROOT);
             if (!scheme.equals("http") && !scheme.equals("https")) return null;
-            // Explicit HTTP addresses remain usable like other browsers; pages opened without a scheme default to HTTPS.
+            boolean secureConnection = getSharedPreferences(PREFS, MODE_PRIVATE).getBoolean("secureConnection", true);
+            String host = uri.getHost() == null ? "" : uri.getHost().toLowerCase(Locale.ROOT);
+            boolean localTarget = host.equals("localhost") || host.equals("127.0.0.1") || host.equals("::1") || host.startsWith("192.168.") || host.startsWith("10.") || host.startsWith("172.16.");
+            if (secureConnection && "http".equals(scheme) && !localTarget) uri = uri.buildUpon().scheme("https").build();
             return uri.toString();
         } catch (Exception ex) { return null; }
     }
@@ -432,9 +562,37 @@ public class MainActivity extends Activity {
         siteWebView.loadUrl(url);
     }
 
+    private boolean isNetworkAvailable() {
+        try {
+            android.net.ConnectivityManager manager = (android.net.ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            if (manager == null) return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                android.net.Network active = manager.getActiveNetwork();
+                android.net.NetworkCapabilities capabilities = active == null ? null : manager.getNetworkCapabilities(active);
+                return capabilities != null && capabilities.hasCapability(android.net.NetworkCapabilities.NET_CAPABILITY_INTERNET);
+            }
+            android.net.NetworkInfo info = manager.getActiveNetworkInfo();
+            return info != null && info.isConnected();
+        } catch (Exception error) {
+            android.util.Log.w(TAG, "Unable to determine network state", error);
+            return true; // Do not incorrectly mark a destination as offline when Android cannot read connectivity state.
+        }
+    }
+
     private void showSiteError(String title, String detail) {
         runOnUiThread(() -> {
-            siteError.setText(title + "\n\n" + detail + "\n\nTap ⋮ → Refresh to try again.");
+            String evidence = detail == null ? "" : detail.toLowerCase(Locale.ROOT);
+            int art = R.drawable.ic_browser_error_site;
+            if (!isNetworkAvailable() || evidence.contains("internet_disconnected") || evidence.contains("network is unreachable") || evidence.contains("connection timed out")) art = R.drawable.ic_browser_error_network;
+            else if (evidence.contains("name_not_resolved") || evidence.contains("dns") || evidence.contains("unknown host")) art = R.drawable.ic_browser_error_dns;
+            android.graphics.drawable.Drawable illustration = ContextCompat.getDrawable(MainActivity.this, art);
+            if (illustration != null) {
+                int w = dp(180), h = dp(124);
+                illustration.setBounds(0, 0, w, h);
+                siteError.setCompoundDrawables(null, illustration, null, null);
+                siteError.setCompoundDrawablePadding(dp(14));
+            } else siteError.setCompoundDrawables(null, null, null, null);
+            siteError.setText(title + "\n\n" + detail + "\n\nTap ⋮ → Refresh to retry, or check the address and connection.");
             siteError.setVisibility(View.VISIBLE);
             progress.setVisibility(View.GONE);
         });
@@ -635,6 +793,19 @@ public class MainActivity extends Activity {
 
     @Override protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PRIVATE_UNLOCK) {
+            privateUnlockRequestPending = false;
+            if (resultCode == RESULT_OK) {
+                privateSessionLocked = false;
+                if (privateLockOverlay != null) privateLockOverlay.setVisibility(View.GONE);
+                showNativeMessage("Private session unlocked with Android device authentication. Screen capture protection remains active while private browsing is enabled.");
+            } else {
+                privateSessionLocked = true;
+                if (privateLockOverlay != null) privateLockOverlay.setVisibility(View.VISIBLE);
+                if (privateLockMessage != null) privateLockMessage.setText("Authentication was cancelled. Private tabs remain hidden until the device screen lock is confirmed.");
+            }
+            return;
+        }
         if (requestCode == REQUEST_FILE && pendingFileCallback != null) {
             Uri[] results = null;
             if (resultCode == RESULT_OK && data != null) {
@@ -697,6 +868,62 @@ public class MainActivity extends Activity {
                     });
                 } catch (Exception error) {
                     showNativeMessage("Could not clear WebView data: " + error.getClass().getSimpleName() + ": " + error.getMessage());
+                }
+            });
+        }
+
+        @android.webkit.JavascriptInterface public void updateBrowserPolicy(String json) {
+            runOnUiThread(() -> {
+                try {
+                    JSONObject policy = new JSONObject(json == null ? "{}" : json);
+                    android.content.SharedPreferences.Editor editor = getSharedPreferences(PREFS, MODE_PRIVATE).edit();
+                    String[] booleanKeys = {"thirdPartyCookies","safeBrowsing","javascriptSecurity","secureConnection","permissionLocation","permissionCamera","permissionMicrophone","permissionNotifications","permissionMotion","permissionUsb","permissionNfc","permissionClipboard","permissionSerial","permissionFileEditing","permissionLocalNetwork","permissionAppsOnDevice","permissionAutoVerify","permissionIntrusiveAds","preloadPages","lockIncognito","doNotTrack","secureDns","privateSession"};
+                    for (String key : booleanKeys) if (policy.has(key)) editor.putBoolean(key, policy.optBoolean(key, false));
+                    if (policy.has("secureDnsProvider")) editor.putString("secureDnsProvider", policy.optString("secureDnsProvider", "cloudflare"));
+                    if (policy.has("notificationsEnabled")) editor.putBoolean("notificationsEnabled", policy.optBoolean("notificationsEnabled", false));
+                    editor.apply();
+                    applyBrowserPolicyToNative();
+                } catch (Exception error) {
+                    showNativeMessage("Could not apply browser settings: " + error.getClass().getSimpleName() + ": " + error.getMessage());
+                }
+            });
+        }
+
+        @android.webkit.JavascriptInterface public void createHomeScreenShortcut(String rawUrl, String rawTitle) {
+            runOnUiThread(() -> {
+                String url = normalizeHttpUrl(rawUrl);
+                if (url == null || !isHttpUrl(url)) { showNativeMessage("Shortcut not created: enter a valid HTTP/HTTPS website first."); return; }
+                String label = rawTitle == null || rawTitle.trim().isEmpty() ? Uri.parse(url).getHost() : rawTitle.trim();
+                if (label.length() > 40) label = label.substring(0, 40);
+                Intent launch = new Intent(MainActivity.this, MainActivity.class);
+                launch.setAction(Intent.ACTION_VIEW);
+                launch.setData(Uri.parse(url));
+                launch.putExtra(EXTRA_OPEN_URL, url);
+                launch.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                try {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        ShortcutManager manager = getSystemService(ShortcutManager.class);
+                        if (manager == null || !manager.isRequestPinShortcutSupported()) {
+                            showNativeMessage("This launcher does not support pinned shortcuts. You can still open this site from Browser History.");
+                            return;
+                        }
+                        String shortLabel = label.length() > 25 ? label.substring(0, 25) : label;
+                        ShortcutInfo shortcut = new ShortcutInfo.Builder(MainActivity.this, "ca_site_" + Integer.toHexString(url.hashCode()))
+                                .setShortLabel(shortLabel).setLongLabel(label).setIntent(launch)
+                                .setIcon(Icon.createWithResource(MainActivity.this, R.mipmap.ic_launcher)).build();
+                        boolean sent = manager.requestPinShortcut(shortcut, null);
+                        showNativeMessage(sent ? "Android accepted the website shortcut request. Confirm the system prompt to add it to your home screen." : "Android did not accept the website shortcut request.");
+                    } else {
+                        Intent install = new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+                        install.putExtra(Intent.EXTRA_SHORTCUT_INTENT, launch);
+                        install.putExtra(Intent.EXTRA_SHORTCUT_NAME, label);
+                        install.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(MainActivity.this, R.mipmap.ic_launcher));
+                        install.putExtra("duplicate", false);
+                        sendBroadcast(install);
+                        showNativeMessage("Sent the website shortcut request to the home screen launcher.");
+                    }
+                } catch (Exception error) {
+                    showNativeMessage("Shortcut creation failed: " + error.getClass().getSimpleName() + ": " + error.getMessage());
                 }
             });
         }

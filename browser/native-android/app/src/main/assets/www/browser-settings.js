@@ -4,7 +4,7 @@ let auth = null, db = null, doc, getDoc, setDoc, serverTimestamp;
 'use strict';
 const $ = selector => document.querySelector(selector);
 const PREFS_KEY = 'ca_browser_preferences_v1';
-const defaults = { theme: 'dark', accent: 'cyan', textScale: '100', reducedMotion: false, startPage: 'home', desktopMode: false, searchEndpoint: '', safeSearch: true, defaultCategory: 'web', liveNews: true, newsRefresh: '15', showThumbnails: true, suggestionsEnabled: true, voiceEnabled: true, notificationsEnabled: false, confirmDownloads: true, siteWarning: true, dnsProvider: 'google', saveHistory: true, privateSession: false, clearHistoryOnExit: false, accountSync: true, searchEngine: 'google', customSearchEngineUrl: '', addressBarPosition: 'top', interfaceLanguage: 'en', thirdPartyCookies: false, doNotTrack: true, preloadPages: false, lockIncognito: false, safeBrowsing: true, secureConnection: true, secureDns: false, secureDnsProvider: 'cloudflare', javascriptSecurity: true, permissionLocation: false, permissionCamera: false, permissionMicrophone: false, permissionNotifications: false, permissionMotion: false, permissionUsb: false, permissionNfc: false, permissionClipboard: false, permissionSerial: false, permissionFileEditing: false, permissionLocalNetwork: false, permissionAppsOnDevice: false, permissionAutoVerify: false, permissionIntrusiveAds: true };
+const defaults = { theme: 'dark', accent: 'cyan', textScale: '100', reducedMotion: false, startPage: 'home', desktopMode: false, searchEndpoint: '', safeSearch: true, defaultCategory: 'web', liveNews: true, newsRefresh: '15', showThumbnails: true, suggestionsEnabled: true, voiceEnabled: true, notificationsEnabled: false, confirmDownloads: true, siteWarning: true, dnsProvider: 'google', saveHistory: true, privateSession: false, clearHistoryOnExit: false, accountSync: true, searchEngine: 'google', customSearchEngineUrl: '', customSearchEngineUrls: { torch: '', grams: '', foc: '' }, addressBarPosition: 'top', interfaceLanguage: 'en', thirdPartyCookies: false, doNotTrack: true, preloadPages: false, lockIncognito: false, safeBrowsing: true, secureConnection: true, secureDns: false, secureDnsProvider: 'cloudflare', javascriptSecurity: true, permissionLocation: false, permissionCamera: false, permissionMicrophone: false, permissionNotifications: false, permissionMotion: false, permissionUsb: false, permissionNfc: false, permissionClipboard: false, permissionSerial: false, permissionFileEditing: false, permissionLocalNetwork: false, permissionAppsOnDevice: false, permissionAutoVerify: false, permissionIntrusiveAds: true };
 let user = null;
 let prefs = { ...defaults };
 const toastRegion = $('#toastRegion');
@@ -47,11 +47,14 @@ function loadControls() {
   const selectDefaults = { preferredSearchEngine: ['google','bing','duckduckgo','ecosia','brave','torch','grams','foc','fofa','censys'].includes(prefs.searchEngine) ? prefs.searchEngine : 'google', addressBarPosition: prefs.addressBarPosition === 'bottom' ? 'bottom' : 'top', interfaceLanguage: ['en','fr','es','zh','pt','ar'].includes(prefs.interfaceLanguage) ? prefs.interfaceLanguage : 'en', secureDnsProvider: ['cloudflare','google','opendns','nextdns'].includes(prefs.secureDnsProvider) ? prefs.secureDnsProvider : 'cloudflare' };
   for (const [id, value] of Object.entries(selectDefaults)) if ($('#'+id)) $('#'+id).value = value;
   if ($('#customSearchEngineUrl')) $('#customSearchEngineUrl').value = prefs.customSearchEngineUrl || '';
+  const customUrls = prefs.customSearchEngineUrls || {};
+  for (const engine of ['torch','grams','foc']) if ($('#'+engine+'SearchUrl')) $('#'+engine+'SearchUrl').value = customUrls[engine] || '';
   const extendedToggles = ['thirdPartyCookies','doNotTrack','preloadPages','lockIncognito','safeBrowsing','secureConnection','secureDns','javascriptSecurity','permissionLocation','permissionCamera','permissionMicrophone','permissionNotifications','permissionMotion','permissionUsb','permissionNfc','permissionClipboard','permissionSerial','permissionFileEditing','permissionLocalNetwork','permissionAppsOnDevice','permissionAutoVerify','permissionIntrusiveAds'];
   for (const key of extendedToggles) if ($('#'+key)) $('#'+key).checked = Boolean(prefs[key] ?? (key === 'safeBrowsing' || key === 'secureConnection' || key === 'javascriptSecurity' || key === 'doNotTrack' || key === 'permissionIntrusiveAds'));
   $$('#themeChoices button').forEach(button => button.classList.toggle('selected', button.dataset.theme === prefs.theme));
   applyTheme(); updateNotificationStatus(); applyBrowserLanguage(prefs.interfaceLanguage || 'en');
   if (window.CodeAcademyNative?.setNotificationsEnabled) window.CodeAcademyNative.setNotificationsEnabled(Boolean(prefs.notificationsEnabled));
+  if (window.CodeAcademyNative?.updateBrowserPolicy) { try { window.CodeAcademyNative.updateBrowserPolicy(JSON.stringify(prefs)); } catch (error) { console.warn('[Code Academy Browser] Native settings restore failed:', error); } }
 }
 function $$(selector) { return Array.from(document.querySelectorAll(selector)); }
 function applyTheme() {
@@ -92,6 +95,7 @@ function captureControls() {
     accountSync: $('#accountSync').checked,
     searchEngine: $('#preferredSearchEngine')?.value || 'google',
     customSearchEngineUrl: validateCustomSearchUrl($('#customSearchEngineUrl')?.value || ''),
+    customSearchEngineUrls: { torch: validateCustomSearchUrl($('#torchSearchUrl')?.value || ''), grams: validateCustomSearchUrl($('#gramsSearchUrl')?.value || ''), foc: validateCustomSearchUrl($('#focSearchUrl')?.value || '') },
     addressBarPosition: $('#addressBarPosition')?.value === 'bottom' ? 'bottom' : 'top',
     interfaceLanguage: ['en','fr','es','zh','pt','ar'].includes($('#interfaceLanguage')?.value) ? $('#interfaceLanguage').value : 'en',
     thirdPartyCookies: $('#thirdPartyCookies')?.checked || false,
@@ -170,6 +174,7 @@ async function saveSettings() {
     prefs = captureControls();
     localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
     if (window.CodeAcademyNative?.setNotificationsEnabled) window.CodeAcademyNative.setNotificationsEnabled(Boolean(prefs.notificationsEnabled));
+  if (window.CodeAcademyNative?.updateBrowserPolicy) { try { window.CodeAcademyNative.updateBrowserPolicy(JSON.stringify(prefs)); } catch (error) { console.warn('[Code Academy Browser] Native settings restore failed:', error); } }
     applyTheme();
     applyBrowserLanguage(prefs.interfaceLanguage);
     document.body.classList.toggle('addressbar-bottom', prefs.addressBarPosition === 'bottom');
@@ -417,3 +422,5 @@ window.CodeAcademySettings = {
     updateNotificationStatus();
   }
 };
+
+window.__codeAcademyPageReady = true;

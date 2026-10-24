@@ -2,7 +2,7 @@ import {
   auth, onAuthStateChanged, createBrowserAccount, signInBrowserEmail,
   signInBrowserGoogle, requestBrowserPasswordReset, checkPasswordResetCode,
   finishPasswordReset, sendBrowserPhoneCode, finishBrowserPhoneSignIn,
-  clearPhoneVerifier, ensureBrowserProfile, errorText
+  clearPhoneVerifier, ensureBrowserProfile, errorText, signOutBrowser
 } from './browser-auth.js';
 
 const $ = id => document.getElementById(id);
@@ -24,6 +24,11 @@ function exactError(error, context) {
   const details = errorText(error);
   console.error(`[Code Academy Browser] ${context}: ${details}`, error);
   showMessage('error', context, details);
+  if (error?.code === 'auth/email-not-verified') {
+    const link = document.createElement('a'); link.href = `./email-verification.html?email=${encodeURIComponent($('email')?.value || '')}`;
+    link.textContent = ' Open email verification page →'; link.style.display = 'inline-block'; link.style.marginTop = '8px'; link.style.fontWeight = '800';
+    messageBox.append(document.createElement('br'), link);
+  }
 }
 function busyState(value, button, label) {
   busy = value;
@@ -62,7 +67,7 @@ function passwordIsStrong(password) {
     length: password.length >= 8,
     upper: /[A-Z]/.test(password),
     lower: /[a-z]/.test(password),
-    special: /[0-9]|[^A-Za-z0-9]/.test(password)
+    special: /[^A-Za-z0-9]/.test(password)
   };
   Object.entries(checks).forEach(([key, good]) => {
     const element = document.querySelector(`[data-check="${key}"]`);
@@ -108,9 +113,9 @@ if (page === 'signup') {
       const warnings = [];
       if (result.profileSyncError) warnings.push(`Profile cloud sync failed: ${errorText(result.profileSyncError)}`);
       if (result.verificationError) warnings.push(`Verification email could not be sent: ${errorText(result.verificationError)}`);
-      if (warnings.length) showMessage('info', 'Your Firebase account was created successfully, but there are follow-up issues.', warnings.join('\n'));
-      else showMessage('success', 'Your browser account was created.', 'A verification message was requested. Opening your browser setup…');
-      setTimeout(nextAfterAuth, 650);
+      if (warnings.length) showMessage('info', 'Your account was created, but there are follow-up issues.', warnings.join('\n'));
+      else showMessage('success', 'Your browser account was created.', 'A verification message was requested. Opening email verification…');
+      setTimeout(() => location.replace(`./email-verification.html?email=${encodeURIComponent(email)}${result.verificationError ? '&sendFailed=1' : ''}`), 650);
     } catch (error) { exactError(error, 'Account creation failed'); }
     finally { busyState(false, button); }
   });
@@ -207,7 +212,8 @@ if (page === 'reset') {
 // decides where to navigate; there is no caller-controlled external redirect.
 try {
   const { consumeGoogleRedirect } = await import('./browser-auth.js');
-  await consumeGoogleRedirect();
+  const redirectResult = await consumeGoogleRedirect();
+  if (redirectResult?.user && (page === 'signup' || page === 'login')) location.replace('./index.html?welcome=1');
 } catch (error) {
   if (error?.code && error.code !== 'auth/redirect-cancelled-by-user') exactError(error, 'Google sign-in return failed');
 }
@@ -221,3 +227,7 @@ if ((page === 'login' || page === 'signup') && !new URLSearchParams(location.sea
   }, error => exactError(error, 'Could not read sign-in state'));
 }
 window.addEventListener('pagehide', clearPhoneVerifier);
+
+window.__codeAcademyBrowserAuthPageReady = true;
+
+window.__codeAcademyPageReady = true;

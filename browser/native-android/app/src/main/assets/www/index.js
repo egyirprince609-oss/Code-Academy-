@@ -1,10 +1,11 @@
-import { auth, onAuthStateChanged, ensureBrowserProfile, getBrowserProfile, errorText } from './browser-auth.js';
+let auth, onAuthStateChanged, ensureBrowserProfile, getBrowserProfile, errorText;
 const status = document.getElementById('launchStatus');
 const actions = document.getElementById('launchActions');
 let launching = false;
 function showError(error, context) {
-  console.error(`[Code Academy Browser] ${context}: ${errorText(error)}`, error);
-  status.textContent = `${context}: ${errorText(error)}`;
+  const detail = typeof errorText === 'function' ? errorText(error) : (error instanceof Error ? `${error.name}: ${error.message}` : String(error));
+  console.error(`[Code Academy Browser] ${context}: ${detail}`, error);
+  status.textContent = `${context}: ${detail}`;
   actions.hidden = false;
 }
 async function launchForUser(user) {
@@ -13,6 +14,10 @@ async function launchForUser(user) {
   if (!user) {
     status.textContent = 'Sign in or create a browser account to continue.';
     location.replace('./login.html?next=index.html');
+    return;
+  }
+  if (user.email && !user.emailVerified && user.providerData?.some(provider => provider.providerId === 'password')) {
+    location.replace(`./email-verification.html?email=${encodeURIComponent(user.email)}`);
     return;
   }
   try {
@@ -44,8 +49,10 @@ async function launchForUser(user) {
 async function start() {
   try {
     if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-      navigator.serviceWorker.register('./sw.js', { scope: new URL('./', location.href).pathname }).catch(error => console.warn('[Code Academy Browser] Offline shell registration failed:', errorText(error)));
+      navigator.serviceWorker.register('./sw.js', { scope: new URL('./', location.href).pathname }).catch(error => console.warn('[Code Academy Browser] Offline shell registration failed:', error?.message || error));
     }
+    const authentication = await import('./browser-auth.js');
+    ({ auth, onAuthStateChanged, ensureBrowserProfile, getBrowserProfile, errorText } = authentication);
     await new Promise((resolve, reject) => {
       let stop = () => {};
       const safety = window.setTimeout(() => { stop(); reject(new Error('Timed out while waiting for Firebase Authentication. Check internet access and Firebase authorized domains.')); }, 15000);
@@ -55,3 +62,5 @@ async function start() {
 }
 document.getElementById('retryLaunch').addEventListener('click', () => { launching = false; status.textContent = 'Retrying…'; start(); });
 start();
+
+window.__codeAcademyPageReady = true;
