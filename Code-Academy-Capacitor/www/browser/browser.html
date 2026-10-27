@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080d19">
+<meta name="application-name" content="Code Academy Browser">
+<meta name="author" content="Code Academy">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="description" content="Code Academy Browser is a focused, secure browsing workspace with real search results, current news previews, image and document discovery, private tabs, saved history, downloads, DNS diagnostics, privacy controls and fast access to the wider web.">
+<link rel="canonical" href="https://egyirprince609-oss.github.io/Code-Academy-/browser/browser.html">
+<link rel="icon" type="image/png" href="./browser-icon-192.png">
+<link rel="apple-touch-icon" href="./browser-icon-192.png">
+<link rel="manifest" href="./browser-manifest.json">
+<link rel="stylesheet" href="./browser.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Code Academy Browser">
+<meta property="og:title" content="Code Academy Browser — Search. Browse. Stay focused.">
+<meta property="og:description" content="Code Academy Browser is a focused, secure browsing workspace with real search results, current news previews, image and document discovery, private tabs, saved history, downloads, DNS diagnostics, privacy controls and fast access to the wider web.">
+<meta property="og:url" content="https://egyirprince609-oss.github.io/Code-Academy-/browser/browser.html">
+<meta property="og:image" content="https://egyirprince609-oss.github.io/Code-Academy-/browser/browser_image_preview.png">
+<meta property="og:image:alt" content="Code Academy Browser — Search, browse, discover and stay focused">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Code Academy Browser — Search. Browse. Stay focused.">
+<meta name="twitter:description" content="Code Academy Browser is a focused, secure browsing workspace with real search results, current news previews, image and document discovery, private tabs, saved history, downloads, DNS diagnostics, privacy controls and fast access to the wider web.">
+<meta name="twitter:image" content="https://egyirprince609-oss.github.io/Code-Academy-/browser/browser_image_preview.png">
+<title>Code Academy Browser</title>
+<style>
+.browser-profile-shortcut{display:inline-grid;place-items:center;width:38px;height:38px;flex:0 0 38px;border-radius:50%;border:1px solid #3c566f;background:#1b2b40;overflow:hidden}
+.browser-profile-shortcut img{width:100%;height:100%;object-fit:cover}
+#bookmarkCurrentButton[aria-pressed="true"] svg{fill:#f8d66d;stroke:#f8d66d}
+@media(max-width:520px){.browser-profile-shortcut{width:33px;height:33px;flex-basis:33px}.toolbar .install-top span{display:none}}
+</style>
+</head>
+<body>
+<div class="browser-app" id="browserApp">
+  <header class="app-header" aria-label="Browser address and account bar">
+    <button class="icon-btn browser-home-icon" type="button" id="homeButton" aria-label="Browser home" title="Home"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7h-6v7H4a1 1 0 0 1-1-1z"/></svg></button>
+    <form class="address-form" id="addressForm" autocomplete="off">
+      <span class="address-lock" id="addressIcon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg></span>
+      <input type="search" id="addressInput" aria-label="Search the web or enter a website" placeholder="Search the web or enter a website…" spellcheck="false" enterkeyhint="search">
+      <div class="address-suggestions" id="addressSuggestions" hidden role="listbox" aria-label="Search suggestions"></div>
+      <button class="voice-btn" id="voiceButton" type="button" title="Voice search" aria-label="Voice search"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M9 21h6"/></svg></button>
+      <button class="go-btn" type="submit" aria-label="Search or go"><svg viewBox="0 0 24 24"><path d="m5 12 14 0M13 5l7 7-7 7"/></svg></button>
+    </form>
+    <button class="new-tab-btn" id="newTabButton" aria-label="Open new tab" title="New tab">＋</button>
+    <a class="browser-profile-shortcut" href="./browser-profile.html" id="browserProfileButton" aria-label="Open browser profile" title="Browser profile"><img id="headerProfileImage" src="./browser-icon-192.png" alt=""></a>
+    <button class="icon-btn browser-more-icon" id="moreButton" type="button" aria-label="Browser menu" title="Menu"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg></button>
+  </header>
+
+  <section class="toolbar" aria-label="Browser navigation tools">
+    <button class="icon-btn small" id="backButton" aria-label="Back" title="Back" disabled><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+    <button class="icon-btn small" id="forwardButton" aria-label="Forward" title="Forward" disabled><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+    <button class="icon-btn small" id="bookmarkCurrentButton" aria-label="Bookmark current page" title="Bookmark"><svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.8 6.2.9-4.5 4.4 1.1 6.2L12 17.4l-5.6 2.9 1.1-6.2L3 9.7l6.2-.9z"/></svg></button>
+    <button class="icon-btn small" id="toolbarDownloadButton" aria-label="Download current page or file" title="Download"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3"/></svg></button>
+    <button class="icon-btn small" id="reloadButton" aria-label="Reload page" title="Reload"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M20 12a8 8 0 1 1-2-5"/></svg></button>
+    <span class="toolbar-spacer"></span>
+    <button type="button" class="icon-btn small" id="navHistoryButton" aria-label="Browsing history" title="History"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.5-6.2L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg></button>
+    <button type="button" class="icon-btn small" id="filesButton" aria-label="Downloads and imported files" title="Downloads"><svg viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M5 17v3h14v-3"/></svg></button>
+    <a class="icon-btn small" href="./browser-settings.html" aria-label="Browser settings" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 2.9-.2-.1a1.7 1.7 0 0 0-1.9.2 1.7 1.7 0 0 0-.8 1.5V22h-3.4v-.3a1.7 1.7 0 0 0-1.1-1.6 1.7 1.7 0 0 0-1.9.3l-.2.1-1.7-2.9.2-.2a1.7 1.7 0 0 0 .2-1.9A1.7 1.7 0 0 0 4.8 14H4v-3.4h.3A1.7 1.7 0 0 0 6 9.5a1.7 1.7 0 0 0-.3-1.9l-.1-.2 2.9-1.7.2.2a1.7 1.7 0 0 0 1.9.2A1.7 1.7 0 0 0 11.4 4V3h3.4v.3a1.7 1.7 0 0 0 1.1 1.6 1.7 1.7 0 0 0 1.9-.3l.2-.1 1.7 2.9-.2.2a1.7 1.7 0 0 0-.2 1.9 1.7 1.7 0 0 0 1.5.8h.3v3.4h-.3a1.7 1.7 0 0 0-1.4.7Z"/></svg></a>
+  </section>
+
+  <div class="tab-bar" aria-label="Open tabs" id="tabBar">
+    <div class="tab-list" id="tabList"></div>
+  </div>
+  <div class="browser-progress" id="browserProgress" hidden role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuetext="Idle" aria-label="No active request"><span></span></div>
+
+  <main class="browser-frame">
+
+
+    <section class="category-row" role="tablist" aria-label="Search categories" id="categoryRow" hidden>
+      <button class="category-chip active" data-category="web" role="tab" aria-selected="true"> <span>⌕</span> All results</button>
+      <button class="category-chip" data-category="images" role="tab" aria-selected="false"><span>▧</span> Images</button>
+      <button class="category-chip" data-category="videos" role="tab" aria-selected="false"><span>▷</span> Videos</button>
+      <button class="category-chip" data-category="news" role="tab" aria-selected="false"><span>▤</span> News</button>
+      <button class="category-chip" data-category="documents" role="tab" aria-selected="false"><span>▱</span> Documents</button>
+      <button class="category-chip" data-category="maps" role="tab" aria-selected="false"><span>⌖</span> Maps</button>
+      <button class="category-chip" data-category="books" role="tab" aria-selected="false"><span>▣</span> Books</button>
+    </section>
+
+    <section class="notice-strip" id="privacyNotice" hidden></section>
+    <section class="focus-viewport" id="focusViewport">
+      <div class="welcome-view" id="welcomeView">
+        <div class="hero-orbit orbit-one"></div><div class="hero-orbit orbit-two"></div>
+        <div class="welcome-content">
+          <section class="browser-home-shortcuts" aria-label="New tab shortcuts">
+            <div class="browser-home-brand"><img src="./browser-icon-192.png" alt="Code Academy Browser logo"><div><strong>Code Academy</strong><span>Browser</span></div></div>
+            <div class="browser-mode-cards"><button type="button" class="browser-mode-card" id="searchModeButton"><span class="mode-card-icon"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg></span><span><strong>Search mode</strong><small>Search the web or enter a URL</small></span><span class="mode-card-arrow">›</span></button><button type="button" class="browser-mode-card" id="incognitoModeButton"><span class="mode-card-icon"><svg viewBox="0 0 24 24"><path d="M3 9h18l-2-5H5zM5 9v3m14-3v3M3 12h18M5 12a4 4 0 1 0 8 0M11 12a4 4 0 1 0 8 0"/></svg></span><span><strong>Incognito mode</strong><small>Keep this session off saved history</small></span><span class="mode-card-arrow">›</span></button></div>
+            <section class="frequent-sites-card"><div class="frequent-sites-heading"><div><p class="kicker">QUICK ACCESS</p><h2>Frequently visited</h2></div><button type="button" id="refreshFrequentSitesButton" class="quiet-btn">Refresh</button></div><div class="frequent-sites-list" id="frequentSitesList" aria-live="polite"><p class="frequent-empty">Your most visited websites will appear here after you browse.</p></div></section>
+          </section>
+          <div class="home-hero-main">
+          <div class="hero-symbol"><img src="./browser-icon-192.png" alt="Code Academy Browser"></div>
+          <div class="eyebrow"><span class="status-dot"></span> YOUR WEB, IN ONE WORKSPACE</div>
+          <h1>Explore beyond<br><em>the next click.</em></h1>
+          <p>Search useful answers, open websites in focused tabs, and keep your browsing tools connected to Code Academy.</p>
+          <form class="hero-search" id="heroSearchForm"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="heroSearchInput" type="search" placeholder="What would you like to find?" aria-label="Search the web"><button type="submit">Search <span>↗</span></button></form>
+          <div class="quick-links" aria-label="Quick links">
+            <button data-open-url="https://www.google.com" class="quick-link"><span class="quick-icon google">G</span><span>Google</span></button>
+            <button data-open-url="https://www.wikipedia.org" class="quick-link"><span class="quick-icon wiki">W</span><span>Wikipedia</span></button>
+            <button data-open-url="https://www.youtube.com" class="quick-link"><span class="quick-icon tube">▷</span><span>YouTube</span></button>
+            <button data-open-url="https://www.paypal.com" class="quick-link"><span class="quick-icon pay">P</span><span>PayPal</span></button>
+            <button id="importImageQuick" class="quick-link"><span class="quick-icon media">▧</span><span>Import image</span></button>
+          </div>
+          <div class="hero-foot"><span><svg viewBox="0 0 24 24"><path d="M12 3 4.5 6v5.5c0 4.8 3.2 7.7 7.5 9.5 4.3-1.8 7.5-4.7 7.5-9.5V6z"/><path d="m9 12 2 2 4-4"/></svg>Focused browsing workspace</span><span>Tabs saved to your account when allowed</span></div>
+          </div>
+          <section class="home-feed" id="homeFeed" aria-labelledby="homeFeedTitle">
+            <div class="home-feed-heading"><div><p class="kicker">LIVE DISCOVERY</p><h2 id="homeFeedTitle">What's happening now</h2><p id="homeFeedStatus" class="home-feed-status" aria-live="polite">Loading current headlines…</p></div><button type="button" id="refreshNewsButton" class="quiet-btn" aria-label="Refresh current headlines">↻ Refresh</button></div>
+            <div class="home-feed-grid" id="homeFeedGrid" aria-live="polite"><div class="feed-loading"><span class="feed-pulse"></span>Loading recent headlines from online news feeds…</div></div>
+            <div class="home-feed-bottom"><span>News items link to their original publishers.</span><a href="https://news.google.com/" id="allNewsLink" target="_blank" rel="noopener noreferrer">Browse more news ↗</a></div>
+          </section>
+        </div>
+      </div>
+      <div class="search-view" id="searchView" hidden>
+        <div class="search-summary"><div><p class="kicker" id="searchKicker">SEARCH RESULTS</p><h2 id="resultsHeading">Results</h2><p id="resultsMeta">Connecting to search…</p></div><div class="search-summary-actions"><a class="quiet-btn full-engine-link" id="openFullSearchButton" target="_blank" rel="noopener noreferrer" href="https://www.google.com/">Open full search results ↗</a><button class="quiet-btn" id="saveSearchButton" type="button">＋ Save search</button></div></div>
+        <div class="answer-card" id="answerCard" hidden></div>
+        <div class="result-layout"><div class="results-list" id="resultsList" aria-live="polite"></div><aside class="results-side" id="resultsSide"><div class="side-card"><span class="side-icon">✦</span><h3>Search stays here</h3><p>Results open inside this browser workspace. Some destination sites may restrict being embedded.</p><a href="./browser-settings.html">Review browser settings →</a></div><div class="side-card compact-side"><strong>Search in another engine</strong><a id="preferredEngineFallback" target="_blank" rel="noopener noreferrer">Primary search engine ↗</a><a id="googleFallback" target="_blank" rel="noopener noreferrer">Google results ↗</a><a id="duckFallback" target="_blank" rel="noopener noreferrer">DuckDuckGo results ↗</a><a id="censysFallback" target="_blank" rel="noopener noreferrer">Censys host search ↗</a><a id="fofaFallback" target="_blank" rel="noopener noreferrer">FOFA asset search ↗</a><small class="engine-note">Censys and FOFA may require an account and their own query syntax. Use them only for systems you are authorized to research.</small></div></aside></div>
+      </div>
+      <div class="website-view" id="websiteView" hidden>
+        <div class="site-progress" id="siteProgress"><span></span></div>
+        <div class="site-hint" id="siteHint"><span class="hint-mark">i</span><span>Some websites block embedded previews. Open the real site in a full browser tab.</span><button class="site-open-external" id="openFullBrowserButton" type="button">Open website in full browser tab ↗</button><button id="dismissSiteHint" aria-label="Dismiss website note">×</button></div>
+        <div class="iframe-wrap" id="iframeWrap"><iframe id="siteFrame" title="Website viewer" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads allow-modals"></iframe></div>
+        <div class="blocked-helper" id="blockedHelper" hidden><img class="browser-error-art" id="siteErrorArt" src="./assets/errors/site-unreachable.png" alt=""><div class="blocked-icon">↗</div><h2>Open this website in a full browser tab</h2><p>This web preview cannot override website frame security. Open the actual destination in a full browser tab instead.</p><button class="primary-btn" id="openExternalButton">Open website in full browser tab ↗</button><button class="text-btn" id="retryFrameButton">Retry embedded view</button></div>
+      </div>
+      <div class="empty-view" id="emptyView" hidden><div class="empty-icon">⌘</div><h2>Nothing is open yet</h2><p>Start a new tab or search for something.</p><button class="primary-btn" id="emptyNewTab">New tab</button></div>
+    </section>
+    <footer class="browser-footer"><div><span class="secure-mini">●</span><span id="footerStatus">Private tab state is stored on this device and, when permitted, your account.</span></div><div class="footer-links"><button id="downloadCurrentButton" type="button">Download</button><button id="shareCurrentButton" type="button">Share tab</button><a href="./browser-settings.html">Settings</a><a href="./browser-profile.html">Browser profile</a></div></footer>
+  </main>
+</div>
+
+<div class="popover-menu" id="moreMenu" hidden>
+  <button data-action="new-tab">＋ New tab <kbd>Ctrl K</kbd></button>
+  <button data-action="new-incognito">◉ New incognito tab</button>
+  <button data-action="new-group">▤ Add current tab to a group</button>
+  <button data-action="history">◷ History</button>
+  <button data-action="clear-data">⌫ Delete browsing data</button>
+  <button data-action="bookmarks">★ Bookmarks</button>
+  <button data-action="recent-tabs">◴ Recent tabs</button>
+  <button data-action="files">▱ Imports & downloads</button>
+  <button data-action="download">⇩ Download current page or file</button>
+  <button data-action="desktop">▣ Toggle desktop site</button>
+  <button data-action="install-site">⌂ Install this site</button><button data-action="install">⇩ Install browser</button>
+  <button data-action="share">↗ Share current tab</button>
+  <button data-action="settings">⚙ Browser settings</button>
+  <button data-action="password-manager">🔑 Password manager & autofill</button>
+  <button data-action="profile">◎ Browser profile</button>
+  <button data-action="customize">✦ Customize new-tab page</button>
+  <button data-action="help">? Help & feedback</button>
+</div>
+
+<div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+<aside class="side-drawer" id="historyDrawer" aria-label="Browsing history" aria-hidden="true">
+  <div class="drawer-head"><div><p class="kicker">YOUR ACTIVITY</p><h2>Browsing history</h2><p>Up to 1,000 recent entries</p></div><button class="icon-btn" data-close-drawer aria-label="Close history">×</button></div>
+  <div class="drawer-tools"><input id="historyFilter" type="search" placeholder="Filter history…" aria-label="Filter history"><button id="clearHistoryButton" class="quiet-btn">Clear</button></div>
+  <div class="drawer-content" id="historyList"><div class="drawer-empty">Your recent browser history will appear here.</div></div>
+</aside>
+<aside class="side-drawer" id="filesDrawer" aria-label="Imported files and downloads" aria-hidden="true">
+  <div class="drawer-head"><div><p class="kicker">LOCAL FILES</p><h2>Imports & downloads</h2><p>File contents remain on this device unless you export them.</p></div><button class="icon-btn" data-close-drawer aria-label="Close files">×</button></div>
+  <div class="drawer-tools"><button id="importFileButton" class="primary-btn">＋ Import file</button><button id="exportHistoryButton" class="quiet-btn">Export list</button></div>
+  <div class="drawer-content" id="filesList"><div class="drawer-empty">Imported file activity appears here.</div></div>
+</aside>
+<input id="filePicker" type="file" accept="image/*,.pdf,.txt,.json,.csv,.html,.css,.js,.zip" hidden multiple>
+<div class="toast-region" id="toastRegion" aria-live="polite" aria-atomic="true"></div>
+<div class="install-dialog" id="installDialog" hidden><div class="install-card"><button class="icon-btn install-close" id="closeInstallDialog" aria-label="Close install dialog">×</button><img src="./browser-icon-192.png" alt="Code Academy Browser"><p class="kicker">MAKE IT YOUR OWN</p><h2>Install Code Academy Browser</h2><p>Keep Code Academy Browser easy to reach, with quick access, saved tabs and an offline-ready interface on supported devices.</p><button class="primary-btn full" id="confirmInstallButton">Continue</button><p class="install-help" id="installHelp">This installs the web app (PWA) when supported; it does not download a standalone .apk file. A separate Android package must be built and signed through the Android workflow.</p><button class="text-btn" id="dismissInstallDialog">Maybe later</button></div></div>
+
+
+<div class="share-dialog" id="shareDialog" hidden role="dialog" aria-modal="true" aria-labelledby="shareDialogTitle"><div class="share-card"><button class="icon-btn share-close" id="closeShareDialog" type="button" aria-label="Close share options">×</button><img src="./browser-icon-192.png" alt="" class="share-brand-icon"><p class="kicker">SHARE WITH YOUR PEOPLE</p><h2 id="shareDialogTitle">Share Code Academy Browser</h2><p>Choose whether to share the browser app itself or the site currently open in this tab.</p><button type="button" class="share-choice" id="shareAppButton"><span class="share-choice-icon">◈</span><span><strong>Share Code Academy App</strong><small>Invite someone to search, browse and learn with Code Academy.</small></span><span aria-hidden="true">↗</span></button><button type="button" class="share-choice" id="shareCurrentSiteButton"><span class="share-choice-icon">↗</span><span><strong>Share Current Site View</strong><small>Share the active website or search with Code Academy Browser details.</small></span><span aria-hidden="true">↗</span></button><p id="shareDialogStatus" class="share-dialog-status" role="status" aria-live="polite"></p><button type="button" class="text-btn" id="dismissShareDialog">Maybe later</button></div></div>
+<script type="module" src="./browser.js"></script>
+<script id="__ca-module-watchdog">(function(){window.addEventListener('error',function(e){if(window.__codeAcademyPageReady)return;var box=document.getElementById('footerStatus')||document.getElementById('saveStatus')||document.getElementById('profileMessage')||document.getElementById('tourError');if(box&&e.message){box.textContent='Page script error: '+e.message;}} ,true);setTimeout(function(){if(window.__codeAcademyPageReady)return;var box=document.getElementById('footerStatus')||document.getElementById('saveStatus')||document.getElementById('profileMessage')||document.getElementById('tourError');if(box)box.textContent='The page script did not finish loading. Check the exact network/CDN error in the browser developer console and reload. Your browser UI remains available where possible.';},14000);})();</script></body>
+</html>

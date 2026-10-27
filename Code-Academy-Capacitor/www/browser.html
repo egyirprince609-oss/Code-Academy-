@@ -61,8 +61,8 @@ function updateAccount(){
 }
 async function syncStatus(){state.online=navigator.onLine;updateAccount();if(!native?.isNative){$('engineLabel').textContent='Web preview · system browser only';message('The full tabbed browser engine runs in the Android APK. This hosted page opens sites in your system browser; it does not embed websites in an iframe.');return;} $('engineLabel').textContent='Android WebView available';}
 async function openNative(options={}){
- clearMessage(); if(native?.isNative && !authReady){message('Code Academy is still checking your sign-in session. Wait for the account status to settle, or retry after the sign-in service responds.',true);return;} if(native?.isNative){
-   try { const uid=currentUser?.uid||'device';const result=await native.openBrowser({uid,url:options.url||'',privateMode:options.privateMode===true,openSettings:options.openSettings===true}); if(result?.opened){message(result.mode==='system-browser'?'Opened in your Android system browser. Native tabs, settings and isolated private sessions require Android 9 or newer.':(options.privateMode?'Private browser session opened.':(options.openSettings?'Native browser settings opened.':'Native Code Academy browser opened.')));return;}throw new Error('The native browser did not confirm that it opened.'); }
+ clearMessage(); if(native?.isNative){
+   try { const uid=currentUser?.uid||'device';const result=await native.openBrowser({uid,url:options.url||'',privateMode:options.privateMode===true,openSettings:options.openSettings===true}); if(result?.opened){message(options.privateMode?'Private browser session opened.':'Native browser opened.');return;}throw new Error('The native browser did not confirm that it opened.'); }
    catch(err){message(`Native browser could not open: ${err?.message||err}`,true);return;}
  }
  const raw=prompt('Enter a website address or search phrase');if(raw==null||!raw.trim())return;
@@ -103,7 +103,7 @@ async function removeExpiredListeners() { /* all cloud reads are request-scoped;
 $('openBtn').addEventListener('click',()=>openNative({}));$('privateBtn').addEventListener('click',()=>openNative({privateMode:true}));$('settingsBtn').addEventListener('click',()=>openNative({openSettings:true}));$('refreshBtn').addEventListener('click',syncStatus);$('syncBtn').addEventListener('click',runSync);$('deleteCloudBtn').addEventListener('click',clearCloud);$('backBtn').addEventListener('click',()=>{if(history.length>1)history.back();else location.href='menu.html';});$('resumeBtn').addEventListener('click',()=>{if(!currentUser)return;localStorage.removeItem(pauseKey(currentUser.uid));state.paused=false;updateAccount();runSync();});
 window.addEventListener('online',()=>{state.online=true;updateAccount();if(currentUser&&!state.paused)runSync();});window.addEventListener('offline',()=>{state.online=false;updateAccount();badge('Offline','warn');});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&currentUser&&!state.paused)runSync();});
 let nativeAutoFallback=null;
-if(native?.isNative){$('engineLabel').textContent='Native browser integration available';nativeAutoFallback=setTimeout(()=>{if(!launchStarted&&!authReady){message('Your sign-in session is taking longer than usual. The browser will open automatically when the existing Code Academy account check finishes. If the sign-in service reports an error, local browsing remains available.',true);}},8000);}
+if(native?.isNative){$('engineLabel').textContent='Android WebView available';nativeAutoFallback=setTimeout(()=>{if(!launchStarted){launchStarted=true;openNative({openSettings:settingsIntent});}},2200);}
 await syncStatus();
 try {
   const [authModule, firestoreModule] = await Promise.all([
