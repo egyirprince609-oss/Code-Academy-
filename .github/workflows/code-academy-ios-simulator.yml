@@ -1,0 +1,65 @@
+name: Code Academy iOS Simulator Build (unsigned)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-ios-simulator:
+    # Simulator build only. A signed IPA for a physical iPhone requires Apple signing credentials.
+    runs-on: macos-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install npm dependencies
+        working-directory: GitHub APK
+        run: |
+          if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+
+      - name: Copy current root website and build native bridge
+        working-directory: GitHub APK
+        run: |
+          python3 scripts/sync-root-website.py
+          npm run build:native
+          python3 scripts/inject-html-script.py www /capacitor-native.js code-academy-native
+
+      - name: Generate iOS project
+        working-directory: GitHub APK
+        run: |
+          npx cap add ios
+          npx cap sync ios
+          python3 scripts/configure-ios.py
+
+      - name: Build unsigned simulator app (not an iPhone-installable IPA)
+        working-directory: GitHub APK
+        run: |
+          if [ -d ios/App/App.xcworkspace ]; then
+            PROJECT_ARGS=(-workspace ios/App/App.xcworkspace)
+          elif [ -d ios/App/App.xcodeproj ]; then
+            PROJECT_ARGS=(-project ios/App/App.xcodeproj)
+          else
+            echo 'Neither App.xcworkspace nor App.xcodeproj was generated.' >&2
+            exit 1
+          fi
+          xcodebuild "${PROJECT_ARGS[@]}" \
+            -scheme App \
+            -sdk iphonesimulator \
+            -configuration Debug \
+            -derivedDataPath build/ios-simulator \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Upload iOS simulator app
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-academy-ios-simulator-app
+          path: 'GitHub APK/build/ios-simulator/Build/Products/Debug-iphonesimulator/App.app'
+          if-no-files-found: error
+          retention-days: 14

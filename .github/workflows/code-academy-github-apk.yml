@@ -1,0 +1,156 @@
+name: Code Academy GitHub APK and AAB
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android API 36 build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'platform-tools'
+
+      - name: Install npm dependencies
+        working-directory: GitHub APK
+        run: |
+          if [ -f package-lock.json ]; then npm ci --no-audit --no-fund; else npm install --no-audit --no-fund; fi
+
+      - name: Copy the current repository-root website into GitHub APK/www
+        run: python3 'GitHub APK/scripts/sync-root-website.py'
+
+      - name: Build native bridge and inject it into copied HTML pages
+        working-directory: GitHub APK
+        run: |
+          npm run build:native
+          python3 scripts/inject-html-script.py www /capacitor-native.js code-academy-native
+
+      - name: Generate Android project and sync Capacitor plugins
+        working-directory: GitHub APK
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Restore optional Firebase Android configuration
+        env:
+          GOOGLE_SERVICES_JSON_BASE64: ${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -n "$GOOGLE_SERVICES_JSON_BASE64" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON_BASE64" | base64 --decode > 'GitHub APK/android/app/google-services.json'
+            test -s 'GitHub APK/android/app/google-services.json'
+          else
+            echo 'GOOGLE_SERVICES_JSON_BASE64 not set; remote push is not configured by this run.'
+          fi
+
+      - name: Configure Android permissions, Firebase and release signing
+        working-directory: GitHub APK
+        run: python3 scripts/configure-android.py
+
+      - name: Check release-signing secrets
+        id: signing
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ] && [ -n "$ANDROID_KEYSTORE_PASSWORD" ] && [ -n "$ANDROID_KEY_ALIAS" ] && [ -n "$ANDROID_KEY_PASSWORD" ]; then
+            echo 'ready=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'ready=false' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Build debug APK and, when configured, signed APK plus AAB
+        id: build
+        working-directory: GitHub APK
+        env:
+          SIGNING_READY: ${{ steps.signing.outputs.ready }}
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          chmod +x android/gradlew
+          if [ "$SIGNING_READY" = 'true' ]; then
+            export ANDROID_KEYSTORE_PATH="$RUNNER_TEMP/code-academy-release.jks"
+            printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$ANDROID_KEYSTORE_PATH"
+            chmod 600 "$ANDROID_KEYSTORE_PATH"
+            echo 'Release signing certificate SHA-256 fingerprint:'
+            keytool -list -v -keystore "$ANDROID_KEYSTORE_PATH" -alias "$ANDROID_KEY_ALIAS" -storepass "$ANDROID_KEYSTORE_PASSWORD" | grep -E 'SHA256:' || true
+            (cd android && ./gradlew --no-daemon assembleDebug assembleRelease bundleRelease)
+            DEBUG_APK="$(find android/app/build/outputs/apk/debug -type f -name '*.apk' -print -quit)"
+            RELEASE_APK="$(find android/app/build/outputs/apk/release -type f -name '*.apk' -print -quit)"
+            AAB="$(find android/app/build/outputs/bundle/release -type f -name '*.aab' -print -quit)"
+            test -n "$DEBUG_APK" && test -n "$RELEASE_APK" && test -n "$AAB"
+            cp "$DEBUG_APK" dist/Code-Academy-debug.apk
+            cp "$RELEASE_APK" dist/Code-Academy.apk
+            cp "$AAB" dist/Code-Academy.aab
+            if command -v apksigner >/dev/null 2>&1; then
+              echo 'Built APK signer fingerprint:'
+              apksigner verify --print-certs dist/Code-Academy.apk || true
+            elif [ -x "$ANDROID_HOME/build-tools/36.0.0/apksigner" ]; then
+              echo 'Built APK signer fingerprint:'
+              "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --print-certs dist/Code-Academy.apk || true
+            fi
+            echo 'signed=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'No complete release-signing secret set found. Building a debug APK for device testing only.'
+            (cd android && ./gradlew --no-daemon assembleDebug)
+            DEBUG_APK="$(find android/app/build/outputs/apk/debug -type f -name '*.apk' -print -quit)"
+            test -n "$DEBUG_APK"
+            cp "$DEBUG_APK" dist/Code-Academy-debug.apk
+            echo 'signed=false' >> "$GITHUB_OUTPUT"
+          fi
+          echo 'Produced files:'
+          ls -lh dist
+
+      - name: Upload APK/AAB build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-academy-android-apk-aab
+          path: 'GitHub APK/dist/*'
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish signed APK and AAB as a GitHub Release
+        if: steps.signing.outputs.ready == 'true' && github.ref_name == 'main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: code-academy-android-${{ github.run_number }}-${{ github.run_attempt }}
+          name: Code Academy Android build ${{ github.run_number }}
+          target_commitish: ${{ github.sha }}
+          body: |
+            Automated Code Academy Android build.
+            - Code-Academy.apk: signed APK for direct Android installation.
+            - Code-Academy.aab: Android App Bundle for compatible publishing workflows.
+            - Code-Academy-debug.apk: debug build for testing; do not distribute as a production release.
+            Native capabilities are limited to implemented plugins and granted Android permissions. See repository documentation for Firebase and background-work requirements.
+          files: |
+            GitHub APK/dist/Code-Academy.apk
+            GitHub APK/dist/Code-Academy.aab
+          draft: false
+          prerelease: false
+          make_latest: true

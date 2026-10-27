@@ -1,0 +1,20 @@
+// Applied by configure-android.py. The keystore is restored from Actions secrets
+// into RUNNER_TEMP; it is never committed to the repository.
+def caStorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+if (caStorePath != null && !caStorePath.trim().isEmpty()) {
+    android {
+        signingConfigs {
+            release {
+                storeFile file(caStorePath)
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias System.getenv('ANDROID_KEY_ALIAS')
+                keyPassword System.getenv('ANDROID_KEY_PASSWORD')
+            }
+        }
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
